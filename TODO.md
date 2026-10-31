@@ -1,6 +1,6 @@
 # TODO — ARENA PARANORMAL
 
-**Versão de referência atual:** v4.0.0 (revisado em 2026-10-31: Cada Um com o Seu — especial próprio para os 13 que usavam o genérico, Amigo pela wiki, vínculos Ordo Calamitas e Arnaldo + Veríssimo, a maça do Gaius e a CPU atiradora)
+**Versão de referência atual:** v4.1.0 (revisado em 2026-10-31: Dupla Recomendada — equipe de 2, parceiro recomendado na seleção como no Storm 4, balas param na parede do Suvaco Seco, Novidades com Ver mais)
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -9,7 +9,7 @@
 
 # PRÓXIMA GRANDE ATUALIZAÇÃO — LUTA + MODO PvE (planejamento de 2026-10-18)
 
-**Estado em 2026-10-31 (v4.0.0):**
+**Estado em 2026-10-31 (v4.1.0):**
 - [~] 2.2 Modelos antigos: Xande e Aguiar (v3.33.0), Fantasma, Kemi e Gal Sal + as lâminas Ereškigal (v3.34.0), Kaiser
   (v3.38.0), Balu e Lírio (v3.40.0), Arthur e Joui (v3.41.0), Arnaldo, Anfitrião, Veríssimo, Kian e O Diabo (2026-10-26)
   refeitos pelas artes oficiais; faltam os outros antigos

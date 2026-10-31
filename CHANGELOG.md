@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.1.0 — Dupla Recomendada
+
+### Adicionado
+- `teamLinks.recommendNext(members, available)`: o próximo membro da ligação que tem todos os já escolhidos (`priority` > equipe de 3 > ordem do arquivo; respeita `order`).
+- `SelectScreen`: equipe de 2 (confirmar de novo o segundo escolhido), `recommend()` move o cursor e marca o cartão (`.card.rec`), `duoLine` (chave `sel.team_two` nos 13 idiomas).
+- `ChangelogScreen`: `NEWS_SHORT` itens e o botão Ver mais / Ver menos (`news.more` / `news.less`).
+- Testes de `recommendNext`.
+
+### Corrigido
+- `projectiles.wall()`: o tiro usa os retângulos andáveis sem a folga de 0,6 m do `blocksPoint` (as balas passavam pela parede de 0,65 m do Bar Suvaco Seco); vale também para a rota da bala curva.
+
+### Alterado
+- `sobre.html`: especiais próprios, especial de equipe, Ordo Calamitas, transformações de Gaius e Celestine, tamanhos dos downloads.
+
 ## v4.0.0 — Cada Um com o Seu
 
 ### Adicionado

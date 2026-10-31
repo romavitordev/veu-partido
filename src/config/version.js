@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.0.0';
+export const VERSION = '4.1.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.1.0',
+    date: '2026-10-31',
+    title: 'Dupla Recomendada',
+    items: [
+      'EQUIPE DE 2: na seleção de equipe, confirme de novo o segundo lutador que acabou de escolher para fechar a equipe em dupla (ex.: Kaiser, Cristopher, Cristopher).',
+      'PARCEIRO RECOMENDADO: escolheu o primeiro, o cursor já vai para quem forma um especial de equipe com ele, com o cartão marcado em dourado. Se ele estiver em mais de uma equipe, a de 3 vem primeiro (Kaiser leva ao Arthur e ao Joui, a Força D).',
+      'CORRIGIDO: as balas atravessavam a parede do Bar Suvaco Seco entre o salão e a calçada. Agora todo tiro para na parede e só passa pela porta.',
+      'NOVIDADES: versões grandes mostram os primeiros itens e o botão Ver mais.',
+    ],
+  },
   {
     v: '4.0.0',
     date: '2026-10-31',

@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.1.0 — Dupla Recomendada
+- Equipe de 2: confirme de novo o segundo lutador para lutar em dupla.
+- Parceiro recomendado: escolhido o primeiro, o cursor vai para quem forma especial de equipe com ele (cartão dourado); equipes de 3 primeiro.
+- Corrigido: balas atravessando a parede do Bar Suvaco Seco.
+- Novidades com o botão Ver mais; página Sobre atualizada.
+
 ## v4.0.0 — Cada Um com o Seu
 - GRANDE MARCO: todo o elenco agora tem um especial próprio. Os 13 que usavam o especial genérico ganharam um com a identidade do cânone — Amalia, Balu, Lírio, Celestine, Gaius, Veríssimo, Ferreiro, Xande, Aguiar, Cristopher, Dalmo, Jae e Juan.
 - Especiais que deixam marca: Gaius ANULA (sem habilidades), Veríssimo ANALISA (mais dano e assistências prontas), Ferreiro CONSOME, Dalmo ATORDOA, Jae CEGA.
