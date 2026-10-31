@@ -859,6 +859,9 @@ body.touch-capable #install-hint { left: 50%; max-width: min(64vw, 520px); } /* 
 #changelog ul { margin: 0; padding-left: 20px; }
 #changelog li { margin: 6px 0; line-height: 1.4; color: #e6dcf8; font-size: 14px; }
 #changelog .hint { margin-top: 10px; font-size: 11px; color: #8a7ab0; }
+#changelog .content { max-height: min(62vh, 560px); overflow-y: auto; padding-right: 4px; }
+#changelog .news-more { margin: 8px 0 0 20px; padding: 6px 14px; min-height: 34px; border: 1px solid #6a58a0; border-radius: 8px; background: #2a2040; color: #ffd84a; font: 800 12px Inter, sans-serif; letter-spacing: .06em; cursor: pointer; }
+#changelog .news-more:hover, #changelog .news-more:focus-visible { background: #3a2c58; border-color: #ffd84a; outline: none; }
 @media (max-height: 600px) {
   .cmdbox { padding: 8px 12px; }
   .cmdbox h3 { font-size: 26px; }

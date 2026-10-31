@@ -181,6 +181,8 @@ export default {
   "news.current": "現在",
   "news.prev": "前のバージョン",
   "news.next": "次のバージョン",
+  "news.more": "もっと見る (+{n})",
+  "news.less": "閉じる",
   "news.hint": "◀ ▶ 他のバージョン · <b>{ok}</b> か <b>{back}</b> で閉じる",
   "news.note": "更新情報はポルトガル語です。",
   "cmd.hint": "◀ ▶ 切替 · ▲ ▼ スクロール · <b>{back}</b>・<kbd>{phys}</kbd>・<kbd>Esc</kbd> 戻る",

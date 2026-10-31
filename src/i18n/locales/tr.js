@@ -181,6 +181,8 @@ export default {
   "news.current": "GÜNCEL",
   "news.prev": "Önceki sürüm",
   "news.next": "Sonraki sürüm",
+  "news.more": "Daha fazla (+{n})",
+  "news.less": "Daha az",
   "news.hint": "◀ ▶ diğer sürümler · <b>{ok}</b> veya <b>{back}</b> kapat",
   "news.note": "Yenilikler Portekizce yazılmıştır.",
   "cmd.hint": "◀ ▶ değiştir · ▲ ▼ kaydır · <b>{back}</b>, <kbd>{phys}</kbd> veya <kbd>Esc</kbd> geri",

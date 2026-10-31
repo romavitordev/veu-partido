@@ -181,6 +181,8 @@ export default {
   "news.current": "현재",
   "news.prev": "이전 버전",
   "news.next": "다음 버전",
+  "news.more": "더 보기 (+{n})",
+  "news.less": "접기",
   "news.hint": "◀ ▶ 다른 버전 · <b>{ok}</b> 또는 <b>{back}</b> 닫기",
   "news.note": "새 소식은 포르투갈어로 작성되어 있습니다.",
   "cmd.hint": "◀ ▶ 전환 · ▲ ▼ 스크롤 · <b>{back}</b>, <kbd>{phys}</kbd> 또는 <kbd>Esc</kbd> 뒤로",

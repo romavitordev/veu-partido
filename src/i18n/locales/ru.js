@@ -181,6 +181,8 @@ export default {
   "news.current": "ТЕКУЩАЯ",
   "news.prev": "Предыдущая версия",
   "news.next": "Следующая версия",
+  "news.more": "Показать ещё (+{n})",
+  "news.less": "Свернуть",
   "news.hint": "◀ ▶ другие версии · <b>{ok}</b> или <b>{back}</b> закрыть",
   "news.note": "Описание обновлений — на португальском.",
   "cmd.hint": "◀ ▶ переключить · ▲ ▼ прокрутка · <b>{back}</b>, <kbd>{phys}</kbd> или <kbd>Esc</kbd> назад",

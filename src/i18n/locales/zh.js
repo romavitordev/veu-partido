@@ -181,6 +181,8 @@ export default {
   "news.current": "当前",
   "news.prev": "上一版本",
   "news.next": "下一版本",
+  "news.more": "查看更多 (+{n})",
+  "news.less": "收起",
   "news.hint": "◀ ▶ 其他版本 · <b>{ok}</b> 或 <b>{back}</b> 关闭",
   "news.note": "更新内容以葡萄牙语撰写。",
   "cmd.hint": "◀ ▶ 切换 · ▲ ▼ 滚动 · <b>{back}</b>、<kbd>{phys}</kbd> 或 <kbd>Esc</kbd> 返回",

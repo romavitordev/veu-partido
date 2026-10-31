@@ -1547,6 +1547,7 @@ export class LanScreen {
 }
 
 // NOVIDADES: o changelog, uma versão por vez (◀ ▶ navegam; começa na mais nova)
+const NEWS_SHORT = 6; // quantos itens aparecem antes do "Ver mais"
 export class ChangelogScreen {
   constructor(root) {
     this.page = 0;
@@ -1567,20 +1568,34 @@ export class ChangelogScreen {
   }
   changePage(direction) {
     this.page = (this.page + direction + CHANGELOG.length) % CHANGELOG.length;
+    this.expanded = false;
     this.render();
+  }
+  // versões grandes mostram só os primeiros itens; "Ver mais" abre o resto (confirmar também abre, antes de fechar)
+  hasMore() {
+    return !this.expanded && CHANGELOG[this.page].items.length > NEWS_SHORT;
   }
   render() {
     const c = CHANGELOG[this.page];
     this.verEl.textContent = `${formatVersion(c.v)}${c.v === VERSION ? ` · ${t('news.current')}` : ''} — ${this.page + 1} / ${CHANGELOG.length}`;
-    this.content.innerHTML = `<div class="news-title">${formatVersion(c.v)} — ${c.title}</div><div class="news-date">${c.date.split('-').reverse().join('/')}</div><ul>${c.items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
+    const long = c.items.length > NEWS_SHORT;
+    const shown = long && !this.expanded ? c.items.slice(0, NEWS_SHORT) : c.items;
+    const more = long ? `<button type="button" class="news-more">${this.expanded ? t('news.less') : t('news.more', { n: c.items.length - NEWS_SHORT })}</button>` : '';
+    this.content.innerHTML = `<div class="news-title">${formatVersion(c.v)} — ${c.title}</div><div class="news-date">${c.date.split('-').reverse().join('/')}</div><ul>${shown.map((i) => `<li>${i}</li>`).join('')}</ul>${more}`;
+    const btn = this.content.querySelector('.news-more');
+    if (btn) btn.addEventListener('click', (event) => { event.stopPropagation(); this.expanded = !this.expanded; this.render(); });
   }
   update(input) {
     if (this.clicked) { this.clicked = false; return 'back'; }
+    // o confirmar que abriu esta tela não pode já abrir o "Ver mais"
+    if (!this.ready) { this.ready = true; return null; }
     for (const p of controllers(input, null)) {
       if (p.menu.left) this.changePage(-1);
       if (p.menu.right) this.changePage(1);
+      if (confirm(p) && this.hasMore()) { this.expanded = true; this.render(); continue; }
       if (back(p) || confirm(p) || p.pressed.start) return 'back';
     }
+    if (input.keyPressedOnce('Enter') && this.hasMore()) { this.expanded = true; this.render(); return null; }
     if (input.keyPressedOnce('Escape') || input.keyPressedOnce('Enter')) return 'back';
     return null;
   }

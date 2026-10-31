@@ -181,6 +181,8 @@ export default {
   "news.current": "AKTUALNA",
   "news.prev": "Poprzednia wersja",
   "news.next": "Następna wersja",
+  "news.more": "Pokaż więcej (+{n})",
+  "news.less": "Pokaż mniej",
   "news.hint": "◀ ▶ inne wersje · <b>{ok}</b> lub <b>{back}</b> zamknij",
   "news.note": "Opis nowości jest po portugalsku.",
   "cmd.hint": "◀ ▶ przełącz · ▲ ▼ przewiń · <b>{back}</b>, <kbd>{phys}</kbd> lub <kbd>Esc</kbd> wstecz",
