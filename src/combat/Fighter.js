@@ -2784,6 +2784,9 @@ export class Fighter {
     if (this.meleeLocked()) return;
     // Templo do Ódio (cânone): sob o ódio não se conjura ritual
     if (a.ritual && this.buffs.some((b) => b.noRituals)) { this.notify('ÓDIO: NÃO CONJURA RITUAIS'); return; }
+    // ANULADO (especial do Gaius): nenhuma habilidade sai enquanto durar
+    const lock = this.buffs.find((b) => b.noAbilities);
+    if (lock) { this.notify(lock.lockMsg || 'HABILIDADES ANULADAS'); return; }
     if (this.cooldowns[a.id] > 0) {
       // recast: a habilidade tem um segundo uso enquanto recarrega (Trinitá Aprimorado: trocar de lugar com uma cópia)
       const re = a.recast && ABILITY_TYPES[a.type] && ABILITY_TYPES[a.type].recast;

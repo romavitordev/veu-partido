@@ -82,7 +82,7 @@ export default {
       name: 'Comandar',
       input: 'carga+physical', // △ + ○
       type: 'mindControl',
-      description: 'Entra na mente do alvo: por alguns segundos ele anda sozinho até o Estrangeiro e não consegue se defender.',
+      description: 'Entra na mente do alvo (um anel verde fecha no chão em volta dele antes — dá para esquivar): por alguns segundos ele anda sozinho até o Estrangeiro e não consegue se defender. Quem é controlado pode RESISTIR: cada botão apertado encurta o controle.',
       energyCost: 35,
       cooldown: 18,
       windup: 0.45,
@@ -92,6 +92,7 @@ export default {
       duration: 2.5,
       walkTo: true,
       noBlock: true,
+      struggle: 0.12, // cada botão apertado pela vítima tira 0,12 s do controle
       color: GREEN,
     },
     {
@@ -129,13 +130,18 @@ export default {
       name: 'Abdução',
       input: 'block+carga', // R2 + △
       type: 'abductBeam',
-      description: 'Um círculo verde marca o chão debaixo do adversário: se ele não sair a tempo, a luz o ERGUE no ar e logo depois o crava de volta no chão. Pouco dano, mas abre para o combo.',
+      description: 'O FEIXE DE LUZ verde desce do céu sobre o adversário e o segue devagar: se ele não sair a tempo, é ABDUZIDO — flutua girando no meio da luz, entre a interferência de sinal, e é cravado de volta no chão. Volta sem lembrar de nada: perde 15 de sanidade e fica DESORIENTADO (movimento invertido) por 1,8 s.',
       energyCost: 25,
       cooldown: 14,
       windup: 0.7,
       range: 14,
       radius: 1.4,
       damage: 40,
+      follow: 2.2, // o feixe anda atrás do alvo no aviso (devagar: correndo, ele escapa)
+      hover: 2.6, // a vítima flutua girando no meio da luz...
+      lift: 1.25,
+      drop: 1.0, // ...por 1 s antes de ser cravada no chão
+      forget: { sanity: 15, time: 1.8 }, // a volta: não lembra de nada — perde sanidade e fica desorientada
       element: 'transmissao',
       color: GREEN,
     },

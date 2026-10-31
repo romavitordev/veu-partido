@@ -157,25 +157,28 @@ export default {
   // CONSUMIR (a Espada Consumidora): o Lodo escorre pela lâmina e ela abre o alvo em quatro cortes enormes; o último
   // crava a espada e consome.
   special: {
+    // ESPADA CONSUMIDORA: cada corte bebe — a energia do alvo corre em Lodo até a lâmina (passa para o Ferreiro) e
+    // um pouco da vida volta; no fim o alvo sai CONSUMIDO (mais fraco e lento)
     name: 'Espada Consumidora',
     banner: 'Consumir',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    // damage: omitido → 250 (padrão)
     color: 0x6a6670,
     sound: 'specialStart',
     prepare: { anim: 'charge', time: 0.4, fx: 'bladeGlow' },
     dash: { speed: 20, maxTime: 0.5, contact: 2.0 },
     hits: [
-      { t: 0.8, anim: 'slash_h', dur: 0.38, share: 0.18, fx: { kind: 'slash', tilt: 0.05, wide: true }, sound: 'bladeHit' },
-      { t: 1.2, anim: 'slash_h_back', dur: 0.38, share: 0.18, fx: { kind: 'slash', tilt: -0.1, flip: true, wide: true }, sound: 'bladeHit' },
-      { t: 1.65, anim: 'slash_v', dur: 0.5, share: 0.24, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 2.25, anim: 'slash_finisher', dur: 0.66, share: 0.4, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true },
+      { t: 0.8, anim: 'slash_h', dur: 0.38, share: 0.18, fx: { kind: 'slash', tilt: 0.05, wide: true }, sound: 'bladeHit', consume: 8, drain: 0.2 },
+      { t: 1.2, anim: 'slash_h_back', dur: 0.38, share: 0.18, fx: { kind: 'slash', tilt: -0.1, flip: true, wide: true }, sound: 'bladeHit', consume: 8, drain: 0.2 },
+      { t: 1.65, anim: 'thrust', dur: 0.5, share: 0.24, fx: { kind: 'stab' }, sound: 'bladeHit', consume: 10, drain: 0.2, victimAnim: 'stagger' },
+      { t: 2.25, anim: 'slash_finisher', dur: 0.66, share: 0.4, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true, consume: 14, drain: 0.2 },
     ],
+    afterBuff: { type: 'lodoWeak', name: 'CONSUMIDO', duration: 4, mult: 0.85, affects: ['melee', 'ranged', 'ability'], speedMult: 0.75 },
     bannerAt: 0.2,
     length: 3.4,
   },
+
 
   // TRANSFORMAÇÃO (Barra de Transformação cheia + vida baixa, segurando △): crava o Símbolo Espiral no peito, se
   // entrega ao Parasita de Dimensões e o Lodo toma o corpo — ergue-se como O DEUS DA MORTE (chefe com vida própria)

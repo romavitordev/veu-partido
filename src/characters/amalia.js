@@ -48,24 +48,25 @@ export default {
     air: { name: 'Flecha do Alto', anim: 'air_kick', dur: 0.44, active: [0.16, 0.3], damage: 34, range: 2.2, arc: 100, knockback: 3, slam: 16, vertical: 2.4, sound: 'swing', hitSound: 'kick' },
   },
 
-  // □: FLECHA FLAMEJANTE — rápida e de longe; LONGA-DISTÂNCIA: depois de 12 m de voo ela não pode ser esquivada nem defendida
+  // □: FLECHA FLAMEJANTE — rápida e de longe (a arqueira solta a corda sem demora: preparo curto, recarga curta);
+  // LONGA-DISTÂNCIA: depois de 12 m de voo ela não pode ser esquivada nem defendida
   ranged: {
     name: 'Flecha Flamejante',
     type: 'projectile',
     anim: 'bow_shot',
     origin: 'chest',
-    windup: 0.34,
-    recovery: 0.24,
+    windup: 0.2,
+    recovery: 0.16,
     count: 1,
     interval: 0,
-    damage: 28,
+    damage: 25,
     range: 30,
-    speed: 38,
+    speed: 46,
     radius: 0.32,
     spread: 0,
     knockback: 0.8,
     hitstun: 0.4,
-    cooldown: 1.8,
+    cooldown: 1.0,
     energyCost: 0,
     visual: 'flameArrow',
     color: CYAN,
@@ -99,10 +100,11 @@ export default {
       name: 'Chuva de Flechas',
       input: 'carga+physical', // △ + ○
       type: 'flowerRain',
-      description: 'Atira para o alto e as flechas flamejantes caem sobre a área do alvo — machucam enquanto ele ficar dentro do círculo.',
+      description: 'Mira para o CÉU e solta a salva: um CÍRCULO marca a área em volta do alvo e, um instante depois, as flechas flamejantes caem nele — dá tempo de sair do círculo ou defender; quem ficar dentro apanha a cada flecha.',
       energyCost: 25,
       cooldown: 13,
-      anim: 'bow_shot',
+      anim: 'bow_shot_up',
+      warn: 0.9, // o tempo das flechas subirem: a área fica marcada antes da queda
       sound: 'sniper',
       range: 20,
       radius: 2.6,
@@ -135,9 +137,9 @@ export default {
       description: 'Três flechas em leque, uma atrás da outra — boas para pegar quem vem correndo de lado.',
       energyCost: 20,
       cooldown: 10,
-      windup: 0.24,
+      windup: 0.16,
       count: 3,
-      interval: 0.14,
+      interval: 0.1,
       spread: 14,
       anim: 'bow_shot',
       projectile: { visual: 'flameArrow', color: CYAN, damage: 20, range: 26, speed: 40, radius: 0.3, knockback: 0.6, hitstun: 0.3, element: 'energia', hitSound: 'impact' },
@@ -146,25 +148,19 @@ export default {
 
   // NÃO PERDE A CABEÇA! (a fala dela no último jogo do Anfitrião): chega chutando, gira o arco e fecha com a flecha
   // flamejante à queima-roupa
+  // NÃO PERDE A CABEÇA! (specials/headshot.js): puxa o arco com a aura ciano, a CHUVA DE FLECHAS cai em volta do alvo e
+  // o prende, e a última Flecha Flamejante (LONGA-DISTÂNCIA: não se esquiva nem se defende) vai na cabeça
   special: {
     name: 'Não Perde a Cabeça!',
     banner: 'Não perde a cabeça!',
-    type: 'cinematicCombo',
+    type: 'headshot',
     energyCost: 50,
     cooldown: 14,
     color: CYAN,
     sound: 'specialStart',
-    prepare: { anim: 'bow_aim', time: 0.35, fx: 'bladeGlow' },
-    dash: { speed: 24, maxTime: 0.45, contact: 1.8 },
-    hits: [
-      { t: 0.75, anim: 'kick_front', dur: 0.3, share: 0.12, fx: { kind: 'smash' }, sound: 'kick' },
-      { t: 1.02, anim: 'slash_h', dur: 0.3, share: 0.14, fx: { kind: 'slash' }, sound: 'blade' },
-      { t: 1.3, anim: 'slash_h_back', dur: 0.3, share: 0.14, fx: { kind: 'slash' }, sound: 'blade' },
-      { t: 1.62, anim: 'spin_kick', dur: 0.4, share: 0.2, fx: { kind: 'smash', big: true }, sound: 'kick' },
-      { t: 2.14, anim: 'bow_shot', dur: 0.56, share: 0.4, fx: { kind: 'cross', big: true }, sound: 'sniper', final: true },
-    ],
-    bannerAt: 0.15,
-    length: 2.9,
+    range: 40,
+    rain: 12,
+    rainShare: 0.4,
   },
 
   // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): a MEMÓRIA REVIVIDA — a aura ciano toma o corpo todo e os olhos

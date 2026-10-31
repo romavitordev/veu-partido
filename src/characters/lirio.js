@@ -173,6 +173,8 @@ export default {
   // Especial: concentra toda a força num ataque — pisa firme, corre (sem teletransporte), três marretadas e a
   // última crava o adversário no chão. Efeito físico (pó, pedras, tremor), nada de energia genérica.
   special: {
+    // LEONORA: as Amarras de Sangue "Magras" laçam e puxam o alvo, a Mão Pesada e a cabeçada seguram ele no lugar, e
+    // a Lírio ergue a Leonora (amaldiçoada com Sangue nas miniaturas) devagar para o GOLPE PESADO que racha o chão
     name: 'Leonora',
     banner: "Hoje 'cê vai conhecer a Leonora!",
     type: 'cinematicCombo',
@@ -180,19 +182,22 @@ export default {
     energyCost: 50,
     cooldown: 14,
     // damage: omitido → COMBAT.specialDamage (250)
-    color: 0xe8dcc0,
+    color: 0xd01828,
     sound: 'specialStart',
-    prepare: { anim: 'taunt_roar', time: 0.75, fx: 'stomp' },
-    dash: { speed: 15, maxTime: 0.6, contact: 1.9 },
+    prepare: { anim: 'taunt_roar', time: 0.6, fx: 'stomp' },
+    approach: 'chain',
+    chain: { speed: 40, range: 14, color: 0xa01020 },
     hits: [
-      { t: 0.95, anim: 'hammer_h', dur: 0.46, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.45, anim: 'hammer_diag', dur: 0.5, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.95, anim: 'hammer_up', dur: 0.52, share: 0.2, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 2.6, anim: 'hammer_ground', dur: 0.62, share: 0.44, fx: { kind: 'smash', big: true }, sound: 'slashFinal', final: true },
+      { t: 0.45, anim: 'heavy_punch', dur: 0.42, share: 0.16, fx: { kind: 'smash' }, sound: 'heavyPunch', call: 'MÃO PESADA' },
+      { t: 0.95, anim: 'headbutt', dur: 0.4, share: 0.14, fx: { kind: 'punch' }, sound: 'heavyPunch', victimAnim: 'stagger' },
+      { t: 1.4, noHit: true, anim: 'hammer_charge', dur: 1.0, victimAnim: 'stagger' },
+      { t: 2.45, anim: 'hammer_heavy', dur: 0.7, share: 0.7, fx: { kind: 'smash', big: true }, sound: 'slashFinal', final: true, shout: 'GOLPE PESADO!', quake: true, push: 0.8 },
     ],
-    bannerAt: 0.3,
+    endReaction: { knockback: 15 },
+    bannerAt: 0.2,
     length: 3.6,
   },
+
 
   // auxiliar de equipe: entra sozinho para proteger o parceiro que está apanhando (ver combat/assists.js)
   assistAuto: { comboHits: 3, cooldownMult: 1.35 },

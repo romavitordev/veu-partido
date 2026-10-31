@@ -59,6 +59,44 @@ const LINK_MOVES = {
     });
     return tl;
   },
+  // CELESTINE — a corrente das chamas de energia: puxa o alvo e o atinge com as duas lâminas
+  celestine: (c) => {
+    const tl = rushStrike(c, 'dual_cross', [[0.32, 28], [0.48, 28]], 'bladeHit', { knockback: 0.8, color: 0x8ad8ff });
+    tl.add(0.33, () => c.world.fx.slash(c.opp.chestPos(), c.as.yaw, { color: 0x8ad8ff, radius: 1.5, arc: 2.4, life: 0.3, width: 0.35, roll: -0.5 }));
+    return tl.end(0.8);
+  },
+  // GAIUS — o corte final do gládio, em energia roxa
+  gaius: (c) => {
+    const tl = rushStrike(c, 'slash_finisher', [[0.4, 55]], 'slashFinal', { knockback: 1.2, color: 0x9a5aff });
+    tl.add(0.41, () => c.world.fx.slash(c.opp.chestPos(), c.as.yaw, { color: 0x9a5aff, radius: 1.8, arc: 2.6, life: 0.35, width: 0.45, roll: 1.2 }));
+    return tl.end(0.85);
+  },
+  // AMALIA — a Flecha Flamejante de longe (o rastro ciano)
+  amalia: (c) => {
+    const tl = shoot(c, 'bow_shot', 1, 55, 'swing');
+    tl.add(0.36, () => {
+      if (distXZ(c.as.pos, c.opp.pos) > 30) return;
+      c.world.fx.tracer(c.as.chest(), c.opp.chestPos(), { color: 0x3ae8b8, life: 0.25, width: 0.06 });
+    });
+    return tl;
+  },
+  // VERÍSSIMO — a estocada do veterano: atravessa a guarda e deixa o alvo aberto para o amigo
+  verissimo: (c) => {
+    const tl = rushStrike(c, 'thrust', [[0.3, 40]], 'bladeHit', { knockback: 0.3 });
+    tl.add(0.31, () => {
+      if (c.opp.state === 'ko' || c.opp.isInvulnerable()) return;
+      c.opp.stun(1.0, 'stagger');
+      c.opp.notify('BRECHA NA GUARDA', true);
+      c.world.fx.flash(c.opp.chestPos(), { color: 0x4a90e2, size: 1.1, life: 0.15 });
+    });
+    return tl.end(0.9);
+  },
+  // ARNALDO — o rodopio teatral da fita e o corte de reverência
+  arnaldo: (c) => {
+    const tl = rushStrike(c, 'arn_spin', [[0.3, 25], [0.55, 40]], 'slashFinal', { knockback: 1.4, color: 0xd01c30 });
+    tl.add(0.56, () => c.world.fx.slash(c.opp.chestPos(), c.as.yaw, { color: 0xd01c30, radius: 1.7, arc: 2.8, life: 0.35, width: 0.4, roll: 0.3 }));
+    return tl.end(0.95);
+  },
 };
 
 // golpe de roda dos Mascarados: o último golpe da sequência de cada um, colado no alvo
@@ -125,8 +163,9 @@ export function scheduleTeamParts(tl, f, world, TS) {
     // dupla/trio: quem está fora ataca primeiro; a ligação entra depois (ou logo, se não há ninguém de fora)
     const start = outside.length ? Math.min(TS.second, 0.9) : 0.05;
     outside.forEach((a, i) => tl.add(0.05 + i * 0.3, () => a.callTeam()));
-    // a Muralha (quem segura) vem antes do disparo
-    const order = linked.slice().sort((a, b) => (linkId(b.def) === 'cristopher') - (linkId(a.def) === 'cristopher'));
+    // a ordem da ligação (link.order: o Veríssimo abre, o Arnaldo fecha); a Muralha (quem segura) vem antes do disparo
+    const rank = (a) => { const i = (link.order || ['cristopher']).indexOf(linkId(a.def)); return i < 0 ? 99 : i; };
+    const order = linked.slice().sort((a, b) => rank(a) - rank(b));
     order.forEach((a, i) => tl.add(start + i * 0.4, () => a.perform(moveFor(a.def))));
   }
   return {

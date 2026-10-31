@@ -2,6 +2,15 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.0.0 — Cada Um com o Seu
+- GRANDE MARCO: todo o elenco agora tem um especial próprio. Os 13 que usavam o especial genérico ganharam um com a identidade do cânone — Amalia, Balu, Lírio, Celestine, Gaius, Veríssimo, Ferreiro, Xande, Aguiar, Cristopher, Dalmo, Jae e Juan.
+- Especiais que deixam marca: Gaius ANULA (sem habilidades), Veríssimo ANALISA (mais dano e assistências prontas), Ferreiro CONSOME, Dalmo ATORDOA, Jae CEGA.
+- Amigo Imaginário revisto pela wiki (Agarrão, Dissolver, a mordida do sino no frenesi).
+- Chuva de Flechas da Amalia marca a área antes de cair; Olhar de Desespero e Comandar podem ser resistidos.
+- Dois vínculos de equipe novos: Ordo Calamitas e Arnaldo + Veríssimo.
+- Maça do Gaius pela arte oficial; fita da espada do Arnaldo vermelha.
+- CPU atiradora sabe se livrar de quem chega perto; invocações esculpidas pelas miniaturas.
+
 ## v3.53.0 — A Flecha
 - NOVA LUTADORA — AMALIA (Ordo Calamitas): a arqueira de Calamidade. Longa-Distância (de longe ninguém esquiva nem defende), Chuva de Flechas, Altruísmo e a passiva Caótica.
 - O ESTRANGEIRO chama os HOMENS DE TERNO (os Doppelgangers com os Fuzis Alheios) e o INCUBAR põe a larva no adversário: a sanidade escoa e, zerada, a larva eclode.

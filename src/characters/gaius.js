@@ -158,6 +158,9 @@ export default {
 
   // CIENTE DA PRÓPRIA FORÇA: o velho avança e a maça não para — o último golpe já vem com o roxo da Energia
   special: {
+    // CIENTE DA PRÓPRIA FORÇA: primeiro o ANULAR (a habilidade dele no cânone) — a onda roxa desfaz o que estiver
+    // contra ele (estados ruins, projéteis, a habilidade que o adversário estiver usando); depois o veterano sem pressa:
+    // três pancadas de maça e a última que racha o chão. O alvo sai ANULADO (sem habilidades por um tempo).
     name: 'Ciente da Própria Força',
     banner: 'Ainda dou conta!',
     type: 'cinematicCombo',
@@ -165,18 +168,19 @@ export default {
     cooldown: 14,
     color: PURPLE,
     sound: 'specialStart',
-    prepare: { anim: 'charge', time: 0.35, fx: 'bladeGlow' },
-    dash: { speed: 22, maxTime: 0.45, contact: 1.8 },
+    prepare: { anim: 'counter_stance', time: 0.5, fx: 'nullify' },
+    dash: { speed: 20, maxTime: 0.5, contact: 1.8 },
     hits: [
-      { t: 0.75, anim: 'slash_h', dur: 0.32, share: 0.14, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.04, anim: 'slash_h_back', dur: 0.32, share: 0.14, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.36, anim: 'hook_r', dur: 0.34, share: 0.16, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.74, anim: 'slash_v', dur: 0.44, share: 0.2, fx: { kind: 'smash', big: true }, sound: 'heavyPunch' },
-      { t: 2.26, anim: 'slash_finisher', dur: 0.56, share: 0.36, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true },
+      { t: 0.7, anim: 'slash_v', dur: 0.44, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch', victimAnim: 'stagger' },
+      { t: 1.25, anim: 'hook_r', dur: 0.36, share: 0.16, fx: { kind: 'smash' }, sound: 'heavyPunch' },
+      { t: 1.7, anim: 'slash_h_back', dur: 0.38, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch' },
+      { t: 2.3, anim: 'slash_finisher', dur: 0.6, share: 0.48, fx: { kind: 'smash', big: true }, sound: 'slashFinal', final: true, quake: true },
     ],
+    afterBuff: { type: 'nullified', name: 'ANULADO', duration: 4, noAbilities: true, lockMsg: 'ANULADO: SEM HABILIDADES' },
     bannerAt: 0.15,
-    length: 3.0,
+    length: 3.1,
   },
+
 
   // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): a Relíquia de Energia se projeta no rosto dele — a MÁSCARA
   // sorridente com as três mãos se funde ao rosto, a maça é consumida e ele vira AMPHITRUO, o primeiro Anfitrião

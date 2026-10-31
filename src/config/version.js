@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '3.53.0';
+export const VERSION = '4.0.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,34 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.0.0',
+    date: '2026-10-31',
+    title: 'Cada Um com o Seu',
+    items: [
+      'GRANDE MARCO — CADA UM COM O SEU ESPECIAL: os 13 lutadores que ainda usavam o especial genérico de golpes ganharam um especial com a identidade do cânone.',
+      'AMALIA — NÃO PERDE A CABEÇA!: a aura ciano sobe, a chuva de flechas cai em volta do alvo e o prende, e a última Flecha Flamejante vai na cabeça.',
+      'BALU — PANCADA DO URSO: paga o Machado Demônio com o próprio sangue, derruba na ombrada, marreta o alvo caído e fecha no 110%.',
+      'LÍRIO — LEONORA: laça com as Amarras de Sangue, Mão Pesada, cabeçada e ergue a Leonora devagar para o Golpe Pesado que racha o chão.',
+      'CELESTINE — DUELO FINAL: as duas machadinhas na corrente prendem o alvo e ela corta pelas costas. Nada pessoal.',
+      'GAIUS — CIENTE DA PRÓPRIA FORÇA: primeiro ANULA (estados ruins, projéteis e a habilidade do adversário), depois a maça; o alvo sai ANULADO, sem habilidades por 4 s.',
+      'VERÍSSIMO — OFICIAL COMANDANTE: lê as brechas e entra nelas; o alvo sai ANALISADO (leva mais dano) e as assistências da equipe ficam prontas.',
+      'FERREIRO — ESPADA CONSUMIDORA: cada corte bebe a energia do alvo em Lodo; ele sai CONSUMIDO (mais fraco e lento).',
+      'XANDE — POR ELES: chega de skate, a Velocidade Mortal e o taco na corrente.',
+      'AGUIAR — CAÇADA NO ACAMPAMENTO: puxa na corda direto para a armadilha de urso e deixa o alvo sangrando.',
+      'CRISTOPHER — POR VOCÊ, FILHO!: a cena de ação — chutes de dublê, o pulo nas costas e o Suplex de Dublê.',
+      'DALMO — FINALIZAÇÃO DE ARENA: a Pressão Atmosférica, segura o crânio e o alvo fica ATORDOADO.',
+      'JAE — A MARCA DO X: some, surge nas costas e deixa o X no chão, o alvo CEGO e sangrando.',
+      'JUAN — HEMORRAGIA SEVERA: corta a si mesmo, o Vínculo de Sangue prende os dois e a Faca Predadora bebe até o Descarnar.',
+      'AMALIA — CHUVA DE FLECHAS: atira para cima e marca a área antes; dá tempo de defender ou sair.',
+      'O AMIGO IMAGINÁRIO pela wiki: o AGARRÃO sai de baixo do capuz, puxa e, no frenesi, arremessa; o DISSOLVER segura e cura o que tira; no frenesi o sino morde.',
+      'MAGISTRADA: o Olhar de Desespero pode ser resistido na defesa (só esmorece). ESTRANGEIRO: o Comandar pode ser quebrado apertando botões. VERÍSSIMO: a Inteligência Estratégica deixa as assistências prontas.',
+      'EQUIPES: dois vínculos novos — ORDO CALAMITAS (3 membros) e A ESPADA DA FITA VERMELHA (Arnaldo + Veríssimo).',
+      'A MAÇA DO GAIUS refeita pela arte oficial (maça de abas) e a fita da espada do Arnaldo vermelha de novo.',
+      'CPU: o atirador alcançado empurra e foge em vez de apanhar parado.',
+      'INVOCAÇÕES esculpidas pelas miniaturas: Zumbis de Sangue e os animais de tinta do Amigo.',
+    ],
+  },
   {
     v: '3.53.0',
     date: '2026-10-31',

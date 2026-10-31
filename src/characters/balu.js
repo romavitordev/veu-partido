@@ -170,6 +170,9 @@ export default {
   // Especial: PANCADA DO URSO — crava o pomo no peito (o Machado Demônio nasce na mão), corre e desce três machadadas
   // de sangue; a última esmaga o adversário no chão.
   special: {
+    // PANCADA DO URSO: o Machado Demônio pago com o próprio sangue (o pomo de pantera cravado no peito: a lâmina vira
+    // a maça-estrela de sangue) e o "Derrubar e Atacar" da ficha — a ombrada derruba, as marretadas vão no chão com o
+    // alvo caído e o 110% fecha
     name: 'Pancada do Urso',
     banner: 'Deixa que o tio Balu resolve!',
     type: 'cinematicCombo',
@@ -178,17 +181,19 @@ export default {
     cooldown: 14,
     color: 0xc01828,
     sound: 'specialStart',
-    prepare: { anim: 'concentrate', time: 0.75, fx: 'stomp', showProp: 'demonMace', hideProp: 'axe', keepIfBuff: 'bloodBlade' },
-    dash: { speed: 14, maxTime: 0.6, contact: 2.0 },
+    prepare: { anim: 'concentrate', time: 0.75, fx: 'bloodPact', selfCost: 0.04, selfLabel: 'PAGO COM SANGUE', showProp: 'demonMace', hideProp: 'axe', keepIfBuff: 'bloodBlade' },
+    dash: { speed: 15, maxTime: 0.6, contact: 2.0, anim: 'shoulder_charge' },
     hits: [
-      { t: 0.95, anim: 'hammer_h', dur: 0.46, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.45, anim: 'hammer_diag', dur: 0.5, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.95, anim: 'hammer_up', dur: 0.52, share: 0.2, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 2.6, anim: 'hammer_ground', dur: 0.62, share: 0.44, fx: { kind: 'smash', big: true }, sound: 'slashFinal', final: true },
+      { t: 0.5, anim: 'shoulder_bash', dur: 0.42, share: 0.14, fx: { kind: 'smash' }, sound: 'heavyPunch', victimAnim: 'downed', call: 'DERRUBADO!', push: 0.4 },
+      { t: 1.2, anim: 'hammer_ground', dur: 0.55, share: 0.18, fx: { kind: 'smash' }, sound: 'heavyPunch', victimAnim: 'downed', quake: true, push: 0 },
+      { t: 1.8, anim: 'hammer_ground', dur: 0.55, share: 0.2, fx: { kind: 'smash' }, sound: 'heavyPunch', victimAnim: 'downed', quake: true, push: 0 },
+      { t: 2.55, anim: 'hammer_finisher', dur: 0.7, share: 0.48, fx: { kind: 'smash', big: true }, sound: 'slashFinal', final: true, shout: '110%!', quake: true },
     ],
-    bannerAt: 0.3,
+    endReaction: { knockback: 6, lowLaunch: true },
+    bannerAt: 0.25,
     length: 3.6,
   },
+
 
   // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Força Física e Resistência à Dor — o Balu
   // com raiva vira um TANQUE até o fim do round (pedido do usuário): recebe quase metade do dano, quase não é empurrado,

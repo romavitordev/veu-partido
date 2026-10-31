@@ -1,5 +1,6 @@
 import { distXZ } from '../core/util.js';
 import { COMBAT } from '../config/combat.js';
+import { inBounds, blocksPointGeneric } from '../combat/positioning.js';
 import { Episode, stateKey, choose, observePlayer, observePlayerMove, playerMoveRate, playerTendency, saveLearned, noteGame } from './learner.js';
 
 // Adversário controlado pelo computador. Gera o mesmo tipo de entrada que um jogador
@@ -85,6 +86,46 @@ export function matchupPlan(me, them) {
   } else plan = { keep: 2.0, escapeAt: 0, pressure: false, control: false };
   row.set(them, plan);
   return plan;
+}
+
+// ATIRADOR FUGINDO PELO CENÁRIO: em vez de recuar em linha reta (e ficar encurralado na parede), testa 16 direções
+// e escolhe a melhor — longe do adversário, com espaço livre à frente (nada de parede nem obstáculo em ~3 m) e, quando
+// o perseguidor está perto, de preferência PASSANDO ATRÁS DE UM PILAR (o obstáculo entre os dois corta o caminho dele).
+export function fleeDirection(arena, me, opp, { cover = false } = {}) {
+  const dx = opp.x - me.x, dz = opp.z - me.z;
+  const dl = Math.hypot(dx, dz) || 1;
+  const ax = -dx / dl, az = -dz / dl; // para longe do adversário
+  const P = { x: 0, y: 1, z: 0 };
+  const blocked = (x, z) => { P.x = x; P.z = z; return arena.blocksPoint ? arena.blocksPoint(P, 0.45) : blocksPointGeneric(arena, P, 0.45); };
+  let best = null, bestScore = -Infinity;
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2;
+    const ux = Math.sin(a), uz = Math.cos(a);
+    const away = ux * ax + uz * az;
+    if (away < -0.2) continue; // nunca na direção dele
+    let score = away * 2;
+    // espaço livre à frente: cada passo de 1 m sem bater vale ponto; bater cedo derruba a direção
+    let free = 0;
+    for (let s = 1; s <= 4; s++) {
+      const x = me.x + ux * s, z = me.z + uz * s;
+      if (!inBounds(arena, x, z, 0.8) || blocked(x, z)) break;
+      free = s;
+    }
+    score += free * 0.9 - (free < 2 ? 4 : 0);
+    // longe das bordas (o canto é onde o atirador morre)
+    const fx = me.x + ux * 4, fz = me.z + uz * 4;
+    if (!inBounds(arena, fx, fz, 3)) score -= 1.5;
+    // COBERTURA: um obstáculo na linha entre o adversário e o ponto de chegada
+    if (cover && free >= 2) {
+      const tx = me.x + ux * 3, tz = me.z + uz * 3;
+      for (let k = 1; k < 6; k++) {
+        const x = opp.x + (tx - opp.x) * (k / 6), z = opp.z + (tz - opp.z) * (k / 6);
+        if (inBounds(arena, x, z, 0) && blocked(x, z)) { score += 2.5; break; }
+      }
+    }
+    if (score > bestScore) { bestScore = score; best = { x: ux, z: uz }; }
+  }
+  return best || { x: ax, z: az };
 }
 
 export function canSpendDodge(f, emergency = false) {
@@ -549,6 +590,21 @@ export class CpuController {
       }
     }
 
+    // ATIRADOR ALCANÇADO: o perseguidor já está colado (mais rápido, a fuga não adianta) — abre ESPAÇO com o golpe que
+    // empurra: o de trás se o outro está atacando (tem invencibilidade no começo), senão o de frente; depois foge e atira
+    const M = f.def.melee || {};
+    if (planZ.control && d < 2.2 && (f.state === 'idle' || f.state === 'charging' || f.state === 'block') && f.onGround
+      && opp.state !== 'downed' && opp.state !== 'ko' && w.time > (this.shoveAt || 0) && Math.random() < (0.5 + L.tactics * 0.4) * k) {
+      const attacking = opp.state === 'attack' || opp.state === 'ability';
+      const pick = attacking && M.back && (M.back.iframes || M.back.counter) ? 'back' : M.forward && (M.forward.knockback ?? 0) >= 2.5 ? 'forward' : M.side && (M.side.knockback ?? 0) >= 2.5 ? 'side' : null;
+      if (pick) {
+        this.shoveAt = w.time + 1.2;
+        const mv = pick === 'back' ? { x: -toOpp.x, z: -toOpp.z } : pick === 'side' ? side : toOpp;
+        this.queue.push({ t: 0.04, held: {}, move: mv }, { t: 0.08, held: { physical: true }, move: mv }, { t: 0.05, held: {} });
+        return out;
+      }
+    }
+
     // ATIRADOR ENCURRALADO (matchupPlan — inteligência única): o adversário passou da distância de fuga do confronto
     // (mais cedo contra quem encurta a distância) — antes de qualquer outra escolha (habilidade, especial, combo)
     // esquiva para trás; sem carga, dash para longe
@@ -742,8 +798,19 @@ export class CpuController {
     const away = !wantClose && (lowHp && !plan.pressure || (P.zoner && d < keep - 1.5));
     // pressionando um atirador: o passo de lado troca de sentido a cada ~0,6 s (ziguezague) e pesa mais
     const weave = plan.pressure && wantClose ? (Math.floor(f.world.time / 0.6) % 2 ? 1 : -1) * 0.75 : 0.45;
-    const mx = (wantClose ? toOpp.x : away ? -toOpp.x : -toOpp.x * 0.3) + side.x * weave;
-    const mz = (wantClose ? toOpp.z : away ? -toOpp.z : -toOpp.z * 0.3) + side.z * weave;
+    let mx = (wantClose ? toOpp.x : away ? -toOpp.x : -toOpp.x * 0.3) + side.x * weave;
+    let mz = (wantClose ? toOpp.z : away ? -toOpp.z : -toOpp.z * 0.3) + side.z * weave;
+    // o atirador foge PELO CENÁRIO (fleeDirection): sem se encurralar e, com o perseguidor perto, atrás dos pilares;
+    // a direção é revista a cada 0,3 s (sem tremer)
+    if (P.zoner && away && opp && f.world.arena) {
+      const now = f.world.time;
+      if (!this.flee || now > this.fleeAt) {
+        this.flee = fleeDirection(f.world.arena, f.pos, opp.pos, { cover: d < plan.escapeAt + 2.5 });
+        this.fleeAt = now + 0.3;
+      }
+      mx = this.flee.x;
+      mz = this.flee.z;
+    } else this.flee = null;
     const b = f.moveBasis();
     out.moveX = mx * b.right.x + mz * b.right.z;
     out.moveY = mx * b.forward.x + mz * b.forward.z;

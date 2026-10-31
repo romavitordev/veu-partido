@@ -2,9 +2,10 @@ import * as THREE from 'three';
 import { buildNpcModel } from './npcRig.js';
 import { buildMarionetteProcedural } from './marionette.js';
 
-// ZUMBI DE SANGUE (invocação do Diabo) — modelos do Blender (tools/blender/npc_zumbi_lib.py): carne viva vermelha,
-// sem olhos, cabeça que é quase só uma boca de presas e braços longos com garras. Duas variações: o FRACO (magro e
-// comprido) e o FORTE (massa de músculo, quase de quatro). Se o .glb faltar, usa a Marionete provisória tingida.
+// ZUMBI DE SANGUE (invocação do Diabo) — modelos do Blender (tools/blender/npc_zumbi_lib.py, escultura de
+// npc_sculpt_lib.py) pelas miniaturas da wiki: carne gosmenta vermelha, cegos (as órbitas vazias), a bocarra de presas
+// e braços longos com garras. Duas variações: o FRACO (magro, o crânio grande e calvo) e o FORTE = o BESTIAL (a corcova
+// de músculo, quase de quatro, o crânio partido ao meio e a mandíbula enorme). Sem o .glb, usa a Marionete tingida.
 export function buildBloodZombie(strong = false) {
   const m = buildNpcModel(strong ? 'zumbi_sangue_forte' : 'zumbi_sangue', { outline: strong ? 0.016 : 0.012, noOutline: ['vein', 'fang', 'claw', 'gum', 'maw'] });
   if (m) {

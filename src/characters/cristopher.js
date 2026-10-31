@@ -132,8 +132,11 @@ export const CRISTOPHER_KIT = {
   // sequência de chutes de filme de ação que aprendeu como dublê do Van Damme — frontal, lateral, joelhada, o
   // giratório e o chute final que joga longe
   special: {
+    // POR VOCÊ, FILHO!: a cena de ação inteira — dois chutes de dublê do Van Damme, o pulo nas COSTAS do alvo (como
+    // nas costas da Aracnasita para salvar o Thiago) e o Suplex de Dublê que racha o chão. A Experiência de Dublê
+    // devolve um pouco da vida no fim.
     name: 'Por Você, Filho!',
-    banner: 'Por Você, Filho!',
+    banner: 'Filho! Eu te amo!',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
@@ -144,14 +147,16 @@ export const CRISTOPHER_KIT = {
     dash: { speed: 18, maxTime: 0.5, contact: 1.9 },
     hits: [
       { t: 0.6, anim: 'kick_front', dur: 0.3, share: 0.12, fx: { kind: 'punch' }, sound: 'kick' },
-      { t: 0.92, anim: 'side_kick', dur: 0.32, share: 0.14, fx: { kind: 'punch' }, sound: 'kick' },
-      { t: 1.26, anim: 'knee', dur: 0.3, share: 0.14, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.6, anim: 'kick_round', dur: 0.36, share: 0.16, fx: { kind: 'punch', up: true }, sound: 'kick' },
-      { t: 2.15, anim: 'spin_kick', dur: 0.55, share: 0.44, fx: { kind: 'smash', big: true }, sound: 'kick', final: true },
+      { t: 0.95, anim: 'spin_kick', dur: 0.45, share: 0.16, fx: { kind: 'punch' }, sound: 'kick' },
+      { t: 1.55, anim: 'grab', dur: 0.4, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch', behind: true, shout: 'CENA DE AÇÃO!', victimAnim: 'stagger', push: 0 },
+      { t: 2.15, anim: 'throw_grab', dur: 0.6, share: 0.6, fx: { kind: 'smash', big: true }, sound: 'heavyPunch', final: true, call: 'SUPLEX DE DUBLÊ', quake: true, push: 0.2 },
     ],
+    endReaction: { knockback: 4, lowLaunch: true },
+    selfHeal: 0.06,
     bannerAt: 0.2,
     length: 3.2,
   },
+
 
   passives: [
     { type: 'thickSkin', knockback: 0.65, chip: 0.65 }, // Couro de Dublê: segura empurrão e o desgaste na defesa (a "muralha")

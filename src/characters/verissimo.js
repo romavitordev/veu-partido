@@ -90,11 +90,12 @@ export default {
       buffType: 'strategicOrder',
       label: 'ORDEM!',
       anim: 'point',
-      description: '"Ordem!" — analisa o inimigo: por 7 s cada golpe físico que acerta ganha um corte extra.',
+      description: '"Ordem!" — analisa o inimigo e dá o comando: por 7 s cada golpe físico que acerta ganha um corte extra (vale para quem entrar em campo). Na batalha em equipe, as assistências ficam PRONTAS na hora — os aliados ouvem a ordem e ganham o ataque extra.',
       energyCost: 25,
       cooldown: 18,
       duration: 7,
       extraHit: { damage: 12, delay: 0.1, color: BLUE },
+      orderAllies: true,
       color: BLUE,
     },
     {
@@ -150,6 +151,9 @@ export default {
   // OFICIAL COMANDANTE (o último poder da trilha Comandante de Campo, RPG): comanda o ataque — avança (dá para esquivar do
   // avanço), uma série de estocadas e cortes e finaliza com a espada do Arnaldo
   special: {
+    // OFICIAL COMANDANTE: a Inteligência Estratégica — ele aponta, lê o adversário e entra exatamente nas brechas (o
+    // lampejo azul marca onde a espada do Arnaldo vai entrar). O alvo sai ANALISADO (leva mais dano) e, na batalha em
+    // equipe, os agentes recebem a ordem: as assistências ficam prontas na hora.
     name: 'Oficial Comandante',
     banner: 'Que também sintam medo!',
     type: 'cinematicCombo',
@@ -157,18 +161,20 @@ export default {
     cooldown: 14,
     color: BLUE,
     sound: 'specialStart',
-    prepare: { anim: 'point', time: 0.4, fx: 'bladeGlow' },
+    prepare: { anim: 'ver_command', time: 0.5, fx: 'bladeGlow' },
     dash: { speed: 20, maxTime: 0.5, contact: 2.0 },
     hits: [
-      { t: 0.7, anim: 'thrust', dur: 0.28, share: 0.15, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.0, anim: 'slash_h', dur: 0.3, share: 0.15, fx: { kind: 'slash', tilt: 0.05 }, sound: 'bladeHit' },
-      { t: 1.3, anim: 'slash_h_back', dur: 0.3, share: 0.15, fx: { kind: 'slash', flip: true }, sound: 'bladeHit' },
-      { t: 1.6, anim: 'thrust', dur: 0.28, share: 0.15, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 2.1, anim: 'slash_v', dur: 0.46, share: 0.4, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true },
+      { t: 0.75, anim: 'ver_thrust', dur: 0.3, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit', foresee: true },
+      { t: 1.15, anim: 'ver_thrust', dur: 0.3, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit', foresee: true },
+      { t: 1.55, anim: 'ver_thrust', dur: 0.3, share: 0.16, fx: { kind: 'stab' }, sound: 'bladeHit', foresee: true, call: 'BRECHA NA GUARDA' },
+      { t: 2.15, anim: 'ver_cut', dur: 0.5, share: 0.56, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true },
     ],
+    afterBuff: { type: 'analyzed', name: 'ANALISADO', duration: 5, takenMult: 1.2 },
+    orderAllies: true,
     bannerAt: 0.2,
     length: 3.1,
   },
+
 
   // DESPERTAR: Líder da Ordo Realitas (sem forma própria) — até o fim do round
   awakening: {

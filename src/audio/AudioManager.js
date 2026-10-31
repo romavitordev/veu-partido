@@ -346,6 +346,13 @@ const SYNTHS = {
     a.noise(t, 0.18, { vol: 0.7 * v, type: 'bandpass', freq: 1200, freqEnd: 300, q: 1.5 });
     a.tone(t, 0.2, { vol: 0.4 * v, freq: 90, freqEnd: 40 });
   },
+  // a INTERFERÊNCIA DE SINAL das abduções do Estrangeiro: chiado de rádio picotado e um zumbido que oscila
+  signalStatic: (a, t, v, o = {}) => {
+    const p = o.pitch ?? 1;
+    for (let i = 0; i < 7; i++) a.noise(t + i * 0.09 + Math.random() * 0.04, 0.07, { vol: (0.16 + Math.random() * 0.12) * v, type: 'bandpass', freq: (1800 + Math.random() * 2400) * p, q: 6 });
+    a.tone(t, 0.7, { vol: 0.07 * v, type: 'square', freq: 220 * p, freqEnd: 330 * p, attack: 0.05 });
+    a.tone(t + 0.1, 0.6, { vol: 0.05 * v, type: 'square', freq: 338 * p, freqEnd: 212 * p, attack: 0.05 });
+  },
   teleport: (a, t, v) => {
     a.noise(t, 0.22, { vol: 0.35 * v, type: 'bandpass', freq: 4000, freqEnd: 400, q: 3 });
     a.tone(t, 0.2, { vol: 0.15 * v, freq: 1400, freqEnd: 200, type: 'sine' });

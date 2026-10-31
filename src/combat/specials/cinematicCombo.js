@@ -5,6 +5,7 @@ import { applyHit } from '../damage.js';
 import { splitDamage, specialHitFx, trySpecialBlock } from './common.js';
 import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose } from '../../camera/shots.js';
 import { HoloCopy } from '../holo.js';
+import { groundMark, blindFighter } from '../abilities.js';
 
 // Especial genérico "avança e executa uma sequência de golpes com câmera
 // cinematográfica". Usado por Arthur, Aghata, Injustiça e Kian;
@@ -15,7 +16,16 @@ import { HoloCopy } from '../holo.js';
 // Opções por golpe (todas opcionais): victimAnim (a pose do alvo nesse golpe, ex.: 'forced_kneel'), sigil (o sigilo
 // do Controle Mental sobre a cabeça do alvo até o fim da cena), foresee (lampejo dourado no ponto do impacto um
 // instante antes — a Bênção Maldita do Gal), push (quanto empurra; padrão 0,18 / 0,6 no final).
-// sp.endReaction: { knockback, lowLaunch } — como o alvo sai da cena (padrão: lançado longe).
+// sp.endReaction: { knockback, lowLaunch, stun } — como o alvo sai da cena (padrão: lançado longe; stun: fica atordoado
+// esse tempo no lugar em vez de voar).
+// Mais opções por golpe: call (o aviso em cima do alvo), shout (o grito de quem bate), quake (o chão racha em volta do
+// alvo), pressure (a onda de pressão no contato), behind (quem bate reaparece nas COSTAS do alvo), vanish (some por
+// esse tempo), trap (a armadilha de urso fecha no pé do alvo), xMark (o X no chão), consume (rouba essa energia — o
+// Lodo correndo do alvo para a lâmina).
+// Mais opções do especial: dash.anim / dash.ride (a montaria do lutador na investida), chain.rope / chain.color (a
+// corda ou corrente da aproximação), tether { at, color, rope, hands } (a corrente/corda presa ao alvo durante a cena),
+// e o que fica depois da cena: afterBuff (um estado no alvo), endBlind (cega o alvo), orderAllies (as assistências
+// ficam prontas), selfHeal (fração da vida que quem usa recupera).
 
 const PREP_FX = {
   // Joui com a Shi no Kage: saca a Relíquia de Energia (relâmpago roxo na mão esquerda) e os sigilos dourados da Shi no
@@ -59,7 +69,77 @@ const PREP_FX = {
     const mk = (s) => world.fx.emitter({ rate: 100, follow: () => f.rig.sockets[s].getWorldPosition(new THREE.Vector3()), particle: { color: sp.color, speed: 1.4, spread: 0.7, life: 0.4, size: 0.32 } });
     return [mk('handR'), mk('handL')];
   },
+  // PAGO COM SANGUE (Balu — o pomo de pantera cravado no peito; Juan — o corte masoquista): prep.selfCost tira essa
+  // fração da vida de quem usa (nunca abaixo de 1) e o sangue escorre do peito durante a preparação
+  bloodPact(f, world, sp) {
+    const P = sp.prepare;
+    const hp = Math.round(f.maxHealth * (P.selfCost ?? 0.04));
+    f.health = Math.max(1, f.health - hp);
+    world.audio.play('drain', { volume: 0.7, pitch: 0.7 });
+    world.fx.burst(f.chestPos(), { count: 36, color: sp.color, speed: 4.5, life: 0.5, size: 0.2, gravity: 8 });
+    world.fx.flash(f.chestPos(), { color: sp.color, size: 1.6, life: 0.15 });
+    if (P.selfLabel) f.notify(P.selfLabel, true);
+    return [world.fx.emitter({ rate: 50, follow: () => f.chestPos(), particle: { color: sp.color, speed: 0.6, up: -0.6, spread: 0.3, life: 0.5, size: 0.12 } })];
+  },
+  // ANULAR (Gaius — "anulava uma habilidade usada contra ele"): a onda roxa tira os estados ruins dele, apaga os
+  // projéteis do adversário por perto e corta a habilidade que o adversário estiver usando
+  nullify(f, world, sp) {
+    let any = false;
+    for (const b of f.buffs) if (NEGATIVE.has(b.type)) { b.time = 0; any = true; }
+    for (const p of [...world.projectiles.list]) {
+      if (p.owner === f || Math.hypot(p.pos.x - f.pos.x, p.pos.z - f.pos.z) > 9) continue;
+      world.fx.burst(p.pos.clone(), { count: 10, color: sp.color, speed: 3, life: 0.3, size: 0.14 });
+      world.projectiles.remove(p, true);
+      any = true;
+    }
+    const opp = f.opponent;
+    if (opp && opp.state === 'ability' && distXZ(f.pos, opp.pos) < 12) {
+      opp.stun(0.5);
+      opp.notify('HABILIDADE ANULADA', true);
+      any = true;
+    }
+    if (any) f.notify('ANULADO!', true);
+    const c = new THREE.Vector3(f.pos.x, 1, f.pos.z);
+    world.fx.distort(c, { color: sp.color, radius: 3.2, life: 0.45 });
+    for (let i = 0; i < 3; i++) world.after(i * 0.09, () => world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: sp.color, radius: 1.2 + i * 1.1, life: 0.4 }));
+    world.audio.play('fearGaze', { volume: 0.7, pitch: 0.6 });
+    return [world.fx.emitter({ rate: 60, follow: () => f.chestPos(), particle: { color: sp.color, speed: 1.0, up: 1.2, spread: 0.6, life: 0.45, size: 0.2 } })];
+  },
 };
+
+// os estados ruins que o Anular do Gaius desfaz (os mesmos que o Mateo fecha — abilities.js CLEANSE)
+const NEGATIVE = new Set(['bleed', 'noHeal', 'dying', 'aging', 'burn', 'blind', 'deaf', 'ritualWeak', 'curseSlow', 'lodoWeak', 'withered', 'deathMark', 'impaled', 'grabSlow', 'chaosSlow']);
+
+// a ARMADILHA DE URSO (Aguiar) que se fecha no pé do alvo durante a cena: duas mandíbulas dentadas que sobem e travam
+function snapTrap(world, pos) {
+  const mesh = new THREE.Group();
+  const steel = new THREE.MeshStandardMaterial({ color: 0x6a6460, metalness: 0.8, roughness: 0.45 });
+  mesh.add(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.04, 10), steel));
+  const jaws = [];
+  for (const s of [-1, 1]) {
+    const jaw = new THREE.Group();
+    const arc = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.02, 4, 18, Math.PI), steel);
+    arc.rotation.x = -Math.PI / 2;
+    jaw.add(arc);
+    for (let k = 1; k < 8; k++) {
+      const ang = (k / 8) * Math.PI;
+      const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.09, 4), steel);
+      tooth.position.set(Math.cos(ang) * 0.34, 0.04, -Math.sin(ang) * 0.34);
+      jaw.add(tooth);
+    }
+    jaw.rotation.order = 'YXZ';
+    jaw.rotation.y = s > 0 ? 0 : Math.PI;
+    mesh.add(jaw);
+    jaws.push(jaw);
+  }
+  mesh.position.set(pos.x, 0.03, pos.z);
+  world.scene.add(mesh);
+  let shut = 0;
+  return {
+    update(dt) { shut = Math.min(1.45, shut + dt * 20); for (const j of jaws) j.rotation.x = -shut; },
+    stop() { world.scene.remove(mesh); mesh.traverse((o) => o.geometry && o.geometry.dispose()); steel.dispose(); },
+  };
+}
 
 function buildShots(kind, f, opp, sp) {
   const firstHit = sp.hits[0].t;
@@ -131,8 +211,15 @@ export const cinematicCombo = {
     const hitChains = [];
     let copies = []; // sp.copies: cópias ilusórias em volta do alvo (Guizo — Registro do Outro Lado)
     let sphere = null; // sp.sphere: esfera que prende os dois durante a cena (Magistrada — Prisão das Sombras)
+    let trap = null; // h.trap: a armadilha de urso no pé do alvo
+    let xMark = null; // h.xMark: o X no chão
+    let hidden = false; // h.vanish: sumido
     const cleanup = () => {
       if (sphere) { world.scene.remove(sphere.group); sphere = null; }
+      if (trap) { trap.stop(); trap = null; }
+      if (xMark) { const m = xMark; xMark = null; world.after(1.2, () => m.dispose()); }
+      if (hidden) { f.setVisible(true); hidden = false; }
+      if (f.riding) f.mount(false);
       copies.forEach((c) => c.alive && c.shatter(sp.copies.color ?? sp.color));
       copies = [];
       emitters.forEach((e) => e.stop());
@@ -147,6 +234,59 @@ export const cinematicCombo = {
       hitChains.length = 0;
     };
     const handPos = (s = 'handR') => f.rig.sockets[s].getWorldPosition(new THREE.Vector3());
+    const feet = () => new THREE.Vector3(opp.pos.x, 0.06, opp.pos.z);
+
+    // o que acontece no começo de um passo (com ou sem dano)
+    const stepFx = (h) => {
+      if (h.shout) f.notify(h.shout, true);
+      if (h.vanish) {
+        // some numa fumaça e volta depois de h.vanish s (Jae — Shhh...)
+        world.fx.burst(f.chestPos(), { count: 22, color: 0x0a0608, kind: 'smoke', speed: 2, life: 0.5, size: 0.6, grow: 1 });
+        world.audio.play('blink', { volume: 0.7 });
+        f.setVisible(false);
+        hidden = true;
+        tl.add(h.t + h.vanish, () => { f.setVisible(true); hidden = false; world.fx.burst(f.chestPos(), { count: 18, color: 0x0a0608, kind: 'smoke', speed: 2, life: 0.45, size: 0.5, grow: 1 }); });
+      }
+      if (h.behind) {
+        // reaparece nas costas do alvo, de frente para ele (o alvo continua olhando para onde estava)
+        const B = forwardFromYaw(opp.yaw);
+        world.fx.burst(f.chestPos(), { count: 14, color: sp.color, speed: 3, life: 0.3, size: 0.2 });
+        f.pos.set(opp.pos.x - B.x * 1.1, f.pos.y, opp.pos.z - B.z * 1.1);
+        f.yaw = yawTo(f.pos, opp.pos);
+        world.fx.burst(f.chestPos(), { count: 14, color: sp.color, speed: 3, life: 0.3, size: 0.2 });
+      }
+    };
+    // o que um golpe que acertou faz além do dano
+    const hitExtras = (h, dealt) => {
+      if (h.call && opp.state !== 'ko') opp.notify(h.call, true);
+      if (h.quake) {
+        const p = feet();
+        world.fx.play('FX_DUST', p, { scale: 1.4 });
+        for (let i = 0; i < 2; i++) world.after(i * 0.08, () => world.fx.ring(p, { color: h.quake === true ? sp.color : h.quake, radius: 1.6 + i * 1.4, life: 0.4 }));
+        world.fx.burst(p.clone().setY(0.2), { count: 26, color: 0x6a5a48, speed: 5, up: 3, life: 0.6, size: 0.16, gravity: 12 });
+        world.cameraRig.shake(0.45, 0.25);
+      }
+      if (h.pressure) {
+        const p = opp.chestPos();
+        world.fx.distort(p, { color: sp.color, radius: 1.8, life: 0.3 });
+        world.fx.ring(p, { color: sp.color, radius: 1.3, life: 0.28, vertical: true, yaw: f.yaw });
+      }
+      if (h.trap && !trap) { trap = snapTrap(world, feet()); world.audio.play('trapSnap'); world.fx.burst(feet().setY(0.3), { count: 26, color: 0x9a0010, speed: 4, up: 1.5, life: 0.6, size: 0.2, gravity: 8 }); }
+      if (h.xMark && !xMark) { xMark = groundMark(world, feet(), h.xMark, sp.color, 0.85); world.audio.play('ritual', { volume: 0.5, pitch: 1.3 }); }
+      if (h.consume) {
+        // a Espada Consumidora bebe a energia: o Lodo corre do alvo até a lâmina
+        const n = opp.drainEnergy(h.consume);
+        f.addEnergy(n);
+        const from = opp.chestPos();
+        const to = handPos();
+        world.fx.tracer(from, to, { color: 0x14100c, life: 0.3, width: 0.08 });
+        world.fx.burst(to, { count: 14, color: 0x2a221a, kind: 'smoke', speed: 1, life: 0.5, size: 0.35, grow: 1 });
+      }
+      if (h.stream && typeof dealt === 'number' && dealt > 0) {
+        // o sangue do alvo corre até quem bate (Faca Predadora / Vínculo de Sangue)
+        world.fx.tracer(opp.chestPos(), f.chestPos(), { color: h.stream === true ? sp.color : h.stream, life: 0.28, width: 0.05 });
+      }
+    };
 
     const beginCinematic = () => {
       phase = 'cinematic';
@@ -157,6 +297,7 @@ export const cinematicCombo = {
       opp.yaw = yawTo(opp.pos, f.pos);
       const F = forwardFromYaw(yaw);
       f.pos.set(opp.pos.x - F.x * 1.15, opp.pos.y, opp.pos.z - F.z * 1.15);
+      if (f.riding) f.mount(false);
       f.anim.play('idle', { restart: true, blend: 0.05 });
       opp.anim.play('hit', { restart: true });
       world.cameraRig.playShots(buildShots(sp.shots, f, opp, sp));
@@ -164,10 +305,18 @@ export const cinematicCombo = {
 
       tl = new Timeline();
       tl.add(sp.bannerAt ?? 0.1, () => world.showBanner(sp.banner || f.def.name, f.def.color));
+      if (sp.tether) {
+        tl.add(sp.tether.at ?? 0, () => {
+          const hands = sp.tether.hands === 'both' ? ['handL', 'handR'] : [sp.tether.hands === 'R' ? 'handR' : 'handL'];
+          for (const s of hands) hitChains.push(world.fx.chain(() => handPos(s), () => opp.chestPos(), chainLook(sp.tether, { links: 18, sag: 0.08 })));
+          world.audio.play('chainPull', { volume: 0.6 });
+        });
+      }
       sp.hits.forEach((h, i) => {
         // momento de cena sem dano (ex.: o Colosso batendo um punho no outro antes da sequência)
         if (h.noHit) {
           tl.add(h.t, () => {
+            stepFx(h);
             f.anim.play(h.anim, { restart: true, duration: h.dur, blend: 0.04 });
             if (h.victimAnim && opp.state !== 'ko') opp.anim.play(h.victimAnim, { restart: true, blend: 0.06 });
             if (h.sigil) controlSigil(world, opp, sp, emitters);
@@ -176,6 +325,7 @@ export const cinematicCombo = {
           return;
         }
         tl.add(h.t, () => {
+          stepFx(h);
           f.anim.play(h.anim, { restart: true, duration: h.dur, blend: 0.04 });
           world.audio.play('swing', { volume: 0.7 });
           // o golpe já é sabido antes de acontecer: um lampejo dourado marca onde a lâmina vai entrar
@@ -207,6 +357,7 @@ export const cinematicCombo = {
             world.cameraRig.shake(0.3, 0.15);
           }
           if (h.bleed && opp.state !== 'ko') opp.applyBleed(h.bleed, f); // ex.: Hemorragia Severa (Juan)
+          hitExtras(h, dealt);
           if (h.fx && h.fx.chain) {
             // correntes aparecem fisicamente durante o golpe
             const sides = h.fx.chain === 'both' ? ['handR', 'handL'] : [h.fx.chain === 'L' ? 'handL' : 'handR'];
@@ -255,6 +406,7 @@ export const cinematicCombo = {
     return {
       update(dt) {
         if (sphere) sphere.update(dt);
+        if (trap) trap.update(dt);
         t += dt;
         if (phase === 'prepare') {
           opp = f.opponent;
@@ -275,12 +427,13 @@ export const cinematicCombo = {
               // 1: lança a lâmina presa à corrente
               phase = 'chain';
               tip = handPos();
-              chainFx = world.fx.chain(() => handPos(), () => tip.clone(), { links: 32, sag: 0.06 });
+              chainFx = world.fx.chain(() => handPos(), () => tip.clone(), chainLook(sp.chain, { links: 32, sag: 0.06 }));
               f.anim.play('chain_throw', { restart: true, duration: 0.4 });
               world.audio.play('chainThrow');
             } else {
               phase = 'dash';
-              f.anim.play('dash', { restart: true });
+              if (dash.ride && f.def.mount) f.mount(true);
+              f.anim.play(dash.anim || 'dash', { restart: true });
             }
           }
           return false;
@@ -365,7 +518,9 @@ export const cinematicCombo = {
             world.endCinematic();
             if (opp.state !== 'ko') {
               const er = sp.endReaction || {};
-              opp.react({ dir: forwardFromYaw(f.yaw), knockback: er.knockback ?? 8, hitstun: COMBAT.launchHitstun, launch: true, lowLaunch: !!er.lowLaunch });
+              if (er.stun) opp.react({ dir: forwardFromYaw(f.yaw), knockback: er.knockback ?? 0, stun: er.stun });
+              else opp.react({ dir: forwardFromYaw(f.yaw), knockback: er.knockback ?? 8, hitstun: COMBAT.launchHitstun, launch: true, lowLaunch: !!er.lowLaunch });
+              afterScene(world, f, opp, sp);
             }
             f.anim.play('idle', { blend: 0.15 });
             return true;
@@ -437,4 +592,30 @@ function shadowSphere(world, f, opp, o = {}) {
     },
   };
   return state;
+}
+
+// a aparência da corrente/corda (approach: 'chain' e sp.tether): o.rope = corda, o.color = cor (ex.: as Amarras de
+// Sangue da Lírio, vermelhas)
+function chainLook(o = {}, base) {
+  const r = { ...base };
+  if (o.rope) r.rope = true;
+  if (o.color != null) { r.color = o.color; r.glow = o.glow ?? o.color; }
+  return r;
+}
+
+// o que fica depois da cena (o alvo ainda de pé)
+function afterScene(world, f, opp, sp) {
+  if (sp.afterBuff) {
+    const b = sp.afterBuff;
+    opp.addBuff({ ...b, time: b.duration, duration: b.duration });
+    opp.notify(b.name, true);
+  }
+  if (sp.endBlind) blindFighter(world, opp, sp.endBlind);
+  // Inteligência Estratégica (Veríssimo): "ao ouvirem a ordem, ganham um ataque extra" — as assistências ficam prontas
+  if (sp.orderAllies && f.assists) {
+    let ready = 0;
+    for (const as of f.assists) if (as && !as.active && as.cooldown > 0) { as.cooldown = 0; ready++; }
+    if (ready) f.notify('AGENTES, AGORA!', true);
+  }
+  if (sp.selfHeal) f.heal(Math.round(f.maxHealth * sp.selfHeal));
 }

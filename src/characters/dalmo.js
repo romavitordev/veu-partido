@@ -165,6 +165,9 @@ export const DALMO_KIT = {
   // FINALIZAÇÃO DE ARENA: avança, castiga o corpo, cabeçada, gancho que tira do chão e o PISÃO final — a finalização do
   // Mosto (o fã das lutas contava que o Colosso sempre terminava esmagando o crânio)
   special: {
+    // FINALIZAÇÃO DE ARENA: as pancadas com a Pressão Atmosférica, e então o que o Colosso fazia nas arenas (wiki:
+    // "esmagando o crânio com as mãos") — segura a cabeça, o alvo cai de joelhos, cabeçada e o soco final. O alvo não
+    // voa: fica ATORDOADO no lugar.
     name: 'Finalização de Arena',
     banner: 'Finalização de Arena',
     type: 'cinematicCombo',
@@ -176,15 +179,17 @@ export const DALMO_KIT = {
     prepare: { anim: 'taunt_roar', time: 0.45, fx: 'stomp' },
     dash: { speed: 18, maxTime: 0.5, contact: 1.9 },
     hits: [
-      { t: 0.6, anim: 'body_blow', dur: 0.3, share: 0.1, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 0.92, anim: 'hook_l', dur: 0.3, share: 0.12, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.25, anim: 'headbutt', dur: 0.38, share: 0.14, fx: { kind: 'punch' }, sound: 'heavyPunch' },
-      { t: 1.68, anim: 'uppercut', dur: 0.4, share: 0.16, fx: { kind: 'punch', up: true }, sound: 'heavyPunch' },
-      { t: 2.3, anim: 'stomp', dur: 0.6, share: 0.48, fx: { kind: 'smash', big: true }, sound: 'heavyPunch', final: true },
+      { t: 0.6, anim: 'body_blow', dur: 0.3, share: 0.12, fx: { kind: 'smash' }, sound: 'heavyPunch', pressure: true },
+      { t: 0.95, anim: 'hook_l', dur: 0.3, share: 0.12, fx: { kind: 'smash' }, sound: 'heavyPunch', pressure: true },
+      { t: 1.4, anim: 'head_hold', dur: 0.6, share: 0.14, fx: { kind: 'punch' }, sound: 'heavyPunch', victimAnim: 'forced_kneel', call: 'CRÂNIO NAS MÃOS', push: 0 },
+      { t: 2.05, anim: 'headbutt', dur: 0.38, share: 0.14, fx: { kind: 'punch' }, sound: 'heavyPunch', victimAnim: 'forced_kneel', push: 0 },
+      { t: 2.55, anim: 'heavy_punch', dur: 0.5, share: 0.48, fx: { kind: 'smash', big: true }, sound: 'heavyPunch', final: true, pressure: true, quake: PRESS, push: 0.3 },
     ],
+    endReaction: { stun: 1.4, knockback: 2 },
     bannerAt: 0.2,
-    length: 3.3,
+    length: 3.4,
   },
+
 
   passives: [
     { type: 'arenaBlows', damage: 14, delay: 0.16 }, // Golpes de Arena: o finalizador emenda uma cabeçada

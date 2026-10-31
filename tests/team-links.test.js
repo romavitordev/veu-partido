@@ -27,6 +27,21 @@ test('team links identify Cristopher and Kaiser duo', () => {
   assert.equal(link.banner, 'A Muralha e o Disparo!');
 });
 
+test('team links identify Ordo Calamitas group', () => {
+  const link = getTeamLink(['amalia', 'celestine', 'gaius']);
+  assert.ok(link);
+  assert.equal(link.id, 'ordo_calamitas');
+  assert.equal(link.banner, 'Ordo Calamitas!');
+  assert.equal(getTeamLink(['amalia', 'celestine', 'dante']), null); // grupo pede 3
+});
+
+test('team links identify Arnaldo and Veríssimo duo', () => {
+  const link = getTeamLink(['arnaldo', 'verissimo', 'erin']);
+  assert.ok(link);
+  assert.equal(link.id, 'arnaldo_verissimo');
+  assert.deepEqual(link.order, ['verissimo', 'arnaldo']);
+});
+
 test('Xande ranged attack uses Skate Caotico with hideProp and returnsProp', () => {
   assert.equal(xande.ranged.name, 'Skate Caótico');
   assert.equal(xande.ranged.visual, 'skate');

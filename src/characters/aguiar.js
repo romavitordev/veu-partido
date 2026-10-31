@@ -136,26 +136,29 @@ export default {
 
   // Especial (sem a máscara — ela é só da Transformação): o delegado caça e finaliza a vítima a machadadas
   special: {
+    // CAÇADA NO ACAMPAMENTO: o Machado na Corda prende e puxa a vítima direto para a ARMADILHA DE URSO, que fecha no pé
+    // dela; presa, leva as machadadas de lâmina vermelha (sangramento severo) até a última de cima
     name: 'Caçada no Acampamento',
     banner: 'A próxima rodada sou eu.',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    // damage: omitido → COMBAT.specialDamage (250)
     color: 0xd01020,
     sound: 'axeHit',
-    prepare: { anim: 'concentrate', time: 0.8 },
-    dash: { speed: 18, maxTime: 0.5, contact: 1.9 },
+    prepare: { anim: 'concentrate', time: 0.6 },
+    approach: 'chain',
+    chain: { speed: 45, range: 14, rope: true },
     hits: [
-      { t: 0.95, anim: 'slash_d', dur: 0.36, share: 0.15, fx: { kind: 'slash', roll: 0.9 }, sound: 'axeHit' },
-      { t: 1.32, anim: 'slash_h', dur: 0.34, share: 0.15, fx: { kind: 'slash', tilt: 0.1 }, sound: 'axeHit' },
-      { t: 1.68, anim: 'slash_h_back', dur: 0.34, share: 0.15, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'axeHit' },
-      { t: 2.02, anim: 'kick_front', dur: 0.34, share: 0.15, fx: { kind: 'punch' }, sound: 'kick' },
-      { t: 2.5, anim: 'slash_v', dur: 0.44, share: 0.4, fx: { kind: 'slash', roll: 1.55, big: true }, sound: 'slashFinal', final: true },
+      { t: 0.35, anim: 'slash_d', dur: 0.36, share: 0.14, fx: { kind: 'slash', roll: 0.9 }, sound: 'axeHit', trap: true, call: 'PRESO NA ARMADILHA', victimAnim: 'stagger', push: 0 },
+      { t: 0.95, anim: 'slash_h', dur: 0.34, share: 0.15, fx: { kind: 'slash', tilt: 0.1 }, sound: 'axeHit', victimAnim: 'stagger', push: 0 },
+      { t: 1.35, anim: 'slash_h_back', dur: 0.34, share: 0.15, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'axeHit', victimAnim: 'stagger', push: 0 },
+      { t: 1.75, anim: 'kick_front', dur: 0.34, share: 0.12, fx: { kind: 'punch' }, sound: 'kick', victimAnim: 'stagger', push: 0 },
+      { t: 2.3, anim: 'slash_v', dur: 0.44, share: 0.44, fx: { kind: 'slash', roll: 1.55, big: true }, sound: 'slashFinal', final: true, bleed: { dps: 8, duration: 4 }, call: 'SANGRAMENTO SEVERO' },
     ],
     bannerAt: 0.3,
-    length: 3.4,
+    length: 3.2,
   },
+
 
   // TRANSFORMAÇÃO (Barra de Transformação cheia + vida baixa, segurando △): para os Mascarados a máscara é a Intenção de
   // Assassino despertando — ele põe a máscara branca da mão vermelha e vira o MUTILADOR NOTURNO até o fim do round

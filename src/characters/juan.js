@@ -133,27 +133,30 @@ export default {
   // HEMORRAGIA SEVERA (Descarnar Discente no cânone: dano de Sangue e hemorragia severa): a faca ondulada abre o
   // alvo em cinco cortes; o último deixa uma hemorragia que continua depois da cena. A Faca Predadora cura no caminho.
   special: {
+    // HEMORRAGIA SEVERA: o masoquista corta a si mesmo primeiro, o VÍNCULO DE SANGUE prende os dois num fio vermelho e a
+    // Faca Predadora bebe o sangue que corre do alvo até ele; fecha com o Descarnar Discente e a hemorragia
     name: 'Hemorragia Severa',
     banner: 'Hemorragia Severa',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    // damage: omitido → 250 (padrão); a hemorragia do último corte soma ~40
     color: 0xc01828,
     sound: 'specialStart',
     applyMeleePassives: true, // a Faca Predadora rouba vida de cada corte
-    prepare: { anim: 'charge', time: 0.35, fx: 'bloodBurst' },
+    prepare: { anim: 'charge', time: 0.45, fx: 'bloodPact', selfCost: 0.03, selfLabel: 'MASOQUISTA' },
     dash: { speed: 24, maxTime: 0.45, contact: 1.6 },
+    tether: { at: 0.2, hands: 'L', rope: true, color: 0xa01020 },
     hits: [
-      { t: 0.7, anim: 'knife_1', dur: 0.24, share: 0.14, fx: { kind: 'slash', tilt: 0.1 }, sound: 'bladeHit' },
-      { t: 0.95, anim: 'knife_2', dur: 0.24, share: 0.14, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'bladeHit' },
-      { t: 1.2, anim: 'thrust', dur: 0.3, share: 0.16, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.55, anim: 'knife_3', dur: 0.3, share: 0.2, fx: { kind: 'slash', roll: 1.2 }, sound: 'bladeHit' },
-      { t: 2.0, anim: 'knife_final', dur: 0.46, share: 0.36, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true, bleed: { dps: 8, duration: 5 } },
+      { t: 0.7, anim: 'knife_1', dur: 0.24, share: 0.14, fx: { kind: 'slash', tilt: 0.1 }, sound: 'bladeHit', stream: true },
+      { t: 0.95, anim: 'knife_2', dur: 0.24, share: 0.14, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'bladeHit', stream: true },
+      { t: 1.2, anim: 'thrust', dur: 0.3, share: 0.16, fx: { kind: 'stab' }, sound: 'bladeHit', stream: true, drain: 0.3 },
+      { t: 1.55, anim: 'knife_3', dur: 0.3, share: 0.2, fx: { kind: 'slash', roll: 1.2 }, sound: 'bladeHit', stream: true },
+      { t: 2.0, anim: 'knife_final', dur: 0.46, share: 0.36, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true, gore: true, bleed: { dps: 8, duration: 5 }, call: 'DESCARNADO' },
     ],
     bannerAt: 0.2,
     length: 3.0,
   },
+
 
   // TRANSFORMAÇÃO 1 (Barra de Transformação cheia + vida baixa, segurando △): ÓDIO DO DIABO — corta o próprio braço,
   // o sangue sobe e vira garras, puxa o capuz e o olho acende (+80 de vida). Dentro dessa forma a Barra volta a encher

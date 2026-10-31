@@ -152,26 +152,29 @@ export default {
 
   // Especial "POR ELES": sobe no skate, atropela, lança o inimigo e acaba com o taco amaldiçoado
   special: {
+    // POR ELES: chega no Skate Caótico, a VELOCIDADE MORTAL vira uma rajada de tacadas, o taco voa na corrente presa
+    // ao braço e volta, e a última tacada desce de cima. Cada golpe conta para o Gladiador Paranormal (sanidade).
     name: 'Por Eles',
     banner: 'Por eles...',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    // damage: omitido → COMBAT.specialDamage (250)
     color: 0xf2c230,
     sound: 'specialStart',
-    prepare: { anim: 'charge', time: 0.7 },
-    dash: { speed: 24, maxTime: 0.45, contact: 1.8 },
+    applyMeleePassives: true,
+    prepare: { anim: 'charge', time: 0.5, fx: 'bladeGlow' },
+    dash: { speed: 26, maxTime: 0.6, contact: 1.9, anim: 'skate_ride', ride: true },
     hits: [
-      { t: 0.95, anim: 'dash_slash', dur: 0.34, share: 0.15, fx: { kind: 'slash', tilt: 0.1 }, sound: 'heavyPunch' },
-      { t: 1.3, anim: 'slash_up', dur: 0.36, share: 0.15, fx: { kind: 'slash', roll: -1.0 }, sound: 'heavyPunch' },
-      { t: 1.65, anim: 'slash_h', dur: 0.32, share: 0.15, fx: { kind: 'slash', tilt: 0.1 }, sound: 'heavyPunch' },
-      { t: 1.98, anim: 'slash_h_back', dur: 0.32, share: 0.15, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'heavyPunch' },
-      { t: 2.5, anim: 'slash_v', dur: 0.44, share: 0.4, fx: { kind: 'slash', roll: 1.55, big: true }, sound: 'slashFinal', final: true },
+      { t: 0.6, anim: 'dash_slash', dur: 0.3, share: 0.12, fx: { kind: 'slash', tilt: 0.1 }, sound: 'heavyPunch' },
+      { t: 0.95, anim: 'slash_rapid', dur: 0.16, share: 0.12, fx: { kind: 'slash', tilt: 0.3 }, sound: 'heavyPunch', shout: 'VELOCIDADE MORTAL' },
+      { t: 1.12, anim: 'slash_rapid', dur: 0.16, share: 0.12, fx: { kind: 'slash', tilt: -0.3, flip: true }, sound: 'heavyPunch' },
+      { t: 1.5, anim: 'chain_throw', dur: 0.4, share: 0.2, fx: { kind: 'smash', chain: 'R' }, sound: 'heavyPunch' },
+      { t: 2.15, anim: 'slash_v', dur: 0.44, share: 0.44, fx: { kind: 'slash', roll: 1.55, big: true }, sound: 'slashFinal', final: true },
     ],
     bannerAt: 0.3,
-    length: 3.4,
+    length: 3.2,
   },
+
 
   // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Gladiador Paranormal — o caçador que aprendeu a lutar com o paranormal; aguenta golpes. Até o fim do round.
   awakening: {

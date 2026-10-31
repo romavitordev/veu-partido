@@ -1,9 +1,9 @@
-import { ExistidoMorte } from '../combat/beasts.js';
+import { ExistidoMorte, InkBeast } from '../combat/beasts.js';
 import * as THREE from 'three';
 import { preloadNpcModels } from '../models/npcRig.js';
 import { Marionette, BloodZombie } from '../combat/npcs.js';
 
-// Página de desenvolvimento (npcs.html, só no `npm run dev`): a Marionete e os Zumbis de Sangue lado a lado, com as
+// Página de desenvolvimento (npcs.html, só no `npm run dev`): a Marionete, os Zumbis de Sangue e as feras de tinta lado a lado, com as
 // poses de cada estado/golpe em loop. Usa um "mundo" falso: nada de partida, só o modelo e a animação de pose().
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(2, devicePixelRatio));
@@ -39,6 +39,8 @@ const npcs = [
   new ExistidoMorte(owner, world, new THREE.Vector3(0, 0, 0)),
   new BloodZombie(owner, world, new THREE.Vector3(3.6, 0, 0), {}),
   new BloodZombie(owner, world, new THREE.Vector3(7.2, 0, 0), { strong: true }),
+  new InkBeast(owner, world, new THREE.Vector3(10.8, 0, 0), { kind: 'cao' }),
+  new InkBeast(owner, world, new THREE.Vector3(14.4, 0, 0), { kind: 'javali' }),
 ];
 for (const n of npcs) { n.state = 'chase'; n.yaw = 0; n.pool.visible = false; }
 

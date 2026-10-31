@@ -1493,34 +1493,66 @@ export function despairMask() {
   return g;
 }
 
-// GAIUS: a MAÇA pequena de ferro, de uma mão, com o cabo enrolado em couro (wiki "Gaius" — Arsenal). Cabo em y, a
-// cabeça em cima (o pulso segura embaixo, como as outras armas de uma mão)
+// GAIUS: a MAÇA de ferro de uma mão (wiki "Gaius" — Arsenal; a arte "Maça de Gaius em Calamidade"): uma maça de ABAS —
+// cabo longo e escuro com o couro enrolado em DIAGONAL, um anel no colarinho, a cabeça prateada com 6 abas pontudas em
+// forma de lâmina (o filete escuro no meio de cada uma), a ponta no topo e uma pontinha no pomo. Montada com a cabeça
+// em +Y e virada no fim (holder), para seguir a convenção das armas de uma mão
 export function ironMace() {
   const g = new THREE.Group();
-  const iron = toon(0x5a5c62);
-  const handle = part(new THREE.CylinderGeometry(0.016, 0.018, 0.4, 8), 0x3a2a1e);
-  handle.position.y = -0.04;
+  const steel = toon(0xb8bcc4);
+  const dark = toon(0x2a2c34);
+  const handle = part(new THREE.CylinderGeometry(0.015, 0.017, 0.46, 8), 0x1c1e26);
+  handle.position.y = -0.03;
   g.add(handle);
-  for (let k = 0; k < 5; k++) { // o couro enrolado na base
-    const w = part(new THREE.TorusGeometry(0.02, 0.005, 4, 10), 0x24180f);
-    w.rotation.x = Math.PI / 2;
-    w.position.y = -0.18 + k * 0.024;
+  for (let k = 0; k < 11; k++) { // o couro enrolado em diagonal
+    const w = part(new THREE.TorusGeometry(0.018, 0.0045, 4, 10), 0x34363e);
+    w.rotation.set(Math.PI / 2, 0.38, 0);
+    w.position.y = -0.24 + k * 0.034;
     g.add(w);
   }
-  const head = part(new THREE.SphereGeometry(0.055, 12, 10), 0, { mat: iron });
-  head.position.y = 0.2;
-  g.add(head);
-  for (let k = 0; k < 6; k++) { // os flanges de ferro
-    const fl = part(new THREE.BoxGeometry(0.016, 0.1, 0.05), 0, { mat: iron });
-    const a = (k / 6) * Math.PI * 2;
-    fl.position.set(Math.cos(a) * 0.05, 0.2, Math.sin(a) * 0.05);
-    fl.rotation.y = -a;
-    g.add(fl);
+  const pommel = part(new THREE.ConeGeometry(0.014, 0.04, 6), 0, { mat: steel });
+  pommel.rotation.x = Math.PI;
+  pommel.position.y = -0.28;
+  g.add(pommel);
+  const collar = part(new THREE.CylinderGeometry(0.022, 0.02, 0.02, 10), 0, { mat: steel });
+  collar.position.y = 0.2;
+  g.add(collar);
+  const core = part(new THREE.CylinderGeometry(0.02, 0.022, 0.15, 6), 0, { mat: dark });
+  core.position.y = 0.28;
+  g.add(core);
+  // a aba: losango alongado (mais larga embaixo do meio), fina, de pé ao longo do cabo
+  const s = new THREE.Shape();
+  s.moveTo(0, -0.07);
+  s.lineTo(0.05, -0.01);
+  s.lineTo(0.042, 0.05);
+  s.lineTo(0, 0.08);
+  s.lineTo(0, -0.07);
+  const flangeGeo = new THREE.ExtrudeGeometry(s, { depth: 0.008, bevelEnabled: false });
+  flangeGeo.translate(0, 0, -0.004);
+  const ridgeGeo = new THREE.BoxGeometry(0.03, 0.003, 0.0095);
+  for (let k = 0; k < 6; k++) {
+    const arm = new THREE.Group();
+    arm.position.y = 0.28;
+    arm.rotation.y = (k / 6) * Math.PI * 2;
+    const fl = part(flangeGeo, 0, { mat: steel });
+    fl.position.x = 0.012;
+    arm.add(fl);
+    const ridge = part(ridgeGeo, 0, { mat: dark, outline: false }); // o filete escuro que corre na aba
+    ridge.position.set(0.035, 0.0, 0);
+    ridge.rotation.z = 0.5;
+    arm.add(ridge);
+    g.add(arm);
   }
-  const cap = part(new THREE.ConeGeometry(0.025, 0.05, 6), 0, { mat: iron });
-  cap.position.y = 0.27;
-  g.add(cap);
-  return g;
+  const tip = part(new THREE.ConeGeometry(0.016, 0.07, 6), 0, { mat: steel });
+  tip.position.y = 0.39;
+  g.add(tip);
+  // na mão, a CABEÇA segue para −Y como a lâmina das espadas (swordArnaldo): o conjunto é virado e a mão segura perto
+  // do POMO (como na arte), não no meio do cabo
+  const holder = new THREE.Group();
+  g.rotation.x = Math.PI;
+  g.position.y = -0.21;
+  holder.add(g);
+  return holder;
 }
 
 // AMPHITRUO: a MÁSCARA da Relíquia de Energia no rosto do Gaius (wiki "Amphitruo" e a "Máscara de Amphitruo"): metal
@@ -2191,6 +2223,9 @@ export function physicsRibbon(anchor, len, width, color, sway = 0.5, n = 10) {
   };
   // primeira pose (antes do 1º quadro): pendurada
   for (let i = 0; i <= n; i++) pos.set([anchor.x - width / 2, anchor.y - i * seg, anchor.z, anchor.x + width / 2, anchor.y - i * seg, anchor.z], i * 6);
+  // as normais já existem desde a construção: criadas só no 1º onBeforeRender (já dentro do desenho), o atributo
+  // não ia para a GPU e o shader lia normal zero → NaN na luz → a fita vermelha saía PRETA
+  geo.computeVertexNormals();
   return mesh;
 }
 

@@ -1,186 +1,285 @@
 """
-ZUMBI DE SANGUE (invocação do Diabo, "Senhor do Sangue") — referências em "Referencias visuais/Personagens/Zumbi de sangue".
+ZUMBI DE SANGUE (invocação do Diabo, "Senhor do Sangue") — wiki "Zumbis de Sangue" (miniaturas de Desconjuração).
 
-Cânone das referências: carne VIVA vermelha com músculos expostos e veias, sem olhos; a cabeça é quase só uma BOCA
-escancarada cheia de presas longas cor de marfim; braços longos terminando em garras; corpo curvado de predador.
-Duas variações (build(strong)):
-  - FRACO (npc_zumbi_sangue.py): magro e comprido, cabeça-boca virada para cima, costelas marcadas;
-  - FORTE (npc_zumbi_sangue_forte.py): massa de músculo, ombros e trapézio enormes, cabeça afundada no peito,
-    braços grossos que chegam ao chão (anda quase de quatro).
+Cânone: pele GOSMENTA e avermelhada, os músculos expostos com estrias claras e VEIAS escuras por cima; CEGOS — as
+órbitas dos olhos vazias (pretas); os dentes crescem todos pontudos e a boca se expande cheia deles; as unhas viram
+garras longas. Duas variações (build(strong)):
+  - FRACO (npc_zumbi_sangue.py, "Homem-Feto" pelo Kaiser): magro e comprido, crânio grande e calvo, as duas órbitas
+    fundas e a bocarra vertical de presas compridas cor de marfim; braços longos até os joelhos;
+  - FORTE = o BESTIAL (npc_zumbi_sangue_forte.py): muito maior, uma CORCOVA de músculo nas costas, quase de quatro; o
+    crânio cresceu e se PARTIU AO MEIO a partir do topo (o sulco do focinho), a mandíbula enorme com o dobro de presas.
 
-Peças rígidas em juntas (J_*), animadas em código (src/combat/npcs.js → BloodZombie.pose). O modelo sai em pé e
-com os membros retos; a postura curvada/agachada é dada pelo jogo.
+TÉCNICA: a escultura do Carniçal (npc_sculpt_lib.py) — cada peça é uma forma contínua de metaballs, com as estrias dos
+músculos por deslocamento e a cor por vértice (vermelho escuro nos sulcos, rosado nas cristas, manchas mais escuras).
+Peças em juntas (J_*) nas MESMAS posições de antes (src/combat/npcs.js → BloodZombie.pose e BLOOD_ZOMBIE.leg contam
+com elas). Modelado em pé, membros retos para baixo, olhando para +z; a postura curvada é dada pelo jogo.
 """
 import sys
+import os
 import math
 import random
 
-from lib import reset, material, export_glb, TAU
-from npc_lib import rod, curve, blob, spike, ribbon, joint, add, finish
+import bpy
+from mathutils import Vector
+
+from lib import reset, material, export_glb, hex_rgb, TAU
+from npc_lib import rod, curve, spike, joint, add, finish
+from npc_sculpt_lib import Sculpt, vcol_material, limb_fibers, ridge, n3, white_vcols
 
 
 def build(strong):
     random.seed(31 if strong else 7)
     reset()
+    tag = 'forte' if strong else 'fraco'
     M = {
-        'flesh': material('flesh_zumbi', '#8c1a20', 0.55),
-        'flesh2': material('flesh2_zumbi', '#5c0d14', 0.6),
-        'muscle': material('muscle_zumbi', '#b8363c', 0.45),
-        'fang': material('fang_zumbi', '#e2d6ba', 0.4),
-        'maw': material('maw_zumbi', '#1c0306', 0.8),
-        'gum': material('gum_zumbi', '#c24a5a', 0.5),
+        'flesh': vcol_material('flesh_zumbi_' + tag, 0.42),  # a carne gosmenta (cor por vértice)
+        'fang': material('fang_zumbi', '#ddd3b0' if not strong else '#c9c8a4', 0.4),
+        'maw': material('maw_zumbi', '#140204', 0.8),
         'claw': material('claw_zumbi', '#2a0709', 0.4),
-        'vein': material('vein_zumbi', '#3a0409', 0.5),
+        'vein': material('vein_zumbi', '#3e050b', 0.5),
     }
+    C = {k: Vector(hex_rgb(v)) for k, v in {
+        'deep': '#4a0a0f', 'flesh': '#8a1a20', 'crest': '#d07070', 'vein': '#38040a', 'patch': '#5a0c12', 'hole': '#080102', 'gum': '#a8303c',
+    }.items()}
 
-    # ---------------- proporções das duas variações
+    # ---------------- proporções (as juntas nas mesmas posições do modelo antigo)
     if strong:
         hipY, shY, shZ, shX = 0.95, 0.78, 0.22, 0.44
-        torsoR = [0.22, 0.24, 0.3, 0.38, 0.44, 0.42]
-        upL, foreL, upR, foreR = 0.6, 0.66, (0.17, 0.13), (0.16, 0.09)
-        thighL, shinL, thighR, shinR, hipX = 0.46, 0.44, (0.16, 0.11), (0.12, 0.07), 0.22
-        fingerL, clawL = 0.18, 0.12
+        upL, foreL, upR, foreR = 0.6, 0.66, 0.17, 0.13
+        thighL, shinL, thighR, shinR, hipX = 0.46, 0.44, 0.16, 0.11, 0.22
     else:
         hipY, shY, shZ, shX = 1.0, 0.64, 0.14, 0.24
-        torsoR = [0.12, 0.12, 0.14, 0.17, 0.19, 0.17]
-        upL, foreL, upR, foreR = 0.5, 0.52, (0.06, 0.045), (0.05, 0.03)
-        thighL, shinL, thighR, shinR, hipX = 0.5, 0.48, (0.07, 0.05), (0.05, 0.03), 0.12
-        fingerL, clawL = 0.17, 0.1
+        upL, foreL, upR, foreR = 0.5, 0.52, 0.06, 0.045
+        thighL, shinL, thighR, shinR, hipX = 0.5, 0.48, 0.07, 0.05, 0.12
+    AMP = 0.005 if strong else 0.0035  # profundidade das estrias (leves: a carne é lisa e gosmenta, com estrias claras)
+
+    def flesh_color(disp_fn, amp):
+        """sulcos escuros, cristas rosadas e manchas mais escuras (o desenho tem placas de carne escura)"""
+        def f(p, sc):
+            ho = sc.field(p).get('hole', 0)
+            if ho > 0.3:
+                return C['hole']
+            if sc.field(p).get('gum', 0) > 0.5:
+                return C['gum']
+            k = max(0.0, min(1.0, disp_fn(p) / amp + 0.35)) if disp_fn else 0.5
+            base = C['flesh'].lerp(C['deep'], (1 - k) ** 2 * 0.35).lerp(C['crest'], min(1.0, max(0.0, k - 0.75) * 4) * max(0.0, n3(p, 3) + 0.3))
+            m = n3(p, 6)
+            if m > 0.18:  # as placas de carne mais escura
+                base = base.lerp(C['patch'], min(1.0, (m - 0.18) * 5) * 0.75)
+            v = abs(n3((p[0] * 1.3, p[1] * 0.6, p[2] * 1.3), 9))  # as VEIAS escuras serpenteando
+            if v < 0.025:
+                base = base.lerp(C['vein'], 1 - v / 0.025)
+            return base
+        return f
 
     body = joint('J_body', (0, 0, 0))
-    chest = joint('J_chest', (0, hipY, 0), body)  # pivô na cintura: o tronco sobe e vai para a frente
+    chest = joint('J_chest', (0, hipY, 0), body)
+    top = (0, shY, shZ)
 
-    # ---------------- tronco
-    spine = curve((0, -0.05, 0), (0, shY * 0.55, -0.04), (0, shY, shZ), 6)
-    add(chest, 'torso', rod(spine, torsoR, seg=14, wobble=0.04), M['flesh'])
-    add(chest, 'pelvis', blob((0, -0.02, -0.01), (torsoR[0] * 1.25, 0.1, torsoR[0] * 0.95), 12, 8), M['flesh2'])
-    top = spine[-1]
+    # ================================================================ TRONCO
+    S = Sculpt('torso_' + tag)
     if strong:
-        # trapézio/dorso gigante, peitorais e "gomos" do abdome
-        add(chest, 'traps', blob((0, top[1] + 0.06, top[2] - 0.16), (0.46, 0.22, 0.3), 16, 10), M['flesh'])
+        S.ell((0, -0.04, 0.0), (0.26, 0.16, 0.2))  # pelve larga
+        S.ell((0, 0.2, 0.06), (0.3, 0.22, 0.24))  # barriga
+        S.ell((0, 0.48, 0.14), (0.42, 0.26, 0.3))  # tórax enorme
+        S.ell((0, 0.74, 0.02), (0.36, 0.26, 0.3))  # a CORCOVA (as costas sobem acima dos ombros)
+        S.ell((0, 0.84, 0.14), (0.3, 0.16, 0.24))
         for s in (1, -1):
-            add(chest, f'pec{s}', blob((s * 0.17, top[1] - 0.12, top[2] + 0.2), (0.17, 0.12, 0.1), 12, 8), M['muscle'])
-            add(chest, f'lat{s}', blob((s * 0.28, top[1] - 0.3, top[2] - 0.05), (0.12, 0.26, 0.18), 10, 8), M['flesh'])
-            add(chest, f'back{s}', blob((s * 0.16, top[1] - 0.1, top[2] - 0.28), (0.18, 0.2, 0.14), 10, 8), M['muscle'])
-        for r in range(3):
-            for s in (1, -1):
-                y = 0.42 - r * 0.13
-                z = spine[3][2] + torsoR[3] * 0.85 - r * 0.02
-                add(chest, f'ab{r}{s}', blob((s * 0.07, y, z), (0.065, 0.055, 0.04), 8, 6), M['muscle'])
+            S.ell((s * 0.2, 0.56, 0.36), (0.18, 0.13, 0.11))  # peitoral
+            S.ell((s * 0.3, 0.72, 0.12), (0.2, 0.2, 0.2))  # trapézio/ombro alto
+            S.ell((s * 0.24, 0.66, -0.16), (0.18, 0.24, 0.16))  # dorso
+            S.ell((s * 0.32, 0.3, 0.02), (0.13, 0.26, 0.18), dir=(s * 0.3, 1, 0))  # grande dorsal
+            S.ell((s * 0.16, -0.06, -0.08), (0.14, 0.13, 0.12))  # glúteo
+            for k in range(3):
+                S.ell((s * 0.085, 0.36 - k * 0.12, 0.27 - k * 0.02), (0.075, 0.06, 0.05))  # gomos do abdômen
     else:
-        # magro: costelas marcadas na frente, saliências da coluna nas costas
-        for r in range(5):
-            y = shY * 0.45 + r * 0.06
-            z = spine[3][2] + 0.03 + r * 0.025
-            for s in (1, -1):
-                rib = curve((s * 0.02, y, z + 0.13), (s * 0.15, y - 0.02, z + 0.05), (s * 0.15, y - 0.03, z - 0.08), 7)
-                add(chest, f'rib{r}{s}', rod(rib, 0.016, seg=5), M['flesh2'])
-        for r in range(7):
-            p = curve((0, 0, -0.1), (0, shY * 0.55, -0.16), (0, shY, shZ - 0.16), 7)[r]
-            add(chest, f'vert{r}', blob(p, (0.035, 0.03, 0.035), 8, 6), M['muscle'])
+        S.ell((0, -0.05, 0.0), (0.12, 0.09, 0.09))  # pelve
+        S.ell((0, 0.1, 0.02), (0.1, 0.12, 0.08))  # barriga funda
+        S.ell((0, 0.3, 0.05), (0.15, 0.13, 0.1))  # costelas baixas
+        S.ell((0, 0.48, 0.09), (0.19, 0.13, 0.12))  # caixa torácica
+        S.ell((0, 0.62, 0.12), (0.22, 0.06, 0.09))  # cintura escapular
         for s in (1, -1):
-            add(chest, f'collar{s}', rod(curve((0, top[1] + 0.02, top[2] + 0.1), (s * 0.12, top[1] + 0.04, top[2] + 0.06), (s * shX, top[1] - 0.02, top[2] - 0.02), 6), 0.025, seg=6), M['muscle'])
-    # veias pelo tronco
-    for i in range(6 if strong else 4):
-        a = random.uniform(-1.2, 1.2) + (math.pi if i % 2 else 0)
-        y0 = random.uniform(0.1, shY * 0.8)
-        R = torsoR[3] * 1.02
-        pts = [(math.sin(a + j * 0.12) * R, y0 + j * 0.07, math.cos(a + j * 0.12) * R + shZ * (y0 + j * 0.07) / shY * 0.6) for j in range(5)]
-        add(chest, f'veinT{i}', rod(pts, 0.008 if not strong else 0.012, seg=4), M['vein'])
+            S.ell((s * 0.09, 0.52, 0.17), (0.085, 0.06, 0.045))  # peitoral magro
+            S.ell((s * 0.15, 0.6, 0.08), (0.06, 0.1, 0.05), dir=(s * 1, 0.4, 0))  # trapézio
+            S.ell((s * 0.14, 0.38, 0.03), (0.05, 0.13, 0.05), dir=(s * 0.3, 1, 0))  # dorsal
+            S.ell((s * 0.07, -0.08, -0.05), (0.06, 0.07, 0.05))  # glúteo
+            S.ell((s * 0.11, 0.62, 0.17), (0.05, 0.02, 0.025), dir=(s * 1, 0.1, 0))  # clavícula saltada
+        for k in range(7):  # a coluna saltada nas costas
+            y = 0.05 + k * 0.085
+            S.ell((0, y, -0.06 + y * 0.12), (0.025, 0.022, 0.03))
 
-    # ---------------- cabeça-boca (sem olhos) e mandíbula
+    def torso_disp(p):
+        x, y, z = p
+        ax = abs(x)
+        w = n3(p, 7) * 0.7
+        if not strong and z > 0.04 and 0.28 < y < 0.58 and ax > 0.03:  # costelas do magro
+            return 0.006 * (ridge((y + ax * 0.25) * 70 + w * 0.3, 2) - 0.35)
+        if z > 0.1 and y > 0.42 and ax < 0.32:  # peitorais: leque do esterno ao ombro
+            v = ridge(math.atan2(y - 0.6, ax + 0.02) * 9 + w)
+        else:  # flancos e costas: fibras diagonais subindo para os ombros
+            v = ridge((y + ax * (0.9 if z > 0 else -0.6)) * (28 if strong else 40) + w)
+        v -= 0.6 * math.exp(-(ax / 0.012) ** 2) if z > 0.05 else 0  # a linha do esterno
+        return AMP * (v - 0.35)
+
+    S.build(chest, M['flesh'], 4200 if strong else 3000, res=0.012 if strong else 0.009, disp=torso_disp, color=flesh_color(torso_disp, AMP))
+
+    # ================================================================ CABEÇA (sem olhos) E MANDÍBULA
     if strong:
-        neck = joint('J_neck', (0, top[1] - 0.04, top[2] + 0.2), chest)  # afundada entre os ombros
-        add(neck, 'skull', blob((0, 0.05, 0.12), (0.22, 0.17, 0.22), 14, 10), M['flesh'])
-        add(neck, 'brow', blob((0, 0.13, 0.22), (0.2, 0.07, 0.12), 12, 8), M['muscle'])
-        add(neck, 'mawU', blob((0, -0.04, 0.27), (0.17, 0.08, 0.08), 12, 8), M['maw'])
-        for i in range(11):  # presas de cima: longas, para baixo e um pouco para dentro
-            a = (i - 5) / 5 * 1.25
-            base = (math.sin(a) * 0.19, -0.02, 0.2 + math.cos(a) * 0.12)
-            ln = 0.15 + 0.06 * math.cos(a * 1.2) + random.uniform(-0.02, 0.02)
-            tip = (base[0] * 0.9, base[1] - ln, base[2] + 0.02)
-            add(neck, f'fangU{i}', rod(curve(base, (base[0], base[1] - ln * 0.6, base[2] + 0.05), tip, 5), [0.028, 0.004], seg=6), M['fang'])
-        add(neck, 'gumU', rod(curve((0.2, -0.02, 0.16), (0, -0.03, 0.4), (-0.2, -0.02, 0.16), 9), 0.03, seg=6), M['gum'])
+        # o BESTIAL: a cabeça afundada entre os ombros, baixa e comprida como um focinho; o crânio partido ao meio a
+        # partir do topo (o sulco fundo no meio) e a bocarra de presas que pinga
+        neck = joint('J_neck', (0, top[1] - 0.04, top[2] + 0.2), chest)
+        H = Sculpt('head_forte')
+        H.ell((0, 0.02, 0.0), (0.22, 0.2, 0.2))  # a massa da nuca (some no trapézio)
+        H.ell((0, 0.04, 0.16), (0.2, 0.15, 0.2))
+        H.ell((0, 0.0, 0.32), (0.17, 0.12, 0.16))  # o focinho
+        for s in (1, -1):
+            H.ell((s * 0.1, 0.1, 0.22), (0.1, 0.08, 0.2), dir=(0, 0, 1))  # as duas metades do crânio
+            H.ell((s * 0.13, -0.02, 0.32), (0.06, 0.06, 0.14), dir=(0, 0, 1))  # bochechas que seguram as presas
+        H.ell((0, 0.17, 0.24), (0.03, 0.08, 0.3), 'hole', neg=True)  # o SULCO: o crânio partido no meio
+        H.ell((0, -0.1, 0.36), (0.14, 0.05, 0.12), 'hole', neg=True)  # o céu da boca aberto
+
+        def head_disp(p):
+            x, y, z = p
+            # pregas da carne correndo ao longo do focinho, e o sulco do meio mais fundo
+            v = ridge(math.atan2(abs(x), y + 0.05) * 7 + n3(p, 6))
+            return AMP * (v - 0.35) - 0.012 * math.exp(-(x / 0.02) ** 2) * (1 if y > 0.05 and z > 0.05 else 0)
+
+        H.build(neck, M['flesh'], 1700, res=0.01, smooth=4, disp=head_disp, color=flesh_color(head_disp, AMP))
+        add(neck, 'mawU', rod(curve((0.15, -0.08, 0.22), (0, -0.09, 0.5), (-0.15, -0.08, 0.22), 9), 0.045, seg=6), M['maw'])
+        for i in range(11):  # presas de cima: muitas, longas, irregulares, curvas para baixo e para dentro
+            a = (i - 5) / 5 * 1.3
+            base = (math.sin(a) * 0.16, -0.06, 0.24 + math.cos(a) * 0.2)
+            ln = 0.17 + 0.07 * math.cos(a * 1.1) + random.uniform(-0.03, 0.03)
+            tip = (base[0] * 0.85, base[1] - ln, base[2] + 0.03)
+            add(neck, f'fangU{i}', rod(curve(base, (base[0] * 1.05, base[1] - ln * 0.55, base[2] + 0.07), tip, 5), [0.026, 0.019, 0.012, 0.006, 0.002], seg=6), M['fang'])
         jaw = joint('J_jaw', (0, -0.06, 0.06), neck)
-        add(jaw, 'jaw', blob((0, -0.08, 0.14), (0.2, 0.08, 0.2), 12, 8), M['flesh'])
-        add(jaw, 'mawL', blob((0, -0.03, 0.2), (0.15, 0.05, 0.12), 10, 6), M['maw'])
+        J = Sculpt('jaw_forte')
+        J.chain(curve((-0.17, 0.0, 0.0), (0, -0.12, 0.42), (0.17, 0.0, 0.0), 9), [0.07, 0.07, 0.065, 0.06, 0.06, 0.06, 0.065, 0.07, 0.07], step=0.5)
+        J.ell((0, -0.08, 0.2), (0.15, 0.06, 0.18))
+        J.ell((0, -0.03, 0.22), (0.12, 0.04, 0.14), 'hole', neg=True)  # a língua/garganta escura
+        J.build(jaw, M['flesh'], 900, res=0.009, smooth=3, color=flesh_color(None, AMP))
         for i in range(9):
-            a = (i - 4) / 4 * 1.15
-            base = (math.sin(a) * 0.17, -0.04, 0.14 + math.cos(a) * 0.15)
-            ln = 0.11 + random.uniform(-0.02, 0.02)
-            add(jaw, f'fangL{i}', rod(curve(base, (base[0], base[1] + ln * 0.6, base[2] + 0.03), (base[0] * 0.92, base[1] + ln, base[2] - 0.01), 5), [0.024, 0.004], seg=6), M['fang'])
+            a = (i - 4) / 4 * 1.2
+            base = (math.sin(a) * 0.15, -0.03, 0.18 + math.cos(a) * 0.2)
+            ln = 0.13 + random.uniform(-0.03, 0.03)
+            add(jaw, f'fangL{i}', rod(curve(base, (base[0] * 1.05, base[1] + ln * 0.55, base[2] + 0.05), (base[0] * 0.9, base[1] + ln, base[2] - 0.01), 5), [0.026, 0.018, 0.011, 0.005, 0.002], seg=6), M['fang'])
+        # o sangue pingando da boca
+        for i in range(3):
+            x = random.uniform(-0.1, 0.1)
+            add(jaw, f'drip{i}', rod([(x, -0.1, 0.36), (x, -0.18, 0.37), (x * 1.05, -0.24 - i * 0.04, 0.37)], [0.012, 0.009, 0.005], seg=5), M['vein'])
     else:
+        # o FRACO: crânio grande e calvo de feto, as duas ÓRBITAS VAZIAS e fundas, a bocarra vertical cheia de presas
         neck = joint('J_neck', (0, top[1] + 0.03, top[2] + 0.06), chest)
-        add(neck, 'neckM', rod([(0, -0.04, -0.02), (0, 0.1, 0.02)], 0.06, seg=8), M['flesh'])
-        # cabeça comprida em capuz, a boca aberta para a frente/cima tomando quase tudo
-        add(neck, 'skull', blob((0, 0.24, 0.02), (0.14, 0.22, 0.15), 14, 10), M['flesh'])
-        add(neck, 'crest', rod(curve((0, 0.44, -0.04), (0, 0.38, -0.15), (0, 0.16, -0.16), 6), [0.05, 0.03], seg=7), M['muscle'])
-        add(neck, 'maw', blob((0, 0.24, 0.12), (0.11, 0.17, 0.06), 12, 8), M['maw'])
-        add(neck, 'lip', rod([(math.sin(i / 16 * TAU) * 0.115, 0.24 + math.cos(i / 16 * TAU) * 0.18, 0.12) for i in range(17)], 0.022, seg=6, caps=False), M['gum'])
-        for i in range(10):  # presas em volta da boca, curvadas para dentro (como uma flor de dentes)
-            a = (i / 10) * TAU + 0.3
-            if abs(math.sin(a)) < 0.25 and math.cos(a) < 0:
-                continue  # deixa o "queixo" livre (a mandíbula tem as dela)
-            base = (math.sin(a) * 0.12, 0.24 + math.cos(a) * 0.18, 0.12)
-            ln = random.uniform(0.13, 0.2)
-            out = (math.sin(a) * 0.2, 0.24 + math.cos(a) * 0.27, 0.22)
-            tip = (math.sin(a) * 0.08, 0.24 + math.cos(a) * 0.12, 0.12 + ln)
-            add(neck, f'fang{i}', rod(curve(base, out, tip, 6), [0.02, 0.003], seg=5), M['fang'])
-        jaw = joint('J_jaw', (0, 0.08, 0.06), neck)
-        add(jaw, 'jaw', blob((0, -0.02, 0.06), (0.09, 0.05, 0.1), 10, 6), M['flesh'])
-        for i in range(4):
-            x = -0.05 + i * 0.033
-            add(jaw, f'fangL{i}', rod(curve((x, -0.0, 0.1), (x * 1.3, 0.05, 0.17), (x, 0.08, 0.15), 5), [0.016, 0.003], seg=5), M['fang'])
+        H = Sculpt('head_fraco')
+        H.chain([(0, -0.05, -0.02), (0, 0.06, 0.0), (0, 0.13, 0.02)], [0.055, 0.05, 0.06])  # pescoço fino
+        H.ell((0, 0.38, -0.01), (0.17, 0.18, 0.18))  # a calota grande
+        H.ell((0, 0.3, 0.07), (0.15, 0.13, 0.13))  # testa e órbitas
+        H.ell((0, 0.17, 0.08), (0.12, 0.11, 0.1))  # a face comprida da boca
+        for s in (1, -1):
+            H.ell((s * 0.08, 0.35, 0.13), (0.065, 0.035, 0.05))  # arcada das órbitas
+            H.ell((s * 0.078, 0.3, 0.19), (0.055, 0.058, 0.06), 'hole', neg=True)  # ÓRBITA vazia (cava)
+            H.ell((s * 0.11, 0.17, 0.1), (0.035, 0.08, 0.05))  # as bochechas que esticam com a boca
+        H.ell((0, 0.15, 0.18), (0.085, 0.085, 0.07), 'hole', neg=True)  # a BOCARRA aberta, larga
+        for i in range(12):  # a gengiva em volta da boca
+            a = i / 12 * TAU
+            H.ell((math.sin(a) * 0.088, 0.15 + math.cos(a) * 0.085, 0.15), (0.02, 0.02, 0.02), 'gum')
 
-    # ---------------- braços longos com garras
-    def arm(side, name):
-        s = side
+        def head_disp(p):
+            x, y, z = p
+            v = ridge((y * 1.0 + abs(x) * 0.6) * 35 + n3(p, 6) * 1.5)
+            return 0.0025 * (v - 0.35)
+
+        H.build(neck, M['flesh'], 2400, res=0.007, smooth=4, disp=head_disp, color=flesh_color(head_disp, 0.0025))
+        add(neck, 'maw', rod(curve((0, 0.22, 0.13), (0, 0.15, 0.1), (0, 0.08, 0.13), 5), 0.06, seg=8), M['maw'])
+        add(neck, 'orbitL', rod([(0.078, 0.3, 0.13), (0.078, 0.3, 0.16)], 0.04, seg=8), M['maw'])
+        add(neck, 'orbitR', rod([(-0.078, 0.3, 0.13), (-0.078, 0.3, 0.16)], 0.04, seg=8), M['maw'])
+        for i in range(7):  # presas de cima: longas, cor de marfim, descendo na boca
+            a = (i - 3) / 3 * 1.05
+            base = (math.sin(a) * 0.085, 0.225 - (1 - math.cos(a)) * 0.04, 0.16 + math.cos(a) * 0.04)
+            ln = 0.09 + 0.03 * math.cos(a) + random.uniform(-0.015, 0.015)
+            add(neck, f'fangU{i}', rod(curve(base, (base[0] * 1.1, base[1] - ln * 0.5, base[2] + 0.03), (base[0] * 0.8, base[1] - ln, base[2] + 0.01), 5), [0.014, 0.011, 0.007, 0.004, 0.0015], seg=5), M['fang'])
+        jaw = joint('J_jaw', (0, 0.08, 0.06), neck)
+        J = Sculpt('jaw_fraco')
+        J.chain(curve((-0.08, 0.02, 0.0), (0, -0.06, 0.13), (0.08, 0.02, 0.0), 7), [0.03, 0.032, 0.034, 0.035, 0.034, 0.032, 0.03], step=0.5)
+        J.build(jaw, M['flesh'], 500, res=0.006, smooth=2, color=flesh_color(None, AMP))
+        for i in range(6):  # presas de baixo subindo
+            a = (i - 2.5) / 2.5 * 1.0
+            base = (math.sin(a) * 0.065, -0.03, 0.06 + math.cos(a) * 0.06)
+            ln = 0.08 + random.uniform(-0.015, 0.015)
+            add(jaw, f'fangL{i}', rod(curve(base, (base[0] * 1.1, base[1] + ln * 0.5, base[2] + 0.03), (base[0] * 0.85, base[1] + ln, base[2] + 0.01), 5), [0.013, 0.01, 0.006, 0.003, 0.0015], seg=5), M['fang'])
+
+    # ================================================================ BRAÇOS longos com garras
+    def arm(s, name):
         sh = joint(f'J_sh{name}', (s * shX, top[1] - 0.06, top[2] - 0.03), chest)
-        add(sh, 'delt', blob((s * 0.02, -0.03, 0), (upR[0] * 1.3, upR[0] * 1.25, upR[0] * 1.25), 12, 8), M['muscle'] if strong else M['flesh'])
-        add(sh, 'upper', rod(curve((0, 0, 0), (s * 0.02, -upL * 0.5, 0.02), (0, -upL, 0), 6), [upR[0], upR[0] * 1.05, upR[0], upR[1] * 1.05, upR[1], upR[1]], seg=10, wobble=0.05), M['flesh'])
-        add(sh, 'bicep', blob((0, -upL * 0.45, 0.03 + upR[0] * 0.4), (upR[0] * 0.7, upL * 0.28, upR[0] * 0.65), 10, 8), M['muscle'])
-        for i in range(2):
-            pts = [(s * upR[0] * (0.9 - 0.1 * i), -upL * (0.1 + j * 0.2), upR[0] * 0.4 * (1 if i else -1)) for j in range(5)]
-            add(sh, f'veinU{i}', rod(pts, 0.007 if not strong else 0.011, seg=4), M['vein'])
+        U = Sculpt(f'upper{name}_{tag}')
+        U.ell((s * 0.02, -0.03, 0), (upR * 1.35, upR * 1.4, upR * 1.3))  # deltoide
+        U.chain([(0, -upL * 0.15, 0), (0, -upL * 0.5, 0.01), (0, -upL, 0)], [upR, upR * 1.05, upR * 0.8], step=0.6)
+        U.ell((0, -upL * 0.45, upR * 0.45), (upR * 0.75, upL * 0.28, upR * 0.7))  # bíceps
+        U.ell((0, -upL * 0.4, -upR * 0.4), (upR * 0.8, upL * 0.3, upR * 0.7))  # tríceps
+        fu = limb_fibers((0, 0.04, 0), (0, -upL, 0), 6, 0.9 * s, AMP)
+        U.build(sh, M['flesh'], 900, res=0.011 if strong else 0.007, disp=fu, color=flesh_color(fu, AMP))
+
         el = joint(f'J_el{name}', (0, -upL, 0), sh)
-        add(el, 'elbow', blob((0, 0, 0), (upR[1], upR[1], upR[1]), 10, 8), M['flesh2'])
-        add(el, 'fore', rod(curve((0, 0, 0), (0, -foreL * 0.4, 0.02), (0, -foreL, 0), 6), [foreR[0] * 0.9, foreR[0] * 1.15, foreR[0] * 1.05, foreR[0] * 0.8, foreR[1], foreR[1]], seg=10, wobble=0.05), M['flesh'])
-        add(el, 'foreM', blob((s * foreR[0] * 0.3, -foreL * 0.3, 0.02), (foreR[0] * 0.8, foreL * 0.22, foreR[0] * 0.75), 10, 8), M['muscle'])
+        F = Sculpt(f'fore{name}_{tag}')
+        F.chain([(0, 0.01, 0), (0, -foreL * 0.25, 0.01), (0, -foreL * 0.6, 0.005), (0, -foreL + 0.02, 0)], [foreR * 0.95, foreR * 1.2, foreR * 0.95, foreR * 0.7], step=0.6)
+        ff = limb_fibers((0, 0.02, 0), (0, -foreL, 0), 6, -0.8 * s, AMP)
+        F.build(el, M['flesh'], 750, res=0.01 if strong else 0.0065, disp=ff, color=flesh_color(ff, AMP))
+
         hand = joint(f'J_hand{name}', (0, -foreL, 0), el)
-        hw = foreR[1] * 1.6
-        add(hand, 'palm', blob((0, -0.05, 0.02), (hw, 0.07, hw * 0.6), 10, 8), M['flesh2'])
-        n_f = 4
-        for i in range(n_f):
-            a = (i - (n_f - 1) / 2) * 0.4
-            base = (math.sin(a) * hw * 0.9, -0.08, 0.03)
-            mid = (math.sin(a) * (hw + fingerL * 0.35), -0.08 - fingerL * 0.7, 0.07)
-            tip = (math.sin(a) * (hw + fingerL * 0.4), -0.08 - fingerL, 0.13)
-            add(hand, f'finger{i}', rod(curve(base, mid, tip, 5), [hw * 0.28, hw * 0.2], seg=6), M['flesh'])
-            ctip = (tip[0] * 1.05, tip[1] - clawL * 0.35, tip[2] + clawL * 0.95)
-            add(hand, f'claw{i}', rod(curve(tip, (tip[0], tip[1] - clawL * 0.4, tip[2] + clawL * 0.5), ctip, 5), [hw * 0.18, 0.002], seg=5), M['claw'])
-        # polegar
-        add(hand, 'thumb', rod(curve((-s * hw * 0.8, -0.05, 0.04), (-s * hw * 1.3, -0.1, 0.1), (-s * hw * 1.2, -0.12, 0.18), 5), [hw * 0.26, hw * 0.12], seg=6), M['flesh'])
-        add(hand, 'thumbClaw', spike((-s * hw * 1.2, -0.12, 0.18), (-s * hw * 1.15, -0.13, 0.18 + clawL * 0.8), hw * 0.12, seg=5), M['claw'])
+        hw = foreR * 1.5
+        fl = 0.2 if strong else 0.17
+        Hd = Sculpt(f'hand{name}_{tag}')
+        Hd.ell((0, -0.04, 0.01), (hw, 0.07, hw * 0.55))  # palma
+        tips = []
+        for i in range(4):
+            a = (i - 1.5) * 0.36
+            x0 = math.sin(a) * hw
+            base = (x0, -0.09, 0.02)
+            mid = (x0 * 1.35, -0.09 - fl * 0.55, 0.05)
+            tip = (x0 * 1.5, -0.09 - fl, 0.1)
+            Hd.chain([base, mid, tip], [hw * 0.3, hw * 0.26, hw * 0.2], step=0.5)
+            tips.append(tip)
+        th = [(-s * hw * 0.8, -0.04, 0.03), (-s * hw * 1.3, -0.1, 0.09), (-s * hw * 1.25, -0.14, 0.16)]
+        Hd.chain(th, [hw * 0.3, hw * 0.24, hw * 0.18], step=0.5)
+        Hd.build(hand, M['flesh'], 700, res=0.008 if strong else 0.0055, smooth=2, color=flesh_color(None, AMP))
+        cl = 0.14 if strong else 0.1
+        for i, tip in enumerate(tips + [th[-1]]):  # GARRAS longas e curvas
+            c1 = (tip[0] * 1.05, tip[1] - cl * 0.45, tip[2] + cl * 0.4)
+            c2 = (tip[0] * 1.08, tip[1] - cl * 0.7, tip[2] + cl)
+            add(hand, f'claw{i}', rod([tip, c1, c2], [hw * 0.2, hw * 0.13, 0.002], seg=5), M['claw'])
 
     arm(1, 'L')
     arm(-1, 'R')
 
-    # ---------------- pernas (dobradas pelo jogo) com pés de garras
+    # ================================================================ PERNAS com pés de garras
     for s, name in ((1, 'L'), (-1, 'R')):
         hip = joint(f'J_hip{name}', (s * hipX, 0, 0), chest)
-        add(hip, 'thigh', rod(curve((0, 0.02, 0), (s * 0.01, -thighL * 0.5, 0.04), (0, -thighL, 0.02), 6), [thighR[0], thighR[0] * 1.05, thighR[0], thighR[1] * 1.1, thighR[1], thighR[1]], seg=10, wobble=0.05), M['flesh'])
-        add(hip, 'quad', blob((0, -thighL * 0.45, thighR[0] * 0.45), (thighR[0] * 0.75, thighL * 0.3, thighR[0] * 0.6), 10, 8), M['muscle'])
-        knee = joint(f'J_knee{name}', (0, -thighL, 0.02), hip)
-        add(knee, 'kneecap', blob((0, 0, 0.02), (thighR[1], thighR[1], thighR[1]), 10, 8), M['flesh2'])
-        add(knee, 'shin', rod(curve((0, 0, 0), (0, -shinL * 0.4, -0.04), (0, -shinL, -0.02), 6), [shinR[0], shinR[0] * 1.1, shinR[0], shinR[1] * 1.1, shinR[1], shinR[1]], seg=9, wobble=0.05), M['flesh'])
-        add(knee, 'calf', blob((0, -shinL * 0.3, -shinR[0] * 0.5), (shinR[0] * 0.8, shinL * 0.22, shinR[0] * 0.7), 10, 8), M['muscle'])
-        fw = shinR[1] * 2.2
-        add(knee, 'foot', blob((0, -shinL - 0.01, 0.06), (fw, 0.04, fw * 1.6), 10, 6), M['flesh2'])
-        for i in range(3):
-            a = (i - 1) * 0.4
-            base = (math.sin(a) * fw * 0.8, -shinL - 0.02, 0.06 + fw * 1.2)
-            add(knee, f'toe{i}', spike(base, (base[0] * 1.2, -shinL - 0.05, base[2] + 0.06 + fw * 0.5), fw * 0.3, seg=5), M['claw'])
+        Th = Sculpt(f'thigh{name}_{tag}')
+        Th.chain([(0, 0.02, 0), (0, -thighL * 0.35, 0.03), (0, -thighL * 0.7, 0.02), (0, -thighL + 0.02, 0.015)], [thighR, thighR * 1.05, thighR * 0.85, thighR * 0.7])
+        Th.ell((0, -thighL * 0.45, thighR * 0.5), (thighR * 0.75, thighL * 0.3, thighR * 0.6))  # quadríceps
+        Th.ell((0, -thighL * 0.45, -thighR * 0.5), (thighR * 0.7, thighL * 0.28, thighR * 0.55))  # posterior
+        ft = limb_fibers((0, 0.02, 0), (0, -thighL, 0.02), 7, 1.0 * s, AMP)
+        Th.build(hip, M['flesh'], 900, res=0.011 if strong else 0.0075, disp=ft, color=flesh_color(ft, AMP))
 
+        knee = joint(f'J_knee{name}', (0, -thighL, 0.02), hip)
+        Sh = Sculpt(f'shin{name}_{tag}')
+        Sh.chain([(0, 0.02, 0), (0, -shinL * 0.25, -0.01), (0, -shinL * 0.6, -0.012), (0, -shinL + 0.07, -0.005)], [shinR * 1.05, shinR * 1.1, shinR * 0.85, shinR * 0.7])
+        Sh.ell((0, -shinL * 0.3, -shinR * 0.6), (shinR * 0.85, shinL * 0.24, shinR * 0.75))  # panturrilha
+        fw = shinR * 1.6
+        Sh.ell((0, -shinL + 0.04, 0.04), (fw, 0.035, fw * 1.7))  # o pé comprido
+        toes = []
+        for i in range(3):
+            a = (i - 1) * 0.35
+            base = (math.sin(a) * fw * 0.7, -shinL + 0.03, 0.04 + fw * 1.4)
+            tip = (math.sin(a) * fw * 1.1, -shinL + 0.02, 0.04 + fw * 2.3)
+            Sh.chain([base, tip], [fw * 0.38, fw * 0.3], step=0.5)
+            toes.append(tip)
+        fs = limb_fibers((0, 0.0, 0), (0, -shinL + 0.08, 0), 6, -0.9 * s, AMP)
+        Sh.build(knee, M['flesh'], 900, res=0.009 if strong else 0.0065, disp=fs, color=flesh_color(fs, AMP))
+        for i, tip in enumerate(toes):
+            add(knee, f'toeClaw{i}', rod([tip, (tip[0] * 1.1, -shinL + 0.015, tip[2] + fw * 0.4), (tip[0] * 1.15, -shinL + 0.002, tip[2] + fw * 0.8)], [fw * 0.25, fw * 0.16, 0.0015], seg=5), M['claw'])
+
+    white_vcols()
     finish()
     out = sys.argv[sys.argv.index('--') + 1]
     export_glb(out)

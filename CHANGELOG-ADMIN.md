@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.0.0 — Cada Um com o Seu
+
+- Versão: `VERSION` 3.53.0 → **4.0.0** (package.json/lock junto). Data: 2026-10-31.
+- **Por que 4.0.0:** pela regra do README (grandes marcos = `x.0.0`). A v3.0.0 foi o Despertar para 13 personagens de uma vez; esta fecha o mesmo tamanho de marco — os 13 lutadores que usavam o especial genérico ganharam especial próprio e o elenco inteiro passa a ter um especial com identidade. A linha 3.x teve 54 versões (3.0.0 → 3.53.0, de 2026-10-04 a 2026-10-31).
+- **Pedidos do dono:** "resolver o TODO por completo antes do modo Outro Lado"; Amalia sem especial e a maça do Gaius diferente da série; a Chuva de Flechas com área e tempo de reação; "e os especiais que faltam?" (feitos na ordem pedida: Balu e Lírio, Celestine e Gaius, Veríssimo e Ferreiro, Xande, Aguiar e Cristopher, Dalmo, Jae e Juan).
+- **Testado:** os 12 especiais novos sem erro (dano contra o Balu: Balu 231, Lírio 237, Celestine 164, Gaius 200, Veríssimo 225, Ferreiro 224, Xande 160, Aguiar 210, Cristopher 216, Dalmo 196, Jae 204, Juan 201 — Celestine e Xande menores pelo ciclo de elementos); estados depois da cena conferidos (ANULADO, ANALISADO, CONSUMIDO, ATORDOADO, CEGO, sangramento); `npm test` 54/0, `check` sem ✖, build ok.
+- **Pendente (TODO):** animações de movimento, revisão de cânone §3.2–3.23/3.28/3.30, personagens novos, remodelos (Portador do Trono, Magistrada, Amigo), arena do Anfitrião, Carniçal jogável; depois o modo Outro Lado (PvE).
+
 ## v3.53.0 — A Flecha
 
 - Versão: `VERSION` 3.52.0 → **3.53.0** (package.json/lock junto). Data: 2026-10-31.

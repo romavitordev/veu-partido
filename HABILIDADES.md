@@ -384,7 +384,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Inteligência Estratégica** — △ + ○ / Y + B · custo 25 · cooldown 18 s
-  "Ordem!" — analisa o inimigo: por 7 s cada golpe físico que acerta ganha um corte extra.
+  "Ordem!" — analisa o inimigo e dá o comando: por 7 s cada golpe físico que acerta ganha um corte extra (vale para quem entrar em campo). Na batalha em equipe, as assistências ficam PRONTAS na hora — os aliados ouvem a ordem e ganham o ataque extra.
 - **Brecha na Guarda** — △ + □ / Y + X · custo 20 · cooldown 16 s · alcance 14 m
   Poder do Comandante de Campo (RPG): acha a brecha na guarda do adversário — por alguns segundos ele recebe mais dano.
 - **Em Seu Caminho** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
@@ -1361,14 +1361,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Principal (□ / X): Flecha Flamejante
 
-- Dano 28 · alcance 30 m · cooldown 1.8 s · custo 0
+- Dano 25 · alcance 30 m · cooldown 1 s · custo 0
 
 ### Habilidades
 
 - **Longa-Distância** — △ + □ / Y + X · custo 30 · cooldown 14 s
   Mira com calma e solta a flecha mais forte: a mais de 9 m o alvo NÃO consegue esquivar nem defender. A mira deixa ela parada um instante.
 - **Chuva de Flechas** — △ + ○ / Y + B · custo 25 · cooldown 13 s · dano 72 · alcance 20 m
-  Atira para o alto e as flechas flamejantes caem sobre a área do alvo — machucam enquanto ele ficar dentro do círculo.
+  Mira para o CÉU e solta a salva: um CÍRCULO marca a área em volta do alvo e, um instante depois, as flechas flamejantes caem nele — dá tempo de sair do círculo ou defender; quem ficar dentro apanha a cada flecha.
 - **Altruísmo** — △ + L2 / Y + LT · custo 0 · cooldown 20 s
   Sacrifica 6% da própria vida pelos aliados: na batalha em equipe as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche um pouco; sozinha, recupera 40 de sanidade e as esquivas.
 - **Flechas Caóticas** — R2 + × / RT + A · custo 20 · cooldown 10 s
@@ -1500,11 +1500,11 @@ Agarra pelo pescoço e envelhece o alvo até o fim do round (40% menos dano, 30%
 - **Dimensão das Sombras** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 6 s
   Some na própria sombra (a Onipresença da Máscara) e surge atrás do adversário, já podendo atacar.
 - **Olhar do Desespero** — △ + ○ / Y + B · custo 25 · cooldown 12 s · alcance 8 m
-  A Máscara encara o adversário: quem estiver à frente fica paralisado por um instante, vulnerável a combo.
+  A Máscara encara o adversário: quem estiver à frente fica paralisado por um instante, vulnerável a combo, e depois ESMORECIDO (bate mais fraco). Quem estiver DEFENDENDO resiste: não paralisa, só fica esmorecido.
 - **Controle Mental** — R2 + × / RT + A · custo 35 · cooldown 18 s · alcance 10 m
   A Magistrada fala pelo corpo do alvo: por alguns segundos ele anda sozinho até ela e não consegue defender.
 - **Dispersão de Dano** — △ + L2 / Y + LT · custo 30 · cooldown 22 s
-  A aura dourada se abre e os Sigilos giram em volta: por 5 s ela recebe METADE do dano e aguenta 1 golpe sem recuar.
+  A aura dourada se abre e os Sigilos giram em volta: por 5 s o lado dela recebe METADE do dano e aguenta 1 golpe sem recuar. Na batalha em equipe a aura fica com quem entrar em campo (no cânone, ela protege os aliados).
 - **Levitação** — R2 + △ / RT + Y · custo 30 · cooldown 15 s · dano 16 · alcance 18 m
   Ergue a mão livre e as pedras do chão flutuam em volta dela; depois voam uma a uma contra o alvo (dá para defender ou sair da frente).
 - **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
@@ -1600,13 +1600,13 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Comandar** — △ + ○ / Y + B · custo 35 · cooldown 18 s · alcance 11 m
-  Entra na mente do alvo: por alguns segundos ele anda sozinho até o Estrangeiro e não consegue se defender.
+  Entra na mente do alvo (um anel verde fecha no chão em volta dele antes — dá para esquivar): por alguns segundos ele anda sozinho até o Estrangeiro e não consegue se defender. Quem é controlado pode RESISTIR: cada botão apertado encurta o controle.
 - **Oblívio** — △ + □ / Y + X · custo 22 · cooldown 14 s
   O alvo ESQUECE que ele está ali (4 s): quase invisível e mais rápido. O primeiro ataque pega o alvo desprevenido. Tomar dano o revela.
 - **Aparição** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 7 s
   Some numa interferência de sinal e reaparece atrás do alvo, como nas abduções.
 - **Abdução** — R2 + △ / RT + Y · custo 25 · cooldown 14 s · dano 40 · alcance 14 m
-  Um círculo verde marca o chão debaixo do adversário: se ele não sair a tempo, a luz o ERGUE no ar e logo depois o crava de volta no chão. Pouco dano, mas abre para o combo.
+  O FEIXE DE LUZ verde desce do céu sobre o adversário e o segue devagar: se ele não sair a tempo, é ABDUZIDO — flutua girando no meio da luz, entre a interferência de sinal, e é cravado de volta no chão. Volta sem lembrar de nada: perde 15 de sanidade e fica DESORIENTADO (movimento invertido) por 1,8 s.
 - **Homens de Terno** — R2 + × / RT + A · custo 35 · cooldown 24 s
   Três DOPPELGANGERS (os Homens de Terno: Alheios de terno e chapéu, a cara rachada ao meio) aparecem numa interferência de sinal em volta do adversário por 10 s: dois ficam longe atirando o plasma verde do Fuzil Alheio e o terceiro chega perto e bate. "Somos Todos Um": quando um cai, os outros atiram mais rápido.
 - **Toque Sutil** — △ + L2 / Y + LT · custo 35 · cooldown 30 s · dano 40 · alcance 1.6 m
@@ -1651,14 +1651,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 - **Derreter** — △ + ○ / Y + B · custo 35 · cooldown 22 s · dano 44 · alcance 1.9 m
   Avança, AGARRA a cabeça da vítima e curva o capuz sobre o rosto dela: a tinta escorre direto na cara (dano em pulsos, sem defesa). Solta com o ROSTO DERRETENDO — dano contínuo, lentidão e mais fraco por alguns segundos. Curto alcance; dá para esquivar.
-- **Tentáculos que Prendem** — △ + □ / Y + X · custo 25 · cooldown 13 s · dano 32 · alcance 12 m
-  Aponta a garra e uma POÇA de tinta se abre debaixo do alvo (o aviso: dá para sair dela). Os tentáculos brotam, se enrolam em quem ficou em cima e o PRENDEM.
+- **Agarrão** — △ + □ / Y + X · custo 25 · cooldown 13 s · dano 24 · alcance 9 m
+  Os TENTÁCULOS saem de baixo do capuz, se enrolam no adversário à frente e o PUXAM até a criatura, preso um instante (a deixa para o Derreter). No FRENESI DE SANGUE, irritada, ela o ARREMESSA longe com força descomunal.
 - **O Sino** — R2 + △ / RT + Y · custo 25 · cooldown 16 s · dano 14 · alcance 6 m
-  O SINO toca dentro da criatura: três badaladas, cada uma uma onda de som em volta (qualquer direção) que machuca um pouco. Quem ainda estiver perto na ÚLTIMA fica paralisado e VULNERÁVEL (leva mais dano) por alguns segundos.
+  O SINO toca dentro da criatura: três badaladas, cada uma uma onda de som em volta (qualquer direção) que machuca um pouco. Quem ainda estiver perto na ÚLTIMA fica paralisado e VULNERÁVEL (leva mais dano) por alguns segundos. No FRENESI DE SANGUE o sino soa distorcido e a vítima MORDE A SI MESMA (dano e sangramento).
 - **Bichos da Ilha** — R2 + × / RT + A · custo 30 · cooldown 22 s
   O Sino chama os animais da ilha INFECTADOS PELA TINTA: saem de poças em volta do adversário e atacam por 12 s — um JAVALI (presas e investida que derruba) e/ou CÃES SELVAGENS (mordidas e o salto). Cadáveres de carne derretida: morrem e viram poça.
-- **Dissolver** — △ + L2 / Y + LT · custo 30 · cooldown 24 s · dano 24
-  DERRETE numa poça da própria tinta (intocável enquanto isso), absorve e recupera vida, e se refaz de uma vez: a tinta espirra em volta e machuca quem estiver em cima da poça.
+- **Dissolver** — △ + L2 / Y + LT · custo 30 · cooldown 20 s · dano 60 · alcance 2 m
+  AGARRA quem estiver colado à frente e o ABSORVE: a tinta cobre a vítima, que afunda nela, e cada pulso RECUPERA A MESMA VIDA que tirou. Curto alcance; errou, não acontece nada.
 
 ### Especial: Todo Mundo Vai Morrer
 

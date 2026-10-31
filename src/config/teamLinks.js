@@ -19,6 +19,9 @@ export const MASCARADOS = ['dalmo', 'aguiar', 'jae', 'kemi', 'labirinto', 'juan'
 // existem são ignorados). A Equipe Abutres é a equipe de Calamidade (sem o Kaiser) — outra ligação, com as versões de
 // Calamidade, quando elas estiverem no jogo.
 export const FORCA_D = ['arthur', 'kaiser', 'joui', 'thiago', 'liz'];
+// ORDO CALAMITAS (Calamidade, 67 d.C.): os guerreiros dos jogos de Amphitruo — Celestine, Gaius e Amalia hoje; Faustus,
+// Marius, Remus e Cascadia entram quando estiverem no elenco
+export const ORDO_CALAMITAS = ['celestine', 'gaius', 'amalia', 'faustus', 'marius', 'remus', 'cascadia'];
 
 export const TEAM_LINKS = {
   // Grupo dos Mascarados (3 ou mais na equipe): os seis cercam o alvo
@@ -41,6 +44,28 @@ export const TEAM_LINKS = {
     group: FORCA_D,
     min: 3,
     color: 0x4a90e2,
+  },
+  // Ordo Calamitas: vale com 3 da equipe; cada um com o golpe próprio (a corrente da Celestine, o gládio do Gaius, a
+  // Flecha Flamejante da Amalia)
+  ordo_calamitas: {
+    id: 'ordo_calamitas',
+    kind: 'group',
+    name: 'ORDO CALAMITAS',
+    banner: 'Ordo Calamitas!',
+    group: ORDO_CALAMITAS,
+    min: 3,
+    color: 0x3ae8b8,
+  },
+  // Dupla Arnaldo + Veríssimo (os melhores amigos da Ordo Realitas, a MESMA espada da fita vermelha): o Veríssimo abre a
+  // guarda com a estocada do veterano e o Arnaldo fecha com o corte teatral
+  arnaldo_verissimo: {
+    id: 'arnaldo_verissimo',
+    kind: 'duo',
+    name: 'A ESPADA DA FITA VERMELHA',
+    banner: 'A Espada da Fita Vermelha!',
+    members: ['verissimo', 'arnaldo'],
+    order: ['verissimo', 'arnaldo'],
+    color: 0xd01c30,
   },
   // Dupla Cristopher + Kaiser (pai e filho: o dublê segura, o filho atira)
   cristopher_kaiser: {

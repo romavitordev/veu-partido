@@ -43,8 +43,9 @@ export function buildSphinx() {
   return b;
 }
 
-// ANIMAIS INFECTADOS PELA TINTA (invocação do Amigo Imaginário, tools/blender/npc_bicho_lib.py): javali e cão
-// selvagem de quatro patas. Juntas: body, torso, head, jaw, legs[FL, FR, BL, BR] (+ joelho) e tail.
+// ANIMAIS INFECTADOS PELA TINTA (invocação do Amigo Imaginário, tools/blender/npc_bicho_lib.py — escultura de
+// npc_sculpt_lib.py pelas miniaturas de O Segredo na Ilha: pelo eriçado, veias saltadas, flanco aberto com as costelas):
+// javali e cão selvagem de quatro patas. Juntas: body, torso, head, jaw, legs[FL, FR, BL, BR] (+ joelho) e tail.
 export function buildInkBeast(kind) {
   const m = buildNpcModel(kind === 'javali' ? 'javali_tinta' : 'cao_tinta', { outline: 0.012, noOutline: ['vein', 'tooth', 'ink', 'goo', 'glow', 'claw', 'bone'] });
   if (m) {

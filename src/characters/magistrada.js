@@ -119,7 +119,7 @@ export default {
       name: 'Olhar do Desespero',
       input: 'carga+physical', // △ + ○
       type: 'fearGaze',
-      description: 'A Máscara encara o adversário: quem estiver à frente fica paralisado por um instante, vulnerável a combo.',
+      description: 'A Máscara encara o adversário: quem estiver à frente fica paralisado por um instante, vulnerável a combo, e depois ESMORECIDO (bate mais fraco). Quem estiver DEFENDENDO resiste: não paralisa, só fica esmorecido.',
       energyCost: 25,
       cooldown: 12,
       range: 8,
@@ -127,6 +127,9 @@ export default {
       windup: 0.4,
       recovery: 0.3,
       stun: 0.9,
+      // cânone (wiki, habilidades das Máscaras): "paralisado momentaneamente. Caso o alvo consiga resistir, ele fica esmorecido"
+      wither: { duration: 4, mult: 0.8 },
+      resist: true,
       color: GOLD,
     },
     {
@@ -151,7 +154,7 @@ export default {
       name: 'Dispersão de Dano',
       input: 'carga+dodge', // △ + L2
       type: 'heavyProtection',
-      description: 'A aura dourada se abre e os Sigilos giram em volta: por 5 s ela recebe METADE do dano e aguenta 1 golpe sem recuar.',
+      description: 'A aura dourada se abre e os Sigilos giram em volta: por 5 s o lado dela recebe METADE do dano e aguenta 1 golpe sem recuar. Na batalha em equipe a aura fica com quem entrar em campo (no cânone, ela protege os aliados).',
       energyCost: 30,
       cooldown: 22,
       duration: 5,

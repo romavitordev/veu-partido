@@ -33,6 +33,7 @@ export function addCharClips(CLIPS, k) {
     sL: [-1.5, -0.2, 0], eL: [-0.08, 0, 0], sR: [-1.35, 0.85, 0], eR: [-2.1, 0, 0],
     lL: [-0.2, 0, 0.12], kL: [0.2, 0, 0], lR: [0.18, 0, -0.1], kR: [0.15, 0, 0],
   };
+  const ARCO_UP = { ...ARCO, sp: [-0.28, -0.25, 0], hd: [-0.45, 0.6, 0], sL: [-2.6, -0.2, 0], sR: [-2.45, 0.85, 0] };
   const BOW_REST = { h: 0, hip: [0, -0.2, 0], sp: [0.03, -0.1, 0], hd: [0, 0.2, 0], sL: [-0.35, 0, 0.2], eL: [-0.4, 0, 0], sR: [0.1, 0, -0.2], eR: [-0.3, 0, 0], lL: [-0.06, 0, 0.06], kL: [0.06, 0, 0], lR: [0.06, 0, -0.06], kR: [0.06, 0, 0] };
   Object.assign(CLIPS, {
     bow_idle: { dur: 2.4, loop: true, keys: [k(0, BOW_REST), k(0.5, { ...BOW_REST, h: -0.012, sp: [0.05, -0.12, 0], sL: [-0.4, 0, 0.22] }), k(1, BOW_REST)] },
@@ -42,6 +43,13 @@ export function addCharClips(CLIPS, k) {
       k(0.55, ARCO),
       k(0.7, { ...ARCO, sR: [-1.1, 1.2, 0], eR: [-1.5, 0, 0], sL: [-1.42, -0.2, 0] }),
       k(1, { ...ARCO, sR: [-0.9, 1.0, 0], eR: [-1.2, 0, 0] }),
+    ] },
+    // CHUVA DE FLECHAS: o mesmo tiro, mas mirando para o CÉU (os braços sobem ~60°, o tronco e a cabeça inclinam para trás)
+    bow_shot_up: { dur: 0.7, keys: [
+      k(0, { ...ARCO_UP, sR: [-2.3, 0.4, 0], eR: [-1.3, 0, 0] }),
+      k(0.6, ARCO_UP),
+      k(0.72, { ...ARCO_UP, sR: [-2.0, 1.2, 0], eR: [-1.4, 0, 0], sL: [-2.55, -0.2, 0] }),
+      k(1, { ...ARCO_UP, sR: [-1.8, 1.0, 0], eR: [-1.1, 0, 0] }),
     ] },
     // mira longa (Longa-Distância): segura a corda puxada
     bow_aim: { dur: 1.0, keys: [k(0, { ...ARCO, sR: [-1.4, 0.4, 0], eR: [-1.4, 0, 0] }), k(0.4, ARCO), k(1, { ...ARCO, sp: [0.02, -0.28, 0] })] },
@@ -276,7 +284,7 @@ export function addCharClips(CLIPS, k) {
       k(0.55, { ...AI, h: -0.1, sp: [0.8, 0.35, 0], hd: [0.3, -0.2, 0], sR: [-1.55, 0.1, -0.1], eR: [0, 0, 0], sL: [-0.2, 0, 0.6], eL: [-0.3, 0, 0] }),
       k(1, { ...AI, sp: [0.75, 0.3, 0], hd: [0.3, -0.2, 0], sR: [-1.5, 0.1, -0.1], eR: [0, 0, 0] }),
     ] },
-    // aponta a garra (Tentáculos que Prendem)
+    // aponta a garra (Agarrão)
     ai_point: { dur: 0.5, keys: [
       k(0, AI),
       k(0.5, { ...AI, sp: [0.6, 0.35, 0], hd: [0.15, -0.3, 0], sR: [-1.6, 0.1, -0.1], eR: [-0.15, 0, 0], sL: [-0.3, 0, 0.45], eL: [-0.5, 0, 0] }),

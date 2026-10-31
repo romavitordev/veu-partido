@@ -114,21 +114,22 @@ export default {
       color: INK,
     },
     {
-      // os tentáculos brotam de uma poça de tinta debaixo do alvo e o prendem
+      // AGARRÃO (wiki): os tentáculos puxam a vítima até a criatura; irritada (Frenesi), arremessa com força descomunal
       id: 'tentaculosPrendem',
-      name: 'Tentáculos que Prendem',
+      name: 'Agarrão',
       input: 'carga+ranged', // △ → □
       type: 'inkTentacles',
-      description: 'Aponta a garra e uma POÇA de tinta se abre debaixo do alvo (o aviso: dá para sair dela). Os tentáculos brotam, se enrolam em quem ficou em cima e o PRENDEM.',
+      description: 'Os TENTÁCULOS saem de baixo do capuz, se enrolam no adversário à frente e o PUXAM até a criatura, preso um instante (a deixa para o Derreter). No FRENESI DE SANGUE, irritada, ela o ARREMESSA longe com força descomunal.',
       energyCost: 25,
       cooldown: 13,
-      windup: 0.55,
-      range: 12,
-      arc: 60,
-      radius: 1.3,
-      hold: 1.3,
+      windup: 0.4,
+      range: 9,
+      arc: 50,
+      pull: 0.45,
+      hold: 0.6,
       count: 4,
-      damage: 32,
+      damage: 24,
+      throwDamage: 40,
       color: DARK,
     },
     {
@@ -137,7 +138,7 @@ export default {
       name: 'O Sino',
       input: 'block+carga', // R2 + △
       type: 'bellToll',
-      description: 'O SINO toca dentro da criatura: três badaladas, cada uma uma onda de som em volta (qualquer direção) que machuca um pouco. Quem ainda estiver perto na ÚLTIMA fica paralisado e VULNERÁVEL (leva mais dano) por alguns segundos.',
+      description: 'O SINO toca dentro da criatura: três badaladas, cada uma uma onda de som em volta (qualquer direção) que machuca um pouco. Quem ainda estiver perto na ÚLTIMA fica paralisado e VULNERÁVEL (leva mais dano) por alguns segundos. No FRENESI DE SANGUE o sino soa distorcido e a vítima MORDE A SI MESMA (dano e sangramento).',
       energyCost: 25,
       cooldown: 16,
       range: 6,
@@ -147,6 +148,7 @@ export default {
       recovery: 0.35,
       tollDamage: 6,
       damage: 14,
+      frenzyBite: 16, // Frenesi de Sangue: quem ouve morde a si mesmo
       stun: 0.9,
       takenMult: 1.2,
       vulnTime: 4,
@@ -166,18 +168,19 @@ export default {
       packs: [['javali'], ['cao', 'cao'], ['javali', 'cao'], ['cao', 'cao', 'cao']],
     },
     {
-      // DISSOLVER: vira uma poça de tinta, absorve e se refaz
+      // DISSOLVER (wiki): pega o corpo da vítima e o absorve — recupera tanta vida quanto o dano que causou
       id: 'dissolver',
       name: 'Dissolver',
       input: 'carga+dodge', // △ + L2
       type: 'inkDissolve',
-      description: 'DERRETE numa poça da própria tinta (intocável enquanto isso), absorve e recupera vida, e se refaz de uma vez: a tinta espirra em volta e machuca quem estiver em cima da poça.',
+      description: 'AGARRA quem estiver colado à frente e o ABSORVE: a tinta cobre a vítima, que afunda nela, e cada pulso RECUPERA A MESMA VIDA que tirou. Curto alcance; errou, não acontece nada.',
       energyCost: 30,
-      cooldown: 24,
-      time: 1.6,
-      heal: 90,
-      damage: 24,
-      radius: 2.2,
+      cooldown: 20,
+      windup: 0.3,
+      hold: 1.2,
+      recovery: 0.3,
+      range: 2.0,
+      damage: 60,
       color: INK,
     },
   ],

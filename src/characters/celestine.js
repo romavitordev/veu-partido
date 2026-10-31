@@ -172,6 +172,8 @@ export default {
 
   // DUELO FINAL: o duelo contra a Amalia — a corrente prende, ela puxa e as machadinhas não param até o último talho
   special: {
+    // DUELO FINAL: a machadinha voa na corrente, prende e puxa o alvo; as duas correntes ficam presas nele durante a
+    // cena, ela corta de frente, some para as COSTAS ("Nada Pessoal" — a traição da ficha) e fecha girando as correntes
     name: 'Duelo Final',
     banner: 'Nada Pessoal',
     type: 'cinematicCombo',
@@ -180,17 +182,20 @@ export default {
     color: BLUE,
     sound: 'specialStart',
     prepare: { anim: 'charge_dual', time: 0.3, fx: 'bladeGlow' },
-    dash: { speed: 26, maxTime: 0.45, contact: 1.8 },
+    approach: 'chain',
+    chain: { speed: 55, range: 15 },
+    tether: { at: 0.05, hands: 'both' },
     hits: [
-      { t: 0.7, anim: 'dual_r', dur: 0.26, share: 0.12, fx: { kind: 'slash', tilt: 0.1 }, sound: 'axeHit' },
-      { t: 0.92, anim: 'dual_l', dur: 0.26, share: 0.12, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'axeHit' },
-      { t: 1.18, anim: 'dual_cross', dur: 0.36, share: 0.18, fx: { kind: 'cross' }, sound: 'axeHit' },
-      { t: 1.55, anim: 'dual_spin', dur: 0.5, share: 0.2, fx: { kind: 'slash', wide: true }, sound: 'blade' },
-      { t: 2.1, anim: 'chain_sweep', dur: 0.55, share: 0.38, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true },
+      { t: 0.45, anim: 'dual_r', dur: 0.26, share: 0.12, fx: { kind: 'slash', tilt: 0.1 }, sound: 'axeHit' },
+      { t: 0.7, anim: 'dual_l', dur: 0.26, share: 0.12, fx: { kind: 'slash', tilt: -0.2, flip: true }, sound: 'axeHit' },
+      { t: 1.1, anim: 'dual_cross', dur: 0.4, share: 0.26, fx: { kind: 'cross' }, sound: 'axeHit', behind: true, call: 'NADA PESSOAL.', push: 0.05 },
+      { t: 1.7, anim: 'dual_spin', dur: 0.5, share: 0.18, fx: { kind: 'slash', wide: true, chain: 'both' }, sound: 'blade' },
+      { t: 2.25, anim: 'chain_sweep', dur: 0.55, share: 0.32, fx: { kind: 'cross', big: true, chain: 'both' }, sound: 'slashFinal', final: true },
     ],
     bannerAt: 0.15,
-    length: 2.9,
+    length: 3.0,
   },
+
 
   // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): veste a MÁSCARA DO DESESPERO e vira A MAGISTRADA
   awakening: {

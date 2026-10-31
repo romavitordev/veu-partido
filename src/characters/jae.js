@@ -139,6 +139,8 @@ export const JAE_KIT = {
   // A MARCA DO X: sussurra, some, surge colada no alvo, abre o corpo em cortes rápidos e termina riscando um X enorme —
   // como no primeiro assassinato dela, quando o X da opressão do pai virou a marca da sua libertação (wiki)
   special: {
+    // A MARCA DO X: "Shhh..." — some na sombra e surge nas COSTAS do alvo (Assassinato Furtivo), corta e fecha com o X
+    // que fica marcado no chão; o Punhal X deixa o alvo CEGO e sangrando
     name: 'A Marca do X',
     banner: 'A Marca do X',
     type: 'cinematicCombo',
@@ -146,18 +148,20 @@ export const JAE_KIT = {
     cooldown: 14,
     color: RED,
     sound: 'specialStart',
-    prepare: { anim: 'shh', time: 0.4 },
+    prepare: { anim: 'shh', time: 0.5 },
     dash: { speed: 28, maxTime: 0.4, contact: 1.8 },
     hits: [
-      { t: 0.6, anim: 'knife_1', dur: 0.22, share: 0.12, fx: { kind: 'slash', tilt: 0.05 }, sound: 'bladeHit' },
-      { t: 0.82, anim: 'knife_2', dur: 0.22, share: 0.12, fx: { kind: 'slash', flip: true }, sound: 'bladeHit' },
-      { t: 1.04, anim: 'knife_3', dur: 0.24, share: 0.12, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.3, anim: 'thrust', dur: 0.26, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.8, anim: 'dual_cross', dur: 0.44, share: 0.5, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true, bleed: { dps: 5, duration: 3 } },
+      { t: 0.25, noHit: true, anim: 'vanish', dur: 0.4, vanish: 0.55 },
+      { t: 0.85, anim: 'knife_1', dur: 0.22, share: 0.12, fx: { kind: 'slash', tilt: 0.05 }, sound: 'bladeHit', behind: true, call: 'DESPREVENIDO', push: 0.05 },
+      { t: 1.1, anim: 'knife_2', dur: 0.22, share: 0.12, fx: { kind: 'slash', flip: true }, sound: 'bladeHit', push: 0.05 },
+      { t: 1.35, anim: 'knife_3', dur: 0.24, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit', push: 0.05 },
+      { t: 1.85, anim: 'dual_cross', dur: 0.44, share: 0.62, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true, bleed: { dps: 5, duration: 3 }, xMark: 1.6 },
     ],
+    endBlind: 2,
     bannerAt: 0.2,
-    length: 2.8,
+    length: 2.9,
   },
+
 
   // Jae matava porque podia: golpe em quem está desprevenido, cego, surdo ou de costas entra muito mais forte
   passives: [

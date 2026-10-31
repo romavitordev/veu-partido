@@ -1,6 +1,6 @@
 # TODO — ARENA PARANORMAL
 
-**Versão de referência atual:** v3.53.0 (revisado em 2026-10-31: A Flecha — Amalia na Ordo Calamitas, os Homens de Terno e o Incubar do Estrangeiro, Magistrada, Amigo e Portador do Trono pelas artes, a Esfinge agachada, o acabamento dos modelos antigos e a CPU atiradora)
+**Versão de referência atual:** v4.0.0 (revisado em 2026-10-31: Cada Um com o Seu — especial próprio para os 13 que usavam o genérico, Amigo pela wiki, vínculos Ordo Calamitas e Arnaldo + Veríssimo, a maça do Gaius e a CPU atiradora)
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -9,7 +9,7 @@
 
 # PRÓXIMA GRANDE ATUALIZAÇÃO — LUTA + MODO PvE (planejamento de 2026-10-18)
 
-**Estado em 2026-10-31 (v3.53.0):**
+**Estado em 2026-10-31 (v4.0.0):**
 - [~] 2.2 Modelos antigos: Xande e Aguiar (v3.33.0), Fantasma, Kemi e Gal Sal + as lâminas Ereškigal (v3.34.0), Kaiser
   (v3.38.0), Balu e Lírio (v3.40.0), Arthur e Joui (v3.41.0), Arnaldo, Anfitrião, Veríssimo, Kian e O Diabo (2026-10-26)
   refeitos pelas artes oficiais; faltam os outros antigos
@@ -627,28 +627,48 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Anfitrião com animações e especial próprios, sem ser apenas espada com efeitos de Energia.
   - Testar transição, efeitos de atração, colisão e retorno de round.
 
-- [ ] **3.24 Senhor Veríssimo (`src/characters/verissimo.js`):**
+- [x] **3.24 Senhor Veríssimo (`src/characters/verissimo.js`):** feito (2026-10-31), conferido com a wiki "Senhor
+  Veríssimo". Batem com o cânone: a espada do Arnaldo (esgrima de veterano, a estocada e a guarda — diferente da
+  teatralidade do Arnaldo), a escopeta (Sinais do Outro Lado), a Jaqueta de Veríssimo (item amaldiçoado de proteção) e
+  o Segredo de Veríssimo (o golpe fatal o deixa com 1 de vida; contra o Kian, a cada round — "impossibilita que Kian o
+  mate"). INTELIGÊNCIA ESTRATÉGICA: no cânone ele dá a ORDEM aos aliados, que ganham um ataque extra — agora, além do
+  corte extra (que passa para quem entrar em campo), na batalha em equipe as assistências ficam prontas na hora
+  (testado: recarga 15 → 0). Sem loop: a ordem tem 18 s de recarga, o mesmo de uma assistência.
   - Diferenciar a esgrima disciplinada de Veríssimo da teatralidade de Arnaldo, apesar da mesma espada.
   - Inteligência Estratégica deve refletir comando e abertura tática.
   - Conferir Segredo de Veríssimo e Olhos Sempre Abertos com a fonte.
   - Limitar liderança para evitar loops de ações extras com assistências/CPU.
   - Testar interceptação, proteção de aliado e combate solo.
 
-- [ ] **3.25 O Estrangeiro (`src/characters/estrangeiro.js`):**
+- [x] **3.25 O Estrangeiro (`src/characters/estrangeiro.js`):** feito (2026-10-31). Transformação pelo cânone (Incubar:
+  a larva no adversário), os Homens de Terno (Doppelgangers), a Abdução com o feixe que segue, a vítima girando no ar e o
+  ESQUECIDO. COMANDAR ganhou contrajogo: um anel verde fecha em volta do alvo na preparação (dá para esquivar) e quem é
+  controlado RESISTE apertando botões (0,12 s por botão: 2,5 s parado → ~1,4 s resistindo). Testado: abdução nas 4
+  bordas do cenário sem sair dos limites (45 de dano), e o Estrangeiro nocauteado no meio da abdução solta a vítima no
+  chão e o round seguinte começa normal.
   - Confirmar poderes próprios versus adaptações; justificar presença sem inventar posse de Relíquia se não houver fonte.
   - Diferenciar Comandar (controle), Oblívio (apagamento), Aparição (deslocamento) e Abdução (transporte).
   - Confirmar visual da máscara, fios, capa e proporções.
   - Fornecer contrajogo ao controle mental (telegraph, duração, escape).
   - Testar abdução em bordas, câmera, interrupção e fim de round.
 
-- [ ] **3.26 Amigo Imaginário (`src/characters/amigo.js`):**
+- [x] **3.26 Amigo Imaginário (`src/characters/amigo.js`):** feito (2026-10-31) — ver "O AMIGO IMAGINÁRIO: melhorar
+  os PODERES e o CÂNONE": Agarrão (puxa; no Frenesi arremessa), Dissolver (absorve e cura o dano causado), o Sino no
+  Frenesi (a vítima morde a si mesma). Tentáculo físico, tinta, aprisionamento, dissolução e Sino agora têm papéis
+  distintos.
   - Distinguir tentáculo físico, tinta/derreter, aprisionamento, dissolução e efeitos do Sino.
   - Confirmar vínculo com Barnabé, Tipora e o sino.
   - O especial Todo Mundo Vai Morrer deve representar o horror/escala da criatura.
   - Conferir animação irregular/assimétrica do corpo e tentáculos sem atravessar o chão.
   - Testar agarrão, dissolução, colisão e leitura em cenários escuros.
 
-- [ ] **3.27 A Magistrada (`src/characters/magistrada.js`):**
+- [x] **3.27 A Magistrada (`src/characters/magistrada.js`):** feito (2026-10-31), conferido com a wiki "A Magistrada".
+  Máscaras (Chamar as Máscaras), Dimensão das Sombras/Onipresença (teleporte), Mão das Sombras (golpe da bengala),
+  Controle Mental (anda até ela, sem defesa; o "resistir apertando botões" ficou só no Comandar do Estrangeiro), Levitação (Conjuração Verdadeira), Prisão das Sombras (especial) e Reescrever a Realidade (a "forma"
+  Saber Tudo é Perder Tudo já tinha saído por ser invenção) batem com o cânone. Ajustes: OLHAR DO DESESPERO agora
+  segue a wiki — paralisa e deixa ESMORECIDO (−20% por 4 s); quem está DEFENDENDO resiste e só fica esmorecido
+  (testado). DISPERSÃO DE DANO: no cânone protege os ALIADOS — na batalha em equipe a aura (metade do dano) fica com
+  quem entrar em campo, porque os buffs passam na troca; descrição corrigida.
   - Confirmar uso das máscaras e controle coerente.
   - Diferenciar Dimensão das Sombras, Mão das Sombras e controle mental.
   - Verificar Dispersão de Dano (quem recebe, limite e contrajogo).
@@ -1578,7 +1598,13 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         4,5 m e prioriza o que trava (Dystopia); atirador × resto a 7,5 m / 3,5 m; quem enfrenta um atirador PRESSIONA
         (encurta ziguezagueando, entra de dash bem mais vezes). Validado em 10 confrontos (5 sorteados do elenco), sem erro.
       - [~] (2026-10-31: o atirador agora LÊ A INVESTIDA — a distância caindo mais de 7 m/s a menos de 5,5 m — e esquiva
-        para o LADO no tempo certo; falta usar o cenário/pilares) **Ainda a melhorar:** atirador × perseguidor rápido quando OS DOIS são CPU (Arthur × Raziel, Kaiser × Jae ficam
+        para o LADO no tempo certo; e FOGE PELO CENÁRIO — `fleeDirection` testa 16 direções e evita parede, canto e
+        obstáculo à frente e, com o perseguidor perto, passa ATRÁS DOS PILARES. Teste CPU × CPU (normal, 3 lutas cada):
+        a distância média subiu de ~2 m para 5–6 m; Kaiser 3×0 Jae, Amalia 3×0 Jae, Amalia 2×1 Raziel, Kemi 1×1 Jae.
+        Falta: Arthur × Raziel (0×3, o Raziel fecha rápido demais — a 4 m, perto 45% do tempo))
+        [x] 2026-10-31: ATIRADOR ALCANÇADO — colado no perseguidor, a CPU abre espaço com o golpe que EMPURRA (o de trás,
+        com invencibilidade, se o outro está atacando; senão o chute de frente) e volta a fugir/atirar. CPU × CPU (normal,
+        3 lutas cada): Arthur × Raziel 1×1, 2×1, 0×2 (antes 0×3); Kaiser × Jae 1×1, 1×1, 2×0. **Ainda a melhorar:** atirador × perseguidor rápido quando OS DOIS são CPU (Arthur × Raziel, Kaiser × Jae ficam
         ~2 m): o perseguidor, mais rápido e agora também pressionando, vence a corrida pela distância. Próximo passo: o
         atirador ler a investida do outro (o telegraph) e esquivar no tempo certo, e usar o cenário (pilares) para fugir.
       - CPU no BOTÃO DO ANFITRIÃO: larga tudo, corre até o botão e aperta primeiro (testado no Fácil e no Difícil).
@@ -1665,7 +1691,13 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         sozinha, sanidade e esquivas), Flechas Caóticas, a passiva CAÓTICA (a cada 2 flechas que acertam, cura), o especial
         "Não Perde a Cabeça!" e a Transformação Memória Revivida. Falas (voz própria, cenas com Celestine, Gaius e Joui, e
         vitórias contra o elenco inteiro), agarrão, retrato da página Sobre, CPU como atiradora.
-      - [ ] **ORDO CALAMITAS**: Faustus, Marius, Remus (Marcados), Cascadia, Cornelius, Karise, Marcellus (membros)...
+        2026-10-31: CHUVA DE FLECHAS pelo pedido do dono — mira para o CÉU (clipe `bow_shot_up`), a ÁREA fica marcada no
+        chão em volta do alvo (círculo pulsando) por 0,9 s antes da queda: sair do círculo escapa (0 de dano), defender
+        segura (24 em vez de 62).
+        2026-10-31: a FLECHA mais ligeira (pedido do dono, "atira meio devagar"): preparo 0,34 → 0,2 s, recuperação
+        0,24 → 0,16 s, recarga 1,8 → 1,0 s, voo 38 → 46 m/s, dano 28 → 25; Flechas Caóticas com preparo 0,16 s e 0,1 s
+        entre as flechas.
+      - [ ] **ORDO CALAMITAS**: Faustus, Marius, Remus (Marcados) e Cascadia (Cornelius, Karise e Marcellus ficam de fora — decisão do dono, 2026-10-31)
       - [x] **O MODELO DAS MÁSCARAS** (feito em 2026-10-27: modelo próprio `tools/blender/char_seita.py` → `public/models/seita.glb` — túnica branca longa com as regiões pretas, capuz, pelerine, forca no pescoço, corda na cintura e os Símbolos tatuados nos antebraços, como na wiki; as máscaras em 3D, uma por membro: Nathaniel, riscada de vermelho, preta e a do sorriso — `weapons.js seitaMask`) que a Magistrada chama (os membros da Seita das Máscaras) — refazer na técnica atual
         (pedido de 2026-10-27).
 - [x] **SKIN do ANFITRIÃO do ARNALDO ≠ ANFITRIÃO base** — entregue na v3.52.0: o Anfitrião selecionável das Relíquias tem o
@@ -1674,10 +1706,91 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       habilidade canônica e agora faz o que a wiki diz: a LARVA vai na cabeça do adversário (exposto: +12% de dano
       recebido; a sanidade não volta e escoa 3/s); zerada, ECLODE (90 de dano e um Doppelganger sai dela) e outra larva
       entra 8 s depois. Corrigido junto: `energyRegenMult: 0` era ignorado (como o `takenMult` 0).
+- [x] **O ESTRANGEIRO: melhorar a ABDUÇÃO** (pedido e entregue em 2026-10-31). Agora (`abducao_luz`, R2 + △, tipo
+      `abductBeam`): o FEIXE DE LUZ verde desce do céu (cone largo, miolo forte girando, o disco aceso lá em cima e as
+      partículas subindo) e SEGUE o alvo devagar no aviso (`follow` 2,2 m/s: correndo, ele escapa); quem é pego FLUTUA
+      GIRANDO no meio da luz por 1 s (`hover` 2,6 m) entre os estalos da interferência de sinal (som novo
+      `signalStatic`), é cravado no chão e volta com o ESQUECIMENTO (`forget`: −15 de sanidade e DESORIENTADO — o
+      movimento invertido — por 1,8 s, "O QUE ACONTECEU?"). O Suspender do Kian (`sigils`) continua como era.
 - [x] **O Portador do Trono** (`char_diabo.py`, 2026-10-31) revisto pela "Arte Completa Cinematic O Portador do Trono" e a
       wiki: os CHIFRES pelo cânone (o par anelado subindo + o par em FOICE descendo; saiu a galhada clara), a COROA DE
       ESPINHOS dourada em leque atrás da cabeça, as ASAS DE BRAÇOS mais densas e ramificadas, os músculos do tronco, os
       braços mais finos e as pernas de BODE com o jarrete bem para trás e o pelo em relevo.
+- [x] **ESPECIAIS PRÓPRIOS** (pedido de 2026-10-31: "Amalia ainda não tem um especial próprio"). Hoje 17 usam o
+      especial genérico `cinematicCombo` (avança e dá uma sequência de golpes, às vezes com um extra): Aguiar, Amalia,
+      Balu, Celestine, Cristopher, Dalmo, Ferreiro, Gaius, Gal Sal, Guizo, Jae, Juan, Lírio, Magistrada, Raziel,
+      Veríssimo e Xande. Cada um precisa de um especial com a identidade dele (pelo cânone), como os que já têm tipo
+      próprio (Ato Final do Arnaldo, Supernova da Erin, Inexistir do Kian...). Começar pela AMALIA (arqueira: o especial
+      de corpo a corpo não combina com ela).
+      [~] 2026-10-31: AMALIA feita — "Não Perde a Cabeça!" (`specials/headshot.js`): puxa o arco com a aura ciano (close
+      dos olhos acesos), a chuva de flechas cai em volta do alvo e o prende, e a Flecha Flamejante final vai na CABEÇA
+      (206 de dano, de perto e de longe).
+      Revisão de 2026-10-31 (o que cada `cinematicCombo` tem de próprio):
+      - JÁ TÊM IDENTIDADE (o combo com extras próprios): Gal Sal (aproximação, corrente, Sigilos, tiros, previsão),
+        Guizo (a câmera de filmar, as cópias), Raziel (o banquete, dreno de sangue), Magistrada (a esfera de sombras).
+      - [x] GENÉRICOS (só a sequência de golpes): Veríssimo, Xande, Aguiar, Ferreiro, Celestine, Gaius, Balu, Lírio
+        (Balu e Lírio com os MESMOS golpes), Cristopher, Dalmo, Jae, Juan (e o Juan no Ódio, só com sangramento).
+        Feito em 2026-10-31 — o `cinematicCombo` ganhou peças novas (pacto de sangue, Anular, corrente/corda presa,
+        golpe pelas costas, sumiço, armadilha, X no chão, roubo de energia, onda de pressão, chão rachando, estados no
+        alvo depois da cena) e cada um ficou com a identidade do cânone:
+        BALU paga o Machado Demônio com o sangue, derruba na ombrada (Derrubar e Atacar), marreta o alvo caído e fecha
+        no 110%; LÍRIO laça com as Amarras de Sangue, Mão Pesada, cabeçada e ergue a Leonora devagar para o Golpe
+        Pesado; CELESTINE prende com as duas machadinhas na corrente e corta pelas costas ("Nada Pessoal"); GAIUS
+        ANULA (estados ruins, projéteis e a habilidade do adversário) e o alvo sai ANULADO (sem habilidades por 4 s);
+        VERÍSSIMO lê as brechas (Inteligência Estratégica): o alvo sai ANALISADO (+20% de dano) e as assistências ficam
+        prontas; FERREIRO bebe a energia do alvo com a Espada Consumidora e o deixa CONSUMIDO; XANDE chega de skate, a
+        Velocidade Mortal e o taco na corrente; AGUIAR puxa na corda para a armadilha de urso e o deixa sangrando;
+        CRISTOPHER faz a cena de ação (chutes, pulo nas costas, Suplex de Dublê) e se recupera um pouco; DALMO segura
+        o crânio (o fim das arenas) e o alvo fica ATORDOADO; JAE some, surge nas costas e deixa o X, CEGO e sangrando;
+        JUAN se corta, o Vínculo de Sangue prende os dois e a Faca Predadora bebe até o Descarnar. (O Juan no Ódio não
+        usa especial de golpes: o dele é o Renascimento.)
+- [x] **A MAÇA DO GAIUS pela série** (feita em 2026-10-31: `weapons.js ironMace` refeita pela arte, a mão segura perto do pomo) (pedido de 2026-10-31): a arte oficial (wiki, "Maça de Gaius em Calamidade") é uma
+      maça de ABAS — cabo longo escuro com o couro enrolado em diagonal, anel no colarinho, cabeça prateada com 6 abas
+      pontudas em forma de lâmina, uma ponta no topo e uma pontinha no pomo. A do jogo era uma bola com caixinhas.
+- [ ] **MELHORAR O MODELO DO PORTADOR DO TRONO** (pedido de 2026-10-31) — a evolução do Diabo (o Juan no ódio → O Diabo →
+      o Portador do Trono). A revisão acima (chifres, coroa de espinhos, asas, pernas de bode) ainda não basta: refazer o
+      corpo na técnica atual (`sculpt_lib`) pela "Arte Completa Cinematic O Portador do Trono" e a wiki, para ele ler como
+      a forma final e mais forte da linha do Diabo — maior e mais monstruoso que O Diabo, sem perder o kit e as juntas.
+- [x] **O AMIGO IMAGINÁRIO: melhorar os PODERES e o CÂNONE** (pedido de 2026-10-31) — revisto pela wiki "Amigo
+      Imaginário": o AGARRÃO (antes "Tentáculos que Prendem", poça debaixo do alvo — invenção) agora sai de baixo do capuz
+      e PUXA a vítima até a criatura, a deixa para o Derreter; no Frenesi de Sangue, irritada, ARREMESSA longe (40, ~8 m).
+      O DISSOLVER (antes virava poça intocável e se curava sozinho — invenção) agora AGARRA quem está colado e o ABSORVE:
+      cura exatamente o dano que causou (testado: 59 de dano → 59 de vida; errou, nada). O SINO no Frenesi soa distorcido
+      e a vítima MORDE A SI MESMA (16 + sangramento). Derreter, Garras e os Bichos da Ilha já batiam com o cânone.
+      Ainda sem cânone no jogo: "quem foi afetado pelas pinturas não consegue se afastar" (sem pinturas no jogo).
+- [ ] **NOVOS PERSONAGENS — O SEGREDO NA ILHA** (pedido de 2026-10-31): os protagonistas da campanha (levantar na wiki
+      quem são e o que fazem antes de modelar).
+- [ ] **NOVOS PERSONAGENS — OS CINCO** (pedido de 2026-10-31): completar o grupo. No jogo: Xande, Guizo e Lírio; faltam
+      (pela wiki, `lore/MEMBROS.md`) Dara Alice Venturini (Médica de Campo), Francisco "Chico" Albuquerque (Técnico) e
+      Morato Vertaler (o líder). O Voytek Nowak fica de fora (decisão do dono, 2026-10-31). Com o grupo completo, entra o
+      especial de grupo dos Cinco.
+- [ ] **NOVOS PERSONAGENS — ENIGMA DO MEDO** (pedido de 2026-10-31): **MIA + LUPI** (a protagonista e o cachorro, como
+      dupla) e **JASER**, com a versão melhorada **O DESASSOMBRADO** (forma/transformação dele). Levantar na wiki o
+      visual, os itens e os poderes de cada um antes de modelar.
+- [ ] **ATUALIZAÇÃO FUTURA — CENÁRIO "O PALCO DO ANFITRIÃO"** (pedido de 2026-10-31; planejamento, nada feito ainda).
+      Um cenário novo inspirado nos JOGOS do Anfitrião em Calamidade ep. 6 (conferir o episódio e a wiki antes de
+      desenhar: os jogos, as regras, o que ele fala). É outro mapa, separado do `arena_coliseu.py` atual (o de areia
+      ao entardecer, sem plateia).
+      - **Visual:** um COLISEU todo em ROXO (pedra, arquibancadas e estandartes), iluminado por TOCHAS com as chamas de
+        ENERGIA (as mesmas `energyFlames` das miniaturas; a luz delas tingindo a arena).
+      - **A plateia de ANFITRIÕES:** as arquibancadas cheias de Anfitriões (o modelo dele, em instâncias para pesar pouco)
+        em poses variadas — aplaudindo, de braços para cima, gritando, de pé, sentados, apontando — e a plateia REAGE à
+        luta: golpe forte, combo grande, especial, quase-KO e KO mudam as poses e o som (aplauso, vaia, grito, silêncio
+        de expectativa).
+      - **EVENTOS ALEATÓRIOS do mapa:** de tempos em tempos o Anfitrião anuncia um evento (ideias a fechar pelo cânone:
+        regra nova por alguns segundos, o botão dele, uma armadilha na arena, a plateia jogando coisas, chão que muda,
+        "só vale golpe X"); aviso antes, duração curta, igual para os dois lutadores.
+      - **O NARRADOR (o Anfitrião):** fala durante a luta em faixa de texto (e som), comentando a luta, ZOANDO os
+        lutadores (frases por personagem, ácido como ele é), anunciando os eventos e narrando os momentos (primeiro
+        sangue, combo, transformação, especial, KO). Reaproveitar o sistema de falas (`config/introVoices.js` /
+        `dialogues.js`) com um bloco próprio do narrador; sem repetir a mesma fala seguida.
+      - **Jogar COM o Anfitrião nesse mapa:** sem vantagem nenhuma; ele só segue sendo o narrador do mapa (pode ganhar
+        falas próprias de "narrar a si mesmo").
+      - **A habilidade da PLATEIA** (`hostAudience`, combat/hostAbilities.js — ele se curva e a plateia aplaude): NESTE
+        mapa a câmera corta para um CLOSE dos Anfitriões da arquibancada aplaudindo e volta.
+      - Técnico: o cenário em `tools/blender/arena_*.py` (a técnica atual); a plateia como modelos instanciados com
+        algumas poses prontas (trocadas por eventos da luta); os eventos e o narrador num módulo do mapa ligado ao
+        Match/World (desligado nos outros cenários); conferir desempenho no celular.
 - [~] Os outros que ainda não usam a técnica atual (`char_*.py` sem `sculpt_lib`, conferido em 2026-10-26): Aghata, Amigo,
       Dalmo, Erin, Estrangeiro, Ferreiro, Guizo, Jae, Labirinto e Magistrada (fora o Portador do Trono acima; o Manancial
       foi refeito em 2026-10-26).
@@ -1735,9 +1848,14 @@ Confirmadas pelo pedido:
   ombrada e SEGURA o alvo e o Kaiser (o filho) dispara.
 - [x] **Mascarados** (Dalmo, Aguiar, Jae, Kemi, Labirinto, Juan) — especial de grupo com 3 ou mais na equipe: os seis
   aparecem em roda em volta do alvo (os de fora da equipe entram como convidados) e golpeiam um após o outro.
-A confirmar (o dono decide antes de entrar):
-- [ ] Outras duplas/trios da Ordo Realitas (ex.: a Equipe Abutres de Calamidade), Escriptas (Kian + Gal Sal) e os
-  Portadores (são inimigos entre si — provavelmente nenhuma ligação).
+- [x] **Ordo Calamitas** (2026-10-31, escolha do dono) — grupo com 3 na equipe (Celestine, Gaius, Amalia; Faustus,
+  Marius, Remus e Cascadia entram quando estiverem no elenco): a Celestine cruza as lâminas, o Gaius dá o corte final
+  do gládio em energia roxa e a Amalia atira a Flecha Flamejante. Testado: 306 de dano, sem erro.
+- [x] **Arnaldo + Veríssimo** (2026-10-31, escolha do dono) — dupla "A Espada da Fita Vermelha" (os melhores amigos, a
+  mesma espada): o Veríssimo abre a guarda com a estocada (BRECHA NA GUARDA) e o Arnaldo fecha com o rodopio da fita.
+  `link.order` define quem entra antes. Testado com o Arnaldo e com o Veríssimo de líder (335 / 347).
+- Escriptas, outras duplas da Ordo Realitas e Portadores: o dono decidiu esperar ter mais personagens de cada equipe
+  (2026-10-31).
 - [ ] **Equipe Abutres** (Calamidade): ligação própria com as versões de Calamidade, quando elas estiverem no jogo
   (o dono confirma os membros).
 - **Os Cinco** (Xande, Guizo, Lírio): grupo incompleto no elenco — **sem especial de grupo** até todos estarem no jogo.
@@ -2487,7 +2605,7 @@ qualidade do Cristino / Cristopher / Dante v2 — um por vez, com o kit e as jun
 * [ ] Aghata
 * [x] Aguiar (v3.33.0)
 * [ ] Amigo Imaginário
-* [ ] Arnaldo Fritz
+* [x] Arnaldo Fritz (2026-10-26)
 * [x] Arthur Cervero (v3.41.0)
 * [x] Balu (v3.40.0)
 * [ ] Dalmo (e o Colosso)
@@ -2500,18 +2618,18 @@ qualidade do Cristino / Cristopher / Dante v2 — um por vez, com o kit e as jun
 * [x] Joui (v3.41.0)
 * [x] Kaiser (v3.38.0)
 * [x] Kemi (v3.34.0)
-* [ ] Kian
+* [x] Kian (2026-10-26)
 * [ ] Labirinto
-* [ ] Lírio
+* [x] Lírio (v3.40.0)
 * [ ] A Magistrada
-* [ ] O Diabo
-* [ ] Senhor Veríssimo
+* [x] O Diabo (2026-10-26)
+* [x] Senhor Veríssimo (2026-10-26)
 * [x] Xande (v3.33.0)
 
 ## Formas com modelo próprio
 
-* [ ] O Anfitrião
-* [ ] O Portador do Trono (forma do Juan)
+* [x] O Anfitrião (2026-10-26)
+* [ ] O Portador do Trono (forma do Juan) — revisto em 2026-10-31; refazer completo pedido (ver *MELHORAR O MODELO DO PORTADOR DO TRONO*)
 * [x] A Fantasma (forma da Kemi) (v3.34.0)
 
 ## Invocações
@@ -2522,8 +2640,18 @@ qualidade do Cristino / Cristopher / Dante v2 — um por vez, com o kit e as jun
   FUNDOS e PRETOS, cabelo preto comprido repartido emoldurando o rosto, só TRAPOS escuros, dedos longos com unhas sujas e o
   Símbolo Espiral no peito (texturas `face_manancial` e `skin_manancial_torso`; a camisa/calça brancas antigas saíram).
   Revisado no Blender e no jogo (Chamar os Mananciais).
-* [ ] Zumbi de Sangue e Zumbi de Sangue forte (O Diabo / Portador do Trono)
-* [ ] As feras de tinta — cão e javali (Amigo Imaginário)
+* [x] Zumbi de Sangue e Zumbi de Sangue forte (O Diabo / Portador do Trono) — refeitos em 2026-10-31 na técnica do
+  Carniçal (`npc_sculpt_lib.py`, metaballs + cor por vértice) pelas miniaturas da wiki "Zumbis de Sangue": o FRACO com o
+  crânio grande e calvo, as ÓRBITAS VAZIAS (são cegos), a bocarra de presas compridas cor de marfim e o corpo magro de
+  braços longos; o FORTE como o BESTIAL (a corcova de músculo, quase de quatro, o crânio partido ao meio no topo, a
+  mandíbula enorme com o dobro de presas, o sangue pingando). Pele gosmenta com placas escuras, estrias claras e veias.
+  Mesmas juntas: as poses e os golpes não mudaram.
+* [x] As feras de tinta — cão e javali (Amigo Imaginário) — refeitas em 2026-10-31 na técnica do Carniçal
+  (`npc_sculpt_lib.py`) pelas miniaturas da wiki ("Javalis Infectados", "Cachorros Selvagens Infectados"): o pelo marrom
+  em mechas com a crina espetada e os tufos desgrenhados, o FLANCO aberto com a carne e as COSTELAS saltando, as VEIAS
+  grossas serpenteando e se ramificando por cima do pelo (assentadas na superfície real do corpo) até o olho vermelho
+  de onde a tinta escorre, os dentes enormes saindo da boca; o javali com as quatro PRESAS curvas, o cão de peito fundo,
+  cintura fina, a língua e o rabo peludo curvado. Mesmas juntas. (O visualizador `npcs.html` agora mostra os dois.)
 
 ---
 

@@ -441,6 +441,17 @@ export const ABILITY_TYPES = {
         }
         world.fx.flash(head(), { color: a.color, size: 1.2, life: 0.2 });
         if (inCone(f, opp, a.range, a.arc) && !opp.isInvulnerable()) {
+          // a.resist (cânone: "caso o alvo consiga resistir, ele fica esmorecido"): quem está DEFENDENDO resiste — não
+          // fica paralisado, só esmorecido
+          if (a.resist && a.wither && opp.isGuarding()) {
+            const old = opp.findBuff('withered');
+            if (old) old.time = a.wither.duration;
+            else opp.addBuff({ type: 'withered', name: 'ESMORECIDO', time: a.wither.duration, duration: a.wither.duration, mult: a.wither.mult, affects: ['melee', 'ranged', 'ability', 'special'] });
+            world.fx.burst(opp.chestPos(), { count: 14, color: 0x1a0610, kind: 'smoke', speed: 1.5, life: 0.7, size: 0.5, grow: 1 });
+            opp.notify('RESISTIU — ESMORECIDO', true);
+            world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
+            return;
+          }
           opp.stun(a.stun, 'fear');
           world.fx.burst(opp.chestPos(), { count: 30, color: 0x1a0610, kind: 'smoke', speed: 2, life: 1.0, size: 0.8, grow: 1 });
           world.fx.burst(opp.chestPos(), { count: 16, color: a.color, speed: 3, life: 0.6, size: 0.2 });
@@ -1005,10 +1016,53 @@ Object.assign(ABILITY_TYPES, {
       f.anim.play(a.anim || 'cast_up', { restart: true, duration: a.castTime + 0.25 }); // a.anim: a Amalia atira para o alto
       world.audio.play(a.sound || 'rebirth', { volume: 0.5, pitch: 1.4 });
       const center = new THREE.Vector3(opp.pos.x, 0, opp.pos.z);
+      // a.warn (Amalia): a ÁREA aparece em volta do alvo e fica marcada o tempo da subida das flechas — dá para sair do
+      // círculo ou defender antes que elas caiam
+      const warn = a.warn ?? 0;
       world.fx.ring(new THREE.Vector3(center.x, 0.06, center.z), { color: a.color, radius: a.radius, life: a.castTime + 0.2 });
+      if (warn) {
+        // a ÁREA fica marcada no chão (borda forte + fundo fraco, pulsando cada vez mais rápido) até a chuva acabar
+        const total = a.castTime + warn + 0.35 + a.hits * a.interval;
+        const area = new THREE.Group();
+        const edgeMat = new THREE.MeshBasicMaterial({ color: a.color, transparent: true, opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false });
+        const fillMat = edgeMat.clone();
+        area.add(new THREE.Mesh(new THREE.RingGeometry(a.radius * 0.92, a.radius, 48), edgeMat));
+        area.add(new THREE.Mesh(new THREE.CircleGeometry(a.radius * 0.92, 48), fillMat));
+        area.rotation.x = -Math.PI / 2;
+        area.position.set(center.x, 0.05, center.z);
+        area.renderOrder = 2;
+        world.scene.add(area);
+        let at = 0;
+        world.addTicker({
+          update(dt) {
+            at += dt;
+            const fade = Math.min(1, at * 5) * Math.min(1, (total - at) / 0.3);
+            const falling = at > a.castTime + warn;
+            const pulse = 0.5 + 0.5 * Math.sin(at * (falling ? 10 : 4 + at * 6));
+            edgeMat.opacity = fade * (0.6 + 0.4 * pulse);
+            fillMat.opacity = fade * (falling ? 0.22 : 0.08 + 0.1 * pulse);
+            return at >= total;
+          },
+          // sai também na troca de round (World descarta os tickers)
+          dispose() {
+            world.scene.remove(area);
+            area.children.forEach((c) => c.geometry.dispose());
+            edgeMat.dispose();
+            fillMat.dispose();
+          },
+        });
+      }
       let rain = null;
       tl.add(a.castTime, () => {
         world.fx.flash(f.chestPos(), { color: a.color, size: 1.6, life: 0.15 });
+        // a salva para o céu (as flechas sobem e somem lá em cima)
+        if (warn) {
+          const from = f.chestPos().add(new THREE.Vector3(0, 0.3, 0));
+          for (let i = 0; i < 3; i++) world.fx.tracer(from, from.clone().add(new THREE.Vector3((i - 1) * 0.8, 14, 0)), { color: a.color, life: 0.35, width: 0.05 });
+        }
+      });
+      // a queda é agendada no mundo: com o aviso, quem lançou já volta a agir enquanto as flechas sobem
+      const fall = () => {
         rain = world.fx.emitter({
           rate: 120,
           follow: () => {
@@ -1024,12 +1078,14 @@ Object.assign(ABILITY_TYPES, {
             if (opp.state === 'ko' || distXZ(opp.pos, center) > a.radius + opp.radius) return;
             applyHit(world, f, opp, {
               damage: a.damage / a.hits, kind: 'ability', knockback: 0.6, hitstun: 0.28, sound: 'clawHit',
-              color: a.color, scale: 0.8, dir: new THREE.Vector3().subVectors(opp.pos, center).setY(0).normalize(), hitstop: 0.03,
+              // com o aviso (Amalia), as flechas vêm de quem atirou: de frente para ela, a defesa segura
+              color: a.color, scale: 0.8, dir: warn ? undefined : new THREE.Vector3().subVectors(opp.pos, center).setY(0).normalize(), hitstop: 0.03,
             });
           });
         }
         world.after(0.35 + a.hits * a.interval, () => rain && rain.stop());
-      });
+      };
+      tl.add(a.castTime, () => (warn ? world.after(warn, fall) : fall()));
       tl.add(a.castTime + 0.2, () => f.anim.play('idle', { blend: 0.1 }));
       tl.end(a.castTime + 0.3);
       return seqFrom(tl, { cancel: () => rain && rain.stop() });
@@ -1223,6 +1279,8 @@ Object.assign(ABILITY_TYPES, {
       if (opp) f.yaw = yawTo(f.pos, opp.pos);
       f.anim.play('point', { restart: true, duration: a.windup + a.recovery });
       world.audio.play('fearGaze', { pitch: 1.3 });
+      // o aviso: um anel fecha no chão em volta do alvo durante a preparação (dá tempo de esquivar)
+      if (opp && inCone(f, opp, a.range, a.arc)) world.fx.ring(opp.pos.clone().setY(0.07), { color: a.color, radius: 1.1, life: a.windup, inner: 0.85 });
       tl.add(a.windup, () => {
         if (!inCone(f, opp, a.range, a.arc) || opp.isInvulnerable()) { f.notify('ERROU', true); return; }
         const head = () => opp.rig.joints.hd.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.45, 0));
@@ -1235,6 +1293,21 @@ Object.assign(ABILITY_TYPES, {
         else opp.addBuff({ type: 'mindControl', name: 'CONTROLADO', time: a.duration, duration: a.duration, invertMove: !a.walkTo, walkTo: a.walkTo ? f : null, noBlock: !!a.noBlock, onEnd() { sig.stop(); } });
         opp.notify('CONTROLE MENTAL', true);
         world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
+        // a.struggle: a vítima RESISTE — cada botão apertado encurta o controle (o escape de quem apanha)
+        if (a.struggle) {
+          const buff = opp.findBuff('mindControl');
+          world.addTicker({
+            update() {
+              if (!opp.buffs.includes(buff) || opp.state === 'ko') return true;
+              const p = opp.input && opp.input.pressed;
+              if (p && Object.keys(p).some((k) => p[k])) {
+                buff.time -= a.struggle;
+                world.fx.burst(head(), { count: 4, color: a.color, speed: 1.5, life: 0.25, size: 0.1 });
+              }
+              return false;
+            },
+          });
+        }
       });
       tl.end(a.windup + a.recovery);
       return seqFrom(tl);
@@ -2923,23 +2996,56 @@ Object.assign(ABILITY_TYPES, {
           world.after(a.drop ?? 0.65, () => held.stop());
         });
       }
-      const beam = new THREE.Mesh(
-        new THREE.CylinderGeometry(R * 0.55, R, 9, 24, 1, true),
+      // O FEIXE (Estrangeiro): o cone de luz verde desce do céu — a luz larga por fora, o miolo forte por dentro e o
+      // disco aceso lá em cima; partículas sobem por dentro. a.follow: no aviso o feixe ANDA atrás do alvo (mais devagar
+      // que uma corrida — dá para escapar)
+      const drop = a.drop ?? 0.65;
+      const HB = 14;
+      const mkBeam = (r0, r1) => new THREE.Mesh(
+        new THREE.CylinderGeometry(r0, r1, HB, 28, 1, true),
         new THREE.MeshBasicMaterial({ color: a.color, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }),
       );
-      beam.position.set(spot.x, 4.5, spot.z);
-      if (!a.sigils) world.scene.add(beam);
+      const beam = new THREE.Group();
+      const outer = mkBeam(R * 0.7, R * 1.05);
+      const core = mkBeam(R * 0.2, R * 0.42);
+      const disc = new THREE.Mesh(new THREE.CircleGeometry(R * 0.85, 32), new THREE.MeshBasicMaterial({ color: 0xeafff0, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+      outer.position.y = core.position.y = HB / 2;
+      disc.rotation.x = Math.PI / 2;
+      disc.position.y = HB;
+      beam.add(outer, core, disc);
+      beam.position.set(spot.x, 0, spot.z);
+      const motes = a.sigils ? null : world.fx.emitter({ rate: 55, follow: () => { const ang = Math.random() * Math.PI * 2, r = Math.random() * R * 0.9; return new THREE.Vector3(spot.x + Math.sin(ang) * r, 0.1 + Math.random() * 0.8, spot.z + Math.cos(ang) * r); }, particle: { color: a.color, speed: 0.2, up: 3.4, spread: 0.08, life: 1.1, size: 0.12 } });
+      if (!a.sigils) {
+        world.scene.add(beam);
+        world.audio.play('signalStatic', { volume: 0.6 }); // a interferência das abduções
+      }
+      const total = a.windup + drop + 0.5;
       let life = 0;
       world.addTicker({
         update(dt) {
           life += dt;
-          const total = a.windup + 1.1;
-          beam.material.opacity = life < a.windup ? 0.08 + 0.12 * (life / a.windup) : 0.22 * Math.max(0, 1 - (life - a.windup) / 1.1);
-          if (life >= total) { world.scene.remove(beam); beam.geometry.dispose(); beam.material.dispose(); return true; }
+          if (a.follow && life < a.windup && opp.state !== 'ko') {
+            const dx = opp.pos.x - spot.x, dz = opp.pos.z - spot.z, d = Math.hypot(dx, dz);
+            const step = Math.min(d, a.follow * dt);
+            if (d > 0.01) { spot.x += (dx / d) * step; spot.z += (dz / d) * step; }
+            beam.position.set(spot.x, 0, spot.z);
+          }
+          const k = life < a.windup ? 0.35 + 0.4 * (life / a.windup) : life < a.windup + drop ? 1 : Math.max(0, 1 - (life - a.windup - drop) / 0.5);
+          const flick = 0.85 + Math.random() * 0.15; // a luz treme (o sinal)
+          outer.material.opacity = 0.16 * k * flick;
+          core.material.opacity = 0.32 * k * flick;
+          disc.material.opacity = 0.7 * k;
+          core.rotation.y += dt * 3;
+          if (life >= total) {
+            if (motes) motes.stop();
+            world.scene.remove(beam);
+            for (const m of [outer, core, disc]) { m.geometry.dispose(); m.material.dispose(); }
+            return true;
+          }
           return false;
         },
       });
-      // o círculo pulsando no chão (o aviso)
+      // o círculo pulsando no chão (o aviso; segue o feixe)
       for (let i = 0; i < 4; i++) tl.add(i * (a.windup / 4), () => world.fx.ring(new THREE.Vector3(spot.x, 0.07, spot.z), { color: a.color, radius: R, life: 0.25, inner: 0.82 }));
       tl.add(a.windup, () => {
         const inside = distXZ(opp.pos, spot) <= R + opp.radius * 0.5;
@@ -2948,11 +3054,38 @@ Object.assign(ABILITY_TYPES, {
         world.audio.play('teleport', { volume: 0.7, pitch: 0.6 });
         opp.notify(a.hitLabel || 'ABDUZIDO', true); // a.hitLabel / a.missLabel: os textos de quem usa (Kian: SUSPENSO)
         applyHit(world, f, opp, { damage: Math.round(a.damage * 0.4), kind: 'ability', element: a.element, launch: true, high: true, hitstun: a.lift ?? 0.9, knockback: 0.2, unblockable: true, color: a.color, sound: 'impact', scale: 1.1, dir: forwardFromYaw(f.yaw) });
+        // a.hover: a vítima FLUTUA girando no meio do feixe (puxada para o centro, a uma altura fixa), com a interferência
+        // estalando em volta
+        if (a.hover) {
+          world.audio.play('signalStatic', { volume: 0.8, pitch: 0.8 });
+          let ht = 0;
+          world.addTicker({
+            update(dt) {
+              ht += dt;
+              if (ht >= drop || opp.state === 'ko') return true;
+              const rise = Math.min(1, ht / 0.25);
+              opp.vel.set((spot.x - opp.pos.x) * 5, (a.hover * rise - opp.pos.y) * 6 + COMBAT.gravity * dt, (spot.z - opp.pos.z) * 5);
+              opp.yaw += dt * 9;
+              if (Math.random() < dt * 10) {
+                const c = opp.chestPos();
+                world.fx.lightning(c.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.4)), c.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.4)), { color: a.color, life: 0.12 });
+              }
+              return false;
+            },
+          });
+        }
         // e cospe de volta no chão
-        world.after(a.drop ?? 0.65, () => {
+        world.after(drop, () => {
           if (opp.state === 'ko' || opp.pos.y < 0.3) return;
           world.fx.burst(opp.chestPos(), { count: 24, color: a.color, speed: 3, life: 0.4, size: 0.16 });
           applyHit(world, f, opp, { damage: Math.round(a.damage * 0.6), kind: 'ability', element: a.element, launch: true, spike: true, juggle: true, knockback: 1, hitstun: 0.6, unblockable: true, ignoreInvuln: true, color: a.color, sound: 'heavyPunch', scale: 1.4, dir: forwardFromYaw(f.yaw) });
+          // a.forget: a volta da abdução — o alvo não lembra o que houve: perde sanidade e fica DESORIENTADO (o movimento
+          // invertido) por um tempo
+          if (a.forget && opp.state !== 'ko') {
+            if (a.forget.sanity && opp.drainEnergy) opp.drainEnergy(a.forget.sanity);
+            if (a.forget.time) opp.addBuff({ type: 'chaosInvert', name: 'ESQUECIDO', time: a.forget.time, duration: a.forget.time, invertMove: true });
+            opp.notify('O QUE ACONTECEU?', true);
+          }
         });
       });
       tl.end(a.windup + 0.25);
@@ -3023,6 +3156,13 @@ Object.assign(ABILITY_TYPES, {
         } else {
           f.energy = Math.min(f.maxEnergy, f.energy + a.energy);
           if (a.refillDodges) f.dodges = Math.max(f.dodges, a.refillDodges);
+        // a.orderAllies (Veríssimo — Inteligência Estratégica: "dar comandos para seus aliados, que, ao ouvirem a ordem,
+        // ganham um ataque extra"): na batalha em equipe as assistências ficam prontas na hora
+        if (a.orderAllies && f.assists) {
+          let ready = 0;
+          for (const as of f.assists) if (as && !as.active && as.cooldown > 0) { as.cooldown = 0; ready++; }
+          if (ready) f.notify('AGENTES, AGORA!', true);
+        }
           f.notify('ALTRUÍSMO', true);
         }
       });
@@ -3765,6 +3905,13 @@ Object.assign(ABILITY_TYPES, {
       tl.add(Math.min(0.25, castT * 0.6), () => {
         const trail = a.trail === false ? null : world.fx.emitter({ rate: 24, follow: () => f.chestPos(), particle: { color: a.color, speed: 0.4, spread: 0.4, life: 0.4, size: 0.16 } });
         if (a.refillDodges) f.dodges = Math.max(f.dodges, a.refillDodges);
+        // a.orderAllies (Veríssimo — Inteligência Estratégica: "dar comandos para seus aliados, que, ao ouvirem a ordem,
+        // ganham um ataque extra"): na batalha em equipe as assistências ficam prontas na hora
+        if (a.orderAllies && f.assists) {
+          let ready = 0;
+          for (const as of f.assists) if (as && !as.active && as.cooldown > 0) { as.cooldown = 0; ready++; }
+          if (ready) f.notify('AGENTES, AGORA!', true);
+        }
         if (a.armor) f.armorHits = (f.armorHits || 0) + a.armor; // estabilidade: aguenta golpes sem recuar
         // a.redAura (Joui — Tomado pelo Ódio): a aura vermelha dos Mascarados em volta do corpo enquanto dura, e o
         // clarão vermelho ao ativar; a.meleeBleed: os golpes físicos fazem sangrar (damage.js)
@@ -3998,7 +4145,7 @@ function xMarkTexture(color) {
   return _xTex[key];
 }
 
-function groundMark(world, pos, radius, color, opacity) {
+export function groundMark(world, pos, radius, color, opacity) {
   const mat = new THREE.MeshBasicMaterial({ map: xMarkTexture(color), transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending });
   const m = new THREE.Mesh(new THREE.PlaneGeometry(radius * 2, radius * 2), mat);
   m.rotation.x = -Math.PI / 2;

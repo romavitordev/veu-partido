@@ -1,5 +1,22 @@
 # Changelog
 
+## v4.0.0 — Cada Um com o Seu
+
+### Adicionado
+- `specials/headshot.js` (Amalia — Não Perde a Cabeça!).
+- `cinematicCombo`: prep `bloodPact` (`selfCost`, `selfLabel`) e `nullify`; `dash.anim` / `dash.ride`; `chain.rope` / `chain.color`; `tether`; por golpe `call`, `shout`, `quake`, `pressure`, `behind`, `vanish`, `trap`, `xMark`, `consume`, `stream`; `endReaction.stun`; depois da cena `afterBuff`, `endBlind`, `orderAllies`, `selfHeal`.
+- Especiais próprios pelo cânone: Balu, Lírio, Celestine, Gaius, Veríssimo, Ferreiro, Xande, Aguiar, Cristopher, Dalmo, Jae e Juan.
+- `Fighter.useAbility`: buff `noAbilities` (+ `lockMsg`) trava todas as habilidades.
+- `teamLinks`: `ordo_calamitas` (grupo, mín. 3) e `arnaldo_verissimo` (dupla com `order`); `LINK_MOVES` de Celestine, Gaius, Amalia, Veríssimo e Arnaldo.
+- Clipe `bow_shot_up`; som `signalStatic`; `tools/blender/npc_sculpt_lib.py` (escultura das invocações).
+
+### Alterado
+- `amigoPowers`: `inkDissolve`, `inkTentacles` (Agarrão) e `bellToll` (`frenzyBite`) refeitos.
+- `abilities`: `mindControl` (`struggle`), `fearGaze` (`resist`), `selfBuff` (`orderAllies`), `flowerRain` (`warn` + área marcada); `groundMark` exportado.
+- `weapons.js`: `ironMace` refeita (maça de abas); `physicsRibbon` com normais desde a criação.
+- CPU: "atirador alcançado" (empurra/foge com o golpe de empurrão do kit).
+- Zumbis de Sangue e animais de tinta reesculpidos (`npc_zumbi_lib.py`, `npc_bicho_lib.py`).
+
 ## v3.53.0 — A Flecha
 
 ### Adicionado
