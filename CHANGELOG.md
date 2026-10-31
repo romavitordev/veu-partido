@@ -3,6 +3,7 @@
 ## v4.1.0 — Dupla Recomendada
 
 ### Adicionado
+- Treinamento em equipe: o item TREINAMENTO do menu ganhou o submenu `solo:training` / `team:training` (chaves `training.solo`, `training.team` e descrições nos 13 idiomas); `Match.updateTraining` enche a Barra de Equipe (com `energy`) e zera a recarga das assistências (com `noCooldown`).
 - `teamLinks.recommendNext(members, available)`: o próximo membro da ligação que tem todos os já escolhidos (`priority` > equipe de 3 > ordem do arquivo; respeita `order`).
 - `SelectScreen`: equipe de 2 (confirmar de novo o segundo escolhido), `recommend()` move o cursor e marca o cartão (`.card.rec`), `duoLine` (chave `sel.team_two` nos 13 idiomas).
 - `ChangelogScreen`: `NEWS_SHORT` itens e o botão Ver mais / Ver menos (`news.more` / `news.less`).

@@ -16,6 +16,7 @@ export const CHANGELOG = [
     date: '2026-10-31',
     title: 'Dupla Recomendada',
     items: [
+      'TREINAMENTO EM EQUIPE: o Treinamento agora tem Solo e Em Equipe. Em equipe, a Barra de Equipe fica sempre cheia para treinar o especial em equipe, e com Sem Recarga as assistências e as trocas ficam prontas.',
       'EQUIPE DE 2: na seleção de equipe, confirme de novo o segundo lutador que acabou de escolher para fechar a equipe em dupla (ex.: Kaiser, Cristopher, Cristopher).',
       'PARCEIRO RECOMENDADO: escolheu o primeiro, o cursor já vai para quem forma um especial de equipe com ele, com o cartão marcado em dourado. Se ele estiver em mais de uma equipe, a de 3 vem primeiro (Kaiser leva ao Arthur e ao Joui, a Força D).',
       'CORRIGIDO: as balas atravessavam a parede do Bar Suvaco Seco entre o salão e a calçada. Agora todo tiro para na parede e só passa pela porta.',

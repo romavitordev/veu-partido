@@ -3,6 +3,7 @@
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
 ## v4.1.0 — Dupla Recomendada
+- Treinamento em equipe: escolha Solo ou Em Equipe; a Barra de Equipe fica cheia e, sem recarga, assistências e trocas ficam prontas.
 - Equipe de 2: confirme de novo o segundo lutador para lutar em dupla.
 - Parceiro recomendado: escolhido o primeiro, o cursor vai para quem forma especial de equipe com ele (cartão dourado); equipes de 3 primeiro.
 - Corrigido: balas atravessando a parede do Bar Suvaco Seco.

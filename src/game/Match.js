@@ -341,6 +341,11 @@ export class Match {
     if (o.energy) { p.energy = p.maxEnergy; p.dodges = COMBAT.dodge.charges; p.guard = p.maxGuard; }
     if (o.noCooldown) for (const k in p.cooldowns) if (k !== 'dodge') p.cooldowns[k] = Math.min(p.cooldowns[k], 0.05);
     if (o.noCooldown) p.specialUses = 0;
+    // treino em equipe: a Barra de Equipe cheia (especial em equipe à vontade) e as assistências prontas
+    if (p.assists) {
+      if (o.energy) p.teamGauge = COMBAT.teamGauge.max;
+      if (o.noCooldown) for (const as of p.assists) if (as && !as.active) as.cooldown = Math.min(as.cooldown, 0.05);
+    }
     // treino com sanidade infinita: a Barra de Transformação fica cheia e não precisa da vida baixa
     if (o.energy && p.def.awakening && !p.baseForm) { p.storm = 100; p.trainingAwaken = true; }
   }

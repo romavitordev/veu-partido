@@ -4,6 +4,7 @@
 
 - Versão: `VERSION` 4.0.0 → **4.1.0** (package.json/lock junto). Data: 2026-10-31.
 - **Pedidos do dono:** "balas de kaiser atravessam paredes" (era na parede do Suvaco Seco); "deve ser possível escolher apenas dois personagens na equipe... Kaiser → Chris → Chris"; "o personagem que combina com o primeiro deve ser recomendado... como funciona no Storm 4" (pesquisado: no Storm 4 o cursor vai para o parceiro do golpe de equipe e o ícone ganha a chama dourada); "ver mais" no changelog; revisar a página Sobre.
+- **Acréscimo (pedido do dono: "tem que ter a opção treinamento em equipe"; "pode subir como 4.1.0 mesmo"):** Treinamento → Solo / Em Equipe. Testado: treino Kaiser + Cristopher + Arthur × Balu + Lírio, a Barra de Equipe volta a 100, assistência pronta com Sem Recarga, troca para o Cristopher, sem erro.
 - **Testado:** Suvaco, Kaiser no salão atirando na calçada: 0 de dano pela parede, 156 pela porta; seleção: Kaiser → cursor no Arthur (cartão dourado), Cristopher → dica de dupla, Cristopher de novo → equipe pronta com 2; luta Kaiser + Cristopher × trio por 60 s sem erro; Novidades com 6 itens e Ver mais (+15) / Ver menos; `npm test` 55/0, `check` sem ✖, build ok.
 
 ## v4.0.0 — Cada Um com o Seu

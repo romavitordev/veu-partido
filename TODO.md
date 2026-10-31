@@ -1,6 +1,6 @@
 # TODO — ARENA PARANORMAL
 
-**Versão de referência atual:** v4.1.0 (revisado em 2026-10-31: Dupla Recomendada — equipe de 2, parceiro recomendado na seleção como no Storm 4, balas param na parede do Suvaco Seco, Novidades com Ver mais)
+**Versão de referência atual:** v4.1.0 (revisado em 2026-10-31: Dupla Recomendada — treinamento em equipe, equipe de 2, parceiro recomendado na seleção como no Storm 4, balas param na parede do Suvaco Seco, Novidades com Ver mais)
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 

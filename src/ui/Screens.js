@@ -75,7 +75,10 @@ const homeOptions = () => [
   { id: 'pve', group: 'play', label: t('menu.pve'), desc: t('menu.pve.desc'), soon: true },
   { id: 'lan', group: 'play', label: t('menu.lan'), desc: t('menu.lan.desc') },
   { id: 'tutorial', group: 'practice', label: t('menu.tutorial'), desc: t('menu.tutorial.desc') },
-  { id: 'training', group: 'practice', label: t('menu.training'), desc: t('menu.training.desc') },
+  { id: 'training', group: 'practice', label: t('menu.training'), desc: t('menu.training.desc'), sub: [
+    { id: 'solo:training', label: t('training.solo'), desc: t('training.solo.desc') },
+    { id: 'team:training', label: t('training.team'), desc: t('training.team.desc') },
+  ] },
   { id: 'news', group: 'game', label: t('menu.news'), desc: t('menu.news.desc', { v: VERSION_LABEL }) },
   { id: 'options', group: 'game', label: t('menu.options'), desc: t('menu.options.desc') },
   { id: 'about', group: 'game', label: t('menu.about'), desc: t('menu.about.desc') },
