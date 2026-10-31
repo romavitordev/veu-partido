@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "ПОМОЩЬ 1",
   "sel.assist2": "ПОМОЩЬ 2",
   "sel.teamLink": "КОМАНДНЫЙ СУПЕР",
+  "sel.team_two": "Подтвердите <b>{name}</b> ещё раз (<b>{ok}</b>), чтобы драться вдвоём",
   "sel.style": "Стиль",
   "sel.melee": "Ближний бой ○",
   "sel.ranged": "Основная □",

@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "アシスト1",
   "sel.assist2": "アシスト2",
   "sel.teamLink": "チーム必殺技",
+  "sel.team_two": "<b>{name}</b> をもう一度決定（<b>{ok}</b>）で2人チーム",
   "sel.style": "スタイル",
   "sel.melee": "打撃 ○",
   "sel.ranged": "メイン □",

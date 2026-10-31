@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "ASSIST. 1",
   "sel.assist2": "ASSIST. 2",
   "sel.teamLink": "SPÉCIAL D'ÉQUIPE",
+  "sel.team_two": "Confirmez <b>{name}</b> à nouveau (<b>{ok}</b>) pour combattre en duo",
   "sel.style": "Style",
   "sel.melee": "Corps à corps ○",
   "sel.ranged": "Principal □",

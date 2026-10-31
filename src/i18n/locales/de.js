@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "UNTERST. 1",
   "sel.assist2": "UNTERST. 2",
   "sel.teamLink": "TEAM-SPEZIAL",
+  "sel.team_two": "Bestätige <b>{name}</b> erneut (<b>{ok}</b>), um zu zweit zu kämpfen",
   "sel.style": "Stil",
   "sel.melee": "Nahkampf ○",
   "sel.ranged": "Haupt □",

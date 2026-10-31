@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getTeamLink, TEAM_LINKS } from '../src/config/teamLinks.js';
+import { getTeamLink, TEAM_LINKS, recommendNext } from '../src/config/teamLinks.js';
 import xande from '../src/characters/xande.js';
 
 test('team links identify Mascarados group', () => {
@@ -48,4 +48,20 @@ test('Xande ranged attack uses Skate Caotico with hideProp and returnsProp', () 
   assert.equal(xande.ranged.hideProp, 'skate');
   assert.equal(xande.ranged.returnsProp, 'skate');
   assert.equal(xande.ranged.boomerang, true);
+});
+
+test('team select recommends the next member of the linked team (Storm 4)', () => {
+  const roster = new Set(['arthur', 'kaiser', 'joui', 'cristopher', 'verissimo', 'arnaldo', 'celestine', 'gaius', 'amalia', 'dalmo', 'aguiar', 'jae']);
+  const has = (e) => roster.has(e);
+  // Kaiser está na Força D (3) e na dupla com o Cristopher: a equipe de 3 ganha
+  assert.equal(recommendNext(['kaiser'], has), 'arthur');
+  assert.equal(recommendNext(['kaiser', 'arthur'], has), 'joui');
+  // Kaiser + Cristopher já fecha a dupla: ninguém mais a recomendar (o cursor fica no Cristopher)
+  assert.equal(recommendNext(['kaiser', 'cristopher'], has), null);
+  // dupla com ordem: Arnaldo → Veríssimo
+  assert.equal(recommendNext(['arnaldo'], has), 'verissimo');
+  assert.equal(recommendNext(['amalia'], has), 'celestine');
+  // quem não está em nenhuma ligação e a equipe já cheia
+  assert.equal(recommendNext(['xande'], has), null);
+  assert.equal(recommendNext(['dalmo', 'aguiar', 'jae'], has), null);
 });

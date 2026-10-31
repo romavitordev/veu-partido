@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "DESTEK 1",
   "sel.assist2": "DESTEK 2",
   "sel.teamLink": "TAKIM ÖZEL",
+  "sel.team_two": "İkili savaşmak için <b>{name}</b> seçimini tekrar onayla (<b>{ok}</b>)",
   "sel.style": "Tarz",
   "sel.melee": "Yakın dövüş ○",
   "sel.ranged": "Ana □",

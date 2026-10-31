@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "어시스트 1",
   "sel.assist2": "어시스트 2",
   "sel.teamLink": "팀 필살기",
+  "sel.team_two": "<b>{name}</b>을(를) 다시 확인(<b>{ok}</b>)하면 2인 팀",
   "sel.style": "스타일",
   "sel.melee": "근접 ○",
   "sel.ranged": "메인 □",

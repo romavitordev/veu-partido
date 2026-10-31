@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "ASIST. 1",
   "sel.assist2": "ASIST. 2",
   "sel.teamLink": "ESPECIAL EN EQUIPO",
+  "sel.team_two": "Confirma a <b>{name}</b> otra vez (<b>{ok}</b>) para luchar en dúo",
   "sel.style": "Estilo",
   "sel.melee": "Físico ○",
   "sel.ranged": "Principal □",

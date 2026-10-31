@@ -1,6 +1,7 @@
 import { COMBAT } from '../config/combat.js';
 import * as THREE from 'three';
 import { applyHit } from './damage.js';
+import { inBounds } from './positioning.js';
 import { glowMat } from '../models/rig.js';
 import { knife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow } from '../models/weapons.js';
 import { createMistZone } from './abilities.js';
@@ -666,7 +667,7 @@ export class Projectiles {
             if (typeof res === 'number' && res >= 0) this.applyOnHit(p, target);
           }
           dead = true;
-        } else if (p.pos.y <= 0.12 || w.arena.blocksPoint(p.pos, a.radius * 0.5) || p.age > 4) {
+        } else if (p.pos.y <= 0.12 || this.wall(p.pos, a.radius * 0.5) || p.age > 4) {
           p.pos.copy(prev).setY(Math.max(0.12, prev.y));
           if (a.explode) this.explode(p);
           else w.fx.burst(p.pos, { count: 8, color: a.color, speed: 2, life: 0.3, size: 0.25 });
@@ -726,7 +727,7 @@ export class Projectiles {
           dead = true;
           break;
         }
-        if (w.arena.blocksPoint(p.pos, a.radius * 0.5)) {
+        if (this.wall(p.pos, a.radius * 0.5)) {
           w.fx.impact(p.pos, a.color, 0.6);
           if (a.stick) this.stick(p);
           if (a.pool) this.poolBelow(p);
@@ -816,7 +817,7 @@ export class Projectiles {
   poolBelow(p) {
     const w = this.world;
     const back = p.pos.clone().addScaledVector(p.dir, -0.6); // um pouco antes da parede (do lado de dentro)
-    if (w.arena.blocksPoint(new THREE.Vector3(back.x, 0.5, back.z), 0.3)) return;
+    if (this.wall(new THREE.Vector3(back.x, 0.5, back.z), 0.3)) return;
     addBloodPool(w, p.owner, back.x, back.z, p.ability.pool);
   }
 
@@ -848,7 +849,14 @@ export class Projectiles {
     for (const n of w.npcs) if (n.alive && n.owner !== p.owner && n.hitTest(c, E.radius)) n.hitBy(p.owner, E.damage || 0, { kind: 'ranged' });
   }
 
-  // tira um projétil do campo (fizzle = some com uma fumacinha)
+  // parede para o TIRO: os obstáculos do cenário e, nos cenários de retângulos andáveis, tudo fora deles SEM a folga de
+  // 0,6 m do blocksPoint — com a folga, os retângulos do salão e da calçada do Bar Suvaco Seco se encostavam e a parede
+  // fina entre eles (0,65 m) deixava passar as balas
+  wall(p, r) {
+    const arena = this.world.arena;
+    return arena.blocksPoint(p, r) || (!!arena.bounds && !inBounds(arena, p.x, p.z, 0));
+  }
+
   // linha livre de obstáculos entre dois pontos (amostras a cada 0,2 m)
   clearLine(a, b, radius) {
     const d = b.clone().sub(a);
@@ -856,7 +864,7 @@ export class Projectiles {
     const q = new THREE.Vector3();
     for (let i = 1; i <= n; i++) {
       q.copy(a).addScaledVector(d, i / n);
-      if (this.world.arena.blocksPoint(q, radius)) return false;
+      if (this.wall(q, radius)) return false;
     }
     return true;
   }
@@ -877,7 +885,7 @@ export class Projectiles {
     const isBlocked = (i) => {
       if (blocked[i] < 0) {
         q.set(x0 + (i % nx) * C, y, z0 + Math.floor(i / nx) * C);
-        blocked[i] = this.world.arena.blocksPoint(q, radius * 0.5) ? 1 : 0;
+        blocked[i] = this.wall(q, radius * 0.5) ? 1 : 0;
       }
       return blocked[i] === 1;
     };
@@ -915,7 +923,7 @@ export class Projectiles {
     const q = new THREE.Vector3();
     for (const k of [0.25, 0.5, 0.75, 1]) {
       q.copy(pos).addScaledVector(dir, len * k);
-      if (this.world.arena.blocksPoint(q, radius)) return true;
+      if (this.wall(q, radius)) return true;
     }
     return false;
   }

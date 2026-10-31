@@ -103,6 +103,7 @@ export default {
   "sel.assist1": "援护 1",
   "sel.assist2": "援护 2",
   "sel.teamLink": "团队必杀",
+  "sel.team_two": "再次确认 <b>{name}</b>（<b>{ok}</b>）即可两人组队",
   "sel.style": "风格",
   "sel.melee": "近战 ○",
   "sel.ranged": "主要 □",

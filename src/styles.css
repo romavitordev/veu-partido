@@ -576,6 +576,11 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 .plate .pv b { color: #f0eaf8; }
 .sel-grid .card.picked { filter: grayscale(.7) brightness(.6); }
 .sel-grid .card.picked::after { content: '✔'; position: absolute; top: 4px; right: 6px; color: #3ad17a; font-weight: 900; }
+/* recomendado (fecha um especial de equipe com os já escolhidos): a chama dourada do Storm 4 */
+.sel-grid .card.rec { box-shadow: 0 0 0 2px #ffd84a, 0 0 18px #ffb020; animation: rec-pulse 1.1s ease-in-out infinite alternate; }
+.sel-grid .card.rec::before { content: '★'; position: absolute; top: 3px; left: 6px; z-index: 2; color: #ffd84a; font-weight: 900; text-shadow: 0 0 8px #ff9a00; }
+@keyframes rec-pulse { to { box-shadow: 0 0 0 2px #ffd84a, 0 0 28px #ff9a00; } }
+.plate .duo { margin: 2px 0 6px; font-size: 11px; color: #ffd84a; letter-spacing: .04em; }
 .sel-side .det { flex: 0 1 auto; min-height: 0; max-height: 34%; overflow: hidden; padding: 6px 10px; border: 1px solid #2f2a3a; border-left: 0; border-right: 0; background: none; }
 .sel-side .det dl { grid-template-columns: 82px 1fr; font-size: 11.5px; gap: 2px 6px; }
 .sel-side .det dd i { color: var(--muted); font-style: normal; font-size: 10.5px; }

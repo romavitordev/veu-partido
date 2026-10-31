@@ -105,6 +105,28 @@ function coverage(link, defs) {
   return { hit, exact };
 }
 
+// RECOMENDAÇÃO NA SELEÇÃO (como no Naruto Storm 4: escolheu o primeiro, o cursor já vai para quem fecha um especial de
+// equipe com ele). Entre as ligações que têm TODOS os já escolhidos e ainda têm alguém que falta, ganha: `priority`,
+// depois a que fecha a equipe de 3 (grupo/trio antes de dupla), depois a ordem deste arquivo (as equipes mais conhecidas
+// primeiro). Devolve a entrada (id) do próximo membro — na ordem da ligação (`order`, senão a lista) — ou null.
+// available(entry): o membro existe no elenco (Thiago e Liz da Força D ainda não)
+export function recommendNext(members, available = () => true) {
+  const defs = members.map(defOf).filter((d) => d.id);
+  if (!defs.length || defs.length >= 3) return null;
+  const best = [];
+  Object.values(TEAM_LINKS).forEach((l, order) => {
+    if (!defs.every((d) => inLink(l, d))) return;
+    const list = l.group || l.members;
+    const ordered = l.order ? [...l.order, ...list.filter((e) => !l.order.includes(e))] : list;
+    const next = ordered.find((e) => !defs.some((d) => matchesEntry(e, d)) && available(e));
+    if (!next) return;
+    const three = (l.group ? l.min : l.members.length) >= 3 ? 1 : 0;
+    best.push({ next, three, order, pr: l.priority || 0 });
+  });
+  best.sort((a, b) => b.pr - a.pr || b.three - a.three || a.order - b.order);
+  return best.length ? best[0].next : null;
+}
+
 // A ligação da equipe (ou null). members[0] é o líder.
 export function getTeamLink(members) {
   if (!members || members.length < 2) return null;

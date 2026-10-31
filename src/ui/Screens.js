@@ -9,7 +9,7 @@ import { moveListHTML, specialSummary } from './moves.js';
 import { VERSION, VERSION_LABEL, CHANGELOG, formatVersion } from '../config/version.js';
 import { t, getLanguage } from '../i18n/index.js';
 import { roundKey } from '../game/tournament.js';
-import { getTeamLink } from '../config/teamLinks.js';
+import { getTeamLink, recommendNext, matchesEntry } from '../config/teamLinks.js';
 
 // Telas fora da luta. Todas recebem as entradas normalizadas dos dois jogadores.
 // Fluxo: Título → Menu principal (P1 VS P2 / P1 VS CPU / Opções) → Personagens →
@@ -348,7 +348,8 @@ export class SelectScreen {
     this.audio = audio;
     this.mode = mode;
     this.team = team;
-    this.picks = [[], []]; // equipe: [líder, assist1, assist2]
+    this.picks = [[], []]; // equipe: [líder, assist1, assist2] (ou só líder + 1)
+    this.rec = [null, null]; // o cartão recomendado (ligação de equipe) de cada lado
     this.M = MODES[mode] || MODES.pvp;
     this.cpu = this.M.single; // um jogador escolhe os dois lados
     // cursor = o lutador escolhido (a VERSÃO, índice no ROSTER); home = o cartão em que o cursor está na grade. As setas
@@ -443,6 +444,13 @@ export class SelectScreen {
     return `<div class="teamlink${done ? ' on' : ''}" style="--c:#${link.color.toString(16).padStart(6, '0')}"><small>${t('sel.teamLink')}</small><b>${link.name}</b></div>`;
   }
 
+  // escolhidos 2: confirmar o segundo de novo fecha a equipe em dupla (a dica aparece com o cursor nele)
+  duoLine(p) {
+    const picks = this.picks[p];
+    if (this.ready[p] || picks.length !== 2) return '';
+    return `<div class="duo">${t('sel.team_two', { ok: OK, name: ROSTER[picks[1]].name })}</div>`;
+  }
+
   // lutador com outras versões: "⇄ HENRI · JUAN" na placa, a escolhida acesa, com os botões que trocam (LB/RB)
   versionLine(p, front) {
     const vs = versionsOf(ROSTER.indexOf(front));
@@ -481,6 +489,7 @@ export class SelectScreen {
           card.querySelector('.tm').innerHTML = teamTags(shown);
         }
         card.classList.toggle('alt', home === i && c !== ROSTER[i]);
+        card.classList.toggle('rec', !this.ready[p] && this.rec[p] === i); // recomendado (fecha um especial de equipe)
       });
       const you = NET_UI.send && p === NET_UI.slot ? `${t('sel.you')} · ` : ''; // online: qual lado é o seu
       this.heads[p].textContent = you + (this.ready[p] ? t('sel.ready') : act >= 0 && act !== p ? t('sel.waiting') : `${t('sel.choosing')}${this.team ? ` ${this.picks[p].length + 1}/3` : ''}`);
@@ -489,7 +498,7 @@ export class SelectScreen {
       const teamLine = this.team ? `<div class="teampicks">${[t('sel.leader'), t('sel.assist1'), t('sel.assist2')].map((lab, k) => {
         const c2 = this.picks[p][k] !== undefined ? ROSTER[this.picks[p][k]] : null;
         return `<span class="${c2 ? 'on' : ''}"><small>${lab}</small><b style="color:${c2 ? c2.color : 'inherit'}">${c2 ? c2.name : '—'}</b></span>`;
-      }).join('')}</div>${this.teamLinkLine(p)}` : '';
+      }).join('')}</div>${this.teamLinkLine(p)}${this.duoLine(p)}` : '';
       this.plates[p].innerHTML = `
         <div class="pn" style="color:${front.color}">${front.name}</div>
         <div class="po">${defTeams(front).join(' / ')} · <span style="color:${ELEMENTS[front.element].color}">${ELEMENTS[front.element].name}</span></div>
@@ -547,7 +556,7 @@ export class SelectScreen {
       if (this.cpu ? this.bk(p1) : this.bk(p1) || this.bk(p2)) {
         const slot = this.cpu ? 1 : this.bk(p2) ? 1 : 0;
         this.ready[slot] = false;
-        if (this.team) this.picks[slot].pop();
+        if (this.team) this.picks[slot].pop(); this.rec[slot] = null;
         this.audio.play('select');
         this.render();
       }
@@ -573,12 +582,12 @@ export class SelectScreen {
 
   handle(p, slot) {
     if (this.ready[slot]) {
-      if (this.bk(p)) { this.ready[slot] = false; if (this.team) this.picks[slot].pop(); return true; }
+      if (this.bk(p)) { this.ready[slot] = false; if (this.team) this.picks[slot].pop(); this.rec[slot] = null; return true; }
       return false;
     }
     // equipe: B desfaz a última escolha do lado
-    if (this.team && this.bk(p) && this.picks[slot].length) { this.picks[slot].pop(); this.audio.play('select'); return true; }
-    if (this.bk(p) && this.cpu && slot === 1) { this.ready[0] = false; if (this.team) this.picks[0].pop(); return true; }
+    if (this.team && this.bk(p) && this.picks[slot].length) { this.picks[slot].pop(); this.rec[slot] = null; this.audio.play('select'); return true; }
+    if (this.bk(p) && this.cpu && slot === 1) { this.ready[0] = false; if (this.team) { this.picks[0].pop(); this.rec[0] = null; } return true; }
     const n = ROSTER.length;
     let changed = false;
     // LB / RB (Q / E · PgUp / PgDn): troca a VERSÃO do lutador sem sair do cartão (Henri ↔ Juan), em círculo
@@ -647,13 +656,33 @@ export class SelectScreen {
     this.audio.play('select');
   }
 
-  // confirma a escolha do lado; na equipe só fica pronto com 3 personagens diferentes
+  // confirma a escolha do lado; na equipe fica pronto com 3 personagens diferentes — ou com 2, confirmando de novo o
+  // segundo que acabou de escolher (Kaiser → Cris → Cris)
   lockPick(slot) {
     if (!this.team) { this.ready[slot] = true; return; }
     const c = this.cursor[slot];
-    if (this.picks[slot].includes(c)) { this.audio.play('denied'); return; }
-    this.picks[slot].push(c);
-    if (this.picks[slot].length >= 3) this.ready[slot] = true;
+    const picks = this.picks[slot];
+    if (picks.includes(c)) {
+      if (picks.length === 2 && picks[1] === c) { this.ready[slot] = true; this.rec[slot] = null; return; }
+      this.audio.play('denied');
+      return;
+    }
+    picks.push(c);
+    if (picks.length >= 3) { this.ready[slot] = true; this.rec[slot] = null; } else this.recommend(slot);
+  }
+
+  // o cursor vai sozinho para quem fecha um especial de equipe com os já escolhidos (Storm 4), e o cartão dele fica
+  // marcado em dourado; sem ligação com ninguém, o cursor fica onde está
+  recommend(slot) {
+    this.rec[slot] = null;
+    const entry = recommendNext(this.picks[slot].map((i) => ROSTER[i]), (e) => ROSTER.some((d) => matchesEntry(e, d)));
+    if (!entry) return;
+    let i = ROSTER.findIndex((d) => d.id === entry);
+    if (i < 0) i = ROSTER.findIndex((d) => matchesEntry(entry, d));
+    if (i < 0 || this.picks[slot].includes(i)) return;
+    this.cursor[slot] = i;
+    this.home[slot] = versionsOf(i)[0];
+    this.rec[slot] = this.home[slot];
   }
 
   flashRandom(slot, i) {
