@@ -1,8 +1,8 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -80,7 +80,15 @@ export const ARENAS = {
     thumbCamera: { pos: [0, 4, 15], look: [0, 4, -20] }, // o chão aceso com a arquibancada cheia ao fundo
     create: () => createGLBArena(PALCO),
   },
+  tipora: {
+    name: 'Ilha de Tipora',
+    description: 'O centro do vilarejo de O Segredo na Ilha à noite: casas de tábua, lampiões, a igreja no morro e, ao longe, o mar e o farol.',
+    colors: ['#123030', '#b49a78', '#ffb060'],
+    available: true,
+    thumbCamera: { pos: [-4, 4.5, 15], look: [4, 4, -40] }, // a praça com a igreja à direita e o mar e o farol ao fundo
+    create: () => createGLBArena(TIPORA),
+  },
 };
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco'];
+export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora'];
 export const DEFAULT_ARENA = 'ruinas';

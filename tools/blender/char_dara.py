@@ -21,12 +21,12 @@ hz = sk['hips'].z
 M = {
     'skin': material('skin_dara', '#efcdb6', 0.8),
     'face': material('face_dara', '#ffffff', 0.8),
-    'torso': material('shirt_dara', '#5a7a5a', 0.85),  # a blusa esverdeada
+    'torso': material('shirt_dara', '#3a8070', 0.85),  # a blusa ESVERDEADA (wiki: 'blusa esverdeada'; turquesa na arte promocional)
     'arm': material('coat_dara', '#141416', 0.8),
     'handL': material('glove_dara', '#6a4428', 0.7),
     'handR': material('skin_dara', '#efcdb6', 0.8),
-    'legs': material('pants_dara', '#6a4a30', 0.9),
-    'feet': material('shoe_dara', '#5a3820', 0.65),
+    'legs': material('pants_dara', '#3e2c20', 0.9),  # calça MARROM com as barras dobradas (wiki); escura como na arte
+    'feet': material('shoe_dara', '#4a3020', 0.65),  # sapatos marrons (wiki)
 }
 coat = M['arm']
 cyan = material('cyan_dara', '#2ab8c8', 0.7)
@@ -36,14 +36,15 @@ strap = material('strap_dara', '#3a2a1e', 0.8)
 bag = material('bag_dara', '#7a5a38', 0.85)
 blackp = material('plastic_dara', '#1e1e22', 0.5)
 uv = material('uv_dara', '#9a5aff', 0.3, emission='#7a3aff', strength=1.5)
-hairm = material('hair_dara', '#5a3a22', 0.55)
+hairm = material('hair_dara', '#6a3420', 0.55)  # castanho-avermelhado
 white = material('white_dara', '#e8e8e0', 0.8)
 
 hc = b.body(M, [(-0.11, 0.146), (0.0, 0.146), (0.17, 0.136), (0.36, 0.178), (0.47, 0.186), (0.57, 0.104), (0.63, 0.062)],
             arm_r=(0.056, 0.045, 0.038), leg_r=(0.08, 0.062, 0.048), head_r=(0.134, 0.144, 0.156))
 
-# a estampa da The Pression na blusa: um retângulo claro no peito
-b.add('band_print', box((0, -0.122 * H, hz + 0.42 * H), (0.11 * H, 0.008, 0.07 * H)), white, region='torso', subdiv=0)
+# a GOLA BRANCA da blusa (gola de marinheiro, arte promocional)
+for s in (1, -1):
+    b.add(f'collar_w{s}', tube([(s * 0.03 * H, -0.1 * H, hz + 0.6 * H, 0.012 * H, 0.004 * H), (s * 0.07 * H, -0.12 * H, hz + 0.55 * H, 0.016 * H, 0.004 * H), (s * 0.09 * H, -0.125 * H, hz + 0.5 * H, 0.012 * H, 0.004 * H)], 6), white, region='torso', subdiv=0)
 # o laço vermelho da gola e a gargantilha com o detalhe dourado
 b.add('bow', merge(ellipsoid((-0.025 * H, -0.105 * H, hz + 0.56 * H), (0.03, 0.014, 0.02), 8, 5), ellipsoid((0.025 * H, -0.105 * H, hz + 0.56 * H), (0.03, 0.014, 0.02), 8, 5)), red, region='torso', subdiv=0)
 b.add('choker', tube([(0, 0, 1.62 * H, 0.06 * H, 0.06 * H), (0, 0, 1.645 * H, 0.06 * H, 0.06 * H)], 14), red, region='neck', subdiv=0)
@@ -54,9 +55,18 @@ for s in (1, -1):
     b.add(f'avi_rim{s}', ellipsoid(c, (0.03, 0.01, 0.024), 10, 6), gold, region='torso', subdiv=0)
     b.add(f'avi_lens{s}', ellipsoid((c[0], c[1] - 0.006, c[2]), (0.026, 0.008, 0.02), 10, 6), red, region='torso', subdiv=0)
 
-# o SOBRETUDO PRETO aberto, até o joelho
-ct = [(hz - 0.36 * H, 0.22 * H, 0.17 * H), (hz - 0.1 * H, 0.2 * H, 0.155 * H), (hz + 0.16 * H, 0.172 * H, 0.13 * H), (hz + 0.36 * H, 0.21 * H, 0.148 * H), (hz + 0.48 * H, 0.218 * H, 0.15 * H), (hz + 0.57 * H, 0.15 * H, 0.112 * H), (hz + 0.62 * H, 0.108 * H, 0.09 * H)]
+# o SOBRETUDO PRETO aberto (wiki: "sobretudo preto"), até o meio da coxa
+ct = [(hz - 0.24 * H, 0.21 * H, 0.165 * H), (hz - 0.06 * H, 0.2 * H, 0.155 * H), (hz + 0.16 * H, 0.172 * H, 0.13 * H), (hz + 0.36 * H, 0.21 * H, 0.148 * H), (hz + 0.48 * H, 0.218 * H, 0.15 * H), (hz + 0.57 * H, 0.15 * H, 0.112 * H), (hz + 0.62 * H, 0.108 * H, 0.09 * H)]
 b.add('coat', open_tube(ct, gap=0.2, seg=26), coat, region='skirt')
+# o BRACELETE DOURADO mecânico no braço esquerdo (arte)
+sL, eL0 = sk['sL'], sk['eL']
+b.add('bracer', tube(limb_rings(sL.lerp(eL0, 0.35), sL.lerp(eL0, 0.65), 0.062, 0.058, n=2), 12), gold, region='eL', subdiv=0)
+# as BOLSAS das coxas na calça cargo
+for side, s in (('L', 1), ('R', -1)):
+    l, k = sk['l' + side], sk['k' + side]
+    p = l.lerp(k, 0.45)
+    b.add('thighpouch' + side, box((p.x + s * 0.075, p.y - 0.02, p.z), (0.03, 0.07, 0.09), bevel=0.008), bag, region='l' + side, subdiv=0)
+    b.add('thighstrap' + side, tube(limb_rings(l.lerp(k, 0.4), l.lerp(k, 0.44), 0.085, 0.085, n=1), 12), strap, region='l' + side, subdiv=0)
 for s in (1, -1):
     lap = [(s * 0.065 * H, -0.098 * H, hz + 0.6 * H, 0.028 * H, 0.008 * H), (s * 0.11 * H, -0.13 * H, hz + 0.5 * H, 0.036 * H, 0.008 * H), (s * 0.13 * H, -0.145 * H, hz + 0.4 * H, 0.022 * H, 0.008 * H)]
     b.add(f'lapel{s}', tube(lap, 6), coat, region='torso', subdiv=0)
@@ -65,8 +75,8 @@ for side in ('L', 'R'):
     b.add('cuff' + side, tube(limb_rings(e.lerp(sk['hand' + side], 0.72), e.lerp(sk['hand' + side], 0.86), 0.05, 0.05, n=1), 12), coat, region='e' + side, subdiv=0)
 
 # a BANDOLEIRA cruzando o peito e a ALÇA da bolsa grande no ombro direito
-for k, (a0, a1) in enumerate(((0.16, -0.16), (-0.16, 0.16))):
-    pts = [(a0 * H, -0.135 * H, hz + 0.55 * H, 0.016 * H, 0.006 * H), (0, -0.142 * H, hz + 0.36 * H, 0.016 * H, 0.006 * H), (a1 * H, -0.13 * H, hz + 0.12 * H, 0.016 * H, 0.006 * H)]
+for k, s in enumerate((1, -1)):  # as alças de couro verticais (suspensório da bolsa, arte promocional)
+    pts = [(s * 0.1 * H, -0.12 * H, hz + 0.58 * H, 0.016 * H, 0.006 * H), (s * 0.095 * H, -0.142 * H, hz + 0.36 * H, 0.016 * H, 0.006 * H), (s * 0.09 * H, -0.135 * H, hz + 0.08 * H, 0.016 * H, 0.006 * H)]
     b.add(f'bandolier{k}', tube(pts, 6), strap, region='torso', subdiv=0)
 # a bolsa enorme pendurada no quadril esquerdo, maior que o tronco
 b.add('bigbag', box((0.21 * H, 0.02 * H, hz + 0.02 * H), (0.11 * H, 0.22 * H, 0.2 * H), bevel=0.02), bag, region='torso', subdiv=0)
@@ -125,6 +135,9 @@ for i in range(5):
 bz = hc.z + 0.1 * H
 b.add('headband', tube([(0, 0.0, bz - 0.014, 0.15 * H, 0.16 * H), (0, 0.0, bz + 0.014, 0.148 * H, 0.158 * H)], 24, cap_start=False, cap_end=False), cyan, region='head', subdiv=0)
 b.add('headband_knot', merge(ellipsoid((0.04, 0.155 * H, bz), (0.02, 0.012, 0.016), 6, 4), tube([(0.04, 0.16 * H, bz, 0.012, 0.006), (0.07, 0.17 * H, bz - 0.08, 0.01, 0.005)], 5)), cyan, region='head', subdiv=0)
+# o LAÇO da bandana em cima da cabeça (as duas orelhas do laço)
+for s in (1, -1):
+    b.add(f'bow_top{s}', ellipsoid((0.05 * H + s * 0.035 * H, -0.03 * H, bz + 0.08 * H), (0.035 * H, 0.012 * H, 0.025 * H), 8, 5), cyan, region='head', subdiv=0)
 
 import sculpt_lib
 sculpt_lib.cloth_pass(b.parts, ['shirt_dara', 'pants_dara', 'coat_dara'], H)

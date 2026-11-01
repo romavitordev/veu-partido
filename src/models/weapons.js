@@ -1052,6 +1052,52 @@ export function leonora() {
   return g;
 }
 
+// METRALHADORA DO MORATO (arte "Metralhadora de Morato em Sinais do Outro Lado"): cano longo com o tubo de gás por
+// baixo, a alça de transporte, o BIPÉ dobrado e a FITA DE MUNIÇÃO dourada pendurada. Mesma orientação do m4 (cano
+// para -Y a partir da mão)
+export function machineGun() {
+  const g = new THREE.Group();
+  const dark = 0x2a2c30, steel = 0x4a4d54;
+  const recv = part(new THREE.BoxGeometry(0.075, 0.36, 0.11), dark);
+  recv.position.y = -0.06;
+  g.add(recv);
+  const stock = part(new THREE.BoxGeometry(0.06, 0.24, 0.09), dark);
+  stock.position.set(0, 0.22, -0.01);
+  g.add(stock);
+  const barrel = part(new THREE.CylinderGeometry(0.018, 0.018, 0.62, 8), steel);
+  barrel.position.y = -0.52;
+  g.add(barrel);
+  for (let i = 0; i < 4; i++) {
+    const ring = part(new THREE.CylinderGeometry(0.026, 0.026, 0.02, 8), dark);
+    ring.position.y = -0.3 - i * 0.1;
+    g.add(ring);
+  }
+  const gas = part(new THREE.CylinderGeometry(0.012, 0.012, 0.42, 6), steel);
+  gas.position.set(0, -0.42, -0.04);
+  g.add(gas);
+  const handle = part(new THREE.BoxGeometry(0.02, 0.12, 0.05), dark);
+  handle.position.set(0, -0.12, 0.085);
+  g.add(handle);
+  for (const s of [1, -1]) {
+    const leg = part(new THREE.CylinderGeometry(0.007, 0.007, 0.26, 5), steel);
+    leg.position.set(0.03 * s, -0.68, -0.06);
+    leg.rotation.x = -0.15;
+    g.add(leg);
+  }
+  const brass = 0xc8a040;
+  for (let i = 0; i < 7; i++) {
+    const round = part(new THREE.CylinderGeometry(0.009, 0.009, 0.05, 5), brass);
+    round.rotation.z = Math.PI / 2;
+    round.position.set(0.05, -0.04 + i * 0.012, -0.08 - i * 0.022);
+    g.add(round);
+  }
+  const muzzle = new THREE.Object3D();
+  muzzle.position.y = -0.86;
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
 // MAGNUM: revólver grande (o .38 da Kemi) de cano longo, preto com cabo de madeira
 export function magnum() {
   const g = new THREE.Group();

@@ -13,7 +13,7 @@ import { blocksPointGeneric } from '../combat/positioning.js';
 //   SWAY_*      → balança devagar (balanços, estandartes)
 //   HIDE_*      → removido (ajuda de modelagem)
 // Materiais com nome em ARENA_TEXTURES recebem textura pintada em código.
-// Na config: particles (um ou uma lista), stars (céu estrelado), fires (fogueiras animadas), mist (névoa).
+// Na config: particles (um ou uma lista), stars (céu estrelado), fires (fogueiras animadas), mist (névoa), beacons (facho de farol).
 
 const cache = {};
 
@@ -30,11 +30,12 @@ export function createGLBArena(cfg) {
   const flicker = [];
   const sway = []; const spin = [];
   const crowd = []; // CROWD_*: a plateia (Palco do Anfitrião) pula com a empolgação da luta (cheer)
-  let excite = 0.15; let exciteFor = 0; let exciteTo = 0.15;
+  let excite = 0.15; let exciteFor = 0; let exciteTo = 0.15; let clapFor = 0;
   let time = 0;
   let particles = [];
   let mist = null;
   let fires = [];
+  let beacons = [];
 
   const arena = {
     id: cfg.id,
@@ -46,6 +47,7 @@ export function createGLBArena(cfg) {
     occluders,
     solids,
     spawns: cfg.spawns,
+    fireZones: cfg.fireZones || [], // fogo pisável que queima (arena/fireZones.js)
 
     build(scene) {
       const gltf = cache[cfg.id];
@@ -72,9 +74,10 @@ export function createGLBArena(cfg) {
       group.traverse((o) => {
         const node = taggedNode(o);
         const n = node.name || '';
-        if (n.startsWith('CROWD_') && !crowd.some((c) => c.o === node)) crowd.push({ o: node, y: node.position.y, seed: crowd.length * 1.7 });
+        if (n.startsWith('CROWD_') && !crowd.some((c) => c.o === node)) crowd.push({ o: node, y: node.position.y, s: node.scale.clone(), seed: crowd.length * 1.7 });
         if (n.startsWith('COL_') || n.startsWith('HIDE_')) {
-          if (o.isMesh) {
+          // cfg.dropColliders: colisores do .glb que o jogo ignora (ex.: a fogueira do Acampamento virou fogo pisável)
+          if (o.isMesh && !(cfg.dropColliders || []).some((p) => n.startsWith(p))) {
             const bb = new THREE.Box3().setFromObject(o);
             if (n.startsWith('COL_cyl')) {
               colliders.push({ x: (bb.min.x + bb.max.x) / 2, z: (bb.min.z + bb.max.z) / 2, r: Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z) / 2, h: bb.max.y });
@@ -180,6 +183,7 @@ export function createGLBArena(cfg) {
       if (cfg.stars) makeStars(group, cfg.stars);
       fires = (cfg.fires || []).map((o) => makeFire(group, o));
       if (cfg.mist) mist = makeMist(group, cfg.mist);
+      beacons = (cfg.beacons || []).map((o) => makeBeacon(group, o));
     },
 
     update(dt) {
@@ -196,7 +200,13 @@ export function createGLBArena(cfg) {
       if (crowd.length) {
         if (exciteFor > 0) exciteFor -= dt; else exciteTo = 0.15;
         excite += (exciteTo - excite) * Math.min(1, dt * 4);
-        for (const c of crowd) c.o.position.y = c.y + Math.abs(Math.sin(time * (5 + excite * 4) + c.seed)) * 0.35 * excite;
+        if (clapFor > 0) clapFor -= dt;
+        const clap = clapFor > 0 ? Math.min(1, clapFor * 2) : 0;
+        for (const c of crowd) {
+          c.o.position.y = c.y + Math.abs(Math.sin(time * (5 + excite * 4) + c.seed)) * 0.35 * excite;
+          const k = clap ? 1 + Math.abs(Math.sin(time * 22 + c.seed * 3)) * 0.07 * clap : 1;
+          c.o.scale.set(c.s.x * k, c.s.y * (2 - k), c.s.z * k);
+        }
       }
       for (const s of sway) {
         s.o.rotation.x = s.rot.x + Math.sin(time * 1.1 + s.seed) * 0.06;
@@ -205,11 +215,25 @@ export function createGLBArena(cfg) {
       for (const pt of particles) pt.update(dt);
       for (const f of fires) f.update(dt, time);
       if (mist) mist.update(dt);
+      for (const b of beacons) b.rotation.y += b.userData.speed * dt;
     },
 
     // a plateia: level 0 (silêncio, prende a respiração) a 1 (de pé, pulando) por `time` s; depois volta ao normal
-    cheer(level, time = 2.5) {
+    cheer(level, time = 2.5, { clap = false } = {}) {
       if (level >= exciteTo || exciteFor <= 0 || level === 0) { exciteTo = level; exciteFor = time; }
+      if (clap) clapFor = Math.max(clapFor, time);
+    },
+
+    // o ponto da plateia mais perto de `p` (para a câmera da cena da Plateia); null se a arena não tem plateia
+    crowdPoint(p) {
+      let best = null, bd = Infinity;
+      // os grupos CROWD_ têm a origem no centro do mundo: o ponto é o centro da caixa de cada grupo (calculado uma vez)
+      for (const c of crowd) {
+        if (!c.center) c.center = new THREE.Box3().setFromObject(c.o).getCenter(new THREE.Vector3());
+        const d = c.center.distanceToSquared(p);
+        if (d < bd) { bd = d; best = c.center.clone(); }
+      }
+      return best;
     },
 
     blocksPoint(p, r = 0) {
@@ -339,6 +363,26 @@ function makeParticles(group, o) {
       p.needsUpdate = true;
     },
   };
+}
+
+// FACHO DE FAROL: dois cones de luz aditiva saindo da lanterna em lados opostos, girando em volta dela
+function makeBeacon(group, o) {
+  const pivot = new THREE.Group();
+  pivot.position.set(...o.pos);
+  pivot.userData.speed = o.speed ?? 0.6;
+  const len = o.length ?? 60;
+  const geo = new THREE.ConeGeometry(o.radius ?? 4, len, 20, 1, true);
+  geo.translate(0, -len / 2, 0);
+  geo.rotateZ(Math.PI / 2); // a ponta na lanterna, abrindo para +x
+  const mat = new THREE.MeshBasicMaterial({ color: o.color ?? 0xfff2c0, transparent: true, opacity: o.opacity ?? 0.15, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false });
+  for (const s of [0, Math.PI]) {
+    const beam = new THREE.Mesh(geo, mat);
+    beam.rotation.y = s;
+    beam.rotation.z = -0.04;
+    pivot.add(beam);
+  }
+  group.add(pivot);
+  return pivot;
 }
 
 // CÉU ESTRELADO: pontos numa cúpula longe (sem névoa), alguns maiores e mais brilhantes

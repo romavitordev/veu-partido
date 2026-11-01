@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://romavitordev.github.io/arena-paranormal/sitemap.xml
+Sitemap: https://romavitordev.github.io/veu-partido/sitemap.xml

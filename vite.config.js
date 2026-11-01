@@ -61,7 +61,7 @@ export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(PKG.version) },
   // APP_BASE: os apps instalados (PC/Electron e Android/Capacitor) servem o jogo na raiz, mesmo quando o build roda no
   // GitHub Actions (o workflow de release passa APP_BASE=/)
-  base: process.env.APP_BASE || (process.env.GITHUB_ACTIONS ? '/arena-paranormal/' : '/'),
+  base: process.env.APP_BASE || (process.env.GITHUB_ACTIONS ? '/veu-partido/' : '/'),
   plugins: [aiLearnedPlugin(), pwaPlugin()],
   // gravar o aprendizado não pode recarregar a página no meio da luta
   server: { watch: { ignored: ['**/public/ai/**', '**/assets_src/**'] } },

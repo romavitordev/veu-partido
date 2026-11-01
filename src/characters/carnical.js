@@ -4,7 +4,11 @@
 // tomada pelo Lodo, o cérebro vermelho à mostra e o SÍMBOLO ESPIRAL brilhando na testa.
 // Kit (Habilidades da wiki, todas confirmadas):
 //   Garra da Morte ......... as garras do combo e o especial ("poucos e velozes movimentos")
-//   Físico Paranormal ...... □ Investida Mortal (velocidade e alcance assustadores) e o salto (△ + ×)
+//   Físico Paranormal ...... o salto (△ + ×)
+// KIT FRIO (pedido do dono, 2026-11-01; wiki: "calmo e preciso, até mesmo quando prepara um ataque", "assim que é
+// atacado, olha para seu agressor e usa sua Hipnose para o controlar"): ele não ataca por impulso — controla. O □ são as
+// LÁGRIMAS DE LODO (PROPOSTA a partir do cânone: os controlados choram Lodo Preto) que deixam LENTO, e a Hipnose Espiral
+// faz a vítima SE GOLPEAR (a morte de Brúlio). Só no Instinto Mortal ele vira o bicho das garras.
 //   Pancada Poderosa ....... △ + L2 (empurra a vítima para longe)
 //   Hipnose Espiral ........ △ + ○ (o contato visual: a vítima só vê o Símbolo Espiral)
 //   Comando ................ R2 + △ (uma ordem simples à criatura próxima)
@@ -15,7 +19,6 @@
 // clipes de besta do Raziel (db_*).
 import raziel from './raziel.js';
 import juan from './juan.js';
-import ferreiro from './ferreiro.js';
 
 const LODO = 0x2a2632;
 const RED = 0xd8261a;
@@ -34,11 +37,11 @@ export default {
   energyColor: RED,
   info: {
     weapon: 'Garras de Lodo que exalam a Morte',
-    style: 'Rápido e brutal: entra de longe num salto, rasga com as garras e hipnotiza quem olha para o Símbolo',
+    style: 'Frio e preciso: deixa a vítima lenta com o Lodo, hipnotiza quem olha para o Símbolo e a faz se ferir; ferido, vira bicho',
     identity: 'A criatura de Lodo com o Símbolo Espiral na testa',
     tagline: 'Não olhe para a espiral.',
   },
-  stats: { moveSpeed: 8.4, attackSpeed: 1.08 }, // Físico Paranormal
+  stats: { moveSpeed: 7.4, attackSpeed: 1.0 }, // anda calmo, gracioso e arrogante (wiki); o Instinto Mortal acelera
   anims: { idle: 'idle_raziel', run: 'run', charge: 'db_charge', victory: 'taunt_roar', block: 'db_block' },
   chargeFx: { style: 'aura', color: RED, smoke: LODO },
   dodge: { style: 'default', distance: 4.6 },
@@ -55,23 +58,57 @@ export default {
     air: claw(raziel.melee.air, 'Cair sobre a vítima'),
   },
 
-  // □ INVESTIDA MORTAL (Físico Paranormal): atravessa a arena e rasga em X no fim
+  // □ LÁGRIMAS DE LODO (PROPOSTA): um fio de Lodo Preto lançado com um gesto — pesa nas pernas de quem pega (LENTO)
   ranged: {
-    ...raziel.ranged,
-    name: 'Investida Mortal',
-    description: 'Físico Paranormal: dispara como um bicho, 10 m em linha, e rasga em X com as garras quem encontrar no caminho.',
-    color: RED,
+    name: 'Lágrimas de Lodo',
+    type: 'projectile',
+    anim: 'point',
+    description: 'Com um gesto calmo, lança Lodo Preto: quem pega fica LENTO por 2,5 s.',
+    windup: 0.3,
+    recovery: 0.32,
+    count: 1,
+    interval: 0,
+    damage: 28,
+    range: 16,
+    speed: 18,
+    radius: 0.45,
+    spread: 0,
+    knockback: 0.6,
+    hitstun: 0.3,
+    cooldown: 2.8,
+    energyCost: 0,
+    visual: 'decay',
+    color: LODO,
     element: 'morte',
-    bleed: undefined,
+    sound: 'drain',
+    hitSound: 'impact',
+    onHit: { slow: { time: 2.5, mult: 0.65 } },
   },
 
   abilities: [
     {
-      // △ + ○ HIPNOSE ESPIRAL (wiki: "assim que é feito o contato visual, o alvo só consegue visualizar o Símbolo Espiral")
-      ...abil(ferreiro, 'hipnoseEspiral'),
+      // △ + ○ HIPNOSE ESPIRAL (wiki: "assim que é feito o contato visual... as faz atacar a si mesmas, como na morte de
+      // Brúlio"; os controlados choram Lodo Preto)
       id: 'hipnoseCarnical',
-      description: 'O Símbolo Espiral da testa acende: quem olha para ele anda em círculos até o Carniçal, sem conseguir defender, e fica parado em transe.',
+      name: 'Hipnose Espiral',
+      input: 'carga+physical',
+      type: 'spiralSelfHarm',
+      anim: 'point',
+      description: 'O Símbolo Espiral da testa acende: quem estiver OLHANDO para ele entra em transe, chora Lodo e se golpeia duas vezes. Ao acordar, fica LENTO por 3 s.',
+      energyCost: 30,
+      cooldown: 13,
+      windup: 0.45,
+      recovery: 0.35,
+      range: 11,
+      arc: 50,
+      lookArc: 120,
+      trance: 2.0,
+      hits: 2,
+      gap: 0.75,
+      damage: 32,
+      slow: { time: 3, mult: 0.6 },
       color: RED,
+      ai: { when: 'far', min: 2 },
     },
     {
       // △ + × SALTO (Físico Paranormal: "pode usar suas musculosas pernas para saltar bons metros") — o bote do Raziel

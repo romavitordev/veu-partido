@@ -276,9 +276,9 @@ export const PASSIVES = {
       if (victim.health / victim.maxHealth > (passive.below ?? 0.3)) return;
       victim.revengeUsed = true;
       const d = passive.duration ?? 8;
-      victim.addBuff({ type: 'revenge', name: 'SEDE DE VINGANÇA', time: d, duration: d, mult: passive.mult ?? 1.3, affects: ['melee', 'ranged', 'ability'], speedMult: passive.speedMult ?? 1.1 });
+      victim.addBuff({ type: 'revenge', name: passive.label ?? 'SEDE DE VINGANÇA', time: d, duration: d, mult: passive.mult ?? 1.3, affects: ['melee', 'ranged', 'ability'], speedMult: passive.speedMult ?? 1.1 });
       victim.energy = Math.min(victim.maxEnergy, victim.energy + (passive.energy ?? 35));
-      victim.notify('SEDE DE VINGANÇA', true);
+      victim.notify(passive.label ?? 'SEDE DE VINGANÇA', true);
       world.fx.burst(victim.chestPos(), { count: 26, color: 0xe8c070, speed: 4, life: 0.5, size: 0.18 });
       world.fx.ring(victim.pos.clone().setY(0.06), { color: 0xe8c070, radius: 2, life: 0.5 });
     },

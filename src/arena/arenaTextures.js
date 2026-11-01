@@ -254,6 +254,46 @@ export const ARENA_TEXTURES = {
   crate_blue: () => crate('#2a4ab0'),
   crate_yellow: () => crate('#d8a624'),
 
+
+  // ---------------- Ilha de Tipora
+  // a terra clara e rachada da praça (como no mapa do RPG), com tufos de grama
+  dirt_cracked: () => tex(512, 7, (g, s) => {
+    g.fillStyle = '#b49a78'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#9a8060', '#c8b08a', '#8a7050'], 9000, [1, 3], 0.4);
+    g.strokeStyle = 'rgba(70,50,30,0.22)'; g.lineWidth = 1;
+    for (let i = 0; i < 18; i++) {
+      let x = Math.random() * s, y = Math.random() * s;
+      g.beginPath(); g.moveTo(x, y);
+      for (let k = 0; k < 7; k++) { x += rnd(-26, 26); y += rnd(-26, 26); g.lineTo(x, y); }
+      g.stroke();
+    }
+    noise(g, s, ['#5a6a2a', '#4a5a22'], 260, [2, 5], 0.6);
+  }, { roughness: 1 }),
+  wood_grey: () => tex(256, 1.2, (g, s) => {
+    g.fillStyle = '#5a5248'; g.fillRect(0, 0, s, s);
+    for (let i = 0; i < s; i += 26) { g.fillStyle = 'rgba(20,16,12,0.55)'; g.fillRect(i, 0, 2, s); }
+    noise(g, s, ['#000', '#8a8070'], 1400, [1, 3], 0.25);
+  }),
+  roof_shingle: () => tex(256, 1.2, (g, s) => {
+    g.fillStyle = '#3a2618'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += 20) {
+      for (let x = (y / 20) % 2 ? -16 : 0; x < s; x += 32) {
+        const k = rnd(0.75, 1.15);
+        g.fillStyle = `rgb(${84 * k | 0},${60 * k | 0},${40 * k | 0})`;
+        g.fillRect(x + 1, y + 1, 30, 18);
+      }
+    }
+    noise(g, s, ['#000', '#3a5a2a'], 1200, [1, 3], 0.3);
+  }),
+  sea_tipora: () => tex(256, 8, (g, s) => {
+    g.fillStyle = '#2a7a72'; g.fillRect(0, 0, s, s);
+    g.strokeStyle = 'rgba(160,220,210,0.35)'; g.lineWidth = 2;
+    for (let i = 0; i < 40; i++) {
+      const x = Math.random() * s, y = Math.random() * s, w = rnd(14, 40);
+      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + w / 2, y - 5, x + w, y); g.stroke();
+    }
+  }, { roughness: 0.25 }),
+
   // ---------------- Coliseu
   sand: () => tex(512, 5, (g, s) => {
     g.fillStyle = '#c9a46a'; g.fillRect(0, 0, s, s);

@@ -60,7 +60,7 @@ export class PalcoHost {
     const list = typeof key === 'string' ? L[key] : key;
     const nm = (f) => (f ? CHARACTER_NAMES[f.def.id] || f.def.name : '');
     const text = this.pick(list).replace(/\{a\}/g, nm(a)).replace(/\{b\}/g, nm(b));
-    m.hud.subtitle({ name: NAME, color: COLOR, text, side: 0 });
+    m.hud.hostLine({ name: NAME, color: COLOR, text });
     this.lineLeft = Math.min(3.2, 1.4 + text.length * 0.03);
     this.nextLineAt = now + 7;
   }
@@ -116,7 +116,7 @@ export class PalcoHost {
     const m = this.match;
     if (this.lineLeft > 0) {
       this.lineLeft -= dt;
-      if (this.lineLeft <= 0 && !m.battleDialogue) m.hud.subtitle(null);
+      if (this.lineLeft <= 0) m.hud.hostLine(null);
     }
     if (m.phase !== 'fight') { this.roundStarted = false; return; }
     if (!this.roundStarted) {

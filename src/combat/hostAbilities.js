@@ -298,16 +298,45 @@ Object.assign(ABILITY_TYPES, {
       if (f.findBuff('audience')) { f.notify('A PLATEIA JÁ ESTÁ ASSISTINDO'); return null; }
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
-      const cam = world.camera.position;
-      f.yaw = Math.atan2(cam.x - f.pos.x, cam.z - f.pos.z);
+      const opp = f.opponent;
+      // para onde ele se curva: a plateia de verdade (Palco do Anfitrião) ou, nas outras arenas, a câmera
+      const chest = f.pos.clone().setY(1.4);
+      const crowdAt = world.arena.crowdPoint && world.arena.crowdPoint(chest);
+      const face = crowdAt || world.camera.position.clone();
+      const yawFace = Math.atan2(face.x - f.pos.x, face.z - f.pos.z);
+      f.yaw = yawFace;
       f.anim.play('host_look', { restart: true, duration: 0.45 });
-      tl.each(() => { f.yaw = Math.atan2(cam.x - f.pos.x, cam.z - f.pos.z); });
-      tl.add(0.45, () => {
+      tl.each(() => { f.yaw = yawFace; });
+      const cine = !world.cinematic && opp && opp.state !== 'ko';
+      if (cine) {
+        world.beginCinematic(f, opp);
+        const F = forwardFromYaw(yawFace);
+        const R = V(Math.cos(yawFace), 0, -Math.sin(yawFace));
+        const crowd = crowdAt || f.pos.clone().addScaledVector(F, 14).setY(4);
+        world.cameraRig.playShots([
+          // 1) a ARQUIBANCADA: de trás do Anfitrião, a câmera sobe e corre pela plateia de pé batendo palmas
+          { dur: 1.5, fov: 50,
+            pos: (t) => f.pos.clone().addScaledVector(F, -2.2).addScaledVector(R, 1.2 - t * 2.4).setY(2.4 + t * 0.5),
+            look: (t) => crowd.clone().addScaledVector(R, 3 - t * 6).setY(crowd.y + 0.4) },
+          // 2) o close no Anfitrião se curvando para os aplausos
+          { dur: 1.0, fov: 40,
+            pos: (t) => f.pos.clone().addScaledVector(F, 2.4 - t * 0.6).addScaledVector(R, 0.6).setY(1.5),
+            look: () => f.pos.clone().setY(1.25) },
+        ]);
+      }
+      world.arena.cheer && world.arena.cheer(1, 3.2, { clap: true });
+      world.audio.play('applause', { volume: 0.8 });
+      // confete neon por cima da plateia
+      for (let i = 0; i < 6; i++) {
+        const fwd = forwardFromYaw(yawFace);
+        const at = (crowdAt || f.pos.clone().addScaledVector(fwd, 10).setY(3)).clone().add(V((Math.random() - 0.5) * 8, 1 + Math.random() * 2, (Math.random() - 0.5) * 3));
+        world.fx.burst(at, { count: 10, color: NEON[i % 3], speed: 2, life: 1.0, size: 0.2 });
+      }
+      tl.add(1.5, () => {
         f.anim.play('host_bow', { restart: true, duration: 0.75 });
-        world.audio.play('applause', { volume: 0.8 });
-        world.arena.cheer && world.arena.cheer(1, 3); // no Palco do Anfitrião, a plateia de verdade se levanta
+        world.audio.play('applause', { volume: 0.7 });
       });
-      tl.add(0.85, () => {
+      tl.add(1.9, () => {
         world.audio.play('applause', { volume: 0.6 });
         const trail = world.fx.emitter({ rate: 20, follow: () => f.chestPos(), particle: { color: PINK, speed: 0.4, spread: 0.5, life: 0.4, size: 0.14 } });
         f.addBuff({ type: 'audience', name: 'A PLATEIA', time: a.duration, duration: a.duration, mult: a.damageMult, affects: a.affects, onEnd() { trail.stop(); } });
@@ -318,8 +347,9 @@ Object.assign(ABILITY_TYPES, {
           world.fx.burst(V(f.pos.x + Math.sin(ang) * 2.5, 2.2, f.pos.z + Math.cos(ang) * 2.5), { count: 6, color: NEON[i % 3], speed: 1.5, life: 0.6, size: 0.16 });
         }
       });
-      tl.end(a.animTime ?? 1.2);
-      return seqFrom(tl);
+      tl.add(2.5, () => { if (cine && world.cinematic && world.cinematic.actor === f) world.endCinematic(); });
+      tl.end(cine ? 2.55 : a.animTime ?? 1.2);
+      return seqFrom(tl, { cancel() { if (cine && world.cinematic && world.cinematic.actor === f) world.endCinematic(); } });
     },
   },
 

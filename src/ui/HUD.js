@@ -31,6 +31,7 @@ export class HUD {
       <div class="dmg p2"><small>DANO</small><b></b></div>
       <div id="callout"></div>
       <div id="subtitle"><b></b><span></span></div>
+      <div id="hostline"><b></b><span></span></div>
       <div id="banner"><div class="stripe"></div><div class="txt"></div></div>
       <div id="teamCut"></div>
       <div id="flash"></div>`;
@@ -39,6 +40,7 @@ export class HUD {
     this.roundsEl = root.querySelector('.rounds');
     this.callEl = root.querySelector('#callout');
     this.subEl = root.querySelector('#subtitle');
+    this.hostEl = root.querySelector('#hostline');
     this.dmgEls = [root.querySelector('.dmg.p1'), root.querySelector('.dmg.p2')];
     this.vignette = root.querySelector('#vignette');
     this.npcBar = root.querySelector('#npcbar');
@@ -70,6 +72,7 @@ export class HUD {
     this.callEl.textContent = '';
     this.bannerEl.querySelector('.txt').textContent = '';
     this.subtitle(null);
+    this.hostLine(null);
     this.setCinematic(false);
     this.flashEl.style.transition = 'none';
     this.flashEl.style.opacity = '0';
@@ -270,6 +273,20 @@ export class HUD {
       for (let k = need - 1; k >= 0; k--) html += `<i class="p2 ${match.wins[1] > k ? 'on' : ''}"></i>`;
       this.roundsEl.innerHTML = html;
     }
+  }
+
+  // Fala do narrador da arena (o Anfitrião no Palco): no CENTRO INFERIOR (no alto tapava a luta e os comandos), com moldura própria — separada das falas
+  // dos lutadores (nos cantos de baixo). null esconde.
+  hostLine(s) {
+    const el = this.hostEl;
+    if (!s) { el.classList.remove('on'); return; }
+    el.querySelector('b').textContent = s.name;
+    el.querySelector('b').style.color = s.color;
+    el.querySelector('span').textContent = s.text;
+    el.style.setProperty('--c', s.color);
+    el.classList.remove('on');
+    void el.offsetWidth;
+    el.classList.add('on');
   }
 
   // Fala de personagem (intro). null esconde.

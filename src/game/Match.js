@@ -4,6 +4,7 @@ import { t } from '../i18n/index.js';
 import { World } from './World.js';
 import { battleLines, introLines, BASE_CHARACTER } from '../config/dialogues.js';
 import { PalcoHost } from '../arena/palcoHost.js';
+import { updateFireZones } from '../arena/fireZones.js';
 import { Assist } from '../combat/assists.js';
 import { yawTo } from '../core/util.js';
 
@@ -179,6 +180,7 @@ export class Match {
     this.phaseTime += dt;
     const w = this.world;
     this.palco && this.palco.update(dt);
+    if (this.phase === 'fight' && w.arena.fireZones && w.arena.fireZones.length) updateFireZones(w, w.arena.fireZones, dt);
     switch (this.phase) {
       case 'entrance':
         this.updateEntrance(dt);

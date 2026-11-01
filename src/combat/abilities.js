@@ -1232,6 +1232,48 @@ Object.assign(ABILITY_TYPES, {
 
   // Gal — Controle Mental: sigilo dourado sobre o alvo; por alguns segundos o corpo dele obedece ao contrário
   // (direções invertidas). À distância, em cone — esquivar na hora escapa.
+  // HIPNOSE ESPIRAL do CARNIÇAL (wiki: "assim que é feito o contato visual, controla a vítima telepaticamente... as faz
+  // atacar a si mesmas, como na morte de Brúlio"; os controlados "expelem Lodo Preto pelos olhos, como lágrimas"). O
+  // Símbolo da testa acende; quem está OLHANDO para ele entra em transe e se golpeia a.hits vezes; ao sair, fica LENTO.
+  spiralSelfHarm: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      if (opp) f.yaw = yawTo(f.pos, opp.pos);
+      f.anim.play(a.anim || 'point', { restart: true, duration: a.windup + a.recovery });
+      world.audio.play('fearGaze', { pitch: 0.7 });
+      const head = (x) => x.rig.joints.hd.getWorldPosition(new THREE.Vector3());
+      world.fx.flash(head(f), { color: a.color, size: 1.1, life: a.windup });
+      tl.add(a.windup, () => {
+        if (!opp || opp.state === 'ko' || opp.isInvulnerable() || !inCone(f, opp, a.range, a.arc)) { f.notify('ERROU', true); return; }
+        if (Math.abs(angleDiff(opp.yaw, yawTo(opp.pos, f.pos))) > (a.lookArc * DEG) / 2) { opp.notify('NÃO OLHOU PARA A ESPIRAL', true); return; }
+        const tears = world.fx.emitter({ rate: 28, follow: () => head(opp), particle: { color: 0x0a0810, speed: 0.4, spread: 0.12, life: 0.6, size: 0.08 } });
+        world.fx.ring(head(opp).add(new THREE.Vector3(0, 0.35, 0)), { color: a.color, radius: 0.5, life: a.trance, vertical: false });
+        opp.vel.set(0, 0, 0);
+        opp.stun(a.trance, 'stagger');
+        opp.notify('HIPNOSE ESPIRAL', true);
+        world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
+        // o golpe é o do próprio alvo (a animação do primeiro golpe do combo dele) — o dano conta para o Carniçal
+        const s = opp.def.melee && opp.def.melee.strikes && opp.def.melee.strikes[0];
+        for (let i = 0; i < a.hits; i++) {
+          world.after(0.3 + i * a.gap, () => {
+            if (opp.state === 'ko') return;
+            if (s && s.anim) opp.anim.play(s.anim, { restart: true, duration: 0.4 });
+            applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: a.element || 'morte', knockback: 0, hitstun: 0.2, reaction: false, sound: 'punch', color: 0x1a1620, scale: 0.8 });
+            if (opp.state !== 'ko') opp.stun(Math.max(0.05, a.trance - (0.3 + i * a.gap)), 'stagger');
+          });
+        }
+        world.after(a.trance, () => {
+          tears.stop();
+          if (opp.state !== 'ko' && a.slow) opp.addBuff({ type: 'curseSlow', name: 'LENTO', time: a.slow.time, duration: a.slow.time, speedMult: a.slow.mult });
+        });
+      });
+      tl.end(a.windup + a.recovery);
+      return seqFrom(tl);
+    },
+  },
+
   mindControl: {
     start(f, a, world) {
       const opp = f.opponent;
@@ -2609,6 +2651,8 @@ Object.assign(ABILITY_TYPES, {
           world.fx.burst(opp.chestPos(), { count: 18, color: 0x9a0010, speed: 3, life: 0.5, size: 0.18, gravity: 8 });
         } else stopRope(); // acertou mas não prendeu (defendeu, por exemplo): a corda some
       });
+      // a.buff (Morato): depois de estalar as Magras, engole a Calabresa — o ódio vale acertando ou não
+      if (a.buff) tl.add(a.windup + 0.05, () => { if (!f.findBuff(a.buff.buffType)) applySelfBuff(f, { name: a.name, ...a.buff }, world); });
       tl.end(a.windup + 0.35);
       // interrompida antes do arremesso: não sobra corda (depois dele, quem cuida é o ticker/temporizador acima)
       return seqFrom(tl, { cancel: () => { if (rope && !caught && tl.time < a.windup) rope.forEach((x) => x.stop()); } });
@@ -3863,33 +3907,36 @@ Object.assign(ABILITY_TYPES, {
       const castT = a.animTime ?? 0.45;
       f.anim.play(a.anim || 'concentrate', { restart: true, duration: castT });
       world.audio.play(a.sound || 'ritual', { volume: 0.5 });
-      tl.add(Math.min(0.25, castT * 0.6), () => {
-        const trail = a.trail === false ? null : world.fx.emitter({ rate: 24, follow: () => f.chestPos(), particle: { color: a.color, speed: 0.4, spread: 0.4, life: 0.4, size: 0.16 } });
-        if (a.refillDodges) f.dodges = Math.max(f.dodges, a.refillDodges);
-        // a.orderAllies (Veríssimo — Inteligência Estratégica: "dar comandos para seus aliados, que, ao ouvirem a ordem,
-        // ganham um ataque extra"): na batalha em equipe as assistências ficam prontas na hora
-        if (a.orderAllies && f.assists) {
-          let ready = 0;
-          for (const as of f.assists) if (as && !as.active && as.cooldown > 0) { as.cooldown = 0; ready++; }
-          if (ready) f.notify('AGENTES, AGORA!', true);
-        }
-        if (a.armor) f.armorHits = (f.armorHits || 0) + a.armor; // estabilidade: aguenta golpes sem recuar
-        // a.redAura (Joui — Tomado pelo Ódio): a aura vermelha dos Mascarados em volta do corpo enquanto dura, e o
-        // clarão vermelho ao ativar; a.meleeBleed: os golpes físicos fazem sangrar (damage.js)
-        const aura = a.redAura ? world.fx.emitter({ rate: 34, follow: () => f.chestPos(), particle: { color: a.redAura, speed: 1, up: 1.2, spread: 0.6, life: 0.55, size: 0.2 } }) : null;
-        if (a.redAura) {
-          world.fx.flash(f.chestPos(), { color: a.redAura, size: 2.2, life: 0.2 });
-          world.screenFlash && world.screenFlash('#3a0606', 0.12);
-          world.audio.play('maskOn', { volume: 0.6, pitch: 0.9 });
-        }
-        f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, onEnd() { trail && trail.stop(); aura && aura.stop(); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
-        f.notify(a.label || a.name.toUpperCase(), true);
-      });
+      tl.add(Math.min(0.25, castT * 0.6), () => applySelfBuff(f, a, world));
       tl.end(castT);
       return seqFrom(tl);
     },
   },
 });
+
+// o efeito do selfBuff (também usado pelo bloodBind com a.buff: o Morato estala as Magras e engole a Calabresa)
+function applySelfBuff(f, a, world) {
+  const trail = a.trail === false ? null : world.fx.emitter({ rate: 24, follow: () => f.chestPos(), particle: { color: a.color, speed: 0.4, spread: 0.4, life: 0.4, size: 0.16 } });
+  if (a.refillDodges) f.dodges = Math.max(f.dodges, a.refillDodges);
+  // a.orderAllies (Veríssimo — Inteligência Estratégica: "dar comandos para seus aliados, que, ao ouvirem a ordem,
+  // ganham um ataque extra"): na batalha em equipe as assistências ficam prontas na hora
+  if (a.orderAllies && f.assists) {
+    let ready = 0;
+    for (const as of f.assists) if (as && !as.active && as.cooldown > 0) { as.cooldown = 0; ready++; }
+    if (ready) f.notify('AGENTES, AGORA!', true);
+  }
+  if (a.armor) f.armorHits = (f.armorHits || 0) + a.armor; // estabilidade: aguenta golpes sem recuar
+  // a.redAura (Joui — Tomado pelo Ódio): a aura vermelha dos Mascarados em volta do corpo enquanto dura, e o
+  // clarão vermelho ao ativar; a.meleeBleed: os golpes físicos fazem sangrar (damage.js)
+  const aura = a.redAura ? world.fx.emitter({ rate: 34, follow: () => f.chestPos(), particle: { color: a.redAura, speed: 1, up: 1.2, spread: 0.6, life: 0.55, size: 0.2 } }) : null;
+  if (a.redAura) {
+    world.fx.flash(f.chestPos(), { color: a.redAura, size: 2.2, life: 0.2 });
+    world.screenFlash && world.screenFlash('#3a0606', 0.12);
+    world.audio.play('maskOn', { volume: 0.6, pitch: 0.9 });
+  }
+  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, onEnd() { trail && trail.stop(); aura && aura.stop(); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
+  f.notify(a.label || a.name.toUpperCase(), true);
+}
 
 // REJEITAR NÉVOA (Kian): o que não é ritual não passa pela conjuração contínua — técnicas de arma, granadas, armadilhas
 // mecânicas, golpes de força e o Especial em Equipe. `a.ritual === false` numa habilidade também tira ela da regra.

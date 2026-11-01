@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.6.0';
+export const VERSION = '4.7.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,25 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.7.0',
+    date: '2026-11-01',
+    title: 'Os Cinco Completos',
+    items: [
+      'NOVO LUTADOR: CHICO, o técnico dos Cinco — o Pulso do Scanner de longe, o FAROL DA VAN que cega, o Scanner de Energia que acha o ponto fraco e o Remendão na fita.',
+      'NOVO LUTADOR: MORATO, o líder dos Cinco — a METRALHADORA, o "Tamo com Ele", a Larva da Fúria "Calabresa" e a Linha de Frente. Especial Pelos Cinco.',
+      'CARNIÇAL REFEITO: corpo de anatomia real coberto de fibras de Lodo, o vermelho nas costas e nos ombros, o crânio de verdade com o cérebro à mostra e a mandíbula de Lodo.',
+      'CARNIÇAL FRIO, como no cânone: a HIPNOSE ESPIRAL faz quem olha para o Símbolo se golpear duas vezes e acordar LENTO, e o □ agora são as LÁGRIMAS DE LODO, que deixam lento. Só no Instinto Mortal ele vira bicho.',
+      'Dara, Chico e Morato com modelos refeitos pelas artes oficiais.',
+      'Palco do Anfitrião: as falas do Anfitrião agora aparecem no centro de baixo, com moldura própria, sem tapar a luta. A PLATEIA virou cena: a câmera mostra a arquibancada de pé batendo palmas.',
+      'CHICO ganhou A VAN DOS CINCO: ele chama no walkie, a van vem por trás com a DARA no volante e atropela quem estiver na frente.',
+      'NOVO CENÁRIO: ILHA DE TIPORA (O Segredo na Ilha) — a praça do vilarejo à noite, com a igreja no morro, os lampiões, a mata e, ao longe, a Mansão dos Moretti no penhasco e o FAROL na praia com o facho girando.',
+      'Acampamento Varminho: dá para passar por cima da fogueira, mas ela queima (1 de dano por segundo; 2 nas criaturas de Morte).',
+      'MORATO: a Larva da Fúria "Calabresa" agora estala as MAGRAS — as Amarras de Sangue que ele deu de presente ao Lírio — e prende o alvo antes de ele engolir a Calabresa.',
+      'Página Sobre: Os Cinco, o Carniçal no Outro Lado e as arenas novas (Acampamento Varminho e Ilha de Tipora).',
+      'O site e o repositório mudaram para veu-partido (romavitordev.github.io/veu-partido).',
+    ],
+  },
   {
     v: '4.6.0',
     date: '2026-11-01',

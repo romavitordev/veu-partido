@@ -718,6 +718,49 @@ export const MATERIAL_TEXTURES = {
 
   // ---------------- ERIN: olhos verdes com olheiras sutis, sardas, sorriso solto
   // DARA: olhos escuros com sombra e delineado (a maquiagem simples da arte)
+  // MORATO: a calça CAMUFLADA (arte conceitual: manchas oliva, marrom e preto)
+  camo_morato: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#5a5c48'; g.fillRect(0, 0, 256, 256);
+    const cols = ['#3a3c2c', '#6e6a50', '#2a2620', '#4a4232'];
+    for (let i = 0; i < 46; i++) {
+      g.fillStyle = cols[i % cols.length];
+      g.beginPath();
+      const x = Math.random() * 256, y = Math.random() * 256, r = 10 + Math.random() * 22;
+      for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; const rr = r * (0.6 + Math.random() * 0.6); g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr * 0.7); }
+      g.closePath(); g.fill();
+    }
+  }, { wrap: true }),
+  // MORATO: olhar cansado (olheiras), a barba por fazer
+  face_morato: face((g) => {
+    g.fillStyle = 'rgba(20,12,8,0.35)';
+    for (let i = 0; i < 260; i++) { const a = Math.random() * Math.PI; const r = 60 + Math.random() * 14; g.fillRect(CX + Math.cos(a) * r * 0.9, 150 + Math.sin(a) * r * 1.05, 1.6, 1.6); }
+  }, {
+    skin: '#5a3a28',
+    eye: { iris: '#2a1a10', irisLight: '#4a3020', tilt: 0, lashes: false, bags: true },
+    brow: { angry: 1, thick: 4, color: '#120c08' },
+    mouth: { mouthW: 13, smile: 0, lip: 'rgba(60,30,24,0.5)' },
+  }),
+  // CHICO: as ESPIRAIS VERMELHAS nas bochechas, o piercing na sobrancelha e o cavanhaque por fazer
+  face_chico: face((g) => {
+    g.strokeStyle = 'rgba(200,40,40,0.85)'; g.lineWidth = 2.2;
+    for (const s of [-1, 1]) {
+      g.beginPath();
+      for (let t = 0; t < 1; t += 0.02) { const a = t * Math.PI * 5; const r = 2 + t * 13; const x = CX + s * 58 + Math.cos(a) * r, y = 150 + Math.sin(a) * r; if (t === 0) g.moveTo(x, y); else g.lineTo(x, y); }
+      g.stroke();
+    }
+    g.fillStyle = '#c8c8d0'; g.beginPath(); g.arc(CX + 46, EYE_Y - 22, 3, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(70,44,24,0.35)';
+    for (let i = 0; i < 120; i++) g.fillRect(CX - 30 + Math.random() * 60, 190 + Math.random() * 40, 1.5, 1.5);
+  }, {
+    skin: '#eac6ac',
+    eye: { iris: '#5a3a20', irisLight: '#8a6040', tilt: 0, lashes: false, bags: true },
+    brow: { angry: 0, thick: 3.5, color: '#4a2c18' },
+    mouth: { mouthW: 13, smile: 5, lip: 'rgba(170,90,80,0.4)' },
+  }),
+  // a manga da The Pression: listras AMARELAS e PRETAS
+  sleeve_chico: () => canvasTex(128, 128, (g) => {
+    for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? '#1a1a1e' : '#e0b828'; g.fillRect(0, i * 16, 128, 16); }
+  }, { wrap: true }),
   face_dara: face((g) => {
     g.strokeStyle = 'rgba(40,24,20,0.8)'; g.lineWidth = 2.2;
     for (const s of [-1, 1]) { g.beginPath(); g.moveTo(CX + s * 18, EYE_Y - 4); g.lineTo(CX + s * 50, EYE_Y - 8); g.stroke(); }

@@ -50,6 +50,132 @@ export function stuntCar(color = 0x6a1418) {
   return g;
 }
 
+// a VAN DOS CINCO (a mesma do Acampamento Varminho: escura, grafite verde neon, antena parabólica no teto) com a DARA
+// no volante — vista pelo para-brisa. Frente em +z, como o sedã; volante à esquerda (+x, carro brasileiro).
+export function vanDosCinco() {
+  const g = new THREE.Group();
+  const PAINT = 0x16241c, TRIM = 0x0c0e0e, NEON = 0x5cff7a;
+  const glass = new THREE.MeshBasicMaterial({ color: 0x0a1418, transparent: true, opacity: 0.32, depthWrite: false });
+  // baú (atrás) + cabine aberta com vidro (na frente): a Dara aparece pelo para-brisa e pelas janelas
+  const body = part(new THREE.BoxGeometry(2.0, 1.75, 3.0), PAINT);
+  body.position.set(0, 0.55 + 0.875, -0.95);
+  g.add(body);
+  const cabLow = part(new THREE.BoxGeometry(2.0, 0.75, 1.2), PAINT);
+  cabLow.position.set(0, 0.55 + 0.375, 1.15);
+  g.add(cabLow);
+  const nose = part(new THREE.BoxGeometry(2.0, 0.95, 0.75), PAINT);
+  nose.position.set(0, 0.55 + 0.475, 2.12);
+  g.add(nose);
+  const roof = part(new THREE.BoxGeometry(2.0, 0.1, 1.15), PAINT);
+  roof.position.set(0, 2.25, 1.1);
+  g.add(roof);
+  for (const s of [-1, 1]) for (const z of [0.58, 1.66]) {
+    const pillar = part(new THREE.BoxGeometry(0.08, 0.95, 0.08), PAINT);
+    pillar.position.set(s * 0.96, 1.77, z);
+    if (z > 1) pillar.rotation.x = -0.3;
+    g.add(pillar);
+  }
+  // para-brisa inclinado (transparente: dá para ver a Dara dirigindo)
+  const ws = new THREE.Mesh(new THREE.BoxGeometry(1.86, 0.95, 0.04), glass);
+  ws.position.set(0, 1.77, 1.62);
+  ws.rotation.x = -0.3;
+  g.add(ws);
+  for (const s of [-1, 1]) {
+    const win = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.9, 1.0), glass);
+    win.position.set(s * 1.0, 1.77, 1.1);
+    g.add(win);
+    const back = part(new THREE.BoxGeometry(0.02, 0.55, 0.9), 0x0a1418, { outline: false });
+    back.position.set(s * 1.01, 2.05, -1.9);
+    g.add(back);
+    // o grafite verde neon do lado (o alienígena de asas, em traços simples)
+    const wingA = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 1.9), glowMat(NEON, 0.85));
+    wingA.position.set(s * 1.012, 1.35, -0.55);
+    wingA.rotation.x = 0.35;
+    g.add(wingA);
+    const wingB = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 1.9), glowMat(NEON, 0.85));
+    wingB.position.set(s * 1.012, 1.35, -0.55);
+    wingB.rotation.x = -0.35;
+    g.add(wingB);
+    const alien = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 8), glowMat(NEON, 0.9));
+    alien.scale.set(0.08, 1.3, 0.9);
+    alien.position.set(s * 1.012, 1.42, -0.55);
+    g.add(alien);
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.06, 4.0), glowMat(NEON, 0.6));
+    stripe.position.set(s * 1.012, 0.82, -0.2);
+    g.add(stripe);
+    // bagageiro
+    const rail = part(new THREE.BoxGeometry(0.06, 0.06, 3.4), TRIM);
+    rail.position.set(s * 0.85, 2.38, -0.6);
+    g.add(rail);
+  }
+  for (const [x, z] of [[-0.9, 1.6], [0.9, 1.6], [-0.9, -1.75], [0.9, -1.75]]) {
+    const w = part(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 14), 0x121214);
+    w.rotation.z = Math.PI / 2;
+    w.position.set(x, 0.42, z);
+    g.add(w);
+    const hub = part(new THREE.CylinderGeometry(0.22, 0.22, 0.32, 10), 0xa8a8ae, { outline: false });
+    hub.rotation.z = Math.PI / 2;
+    hub.position.copy(w.position);
+    g.add(hub);
+  }
+  for (const x of [-0.68, 0.68]) {
+    const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.06), glowMat(0xfff0b0, 1));
+    lamp.position.set(x, 0.9, 2.52);
+    g.add(lamp);
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.3, 0.04), glowMat(0xff2010, 0.9));
+    tail.position.set(x * 1.18, 1.0, -2.47);
+    g.add(tail);
+  }
+  for (const z of [2.55, -2.5]) {
+    const bumper = part(new THREE.BoxGeometry(2.05, 0.22, 0.18), TRIM);
+    bumper.position.set(0, 0.5, z);
+    g.add(bumper);
+  }
+  const plate = part(new THREE.BoxGeometry(0.5, 0.14, 0.02), 0xe8e8e0, { outline: false });
+  plate.position.set(0, 0.52, 2.65);
+  g.add(plate);
+  // a antena parabólica do Chico no teto
+  const post = part(new THREE.CylinderGeometry(0.05, 0.05, 0.5, 6), TRIM);
+  post.position.set(0, 2.6, -1.4);
+  g.add(post);
+  const dish = part(new THREE.SphereGeometry(0.5, 14, 6, 0, Math.PI * 2, 0, Math.PI / 2), 0xb8bcc0);
+  dish.scale.set(1, 0.3, 1);
+  dish.rotation.x = Math.PI;
+  dish.position.set(0, 3.0, -1.4);
+  g.add(dish);
+  // a DARA ao volante (blusa esverdeada, sobretudo preto, bandana, cabelo escuro)
+  const dara = new THREE.Group();
+  const torso = part(new THREE.BoxGeometry(0.46, 0.55, 0.3), 0x16161a);
+  torso.position.y = 0.28;
+  dara.add(torso);
+  const blouse = part(new THREE.BoxGeometry(0.2, 0.4, 0.02), 0x3a8070, { outline: false });
+  blouse.position.set(0, 0.32, 0.16);
+  dara.add(blouse);
+  const head = part(new THREE.SphereGeometry(0.17, 12, 10), 0x8a5a3c);
+  head.position.y = 0.76;
+  dara.add(head);
+  const hair = part(new THREE.SphereGeometry(0.185, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.6), 0x1a1210);
+  hair.position.set(0, 0.79, -0.02);
+  dara.add(hair);
+  const band = part(new THREE.CylinderGeometry(0.185, 0.185, 0.07, 14), 0x8a2a2a, { outline: false });
+  band.position.y = 0.84;
+  dara.add(band);
+  for (const s of [-1, 1]) {
+    const arm = part(new THREE.CylinderGeometry(0.06, 0.055, 0.45, 8), 0x16161a);
+    arm.position.set(s * 0.2, 0.38, 0.22);
+    arm.rotation.x = -1.1;
+    dara.add(arm);
+  }
+  dara.position.set(0.45, 1.05, 0.95);
+  g.add(dara);
+  const wheel = part(new THREE.TorusGeometry(0.17, 0.025, 6, 16), 0x101012, { outline: false });
+  wheel.position.set(0.45, 1.45, 1.35);
+  wheel.rotation.x = -0.5;
+  g.add(wheel);
+  g.userData.driver = dara;
+  return g;
+}
+
 Object.assign(ABILITY_TYPES, {
   // △ → □  DIREÇÃO AVANÇADA: o carro vem por trás dele, ele pula para o lado e o carro atropela
   stuntCar: {
@@ -60,13 +186,13 @@ Object.assign(ABILITY_TYPES, {
       f.vel.set(0, 0, 0);
       f.yaw = yawTo(f.pos, opp.pos);
       f.anim.play('point', { restart: true, duration: 0.5 });
-      world.audio.play('ready', { volume: 0.9, pitch: 1.6 }); // o assobio
+      world.audio.play('ready', { volume: 0.9, pitch: a.vehicle === 'van' ? 1.2 : 1.6 }); // o assobio (ou o rádio chamando a van)
       const F = forwardFromYaw(f.yaw);
       const R = new THREE.Vector3(Math.cos(f.yaw), 0, -Math.sin(f.yaw));
       const start = new THREE.Vector3(f.pos.x - F.x * (a.behind ?? 11), 0, f.pos.z - F.z * (a.behind ?? 11));
       const aim = opp.pos.clone().setY(0);
       const dir = aim.clone().sub(start).setY(0).normalize();
-      const car = stuntCar(a.carColor);
+      const car = a.vehicle === 'van' ? vanDosCinco() : stuntCar(a.carColor);
       car.position.copy(start);
       car.rotation.y = Math.atan2(dir.x, dir.z);
       let carT = -(a.delay ?? 0.35);

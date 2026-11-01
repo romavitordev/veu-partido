@@ -73,7 +73,7 @@ plane('DECAL_dirt', (0, 0.02, 0), (17, 17), M['dirt'], facing='up')
 # ---------------- FOGUEIRA no centro (o fogo em si é animado no jogo) e toras como bancos em volta
 put('nature', 'campfire_stones', (0, 0, 0), 0.3, 4.2)
 put('nature', 'campfire_logs', (0, 0.05, 0), 0.0, 4.6)
-col_cyl('fire', (0, 0, 0), 1.25, 1.2)
+# (sem colisor: a fogueira é pisável e queima — fireZones no config da arena)
 LOG_TINT = {'woodBark': hex_rgb('#3a2616'), 'woodInner': hex_rgb('#7a5a3a')}
 for i, a in enumerate((0.5, 2.1, 3.9, 5.3)):
     x, z = math.sin(a) * 4.6, math.cos(a) * 4.6

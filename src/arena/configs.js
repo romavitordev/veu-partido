@@ -160,6 +160,9 @@ export const ACAMPAMENTO = {
     { type: 'point', color: 0xff2020, intensity: 8, distance: 12, pos: [18, 29.6, -31], flicker: true },
   ],
   fires: [{ pos: [0, 0.15, 0], scale: 0.75 }],
+  // a fogueira NÃO bloqueia (2026-11-01): dá para passar por cima, queimando 1/s (2/s em criatura de Morte)
+  fireZones: [{ x: 0, z: 0, radius: 1.25, height: 1.0, dps: 1, deathDps: 2 }],
+  dropColliders: ['COL_cyl_fire'], // o .glb ainda tem o colisor antigo (rebuild precisa dos kits Kenney)
   stars: { count: 1500, radius: 170, size: 0.85 },
   particles: [
     { color: 0xffa040, count: 60, area: 1.8, height: 4.5, rise: 1.4, drift: 0.45, size: 0.07, opacity: 0.85 }, // brasas da fogueira
@@ -234,4 +237,38 @@ export const IGREJA = {
   mist: { color: 0x6a1018, count: 22, center: [0, 0], inner: 6, radius: 10, height: 1.2, size: 5, opacity: 0.16, swirl: 0.02, banks: [{ at: [0, -14], radius: 6, count: 10, y: 0.8, height: 3, size: 7, opacity: 0.28 }, { at: [0, 12.5], radius: 5, count: 8, y: 0.6, height: 2.5, size: 6, opacity: 0.26 }] },
   particles: { color: 0xff6a5a, count: 160, area: 20, height: 9, rise: 0.04, drift: 0.25, size: 0.04, opacity: 0.5, center: [0, 0, -1] }, // poeira na luz vermelha
   camera: { rect: { minX: -9.6, maxX: 9.6, minZ: -15.5, maxZ: 13.4 }, maxY: 9.5 },
+};
+
+// ILHA DE TIPORA (O Segredo na Ilha): a praça de terra no centro do vilarejo, à noite — as casas de tábua com as janelas
+// acesas, os LAMPIÕES (a ilha não tem luz elétrica), a igreja no morro com o cemitério, e ao longe o MAR verde e o
+// FAROL no rochedo, com o facho girando; a Mansão dos Moretti no penhasco
+export const TIPORA = {
+  id: 'tipora',
+  name: 'Ilha de Tipora',
+  glb: 'arenas/tipora.glb',
+  bounds: { radius: 17 },
+  spawns: [{ x: 0, z: -6 }, { x: 0, z: 6 }],
+  sky: 0x0e2426,
+  skyGradient: [[0, '#081414'], [0.5, '#123030'], [0.8, '#2a4a46'], [1, '#4a6660']],
+  fog: { color: 0x1e3c3a, density: 0.0048 },
+  lights: [
+    { type: 'hemi', sky: 0x8ab8b0, ground: 0x2a2418, intensity: 1.05 },
+    { type: 'ambient', color: 0x3a5250, intensity: 0.45 },
+    // o luar esverdeado atrás das nuvens
+    { type: 'dir', color: 0xb0d8d0, intensity: 1.4, pos: [-20, 28, -14], shadow: true, area: 28 },
+    // os lampiões em volta da praça (r = 14, os mesmos do .glb)
+    ...Array.from({ length: 7 }, (_, k) => {
+      const a = ((k + 0.5) / 7) * Math.PI * 2;
+      return { type: 'point', color: 0xffa850, intensity: 9, distance: 11, decay: 1.6, pos: [Math.sin(a) * 13.7, 2.4, Math.cos(a) * 13.7], flicker: true };
+    }),
+    // a igreja acesa no morro (ao norte) e a churrasqueira
+    { type: 'point', color: 0xffb060, intensity: 16, distance: 14, pos: [19, 5, -4.5] }, // a igreja ao norte da praça
+    { type: 'point', color: 0xff6a20, intensity: 5, distance: 6, pos: [15.5, 1.4, 2.5], flicker: true },
+    // o farol ao longe
+    { type: 'point', color: 0xfff0b0, intensity: 40, distance: 30, pos: [-27, 17, -90] },
+  ],
+  // o facho do farol girando (glbArena: beacons)
+  beacons: [{ pos: [-27, 17, -90], length: 70, radius: 4, color: 0xfff2c0, opacity: 0.1, speed: 0.7 }],
+  particles: { color: 0xffd890, count: 70, area: 30, height: 4, rise: 0.04, drift: 0.5, size: 0.06, opacity: 0.6 }, // vaga-lumes
+  camera: { radius: 21, maxY: 14 },
 };

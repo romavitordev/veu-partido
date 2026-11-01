@@ -176,6 +176,12 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 #subtitle .subtitle-word { display: inline-block; font-style: normal; animation: subtitleWord .12s ease-out both; }
 @keyframes subtitleWord { from { opacity: 0; transform: translateY(3px) scale(.94); } to { opacity: 1; transform: none; } }
 #subtitle.right span { border-left: none; border-right: 3px solid #fff; }
+#hostline { position: absolute; bottom: 3%; left: 50%; width: min(560px, 86vw); transform: translate(-50%, 6px); display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; }
+#hostline.on { opacity: 1; transform: translate(-50%, 0); }
+#hostline b { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: .14em; text-shadow: 2px 2px 0 #000; }
+#hostline span { padding: 6px 14px; background: rgba(8, 5, 12, .78); border-top: 2px solid var(--c, #b48cff); border-bottom: 2px solid var(--c, #b48cff); font-size: 16px; line-height: 1.3; color: #f2eef8; font-style: italic; }
+#hud.intro-scene #hostline { display: none; }
+@media (max-width: 700px) { #hostline b { font-size: 16px; } #hostline span { font-size: 13px; padding: 4px 10px; } }
 #hud.intro-scene .panel, #hud.intro-scene #center, #hud.intro-scene #npcbar,
 #hud.intro-scene .dmg, #hud.intro-scene #vignette, #hud.intro-scene #banner { display: none; }
 #callout.show { animation: callout 1.2s ease-out forwards; }

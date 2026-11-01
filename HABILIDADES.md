@@ -791,6 +791,98 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## CHICO
+
+*O técnico dos Cinco: óculos refletivos com gambiarra, fones no pescoço e o toca-discos na bolsa* · arma: Os punhos, a chave inglesa, o scanner de Energia e a van
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Jab | 32 | 1.8 m |  |
+| ○ 2 | Direto | 35 | 1.8 m |  |
+| ○ 3 | Sequência nervosa | 57 (3 acertos) | 1.8 m |  |
+| ○ 4 | Soco no corpo | 38 | 1.7 m |  |
+| ○ 5 | Chave inglesa | 41 | 1.8 m |  |
+| ○ 6 | Chave na cabeça | 81 | 1.9 m | finalizador: lança |
+| Frente + ○ | Avanço | 49 | 1.8 m |  |
+| Trás + ○ | Empurrão | 43 | 1.5 m | finalizador: afasta |
+| Lado + ○ | Gancho em movimento | 41 | 1.8 m |  |
+| No ar + ○ | Soco aéreo | 54 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho | 57 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Martelada no chão | 70 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Pulso do Scanner
+
+- Dano 42 · alcance 16 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Farol da Van** — △ + ○ / Y + B · custo 18 · cooldown 12 s · alcance 10 m
+  Liga o farol da van na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,8 s.
+- **Scanner de Energia** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 14 m
+  Passa o scanner no adversário e acha o ponto fraco: por 7 s ele recebe 35% a mais de dano de tudo do Chico.
+- **Remendão** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
+  Silver tape em tudo: remenda o que quebrou e recupera vida por 2 s.
+- **A Van dos Cinco** — △ + □ / Y + X · custo 30 · cooldown 18 s · dano 74
+  Chama a van no walkie: ela vem por trás com a Dara no volante, o Chico pula de lado e a van atropela quem estiver na frente (quebra a defesa).
+- **Passiva — Resistente:** −15% de dano físico recebido
+
+### Especial: Conexão Neural
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Engenhosidade
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano, +10% de velocidade, recargas 70% mais rápidas, cura 6% na hora.
+
+---
+
+## MORATO
+
+*Ex-agente da Ordo Realitas, o fundador dos Cinco: faixa vermelha, jaqueta azul e o colar militar* · arma: Os punhos, a metralhadora, as Magras e a Larva da Fúria "Calabresa"
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Jab | 29 | 1.8 m |  |
+| ○ 2 | Direto | 31 | 1.8 m |  |
+| ○ 3 | Sequência | 50 (3 acertos) | 1.8 m |  |
+| ○ 4 | Soco no corpo | 34 | 1.7 m |  |
+| ○ 5 | Cotovelada | 36 | 1.8 m |  |
+| ○ 6 | Direto pesado | 72 | 1.9 m | finalizador: lança |
+| Frente + ○ | Avanço | 43 | 1.8 m |  |
+| Trás + ○ | Empurrão | 38 | 1.5 m | finalizador: afasta |
+| Lado + ○ | Gancho em movimento | 36 | 1.8 m |  |
+| No ar + ○ | Soco aéreo | 48 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho | 50 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Soco no chão | 62 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Metralhadora
+
+- Dano 10 × 6 · alcance 30 m · cooldown 2.8 s · custo 0
+
+### Habilidades
+
+- **Tamo com Ele** — △ + ○ / Y + B · custo 22 · cooldown 18 s
+  "Tamo com ele!" — por 7 s anda 15% mais rápido, bate 15% mais forte e recupera as esquivas. Na batalha em equipe, as assistências ficam PRONTAS na hora.
+- **Larva da Fúria "Calabresa"** — △ + L2 / Y + LT · custo 25 · cooldown 20 s · dano 24 · alcance 9 m
+  Estala as Magras (as Amarras de Sangue que depois deu ao Lírio) e prende o alvo; logo em seguida engole a Calabresa, a Larva de Sangue: por 6 s tomado pelo ódio — golpes físicos 35% mais fortes que sangram, mas recebe 10% a mais de dano.
+- **Linha de Frente** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
+  Fica na frente dos Cinco: por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar.
+- **Passiva — Resistente:** −10% de dano físico recebido
+
+### Especial: Pelos Cinco
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Último Sacrifício
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +20% de dano, −15% de dano recebido, +8% de velocidade, cura 8% na hora.
+
+---
+
 ## DALMO
 
 *Gladiador das arenas clandestinas: pondo o escafandro, vira o Colosso* · arma: Os punhos; as Manoplas do Colosso na Transformação
@@ -1736,14 +1828,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | ↑ + ○ (no combo) | Garra de baixo | 38 | 2 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Esmagar | 44 | 2 m | finalizador: derruba |
 
-### Principal (□ / X): Investida Mortal
+### Principal (□ / X): Lágrimas de Lodo
 
-- Dano 30 · alcance 1.6 m · cooldown 2.6 s · custo 0
+- Dano 28 · alcance 16 m · cooldown 2.8 s · custo 0
 
 ### Habilidades
 
-- **Hipnose Espiral** — △ + ○ / Y + B · custo 25 · cooldown 22 s · alcance 10 m
-  O Símbolo Espiral da testa acende: quem olha para ele anda em círculos até o Carniçal, sem conseguir defender, e fica parado em transe.
+- **Hipnose Espiral** — △ + ○ / Y + B · custo 30 · cooldown 13 s · dano 32 · alcance 11 m
+  O Símbolo Espiral da testa acende: quem estiver OLHANDO para ele entra em transe, chora Lodo e se golpeia duas vezes. Ao acordar, fica LENTO por 3 s.
 - **Salto do Carniçal** — Energia + Pulo (△+× / Y+A) · custo 30 · cooldown 12 s · dano 84 · alcance 2.8 m
   Agacha e salta bons metros sobre a vítima, descendo com as duas garras. Quem esquiva ainda toma metade. Aguenta um golpe na preparação.
 - **Pancada Poderosa** — △ + L2 / Y + LT · custo 25 · cooldown 11 s · dano 70 · alcance 2.6 m

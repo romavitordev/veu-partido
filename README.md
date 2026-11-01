@@ -4,7 +4,8 @@
 > mitologia de Ordem Paranormal: a **Membrana** que separa a realidade do **Outro Lado** — e que, quando se rompe, deixa
 > o paranormal entrar. O logo é a palavra PARTIDO rachada na diagonal, com o rasgo roxo do Outro Lado e a borda carmesim;
 > o ícone é o "V" partido pela mesma fenda, sobre a linha dos cinco elementos. É o mesmo jogo, com todo o elenco, os
-> modos e o histórico de versões preservados. O repositório, o endereço do site (`/arena-paranormal/`), os nomes dos
+> modos e o histórico de versões preservados. O repositório e o endereço do site passaram para `veu-partido`
+> (`romavitordev.github.io/veu-partido/`; o GitHub redireciona os links antigos do repositório). Os nomes dos
 > arquivos baixados (`Arena-Paranormal-*.exe/.apk`), o ID do app Android e as chaves de salvamento continuam os mesmos,
 > para não quebrar links, atualizações nem configurações salvas.
 
@@ -12,7 +13,7 @@ Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível,
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v4.6.0**.
+Versão atual do jogo: **v4.7.0**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 
@@ -231,8 +232,8 @@ acessórios ficam em `MODEL_VARIANTS`. Armas e acessórios em código ficam em `
 modelos procedurais provisórios: se um `.glb` não carregar, o jogo tenta de novo e, se ainda falhar, avisa na tela.
 
 ### Cenários (Blender + modelos prontos)
-Os cenários (Ruínas do Ritual, Orfanato, Bar Suvaco Seco, Coliseu, Santo Berço, Acampamento, Igreja e o Palco do
-Anfitrião) são montados no Blender por
+Os cenários (Ruínas do Ritual, Orfanato, Bar Suvaco Seco, Coliseu, Santo Berço, Acampamento, Igreja, o Palco do
+Anfitrião e a Ilha de Tipora) são montados no Blender por
 `tools/blender/arena_<id>.py` com **peças prontas e gratuitas dos kits do Kenney** (CC0) — casas, árvores, muralhas,
 lápides, móveis, ruas, carros — posicionadas por `tools/blender/kenney.py` (`put`, `house`, `tower`). Só os
 elementos únicos de cada lugar são feitos à mão (Símbolo Espiral, círculo ritual, estátuas, placas). Os kits ficam em

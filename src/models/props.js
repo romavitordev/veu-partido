@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1219,6 +1219,23 @@ export function addAmaliaProps(rig) {
     at('e' + side, [0.02 * sx, -0.12, 0], { count: 5, radius: 0.09, height: 0.32, width: 0.12 });
     at('k' + side, [0, -0.26, 0], { count: 6, radius: 0.1, height: 0.36, width: 0.14 });
   }
+}
+
+// MORATO: a METRALHADORA (cânone) nas costas; na mão só no □
+export function addMoratoProps(rig) {
+  const { sockets, props } = rig;
+  const back = machineGun();
+  back.rotation.set(0, 0, 2.5);
+  back.position.set(0, 0, -0.1);
+  sockets.back.add(back);
+  props.mgBack = back;
+  const hand = machineGun();
+  hand.rotation.x = -0.1;
+  hand.position.y = -0.03;
+  hand.visible = false;
+  sockets.handR.add(hand);
+  props.mgHand = hand;
+  rig.muzzle = hand.userData.muzzle;
 }
 
 // DOPPELGANGER (os Homens de Terno do Estrangeiro): o Fuzil Alheio na mão direita — a pistola de plasma verde

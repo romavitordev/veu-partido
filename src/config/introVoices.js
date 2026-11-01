@@ -165,6 +165,32 @@ export const VOICES = {
       any: [(o) => `Beleza, ${o.name}. Do meu jeito, então.`, (o) => `Pelos meus amigos, ${o.name}. Sempre por eles.`],
     },
   },
+  // MORATO: o líder dos Cinco — cansado, firme, protetor; ex-agente da Ordo Realitas
+  morato: {
+    open: {
+      ally: (o) => `${o.name}. Guarda alta. Tamo com ele.`,
+      rival: (o) => `${o.group}... ${o.name}. Já vi o seu tipo antes.`,
+      any: [(o) => `${o.name}, eu tô cansado. Mas não tanto.`, (o) => `Os Cinco estão atrás de mim, ${o.name}. Você não passa.`],
+    },
+    reply: {
+      ally: (o) => `Sem moleza, ${o.name}. É treino de verdade.`,
+      rival: (o) => `A Ordo Realitas não me segurou, ${o.name}. Você também não.`,
+      any: [(o) => `Então vem, ${o.name}.`, (o) => `Tamo com ele, ${o.name}.`],
+    },
+  },
+  // CHICO: o técnico dos Cinco — nerd, fala rápido, nervoso e engraçado, gambiarra pra tudo
+  chico: {
+    open: {
+      ally: (o) => `${o.name}! Treino? Beleza, mas não encosta na minha bolsa.`,
+      rival: (o) => `${o.name}... ${o.one}. Deixa eu ligar o scanner rapidinho.`,
+      any: [(o) => `Calma, ${o.name}, calma. Eu tenho fita isolante pra isso.`, (o) => `${o.name}, você tá dando um pico de Energia absurdo aqui.`],
+    },
+    reply: {
+      ally: (o) => `Pega leve, ${o.name}. Os óculos são caros.`,
+      rival: (o) => `${o.group}? Já tenho isso catalogado, ${o.name}.`,
+      any: [(o) => `Tá, tá, ${o.name}. Liga o farol.`, (o) => `Já tô no sistema, ${o.name}.`],
+    },
+  },
   // DARA: a médica de campo dos Cinco — gentil, prática, investigadora, e firme quando precisa
   dara: {
     open: {

@@ -54,7 +54,7 @@ def material(name, color, rough=0.75, metal=0.0, emission=None, strength=1.0, al
         return m
     m = bpy.data.materials.new(name)
     m.use_nodes = True
-    bsdf = m.node_tree.nodes.get('Principled BSDF')
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')  # pelo tipo: o nome vem traduzido no Blender em português
     c = hex_rgb(color)
     bsdf.inputs['Base Color'].default_value = (*c, 1)
     bsdf.inputs['Roughness'].default_value = rough

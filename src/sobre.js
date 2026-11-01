@@ -2,7 +2,7 @@
 // changelog) e o elenco (os dados dos personagens) só carrega quando a seção chega perto da tela.
 import { ELEMENTS } from './config/elements.js'; // as cores dos elementos do próprio jogo (arquivo pequeno)
 
-const REL = 'https://github.com/romavitordev/arena-paranormal/releases/latest/download/';
+const REL = 'https://github.com/romavitordev/veu-partido/releases/latest/download/';
 
 /* global __APP_VERSION__ */
 const ver = document.getElementById('ver');

@@ -1,5 +1,29 @@
 # Changelog
 
+## v4.7.0 — Os Cinco Completos
+
+### Adicionado
+- `src/characters/chico.js` (Os Cinco, Energia) e `src/characters/morato.js` (Os Cinco, Conhecimento — PROPOSTA); modelos `tools/blender/char_chico.py` e `char_morato.py`; rostos `face_chico`/`face_morato`, `sleeve_chico`, `camo_morato`.
+- `machineGun()` em `models/weapons.js` e `addMoratoProps` (metralhadora nas costas / na mão no □).
+- Falas `VICTORY_CHICO`/`VICTORY_MORATO` com todo o elenco, vozes de introdução e `GRAB_SCENES`.
+- HUD: `hostLine()` e `#hostline` (fala do narrador da arena no centro inferior, moldura própria).
+- `glbArena.crowdPoint()` e `cheer(level, time, { clap })` (a plateia bate palmas).
+- Cenário `tipora` (`tools/blender/arena_tipora.py` → `public/arenas/tipora.glb`, `TIPORA` em arena/configs.js, registrado em arena/index.js e no fim de `ARENA_ORDER`). Distâncias pelo mapa da ilha da wiki; texturas `dirt_cracked`, `wood_grey`, `roof_shingle`, `sea_tipora`.
+- glbArena: `beacons` na config (facho de farol aditivo girando), `fireZones` (fogo pisável, `arena/fireZones.js`: 1/s, 2/s em criatura de Morte) e `dropColliders` (tira colisores antigos do .glb).
+- Morato: a Larva da Fúria "Calabresa" virou `bloodBind` com `gut` (as Magras do Lírio) + `buff`; `applySelfBuff()` extraído do `selfBuff` em `combat/abilities.js` (o bloodBind aplica o buff logo depois do arremesso, acertando ou não).
+- sobre.html: Os Cinco, Carniçal no Outro Lado, Acampamento Varminho e Ilha de Tipora nos textos.
+- Carniçal: modelo novo sobre a base CC0 "Human Base Meshes" (Blender Studio) — `tools/blender/base_body.py` (`load_fitted`, `store_weights`/`read_weights`, `load_mesh`), crânio realista sem mandíbula (mandíbula de Lodo), fibras por deslocamento e decimação. `lib.py`: material Principled achado por tipo (nomes de nós traduzidos no Blender em pt-BR).
+- Carniçal: kit frio — `spiralSelfHarm` (novo tipo em `combat/abilities.js`: transe, a vítima se golpeia `hits` vezes, depois `curseSlow`); □ Lágrimas de Lodo (`onHit.slow`) no lugar da Investida Mortal; `moveSpeed` 7,4. check-roster atualizado.
+- Chico: △ + □ `vanDosCinco` (`type: 'stuntCar'`, `vehicle: 'van'`); `vanDosCinco()` em `combat/cristopherAbilities.js` (a van do Acampamento com a Dara ao volante, cabine de vidro).
+
+### Alterado
+- `hostAudience` (A Plateia): vira cena (`beginCinematic` + dois planos: arquibancada e o close do Anfitrião se curvando).
+- `PalcoHost` usa `hud.hostLine` em vez de `hud.subtitle`.
+- Passiva `revenge`: aceita `label`.
+- Modelos refeitos: `char_carnical.py` (tronco pelo esqueleto, caveira esculpida), `char_dara.py`, `char_chico.py`, `char_morato.py`.
+- Acampamento: a fogueira não bloqueia mais (sem `COL_cyl_fire`; zona de fogo no config).
+- Repositório e site: `/arena-paranormal/` → `/veu-partido/` (vite `base`, `homepage`, 404, robots, sitemap, Sobre, `tools/release-notes.mjs`). Mantidos: `name` do package, appId, chaves de save, prefixo do online e nomes dos arquivos baixados.
+
 ## v4.6.0 — A Médica dos Cinco
 
 ### Adicionado

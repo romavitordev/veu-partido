@@ -2,6 +2,19 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.7.0 — Os Cinco Completos
+- Novos lutadores: Chico, o técnico (farol da van, scanner de Energia, remendo na fita) e Morato, o líder (metralhadora, "Tamo com Ele" e a Larva da Fúria).
+- Carniçal refeito: anatomia de verdade coberta de Lodo, crânio com o cérebro à mostra e a mandíbula de Lodo.
+- Carniçal frio, como no cânone: a Hipnose Espiral faz o adversário se golpear e ficar lento; o □ agora deixa lento.
+- Dara, Chico e Morato com visual refeito pelas artes oficiais.
+- Palco do Anfitrião: as falas do Anfitrião aparecem no centro de baixo da tela, separadas das falas dos lutadores, e a Plateia virou uma cena com o público batendo palmas.
+- Morato estala as Magras (as Amarras de Sangue que depois deu ao Lírio) antes de engolir a Calabresa.
+- Página Sobre atualizada com Os Cinco, o Carniçal e as arenas novas.
+- Chico chama a Van dos Cinco: a Dara vem no volante e atropela o adversário.
+- Novo cenário: Ilha de Tipora, a praça do vilarejo de O Segredo na Ilha, com a igreja, a mansão no penhasco e o farol na praia.
+- Acampamento Varminho: dá para pisar na fogueira, mas ela queima.
+- Novo endereço: romavitordev.github.io/veu-partido.
+
 ## v4.6.0 — A Médica dos Cinco
 - Nova lutadora: Dara, a médica de campo dos Cinco — Lanterna UV que cega, Paramédico para se curar, Olho de Investigadora e Dedicação.
 - Especial Bolsa de Emergência e a Transformação Ninguém Fica Pra Trás.

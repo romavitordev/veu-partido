@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.6.0 (2026-11-01: Dara, a médica dos Cinco). Antes: v4.5.1 O Palco do Anfitrião. Antes: v4.4.0 O Carniçal, v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
+**Versão de referência atual:** v4.7.0 (2026-11-01: Os Cinco completos — Chico e Morato, a Van dos Cinco; cenário Ilha de Tipora; fogueira pisável; Carniçal refeito sobre base CC0 e com o kit frio da Hipnose; Morato com as Magras; modelos refeitos; Palco com falas no centro inferior e a cena da Plateia; URL veu-partido). Antes: v4.6.0 Dara, v4.5.1 O Palco do Anfitrião. Antes: v4.4.0 O Carniçal, v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -14,7 +14,8 @@
   da Membrana), ícones/favicon (`tools/make-icons.py`), títulos, manifest, Sobre, 404, 13 idiomas, nome do app no PC/Android,
   README e changelogs com a transição registrada. Mantidos: URL `/arena-paranormal/`, appId, chaves de save, ID do online,
   nomes dos arquivos baixados.
-  - [ ] Decidir se renomeia o repositório/URL e os arquivos `Arena-Paranormal-*.exe/.apk` (quebra links antigos — só com pedido).
+  - [~] Repositório/URL → `veu-partido` (pedido do dono, 2026-11-01, v4.7.0): código e links trocados; falta o `gh repo rename`
+    + o Pages no push. Os arquivos `Arena-Paranormal-*.exe/.apk` continuam com o nome antigo (decidir à parte).
   - [ ] `public/ordo-realitas.ico` ficou sem uso (mantido); apagar quando quiser.
 - [x] **Menu no celular deitado não cabia** (pedido do dono, v4.2.0): duas colunas em tela baixa.
 - [x] **Fundo único dos personagens na seleção** (pedido do dono, v4.2.0): `portraits.js`, no lugar da cor da equipe.
@@ -1875,8 +1876,47 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         (R2 + △: aguenta 2 golpes e recupera as esquivas). PROPOSTA: punhos, □ Lanterna UV (`photoFlash`, cega 1,4 s),
         especial Bolsa de Emergência e a Transformação "Ninguém Fica Pra Trás". Elemento Medo (sem afinidade, como o
         Veríssimo). Falas com todo o elenco e agarrão próprio.
-      - [ ] CHICO (Técnico: o Scanner de Energia, as Joias de Escudo Mental, o Teclado de Conexão Neural, a van com o
-        farol) e MORATO (o líder; "Tamo com Ele"; a Larva "Calabresa"); depois o especial de grupo.
+      - [x] **CHICO** (v4.7.0): `src/characters/chico.js` + `tools/blender/char_chico.py`. Cânone: Farol da Van (△ + ○,
+        cega), Scanner de Energia (△ + L2), Joias de Escudo Mental (passiva `iKnewIt`), Remendão (R2 + △). PROPOSTA: □ Pulso
+        do Scanner, especial Conexão Neural, Transformação Engenhosidade. Balanço: 6×8 contra o elenco de teste.
+      - [x] **MORATO** (v4.7.0): `src/characters/morato.js` + `tools/blender/char_morato.py`. Cânone: a METRALHADORA (□,
+        prop `machineGun`), "Tamo com Ele" (△ + ○), Larva da Fúria "Calabresa" (△ + L2). PROPOSTA: Linha de Frente,
+        especial Pelos Cinco, Transformação Último Sacrifício, passiva "Ainda de Pé" (`revenge` com `label`). Balanço: 6×9.
+      - [x] **A VAN DOS CINCO do Chico** (pedido do dono, v4.7.0): △ + □, `stuntCar` com `vehicle: 'van'` — a van do
+        Acampamento vem por trás com a DARA no volante e atropela (PROPOSTA). Testada: 85 de dano.
+      - [x] **ACAMPAMENTO — fogueira pisável** (pedido do dono, v4.7.0): `fireZones` (1 de dano/s; 2/s em criatura de Morte).
+      - [x] **CENÁRIO ILHA DE TIPORA** (pedido do dono, v4.7.0): `tools/blender/arena_tipora.py` — a praça do vilarejo (só a praça,
+        sem interiores), igreja no morro ao norte com o cemitério, lampiões, a mata entre a vila e a MANSÃO DOS MORETTI no
+        penhasco e o FAROL na praia (facho girando, `beacons`); distâncias pelo mapa da ilha. A refinar: mais casas do
+        vilarejo pela lista da wiki, a Torre do Sino / Tenebris como evento do mapa, a Tinta.
+      - [x] **MORATO — as MAGRAS na Calabresa** (pedido do dono, 2026-11-01): as Amarras de Sangue "Magras" eram do Morato
+        antes de ele dar ao Lírio, então a Larva da Fúria "Calabresa" agora estala as MESMAS Magras do Lírio (`bloodBind`
+        com `gut`, tripas trançadas e voltas no corpo) e, em seguida, ele engole a Calabresa (`buff` no bloodBind →
+        `applySelfBuff`). Testada: prende o alvo e liga o ódio.
+      - [ ] O especial de grupo dos Cinco (Xande, Guizo, Lírio, Dara, Chico e Morato) — coreografia na seção dos especiais de grupo.
+      - [ ] PROPOSTA a decidir: Dara e Chico têm SUBMETRALHADORAS no cânone (artes da wiki) — hoje o □ deles é a Lanterna UV
+        e o Pulso do Scanner.
+      - [x] **CARNIÇAL REFEITO SOBRE UMA BASE CC0** (pedido do dono, 2026-11-01, Blender MCP): o corpo masculino realista e o
+        crânio realista do pacote "Human Base Meshes" da Blender Studio (CC0, `assets_src/README.md`) encaixados no
+        esqueleto de lutador (`tools/blender/base_body.py`: armadura temporária com pesos automáticos, os mesmos pesos vão
+        para o jogo). Por cima: fibras de Lodo por deslocamento seguindo cada músculo, cristas pálidas e o vermelho no
+        trapézio/costas/dorsais (referência do dono), cintura fina, dedos longos até o meio da coxa, garras, tendões
+        enrolados, o topo do crânio rompido com o cérebro rosado, o Símbolo Espiral na testa e SEM MANDÍBULA de osso: a
+        mandíbula é de LODO (fios que escorrem até o pescoço). A refinar: menos contraste das estrias sob a luz das arenas.
+      - [x] **CARNIÇAL COM O KIT FRIO** (pedido do dono, 2026-11-01; wiki: "calmo e preciso", controla quem o ataca pela
+        Hipnose e faz atacar a si mesmo, como Brúlio): △ + ○ Hipnose Espiral nova (`spiralSelfHarm`: quem OLHA para o
+        Símbolo entra em transe, chora Lodo, se golpeia 2× e fica LENTO), □ Lágrimas de Lodo (PROPOSTA: deixa LENTO) no
+        lugar da Investida Mortal, anda mais devagar (7,4). Mantidos: Salto, Pancada Poderosa, Comando, garras no combo e o
+        Instinto Mortal (quando ferido vira o bicho). A fazer: a passiva "olha para o agressor" (hipnose de contra-ataque
+        ao apanhar, como no cânone) e a Investida Mortal dentro do Instinto Mortal.
+      - [~] Modelos refeitos pelas artes da wiki (2026-11-01, Blender em modo background + prévias): Dara (bracelete dourado, gola branca, bolsas nas coxas; cores pelo texto da wiki: blusa esverdeada, calça marrom, sobretudo preto),
+        Chico (macacão bege da wiki, visor colorido na testa, scanner aceso, walkie de luz azul), Morato (dreads em coque, faixa de pontas longas, camuflado,
+        mochila). Polir mais pelo Blender MCP com o dono (o MCP caiu depois de um `read_homefile` — não usar isso).
+- [ ] **FUTURO PERSONAGEM — CALISTO, EM DUAS VERSÕES** (pedido do dono, 2026-11-01; só no TODO por enquanto): a versão de
+      **Sinais do Outro Lado** e a versão do FUTURO, de **Enigma do Medo**, como versões do mesmo personagem
+      (`VERSION_GROUPS`). Antes de modelar: análise das habilidades ANTES e DEPOIS pela wiki (rituais, poderes,
+      itens, armas, visual e personalidade de cada época) e o que muda entre elas no jogo (□, habilidades, especial,
+      Transformação). Marcar como PROPOSTA o que não for do cânone.
 - [ ] **NOVOS PERSONAGENS — ENIGMA DO MEDO** (pedido de 2026-10-31): **MIA + LUPI** (a protagonista e o cachorro, como
       dupla) e **JASER**, com a versão melhorada **O DESASSOMBRADO** (forma/transformação dele). Levantar na wiki o
       visual, os itens e os poderes de cada um antes de modelar.
@@ -1982,9 +2022,22 @@ Confirmadas pelo pedido:
   `link.order` define quem entra antes. Testado com o Arnaldo e com o Veríssimo de líder (335 / 347).
 - Escriptas, outras duplas da Ordo Realitas e Portadores: o dono decidiu esperar ter mais personagens de cada equipe
   (2026-10-31).
-- [ ] **Equipe Abutres** (Calamidade): ligação própria com as versões de Calamidade, quando elas estiverem no jogo
-  (o dono confirma os membros).
-- **Os Cinco** (Xande, Guizo, Lírio): grupo incompleto no elenco — **sem especial de grupo** até todos estarem no jogo.
+- [ ] **FORÇA D — coreografia melhor** (pedido do dono, 2026-11-01): 1) o KAISER conjura a CINERÁRIA no cenário (cânone:
+  acende o cigarro, os olhos acendem em roxo, sussurra "Cinerária" e a Névoa do Outro Lado sai entre os dentes) com
+  CLOSE NO ROSTO dele; 2) o JOUI aparece ATRÁS do alvo atacando com a espada, e as ESPIRAIS da espada parecem atacar
+  mais na ferida; 3) o ARTHUR surge CORRENDO no meio da névoa e ataca com a ARMA DE SANGUE.
+- [ ] **Equipe Abutres** (Calamidade): DANTE, CARINA, ARTHUR, JOUI, BALU e RUBENS (membros confirmados pelo dono,
+  2026-11-01). Faltam dois no elenco: **CARINA** e **RUBENS** (personagens novos: kit pela wiki, modelo, falas). Depois,
+  o especial de grupo dos Abutres com coreografia própria.
+- [ ] **OS CINCO — especial de grupo** (pedido do dono, 2026-11-01; o grupo está completo: Chico, Dara, Xande, Lírio,
+  Morato e Guizo). Coreografia: o MORATO dá a ordem e depois avança andando enquanto atira com a METRALHADORA; o CHICO
+  lança uma granada (conferido na wiki: granada NÃO está nos itens dele — o cânone dá o Scanner, as Joias e o Teclado
+  de Conexão Neural; decidir com o dono entre a granada como PROPOSTA ou o FAROL DA VAN/scanner, que são canon); o XANDE
+  vem de SKATE batendo com o TACO AMALDIÇOADO; o LÍRIO prende com as MAGRAS e bate com a LEONORA; o GUIZO grava com a
+  CÂMERA enquanto a DARA usa um ritual de paralisar (conferido na wiki: a Dara NÃO tem rituais — só Paramédico,
+  Eclético, Perito e Dedicação; decidir com o dono: PROPOSTA de ritual de paralisia, ou ela imobiliza o alvo com o
+  kit médico/lanterna UV).
+- [x] **A Plateia** é só do ANFITRIÃO e do AMPHITRUO (o Amphitruo herda o kit do Anfitrião) — conferido em 2026-11-01.
 
 ### Fases
 - [x] **F1** Barra de Equipe: enche com as assistências (+6) e trocas (+3), aparece na HUD (e no toque), reinicia por

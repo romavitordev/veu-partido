@@ -26,6 +26,14 @@ assets_src/kenney/kenney_nature-kit/Models/GLTF format/*.glb
 
 Depois: `node tools/blender/build.mjs santo_berco` (ou outro id de cenário).
 
+## Corpo base e crânio dos personagens (CC0)
+
+O CARNIÇAL (`tools/blender/char_carnical.py`) parte do corpo masculino realista e do crânio realista do pacote
+**Human Base Meshes** da **Blender Studio** (licença **CC0**): https://www.blender.org/download/demo-files/ (bundle de
+~47 MB, `human_base_meshes_bundle.blend`). Extraia em `assets_src/blender-human-base-meshes/` (fora do git).
+`tools/blender/base_body.py` encaixa o corpo no esqueleto de lutador (pesos automáticos numa armadura temporária) e
+carrega o crânio; sem o arquivo, o build do Carniçal para com o aviso.
+
 ## Animações (CC0)
 
 Corrida, caminhada e queda do jogo vêm do **Universal Animation Library** de **Quaternius** (licença **CC0**), versão
