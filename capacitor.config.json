@@ -1,6 +1,6 @@
 {
   "appId": "com.romavitordev.arenaparanormal",
-  "appName": "Arena Paranormal",
+  "appName": "Véu Partido",
   "webDir": "dist",
   "android": { "backgroundColor": "#0b0910" }
 }

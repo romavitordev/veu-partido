@@ -1,16 +1,24 @@
-import { Timeline, distXZ } from '../core/util.js';
+import * as THREE from 'three';
+import { Timeline, distXZ, yawTo } from '../core/util.js';
 import { Assist, rushStrike, shoot } from './assists.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
+import { applyHit } from './damage.js';
+import { twoShot, orbit, pullBack, overShoulder, lowAngle } from '../camera/shots.js';
 import { ROSTER } from '../characters/index.js';
 import { getTeamLink, linkId, inLink as inLinkOf, matchesEntry } from '../config/teamLinks.js';
 
-// ESPECIAIS EM EQUIPE COM LIGAÇÃO (F4): a coreografia de cada ligação de config/teamLinks.js. O especial em si
-// (abilities.js teamSpecial) cuida do dano (as partes valem COMBAT.teamSpecial.bonus) e o LÍDER sempre fecha com o
-// próprio especial; aqui só se decide QUEM entra, ONDE e COM QUAL GOLPE.
-//   dupla  → quem está fora da dupla ataca primeiro (o golpe dele), depois a dupla faz o golpe dela
-//   trio   → as duas assistências fazem o golpe do trio quase juntas
-//   grupo  → todos os membros do grupo aparecem em volta do alvo (até os que estão fora da equipe) e golpeiam um após o
-//            outro (Mascarados: o golpe de roda; Equipe Abutres: o golpe próprio de cada um)
+// ESPECIAL EM EQUIPE = CINEMÁTICA DA EQUIPE INTEIRA (pedido do dono, 2026-11-01: "não são apenas assistências atacando no
+// mapa, é um especial com cinematic, de todos atacando em equipe, e isso vale pra todos os especiais em equipe").
+// Antes as assistências entravam no mapa e o líder fechava com o PRÓPRIO especial (com o Mascarados aparecia o especial
+// do Dalmo, e o nome da equipe, a fala e os retratos saíam todos juntos). Agora (teamScene):
+//   1. ABERTURA — o primeiro membro avança e golpeia (dá para defender/esquivar: errou, o especial acaba ali)
+//   2. PEGOU → cena: o NOME DA EQUIPE (sozinho) → os RETRATOS (sozinhos) → cada membro usa a HABILIDADE/RITUAL dele
+//      (sceneCast) com a câmera NELE e o nome da habilidade
+//      (os de fora da equipe também, nas ligações de grupo) → TODOS JUNTOS em volta do alvo com o LÍDER no golpe final
+//      (a fala do líder entra aqui, sozinha)
+//   3. Os Mascarados vestem as máscaras (link.masks) durante a cena
+// Dano total exato e em escada (COMBAT.teamSpecial: em equipe > especial transformado > especial normal).
+// LINK_MOVES continua sendo o golpe próprio de cada um quando entra como assistência comum (e na abertura).
 
 // GOLPES DA LIGAÇÃO: (ctx de Assist.enter) → Timeline
 const LINK_MOVES = {
@@ -120,23 +128,16 @@ export function teamLinkOf(f) {
   return getTeamLink([f.def, ...f.assists.map((a) => a.def)]);
 }
 
-// Agenda as entradas no timeline do especial (t0 = início). Devolve { link, cleanup }.
-// Sem ligação: o simplificado (assistência 1, depois a 2).
-export function scheduleTeamParts(tl, f, world, TS) {
-  const link = teamLinkOf(f);
-  const assists = f.assists.filter(Boolean);
-  if (!link) {
-    tl.add(0.05, () => assists[0] && assists[0].callTeam());
-    tl.add(TS.second, () => assists[1] && assists[1].callTeam());
-    return { link: null, cleanup: () => {} };
-  }
-  const inLink = (a) => inLinkOf(link, a.def);
-  const linked = assists.filter(inLink);
-  const outside = assists.filter((a) => !inLink(a));
-  const guests = [];
+// tiro (de quem luta de longe) ou o golpe final da sequência: o que cada um usa na cena
+const RANGED_LOOK = { kaiser: 'shoot_rifle', arthur: 'shoot_sniper', amalia: 'bow_shot', kemi: 'shoot_sniper' };
+const strikeOf = (def, k = 1) => (def.melee && def.melee.strikes && def.melee.strikes.at(-k)) || { anim: 'heavy_punch', hitSound: 'heavyPunch' };
 
-  if (link.kind === 'group') {
-    // todos os membros do grupo: os da equipe (as assistências) + os de fora (convidados), em volta do alvo
+// quem entra na cena: as assistências (na ordem da ligação: link.order, a Muralha antes do disparo) e, nas ligações de
+// grupo, os membros que estão fora da equipe (convidados, sem recarga)
+function teamCrew(f, world, link) {
+  const assists = f.assists.filter(Boolean);
+  const guests = [];
+  if (link && link.kind === 'group') {
     const team = [f.def, ...assists.map((a) => a.def)];
     for (const id of link.group) {
       if (team.some((d) => matchesEntry(id, d))) continue;
@@ -145,34 +146,502 @@ export function scheduleTeamParts(tl, f, world, TS) {
       if (!def) continue;
       try { guests.push(new Assist(def, f, world, guests.length % 2)); } catch (e) { /* modelo indisponível: fica de fora */ }
     }
-    f.teamGuests = guests;
-    const crew = [...linked, ...guests];
-    outside.forEach((a) => tl.add(0.05, () => a.callTeam()));
-    crew.forEach((a, i) => {
-      tl.add(0.1 + i * 0.2, () => {
-        const opp = f.opponent;
-        if (!opp) return;
-        const ang = (i / crew.length) * Math.PI * 2;
-        const want = { x: opp.pos.x + Math.cos(ang) * 2.4, z: opp.pos.z + Math.sin(ang) * 2.4 };
-        const spot = findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.5, others: [{ x: opp.pos.x, z: opp.pos.z, r: 0.6 }] }) || want;
-        // style 'circle' (Mascarados): todos com o golpe de roda; senão cada um com o golpe próprio da ligação
-        a.perform(link.style === 'circle' ? circleStrike : moveFor(a.def), { at: spot, quiet: i > 0, guest: guests.includes(a) });
-      });
+  }
+  const rank = (a) => { if (!link) return 0; const i = (link.order || ['cristopher']).indexOf(linkId(a.def)); return i < 0 ? 99 : i; };
+  const crew = [...assists.slice().sort((a, b) => rank(a) - rank(b)), ...guests];
+  return { crew, guests };
+}
+
+// vestir as máscaras (link.masks[id]: { show, hide }) — devolve como desfazer
+function wearMasks(link, actors) {
+  const undo = [];
+  if (!link || !link.masks) return () => {};
+  for (const x of actors) {
+    const m = link.masks[linkId(x.def)];
+    const rig = x.rig;
+    if (!m || !rig || !rig.props) continue;
+    for (const [list, on] of [[m.show || [], true], [m.hide || [], false]]) {
+      for (const p of list) {
+        if (!rig.props[p]) continue;
+        undo.push([rig, p, rig.props[p].visible]);
+        rig.showProp(p, on);
+      }
+    }
+  }
+  return () => { for (const [rig, p, v] of undo) rig.showProp(p, v); };
+}
+
+// um golpe de um membro na cena: aparece no lugar dele em volta do alvo e bate (ou atira) — o dano é do especial
+function sceneStrike(c, { at, dmg, k = 1, onHit }) {
+  const tl = new Timeline();
+  const look = RANGED_LOOK[linkId(c.def)];
+  const st = strikeOf(c.def, k);
+  tl.add(0.02, () => {
+    c.as.pos.set(at.x, 0, at.z);
+    c.as.face(c.opp);
+    c.as.play(look || st.anim, 0.62);
+    c.world.audio.play('swing', { volume: 0.6 });
+  });
+  tl.add(look ? 0.34 : 0.26, () => {
+    if (c.opp.state === 'ko') return;
+    if (look) c.world.fx.tracer(c.as.chest(), c.opp.chestPos(), { color: c.color, life: 0.22, width: 0.07 });
+    else c.world.fx.slash(c.opp.chestPos(), c.as.yaw, { color: c.color, radius: 1.6, arc: 2.6, life: 0.28, width: 0.4, roll: (Math.random() - 0.5) * 2 });
+    c.world.fx.burst(c.opp.chestPos(), { count: 14, color: c.color, speed: 4, life: 0.35, size: 0.16 });
+    if (dmg > 0) applyHit(c.world, c.owner, c.opp, { damage: dmg, kind: 'special', reaction: false, ignoreInvuln: true, sound: look ? 'sniper' : st.hitSound || 'heavyPunch', color: c.color, scale: 1.3 });
+    c.opp.anim.play('hit', { restart: true, blend: 0.03 });
+    c.world.cameraRig.shake(0.18, 0.12);
+    c.world.hitstop(0.05);
+    onHit && onHit();
+  });
+  return tl.end(0.7);
+}
+
+// HABILIDADES E RITUAIS NA CENA (pedido do dono, 2026-11-01: "ao invés de só baterem, deveriam usar suas
+// habilidades/rituais no especial"). Cada membro usa a habilidade DELE (o nome, a animação e a cor da ficha); o efeito
+// na cena vem do tipo da habilidade:
+//   shot   — tiro/rajada: raio da arma até o alvo
+//   sigil  — ritual/maldição/controle: o sigilo no chão sob o alvo, o anel em pé, a distorção e os raios do elemento
+//   rain   — chuva (Acácia, Chuva de Flechas): o que cai do alto em volta do alvo
+//   blast  — arremesso/explosão (granada, carro de dublê): a explosão no alvo
+//   behind — some na sombra e surge atrás cortando
+//   trap   — armadilha/cães: o bote no pé do alvo
+//   cut    — golpe de habilidade (investida, golpe pesado, cortes de ritual): o corte grande, com a animação dela
+const ABILITY_LOOK = {
+  deathShot: ['shot', 'shoot_sniper'], cursedShots: ['shot', 'shoot_rifle'], weaponState: ['shot', 'shoot_sniper'],
+  bloodParalysis: ['sigil', 'cast_up'], hatredTemple: ['sigil', 'taunt_roar'], mentalMaze: ['sigil', 'concentrate'], predatorScent: ['sigil', 'point'],
+  fearGaze: ['sigil', 'point'], shadowPortal: ['sigil', 'cast_up'], shadowTrap: ['sigil', 'point'], rootTrap: ['sigil', 'cast_up'], command: ['sigil', 'point'],
+  analyze: ['sigil', 'point'], falseAlliance: ['sigil', 'point'], polarize: ['sigil', 'arn_emit'], whisperZone: ['sigil', 'concentrate'], shadowVeil: ['sigil', 'concentrate'],
+  curseWeapon: ['sigil', 'concentrate'], demonAxe: ['sigil', 'concentrate'], bloodBlade: ['sigil', 'concentrate'], bloodLink: ['sigil', 'point'], mistCloud: ['sigil', 'breath'],
+  photoFlash: ['sigil', 'point'], ritualCuts: ['cut', 'slash_v'],
+  flowerRain: ['rain', 'cast_up'], throwProjectile: ['blast', 'throw_r'], stuntCar: ['blast', 'point'],
+  teleportBehind: ['behind', 'iai_slash'], bearTrap: ['trap', 'point'], huntingDog: ['trap', 'point'],
+  dashStrike: ['cut', 'dash_slash'], heavyBlow: ['cut', 'heavy_punch'], sweepStrike: ['cut', 'arn_spin'], arenaGrab: ['cut', 'shoulder_bash'], caiDentro: ['cut', 'shoulder_bash'],
+};
+// utilidade (análise, furtividade, buff da arma, faro): não mostram nada no alvo — ficam de fora da cena
+const UTILITY = new Set(['analyze', 'shadowVeil', 'photoFlash', 'curseWeapon', 'demonAxe', 'bloodBlade', 'bloodLink', 'predatorScent']);
+
+// a habilidade que cada um mostra na cena: ritual primeiro, depois a de MAIS dano (as de efeito grande — sigilo, chuva —
+// desempatam); utilidade fica de fora
+function sceneAbility(def) {
+  let best = null;
+  let bestScore = 0;
+  for (const a of def.abilities || []) {
+    const look = ABILITY_LOOK[a.type];
+    if (!look || UTILITY.has(a.type)) continue;
+    const hurt = a.damage ? 1 + Math.min(a.damage, 100) / 40 : a.projectile ? 2.5 : 0;
+    const score = (a.ritual ? 4 : 0) + hurt + (look[0] === 'sigil' || look[0] === 'rain' ? 0.8 : 0) + 0.5;
+    if (score > bestScore) { bestScore = score; best = { a, kind: look[0], anim: a.anim || look[1] }; }
+  }
+  return best;
+}
+
+// um membro usa a habilidade na cena (named: mostra o nome — só na vez dele, para os textos não se atropelarem)
+function sceneCast(c, { at, dmg, named = false }) {
+  const pick = sceneAbility(c.def);
+  if (!pick) return sceneStrike(c, { at, dmg, k: 2 });
+  const { a, kind, anim } = pick;
+  const w = c.world;
+  const col = a.color ?? c.color;
+  const tl = new Timeline();
+  const P = () => c.opp.chestPos();
+  const feet = () => new THREE.Vector3(c.opp.pos.x, 0.06, c.opp.pos.z);
+  const far = kind === 'shot' || kind === 'sigil' || kind === 'rain' || kind === 'blast' || kind === 'trap';
+  tl.add(0.02, () => {
+    let spot = at;
+    if (kind === 'behind') {
+      const s = findSpotBehind(w.arena, { x: c.opp.pos.x, z: c.opp.pos.z, yaw: c.opp.yaw }, { distance: 1.4, radius: 0.5 });
+      if (s) spot = s;
+      w.fx.shadowDisc(new THREE.Vector3(spot.x, 0, spot.z), { radius: 1, life: 0.45, rim: col });
+    } else if (far) {
+      // quem conjura/atira fica um pouco mais longe (dá para ver o gesto e o efeito no mesmo plano)
+      const dx = at.x - c.opp.pos.x, dz = at.z - c.opp.pos.z, l = Math.hypot(dx, dz) || 1;
+      const want = { x: c.opp.pos.x + (dx / l) * 3.6, z: c.opp.pos.z + (dz / l) * 3.6 };
+      spot = findFreeSpotNear(w.arena, want.x, want.z, { radius: 0.5, others: [{ x: c.opp.pos.x, z: c.opp.pos.z, r: 0.6 }] }) || want;
+    }
+    c.as.pos.set(spot.x, 0, spot.z);
+    c.as.face(c.opp);
+    c.as.play(anim, 0.8);
+    if (named) c.owner.notify(`${c.def.name.toUpperCase()}: ${a.name.toUpperCase()}`, true);
+    w.fx.burst(c.as.chest(), { count: 12, color: col, speed: 2.5, life: 0.35, size: 0.16 });
+    if (kind === 'sigil') {
+      // o sigilo se forma sob o alvo antes de fechar
+      w.fx.ring(feet(), { color: col, radius: 2.2, life: 0.7 });
+      w.fx.ring(feet(), { color: col, radius: 1.2, life: 0.7 });
+      w.audio.play(a.ritual ? 'ritual' : 'teleport', { volume: 0.6 });
+    }
+    if (kind === 'rain') w.audio.play('swing', { volume: 0.6, pitch: 0.8 });
+  });
+  // o efeito fecha no alvo
+  const hitT = kind === 'sigil' || kind === 'rain' ? 0.42 : kind === 'shot' ? 0.32 : 0.28;
+  tl.add(hitT, () => {
+    if (c.opp.state === 'ko') return;
+    const p = P();
+    switch (kind) {
+      case 'shot':
+        w.fx.tracer(c.as.chest(), p, { color: col, life: 0.25, width: 0.09 });
+        w.fx.flash(p, { color: col, size: 1.6, life: 0.16 });
+        w.audio.play('sniper', { volume: 0.6 });
+        break;
+      case 'sigil':
+        w.fx.ring(p, { color: col, radius: 1.3, life: 0.4, vertical: true, yaw: c.as.yaw + Math.PI / 2 });
+        w.fx.distort(p, { color: col, radius: 1.8, life: 0.4 });
+        for (let i = 0; i < 4; i++) {
+          const ang = (i / 4) * Math.PI * 2;
+          const base = new THREE.Vector3(c.opp.pos.x + Math.cos(ang) * 1.2, 0.1, c.opp.pos.z + Math.sin(ang) * 1.2);
+          w.fx.lightning(base, base.clone().setY(2.6), { color: col, life: 0.25 });
+        }
+        w.fx.burst(p, { count: 24, color: col, speed: 3, up: 1.5, life: 0.5, size: 0.18 });
+        break;
+      case 'rain':
+        for (let i = 0; i < 9; i++) {
+          const x = c.opp.pos.x + (Math.random() - 0.5) * 2.4, z = c.opp.pos.z + (Math.random() - 0.5) * 2.4;
+          w.fx.tracer(new THREE.Vector3(x + 0.6, 6, z), new THREE.Vector3(x, 0.1, z), { color: col, life: 0.22, width: 0.05 });
+        }
+        w.fx.burst(feet(), { count: 26, color: col, speed: 3, up: 2, life: 0.5, size: 0.16 });
+        break;
+      case 'blast':
+        w.fx.tracer(c.as.chest(), p, { color: col, life: 0.18, width: 0.06 });
+        w.fx.burst(p, { count: 34, color: col, speed: 6, life: 0.45, size: 0.22 });
+        w.fx.burst(p, { count: 14, color: 0x2a2632, kind: 'smoke', speed: 2, life: 0.7, size: 0.7, grow: 1 });
+        w.audio.play('impact', { volume: 0.8 });
+        break;
+      case 'trap':
+        w.fx.ring(feet(), { color: col, radius: 1, life: 0.35 });
+        w.fx.burst(feet(), { count: 18, color: 0x8a1a1a, speed: 3, up: 1, life: 0.4, size: 0.14 });
+        w.audio.play('heavyPunch', { volume: 0.7 });
+        break;
+      default: // behind, cut
+        w.fx.slash(p, c.as.yaw, { color: col, radius: 1.9, arc: 2.8, life: 0.32, width: 0.5, roll: (Math.random() - 0.5) * 2 });
+        w.fx.burst(p, { count: 18, color: col, speed: 4, life: 0.35, size: 0.18 });
+        w.audio.play('slashFinal', { volume: 0.6 });
+    }
+    if (dmg > 0) applyHit(w, c.owner, c.opp, { damage: dmg, kind: 'special', reaction: false, ignoreInvuln: true, color: col, scale: 1.3 });
+    c.opp.anim.play('hit', { restart: true, blend: 0.03 });
+    w.cameraRig.shake(0.2, 0.14);
+    w.hitstop(0.05);
+  });
+  return tl.end(0.85);
+}
+
+// lugar de cada um em volta do alvo (quem atira fica mais longe)
+function ringSpot(world, opp, def, i, n, phase = 0) {
+  const ang = phase + (i / Math.max(1, n)) * Math.PI * 2;
+  const r = RANGED_LOOK[linkId(def)] ? 4.2 : 1.6;
+  const want = { x: opp.pos.x + Math.cos(ang) * r, z: opp.pos.z + Math.sin(ang) * r };
+  return findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.5, others: [{ x: opp.pos.x, z: opp.pos.z, r: 0.6 }] }) || want;
+}
+
+// SEQUÊNCIA GENÉRICA (equipes sem coreografia própria): cada um usa a habilidade com a câmera nele, depois todos juntos
+// em volta do alvo com o líder entrando pela frente. Devolve o instante do golpe final.
+function genericParts({ tl, S, f, opp, world, crew, guests, color, crewTotal, TS, live }) {
+  const n = crew.length;
+  const each = n ? Math.floor(crewTotal / n) : 0;
+  crew.forEach((a, i) => {
+    tl.add(S + i * TS.beat, () => {
+      if (!live()) return;
+      const at = ringSpot(world, opp, a.def, i, n, f.yaw + Math.PI);
+      a.perform((c) => sceneCast(c, { at, dmg: each, named: true }), { at, quiet: true, guest: guests.includes(a) });
+      // quem conjura/atira de longe: por cima do ombro (o alvo e o efeito no meio); quem golpeia: os dois de lado
+      const pick = sceneAbility(a.def);
+      const far = pick && pick.kind !== 'cut' && pick.kind !== 'behind';
+      world.cameraRig.playShots([{ ...(far ? overShoulder(a, opp, { dur: TS.beat + 0.05, back: 2, side: i % 2 ? 0.9 : -0.9, height: 1.9, fov: 48 }) : twoShot(a, opp, { dur: TS.beat + 0.05, dist: 3.4, height: 1.5, push: 0.6, side: i % 2 ? 1 : -1, fov: 42 })), cut: true }]);
     });
-  } else {
-    // dupla/trio: quem está fora ataca primeiro; a ligação entra depois (ou logo, se não há ninguém de fora)
-    const start = outside.length ? Math.min(TS.second, 0.9) : 0.05;
-    outside.forEach((a, i) => tl.add(0.05 + i * 0.3, () => a.callTeam()));
-    // a ordem da ligação (link.order: o Veríssimo abre, o Arnaldo fecha); a Muralha (quem segura) vem antes do disparo
-    const rank = (a) => { const i = (link.order || ['cristopher']).indexOf(linkId(a.def)); return i < 0 ? 99 : i; };
-    const order = linked.slice().sort((a, b) => rank(a) - rank(b));
-    order.forEach((a, i) => tl.add(start + i * 0.4, () => a.perform(moveFor(a.def))));
+  });
+  const F = S + n * TS.beat + 0.1;
+  tl.add(F, () => {
+    if (!live()) return;
+    crew.forEach((a, i) => {
+      const at = ringSpot(world, opp, a.def, i, n + 1, f.yaw + Math.PI + Math.PI * 2 / (n + 1));
+      // todos juntos: cada um solta a habilidade de novo, ao mesmo tempo (sem os nomes)
+      a.perform((c) => sceneCast(c, { at, dmg: 0 }), { at, quiet: true, guest: guests.includes(a) });
+    });
+    // o líder entra pela frente
+    const front = ringSpot(world, opp, f.def, 0, n + 1, f.yaw + Math.PI);
+    f.pos.set(front.x, 0, front.z);
+    f.yaw = yawTo(f.pos, opp.pos);
+    const st = strikeOf(f.def);
+    f.anim.play(RANGED_LOOK[linkId(f.def)] || st.anim, { restart: true, duration: 0.75, blend: 0.04 });
+    world.fx.burst(f.chestPos(), { count: 20, color, speed: 4, life: 0.4, size: 0.2 });
+    world.cameraRig.playShots([{ ...pullBack(f, opp, { dur: 1.1, from: 3.4, to: 7, height: 2.4 }), cut: true }]);
+  });
+  return F;
+}
+
+// quem faz o papel na coreografia: o líder (Fighter) ou um da equipe/convidado (Assist), com a mesma cara
+function actorFor(x, f, guests) {
+  if (x === f) {
+    return {
+      def: f.def, pos: f.pos, rig: f.rig, get yaw() { return f.yaw; },
+      chest: () => f.chestPos(), face: (o) => { f.yaw = yawTo(f.pos, o.pos); },
+      play: (name, dur) => f.anim.play(name, { restart: true, duration: dur, blend: 0.04 }),
+      show: () => {}, color: f.def.energyColor ?? 0xc4241c,
+    };
   }
   return {
-    link,
-    // os convidados somem no fim do especial
-    cleanup: () => { guests.forEach((g) => g.reset()); if (f.teamGuests === guests) f.teamGuests = null; },
+    def: x.def, pos: x.pos, rig: x.rig, get yaw() { return x.yaw; },
+    chest: () => x.chest(), face: (o) => x.face(o), play: (name, dur) => x.play(name, dur),
+    // entra em cena e fica até `dur` (a coreografia é que move e anima)
+    show: (dur, at) => x.perform(() => new Timeline().end(dur), { at, quiet: true, guest: guests.includes(x) }),
+    color: x.color,
   };
+}
+
+// COREOGRAFIAS PRÓPRIAS DAS LIGAÇÕES (link.choreo). Recebem a cena e devolvem o instante do golpe final.
+const CHOREO = {
+  // EXECUÇÃO DOS MASCARADOS (pedido do dono, 2026-11-01): a Kemi (Fantasma) atira de longe, o X (Jae) surge atrás e
+  // crava a faca, o ??? (Labirinto) carrega um raio de energia e solta, e o Dalmo e o Aguiar fecham juntos — o Dalmo nos
+  // socos e o Aguiar cortando com o machado. O Juan (se estiver na equipe) abre a carne com o Descarnar no meio da dupla.
+  mascarados({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
+    const by = (id) => { const x = [f, ...crew].find((m) => linkId(m.def) === id); return x ? actorFor(x, f, guests) : null; };
+    const kemi = by('kemi'), jae = by('jae'), lab = by('labirinto'), dalmo = by('dalmo'), aguiar = by('aguiar'), juan = by('juan');
+    const cast = [kemi, jae, lab, dalmo, aguiar, juan].filter(Boolean);
+    // dano: cada parte com o seu peso (os golpes da dupla somam mais)
+    const W = { kemi: 2, jae: 2, lab: 2.5, dalmo: 1, aguiar: 1, juan: 1.5 };
+    const wsum = (kemi ? W.kemi : 0) + (jae ? W.jae : 0) + (lab ? W.lab : 0) + (dalmo ? W.dalmo * 3 : 0) + (aguiar ? W.aguiar * 2 : 0) + (juan ? W.juan : 0) || 1;
+    const part = (w) => Math.floor((crewTotal * w) / wsum);
+    const hit = (who, dmg, { sound = 'heavyPunch', fx = 'burst', col } = {}) => {
+      if (!live()) return;
+      const c = col ?? who.color;
+      const p = opp.chestPos();
+      if (fx === 'slash') world.fx.slash(p, who.yaw, { color: c, radius: 1.8, arc: 2.6, life: 0.3, width: 0.45, roll: (Math.random() - 0.5) * 2 });
+      world.fx.burst(p, { count: 16, color: c, speed: 4, life: 0.35, size: 0.16 });
+      if (dmg > 0) applyHit(world, f, opp, { damage: dmg, kind: 'special', reaction: false, ignoreInvuln: true, sound, color: c, scale: 1.3 });
+      opp.anim.play('hit', { restart: true, blend: 0.03 });
+      world.cameraRig.shake(0.18, 0.12);
+      world.hitstop(0.05);
+    };
+    const place = (who, x, z) => { who.pos.set(x, 0, z); who.face(opp); };
+    const around = (ang, r) => {
+      const a = opp.yaw + ang;
+      const want = { x: opp.pos.x + Math.sin(a) * r, z: opp.pos.z + Math.cos(a) * r };
+      return findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.5, others: [{ x: opp.pos.x, z: opp.pos.z, r: 0.6 }] }) || want;
+    };
+    const END = 5.6; // todos ficam até o fim
+    let t = S;
+    // o líder espera de lado até a vez dele (a parte dele o põe no lugar)
+    tl.add(S, () => {
+      if (!live()) return;
+      const side = around(-2.2, 6);
+      f.pos.set(side.x, 0, side.z);
+      f.yaw = yawTo(f.pos, opp.pos);
+    });
+    // 1. A FANTASMA ATIRA DE LONGE
+    if (kemi) {
+      tl.add(t, () => {
+        if (!live()) return;
+        const s = around(Math.PI * 0.75, 9);
+        kemi.show(END, s);
+        place(kemi, s.x, s.z);
+        kemi.play('shoot_sniper', 1.0);
+        world.cameraRig.playShots([{ ...overShoulder(kemi, opp, { dur: 0.95, back: 1.6, side: 0.7, height: 1.8, fov: 40 }), cut: true }]);
+        world.fx.flash(kemi.chest(), { color: kemi.color, size: 0.6, life: 0.3 });
+      });
+      tl.add(t + 0.5, () => {
+        if (!live()) return;
+        world.fx.tracer(kemi.chest(), opp.chestPos(), { color: kemi.color, life: 0.3, width: 0.1 });
+        world.fx.flash(opp.chestPos(), { color: kemi.color, size: 1.8, life: 0.18 });
+        hit(kemi, part(W.kemi), { sound: 'sniper' });
+      });
+      t += 1.0;
+    }
+    // 2. O X SURGE ATRÁS E CRAVA A FACA
+    if (jae) {
+      tl.add(t, () => {
+        if (!live()) return;
+        const s = findSpotBehind(world.arena, { x: opp.pos.x, z: opp.pos.z, yaw: opp.yaw }, { distance: 1.2, radius: 0.5 }) || around(Math.PI, 1.2);
+        world.fx.shadowDisc(new THREE.Vector3(s.x, 0, s.z), { radius: 1, life: 0.5, rim: jae.color });
+        jae.show(END - (t - S), s);
+        place(jae, s.x, s.z);
+        jae.play('thrust', 0.6);
+        world.audio.play('teleport', { volume: 0.6 });
+        world.cameraRig.playShots([{ ...twoShot(jae, opp, { dur: 0.75, dist: 2.4, height: 1.4, push: 0.4, side: 1, fov: 38 }), cut: true }]);
+      });
+      tl.add(t + 0.28, () => {
+        hit(jae, part(W.jae), { sound: 'bladeHit', fx: 'slash' });
+        if (live()) world.fx.burst(opp.chestPos(), { count: 22, color: 0x9a0e14, speed: 3.5, life: 0.5, size: 0.14, gravity: 8 });
+      });
+      t += 0.8;
+    }
+    // 3. O ??? CARREGA O RAIO DE ENERGIA E SOLTA
+    if (lab) {
+      let charge = null;
+      tl.add(t, () => {
+        if (!live()) return;
+        const s = around(-Math.PI * 0.6, 5);
+        lab.show(END - (t - S), s);
+        place(lab, s.x, s.z);
+        lab.play('concentrate', 0.75);
+        world.cameraRig.playShots([{ ...lowAngle(lab, { dur: 0.75, dist: 2.2, side: 1.1, fov: 48 }), cut: true }]);
+        charge = world.fx.emitter({ rate: 90, follow: () => lab.chest().add(new THREE.Vector3(0, 0.1, 0)), particle: { color: lab.color, speed: 1.5, spread: 1.2, up: 0.4, life: 0.35, size: 0.14 } });
+        world.audio.play('carga', { pitch: 0.8 });
+      });
+      tl.add(t + 0.7, () => {
+        if (charge) charge.stop();
+        if (!live()) return;
+        lab.play('arn_emit', 0.5);
+        world.cameraRig.playShots([{ ...overShoulder(lab, opp, { dur: 0.6, back: 1.8, side: -0.8, height: 1.7, fov: 46 }), cut: true }]);
+        world.fx.tracer(lab.chest(), opp.chestPos(), { color: lab.color, life: 0.4, width: 0.32 });
+        world.fx.tracer(lab.chest(), opp.chestPos(), { color: 0xffffff, life: 0.3, width: 0.1 });
+        world.fx.distort(opp.chestPos(), { color: lab.color, radius: 1.8, life: 0.4 });
+      });
+      tl.add(t + 0.82, () => hit(lab, part(W.lab), { sound: 'impact' }));
+      t += 1.3;
+    }
+    // 4. DALMO E AGUIAR JUNTOS: os socos do Dalmo e o machado do Aguiar (o Juan no meio, se estiver)
+    const duo = [dalmo, aguiar, juan].filter(Boolean);
+    if (duo.length) {
+      tl.add(t, () => {
+        if (!live()) return;
+        if (dalmo) { const s = around(0, 1.3); dalmo.show(END - (t - S), s); place(dalmo, s.x, s.z); }
+        if (aguiar) { const s = around(0.9, 1.5); aguiar.show(END - (t - S), s); place(aguiar, s.x, s.z); }
+        if (juan) { const s = around(-0.9, 1.5); juan.show(END - (t - S), s); place(juan, s.x, s.z); }
+        world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.5, radius: 4.2, height: 1.8, a0: -0.5, a1: 0.7, lookH: 1.1, fov: 44 }), cut: true }]);
+      });
+      // Dalmo: três socos · Aguiar: dois cortes intercalados · Juan: o Descarnar entre eles
+      if (dalmo) ['jab', 'cross', 'hook_l'].forEach((an, i) => {
+        tl.add(t + 0.05 + i * 0.36, () => { if (live()) dalmo.play(an, 0.34); });
+        tl.add(t + 0.18 + i * 0.36, () => hit(dalmo, part(W.dalmo), { sound: 'heavyPunch' }));
+      });
+      if (aguiar) [0, 1].forEach((i) => {
+        tl.add(t + 0.2 + i * 0.5, () => { if (live()) aguiar.play(i ? 'slash_d' : 'slash_v', 0.45); });
+        tl.add(t + 0.36 + i * 0.5, () => hit(aguiar, part(W.aguiar), { sound: 'axeHit', fx: 'slash' }));
+      });
+      if (juan) {
+        tl.add(t + 0.55, () => { if (live()) juan.play('slash_v', 0.5); });
+        tl.add(t + 0.7, () => {
+          hit(juan, part(W.juan), { sound: 'bladeHit', fx: 'slash', col: 0xb01020 });
+          if (live()) world.fx.burst(opp.chestPos(), { count: 26, color: 0x9a0e14, speed: 3, life: 0.5, size: 0.14, gravity: 8 });
+        });
+      }
+      t += 1.25;
+    }
+    // GOLPE FINAL: Dalmo no soco pesado e Aguiar no machado de cima, juntos; os outros soltam o deles ao mesmo tempo
+    tl.add(t, () => {
+      if (!live()) return;
+      if (dalmo) dalmo.play('heavy_punch', 0.6);
+      if (aguiar) aguiar.play('slash_v', 0.6);
+      if (juan) juan.play('slash_d', 0.6);
+      if (jae) jae.play('thrust', 0.5);
+      if (kemi) { kemi.play('shoot_sniper', 0.6); world.fx.tracer(kemi.chest(), opp.chestPos(), { color: kemi.color, life: 0.3, width: 0.1 }); }
+      if (lab) { lab.play('arn_emit', 0.5); world.fx.tracer(lab.chest(), opp.chestPos(), { color: lab.color, life: 0.35, width: 0.3 }); }
+      const hero = dalmo || aguiar || cast[0] || f;
+      world.cameraRig.playShots([{ ...pullBack(hero, opp, { dur: 1.1, from: 3.2, to: 7, height: 2.3 }), cut: true }]);
+    });
+    return t;
+  },
+};
+
+// A CENA (abilities.js teamSpecial). Devolve { tl, cancel }.
+export function teamScene(f, world, TS) {
+  const opp = f.opponent;
+  const link = teamLinkOf(f);
+  const { crew, guests } = teamCrew(f, world, link);
+  f.teamGuests = guests;
+  const color = link ? link.color : f.def.energyColor ?? 0xffd84a;
+  // dano em escada (COMBAT.teamSpecial): sem ligação < com ligação; o líder transformado sobe um degrau
+  const total = link ? (f.baseForm ? TS.formDamage : TS.damage) : (f.baseForm ? TS.plainFormDamage : TS.plainDamage);
+  const tl = new Timeline();
+  const h0 = opp.health;
+  let caught = false;
+  let inScene = false;
+  let unmask = () => {};
+  const formed = [];
+  const cleanup = () => {
+    for (const a of formed.splice(0)) a.revertEmpower();
+    unmask();
+    unmask = () => {};
+    for (const a of crew) if (a.active) a.leave();
+    guests.forEach((g) => g.reset());
+    if (f.teamGuests === guests) f.teamGuests = null;
+    if (inScene) { inScene = false; world.endCinematic(); }
+  };
+
+  f.vel.set(0, 0, 0);
+  f.yaw = yawTo(f.pos, opp.pos);
+  f.invuln = Math.max(f.invuln, TS.catchAt + 0.5); // o líder não é interrompido na abertura (quem pode errar é o golpe de abertura)
+  f.anim.play('concentrate', { restart: true, duration: 1 });
+  world.audio.play('specialStart', { volume: 0.9 });
+  world.fx.ring(f.pos.clone().setY(0.06), { color, radius: 2.8, life: 0.7 });
+  // 1º TEXTO: só o nome da equipe
+  world.showBanner(link ? link.banner : 'Especial em Equipe!', color);
+
+  // ABERTURA: o primeiro membro avança e golpeia (com reação normal: dá para defender ou esquivar)
+  const opener = crew[0];
+  tl.add(0.05, () => {
+    if (!opener) return;
+    // o golpe próprio da ligação (LINK_MOVES; Mascarados: o de roda); quem atira avança e golpeia (o tiro chegaria tarde)
+    const st = strikeOf(opener.def);
+    const own = link && link.style === 'circle' ? circleStrike : !RANGED_LOOK[linkId(opener.def)] && link ? moveFor(opener.def) : (c) => rushStrike(c, st.anim, [[0.28, 30]], st.hitSound || 'heavyPunch', { knockback: 0.2 });
+    opener.perform(own, { quiet: true, guest: guests.includes(opener) });
+  });
+  tl.each(() => {
+    if (!caught && tl.time <= TS.catchAt + 0.05 && opp.health < h0 && opp.state !== 'ko') caught = true;
+  });
+
+  // ERROU: acaba aqui (o líder não gasta o especial)
+  tl.add(TS.catchAt + 0.06, () => {
+    if (caught) return;
+    f.notify('ESPECIAL EM EQUIPE ERROU', true);
+    cleanup();
+    tl.end(tl.time + 0.3);
+  });
+
+  // PEGOU: vira cena
+  const C = TS.catchAt + 0.06;
+  tl.add(C, () => {
+    if (!caught || opp.state === 'ko') return;
+    if (opener && opener.active) opener.leave();
+    world.beginCinematic(f, opp);
+    inScene = true;
+    f.invuln = Math.max(f.invuln, 30);
+    if (link && link.sceneForms) {
+      for (const a of crew) {
+        const want = link.sceneForms[linkId(a.def)];
+        if (want && !a.empowered && a.def.awakening && a.def.awakening.form === want) { a.empower(color); formed.push(a); }
+      }
+    }
+    unmask = wearMasks(link, [f, ...crew]);
+    // conta como o especial do líder (a sanidade do especial, a recarga e o uso na partida)
+    f.spendEnergy(Math.min(f.energy, f.specialCost()));
+    f.cooldowns.special = f.cooldownMax.special;
+    f.specialUses++;
+    world.cameraRig.playShots([{ ...orbit(opp, { dur: TS.banner + TS.cards - C + 0.2, radius: 5, height: 2.4, a0: -1.2, a1: 0.4, lookH: 1 }), cut: true }]);
+  });
+  // 2º TEXTO: os retratos (depois que o nome saiu)
+  tl.add(TS.banner, () => {
+    if (!inScene || !world.ui || !world.ui.teamCut) return;
+    const cards = link ? linkCards(link, f) : [...crew.map((a) => a.def), f.def];
+    world.ui.teamCut(cards.map((d) => ({ id: d.id, name: d.name, color: '#' + new THREE.Color(d.energyColor ?? color).getHexString() })), { quick: true });
+  });
+
+  const S = TS.banner + TS.cards;
+  const crewTotal = Math.round(total * TS.crewShare);
+  const choreo = link && CHOREO[link.choreo];
+  const F = choreo
+    ? choreo({ tl, S, f, opp, world, crew, guests, color, crewTotal, live: () => inScene && opp.state !== 'ko' })
+    : genericParts({ tl, S, f, opp, world, crew, guests, color, crewTotal, TS, live: () => inScene && opp.state !== 'ko' });
+  // 3º TEXTO (só nas ligações): o NOME DO ESPECIAL EM EQUIPE, sozinho, no golpe final — nunca o especial próprio do líder
+  if (link) tl.add(F, () => { if (inScene) world.showBanner(link.name, color); });
+  // o golpe final: o que falta para o total exato, com a reação de verdade (voa longe)
+  tl.add(F + 0.4, () => {
+    if (!inScene) return;
+    const dealt = h0 - opp.health;
+    const rest = Math.max(Math.round(total * 0.3), total - dealt); // o golpe final nunca é fraco
+    inScene = false;
+    world.endCinematic();
+    if (opp.state === 'ko') return;
+    opp.comboHits = 0;
+    const dir = new THREE.Vector3().subVectors(opp.pos, f.pos).setY(0).normalize();
+    applyHit(world, f, opp, { damage: rest, kind: 'special', knockback: 7, launch: true, dir, ignoreInvuln: true, unblockable: true, sound: 'slashFinal', color, scale: 2.2 });
+    world.fx.ring(opp.chestPos(), { color, radius: 2.4, life: 0.4, vertical: true, yaw: f.yaw + Math.PI / 2 });
+    world.fx.burst(opp.chestPos(), { count: 40, color, speed: 6, life: 0.5, size: 0.2 });
+    world.screenFlash && world.screenFlash(color, 0.18);
+    world.cameraRig.shake(0.45, 0.3);
+    world.hitstop(0.14);
+  });
+  tl.add(F + 0.75, () => { f.invuln = Math.min(f.invuln, 0.3); cleanup(); });
+  tl.end(F + 0.9);
+  return { tl, cancel: () => { f.invuln = Math.min(f.invuln, 0.3); cleanup(); } };
 }
 
 // os retratos do tríptico de abertura: quem está na ligação (no grupo, todos os membros)

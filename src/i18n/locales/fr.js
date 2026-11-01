@@ -1,7 +1,7 @@
 // Textos da INTERFACE — Français (fr). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "UN JEU DE COMBAT PARANORMAL",
   "menu.fanmade": "Jeu fan made par romavitordev · inspiré de Ordem Paranormal",
   "menu.press_start": "APPUIE SUR <b>START</b>, <b>{ok}</b> OU <kbd>ENTRÉE</kbd>",

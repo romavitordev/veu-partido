@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.2.0 — Véu Partido
+
+### Alterado
+- **Identidade: Arena Paranormal → VÉU PARTIDO** (nome público e visual; nada técnico mudou). Logo da tela inicial (`Screens.js` `.logo`: `.t-veu` + `.word` com `.wm` / `.wm.shard` recortados na diagonal e o SVG `.rift`; sem o subtítulo); `<title>`, `manifest.webmanifest` (`name`/`short_name`), `sobre.html` (título, og/twitter, JSON-LD com `alternateName`, FAQ, marca, h1, rodapé com a nota da transição), `404.html`, `menu.title` nos 13 idiomas, `productName`/`shortcutName`, `capacitor appName`, nome da release no workflow, `abrir-jogo.ps1` (procura `Partido</title>`), `gen-moves`.
+- Ícones novos (`tools/make-icons.py`): `public/icons/*`, `electron/icon.png` e o favicon `public/veu-partido.ico` (antes `ordo-realitas.ico`, mantido no repositório). Imagens da página Sobre (título, seleção, og) refeitas.
+- Seleção de personagens: fundo único dos retratos (`portraits.js`), no lugar da cor de cada equipe.
+- **Mantidos de propósito:** URL/`base` `/arena-paranormal/`, nome npm, `appId com.romavitordev.arenaparanormal`, chaves `arena-paranormal:*` do localStorage, `ID_PREFIX` do online, nomes `Arena-Paranormal-*.exe/.apk`.
+- Especial em equipe = cinemática da equipe inteira (`teamSpecials.teamScene`): abertura que dá para defender, nome da equipe → retratos → cada membro usa a própria habilidade (`sceneCast`) → todos juntos no golpe final; coreografia própria dos Mascarados (`CHOREO.mascarados`, Kemi como Fantasma, máscaras via `link.masks`). Dano em escada em `COMBAT.teamSpecial` (sem ligação 360/430, com ligação 420/500).
+- Animações: camada de impulsos (`Animator.kick`, `LOCO_KICKS`), golpes polidos (`strikePolish`, finalizadores) e estilos por personagem (`anim/animStyles.js`).
+- CPU atiradora: "janela de fuga" — abre distância quando o perseguidor está caído, atordoado ou preso.
+- Auditoria de cânone 3.2 (Joui): a forma Shi no Kage perdeu os poderes da máscara (Olhar do Desespero → **Ataque Volátil**; passivas Decepar e Um por Um); descrição do Mateo com a cicatriz em espiral.
+
+### Corrigido
+- Menu principal em tela baixa (celular deitado): as 11 opções + 3 seções não cabiam; `max-height: 520px` divide em duas colunas (`.hlist:has(.hsec)`, `.hsec[data-g="practice"]` quebra a coluna), livre dos botões dos cantos.
+- A tela de equipe (`#teamCut`) do especial da luta anterior reaparecia no começo da luta seguinte.
+
 ## v4.1.0 — Dupla Recomendada
 
 ### Adicionado

@@ -94,9 +94,12 @@ export class HomeScreen {
       <div class="grain"></div>
       <div class="fog"></div>
       <div class="logo">
-        <div class="kicker">${t('menu.subtitle')}</div>
-        <div class="t-arena">ARENA</div>
-        <h1 data-text="PARANORMAL">PARANORMAL</h1>
+        <div class="t-veu" aria-hidden="true">VÉU</div>
+        <div class="word">
+          <h1 class="wm" data-text="PARTIDO" aria-label="VÉU PARTIDO">PARTIDO</h1>
+          <div class="wm shard" data-text="PARTIDO" aria-hidden="true">PARTIDO</div>
+          <svg class="rift" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="riftG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d1122e" /><stop offset=".25" stop-color="#9b4dff" /><stop offset=".5" stop-color="#f3e9ff" /><stop offset=".75" stop-color="#9b4dff" /><stop offset="1" stop-color="#d1122e" /></linearGradient></defs><path class="r-tear" d="M4 60.5 L31 54 L36 57 L62 46 L67 48 L96 38.6 L67 52.5 L62 51 L36 62.5 L31 59.5 Z" /><path class="r-edge" d="M4 60.5 L31 54 L36 57 L62 46 L67 48 L96 38.6" /><path class="r-crack" d="M31 54 L29.5 45 M62 46 L64 40 M36 62.5 L38.5 70 M67 52.5 L70 60" /></svg>
+        </div>
         <div class="elements"><i class="ln"></i>${Object.values(ELEMENTS).map((e) => `<b style="--c:${e.color}" title="${e.name}"></b>`).join('')}<i class="ln"></i></div>
         <div class="tag">${Object.entries(TEAM_COLORS).filter(([name]) => ROSTER.some((c) => defTeams(c).includes(name))).map(([name, col]) => `<span style="--tc:${col}">${name}</span>`).join('')}</div>
 
@@ -161,7 +164,7 @@ export class HomeScreen {
     let group = null;
     this.listEl.innerHTML = (this.parent ? `<div class="hcrumb">${this.parent.label}</div>` : '')
       + this.visibleList.map((o) => {
-        const head = o.group && o.group !== group ? `<div class="hsec">${t('menu.sec.' + o.group)}</div>` : '';
+        const head = o.group && o.group !== group ? `<div class="hsec" data-g="${o.group}">${t('menu.sec.' + o.group)}</div>` : '';
         group = o.group;
         const cls = `hopt${o.group === 'game' ? ' small' : ''}${o.soon ? ' soon' : ''}`;
         return `${head}<div class="${cls}" data-id="${o.id}"><span class="mk">◆</span>${o.label}${o.sub ? ' <i class="arr">▸</i>' : ''}${o.soon ? `<em class="badge">${t('menu.soon')}</em>` : ''}</div>`;

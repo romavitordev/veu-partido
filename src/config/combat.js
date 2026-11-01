@@ -138,10 +138,18 @@ export const COMBAT = {
   // (△ △ △ ○) — ver TODO.md, "EQUIPE — BARRA DE EQUIPE E ESPECIAIS EM EQUIPE"
   // devagar de propósito: ~17 chamadas para encher (≈ uma vez por partida) — o Especial em Equipe é raro numa luta
   teamGauge: { max: 100, assist: 6, swap: 3 },
-  // ESPECIAL EM EQUIPE (simplificado): assistência 1 → assistência 2 → o especial do líder. Se pegou, a parte das
-  // assistências vale EXATAMENTE `bonus` (o que faltar entra no fim; o que passar é devolvido): total = especial + bonus.
-  // hold: até quando o alvo pego fica atordoado (cobre a preparação do especial do líder)
-  teamSpecial: { bonus: 100, second: 1.1, leader: 2.3, hold: 3.9 },
+  // ESPECIAL EM EQUIPE — CINEMÁTICA DA EQUIPE INTEIRA (combat/teamSpecials.js, pedido de 2026-11-01): o primeiro golpe
+  // pega (dá para defender/esquivar); pegou, vira cena: nome da equipe → retratos → cada membro usa a habilidade/ritual dele com a câmera nele →
+  // todos juntos com o líder no golpe final. Dano TOTAL exato, em escada (pedido do dono: especial normal < especial
+  // transformado < em equipe < em equipe transformado): especial normal = specialDamage (250), transformado ≈ 300 (fichas
+  // das formas), em equipe = damage, com o líder transformado = formDamage.
+  //   catchAt: até quando o primeiro golpe precisa ter acertado · banner/cards: duração do nome e dos retratos (os
+  //   textos entram um de cada vez, sem sobrepor) · beat: intervalo entre os golpes de cada membro · crewShare: o quanto do
+  //   total sai nos golpes individuais (o resto é o golpe final de todos)
+  //   REVISÃO DOS DANOS (2026-11-01, medido no jogo contra o Balu — o número da ficha é o total ANTES da escala de combo):
+  //   especial normal ~160–240 · especial transformado ~250–300 · em equipe SEM ligação plainDamage · com LIGAÇÃO damage
+  //   (a equipe de verdade da lore vale mais) · com o líder transformado, o degrau de cima de cada um
+  teamSpecial: { plainDamage: 360, plainFormDamage: 430, damage: 420, formDamage: 500, catchAt: 0.5, banner: 1.5, cards: 0.95, beat: 0.85, crewShare: 0.5 },
   // ---- Anti-repetição ----
   maxVolleys: 2, // no máximo 2 disparos do mesmo jogador no ar (um terceiro apaga o mais antigo)
   repeat: { after: 2, mult: 0.7, window: 2.5 }, // o mesmo golpe 3x seguidas causa 70% (até variar)

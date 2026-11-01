@@ -337,6 +337,9 @@ export class World {
       const { actor, target } = this.cinematic;
       actor.update(dt);
       for (const f of this.fighters) if (f !== actor) f.updatePresentation(dt);
+      // o Especial em Equipe é uma cena da equipe inteira: a equipe de quem está na cena (assistências e convidados) se mexe
+      if (actor.assists) for (const a of actor.assists) if (a && a.active) a.update(dt);
+      if (actor.teamGuests) for (const a of actor.teamGuests) a.update(dt);
       void target;
     } else if (simulate) {
       this.tickTimers(dt);

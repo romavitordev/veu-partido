@@ -1,7 +1,7 @@
 // Textos da INTERFACE — Türkçe (tr). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "PARANORMAL BİR DÖVÜŞ OYUNU",
   "menu.fanmade": "romavitordev tarafından hayran yapımı oyun · Ordem Paranormal'dan esinlenildi",
   "menu.press_start": "<b>START</b>, <b>{ok}</b> VEYA <kbd>ENTER</kbd> TUŞUNA BAS",

@@ -90,7 +90,7 @@ export default {
       name: 'Envelhecimento Localizado "Mateo"',
       input: 'block+carga', // R2 + △
       type: 'healOverTime',
-      description: 'Recita o nome de Mateo e solta as cinzas sobre a ferida: o tempo corre só ali e ele recupera vida em instantes.',
+      description: 'Recita o nome de Mateo e solta as cinzas sobre a ferida: o tempo corre só ali e ele recupera vida em instantes (a ferida fecha deixando a cicatriz em espiral).',
       energyCost: 30,
       cooldown: 26,
       heal: 80,

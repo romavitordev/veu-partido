@@ -434,20 +434,31 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
   background: radial-gradient(40% 25% at 20% 70%, rgba(120,90,160,.25), transparent 70%), radial-gradient(35% 20% at 80% 60%, rgba(90,60,130,.22), transparent 70%), radial-gradient(30% 18% at 55% 85%, rgba(160,130,190,.18), transparent 70%);
   animation: fogDrift 18s ease-in-out infinite alternate; }
 @keyframes fogDrift { to { transform: translate(4%, -3%) scale(1.06); } }
-/* LOGO: "ARENA" fino e espaçado sobre "PARANORMAL" grande, metálico, com um feixe de luz passando e uma aberração
-   cromática leve; abaixo, a linha com os cinco elementos */
+/* LOGO VÉU PARTIDO (v4.2.0 — antes "ARENA PARANORMAL"): "VÉU" fino e espaçado sobre "PARTIDO" grande, metálico, com
+   o feixe de luz e a aberração cromática de antes. A palavra está PARTIDA: duas camadas iguais recortadas na diagonal
+   (.wm em cima, .shard embaixo, deslocada) e, na fenda, o rasgo da Membrana — roxo do Outro Lado com a borda carmesim
+   (.rift, SVG esticado na palavra). Abaixo, a linha com os cinco elementos */
 #home .logo { position: relative; text-align: center; transition: transform .45s ease, margin .45s ease; animation: logoIn 1.2s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes logoIn { from { opacity: 0; transform: translateY(14px) scale(.97); filter: blur(6px); } }
-#home .logo .kicker { font-weight: 600; letter-spacing: .55em; font-size: 11px; color: #b7a8d6; opacity: .75; margin-right: -.55em; }
-#home .logo .t-arena { margin-top: 10px; font-family: 'Inter', sans-serif; font-weight: 300; font-size: clamp(16px, 2.6vw, 30px); letter-spacing: 1.1em; margin-right: -1.1em; color: #e8e0f7; text-shadow: 0 0 18px rgba(164,107,255,.6); }
-#home .logo h1 { position: relative; font-family: 'Bebas Neue', sans-serif; margin: 0; line-height: .86; letter-spacing: .07em; margin-right: -.07em; font-size: clamp(64px, 12.5vw, 176px); font-weight: 400;
+#home .logo .t-veu { margin-top: 10px; font-family: 'Inter', sans-serif; font-weight: 300; font-size: clamp(16px, 2.6vw, 30px); letter-spacing: 1.1em; margin-right: -1.1em; color: #e8e0f7; text-shadow: 0 0 18px rgba(164,107,255,.6); }
+#home .logo .wm { position: relative; font-family: 'Bebas Neue', sans-serif; margin: 0; line-height: .86; letter-spacing: .07em; margin-right: -.07em; font-size: clamp(64px, 12.5vw, 176px); font-weight: 400;
   color: transparent; background: linear-gradient(100deg, #8f7fb0 0%, #f4efff 30%, #ffffff 45%, #c9b4f0 55%, #7a6a9a 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text;
   filter: drop-shadow(0 6px 0 rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(164,107,255,.45)); animation: sheen 7s ease-in-out infinite; }
 @keyframes sheen { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0% 0; } }
+#home .logo .word { position: relative; display: inline-block; filter: drop-shadow(0 6px 0 rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(164,107,255,.45)); }
+/* a sombra e o brilho ficam no .word: com o clip-path no .wm, o brilho saía recortado num retângulo */
+#home .logo .wm { filter: none; clip-path: polygon(0 0, 100% 0, 100% 37%, 95% 39%, 67% 48%, 62% 46%, 36% 57%, 31% 54%, 6% 60%, 0 61%); }
+#home .logo .wm.shard { position: absolute; inset: 0; transform: translate(.03em, .05em) rotate(.6deg); clip-path: polygon(0 61%, 6% 60%, 31% 54%, 36% 57%, 62% 46%, 67% 48%, 95% 39%, 100% 37%, 100% 100%, 0 100%); }
+#home .logo .rift { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; filter: drop-shadow(0 0 5px rgba(164,107,255,.95)) drop-shadow(0 0 14px rgba(120,40,220,.6)); animation: riftPulse 4.5s ease-in-out infinite; }
+#home .logo .rift .r-edge, #home .logo .rift .r-crack { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+#home .logo .rift .r-tear { fill: url(#riftG); stroke: none; }
+#home .logo .rift .r-edge { stroke: #d1122e; stroke-width: 1.4; opacity: .9; }
+#home .logo .rift .r-crack { stroke: #b88cff; stroke-width: 1; opacity: .7; }
+@keyframes riftPulse { 0%, 100% { opacity: .85; } 50% { opacity: 1; filter: drop-shadow(0 0 9px rgba(164,107,255,1)) drop-shadow(0 0 22px rgba(200,30,60,.45)); } }
 /* duas cópias deslocadas (vermelho/ciano) que piscam de vez em quando: o "glitch" paranormal */
-#home .logo h1::before, #home .logo h1::after { content: attr(data-text); position: absolute; inset: 0; background: none; -webkit-background-clip: border-box; background-clip: border-box; opacity: 0; pointer-events: none; }
-#home .logo h1::before { color: rgba(255,40,70,.55); transform: translate(-3px, 0); animation: glitchA 6s steps(1) infinite; }
-#home .logo h1::after { color: rgba(60,220,255,.45); transform: translate(3px, 0); animation: glitchB 6s steps(1) infinite; }
+#home .logo .wm::before, #home .logo .wm::after { content: attr(data-text); position: absolute; inset: 0; background: none; -webkit-background-clip: border-box; background-clip: border-box; opacity: 0; pointer-events: none; }
+#home .logo .wm::before { color: rgba(255,40,70,.55); transform: translate(-3px, 0); animation: glitchA 6s steps(1) infinite; }
+#home .logo .wm::after { color: rgba(60,220,255,.45); transform: translate(3px, 0); animation: glitchB 6s steps(1) infinite; }
 @keyframes glitchA { 0%, 91%, 95%, 100% { opacity: 0; } 92% { opacity: 1; clip-path: inset(18% 0 52% 0); } 94% { opacity: 1; clip-path: inset(62% 0 8% 0); transform: translate(-6px, 0); } }
 @keyframes glitchB { 0%, 91%, 96%, 100% { opacity: 0; } 93% { opacity: 1; clip-path: inset(40% 0 30% 0); } 95% { opacity: 1; clip-path: inset(5% 0 75% 0); transform: translate(6px, 0); } }
 /* aviso de jogo fan made (não oficial) na tela de título */
@@ -482,7 +493,7 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
    para o canto e o menu vira uma coluna à esquerda (os lutadores ficam à mostra à direita) */
 @media (min-width: 761px) and (min-height: 521px) {
   #home { justify-content: flex-start; padding-top: 9vh; }
-  #home .logo h1 { font-size: clamp(64px, 10.5vw, 150px); }
+  #home .logo .wm { font-size: clamp(64px, 10.5vw, 150px); }
   #home .press { position: absolute; bottom: 13vh; margin-top: 0; }
   #home.menu-on .logo { position: absolute; top: 6vh; left: 5vw; transform: scale(.42); transform-origin: left top; text-align: left; margin: 0; }
   #home.menu-on .logo .elements { justify-content: flex-start; }
@@ -704,8 +715,7 @@ body.touch-ui .panel { width: min(36vw, 440px); }
   .panel .name { font-size: clamp(13px, 4vw, 18px); }
   #timer { font-size: clamp(30px, 10vw, 40px); }
   #home { padding-right: max(12px, env(safe-area-inset-right)); padding-left: max(12px, env(safe-area-inset-left)); }
-  #home .logo h1 { font-size: clamp(44px, 16vw, 76px); }
-  #home .logo .kicker { font-size: 10px; letter-spacing: .2em; }
+  #home .logo .wm { font-size: clamp(44px, 16vw, 76px); }
   #home .logo .tag { max-width: 90vw; margin-right: auto; margin-left: auto; font-size: clamp(9px, 2.8vw, 12px); letter-spacing: .12em; line-height: 1.4; }
   #home .press { margin-top: 4vh; font-size: 11px; text-align: center; }
   #home .hopt { padding: 4px 10px; font-size: clamp(20px, 6vw, 26px); }
@@ -811,8 +821,8 @@ body.touch-capable #select { padding-top: max(58px, calc(env(safe-area-inset-top
 @media (max-height: 520px) and (max-width: 760px) { .sel-pages .pg-n { display: none; } .sel-grid .card .cn b { letter-spacing: 0; } } /* celular estreito: só as setas */
 /* menu principal em tela baixa (celular deitado): logo menor para as opções caberem */
 @media (max-height: 520px) {
-  #home .logo h1 { font-size: clamp(40px, 15vh, 90px); }
-  #home .logo .kicker, #home .logo .tag { font-size: 10px; letter-spacing: .2em; margin-top: 2px; }
+  #home .logo .wm { font-size: clamp(40px, 15vh, 90px); }
+  #home .logo .tag { font-size: 10px; letter-spacing: .2em; margin-top: 2px; }
   #home.menu-on .logo { transform: scale(.7); margin-top: -6vh; margin-bottom: -6vh; }
   #home .menu-home { margin-top: 0; gap: 2px; }
   #home .menu-home .hopt { padding-top: 2px; padding-bottom: 2px; font-size: clamp(15px, 5.6vh, 26px); line-height: 1.1; }
@@ -820,6 +830,11 @@ body.touch-capable #select { padding-top: max(58px, calc(env(safe-area-inset-top
   #home .hdesc { display: none; }
   /* com o menu aberto o logo sai: as 10 opções cabem na altura do celular deitado */
   #home.menu-on .logo { display: none; }
+  /* ...e mesmo assim as 11 opções + 3 seções não cabiam (pedido do dono, v4.2.0): duas colunas — LUTAS à esquerda,
+     PRATICAR e JOGO à direita. A ordem do cursor (cima/baixo) não muda */
+  #home.menu-on .hlist:has(.hsec) { display: block; columns: 2; column-gap: 36px; width: min(600px, calc(100vw - 150px)); } /* livre nos cantos: voltar e tela cheia do celular */
+  #home.menu-on .hlist > * { break-inside: avoid; }
+  #home.menu-on .hsec[data-g="practice"] { break-before: column; margin-top: 0; }
 }
 #touch.away { display: none; }
 /* app instalado (aberto pela tela de início): já está em tela cheia — o botão de tela cheia sai */

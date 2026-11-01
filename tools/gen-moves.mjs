@@ -31,7 +31,7 @@ const strikeRow = (label, s) => {
   return `| ${label} | ${s.name} | ${s.damage}${hits} | ${s.range} m | ${notes} |`;
 };
 
-let md = `# Habilidades — Arena Paranormal
+let md = `# Habilidades — Véu Partido
 
 > Gerado automaticamente a partir de \`src/characters/\` (\`npm run moves\`). Não edite à mão.
 

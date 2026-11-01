@@ -73,7 +73,7 @@ import { buildHuntingDog } from '../models/dog.js';
 import { bloodCoat, elementCoat, SEITA_MASKS } from '../models/weapons.js';
 import { addBloodPool, poolsOf, splatGeo } from './bloodPools.js';
 import { inscribe } from './kianPowers.js';
-import { scheduleTeamParts, linkCards } from './teamSpecials.js';
+import { teamScene } from './teamSpecials.js';
 import { AMIGO_TYPES } from './amigoPowers.js';
 import { ExistidoMorte, InkBeast } from './beasts.js';
 import { inkSplash } from '../fx/inkFx.js';
@@ -274,54 +274,13 @@ export const ABILITY_TYPES = {
       return seqFrom(tl, { cancel: () => { f.calmEvade = null; } });
     },
   },
-  // ESPECIAL EM EQUIPE (simplificado, Barra de Equipe cheia + △ △ △ ○): a assistência 1 entra e ataca, depois a 2, e o
-  // líder fecha com o próprio especial (Fighter.pendingTeamSpecial → trySpecial no fim). Quem é pego não escapa até o
-  // especial (atordoado a cada golpe); o dano das assistências é limitado a COMBAT.teamSpecial.bonus.
+  // ESPECIAL EM EQUIPE (Barra de Equipe cheia + △ △ △ ○): a cinemática da equipe inteira (combat/teamSpecials.js)
   teamSpecial: {
     start(f, a, world) {
       const opp = f.opponent;
-      const TS = COMBAT.teamSpecial;
       if (!opp || !f.assists || opp.state === 'ko') return null;
-      const tl = new Timeline();
-      f.vel.set(0, 0, 0);
-      f.yaw = yawTo(f.pos, opp.pos);
-      f.invuln = Math.max(f.invuln, TS.leader + 0.3);
-      f.anim.play('concentrate', { restart: true, duration: TS.leader });
-      // F4: com LIGAÇÃO na lore (config/teamLinks.js) a coreografia muda (combat/teamSpecials.js); sem, o simplificado
-      const parts = scheduleTeamParts(tl, f, world, TS);
-      const link = parts.link;
-      world.showBanner(link ? link.banner : 'Especial em Equipe!', link ? link.color : f.def.color);
-      world.audio.play('specialStart', { volume: 0.9 });
-      world.fx.ring(f.pos.clone().setY(0.06), { color: link ? link.color : 0xffd84a, radius: 2.8, life: 0.7 });
-      if (link && world.ui && world.ui.teamCut) {
-        world.ui.teamCut(linkCards(link, f).map((d) => ({ id: d.id, name: d.name, color: '#' + new THREE.Color(d.energyColor ?? link.color).getHexString() })), { quick: true });
-      }
-      const h0 = opp.health;
-      let last = h0;
-      let caught = false;
-      tl.each((t) => {
-        // pegou: atordoado a cada golpe até o especial do líder (não foge entre as partes)
-        if (opp.health < last && opp.state !== 'ko') {
-          caught = true;
-          if (t < TS.leader) opp.stun(Math.max(0.3, TS.hold - t), 'stagger');
-        }
-        last = opp.health;
-      });
-      tl.add(TS.leader - 0.05, () => {
-        // a parte das assistências vale exatamente o bônus: o que passou é devolvido, o que faltou entra agora
-        if (opp.state !== 'ko') opp.health = Math.max(opp.health, h0 - TS.bonus);
-        const rest = TS.bonus - (h0 - opp.health);
-        if (caught && rest > 0 && opp.state !== 'ko') {
-          applyHit(world, f, opp, { damage: rest, kind: 'ability', reaction: false, knockback: 0, ignoreInvuln: true, sound: 'impact', color: 0xffd84a, scale: 1.4 });
-        }
-        // o especial do líder entra inteiro (sem a escala de combo das partes das assistências): especial + bônus
-        opp.comboHits = 0;
-        f.pendingTeamSpecial = true;
-        if (caught) f.notify(link ? `${link.name}!` : 'ESPECIAL EM EQUIPE!', true);
-      });
-      tl.add(TS.leader - 0.02, () => parts.cleanup());
-      tl.end(TS.leader);
-      return seqFrom(tl, { cancel: () => parts.cleanup() });
+      const scene = teamScene(f, world, COMBAT.teamSpecial);
+      return seqFrom(scene.tl, { cancel: () => scene.cancel() });
     },
   },
   // ------------------------------------------------------------------ JOUI

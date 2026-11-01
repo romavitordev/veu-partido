@@ -83,7 +83,7 @@ jobs:
       - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG }}
-          name: Arena Paranormal ${{ env.TAG }}
+          name: Véu Partido ${{ env.TAG }}
           body_path: notas.md
           make_latest: true
           files: |

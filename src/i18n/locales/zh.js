@@ -1,7 +1,7 @@
 // Textos da INTERFACE — 中文 (zh). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "超自然格斗游戏",
   "menu.fanmade": "romavitordev 制作的粉丝游戏 · 灵感来自 Ordem Paranormal",
   "menu.press_start": "按 <b>START</b>、<b>{ok}</b> 或 <kbd>ENTER</kbd>",

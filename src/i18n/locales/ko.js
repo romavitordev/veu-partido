@@ -1,7 +1,7 @@
 // Textos da INTERFACE — 한국어 (ko). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "초자연 격투 게임",
   "menu.fanmade": "romavitordev의 팬메이드 게임 · Ordem Paranormal에서 영감",
   "menu.press_start": "<b>START</b>, <b>{ok}</b> 또는 <kbd>ENTER</kbd>를 누르세요",

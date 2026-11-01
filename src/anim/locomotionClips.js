@@ -44,12 +44,14 @@ export function locomotionClips(k, mirror, GUARD) {
     ]),
   };
 
-  // ---------------- PULO: agacha (antecipação) → estica explodindo com os braços → encolhe no alto
+  // ---------------- PULO: agacha (antecipação) → estica explodindo com os braços (o corpo passa do ponto) → encolhe no
+  // alto com os braços abrindo para equilibrar (a queda continua daí). O tronco fica um pouco atrás da explosão.
   const jump = {
-    dur: 0.34, keys: [
+    dur: 0.4, keys: [
       k(0, { h: -0.3, sp: [0.38, 0, 0], hd: [-0.2, 0, 0], sL: [0.65, 0, 0.2], eL: [-0.6, 0, 0], sR: [0.65, 0, -0.2], eR: [-0.6, 0, 0], lL: [-0.55, 0, 0.06], kL: [1.15, 0, 0], lR: [-0.45, 0, -0.06], kR: [1.1, 0, 0] }),
-      k(0.35, { h: 0.02, sp: [-0.06, 0, 0], hd: [-0.12, 0, 0], sL: [-2.35, 0, 0.35], eL: [-0.35, 0, 0], sR: [-2.35, 0, -0.35], eR: [-0.35, 0, 0], lL: [0.12, 0, 0.04], kL: [0.12, 0, 0], lR: [0.2, 0, -0.04], kR: [0.25, 0, 0] }),
-      k(1, { h: -0.02, sp: [0.12, 0, 0], hd: [0, 0, 0], sL: [-1.7, 0, 0.5], eL: [-0.9, 0, 0], sR: [-1.7, 0, -0.5], eR: [-0.9, 0, 0], lL: [-1.0, 0, 0.06], kL: [1.6, 0, 0], lR: [-0.35, 0, -0.06], kR: [1.25, 0, 0] }),
+      k(0.28, { h: 0.04, sp: [-0.12, 0, 0], hd: [-0.16, 0, 0], sL: [-2.5, 0, 0.3], eL: [-0.3, 0, 0], sR: [-2.5, 0, -0.3], eR: [-0.3, 0, 0], lL: [0.16, 0, 0.04], kL: [0.08, 0, 0], lR: [0.24, 0, -0.04], kR: [0.2, 0, 0] }),
+      k(0.6, { h: 0, sp: [0.16, 0, 0], hd: [0.02, 0, 0], sL: [-1.8, 0, 0.55], eL: [-0.95, 0, 0], sR: [-1.8, 0, -0.55], eR: [-0.95, 0, 0], lL: [-1.1, 0, 0.06], kL: [1.75, 0, 0], lR: [-0.4, 0, -0.06], kR: [1.4, 0, 0] }),
+      k(1, { h: -0.02, sp: [0.12, 0, 0], hd: [0.08, 0, 0], sL: [-1.3, 0, 0.75], eL: [-0.75, 0, 0], sR: [-1.3, 0, -0.75], eR: [-0.75, 0, 0], lL: [-0.75, 0, 0.06], kL: [1.25, 0, 0], lR: [-0.2, 0, -0.06], kR: [0.9, 0, 0] }),
     ],
   };
 
@@ -75,12 +77,15 @@ export function locomotionClips(k, mirror, GUARD) {
     ],
   };
 
-  // ---------------- ESQUIVA: abaixa de lado com o tronco girando e volta à guarda (antes: só abaixava e voltava)
+  // ---------------- ESQUIVA: carrega o peso (antecipação curta), abaixa de lado com o tronco girando, sobe passando um
+  // pouco da guarda e assenta (antes: abaixava e voltava em linha reta)
   const dodge = {
-    dur: 0.26, keys: [
+    dur: 0.28, keys: [
       k(0, GUARD),
-      k(0.3, { h: -0.32, hip: [0, 0.2, 0], sp: [0.5, 0.2, 0.08], hd: [-0.25, -0.15, 0], sL: [0.4, 0, 0.5], eL: [-1.2, 0, 0], sR: [0.4, 0, -0.5], eR: [-1.2, 0, 0], lL: [-0.8, 0, 0.12], kL: [1.3, 0, 0], lR: [0.6, 0, -0.12], kR: [1.5, 0, 0] }),
-      k(0.7, { h: -0.18, hip: [0, -0.1, 0], sp: [0.3, 0.25, 0], hd: [-0.25, -0.2, 0], sL: [-0.6, 0, 0.35], eL: [-1.7, 0, 0], sR: [-0.4, 0, -0.35], eR: [-1.8, 0, 0], lL: [-0.45, 0, 0.12], kL: [0.7, 0, 0], lR: [0.35, 0, -0.12], kR: [0.6, 0, 0] }),
+      k(0.1, { ...GUARD, h: -0.1, hip: [0, -0.08, 0], sp: [0.2, -0.12, -0.06], lL: [-0.35, 0, 0.06], kL: [0.7, 0, 0], lR: [0.25, 0, -0.06], kR: [0.75, 0, 0] }),
+      k(0.32, { h: -0.32, hip: [0, 0.2, 0], sp: [0.5, 0.2, 0.08], hd: [-0.25, -0.15, 0], sL: [0.4, 0, 0.5], eL: [-1.2, 0, 0], sR: [0.4, 0, -0.5], eR: [-1.2, 0, 0], lL: [-0.8, 0, 0.12], kL: [1.3, 0, 0], lR: [0.6, 0, -0.12], kR: [1.5, 0, 0] }),
+      k(0.66, { h: -0.18, hip: [0, -0.1, 0], sp: [0.3, 0.25, 0], hd: [-0.25, -0.2, 0], sL: [-0.6, 0, 0.35], eL: [-1.7, 0, 0], sR: [-0.4, 0, -0.35], eR: [-1.8, 0, 0], lL: [-0.45, 0, 0.12], kL: [0.7, 0, 0], lR: [0.35, 0, -0.12], kR: [0.6, 0, 0] }),
+      k(0.85, { ...GUARD, h: (GUARD.h || 0) + 0.02, sp: [(GUARD.sp?.[0] || 0) - 0.06, -0.08, 0] }),
       k(1, GUARD),
     ],
   };
@@ -97,3 +102,15 @@ export function locomotionClips(k, mirror, GUARD) {
 
   return { run, walk, jump, fall, dash, dodge, hit };
 }
+
+// IMPULSOS (Animator.kick): desvios somados por cima do clipe que estiver tocando, com peso que sobe e volta.
+//   land  — aterrissagem: o quadril afunda, joelhos cedem, tronco e braços caem com o peso (força pela velocidade de queda)
+//   brake — freada da corrida: o tronco joga para trás e o pé da frente segura
+//   start — arrancada: o tronco tomba para a frente antes do primeiro passo
+export const LOCO_KICKS = {
+  land: { h: -0.14, sp: [0.22, 0, 0], hd: [0.1, 0, 0], sL: [0.25, 0, 0.12], eL: [-0.2, 0, 0], sR: [0.25, 0, -0.12], eR: [-0.2, 0, 0], lL: [-0.22, 0, 0], kL: [0.45, 0, 0], lR: [-0.22, 0, 0], kR: [0.45, 0, 0] },
+  brake: { h: -0.06, sp: [-0.2, 0, 0], hd: [0.08, 0, 0], sL: [-0.3, 0, 0.1], sR: [-0.3, 0, -0.1], lL: [-0.25, 0, 0], kL: [0.15, 0, 0], kR: [0.3, 0, 0] },
+  start: { h: -0.05, sp: [0.18, 0, 0], hd: [-0.08, 0, 0], sL: [0.2, 0, 0], sR: [0.2, 0, 0] },
+  // coice do disparo: o braço sobe e dobra, o tronco e a cabeça vão um pouco para trás (todo projétil lançado)
+  recoil: { sp: [-0.08, 0, 0], hd: [-0.05, 0, 0], sR: [-0.22, 0, 0], eR: [-0.22, 0, 0], sL: [-0.08, 0, 0] },
+};

@@ -1,7 +1,7 @@
 // Textos da INTERFACE — Italiano (it). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "UN PICCHIADURO PARANORMALE",
   "menu.fanmade": "Gioco fan made di romavitordev · ispirato a Ordem Paranormal",
   "menu.press_start": "PREMI <b>START</b>, <b>{ok}</b> O <kbd>INVIO</kbd>",

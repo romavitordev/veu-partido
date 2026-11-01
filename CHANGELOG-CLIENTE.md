@@ -2,6 +2,16 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.2.0 — Véu Partido
+- NOVA IDENTIDADE: o Arena Paranormal agora se chama VÉU PARTIDO — a Membrana rompida entre a realidade e o Outro Lado. Logo e ícone novos; é o mesmo jogo, com tudo o que você já tinha.
+- Seleção de personagens com o mesmo fundo para todos.
+- Menu no celular deitado: as opções não cabiam; agora ficam em duas colunas (Lutar | Praticar e Jogo).
+- Especial em equipe virou cinemática: cada membro usa a própria habilidade e todos fecham juntos; os Mascarados têm coreografia própria e vestem as máscaras. Mais dano para equipes com ligação.
+- Animações mais vivas (impulso ao pousar, frear, atirar; golpes com antecipação e finalizadores com peso) e um jeito de lutar para cada estilo.
+- CPU atiradora foge melhor quando derruba quem a persegue.
+- Joui na forma Shi no Kage sem os poderes da máscara (ganhou o Ataque Volátil).
+- Corrigido: a tela do especial em equipe da luta anterior aparecendo na luta seguinte.
+
 ## v4.1.0 — Dupla Recomendada
 - Treinamento em equipe: escolha Solo ou Em Equipe; a Barra de Equipe fica cheia e, sem recarga, assistências e trocas ficam prontas.
 - Equipe de 2: confirme de novo o segundo lutador para lutar em dupla.

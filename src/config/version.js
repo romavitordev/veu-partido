@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.1.0';
+export const VERSION = '4.2.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,22 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.2.0',
+    date: '2026-11-01',
+    title: 'Véu Partido',
+    items: [
+      'NOVA IDENTIDADE: o Arena Paranormal agora se chama VÉU PARTIDO — a Membrana rompida entre a realidade e o Outro Lado. Logo e ícone novos; é o mesmo jogo, com todos os personagens, modos e o seu progresso.',
+      'SELEÇÃO: todos os personagens com o mesmo fundo (a equipe continua no selo do cartão).',
+      'ESPECIAL EM EQUIPE virou cinemática: cada membro usa a própria habilidade e todos fecham juntos. Os Mascarados têm coreografia própria — a Fantasma atira de longe, o X surge atrás, o Labirinto solta o raio, Dalmo e Aguiar atacam juntos — e vestem as máscaras.',
+      'DANO EM ESCADA: especial normal < transformado < em equipe < em equipe com ligação; com o líder transformado, mais um degrau.',
+      'ANIMAÇÕES: impulso ao pousar, frear, arrancar e atirar; golpes com antecipação, finalizadores com peso e um estilo de luta por personagem.',
+      'CPU atiradora abre distância quando derruba ou atordoa quem a persegue.',
+      'JOUI na forma Shi no Kage: sem os poderes da máscara (como na série) — o Olhar do Desespero deu lugar ao Ataque Volátil.',
+      'CORRIGIDO: no celular deitado as opções do menu não cabiam na tela — agora ficam em duas colunas.',
+      'CORRIGIDO: a tela do especial em equipe da luta anterior aparecia no começo da luta seguinte.',
+    ],
+  },
   {
     v: '4.1.0',
     date: '2026-10-31',

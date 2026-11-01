@@ -605,6 +605,18 @@ export class CpuController {
       }
     }
 
+    // JANELA DE FUGA (2026-11-01): o perseguidor caiu, foi atordoado ou está tomando golpe — é a hora de abrir distância
+    // de verdade (andando ele alcança: é mais rápido). Dash curto para longe PELO CENÁRIO (fleeDirection) e volta a atirar
+    const helpless = opp.state === 'downed' || opp.state === 'stun' || opp.state === 'hitstun' || opp.state === 'grabbed';
+    if (planZ.escapeAt > 0 && helpless && d < planZ.keep - 1 && (f.state === 'idle' || f.state === 'charging') && f.onGround
+      && f.cooldowns.dash <= 0 && w.time > (this.escapeDashAt || 0) && Math.random() < (0.4 + L.tactics * 0.5) * k) {
+      this.escapeDashAt = w.time + 1.5;
+      const fl = w.arena ? fleeDirection(w.arena, f.pos, opp.pos, { cover: true }) : { x: -toOpp.x, z: -toOpp.z };
+      const away = { x: fl.x, z: fl.z };
+      this.queue.push({ t: 0.05, held: { jump: true }, move: away }, { t: 0.05, held: {}, move: away }, { t: 0.05, held: { jump: true }, move: away }, { t: 0.05, held: {}, move: away });
+      return out;
+    }
+
     // ATIRADOR ENCURRALADO (matchupPlan — inteligência única): o adversário passou da distância de fuga do confronto
     // (mais cedo contra quem encurta a distância) — antes de qualquer outra escolha (habilidade, especial, combo)
     // esquiva para trás; sem carga, dash para longe

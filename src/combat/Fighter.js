@@ -4,6 +4,8 @@ import { tAlert } from '../i18n/index.js';
 import { COMBAT } from '../config/combat.js';
 import { buildModel } from '../models/index.js';
 import { Animator } from '../anim/Animator.js';
+import { LOCO_KICKS } from '../anim/locomotionClips.js';
+import { styleFor } from '../anim/animStyles.js';
 import { clamp, yawTo, turnTowards, forwardFromYaw, distXZ, angleDiff, DEG } from '../core/util.js';
 import { applyHit } from './damage.js';
 import { findSubstitutionSpot, resolveBody } from './positioning.js';
@@ -55,7 +57,7 @@ export class Fighter {
     this.input = input;
 
     this.rig = buildModel(def.model);
-    this.anim = new Animator(this.rig, def.anims);
+    this.anim = new Animator(this.rig, def.anims, styleFor(def));
     world.scene.add(this.rig.root);
 
     const s = def.stats || {};
@@ -96,7 +98,6 @@ export class Fighter {
     if (this.baseForm) revertForm(this, { keepHealth: false });
     this.lethalHook = null;
     this.revengeUsed = false; // Sede de Vingança (Kemi): uma vez por round
-    this.pendingTeamSpecial = false;
     this.storm = 0; // Barra de Transformação (0–100), zera a cada round
     this.overcharge = 0; // segurando △ com a sanidade cheia (0–1) → transforma
     this.health = this.maxHealth;
@@ -317,6 +318,7 @@ export class Fighter {
   setState(s) {
     if (this.state === 'dodge' && s !== 'dodge') this.settleDodge();
     if (s !== 'idle' && this.anim) this.anim.twist = 0; // giro das pernas só existe andando
+    if (s !== 'idle') this.locoWas = null; // freada/arrancada só entre passos de locomoção
     if (this.state === 'downed' && s !== 'downed') this.otgTaken = false;
     if (s !== 'attack' && s !== 'ability') this.superArmor = null;
     // preparo do especial interrompido por qualquer outro estado (golpe, projétil, agarrão...)
@@ -565,7 +567,7 @@ export class Fighter {
     this.seq = null;
     this.def = def;
     this.rig = rig;
-    this.anim = new Animator(rig, def.anims);
+    this.anim = new Animator(rig, def.anims, styleFor(def));
     this.world.scene.add(rig.root);
     rig.root.visible = true;
     rig.root.position.copy(this.pos);
@@ -1251,12 +1253,6 @@ export class Fighter {
   }
 
   updateIdle(dt) {
-    // fim da parte das assistências do Especial em Equipe: sai o especial do líder
-    if (this.pendingTeamSpecial) {
-      this.pendingTeamSpecial = false;
-      this.trySpecial();
-      if (this.state !== 'idle') return;
-    }
     if (this.handleCommands()) return;
     const inp = this.input;
     const dir = this.moveInputWorld(v1);
@@ -1304,6 +1300,7 @@ export class Fighter {
     }
 
     if (!this.onGround) {
+      this.locoWas = 'air';
       if (this.vel.y < 0) this.anim.play('fall');
     } else if (mag > 0.05) {
       // analógico até a metade: caminha; daí para cima: corre (com folga para não ficar alternando)
@@ -1322,11 +1319,16 @@ export class Fighter {
           clip = 'run';
           twist = clamp(Math.atan2(ld, fd), -1.22, 1.22);
         }
+        if (clip === 'run' && this.locoWas !== 'run') this.anim.kick(LOCO_KICKS.start, 0.22, this.locoWas ? 0.5 : 1);
+        this.locoWas = clip;
         this.anim.play(clip, { blend: 0.15 });
         this.anim.twist += (twist - this.anim.twist) * Math.min(1, dt * 10);
         this.anim.speed = this.strideSpeed(this.anim.current, Math.hypot(this.vel.x, this.vel.z));
       }
     } else {
+      // parou de correr de repente: freada (o tronco joga para trás)
+      if (this.locoWas === 'run' && this.state === 'idle') this.anim.kick(LOCO_KICKS.brake, 0.3);
+      this.locoWas = null;
       if (!(this.gestureT > 0)) this.anim.play('idle');
       this.anim.speed = 1;
       this.anim.twist = 0;
@@ -2843,8 +2845,9 @@ export class Fighter {
   }
 
   // ------------------------------------------------ especial
-  // ESPECIAL EM EQUIPE (△ △ △ ○ com a Barra de Equipe cheia): gasta a barra; as assistências entram e o especial do
-  // líder sai no fim (abilities.js teamSpecial). Sem especial disponível, avisa e não gasta a barra.
+  // ESPECIAL EM EQUIPE (△ △ △ ○ com a Barra de Equipe cheia): gasta a barra e começa a cinemática da equipe
+  // (combat/teamSpecials.js — pegou, conta como o especial do líder: recarga e uso). Sem especial disponível, avisa e não
+  // gasta a barra.
   tryTeamSpecial() {
     if (!this.teamReady()) { this.trySpecial(); return; }
     if (!this.specialAvailable()) { this.trySpecial(); return; } // o próprio trySpecial diz o motivo
@@ -3160,6 +3163,8 @@ export class Fighter {
       if (!this.onGround) {
         this.world.audio.play('land', { volume: 0.6 });
         if (this.state === 'idle') this.anim.play('idle', { blend: 0.1 });
+        // o corpo absorve a queda (mais forte quanto mais rápido caiu); golpes e estados de dano têm pose própria
+        if (['idle', 'dashing', 'block', 'charging'].includes(this.state)) this.anim.kick(LOCO_KICKS.land, 0.26, clamp(-this.vel.y / 9, 0.35, 1.2) * ((this.anim.style && this.anim.style.land) || 1));
       }
       this.pos.y = 0;
       this.vel.y = 0;

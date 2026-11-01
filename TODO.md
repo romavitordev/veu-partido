@@ -1,6 +1,6 @@
-# TODO — ARENA PARANORMAL
+# TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.1.0 (revisado em 2026-10-31: Dupla Recomendada — treinamento em equipe, equipe de 2, parceiro recomendado na seleção como no Storm 4, balas param na parede do Suvaco Seco, Novidades com Ver mais)
+**Versão de referência atual:** v4.2.0 (2026-11-01: Véu Partido — nova identidade, fundo único na seleção, especial em equipe cinematográfico, animações e auditoria 3.2 do Joui). Antes: v4.1.0 Dupla Recomendada.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -10,6 +10,62 @@
 # PRÓXIMA GRANDE ATUALIZAÇÃO — LUTA + MODO PvE (planejamento de 2026-10-18)
 
 **Estado em 2026-10-31 (v4.1.0):**
+- [x] **IDENTIDADE VÉU PARTIDO (pedido do dono, 2026-11-01, v4.2.0):** nome público, logo (PARTIDO rachado com o rasgo
+  da Membrana), ícones/favicon (`tools/make-icons.py`), títulos, manifest, Sobre, 404, 13 idiomas, nome do app no PC/Android,
+  README e changelogs com a transição registrada. Mantidos: URL `/arena-paranormal/`, appId, chaves de save, ID do online,
+  nomes dos arquivos baixados.
+  - [ ] Decidir se renomeia o repositório/URL e os arquivos `Arena-Paranormal-*.exe/.apk` (quebra links antigos — só com pedido).
+  - [ ] `public/ordo-realitas.ico` ficou sem uso (mantido); apagar quando quiser.
+- [x] **Menu no celular deitado não cabia** (pedido do dono, v4.2.0): duas colunas em tela baixa.
+- [x] **Fundo único dos personagens na seleção** (pedido do dono, v4.2.0): `portraits.js`, no lugar da cor da equipe.
+- [~] **v4.2.0 — ESPECIAL EM EQUIPE (notas do dono, 2026-11-01, jogando com Os Mascarados):** feito em
+  2026-11-01 (`combat/teamSpecials.js teamScene`), falta só a máscara da Kemi. Testado: Mascarados (5 membros + Dalmo),
+  dupla Cristopher + Kaiser, Força D, equipe sem ligação — 385 a 425 de dano, sem erro; errou (alvo invulnerável) → acaba
+  em 0,9 s sem gastar o especial do líder.
+  - [x] **Bug: a tela de equipe do especial da luta anterior aparece no começo da luta seguinte.** Era o `#teamCut`
+        ficando com `.show`: ao mostrar o HUD da luta seguinte a animação CSS tocava de novo. Agora sai sozinho no fim
+        e o `HUD.reset()` limpa.
+  - [x] **Cinemática de verdade com TODOS atacando juntos** (vale para TODOS os especiais em equipe — "não são apenas
+        assistências atacando no mapa"): o primeiro membro abre (dá para defender/esquivar); pegou, vira cena — cada
+        membro golpeia com a câmera nele (nas ligações de grupo os de fora da equipe também entram), depois TODOS JUNTOS
+        em volta do alvo com o LÍDER no golpe final. O especial próprio do líder não toca mais no fim (pegou, conta como
+        o especial dele: sanidade, recarga e uso). Durante a cena a equipe se mexe (`World`: a equipe de quem está na
+        cena atualiza no mundo congelado).
+  - [x] **Habilidades e rituais na cena** (pedido de 2026-11-01: "ao invés de só baterem, deveriam usar suas
+        habilidades/rituais"): cada membro usa a habilidade DELE (`sceneAbility`: ritual primeiro, depois a de mais dano;
+        utilidade fica de fora) com o nome na tela e o efeito pelo tipo — tiro, sigilo do ritual sob o alvo, chuva,
+        explosão, surgir atrás, armadilha, corte. Quem conjura de longe é filmado por cima do ombro. Ex.: Mascarados =
+        Ataque Especial, Punhal X, Disparo da Morte, Labirinto Mental, Descarnar Discente; Força D = Acácia, Portal das
+        Sombras; Ordo = Golpe do Veterano, Chuva de Flechas. No golpe final todos soltam a habilidade juntos.
+  - [x] **Texto do fim** (pedido de 2026-11-01: aparecia "Finalização de Arena", o especial do Dalmo): no golpe final
+        entra só o NOME DO ESPECIAL EM EQUIPE da ligação; sem ligação não entra fala nenhuma (só o "Especial em Equipe!"
+        do começo).
+  - [x] **Coreografia própria dos Mascarados** (`CHOREO.mascarados`, pedido de 2026-11-01): a Kemi entra como FANTASMA
+        e atira de longe (por cima do ombro) → o X (Jae) surge atrás e crava a faca → o ??? (Labirinto) carrega o raio de
+        energia (câmera baixa) e solta → Dalmo nos socos e Aguiar no machado JUNTOS (o Juan, se estiver, abre a carne no
+        meio) → golpe final de todos. Outras ligações podem ganhar a sua em `link.choreo`.
+  - [x] **Revisão dos danos por tipo** (`COMBAT.teamSpecial`, medido contra o Balu): especial normal ~160–240 <
+        transformado ~250–300 < em equipe SEM ligação 360 (líder transformado 430) < com LIGAÇÃO 420 (500). Fora da
+        escada de propósito: Erin no Caos (450, ela morre junto) e o Envelhecimento do Deus da Morte (150 + o
+        envelhecimento até o fim do round).
+  - Pedido original: hoje aparecem os membros bem rápido e depois toca o especial do
+        Dalmo. O especial em equipe tem que ser uma cena em que todos golpeiam em conjunto, um ajudando o outro a derrotar
+        o adversário (cada um com o seu golpe, em sequência e ao mesmo tempo), não o especial de um só.
+  - [x] **Câmera com ênfase:** close em quem está atacando naquele momento (troca de plano a cada golpe de cada membro).
+  - [~] **Os Mascarados vestem as máscaras** (`link.masks`: Dalmo o capacete, Aguiar a máscara, Jae o capuz do X,
+        Labirinto o elmo, Juan o capuz; **falta a Kemi** — o modelo não tem máscara: modelar) no momento do especial em equipe (e o mesmo cuidado com o visual de cada
+        equipe: roupas/armas/formas próprias da cena).
+  - [x] **Textos na tela organizados** (nome da equipe → retratos → a fala do líder no golpe final, um de cada vez): hoje "OS MASCARADOS", a fala ("Aí sim, neném") e as imagens deles aparecem todos ao
+        mesmo tempo e se sobrepõem. Dar uma sequência: 1º o nome da equipe, depois os retratos, depois as falas, cada um
+        com tempo próprio e sem sobrepor.
+  - [x] **Dano por tipo de especial (o dono achou o especial em equipe fraco):** `COMBAT.teamSpecial` damage 400 /
+        formDamage 475 (especial normal 250, transformado ~300 nas fichas das formas). escala clara e crescente —
+        especial normal < especial transformado < especial em equipe < especial em equipe transformado. Definir os
+        multiplicadores em `config/balance.js` e testar com a telemetria.
+  - Nota original do dono (mantida):
+    > Joguei e percebi que no começo da luta aparece a tela de equipe do especial que teve na ultima batalha, um bug.
+    > Os especiais de equipe devem dar mais enfase e close nos personagens que estão atacando no momento, usei o dos mascarados e só apareceu eles bem rapido atacando e depois o especial do Dalmo, sendo que deveria ser um especial de todos eles atacando em equipe, uma cinematic de todos usando ataques em conjunto se ajudando a derrotar, percebi também que o dano foi pouco. Dano de especial normal != Especial  transformado != especial em equipe != especial transformado em equipe.
+    > Os mascarados por exemplo: Devem vestir suas mascaras no momento do especial em equipe. Os textos na tela bugam e se sobrepoem, é tudo atropelado. Aparecendo Os Mascarados, Ai sim nenem e a imagem deles, tudo ao mesmo tempo. Organize isso no TODO para proxima versão.
 - [~] 2.2 Modelos antigos: Xande e Aguiar (v3.33.0), Fantasma, Kemi e Gal Sal + as lâminas Ereškigal (v3.34.0), Kaiser
   (v3.38.0), Balu e Lírio (v3.40.0), Arthur e Joui (v3.41.0), Arnaldo, Anfitrião, Veríssimo, Kian e O Diabo (2026-10-26)
   refeitos pelas artes oficiais; faltam os outros antigos
@@ -30,8 +86,21 @@
   poeira e tranco na câmera, sem o sigilo paranormal), escala de impacto e pausa no impacto maiores; anel 2,3 / onda 1,8
   (finalizador 3,4 + eco 4,4 / 2,6) — ele é pesado, golpes lentos e de impacto. O COLOSSO (a forma mais forte) fica acima:
   a onda da Pressão Atmosférica com anel 3,0 / onda 2,4 e, no finalizador, anel 4,4 + dois ecos (5,6 e 6,8), onda 3,4 e o
-  anel de choque no chão (sem duplicar com o 'shock'). Próximas levas: combos e
-  finalizadores próprios, esquivas, habilidades. Pedido original (2026-10-26): Todas as animações de movimento, ataques básicos,
+  anel de choque no chão (sem duplicar com o 'shock'). 2ª leva (2026-11-01, movimento): camada de
+  impulsos aditivos no Animator (`kick`) com aterrissagem (afunda conforme a velocidade de queda), freada da corrida e
+  arrancada; pulo com pose de pico; esquiva com antecipação e assentamento. 3ª leva (2026-11-01, combos):
+  mais 51 golpes de combo do elenco (lâminas, machado, garras, duas mãos, chutes próprios) com antecipação, passagem e
+  peso na volta; 11 golpes que fecham combo (`FINISHER_STRIKES`) passam mais do ponto e seguram o impacto um instante.
+  4ª leva (2026-11-01, habilidades): 10 arremessos e conjurações (throw_r/l, point, breath, cast_up, shadow_cast,
+  db_throw, ai_fling, arn_emit, arn_focus) com antecipação e soltura; todo projétil lançado dá um coice no corpo de quem
+  atira (mais forte no tiro de precisão; rajada recomeça o coice em vez de somar).
+  5ª leva (2026-11-01, ESTILO POR LUTADOR — `anim/animStyles.js`): o mesmo golpe toca diferente conforme quem bate, sem
+  mudar o instante do acerto: PESADO (Balu, Aguiar, Dalmo, Colosso, Lírio, Gal Sal: carrega muito, afunda no impacto, volta
+  devagar, aterrissa pesado), ESGRIMA (Joui, Jae, Celestine, Cristino, Juan: quase sem preparo, estala e volta rápido),
+  MILITAR (Kaiser, Veríssimo, Arthur, Cristopher: controlado e limpo), CAÓTICO (Xande, Guizo, Arnaldo/Anfitrião, Erin no
+  caos, Juan no ódio: preparo exagerado, passa muito do ponto, cabeça entorta), ELEGANTE (Kian, Gaius, Dante, Magistrada,
+  Nubi, Ferreiro: econômico, volta longa). `def.animStyle` sobrepõe a tabela.
+  Próximas levas: golpes de 5+ poses (hammer_finisher, dm_*, ai_*, db_*), estilo para os que ficaram no padrão. Pedido original (2026-10-26): Todas as animações de movimento, ataques básicos,
   combos, finalizadores, esquivas e habilidades de todos os personagens precisam ser melhoradas e retrabalhadas. Buscar
   referências da internet (jogos de luta consagrados como Naruto Storm, Guilty Gear, Tekken, além de coreografias de artes
   marciais e animes de ação) para trazer muito mais impacto, fluidez, peso e naturalidade (ver *2.1*).
@@ -90,7 +159,8 @@
         descarnado com as costelas à mostra e os braços rasgados até o osso, a língua comprida; descontrolado, mais rápido
         e forte, SEDE INCONTROLÁVEL: devora quem está morrendo e se cura).
         Equipe nova "Vampiros" (Alvira, Velisar, Zéfero, Sabara quando entrarem).
-- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** (dungeons, Espreitador como chefe, progressão, salvamento,
+- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** — **EM ESPERA (pedido do dono, 2026-11-01: "esqueça o pve, por
+  enquanto, finalizarei e polirei primeiro o modo que já existe")**. As ideias do dono estão na seção 3.0. (dungeons, Espreitador como chefe, progressão, salvamento,
   cooperativo): não iniciado; já anunciado como "em desenvolvimento, sem data" na página Sobre. Na v3.47.0 entrou só a
   opção OUTRO LADO no menu principal (selo EM BREVE e aviso ao escolher), como pedido.
 - [x] **Menu principal em seções** (v3.47.0): LUTAR / PRATICAR / JOGO, Outro Lado com EM BREVE, descrição em cartão ao
@@ -302,7 +372,7 @@ As animações deverão respeitar o estilo de luta de cada personagem e ser comp
 
 - [ ] **Melhoria geral de todas as animações do jogo (pedido de 2026-10-26):** todas as animações de movimento (corrida, caminhada, esquivas, dash, pulo, transições), ataques normais, sequências de combo, finalizadores e habilidades precisam ser aprimoradas para maior fluidez, impacto e naturalidade.
 - [ ] **Pesquisa e uso de referências visuais da internet:** buscar referências de alta qualidade em jogos de luta consagrados (Naruto Storm, Guilty Gear, Tekken, Street Fighter), coreografias de artes marciais reais e cenas de ação em animes para guiar o timing, arcos de movimento (anticipation, follow-through, peso e inércia).
-- [ ] **Polimento individual por estilo de combate:** garantir que cada combatente tenha animações fiéis ao seu estilo e personalidade narrativa (ex.: agilidade e esgrima de Joui, brutalidade pesada de Balu e Aguiar, técnica militar de Kaiser e Veríssimo, loucura caótica de Xande e Anfitrião, elegância sobrenatural de Kian).
+- [x] **Polimento individual por estilo de combate** (2026-11-01, `anim/animStyles.js`, ver a 5ª leva acima): garantir que cada combatente tenha animações fiéis ao seu estilo e personalidade narrativa (ex.: agilidade e esgrima de Joui, brutalidade pesada de Balu e Aguiar, técnica militar de Kaiser e Veríssimo, loucura caótica de Xande e Anfitrião, elegância sobrenatural de Kian).
 
 ### 2.2. Atualização dos modelos antigos
 
@@ -473,7 +543,20 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - A forma Olhos Sempre Abertos deve ter mudança visual e mecânica legível.
   - Testar mira, alcance, hitboxes do rifle, interrupção do especial, colisão com cenário e golpes de um braço.
 
-- [ ] **3.2 Joui Jouki (`src/characters/joui.js`; forma `forms/joui_shinokage.js`):**
+- [~] **3.2 Joui Jouki (`src/characters/joui.js`; forma `forms/joui_shinokage.js`):** auditado em 2026-11-01 contra a
+  wiki (nota "Joui perdeu essa habilidade ao entregar a Máscara para a Magistrada" em Teleporte, Portal, Olhar do
+  Desespero, Decepar e Um por Um).
+  | Habilidade | Código | Fonte | Divergência | Feito |
+  |---|---|---|---|---|
+  | Teleporte das Sombras, Portal das Sombras, Tomado pelo Ódio | mascarado | máscara (Calamidade) | — | ok, só no mascarado |
+  | Olhar do Desespero | estava na forma Shi no Kage | máscara | forma é a fase SEM máscara | trocado por **Ataque Volátil** (canônico do Joui, Calamidade ep. 11, sem máscara) |
+  | Passivas Decepar e Um por Um | estavam na forma | máscara | idem | saem da forma (ficam no mascarado) |
+  | Decepar (△+L2 da forma) | heavyBlow | máscara | idem | **em aberto**: pedido do dono — decidir manter como licença ou trocar |
+  | Envelhecimento Localizado "Mateo" | healOverTime | Desconjuração | faltava a cicatriz em espiral | descrição corrigida |
+  | Coincidência Forçada "Rodolfo", Pavor Anormal | contra-ataque / armadilha | Desconjuração | — | ok nas duas fases |
+  | Resistência Paranormal, Precognição, Desarmar | passivas | Calamidade | Resistência vem de Celestine, não da Seita | ok nas duas fases |
+  | Sombra Rasteira, Corte de Conhecimento, Saque da Relíquia | projétil / avanço | proposta | — | marcados como proposta |
+  Falta: decisão sobre o Decepar e o teste em jogo da troca de forma/teleporte.
   - Conferir a fase exata de cada poder de sombra, máscara e katana.
   - A transformação Shi no Kage deve usar a katana da Magistrada apenas se a referência temporal e narrativa confirmar a associação desejada; não misturar o kit da máscara com a fase da nova katana.
   - Confirmar o efeito e o nome de cada ritual, especialmente Envelhecimento Localizado e Portal das Sombras.
@@ -721,6 +804,18 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
 ---
 
 ## 3. Novo modo PvE — dungeons e chefes
+
+> **EM ESPERA (2026-11-01):** o dono vai primeiro finalizar e polir o modo de luta que já existe. Não começar o PvE
+> antes de ele pedir.
+
+### 3.0. Ideias do dono (2026-11-01)
+
+- **Dungeons com chefes:** você derrota os minions antes do chefe.
+- **Cada chefe bem diferente do outro**, com mecânica própria e um jeito próprio de ser derrotado.
+- **A cada chefe derrotado, o personagem sobe um pouco de nível.**
+- **Se morrer, reinicia**, e a próxima dungeon que vem é aleatória.
+- **Melhorias por personagem:** cada lutador evolui separado, então você tem que ir upando cada um.
+- **Solo ou cooperativo.**
 
 ### 3.1. Conceito do modo
 
@@ -1607,6 +1702,10 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         3 lutas cada): Arthur × Raziel 1×1, 2×1, 0×2 (antes 0×3); Kaiser × Jae 1×1, 1×1, 2×0. **Ainda a melhorar:** atirador × perseguidor rápido quando OS DOIS são CPU (Arthur × Raziel, Kaiser × Jae ficam
         ~2 m): o perseguidor, mais rápido e agora também pressionando, vence a corrida pela distância. Próximo passo: o
         atirador ler a investida do outro (o telegraph) e esquivar no tempo certo, e usar o cenário (pilares) para fugir.
+        [x] 2026-11-01: JANELA DE FUGA — com o perseguidor caído, atordoado, agarrado ou tomando golpe, o atirador dá dash
+        curto para longe pelo cenário (fleeDirection) e volta a atirar. CPU × CPU (normal, 3 lutas cada): Kaiser × Jae 2×0,
+        2×0, 1×1 com distância média 5–6 m (antes ~2 m); Arthur × Raziel 0×2 nas 3, distância 3,7–5,7 m (antes ~2 m) — o
+        Raziel ainda vence: falta o Arthur converter a distância em dano (tiro carregado/Dystopia na hora certa).
       - CPU no BOTÃO DO ANFITRIÃO: larga tudo, corre até o botão e aperta primeiro (testado no Fácil e no Difícil).
 - [ ] **PLANEJAMENTO — DISTRIBUIÇÃO PELO CÂNONE (pesquisa de 2026-10-27, wiki "Relíquias da Calamidade" e "A
       Magistrada").** Cada Relíquia é um OBJETO, e quem a porta recebe um TÍTULO:

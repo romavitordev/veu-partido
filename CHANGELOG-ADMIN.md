@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.2.0 — Véu Partido
+
+- Versão: `VERSION` 4.1.0 → **4.2.0** (package.json/lock junto). Data: 2026-11-01. Atualização concreta (`x.y.0`), sem reiniciar a numeração.
+- **Pedido do dono: reformulação de marca Arena Paranormal → VÉU PARTIDO** (identidade, não reconstrução). Auditoria de todas as ocorrências separadas em visuais (trocadas), técnicas (mantidas: URL `/arena-paranormal/`, `appId` do Android — trocar instalaria como outro app —, chaves `arena-paranormal:*` do save, `ID_PREFIX` do online, nome npm), downloads (`Arena-Paranormal-*.exe/.apk` mantidos para não quebrar os links `latest/download`) e históricas (changelogs, notas antigas do `version.js`, docs — preservadas). Plano aprovado pelo dono antes de executar.
+- **Pedido do dono: padronizar o fundo dos personagens na seleção** ("várias cores está estranho"): fundo único; a equipe continua no selo do cartão.
+- **Pedido do dono (durante os testes): "tela do menu no mobile não funciona, não cabem todas as opções"** — duas colunas em tela baixa; testado em 812×375 e 640×300 (toque), submenus continuam em uma coluna, ordem do cursor igual.
+- **Também nesta versão (trabalho anterior ainda não publicado):** especial em equipe cinematográfico (pedidos do dono de 2026-11-01), animações levas 2–5 e estilos, janela de fuga da CPU, auditoria 3.2 do Joui (Ataque Volátil — o nome "Ataque Poderoso" foi recusado pelo dono por ser genérico).
+- **Pendente:** Decepar da forma Shi no Kage (poder da máscara, pedido do dono — decidir); máscara da Kemi no modelo; renomear o repositório/URL só se o dono pedir.
+
 ## v4.1.0 — Dupla Recomendada
 
 - Versão: `VERSION` 4.0.0 → **4.1.0** (package.json/lock junto). Data: 2026-10-31.

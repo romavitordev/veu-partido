@@ -1,7 +1,7 @@
 // Textos da INTERFACE — Polski (pl). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "PARANORMALNA BIJATYKA",
   "menu.fanmade": "Gra fanowska autorstwa romavitordev · inspirowana Ordem Paranormal",
   "menu.press_start": "NACIŚNIJ <b>START</b>, <b>{ok}</b> LUB <kbd>ENTER</kbd>",

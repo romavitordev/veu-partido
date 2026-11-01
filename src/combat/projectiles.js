@@ -7,6 +7,7 @@ import { knife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, iron
 import { createMistZone } from './abilities.js';
 import { addBloodPool } from './bloodPools.js';
 import { inscribe } from './kianPowers.js';
+import { LOCO_KICKS } from '../anim/locomotionClips.js';
 
 // Gerencia projéteis (balas, faca arremessada, ondas de corte, ondas de impacto).
 // A aparência vem de `visual` na definição do ataque; a lógica é a mesma para todos.
@@ -462,6 +463,8 @@ export class Projectiles {
     mesh.position.copy(origin);
     mesh.lookAt(origin.clone().add(dir));
     this.world.scene.add(mesh);
+    // o corpo de quem dispara sente o coice (mais forte no tiro de precisão)
+    if (owner && owner.anim && owner.anim.kick) owner.anim.kick(LOCO_KICKS.recoil, 0.18, /sniper/i.test(ability.visual || '') ? 1.3 : 0.7);
     const p = {
       owner, ability, mesh, volley: vid,
       pos: origin.clone(),

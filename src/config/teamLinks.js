@@ -34,6 +34,12 @@ export const TEAM_LINKS = {
     min: 3,
     style: 'circle',
     color: 0xc4241c,
+    // no Especial em Equipe cada um VESTE a máscara (prop do modelo: mostra → esconde no fim). A Kemi ainda não tem a
+    // máscara no modelo (TODO: modelar).
+    // coreografia própria (combat/teamSpecials.js CHOREO.mascarados) e quem entra transformado na cena
+    choreo: 'mascarados',
+    sceneForms: { kemi: 'fantasma' },
+    masks: { dalmo: { show: ['helmet'] }, aguiar: { show: ['maskOn'] }, jae: { show: ['hoodX'], hide: ['hoodDown', 'hoodUp'] }, labirinto: { show: ['helmetOn'] }, juan: { show: ['hoodUp'] } },
   },
   // Força D: vale com 3 da equipe e aparecem todos os membros, cada um com o golpe próprio
   forca_d: {

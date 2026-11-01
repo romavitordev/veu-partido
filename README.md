@@ -1,10 +1,18 @@
-# Arena Paranormal
+# Véu Partido
+
+> **Nova identidade (v4.2.0):** o jogo que se chamava **Arena Paranormal** agora é **VÉU PARTIDO**. O nome vem da
+> mitologia de Ordem Paranormal: a **Membrana** que separa a realidade do **Outro Lado** — e que, quando se rompe, deixa
+> o paranormal entrar. O logo é a palavra PARTIDO rachada na diagonal, com o rasgo roxo do Outro Lado e a borda carmesim;
+> o ícone é o "V" partido pela mesma fenda, sobre a linha dos cinco elementos. É o mesmo jogo, com todo o elenco, os
+> modos e o histórico de versões preservados. O repositório, o endereço do site (`/arena-paranormal/`), os nomes dos
+> arquivos baixados (`Arena-Paranormal-*.exe/.apk`), o ID do app Android e as chaves de salvamento continuam os mesmos,
+> para não quebrar links, atualizações nem configurações salvas.
 
 Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível, com
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v4.1.0**.
+Versão atual do jogo: **v4.2.0**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 

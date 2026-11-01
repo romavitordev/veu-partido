@@ -4,7 +4,9 @@
 // FASE (decisão explícita, feedback de 25/10/2026 — ver docs/AUDITORIA-KIAN-JOUI.md): o Joui NORMAL do jogo é o Joui
 // MASCARADO da Seita das Máscaras (máscara, sombras, teleporte). A FORMA é o Joui da FASE FINAL contra o Kian (depois do
 // ep. 9 de Calamidade): ele ENTREGOU a máscara à Magistrada — sem ela, sem os poderes da máscara (sem Teleporte das
-// Sombras, sem Sombra Rasteira, sem Corte das Sombras) — e luta com a SHI NO KAGE ("Sombra da Morte"), a katana preta
+// Sombras, sem Sombra Rasteira, sem Corte das Sombras; e, pela wiki, "Joui perdeu essa habilidade ao entregar a Máscara
+// para a Magistrada" vale também para o Portal das Sombras, o Olhar do Desespero, o Decepar e o Um por Um — auditoria
+// 3.2, 2026-11-01) — e luta com a SHI NO KAGE ("Sombra da Morte"), a katana preta
 // amaldiçoada com Conhecimento (sigilos dourados) que a Magistrada lhe deu; no quadril, a bainha com sigilos roxos que
 // contém a Relíquia de Energia (a katana antiga). O que é proposta de jogo está marcado como tal nos comentários.
 import base from '../joui.js';
@@ -109,11 +111,31 @@ export default {
     // Envelhecimento Localizado "Mateo" (ritual dele): na fase final o tempo corre só ali e as FERIDAS FECHAM — além de
     // curar, tira sangramento, MORRENDO, envelhecimento, queimadura, cegueira, surdez e a ferida aberta
     { ...byId.mateo, cleanse: true, description: 'Recita o nome de Mateo e solta as cinzas sobre a ferida: o tempo corre só ali — recupera vida e as feridas FECHAM (sangramento, MORRENDO, envelhecimento, queimadura, cegueira, surdez e ferida aberta saem na hora).' },
-    // Olhar do Desespero (habilidade dele; cânone: "paralisa... ou torna-o ESMORECIDO"): passada a paralisia, o alvo
-    // fica esmorecido — bate 25% mais fraco por 5 s
-    { ...byId.olhar, wither: { mult: 0.75, duration: 5 }, description: 'Encara o adversário: quem estiver à frente fica paralisado de medo e, passada a paralisia, ESMORECIDO — bate 25% mais fraco por 5 s.' },
     {
-      // △ + L2 DECEPAR (pedido do Vitor: "um golpe como o do Cristino de decepar membro"; cânone do Joui: "quando deixa um
+      // △ + ○ ATAQUE VOLÁTIL (habilidade do Joui que NÃO é da máscara — wiki, Calamidade ep. 11: "sempre que ataca com
+      // uma arma de duas mãos, pode gastar 1 PE para dobrar seu bônus de força no dano"). No lugar do Olhar do Desespero,
+      // que ele perdeu com a máscara: segura a Shi no Kage com as duas mãos e por alguns segundos os cortes pesam mais.
+      id: 'ataqueVolatil',
+      name: 'Ataque Volátil',
+      input: byId.olhar.input,
+      type: 'selfBuff',
+      buffType: 'ataqueVolatil',
+      label: 'ATAQUE VOLÁTIL',
+      description: 'Firma a Shi no Kage com as duas mãos e dobra a força de cada corte: por 5 s os cortes batem 30% mais forte.',
+      energyCost: 22,
+      cooldown: 14,
+      duration: 5,
+      anim: 'counter_stance',
+      animTime: 0.5,
+      damageMult: 1.3,
+      affects: ['melee'],
+      sound: 'carga',
+      color: GOLD,
+    },
+    {
+      // △ + L2 DECEPAR — DIVERGÊNCIA EM ABERTO (auditoria 3.2): na wiki o Decepar é poder da MÁSCARA, e esta forma é a
+      // fase sem ela; fica por ser pedido explícito do dono, à espera da decisão dele (manter como licença ou trocar).
+      // (pedido do Vitor: "um golpe como o do Cristino de decepar membro"; cânone do Joui: "quando deixa um
       // alvo morrendo pode decepar um membro; se o dano for suficiente para matar, pode decapitar"): ergue a Shi no Kage e
       // desce num corte que arranca — o alvo SANGRA e fica com a FERIDA ABERTA (sem cura); em quem está atordoado ou
       // preso entra mais fundo, e em quem já está morrendo (vida baixa) o corte vai no pescoço
@@ -185,7 +207,9 @@ export default {
 
   awakening: undefined,
   passives: [
-    ...base.passives,
+    // sem as passivas da máscara (Decepar e Um por Um saem com ela); ficam Pelas Costas, Precognição, a resistência
+    // física e a Resistência Paranormal (essa vem da Máscara do Desespero de Celestine, não da máscara da Seita)
+    ...base.passives.filter((p) => p.type !== 'decepar' && p.type !== 'oneByOne'),
     // Técnica Secreta "Desarmar" (habilidade dele): na forma é passiva — o finalizador arranca a arma do alvo
     { type: 'disarmStrike', time: 4 },
   ],

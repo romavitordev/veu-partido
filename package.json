@@ -1,6 +1,6 @@
 {
   "name": "arena-paranormal",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "private": true,
   "description": "Jogo de luta 3D em arena com temática paranormal (protótipo).",
   "author": "Vitor Roma",
@@ -34,7 +34,7 @@
   },
   "build": {
     "appId": "com.romavitordev.arenaparanormal",
-    "productName": "Arena Paranormal",
+    "productName": "Véu Partido",
     "directories": {
       "output": "release"
     },
@@ -52,13 +52,13 @@
           ]
         }
       ],
-      "icon": "public/ordo-realitas.ico"
+      "icon": "public/veu-partido.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "shortcutName": "Arena Paranormal",
+      "shortcutName": "Véu Partido",
       "artifactName": "Arena-Paranormal-Windows.${ext}"
     }
   }

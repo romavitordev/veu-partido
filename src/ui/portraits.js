@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { buildModel } from '../models/index.js';
 import { disposeSkeletons } from '../models/glbRig.js';
 import { Animator } from '../anim/Animator.js';
-import { teamColor } from '../config/teams.js';
 
 // Gera retratos dos personagens renderizando o modelo 3D uma vez (dataURL).
 // Quando houver artes oficiais, basta trocar por <img> das artes.
@@ -75,24 +74,25 @@ export function renderPortraits(roster, renderer, { w = 300, h = 400, anim: anim
     // retrato anterior aparecer como um "fantasma" atrás do personagem
     ctx.clearRect(0, 0, w, h);
     if (background) {
-      // fundo na cor da EQUIPE (Ordo amarelo, Mascarados vermelho, Os Cinco verde...): brilho atrás do personagem e
-      // o chão mais escuro; sem equipe, a cor do lutador
-      const tc = teamColor(def);
+      // fundo ÚNICO para todos (v4.2.0, identidade VÉU PARTIDO — antes era a cor da equipe e a grade ficava colorida
+      // demais): preto arroxeado, o brilho roxo do Outro Lado atrás do personagem e uma linha carmesim no chão. A
+      // equipe continua no selo do cartão.
       const grd = ctx.createLinearGradient(0, 0, 0, h);
-      grd.addColorStop(0, tc ? tc + '70' : '#1c1428');
-      grd.addColorStop(0.55, tc ? tc + '38' : '#1c1428');
-      grd.addColorStop(1, tc ? '#120d16' : def.color + '55');
-      ctx.fillStyle = '#120d16';
-      ctx.fillRect(0, 0, w, h);
+      grd.addColorStop(0, '#24133a');
+      grd.addColorStop(0.6, '#150c22');
+      grd.addColorStop(1, '#0a0610');
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, w, h);
-      if (tc) {
-        const rad = ctx.createRadialGradient(w / 2, h * 0.32, 0, w / 2, h * 0.32, Math.max(w, h) * 0.6);
-        rad.addColorStop(0, tc + 'a0');
-        rad.addColorStop(1, tc + '00');
-        ctx.fillStyle = rad;
-        ctx.fillRect(0, 0, w, h);
-      }
+      const rad = ctx.createRadialGradient(w / 2, h * 0.34, 0, w / 2, h * 0.34, Math.max(w, h) * 0.55);
+      rad.addColorStop(0, '#8a4ce07a');
+      rad.addColorStop(1, '#8a4ce000');
+      ctx.fillStyle = rad;
+      ctx.fillRect(0, 0, w, h);
+      const floor = ctx.createRadialGradient(w / 2, h, 0, w / 2, h, w * 0.6);
+      floor.addColorStop(0, '#c8183a40');
+      floor.addColorStop(1, '#c8183a00');
+      ctx.fillStyle = floor;
+      ctx.fillRect(0, 0, w, h);
     }
     const tmp = document.createElement('canvas');
     tmp.width = w;

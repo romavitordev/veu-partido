@@ -15,7 +15,7 @@ function Test-GameServer {
         $content = $reader.ReadToEnd()
         $reader.Dispose()
         $response.Dispose()
-        return $content.Contains('<title>Arena Paranormal</title>')
+        return $content.Contains('Partido</title>')
     }
     catch {
         return $false
@@ -40,7 +40,7 @@ if (-not (Test-GameServer)) {
         $shell.Popup(
             "O jogo não iniciou. Verifique se o Node.js está instalado e se as dependências foram instaladas com npm install na pasta do projeto.",
             0,
-            'Arena Paranormal',
+            'Veu Partido',
             16
         ) | Out-Null
         exit 1
@@ -49,7 +49,7 @@ if (-not (Test-GameServer)) {
 
 if (-not (Test-Path $edgePath)) {
     $shell = New-Object -ComObject Wscript.Shell
-    $shell.Popup('O Microsoft Edge não foi encontrado neste computador.', 0, 'Arena Paranormal', 16) | Out-Null
+    $shell.Popup('O Microsoft Edge não foi encontrado neste computador.', 0, 'Veu Partido', 16) | Out-Null
     exit 1
 }
 

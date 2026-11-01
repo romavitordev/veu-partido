@@ -1,7 +1,7 @@
 // Textos da INTERFACE — 日本語 (ja). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "超常格闘ゲーム",
   "menu.fanmade": "romavitordev によるファンメイドゲーム · Ordem Paranormal に着想",
   "menu.press_start": "<b>START</b>・<b>{ok}</b>・<kbd>ENTER</kbd> を押してください",

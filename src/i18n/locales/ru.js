@@ -1,7 +1,7 @@
 // Textos da INTERFACE — Русский (ru). Gerado da mesma tabela para os 13 idiomas (mesmas chaves em todos).
 // O conteúdo dos personagens (nomes de golpes, descrições, falas) e as novidades continuam em português.
 export default {
-  "menu.title": "ARENA PARANORMAL",
+  "menu.title": "VÉU PARTIDO",
   "menu.subtitle": "ПАРАНОРМАЛЬНЫЙ ФАЙТИНГ",
   "menu.fanmade": "Фанатская игра от romavitordev · по мотивам Ordem Paranormal",
   "menu.press_start": "НАЖМИТЕ <b>START</b>, <b>{ok}</b> ИЛИ <kbd>ENTER</kbd>",

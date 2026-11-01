@@ -19,7 +19,7 @@ import { addPowerClips } from './powerClips.js';
 import { addRazielClips } from './razielClips.js';
 import { UAL_CLIPS } from './ualClips.js';
 import { locomotionClips } from './locomotionClips.js';
-import { polishStrikes, POLISHED_STRIKES } from './strikePolish.js';
+import { polishStrikes, POLISHED_STRIKES, FINISHER_STRIKES } from './strikePolish.js';
 
 const k = (t, pose) => ({ t, pose });
 
@@ -556,9 +556,6 @@ CLIPS.walk_back = {
   keys: CLIPS.walk.keys.map((key) => ({ t: 1 - key.t, pose: { ...key.pose, ...GUARD_TOP } })).reverse(),
 };
 
-// 1ª leva da melhoria geral das animações (anim/strikePolish.js): antecipação, passagem e peso nos golpes genéricos
-polishStrikes(CLIPS, k, GUARD, POLISHED_STRIKES);
-
 // animações próprias das formas (Deus da Morte e Diabo)
 addFormClips(CLIPS, k, mirrorPose);
 addVictoryClips(CLIPS, k);
@@ -566,5 +563,9 @@ addCharClips(CLIPS, k);
 addIdleClips(CLIPS, k);
 addPowerClips(CLIPS, k);
 addRazielClips(CLIPS, k); // o Raziel (Vampiros)
+
+// melhoria geral das animações (anim/strikePolish.js): antecipação, passagem e peso nos golpes de combo, mais forte nos
+// que fecham combo — depois de todos os clipes registrados (os de personagem também entram)
+polishStrikes(CLIPS, k, GUARD, POLISHED_STRIKES, FINISHER_STRIKES);
 
 export const JOINTS = ['hip', 'sp', 'hd', 'sL', 'eL', 'sR', 'eR', 'lL', 'kL', 'lR', 'kR'];

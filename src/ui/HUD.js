@@ -64,6 +64,9 @@ export class HUD {
   reset() {
     this.setIntro(false);
     for (const el of [this.callEl, this.bannerEl]) { el.classList.remove('show'); }
+    // a tela de equipe do especial também (antes ficava com .show e a animação voltava a tocar ao mostrar o HUD da luta seguinte)
+    const tc = this.root.querySelector('#teamCut');
+    if (tc) { tc.classList.remove('show', 'quick'); tc.innerHTML = ''; }
     this.callEl.textContent = '';
     this.bannerEl.querySelector('.txt').textContent = '';
     this.subtitle(null);
@@ -411,6 +414,9 @@ export class HUD {
     el.classList.toggle('quick', quick);
     void el.offsetWidth;
     el.classList.add('show');
+    // terminou: tira o .show (mostrar o HUD de novo reinicia animações CSS — a tela reaparecia na luta seguinte)
+    clearTimeout(this.teamCutT);
+    this.teamCutT = setTimeout(() => { el.classList.remove('show', 'quick'); el.innerHTML = ''; }, quick ? 1000 : 1850);
   }
 
   // ENIGMA DA ESFINGE (combat/riddle.js): a pergunta e as quatro respostas no losango Y / X / B / A, com o botão de
