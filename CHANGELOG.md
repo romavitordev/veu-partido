@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.4.0 — O Carniçal
+
+### Adicionado
+- `src/characters/carnical.js` (Outro Lado, Morte): combo e especial com os clipes de garra do Raziel (`db_*`, sem sangramento), □ `dashStrike` Investida Mortal, △ + ○ `hypnoSpiral` (do Ferreiro), △ + × pounce (`boteRetalhador`), △ + L2 `heavyBlow` Pancada Poderosa (knockback 9), R2 + △ ordem do Juan (Comando), `awakenMode` Instinto Mortal.
+- Passiva `closedBody` (`damageTakenMod`): `o.ballistic` (projéteis `bullet`/`sniper`/`pellet`, marcado em projectiles.js) × 0,4.
+- Modelo `tools/blender/char_carnical.py` → `public/models/carnical.glb` (esqueleto de lutador; fonte `fonte/carnical_lutador.blend`); textura `face_skull_carnical` (caveira rachada, espiral emissiva).
+- Falas: `VICTORY_CARNICAL` (ida e volta com os 33), voz de introdução em `introVoices.js`; `GRAB_SCENES.carnical`.
+- check-roster: kit do Carniçal e elenco com 34.
+
 ## v4.3.0 — Fiel ao Cânone
 
 ### Alterado

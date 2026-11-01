@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.3.0 (2026-11-01: Fiel ao Cânone — auditoria de todo o elenco, transformações com nome próprio, CPU atiradora, estilo para todos). Antes: v4.2.0 Véu Partido.
+**Versão de referência atual:** v4.4.0 (2026-11-01: O Carniçal jogável). Antes: v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2699,10 +2699,7 @@ qualidade do Cristino / Cristopher / Dante v2 — um por vez, com o kit e as jun
 
 **Já na técnica nova:** Cristino, Cristopher, Dante (+ Olhos Abertos), Juan / Henri, Deus da Morte, Existido de Morte, A Marionete.
 
-- [ ] **O Carniçal como personagem jogável** (criatura do Outro Lado) — saiu das invocações na v3.31.0 (o Deus da Morte
-  agora invoca um Existido de Morte). Reaproveitar `tools/blender/npc_carnical.py` / `public/npcs/carnical.glb` e o kit
-  antigo (Garra da Morte, Pancada Poderosa, o salto, Hipnose Espiral, Corpo Fechado, Instinto Mortal — no histórico da
-  v3.30.1, `src/combat/beasts.js`).
+- [x] **O Carniçal como personagem jogável** (criatura do Outro Lado) — feito em 2026-11-01: `src/characters/carnical.js` (Outro Lado, Morte) com modelo de lutador próprio (`tools/blender/char_carnical.py` → `public/models/carnical.glb`; o NPC continua em `public/npcs`). Kit da wiki: Garra da Morte (combo e especial), □ Investida Mortal e △ + × Salto (Físico Paranormal), △ + L2 Pancada Poderosa, △ + ○ Hipnose Espiral, R2 + △ Comando, Transformação Instinto Mortal e a passiva Corpo Fechado (bala comum entra com 40%: `o.ballistic` em projectiles.js). Falas de introdução e vitória contra todo o elenco e agarrão próprio. Reanimar Corpos ficou de fora (o Deus da Morte e o Diabo já invocam).
 
 ## Personagens jogáveis
 

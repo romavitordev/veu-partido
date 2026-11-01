@@ -225,3 +225,5 @@ GRAB_SCENES.estrangeiro = GRAB_SCENES.diabo;
 // Amigo Imaginário: duas garras secas e o capuz se curva sobre o rosto da vítima — a tinta escorre (Derreter)
 GRAB_SCENES.amigo = scene({ ...S('ai_claw_r', 0.34), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('ai_claw_l', 0.34), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'ai_tear', fx: 'ink', sound: 'drain', slow: { mult: 0.8, time: 2 } });
 GRAB_SCENES.juan_odio = GRAB_SCENES.juan; // o Ódio do Diabo agarra como o Juan (as garras no lugar da faca)
+// CARNIÇAL: as duas garras e, com a vítima presa, encara de perto — a espiral da testa entra na mente — e rasga
+GRAB_SCENES.carnical = scene({ ...S('db_claw_r'), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('db_claw_l'), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'db_rend', fx: 'mind', sound: 'clawHit' });

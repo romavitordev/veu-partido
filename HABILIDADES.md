@@ -1669,3 +1669,48 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Transformação: Frenesi de Sangue
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +20% de dano (físico, habilidades), −15% de dano recebido, +30% de velocidade, todo golpe sangra, cura 12% na hora.
+
+---
+
+## CARNIÇAL
+
+*A criatura de Lodo com o Símbolo Espiral na testa* · arma: Garras de Lodo que exalam a Morte
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Garra da Morte | 24 | 2 m |  |
+| ○ 2 | Garra de volta | 24 | 2 m |  |
+| ○ 3 | Rasgo cruzado | 30 (2 acertos) | 2 m |  |
+| ○ 4 | Dilacerar | 52 | 2.2 m | finalizador: lança |
+| Frente + ○ | Avanço da criatura | 34 | 2.2 m |  |
+| Trás + ○ | Recua e rasga | 30 (2 acertos) | 2.1 m | invulnerável no começo |
+| Lado + ○ | Garra em giro | 30 | 2.1 m |  |
+| No ar + ○ | Cair sobre a vítima | 36 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Garra de baixo | 38 | 2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Esmagar | 44 | 2 m | finalizador: derruba |
+
+### Principal (□ / X): Investida Mortal
+
+- Dano 30 · alcance 1.6 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Hipnose Espiral** — △ + ○ / Y + B · custo 25 · cooldown 22 s · alcance 10 m
+  O Símbolo Espiral da testa acende: quem olha para ele anda em círculos até o Carniçal, sem conseguir defender, e fica parado em transe.
+- **Salto do Carniçal** — Energia + Pulo (△+× / Y+A) · custo 30 · cooldown 12 s · dano 84 · alcance 2.8 m
+  Agacha e salta bons metros sobre a vítima, descendo com as duas garras. Quem esquiva ainda toma metade. Aguenta um golpe na preparação.
+- **Pancada Poderosa** — △ + L2 / Y + LT · custo 25 · cooldown 11 s · dano 70 · alcance 2.6 m
+  Ergue os dois braços e desce com tudo: a vítima é arremessada para longe. Aguenta um golpe na preparação.
+- **Comando** — R2 + △ / RT + Y · custo 20 · cooldown 12 s · dano 30 · alcance 5 m
+  Uma ordem que entra na cabeça de quem está perto: "PARE!" (paralisa), "VENHA!" (puxa) ou "AJOELHE!" (derruba).
+- **Passiva — Afinidade com Morte:** rituais de Morte +10%; −15% de dano de rituais desse elemento
+
+### Especial: Garra da Morte
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Instinto Mortal
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano, +15% de velocidade, recargas 50% mais rápidas, cura 8% na hora.

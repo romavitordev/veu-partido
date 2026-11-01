@@ -30,6 +30,7 @@ import raziel from './raziel.js';
 import celestine from './celestine.js';
 import gaius from './gaius.js';
 import amalia from './amalia.js';
+import carnical from './carnical.js';
 import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectableForms.js';
 
 // Elenco jogável, na ordem da tela de seleção — AGRUPADO POR EQUIPE/TEMPORADA (a grade tem 3 colunas × 5 linhas por
@@ -58,7 +59,7 @@ export const ROSTER = [
   gaius, // Ordo Calamitas (Calamidade, 67 d.C.) — o Gaius; no RB/LB, o AMPHITRUO (a versão transformada)
   amalia, // Ordo Calamitas — A Flecha, a arqueira (Calamidade). Faustus, Marius, Remus, Cascadia, Cornelius... depois
   oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (Sangue, Morte, Conhecimento, Energia)
-  estrangeiro, amigo, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta)
+  estrangeiro, amigo, carnical, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte)
 ];
 
 // VERSÕES do mesmo personagem (seleção: RB/LB trocam a versão sem sair do cartão, como no Naruto Storm). A ordem é a do

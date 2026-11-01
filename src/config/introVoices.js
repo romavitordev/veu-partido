@@ -321,6 +321,19 @@ export const VOICES = {
       any: [(o) => `Interessante, ${o.name}. Repita.`, (o) => `Você ouviu o sinal, ${o.name}. Agora não para mais.`],
     },
   },
+  // CARNIÇAL: quase não fala. A espiral pulsa, ele rosna, e o Comando sai em ordens curtas em maiúsculas
+  carnical: {
+    open: {
+      ally: (o) => `(rosna baixo e fareja ${o.name}) ...JUNTOS...`,
+      rival: (o) => `(o Símbolo Espiral acende na testa) ...${o.name}... OLHE...`,
+      any: [(o) => `(as garras arranham o chão; o Lodo escorre do crânio) ...${o.name}...`, (o) => `...VENHA... ${o.name}... (a espiral gira)`],
+    },
+    reply: {
+      ally: (o) => `(abaixa a cabeça para ${o.name}) ...sim...`,
+      rival: (o) => `(rosna para ${o.group}) ...AJOELHE...`,
+      any: [(o) => `(o brilho vermelho dos ombros acende) ...${o.name}...`, (o) => `...PARE... ${o.name}...`],
+    },
+  },
   amigo: {
     open: {
       ally: (o) => `...${o.name}... brincar... juntos?...`,

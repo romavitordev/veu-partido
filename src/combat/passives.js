@@ -296,6 +296,12 @@ export const PASSIVES = {
       return kind === 'ranged' ? passive.mult ?? 0.85 : 1;
     },
   },
+  // Carniçal — Corpo Fechado (wiki: "imune a qualquer dano balístico"): bala comum mal entra (o.ballistic, projectiles.js)
+  closedBody: {
+    damageTakenMod({ passive, o }) {
+      return o && o.ballistic ? passive.mult ?? 0.4 : 1;
+    },
+  },
   // Guizo — Eu Já Sabia: resistência mental (rituais e golpes de Conhecimento doem menos)
   iKnewIt: {
     damageTakenMod({ element, passive, o }) {

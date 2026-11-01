@@ -23,6 +23,7 @@ const BLENDER_MODELS = {
   lirio: { url: 'models/lirio.glb', props: addLirioProps },
   ferreiro: { url: 'models/ferreiro.glb', props: addFerreiroProps }, // o Luzidio de Santo Berço
   deus_morte: { url: 'models/deus_morte.glb', props: null }, // forma de chefe (sem armas)
+  carnical: { url: 'models/carnical.glb', props: null }, // o Carniçal jogável (garras no modelo); o NPC é public/npcs/carnical.glb
   juan: { url: 'models/juan.glb', props: addJuanProps },
   diabo: { url: 'models/diabo.glb', props: null }, // Portador do Trono (garras)
   o_diabo: { url: 'models/o_diabo.glb', props: null }, // O Diabo de Ordem Paranormal (o Portador do Trono é a transformação dele)

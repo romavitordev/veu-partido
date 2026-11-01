@@ -1,5 +1,11 @@
 # Registro administrativo de alterações
 
+## v4.4.0 — O Carniçal
+
+- Versão: `VERSION` 4.3.0 → **4.4.0** (package.json/lock junto). Data: 2026-11-01.
+- **Pedido do TODO: "O Carniçal como personagem jogável"**, dentro de "siga com o TODO, finalize tudo sem contar o Outro Lado". Kit pela wiki "Carniçal Preto da Morte"; Reanimar Corpos ficou de fora; Corpo Fechado reduzido (imunidade total anularia os atiradores).
+- **Testado:** `npm test` 55/55, `npm run check`; seleção e luta no navegador sem erro; CPU × CPU (normal, 36 lutas): Carniçal 12×15 no total (Arthur 4×1, Kaiser 3×1, Kemi 3×2, Balu 1×3, Joui 1×3, Raziel 0×5), dano causado ≈ recebido.
+
 ## v4.3.0 — Fiel ao Cânone
 
 - Versão: `VERSION` 4.2.0 → **4.3.0** (package.json/lock junto). Data: 2026-11-01.

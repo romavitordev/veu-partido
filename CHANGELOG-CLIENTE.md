@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.4.0 — O Carniçal
+- Novo lutador: o Carniçal (Outro Lado, Morte) — Garra da Morte, Investida Mortal, Salto, Pancada Poderosa, Hipnose Espiral e Comando.
+- Corpo Fechado: bala comum quase não entra nele.
+- Transformação Instinto Mortal: mais rápido e mais brutal.
+- Falas e agarrão próprios contra todo o elenco.
+
 ## v4.3.0 — Fiel ao Cânone
 - Transformações com nome próprio: Kaiser Angel of the Night, Xande Rei do Rolê, Balu O Urso Acordou, Lírio A Fúria da Leonora, Nubi O Chacal Desperto.
 - Auditoria de cânone de todo o elenco: Acácia mais forte contra Energia, Gal com Resistente e Precognição, Joui Shi no Kage sem os poderes da máscara.

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.3.0';
+export const VERSION = '4.4.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.4.0',
+    date: '2026-11-01',
+    title: 'O Carniçal',
+    items: [
+      'NOVO LUTADOR: o CARNIÇAL, a criatura de Lodo do Outro Lado com o Símbolo Espiral na testa (Morte). Garra da Morte, Investida Mortal, Salto, Pancada Poderosa que arremessa longe, Hipnose Espiral e Comando.',
+      'CORPO FECHADO: bala comum quase não entra no Carniçal — mire no crânio (ou lute de perto).',
+      'Transformação INSTINTO MORTAL: ferido, ele larga a postura controlada e fica mais rápido e mais brutal.',
+      'Falas de introdução e de vitória contra todo o elenco, e agarrão próprio.',
+    ],
+  },
   {
     v: '4.3.0',
     date: '2026-11-01',

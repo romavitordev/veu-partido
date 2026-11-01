@@ -1601,6 +1601,46 @@ export const MATERIAL_TEXTURES = {
     g.fillRect(CX - 7, 0, 14, 128); // faixa preta vertical do topo do crânio até o nariz
     for (const s of [-1, 1]) { g.beginPath(); g.moveTo(CX + s * 30, EYE_Y + 18); g.lineTo(CX + s * 52, EYE_Y + 78); g.lineTo(CX + s * 62, EYE_Y + 72); g.lineTo(CX + s * 42, EYE_Y + 16); g.closePath(); g.fill(); }
   }, { wrap: true }),
+  // CARNIÇAL: a caveira bege rachada, sem a faixa do Ferreiro, e o SÍMBOLO ESPIRAL aceso na testa (emissiveMap)
+  face_skull_carnical: () => {
+    const swirl = (g, glow) => {
+      for (let k = 0; k < (glow ? 2 : 1); k++) {
+        g.strokeStyle = glow ? (k ? 'rgba(255,150,120,0.9)' : 'rgba(255,40,30,1)') : '#4a0c0a';
+        g.lineWidth = glow ? (k ? 1.5 : 4) : 6;
+        g.beginPath();
+        for (let t = 0; t < 1; t += 0.01) {
+          const a = t * Math.PI * 6;
+          const r = 2 + t * 22;
+          const x = CX + Math.cos(a) * r, y = EYE_Y - 44 + Math.sin(a) * r;
+          if (t === 0) g.moveTo(x, y); else g.lineTo(x, y);
+        }
+        g.stroke();
+      }
+    };
+    const map = canvasTex(W, HT, (g) => {
+      const rnd = seeded(213);
+      g.fillStyle = '#cbb68f'; g.fillRect(0, 0, W, HT);
+      g.fillStyle = 'rgba(110,84,56,0.45)';
+      for (let i = 0; i < 400; i++) g.fillRect(rnd() * W, rnd() * HT, 2, 2);
+      g.fillStyle = '#060508';
+      for (const s of [-1, 1]) { g.beginPath(); g.ellipse(CX + s * 32, EYE_Y + 2, 22, 18, 0, 0, Math.PI * 2); g.fill(); }
+      g.beginPath(); g.moveTo(CX, 140); g.lineTo(CX - 11, 170); g.lineTo(CX + 11, 170); g.closePath(); g.fill();
+      g.fillStyle = '#e4d8bc';
+      for (let i = -4; i <= 4; i++) g.fillRect(CX + i * 9 - 3.5, 186, 7, 14);
+      g.strokeStyle = '#3a2c20'; g.lineWidth = 1.5; g.strokeRect(CX - 40, 186, 80, 14);
+      // as rachaduras saindo do topo rompido
+      g.strokeStyle = '#2a1e16'; g.lineWidth = 2;
+      for (let c = 0; c < 9; c++) {
+        let x = CX + (rnd() - 0.5) * 220, y = 0;
+        g.beginPath(); g.moveTo(x, y);
+        for (let s = 0; s < 6; s++) { x += (rnd() - 0.5) * 26; y += 8 + rnd() * 12; g.lineTo(x, y); }
+        g.stroke();
+      }
+      swirl(g, false);
+    }, { wrap: true });
+    const emissiveMap = canvasTex(W, HT, (g) => { g.fillStyle = '#000'; g.fillRect(0, 0, W, HT); swirl(g, true); }, { wrap: true });
+    return { map, emissiveMap, emissive: 0xff3a2a };
+  },
 
   // ---------------- JUAN (Henri): olho ESQUERDO perdido (buraco com cicatriz), o direito esbranquiçado, piercings na
   // boca e no olho, olheiras; torso cheio de cortes e frases tatuadas (menos o peito/braço esquerdo)

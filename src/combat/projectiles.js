@@ -715,6 +715,7 @@ export class Projectiles {
             unblockable: !!a.unblockable || far, ignoreInvuln: far, guardCrush: a.guardCrush, element: a.element,
             dir: p.dir, color: a.color, sound: a.hitSound, scale: a.impactScale || 1, pos: p.pos.clone(),
             reaction: !(a.onHit && a.onHit.pull),
+            ballistic: a.visual === 'bullet' || a.visual === 'sniper' || a.visual === 'pellet', // bala comum (o Corpo Fechado do Carniçal lê)
           });
           if (far && typeof res === 'number') p.owner.notify && p.owner.notify('LONGA-DISTÂNCIA', true);
           if (typeof res === 'number' && res >= 0) {
