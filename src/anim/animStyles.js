@@ -22,6 +22,13 @@ const STYLE_OF = {
   joui: 'esgrima', joui_shinokage: 'esgrima', jae: 'esgrima', jae_x: 'esgrima', celestine: 'esgrima', cristino: 'esgrima', cristino_desertor: 'esgrima', juan: 'esgrima',
   kaiser: 'militar', verissimo: 'militar', arthur: 'militar', cristopher: 'militar',
   xande: 'caotico', guizo: 'caotico', guizo_et: 'caotico', guizo_bombado: 'caotico', guizo_velho: 'caotico', arnaldo: 'caotico', anfitriao: 'caotico', erin_caos: 'caotico', juan_odio: 'caotico',
+  // os que estavam no padrão (2026-11-01): agentes de arma controlados, quem luta de faca no ritmo da esgrima, as criaturas
+  // e o Diabo pesados ou caóticos, os conjuradores elegantes
+  erin: 'militar', kemi: 'militar', amalia: 'militar',
+  aghata: 'esgrima', fantasma: 'esgrima',
+  o_diabo: 'pesado', diabo: 'pesado', raziel_verdadeiro: 'pesado',
+  raziel: 'caotico', amigo: 'caotico',
+  labirinto: 'elegante', labirinto_elmo: 'elegante', estrangeiro: 'elegante',
   kian: 'elegante', kian_calamidade: 'elegante', gaius: 'elegante', amphitruo: 'elegante', dante: 'elegante', dante_aberto: 'elegante', magistrada: 'elegante', celestine_magistrada: 'elegante', nubi: 'elegante', ferreiro: 'elegante', deus_morte: 'elegante',
 };
 

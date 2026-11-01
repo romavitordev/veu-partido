@@ -79,7 +79,7 @@
 - [x] 2.1 Animações de movimentação: 1ª parte na v3.37.0 (corrida, caminhada, pulo, queda, dash, esquiva, reação e 18
   posturas paradas próprias); 2ª parte (2026-10-26): pacote gratuito importado e redirecionado — corrida, caminhada e
   queda (ver *REAJUSTE DAS ANIMAÇÕES*).
-- [~] **MELHORIA GERAL DE TODAS AS ANIMAÇÕES** — 1ª leva na v3.47.0 (`anim/strikePolish.js`): os 15 golpes genéricos
+- [x] **MELHORIA GERAL DE TODAS AS ANIMAÇÕES** — 1ª leva na v3.47.0 (`anim/strikePolish.js`): os 15 golpes genéricos
   (jab, direto, ganchos, gancho de baixo, soco pesado, os chutes, joelhada, soco de um braço, cortes de faca) ganharam
   antecipação, passagem (overshoot) e peso na volta, com o acerto no mesmo instante de antes. Depois (pedido de
   2026-10-27): os socos do DALMO com o mesmo impacto dos do Kian — `impactFx: 'shock'` (anel de ar, onda que distorce,
@@ -100,7 +100,10 @@
   MILITAR (Kaiser, Veríssimo, Arthur, Cristopher: controlado e limpo), CAÓTICO (Xande, Guizo, Arnaldo/Anfitrião, Erin no
   caos, Juan no ódio: preparo exagerado, passa muito do ponto, cabeça entorta), ELEGANTE (Kian, Gaius, Dante, Magistrada,
   Nubi, Ferreiro: econômico, volta longa). `def.animStyle` sobrepõe a tabela.
-  Próximas levas: golpes de 5+ poses (hammer_finisher, dm_*, ai_*, db_*), estilo para os que ficaram no padrão. Pedido original (2026-10-26): Todas as animações de movimento, ataques básicos,
+  6ª leva (2026-11-01): ESTILO PARA TODO O ELENCO — Erin, Kemi, Amalia (militar), Aghata, Fantasma (esgrima), Diabo e
+  Raziel Verdadeiro (pesado), Raziel e Amigo (caótico), Labirinto e Estrangeiro (elegante); nenhum lutador fica no padrão.
+  Os golpes de 5+ poses (hammer_finisher, dm_*, ai_*, db_*) ficam como estão de propósito: já têm preparo e volta
+  desenhados à mão, e o polimento automático é feito para golpes de 3–4 poses. Pedido original (2026-10-26): Todas as animações de movimento, ataques básicos,
   combos, finalizadores, esquivas e habilidades de todos os personagens precisam ser melhoradas e retrabalhadas. Buscar
   referências da internet (jogos de luta consagrados como Naruto Storm, Guilty Gear, Tekken, além de coreografias de artes
   marciais e animes de ação) para trazer muito mais impacto, fluidez, peso e naturalidade (ver *2.1*).
