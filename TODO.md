@@ -1706,6 +1706,8 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         curto para longe pelo cenário (fleeDirection) e volta a atirar. CPU × CPU (normal, 3 lutas cada): Kaiser × Jae 2×0,
         2×0, 1×1 com distância média 5–6 m (antes ~2 m); Arthur × Raziel 0×2 nas 3, distância 3,7–5,7 m (antes ~2 m) — o
         Raziel ainda vence: falta o Arthur converter a distância em dano (tiro carregado/Dystopia na hora certa).
+        [x] 2026-11-01: JANELA PARA CONVERTER — com o perseguidor caído ou atordoado e a distância já segura, o atirador
+        ATIRA em vez de só fugir. CPU × CPU (normal): **Arthur × Raziel 3×1** (antes 0×3).
       - CPU no BOTÃO DO ANFITRIÃO: larga tudo, corre até o botão e aperta primeiro (testado no Fácil e no Difícil).
 - [ ] **PLANEJAMENTO — DISTRIBUIÇÃO PELO CÂNONE (pesquisa de 2026-10-27, wiki "Relíquias da Calamidade" e "A
       Magistrada").** Cada Relíquia é um OBJETO, e quem a porta recebe um TÍTULO:

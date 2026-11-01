@@ -608,6 +608,14 @@ export class CpuController {
     // JANELA DE FUGA (2026-11-01): o perseguidor caiu, foi atordoado ou está tomando golpe — é a hora de abrir distância
     // de verdade (andando ele alcança: é mais rápido). Dash curto para longe PELO CENÁRIO (fleeDirection) e volta a atirar
     const helpless = opp.state === 'downed' || opp.state === 'stun' || opp.state === 'hitstun' || opp.state === 'grabbed';
+    // ...mas se a distância JÁ é segura, a janela é para CONVERTER em dano (o Arthur abria espaço e não atirava: o Raziel
+    // levantava e fechava de novo): caído ou atordoado e longe o bastante, atira (o tiro carregado, se for o caso)
+    if (planZ.escapeAt > 0 && (opp.state === 'downed' || opp.state === 'stun') && d >= planZ.escapeAt + 0.5
+      && (f.state === 'idle' || f.state === 'charging') && f.cooldowns.ranged <= 0 && f.def.ranged && f.def.ranged.type === 'projectile'
+      && Math.random() < (0.5 + L.tactics * 0.5) * k) {
+      if (f.def.ranged.chargeShot) { this.queue.push({ t: 0.06, held: { ranged: true } }); this.aimHold = Math.min(1.2, 0.2 + d / 14); } else this.tap('ranged');
+      return out;
+    }
     if (planZ.escapeAt > 0 && helpless && d < planZ.keep - 1 && (f.state === 'idle' || f.state === 'charging') && f.onGround
       && f.cooldowns.dash <= 0 && w.time > (this.escapeDashAt || 0) && Math.random() < (0.4 + L.tactics * 0.5) * k) {
       this.escapeDashAt = w.time + 1.5;
