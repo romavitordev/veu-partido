@@ -279,7 +279,7 @@ def finalize(path, merge=True):
             if o.type != 'MESH':
                 continue
             n = o.name
-            if n.startswith(('COL_', 'OCC_', 'FLICKER_', 'SWAY_', 'DECAL_', 'GROUND', 'FLOOR')):
+            if n.startswith(('COL_', 'OCC_', 'FLICKER_', 'SWAY_', 'DECAL_', 'GROUND', 'FLOOR', 'CROWD_')):
                 continue
             if len(o.data.materials) != 1:
                 continue

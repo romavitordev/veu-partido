@@ -12,7 +12,7 @@ Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível,
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v4.4.0**.
+Versão atual do jogo: **v4.5.0**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 
@@ -231,11 +231,15 @@ acessórios ficam em `MODEL_VARIANTS`. Armas e acessórios em código ficam em `
 modelos procedurais provisórios: se um `.glb` não carregar, o jogo tenta de novo e, se ainda falhar, avisa na tela.
 
 ### Cenários (Blender + modelos prontos)
-Os 5 cenários (Ruínas do Ritual, Orfanato, Bar Suvaco Seco, Coliseu e Santo Berço) são montados no Blender por
+Os cenários (Ruínas do Ritual, Orfanato, Bar Suvaco Seco, Coliseu, Santo Berço, Acampamento, Igreja e o Palco do
+Anfitrião) são montados no Blender por
 `tools/blender/arena_<id>.py` com **peças prontas e gratuitas dos kits do Kenney** (CC0) — casas, árvores, muralhas,
 lápides, móveis, ruas, carros — posicionadas por `tools/blender/kenney.py` (`put`, `house`, `tower`). Só os
 elementos únicos de cada lugar são feitos à mão (Símbolo Espiral, círculo ritual, estátuas, placas). Os kits ficam em
 `assets_src/kenney/` (fora do git; ver `assets_src/README.md`). Gerar: `node tools/blender/build.mjs <id>`.
+O **Palco do Anfitrião** é todo feito à mão (o roxo não sai do atlas do Kenney) e tem regras próprias em
+`src/arena/palcoHost.js`: o Anfitrião narra a luta, a plateia (objetos `CROWD_*`) pula com os golpes e, de tempos em
+tempos, entra uma regra nova igual para os dois.
 
 ### Animações de movimento (pacote CC0)
 A corrida, a caminhada e a queda vêm do **Universal Animation Library** de **Quaternius** (CC0), redirecionadas para o

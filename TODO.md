@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.4.0 (2026-11-01: O Carniçal jogável). Antes: v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
+**Versão de referência atual:** v4.5.0 (2026-11-01: O Palco do Anfitrião). Antes: v4.4.0 O Carniçal, v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1871,7 +1871,18 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 - [ ] **NOVOS PERSONAGENS — ENIGMA DO MEDO** (pedido de 2026-10-31): **MIA + LUPI** (a protagonista e o cachorro, como
       dupla) e **JASER**, com a versão melhorada **O DESASSOMBRADO** (forma/transformação dele). Levantar na wiki o
       visual, os itens e os poderes de cada um antes de modelar.
-- [ ] **ATUALIZAÇÃO FUTURA — CENÁRIO "O PALCO DO ANFITRIÃO"** (pedido de 2026-10-31; planejamento, nada feito ainda).
+- [~] **ATUALIZAÇÃO FUTURA — CENÁRIO "O PALCO DO ANFITRIÃO"** (pedido de 2026-10-31). **Feito em 2026-11-01 (v4.5.0):**
+      o cenário (`tools/blender/arena_palco.py` → `public/arenas/palco.glb`: chão roxo com o Símbolo aceso, muro do
+      pódio com friso dourado, arquibancada em anel, estandartes, 8 tochas de chama de Energia com luz roxa, dois
+      pódios); a PLATEIA de ~400 Anfitriões (casacão, máscara de gás, olhos roxos) em 4 poses, em 14 grupos `CROWD_`
+      que pulam com a empolgação (`arena.cheer` em glbArena.js: golpe forte, combo, especial e K.O. agitam; o quase-K.O.
+      silencia); o NARRADOR (`src/arena/palcoHost.js` + `config/palcoLines.js`: abertura, primeiro sangue, golpe forte,
+      combo, especial, transformação, quase-K.O., K.O., sem repetir a fala seguida e sem atropelar as falas dos
+      lutadores) e os EVENTOS a cada 24–34 s, iguais para os dois (mais rápidos, tudo dói mais, só golpe físico,
+      sanidade de presente). **Falta:** trocar as POSES da plateia por evento (hoje ela só pula/para), vaia e grito
+      (só o aplauso no K.O.), falas do narrador zoando cada personagem, o close na plateia na habilidade Plateia do
+      Anfitrião e conferir no celular. Os jogos do Calamidade ep. 6 não foram conferidos no episódio (as regras são
+      propostas no tom do personagem).
       Um cenário novo inspirado nos JOGOS do Anfitrião em Calamidade ep. 6 (conferir o episódio e a wiki antes de
       desenhar: os jogos, as regras, o que ele fala). É outro mapa, separado do `arena_coliseu.py` atual (o de areia
       ao entardecer, sem plateia).

@@ -29,6 +29,8 @@ export function createGLBArena(cfg) {
   const solids = []; // blocos grandes que a câmera não atravessa
   const flicker = [];
   const sway = []; const spin = [];
+  const crowd = []; // CROWD_*: a plateia (Palco do Anfitrião) pula com a empolgação da luta (cheer)
+  let excite = 0.15; let exciteFor = 0; let exciteTo = 0.15;
   let time = 0;
   let particles = [];
   let mist = null;
@@ -57,7 +59,7 @@ export function createGLBArena(cfg) {
       const texCache = {};
       // Objetos com vários materiais viram um grupo com várias malhas: o prefixo
       // (OCC_, FLICKER_...) fica no nome do grupo, então olha também os pais.
-      const PREFIXES = ['COL_', 'HIDE_', 'OCC_', 'FLICKER_', 'SWAY_', 'GROUND', 'FLOOR'];
+      const PREFIXES = ['COL_', 'HIDE_', 'OCC_', 'FLICKER_', 'SWAY_', 'GROUND', 'FLOOR', 'CROWD_'];
       const taggedNode = (o) => {
         for (let p = o; p && p !== group; p = p.parent) {
           if (PREFIXES.some((x) => (p.name || '').startsWith(x))) return p;
@@ -66,9 +68,11 @@ export function createGLBArena(cfg) {
       };
       const swaySeen = new Set();
       spin.length = 0;
+      crowd.length = 0;
       group.traverse((o) => {
         const node = taggedNode(o);
         const n = node.name || '';
+        if (n.startsWith('CROWD_') && !crowd.some((c) => c.o === node)) crowd.push({ o: node, y: node.position.y, seed: crowd.length * 1.7 });
         if (n.startsWith('COL_') || n.startsWith('HIDE_')) {
           if (o.isMesh) {
             const bb = new THREE.Box3().setFromObject(o);
@@ -128,7 +132,7 @@ export function createGLBArena(cfg) {
       group.traverse((o) => {
         if (!o.isMesh || occSet.has(o)) return;
         const n = taggedNode(o).name || '';
-        if (/^(GROUND|FLOOR|DECAL_)/.test(n)) return;
+        if (/^(GROUND|FLOOR|DECAL_|CROWD_)/.test(n)) return;
         const bb = new THREE.Box3().setFromObject(o);
         if (bb.max.y - bb.min.y < 1.2) return;
         // peças juntadas num bloco só (a cidade inteira, o cemitério): não dá para sumir uma casa sozinha — a câmera
@@ -189,6 +193,11 @@ export function createGLBArena(cfg) {
         }
       }
       for (const s of spin) s.o.rotation.y += s.speed * dt;
+      if (crowd.length) {
+        if (exciteFor > 0) exciteFor -= dt; else exciteTo = 0.15;
+        excite += (exciteTo - excite) * Math.min(1, dt * 4);
+        for (const c of crowd) c.o.position.y = c.y + Math.abs(Math.sin(time * (5 + excite * 4) + c.seed)) * 0.35 * excite;
+      }
       for (const s of sway) {
         s.o.rotation.x = s.rot.x + Math.sin(time * 1.1 + s.seed) * 0.06;
         s.o.rotation.z = s.rot.z + Math.sin(time * 0.8 + s.seed) * 0.03;
@@ -196,6 +205,11 @@ export function createGLBArena(cfg) {
       for (const pt of particles) pt.update(dt);
       for (const f of fires) f.update(dt, time);
       if (mist) mist.update(dt);
+    },
+
+    // a plateia: level 0 (silêncio, prende a respiração) a 1 (de pé, pulando) por `time` s; depois volta ao normal
+    cheer(level, time = 2.5) {
+      if (level >= exciteTo || exciteFor <= 0 || level === 0) { exciteTo = level; exciteFor = time; }
     },
 
     blocksPoint(p, r = 0) {

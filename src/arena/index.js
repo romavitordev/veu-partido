@@ -1,8 +1,8 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -72,7 +72,15 @@ export const ARENAS = {
     thumbCamera: { pos: [0, 3.2, 11], look: [0, 4, -16] }, // a nave até o altar
     create: () => createGLBArena(IGREJA),
   },
+  palco: {
+    name: 'O Palco do Anfitrião',
+    description: 'O coliseu roxo dos jogos do Anfitrião: tochas de Energia, uma plateia inteira de Anfitriões e ele mesmo narrando — e mudando as regras no meio da luta.',
+    colors: ['#1a0a30', '#3a2450', '#b48cff'],
+    available: true,
+    thumbCamera: { pos: [0, 4, 15], look: [0, 4, -20] }, // o chão aceso com a arquibancada cheia ao fundo
+    create: () => createGLBArena(PALCO),
+  },
 };
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja'];
+export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco'];
 export const DEFAULT_ARENA = 'ruinas';

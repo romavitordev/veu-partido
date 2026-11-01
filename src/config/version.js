@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.4.0';
+export const VERSION = '4.5.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.5.0',
+    date: '2026-11-01',
+    title: 'O Palco do Anfitrião',
+    items: [
+      'NOVO CENÁRIO: O PALCO DO ANFITRIÃO — o coliseu roxo dos jogos dele, com tochas de chama de Energia e a arquibancada lotada de Anfitriões.',
+      'O ANFITRIÃO NARRA A LUTA: primeiro sangue, combo, golpe forte, especial, transformação, quase-K.O. e K.O. — e a plateia pula ou prende a respiração.',
+      'REGRAS NOVAS no meio da luta, iguais para os dois: todo mundo mais rápido, tudo dói mais, só golpe físico ou sanidade de presente.',
+    ],
+  },
   {
     v: '4.4.0',
     date: '2026-11-01',

@@ -3,6 +3,7 @@ import { SETTINGS } from '../config/settings.js';
 import { t } from '../i18n/index.js';
 import { World } from './World.js';
 import { battleLines, introLines, BASE_CHARACTER } from '../config/dialogues.js';
+import { PalcoHost } from '../arena/palcoHost.js';
 import { Assist } from '../combat/assists.js';
 import { yawTo } from '../core/util.js';
 
@@ -45,6 +46,8 @@ export class Match {
       this.triggerBattleDialogue(fighter, 'transform');
     };
     // Injustiça: o inimigo recupera Y de vida e perde sanidade (energia)
+    // O PALCO DO ANFITRIÃO: o narrador, a plateia e as regras novas (só neste cenário)
+    this.palco = arenaId === 'palco' ? new PalcoHost(this) : null;
     this.world.onDrain = (attacker, victim, heal, removed) => {
       hud.popup(victim.index, t('combat.heal_popup', { n: fmt(heal) }), '#7dffb0');
       hud.popup(victim.index, t('combat.sanity_popup', { n: fmt(removed) }), '#6ad1ff');
@@ -175,6 +178,7 @@ export class Match {
     if (this.training && this.phase === 'fight') this.updateTraining(dt);
     this.phaseTime += dt;
     const w = this.world;
+    this.palco && this.palco.update(dt);
     switch (this.phase) {
       case 'entrance':
         this.updateEntrance(dt);

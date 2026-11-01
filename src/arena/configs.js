@@ -168,6 +168,32 @@ export const ACAMPAMENTO = {
   camera: { radius: 24, maxY: 15 },
 };
 
+// O PALCO DO ANFITRIÃO (2026-11-01): o coliseu roxo dos jogos do Anfitrião, as tochas de Energia e a plateia de
+// Anfitriões; o narrador e as regras novas ficam em palcoHost.js (ligado pelo Match só neste cenário)
+const PALCO_TORCHES = Array.from({ length: 8 }, (_, k) => {
+  const a = ((k + 0.5) / 8) * Math.PI * 2;
+  return { type: 'point', color: 0xb060ff, intensity: 22, distance: 16, decay: 1.6, pos: [Math.sin(a) * 19.8, 3.6, Math.cos(a) * 19.8], flicker: true };
+});
+export const PALCO = {
+  id: 'palco',
+  name: 'O Palco do Anfitrião',
+  glb: 'arenas/palco.glb',
+  bounds: { radius: 20.2 },
+  spawns: [{ x: 0, z: -6 }, { x: 0, z: 6 }],
+  sky: 0x120820,
+  skyGradient: [[0, '#06020c'], [0.5, '#1a0a30'], [0.8, '#3a1460'], [1, '#5a2080']],
+  fog: { color: 0x1a0a2e, density: 0.011 },
+  lights: [
+    { type: 'hemi', sky: 0xc8a0ff, ground: 0x2a1440, intensity: 1.1 },
+    { type: 'ambient', color: 0x5a3a7a, intensity: 0.35 },
+    { type: 'dir', color: 0xd8b8ff, intensity: 2.2, pos: [-20, 30, 14], shadow: true, area: 28 }, // o holofote de cima
+    { type: 'point', color: 0xb48cff, intensity: 30, distance: 14, decay: 1.4, pos: [0, 2.5, 0] }, // o Símbolo aceso no chão
+    ...PALCO_TORCHES,
+  ],
+  particles: { color: 0xd0a0ff, count: 200, area: 40, height: 9, rise: 0.12, drift: 0.6, size: 0.06, opacity: 0.6 }, // faíscas de Energia
+  camera: { radius: 21.5, maxY: 15 },
+};
+
 // IGREJA ANTIGA (Hexatombe): a base dos Vampiros, só o INTERIOR (o modelo 3D do próprio RPG). A porta está trancada; a
 // NÉVOA DA MEMBRANA enche a nave e a LUA VERMELHA DE SANGUE entra pelos vitrais e tinge tudo; velas na mesa do banquete
 // e no altar (a Dama da Culpa e o Serafim decapitado).
