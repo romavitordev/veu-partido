@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.3.0 — Fiel ao Cânone
+- Transformações com nome próprio: Kaiser Angel of the Night, Xande Rei do Rolê, Balu O Urso Acordou, Lírio A Fúria da Leonora, Nubi O Chacal Desperto.
+- Auditoria de cânone de todo o elenco: Acácia mais forte contra Energia, Gal com Resistente e Precognição, Joui Shi no Kage sem os poderes da máscara.
+- CPU atiradora atira quando derruba o perseguidor.
+- Estilo de luta para todo o elenco.
+
 ## v4.2.0 — Véu Partido
 - NOVA IDENTIDADE: o Arena Paranormal agora se chama VÉU PARTIDO — a Membrana rompida entre a realidade e o Outro Lado. Logo e ícone novos; é o mesmo jogo, com tudo o que você já tinha.
 - Seleção de personagens com o mesmo fundo para todos.

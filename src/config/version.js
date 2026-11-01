@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.2.0';
+export const VERSION = '4.3.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.3.0',
+    date: '2026-11-01',
+    title: 'Fiel ao Cânone',
+    items: [
+      'TRANSFORMAÇÕES COM A CARA DE CADA UM: Kaiser vira ANGEL OF THE NIGHT, Xande o REI DO ROLÊ, Balu O URSO ACORDOU, Lírio A FÚRIA DA LEONORA e Nubi O CHACAL DESPERTO.',
+      'AUDITORIA DE CÂNONE de todo o elenco pela wiki: a Acácia do Kaiser fere mais quem é de Energia; o Gal ganhou Resistente e Precognição; o Joui na Shi no Kage está sem os poderes da máscara.',
+      'CPU atiradora aproveita quando derruba o perseguidor para atirar (o Arthur agora vence o Raziel com mais frequência).',
+      'ESTILO DE LUTA PARA TODOS: Erin, Kemi, Amalia, Aghata, Fantasma, Diabo, Raziel, Amigo, Labirinto e Estrangeiro também se movem do jeito deles.',
+    ],
+  },
   {
     v: '4.2.0',
     date: '2026-11-01',

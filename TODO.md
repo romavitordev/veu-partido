@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.2.0 (2026-11-01: Véu Partido — nova identidade, fundo único na seleção, especial em equipe cinematográfico, animações e auditoria 3.2 do Joui). Antes: v4.1.0 Dupla Recomendada.
+**Versão de referência atual:** v4.3.0 (2026-11-01: Fiel ao Cânone — auditoria de todo o elenco, transformações com nome próprio, CPU atiradora, estilo para todos). Antes: v4.2.0 Véu Partido.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 

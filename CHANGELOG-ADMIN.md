@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.3.0 — Fiel ao Cânone
+
+- Versão: `VERSION` 4.2.0 → **4.3.0** (package.json/lock junto). Data: 2026-11-01.
+- **Pedido do dono: "siga com o TODO, finalize tudo sem contar o Outro Lado"** (e "a Kemi já tem a forma Fantasma" — a máscara dela no especial em equipe é a forma). Auditoria de cânone 3.3–3.30 pela wiki (wikitext pela API): tabela/resumo por personagem no TODO; mudanças só onde havia divergência.
+- **Pedido do dono: nomes de Transformação com a cara do personagem** ("Kaiser transformado deveria ser Angel of the Night").
+- **Testado:** `npm test` 55/55, `npm run check`; CPU × CPU (normal) Arthur × Raziel 3×1 (antes 0×3), Kaiser × Jae/Balu/Arthur sem regressão; lutas com os estilos novos sem erro.
+- **Pendente:** modelos (Magistrada, Portador do Trono, antigos), personagens novos, arena do Anfitrião, Carniçal jogável, Equipe Abutres; Decepar da Shi no Kage (decisão do dono).
+
 ## v4.2.0 — Véu Partido
 
 - Versão: `VERSION` 4.1.0 → **4.2.0** (package.json/lock junto). Data: 2026-11-01. Atualização concreta (`x.y.0`), sem reiniciar a numeração.

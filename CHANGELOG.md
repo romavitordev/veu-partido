@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.3.0 — Fiel ao Cânone
+
+### Alterado
+- Nomes das Transformações (`awakening.name/banner`): kaiser → Angel of the Night, xande → Rei do Rolê, balu → O Urso Acordou, lirio → A Fúria da Leonora, nubi → O Chacal Desperto (efeitos iguais).
+- `flowerRain`: `a.vsElement` multiplica o dano contra o elemento do alvo; Acácia `vsElement: { energia: 1.4 }`.
+- Gal Sal: passivas `resistant` (melee 0,93) e `precognition`.
+- `CpuController`: com o perseguidor caído/atordoado e a distância segura, o atirador atira (tiro carregado se houver) em vez de só fugir.
+- `animStyles`: estilo para erin, kemi, amalia, aghata, fantasma, o_diabo, diabo, raziel, raziel_verdadeiro, amigo, labirinto, labirinto_elmo, estrangeiro.
+- Kaiser: Dendrobium documentado como proposta (no cânone compartilha a visão).
+
 ## v4.2.0 — Véu Partido
 
 ### Alterado
