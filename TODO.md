@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.5.1 (2026-11-01: O Palco do Anfitrião + provocações do narrador). Antes: v4.4.0 O Carniçal, v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
+**Versão de referência atual:** v4.6.0 (2026-11-01: Dara, a médica dos Cinco). Antes: v4.5.1 O Palco do Anfitrião. Antes: v4.4.0 O Carniçal, v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1864,10 +1864,19 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       Ainda sem cânone no jogo: "quem foi afetado pelas pinturas não consegue se afastar" (sem pinturas no jogo).
 - [ ] **NOVOS PERSONAGENS — O SEGREDO NA ILHA** (pedido de 2026-10-31): os protagonistas da campanha (levantar na wiki
       quem são e o que fazem antes de modelar).
-- [ ] **NOVOS PERSONAGENS — OS CINCO** (pedido de 2026-10-31): completar o grupo. No jogo: Xande, Guizo e Lírio; faltam
+- [~] **NOVOS PERSONAGENS — OS CINCO** (pedido de 2026-10-31): completar o grupo. No jogo: Xande, Guizo e Lírio; faltam
       (pela wiki, `lore/MEMBROS.md`) Dara Alice Venturini (Médica de Campo), Francisco "Chico" Albuquerque (Técnico) e
       Morato Vertaler (o líder). O Voytek Nowak fica de fora (decisão do dono, 2026-10-31). Com o grupo completo, entra o
       especial de grupo dos Cinco.
+      - [x] **DARA** (v4.6.0, 2026-11-01): `src/characters/dara.js` + `tools/blender/char_dara.py` → `public/models/dara.glb`
+        (1,57 m, faixa ciano, gargantilha, sobretudo preto, blusa verde com os óculos de aviador vermelhos, bandoleiras,
+        lanterna UV, radar, alicate, walkie-talkie no braço, a bolsa grande, as meias vermelha e ciano). Do cânone:
+        Paramédico (△ + ○, cura), "ótima investigadora"/Perito (△ + L2 Olho de Investigadora, `analyze`) e Dedicação
+        (R2 + △: aguenta 2 golpes e recupera as esquivas). PROPOSTA: punhos, □ Lanterna UV (`photoFlash`, cega 1,4 s),
+        especial Bolsa de Emergência e a Transformação "Ninguém Fica Pra Trás". Elemento Medo (sem afinidade, como o
+        Veríssimo). Falas com todo o elenco e agarrão próprio.
+      - [ ] CHICO (Técnico: o Scanner de Energia, as Joias de Escudo Mental, o Teclado de Conexão Neural, a van com o
+        farol) e MORATO (o líder; "Tamo com Ele"; a Larva "Calabresa"); depois o especial de grupo.
 - [ ] **NOVOS PERSONAGENS — ENIGMA DO MEDO** (pedido de 2026-10-31): **MIA + LUPI** (a protagonista e o cachorro, como
       dupla) e **JASER**, com a versão melhorada **O DESASSOMBRADO** (forma/transformação dele). Levantar na wiki o
       visual, os itens e os poderes de cada um antes de modelar.

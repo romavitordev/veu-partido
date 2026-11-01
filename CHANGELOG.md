@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.6.0 — A Médica dos Cinco
+
+### Adicionado
+- `src/characters/dara.js` (Os Cinco, Medo): golpes de punho do Kian sem os sigilos (×0,95), □ `photoFlash` Lanterna UV, `healOverTime` Paramédico, `analyze` Olho de Investigadora, `selfBuff` Dedicação (`armor` 2, `refillDodges` 3), `cinematicCombo` Bolsa de Emergência, `awakenMode` Ninguém Fica Pra Trás.
+- Modelo `tools/blender/char_dara.py` → `public/models/dara.glb`; rosto `face_dara`.
+- Falas `VICTORY_DARA` (ida e volta com todo o elenco), voz de introdução e `GRAB_SCENES.dara`.
+
 ## v4.5.0 — O Palco do Anfitrião
 
 ### Adicionado

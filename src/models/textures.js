@@ -717,6 +717,16 @@ export const MATERIAL_TEXTURES = {
   }),
 
   // ---------------- ERIN: olhos verdes com olheiras sutis, sardas, sorriso solto
+  // DARA: olhos escuros com sombra e delineado (a maquiagem simples da arte)
+  face_dara: face((g) => {
+    g.strokeStyle = 'rgba(40,24,20,0.8)'; g.lineWidth = 2.2;
+    for (const s of [-1, 1]) { g.beginPath(); g.moveTo(CX + s * 18, EYE_Y - 4); g.lineTo(CX + s * 50, EYE_Y - 8); g.stroke(); }
+  }, {
+    skin: '#efcdb6',
+    eye: { iris: '#3a2618', irisLight: '#6a4a30', tilt: 0.02, lashes: true },
+    brow: { angry: 0, thick: 3, color: '#4a2c18' },
+    mouth: { mouthW: 12, smile: 3, lip: 'rgba(180,90,90,0.45)' },
+  }),
   face_erin: face((g) => {
     // sardas no nariz e nas bochechas
     g.fillStyle = 'rgba(170,90,50,0.45)';

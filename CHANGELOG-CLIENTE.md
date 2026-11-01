@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.6.0 — A Médica dos Cinco
+- Nova lutadora: Dara, a médica de campo dos Cinco — Lanterna UV que cega, Paramédico para se curar, Olho de Investigadora e Dedicação.
+- Especial Bolsa de Emergência e a Transformação Ninguém Fica Pra Trás.
+
 ## v4.5.0 — O Palco do Anfitrião
 - Novo cenário: o Palco do Anfitrião, um coliseu roxo com a plateia cheia de Anfitriões.
 - O Anfitrião narra a luta e a plateia reage.

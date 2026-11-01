@@ -746,6 +746,51 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## DARA
+
+*A médica de campo dos Cinco, a faixa ciano e as meias de cores diferentes* · arma: Os punhos, a lanterna UV e a bolsa enorme de primeiros socorros
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Jab | 28 | 1.8 m |  |
+| ○ 2 | Direto | 30 | 1.8 m |  |
+| ○ 3 | Sequência rápida | 48 (3 acertos) | 1.8 m |  |
+| ○ 4 | Soco no corpo | 32 | 1.7 m |  |
+| ○ 5 | Cruzado | 35 | 1.8 m |  |
+| ○ 6 | Soco de bolsa | 69 | 1.9 m | finalizador: lança |
+| Frente + ○ | Avanço | 41 | 1.8 m |  |
+| Trás + ○ | Empurrão | 37 | 1.5 m | finalizador: afasta |
+| Lado + ○ | Gancho em movimento | 35 | 1.8 m |  |
+| No ar + ○ | Soco aéreo | 46 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho | 48 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Soco no chão | 60 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Lanterna UV
+
+- Dano undefined · alcance 8 m · cooldown 7 s · custo 10
+
+### Habilidades
+
+- **Paramédico** — △ + ○ / Y + B · custo 25 · cooldown 20 s
+  Abre a bolsa e se remenda no meio da luta: recupera vida por 2 s. Apanhar no meio não cancela.
+- **Olho de Investigadora** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 14 m
+  Liga o radar, observa e acha onde dói: por 7 s o adversário recebe 30% a mais de dano dos golpes físicos e do especial.
+- **Dedicação** — R2 + △ / RT + Y · custo 15 · cooldown 18 s
+  Respira fundo e se concentra no paciente da vez: aguenta 2 golpes sem recuar e recupera as esquivas.
+- **Passiva — Resistente:** −14% de dano físico recebido
+
+### Especial: Bolsa de Emergência
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Ninguém Fica Pra Trás
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano, +12% de velocidade, recargas 60% mais rápidas, cura 12% na hora.
+
+---
+
 ## DALMO
 
 *Gladiador das arenas clandestinas: pondo o escafandro, vira o Colosso* · arma: Os punhos; as Manoplas do Colosso na Transformação

@@ -171,6 +171,8 @@ export const GRAB_SCENES = {
   aguiar: scene({ ...S('slash_h'), fx: { kind: 'slash' }, sound: 'axeHit' }, { ...S('kick_front'), fx: { kind: 'punch' }, sound: 'kick' }, { anim: 'slash_v', fx: 'axe', sound: 'axeHit', bleed: { dps: 5, duration: 2 } }),
   labirinto: scene({ ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { ...S('slash_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { anim: 'slash_d', fx: 'chaos', sound: 'shockwave' }),
   xande: scene({ ...S('slash_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('slash_h_back'), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'slash_finisher', fx: 'descarnar', sound: 'descarnar', bleed: { dps: 4, duration: 2 } }),
+  // DARA: dois socos e a lanterna UV na cara antes do empurrão
+  dara: scene({ ...S('body_blow'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('hook_l'), fx: { kind: 'punch' }, sound: 'punch' }, { anim: 'heavy_punch', fx: 'slam', sound: 'heavyPunch' }),
   lirio: scene({ ...S('hammer_h', 0.34), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.34), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   balu: scene({ ...S('hammer_h', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { ...S('hammer_diag', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   ferreiro: scene({ ...S('slash_h', 0.32), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('slash_h_back', 0.32), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'slash_finisher', fx: 'consume', sound: 'slashFinal' }),

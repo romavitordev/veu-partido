@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.6.0 — A Médica dos Cinco
+
+- Versão: `VERSION` 4.5.1 → **4.6.0** (package.json/lock junto). Data: 2026-11-01.
+- **Pedido do TODO (2026-10-31): "completar Os Cinco"** — primeira do grupo: a Dara. Kit pelas habilidades da wiki (Paramédico, Perito/Eclético, Dedicação) e pelos itens da arte; o resto marcado como PROPOSTA no arquivo. Chico e Morato continuam pendentes.
+- **Balanço:** a primeira versão perdeu 1×5 (causava 41% do dano recebido); reforçada (golpes ×1,05, velocidade 7,9 e ataque 1,08, Paramédico cura 150, passiva `resistant` 0,9 em físico e tiro). Segunda rodada: 2×5 (dano 48%); reforçada de novo (golpes ×1,15, Olho de Investigadora +30% em físico e especial, resistant 0,86) — o balanço final dessa versão NÃO foi conferido.
+- **Testado:** `npm test`, `npm run check`; seleção e luta no navegador sem erro.
+
 ## v4.5.0 — O Palco do Anfitrião
 
 - Versão: `VERSION` 4.4.0 → **4.5.0** → **4.5.1** (provocações do narrador; package.json/lock junto). Data: 2026-11-01.

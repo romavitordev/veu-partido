@@ -165,6 +165,19 @@ export const VOICES = {
       any: [(o) => `Beleza, ${o.name}. Do meu jeito, então.`, (o) => `Pelos meus amigos, ${o.name}. Sempre por eles.`],
     },
   },
+  // DARA: a médica de campo dos Cinco — gentil, prática, investigadora, e firme quando precisa
+  dara: {
+    open: {
+      ally: (o) => `${o.name}! Treino? Tá, mas se machucar, fica parado que eu cuido.`,
+      rival: (o) => `${o.name}... ${o.one}. Eu já li sobre vocês. Sei onde dói.`,
+      any: [(o) => `${o.name}, eu tenho atadura pra nós dois. Vai precisar.`, (o) => `Lanterna, radar, alicate... pronto, ${o.name}. Pode vir.`],
+    },
+    reply: {
+      ally: (o) => `Sem pegar pesado, ${o.name}. Sou eu que remendo depois.`,
+      rival: (o) => `${o.group}? Ótimo. Mais um caso pra investigar, ${o.name}.`,
+      any: [(o) => `Calma, ${o.name}. Eu já vi coisa pior na van do Chico.`, (o) => `Respira, ${o.name}. Vai ser rápido.`],
+    },
+  },
   lirio: {
     open: {
       ally: (o) => `${o.name}, bah, tu e eu? A Leonora vai se divertir.`,

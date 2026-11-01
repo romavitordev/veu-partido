@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.5.1';
+export const VERSION = '4.6.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.6.0',
+    date: '2026-11-01',
+    title: 'A Médica dos Cinco',
+    items: [
+      'NOVA LUTADORA: DARA, a médica de campo dos Cinco — luta nos punhos, cega com a LANTERNA UV e se remenda com o PARAMÉDICO no meio da luta.',
+      'OLHO DE INVESTIGADORA acha a brecha do adversário e a DEDICAÇÃO segura dois golpes e devolve as esquivas.',
+      'Especial BOLSA DE EMERGÊNCIA e a Transformação NINGUÉM FICA PRA TRÁS.',
+    ],
+  },
   {
     v: '4.5.0',
     date: '2026-11-01',

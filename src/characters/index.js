@@ -31,6 +31,7 @@ import celestine from './celestine.js';
 import gaius from './gaius.js';
 import amalia from './amalia.js';
 import carnical from './carnical.js';
+import dara from './dara.js';
 import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectableForms.js';
 
 // Elenco jogável, na ordem da tela de seleção — AGRUPADO POR EQUIPE/TEMPORADA (a grade tem 3 colunas × 5 linhas por
@@ -46,7 +47,7 @@ import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectable
 export const ROSTER = [
   arthur, joui, kaiser, dante, erin, aghata, balu, verissimo, cristopher, // Ordo Realitas (o Cris fecha a Equipe E de OSNF)
   kian, gal_sal, nubi, // Escriptas
-  xande, guizo, lirio, // Os Cinco (Sinais do Outro Lado) — o Guizo do lado do melhor amigo
+  xande, guizo, lirio, dara, // Os Cinco (Sinais do Outro Lado) — o Guizo do lado do melhor amigo; a Dara, a médica
   dalmo, aguiar, jae, kemi, labirinto, juan, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo
   raziel, // Vampiros (Hexatombe) — o líder; Alvira, Velisar, Zéfero e Sabara entram depois
