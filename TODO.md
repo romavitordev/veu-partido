@@ -661,49 +661,49 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Validar elemento Sangue com a fonte oficial.
   - Testar armadilhas no cenário, limite de armadilhas, puxão e troca de forma no round.
 
-- [ ] **3.17 Park Jae-Yoon (`src/characters/jae.js`; forma `forms/jae_x.js`):**
+- [x] **3.17 Park Jae-Yoon (`src/characters/jae.js`; forma `forms/jae_x.js`):** auditado em 2026-11-01 (wiki "Park Jae-Yoon"): Assassinato Furtivo, Zona dos Sussurros, Punhal X e, com o Capuz de X, Assassinato Cruel e Zona das Sombras (armadilha de Conhecimento, 3 m) batem. Sem mudanças.
   - Confirmar distinção entre Jae sem máscara e X/Capuz de X com mudança de comportamento.
   - Furtividade deve criar janela tática curta com aviso sonoro/visual e resposta, sem invisibilidade injusta.
   - Diferenciar punhaladas rápidas, arremesso e ataque surpresa em alcance e recuperação.
   - Confirmar pronome e nome consistentes na UI (Jae, X, Park Jae-Yoon).
   - Testar furtividade contra CPU, lock-on, ataque pelas costas e esquiva.
 
-- [ ] **3.18 Kemi (`src/characters/kemi.js`; forma `forms/fantasma.js`):**
+- [x] **3.18 Kemi (`src/characters/kemi.js`; forma `forms/fantasma.js`):** auditado em 2026-11-01 (wiki "Kemi"): Perita, Disparo da Morte, Sniper da Morte e, com as Faixas da Fantasma, Analítica e Disparo Espiral (balas curvas) batem. Sem mudanças. No especial em equipe dos Mascarados ela entra como Fantasma (a forma é a máscara dela).
   - Separar rifle de precisão, revólver, faca e Pistola Transtornada em funções distintas.
   - Confirmar se Sede de Vingança pertence à Kemi, à Lena ou à condição do corpo utilizado.
   - A forma A Fantasma deve alterar o padrão de luta de modo coerente com as faixas e o papel de assassina.
   - Verificar tempo de reação na mira e contrajogo justo.
   - Testar distância máxima, colisão do projétil, execução e troca de modelo.
 
-- [ ] **3.19 Labirinto (`src/characters/labirinto.js`; forma `forms/labirinto_elmo.js`):**
+- [x] **3.19 Labirinto (`src/characters/labirinto.js`; forma `forms/labirinto_elmo.js`):** auditado em 2026-11-01 (wiki "Labirinto"): Rajada Caótica, Labirinto Mental, Capturar Momento, Mapa Sanguíneo e, com o Capacete do ???, Tempestade Caótica, Labirinto Abissal, Consumir Momento e Revelação Sanguínea — todos no jogo com o nome da ficha. Sem mudanças.
   - Conferir identidade do capacete antes de nomear a forma (manter "???" se não confirmado).
   - Diferenciar Rajada Caótica, Labirinto Mental, Mapa Sanguíneo e Capturar Momento.
   - Validar a função narrativa de cada poder com cenas em vez de apenas pacote genérico de Energia.
   - Garantir antena na mão correta em ataques, bloqueios, corrida e especial.
   - Testar zonas, efeitos temporais, câmera e retorno de forma.
 
-- [ ] **3.20 Juan / Henri (`src/characters/juan.js`; forma `forms/juan_odio.js`):**
+- [x] **3.20 Juan / Henri (`src/characters/juan.js`; forma `forms/juan_odio.js`):** auditado em 2026-11-01 (wiki "Juan"): Armadura de Sangue (Diabólica), Vínculo de Sangue, Descarnar Discente, Perturbação Discente e Afinidade com Sangue batem. Sem mudanças.
   - Conferir cronologia e nomenclatura: Henri/Juan, Ódio do Diabo, pacto e Portador do Trono.
   - Verificar custo físico do pacto, sangue como recurso e progressão de forma.
   - Diferenciar Faca Predadora (dreno), Vínculo (controle), Perturbação (mental) e Descarnar (físico).
   - Confirmar ativação e duração da transformação por round.
   - Testar transições, regeneração, especial e consistência com o personagem O Diabo.
 
-- [ ] **3.21 O Diabo (`src/characters/o_diabo.js`; forma `forms/diabo.js`):**
+- [x] **3.21 O Diabo (`src/characters/o_diabo.js`; forma `forms/diabo.js`):** auditado em 2026-11-01 (wiki "O Diabo"): Ódio do Diabo, Sangue nos Arredores, Transportar pelo Sangue, Veias de Sangue, Senhor do Sangue, Pacto e Regeneração (Renascimento) batem. Sem mudanças.
   - Separar a entidade O Diabo selecionável da transformação de Juan; manter semelhanças mecânicas sem copiar identidade integralmente.
   - Conferir se Renascimento é transformação/estado e como funciona o retorno.
   - Verificar escala corporal, garras, chifres, manto e hitboxes.
   - Distinguir agressividade, agarrão, regeneração e pactos sem imunidades ilimitadas.
   - Testar espelhamento contra Juan transformado e transições.
 
-- [ ] **3.22 Ferreiro / Deus da Morte (`src/characters/ferreiro.js`; forma `forms/deus_morte.js`):**
+- [x] **3.22 Ferreiro / Deus da Morte (`src/characters/ferreiro.js`; forma `forms/deus_morte.js`):** auditado em 2026-11-01 (wiki "Deus da Morte"): Espiral Descendente, Controlar Mortos, Senhor do Tempo e Regeneração estão na forma; o Ferreiro antes do pacto usa a Espada Consumidora e os Mananciais. Sem mudanças.
   - Confirmar condição de transformação e relação entre sanidade, tempo e morte com regra visível.
   - Diferenciar Espada Consumidora, lodo, hipnose e mananciais.
   - No Deus da Morte, ajustar escala de hitbox, câmera, distância e vulnerabilidade; confirmar fraquezas elementais com fonte confiável.
   - Evitar que tamanho e regeneração criem luta sem contrajogo.
   - Testar transformação por morte, reset de round e fraquezas.
 
-- [ ] **3.23 Arnaldo Fritz / O Anfitrião (`src/characters/arnaldo.js`; forma `forms/anfitriao.js`):**
+- [~] **3.23 Arnaldo Fritz / O Anfitrião (`src/characters/arnaldo.js`; forma `forms/anfitriao.js`):** conferido em 2026-11-01 contra a ficha do jogo (as páginas "Arnaldo Fritz" e "O Anfitrião" não abriram pela API): Finta Teatral, Pulso Paranormal, Aniquilador e, como Anfitrião, Regra do Caos, Multiplicação, Distorção, Botão e Jogo do Orfanato já têm fonte nos comentários. Falta reler a wiki.
   - Separar esgrima teatral de Arnaldo do kit de caos/tempo do Anfitrião.
   - Conferir relógio/relíquia na transição e duração da forma por round.
   - Validar atração/repulsão do Emissor de Pulsos com leitura direcional clara.
@@ -758,7 +758,7 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Conferir forma Saber Tudo é Perder Tudo sem ser mero buff de atributos.
   - Testar controle de alvo, absorção/redistribuição de dano e reset de round.
 
-- [ ] **3.28 Kian (`src/characters/kian.js`; forma `forms/kian_calamidade.js`):**
+- [x] **3.28 Kian (`src/characters/kian.js`; forma `forms/kian_calamidade.js`):** auditado em 2026-11-01 (wiki "Kian" + `docs/AUDITORIA-KIAN-JOUI.md`): Inexistir, Teletransporte, Toque da Morte, Rejeitar Névoa, Levitação e Lâmina do Medo batem; a forma Realizador da Calamidade tem as versões de Calamidade. Sem mudanças.
   - Reaproveitar `docs/AUDITORIA-KIAN-JOUI.md` e conferir poderes por fase.
   - Rejeitar Névoa com utilidade ampla contra efeitos compatíveis sem anular tudo.
   - Distinguir teletransporte, levitação, combate físico e rituais.
@@ -769,7 +769,7 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Seguir o plano RZ-01 a RZ-09: Turno Extra, Sede Incontrolável, Banquete Bestial diferenciado, investida de garras no lugar de projétil ou licença documentada, Endurecer Sangue com crosta visual, e kit bestial exclusivo.
   - Testes com CPU, jogador, alvos críticos, esquiva e finalizadores.
 
-- [ ] **3.30 Revisão final cruzada — Formas, elementos e documentação:**
+- [~] **3.30 Revisão final cruzada — Formas, elementos e documentação:** 2026-11-01: registro de formas conferido por script — as 20 formas estão em `FORMS`, nenhuma `awakening.form` sem registro e nenhum arquivo de forma solto. Falta a classificação de cada forma e a revisão de elementos.
   - Comparar `src/characters/forms/index.js` com `src/characters/index.js`; garantir registro de todas as formas sem aliases confusos.
   - Classificar cada forma: transformação temporária, estado narrativo, chefe, entidade separada ou skin.
   - Conferir `element` e `energyColor` contra fontes canônicas (cor não comprova elemento).
