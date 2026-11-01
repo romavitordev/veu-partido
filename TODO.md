@@ -619,7 +619,7 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Se as formas bombado/velho multiplicam dano e reduzem cooldown, avaliar suficiência da variação sem inventar poderes sem fonte.
   - Testar troca de forma, escala, hitbox e animação da faca com a câmera.
 
-- [~] **3.11 Lírio Tellini (`src/characters/lirio.js`):** conferido em 2026-11-01 só contra a ficha do jogo (a página da wiki não abriu pela API com esse nome): Leonora, Magras, Golpe Pesado, Cai Dentro e Proteção Pesada já têm comentário de fonte na ficha. Falta reler a wiki.
+- [x] **3.11 Lírio Tellini (`src/characters/lirio.js`):** auditado em 2026-11-01 (wiki "Lírio Tellini"): Sangue de Ferro (`ironBlood` + a Transformação), Casca Grossa (`thickSkin`), Ataque Especial e Golpe Pesado (`heavyBlow`), Mão Pesada (`heavyHand`), Cai Dentro e Proteção Pesada — todos no jogo. Sem mudanças.
   - Confirmar a modelagem exata da Leonora e como as miniaturas amaldiçoadas aparecem durante os ataques.
   - Diferenciar proteção/absorção de dano de superarmadura: resistir sem ignorar todos os ataques.
   - Verificar se Amarras de Sangue controla o alvo com duração, escape e telegraph.
@@ -633,7 +633,7 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - A personalidade protetora deve aparecer em postura, reação e defesa.
   - Testar armadura contra tiros, corpo a corpo, agarrões e visual antes/depois da maldição.
 
-- [~] **3.13 Cristino (`src/characters/cristino.js`; forma `forms/cristino_desertor.js`):** conferido em 2026-11-01 só contra a ficha do jogo (a página "Cristino" não abriu pela API): Peixeira, Socadeira, lampiões, Corda do Telhado e Decepar já têm fonte na ficha. Falta reler a wiki.
+- [x] **3.13 Cristino (`src/characters/cristino.js`; forma `forms/cristino_desertor.js`):** auditado em 2026-11-01 (wiki "Cristino", Arsenal): Espingarda Socadeira, Peixeira e Lampiões Explosivos batem; Corda do Telhado (Igreja de Sangue) e Decepar já têm fonte na ficha. Sem mudanças.
   - Conferir ordem de uso das armas: espingarda carregada pela boca tem ritmo diferente de arma moderna.
   - Diferenciar lampiões como controle/preparação de área em vez de simples granada.
   - Validar a corda e deslocamento em relação às cenas sem conceder teleporte não mostrado.
@@ -703,7 +703,7 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Evitar que tamanho e regeneração criem luta sem contrajogo.
   - Testar transformação por morte, reset de round e fraquezas.
 
-- [~] **3.23 Arnaldo Fritz / O Anfitrião (`src/characters/arnaldo.js`; forma `forms/anfitriao.js`):** conferido em 2026-11-01 contra a ficha do jogo (as páginas "Arnaldo Fritz" e "O Anfitrião" não abriram pela API): Finta Teatral, Pulso Paranormal, Aniquilador e, como Anfitrião, Regra do Caos, Multiplicação, Distorção, Botão e Jogo do Orfanato já têm fonte nos comentários. Falta reler a wiki.
+- [x] **3.23 Arnaldo Fritz / O Anfitrião (`src/characters/arnaldo.js`; forma `forms/anfitriao.js`):** auditado em 2026-11-01 (wiki "Arnaldo Fritz", Arsenal e Itens Paranormais): a espada da fita vermelha e o Emissor de Pulsos Paranormais (atrai as criaturas de um elemento e afasta as do oposto — no jogo atrai de longe e repele de perto) batem; o kit do Anfitrião segue a ficha de Calamidade. Sem mudanças.
   - Separar esgrima teatral de Arnaldo do kit de caos/tempo do Anfitrião.
   - Conferir relógio/relíquia na transição e duração da forma por round.
   - Validar atração/repulsão do Emissor de Pulsos com leitura direcional clara.
