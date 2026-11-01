@@ -373,7 +373,7 @@ Adicionar e aprimorar animações de movimentação para deixar os personagens m
 
 As animações deverão respeitar o estilo de luta de cada personagem e ser compatíveis com os sistemas atuais de movimentação, ataques, esquivas e habilidades.
 
-- [ ] **Melhoria geral de todas as animações do jogo (pedido de 2026-10-26):** todas as animações de movimento (corrida, caminhada, esquivas, dash, pulo, transições), ataques normais, sequências de combo, finalizadores e habilidades precisam ser aprimoradas para maior fluidez, impacto e naturalidade.
+- [x] **Melhoria geral de todas as animações do jogo (pedido de 2026-10-26):** todas as animações de movimento (corrida, caminhada, esquivas, dash, pulo, transições), ataques normais, sequências de combo, finalizadores e habilidades precisam ser aprimoradas para maior fluidez, impacto e naturalidade. — feito em 6 levas (ver MELHORIA GERAL DE TODAS AS ANIMAÇÕES, 2026-11-01).
 - [ ] **Pesquisa e uso de referências visuais da internet:** buscar referências de alta qualidade em jogos de luta consagrados (Naruto Storm, Guilty Gear, Tekken, Street Fighter), coreografias de artes marciais reais e cenas de ação em animes para guiar o timing, arcos de movimento (anticipation, follow-through, peso e inércia).
 - [x] **Polimento individual por estilo de combate** (2026-11-01, `anim/animStyles.js`, ver a 5ª leva acima): garantir que cada combatente tenha animações fiéis ao seu estilo e personalidade narrativa (ex.: agilidade e esgrima de Joui, brutalidade pesada de Balu e Aguiar, técnica militar de Kaiser e Veríssimo, loucura caótica de Xande e Anfitrião, elegância sobrenatural de Kian).
 
@@ -420,18 +420,18 @@ A wiki comunitária é um índice e uma ferramenta para localizar fatos e cenas,
 
 #### 1. Processo obrigatório para cada personagem
 Antes de propor alterações:
-- [ ] Conferir o código atual e listar todos os kits: base, forma(s), passivas, especial, agarrão, armas, assistências, efeitos de status e interações de equipe.
-- [ ] Confirmar em quais arquivos estão definidos os golpes, animações, hitboxes, dano, cooldown, custo de energia, VFX, IA/CPU, HUD e transformações.
-- [ ] Consultar a página da wiki do personagem, as páginas das habilidades/elementos/trilhas relacionadas e as referências indicadas nelas.
-- [ ] Verificar as cenas relevantes nos episódios oficiais. Registrar episódio, cena e timestamp quando possível; não inventar timestamp se não foi conferido.
-- [ ] Para poderes que vêm do RPG, consultar a descrição mecânica no livro/suplemento. Se o texto integral não estiver disponível legalmente, não reconstruir regras detalhadas de memória: usar a descrição pública e marcar a incerteza.
-- [ ] Criar uma tabela: **habilidade atual → comportamento real no código → referência canônica → divergência → proposta → impacto técnico → teste de aceite**.
-- [ ] Marcar cada conclusão como uma destas categorias:
+- [x] Conferir o código atual e listar todos os kits: base, forma(s), passivas, especial, agarrão, armas, assistências, efeitos de status e interações de equipe. (2026-11-01: script de kit para os 22 personagens + formas)
+- [x] Confirmar em quais arquivos estão definidos os golpes, animações, hitboxes, dano, cooldown, custo de energia, VFX, IA/CPU, HUD e transformações.
+- [x] Consultar a página da wiki do personagem, as páginas das habilidades/elementos/trilhas relacionadas e as referências indicadas nelas. (2026-11-01: wikitext pela API para todos de 3.2 a 3.28)
+- [~] Verificar as cenas relevantes nos episódios oficiais. Registrar episódio, cena e timestamp quando possível; não inventar timestamp se não foi conferido. — só os timestamps que a wiki cita; episódios não assistidos nesta passada.
+- [~] Para poderes que vêm do RPG, consultar a descrição mecânica no livro/suplemento. Se o texto integral não estiver disponível legalmente, não reconstruir regras detalhadas de memória: usar a descrição pública e marcar a incerteza. — usada a descrição mecânica da wiki; o livro não foi consultado.
+- [x] Criar uma tabela: **habilidade atual → comportamento real no código → referência canônica → divergência → proposta → impacto técnico → teste de aceite**. (tabela completa no 3.1/3.2; resumo por personagem nos demais)
+- [x] Marcar cada conclusão como uma destas categorias:
   - **CONFIRMADO:** aparece em fonte oficial ou descrição mecânica identificável.
   - **ADAPTAÇÃO:** efeito criado para traduzir a habilidade para combate em tempo real.
   - **PROPOSTA NÃO CANÔNICA:** ideia nova de gameplay; nunca a descrever como poder oficial.
   - **INCERTO:** a fonte consultada não permite confirmar.
-- [ ] Só depois da auditoria, propor mudanças. Não remover habilidade existente sem explicar o que entra no lugar.
+- [x] Só depois da auditoria, propor mudanças. Não remover habilidade existente sem explicar o que entra no lugar.
 - [ ] Depois de qualquer implementação, atualizar este TODO, `CHANGELOG-ADMIN.md`, `HABILIDADES.md` e os documentos de versão pertinentes; executar `npm run check`, `npm test` e `npm run build`, e realizar testes visuais.
 
 ---
