@@ -2,6 +2,14 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.8.0 — Especiais em Equipe
+- Força D: Kaiser, Joui e Arthur atacam juntos em uma cena com a Cinerária e a Arma de Sangue.
+- Os Cinco: os seis membros combinam suas armas e habilidades em uma coreografia de equipe.
+- Abutres: especial próprio para Dante, Balu, Joui e Arthur; Carina e Rubens entram quando estiverem no elenco.
+- Câmera dos especiais em equipe agora destaca quem golpeia e o alvo nos impactos próximos.
+- Van dos Cinco corrigida na Ilha de Tipora.
+- Com uma assistência, LB/RB e as duas direções de troca chamam o mesmo parceiro.
+
 ## v4.7.1 — Transmissão nos Cinco
 - Elemento da Dara corrigido para Transmissão; agora aparece assim na luta, nos filtros e no elenco da página Sobre.
 - Página Sobre com retratos novos de Dara, Chico, Morato e Carniçal.

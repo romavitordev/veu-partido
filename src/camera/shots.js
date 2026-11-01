@@ -50,6 +50,27 @@ export function twoShot(a, b, { dur = 1, dist = 3.2, height = 1.4, push = 0.6, s
   };
 }
 
+// Plano próximo que mantém os dois envolvidos na ação enquadrados durante o impacto.
+export function impactClose(a, b, { dur = 0.72, side = 4.1, height = 2.05, lookH = 1.35, fov = 48 } = {}) {
+  const center = () => new THREE.Vector3().addVectors(a.pos, b.pos).multiplyScalar(0.5);
+  const axis = () => {
+    const direction = new THREE.Vector3().subVectors(b.pos, a.pos).setY(0);
+    if (direction.lengthSq() < 1e-4) return forwardFromYaw(a.yaw);
+    return direction.normalize();
+  };
+  return {
+    dur, fov,
+    pos: () => {
+      const mid = center();
+      const forward = axis();
+      return mid
+        .add(new THREE.Vector3(forward.z, 0, -forward.x).multiplyScalar(side))
+        .setY(mid.y + height);
+    },
+    look: () => center().setY((a.pos.y + b.pos.y) / 2 + lookH),
+  };
+}
+
 // Por cima do ombro de `a` olhando para `b`
 export function overShoulder(a, b, { dur = 1, back = 1.6, side = 0.7, height = 1.7, fov = 42 } = {}) {
   return {

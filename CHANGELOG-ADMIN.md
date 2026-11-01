@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v4.8.0 — Especiais em Equipe
+
+- Versão: `VERSION` 4.7.1 → **4.8.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `combat/teamSpecials.js`: coreografias próprias da Força D, Os Cinco e Abutres. Os grupos de Os Cinco e Força D usam todos os membros disponíveis; a cena dos Abutres usa Dante, Balu, Joui e Arthur até Carina/Rubens entrarem no elenco.
+- `camera/shots.js`: novo plano de close para impactos enquadra atacante e alvo; aplicado apenas quando estão próximos, preservando planos de ataques à distância.
+- Props temporários de `teamLinks.sceneProps` agora são restaurados tanto no fim quanto no cancelamento da cinemática.
+- Com uma assistência, LB/RB e as duas direções de troca selecionam o mesmo parceiro; com duas, os mapeamentos continuam independentes.
+- Van dos Cinco: colisão com objetos decorativos da Ilha de Tipora ignora apenas esses obstáculos e continua respeitando o limite circular da arena.
+- TODO registra Jaqueta de Veríssimo na habilidade e na transformação como trabalho futuro; não foi implementada nesta versão.
+- **Validado:** `npm test` (62 testes), `npm run check`, `npm run build`; enquadramento da Força D conferido no Treinamento em Equipe. Os Cinco e Abutres ainda precisam de conferência visual.
+
 ## v4.7.1 — Transmissão nos Cinco
 
 - Versão: `VERSION` 4.7.0 → **4.7.1** (`package.json`/lock junto). Data: 2026-11-01.

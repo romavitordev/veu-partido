@@ -123,11 +123,11 @@ export default {
       input: 'carga+ranged',
       type: 'stuntCar',
       vehicle: 'van',
+      behind: 6, // mantém a van dentro da praça da Ilha de Tipora antes da arrancada
       label: 'PEGA ELE, DARA!',
       description: 'Chama a van no walkie: ela vem por trás com a Dara no volante, o Chico pula de lado e a van atropela quem estiver na frente (quebra a defesa).',
       energyCost: 30,
       cooldown: 18,
-      behind: 12,
       delay: 0.45,
       speed: 24,
       damage: 74,

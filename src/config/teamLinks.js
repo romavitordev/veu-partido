@@ -50,6 +50,33 @@ export const TEAM_LINKS = {
     group: FORCA_D,
     min: 3,
     color: 0x4a90e2,
+    choreo: 'forca_d',
+    sceneProps: { arthur: { show: ['bloodBlade'] } },
+  },
+  os_cinco: {
+    id: 'os_cinco',
+    kind: 'group',
+    name: 'OS CINCO',
+    banner: 'Os Cinco!',
+    group: ['morato', 'chico', 'xande', 'lirio', 'guizo', 'dara'],
+    min: 3,
+    order: ['morato', 'chico', 'xande', 'lirio', 'guizo', 'dara'],
+    color: 0x2ab8c8,
+    choreo: 'os_cinco',
+    sceneProps: { morato: { show: ['mgHand'], hide: ['mgBack'] } },
+  },
+  abutres: {
+    id: 'abutres',
+    kind: 'group',
+    name: 'EQUIPE ABUTRES',
+    banner: 'Equipe Abutres!',
+    // Carina e Rubens entram na coreografia quando estiverem disponíveis no elenco.
+    group: ['dante', 'carina', 'arthur', 'joui', 'balu', 'rubens'],
+    min: 3,
+    order: ['dante', 'balu', 'joui', 'arthur', 'carina', 'rubens'],
+    color: 0x9a94ae,
+    choreo: 'abutres',
+    sceneProps: { arthur: { show: ['bloodBlade'] } },
   },
   // Ordo Calamitas: vale com 3 da equipe; cada um com o golpe próprio (a corrente da Celestine, o gládio do Gaius, a
   // Flecha Flamejante da Amalia)

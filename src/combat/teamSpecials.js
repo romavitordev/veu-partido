@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { Timeline, distXZ, yawTo } from '../core/util.js';
+import { Timeline, distXZ, smooth, yawTo } from '../core/util.js';
 import { Assist, rushStrike, shoot } from './assists.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { applyHit } from './damage.js';
-import { twoShot, orbit, pullBack, overShoulder, lowAngle } from '../camera/shots.js';
+import { twoShot, orbit, pullBack, overShoulder, lowAngle, faceClose, impactClose } from '../camera/shots.js';
 import { ROSTER } from '../characters/index.js';
 import { getTeamLink, linkId, inLink as inLinkOf, matchesEntry } from '../config/teamLinks.js';
 
@@ -169,6 +169,24 @@ function wearMasks(link, actors) {
     }
   }
   return () => { for (const [rig, p, v] of undo) rig.showProp(p, v); };
+}
+
+function showSceneProps(link, actors) {
+  const undo = [];
+  if (!link || !link.sceneProps) return () => {};
+  for (const x of actors) {
+    const config = link.sceneProps[linkId(x.def)];
+    const rig = x.rig;
+    if (!config || !rig || !rig.props) continue;
+    for (const [list, visible] of [[config.show || [], true], [config.hide || [], false]]) {
+      for (const prop of list) {
+        if (!rig.props[prop]) continue;
+        undo.push([rig, prop, rig.props[prop].visible]);
+        rig.showProp(prop, visible);
+      }
+    }
+  }
+  return () => { for (const [rig, prop, visible] of undo) rig.showProp(prop, visible); };
 }
 
 // um golpe de um membro na cena: aparece no lugar dele em volta do alvo e bate (ou atira) — o dano é do especial
@@ -386,8 +404,391 @@ function actorFor(x, f, guests) {
   };
 }
 
+function choreographyTools({ f, opp, world, crew, guests, live, end }) {
+  const actors = new Map([[f, actorFor(f, f, guests)], ...crew.map((x) => [x, actorFor(x, f, guests)])]
+    .map(([source, actor]) => [linkId(source.def), actor]));
+  const get = (id) => actors.get(id) || null;
+  const around = (_actor, angle, radius) => {
+    const yaw = f.yaw + Math.PI + angle;
+    const want = { x: opp.pos.x + Math.sin(yaw) * radius, z: opp.pos.z + Math.cos(yaw) * radius };
+    return findFreeSpotNear(world.arena, want.x, want.z, {
+      radius: 0.5,
+      others: [{ x: opp.pos.x, z: opp.pos.z, r: 0.6 }],
+    }) || want;
+  };
+  const enter = (actor, angle, radius) => {
+    if (!actor || !live()) return null;
+    const at = around(actor, angle, radius);
+    actor.show(end, at);
+    actor.pos.set(at.x, 0, at.z);
+    actor.face(opp);
+    return at;
+  };
+  const impact = (actor, damage, { sound = 'heavyPunch', color = actor && actor.color, slash = false } = {}) => {
+    if (!actor || !live()) return;
+    const tint = color ?? 0xc4241c;
+    const point = opp.chestPos();
+    if (distXZ(actor.pos, opp.pos) <= 4.5) {
+      world.cameraRig.playShots([{ ...impactClose(actor, opp), cut: true }]);
+    }
+    if (slash) world.fx.slash(point, actor.yaw, { color: tint, radius: 1.8, arc: 2.6, life: 0.32, width: 0.45, roll: 0.2 });
+    world.fx.burst(point, { count: 18, color: tint, speed: 4, life: 0.38, size: 0.17 });
+    if (damage > 0) applyHit(world, f, opp, { damage, kind: 'special', reaction: false, ignoreInvuln: true, sound, color: tint, scale: 1.3 });
+    opp.anim.play('hit', { restart: true, blend: 0.03 });
+    world.cameraRig.shake(0.18, 0.12);
+    world.hitstop(0.05);
+  };
+  return { get, around, enter, impact };
+}
+
+function splitDamage(total, count) {
+  const base = Math.floor(total / count);
+  return Array.from({ length: count }, (_, i) => base + (i < total - base * count ? 1 : 0));
+}
+
 // COREOGRAFIAS PRÓPRIAS DAS LIGAÇÕES (link.choreo). Recebem a cena e devolvem o instante do golpe final.
 const CHOREO = {
+  forca_d({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 5.2 });
+    const kaiser = tools.get('kaiser'), joui = tools.get('joui'), arthur = tools.get('arthur');
+    const shares = splitDamage(crewTotal, 3);
+    const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
+    const END = S + 5.2;
+
+    if (kaiser) {
+      tl.add(S, () => {
+        if (!live()) return;
+        tools.enter(kaiser, -1.7, 5);
+        kaiser.play('breath', 0.85);
+        world.cameraRig.playShots([{ ...faceClose(kaiser, { dur: 1.15, from: 2.8, to: 1.35, height: 1.65, fov: 34 }), cut: true }]);
+        world.audio.play('carga', { pitch: 0.8 });
+      });
+      tl.add(S + 0.42, () => {
+        if (!live()) return;
+        world.showBanner('CINERÁRIA', 0xa46bff);
+        world.fx.flash(head(kaiser), { color: 0xa46bff, size: 0.65, life: 0.3 });
+        world.fx.burst(head(kaiser), { count: 18, color: 0xa46bff, speed: 1.2, life: 0.5, size: 0.12 });
+      });
+      tl.add(S + 0.82, () => {
+        if (!live()) return;
+        world.fx.burst(head(kaiser), { count: 28, color: 0x777184, speed: 2.4, spread: 1.2, life: 0.8, size: 0.19 });
+        world.fx.distort(opp.chestPos(), { color: 0x817097, radius: 2.2, life: 0.65 });
+        tools.impact(kaiser, shares[0], { sound: 'impact', color: 0xa46bff });
+      });
+    }
+
+    if (joui) {
+      tl.add(S + 1.55, () => {
+        if (!live()) return;
+        const at = findSpotBehind(world.arena, { x: opp.pos.x, z: opp.pos.z, yaw: opp.yaw }, { distance: 1.35, radius: 0.5 })
+          || tools.around(joui, Math.PI, 1.5);
+        joui.show(END - (S + 1.55), at);
+        joui.pos.set(at.x, 0, at.z);
+        joui.face(opp);
+        joui.play('iai_slash', 0.5);
+        world.cameraRig.playShots([{ ...twoShot(joui, opp, { dur: 0.8, dist: 2.4, height: 1.45, fov: 36 }), cut: true }]);
+        world.fx.shadowDisc(new THREE.Vector3(at.x, 0, at.z), { radius: 0.9, life: 0.35, rim: 0x8f4cff });
+      });
+      tl.add(S + 1.83, () => {
+        if (!live()) return;
+        tools.impact(joui, shares[1], { sound: 'slashFinal', color: 0x8f4cff, slash: true });
+        const wound = opp.chestPos();
+        world.fx.slash(wound, joui.yaw + 0.5, { color: 0xd7b5ff, radius: 1.05, arc: 2.3, life: 0.32, width: 0.25, roll: 0.9 });
+        world.fx.slash(wound, joui.yaw - 0.5, { color: 0x6a2fe0, radius: 0.85, arc: 2.1, life: 0.28, width: 0.2, roll: -0.8 });
+      });
+    }
+
+    if (arthur) {
+      let start = null;
+      const target = tools.around(arthur, 0.4, 1.5);
+      const runStart = S + 2.65, runEnd = S + 3.25;
+      tl.add(runStart, () => {
+        if (!live()) return;
+        const at = tools.around(arthur, Math.PI, 7);
+        arthur.show(END - runStart, at);
+        arthur.pos.set(at.x, 0, at.z);
+        arthur.face(opp);
+        arthur.play('run', 0.7);
+        start = arthur.pos.clone();
+        world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.7, back: 2.1, side: 0.5, height: 1.7, fov: 42 }), cut: true }]);
+        world.fx.burst(start.clone().lerp(new THREE.Vector3(target.x, 0, target.z), 0.5), {
+          count: 26, color: 0x777184, speed: 2, spread: 1.5, life: 0.75, size: 0.18,
+        });
+      });
+      tl.each((time) => {
+        if (!start || time < runStart || time > runEnd || !live()) return;
+        const t = smooth((time - runStart) / (runEnd - runStart));
+        arthur.pos.set(
+          start.x + (target.x - start.x) * t,
+          0,
+          start.z + (target.z - start.z) * t,
+        );
+        arthur.face(opp);
+      });
+      tl.add(runEnd, () => {
+        if (!live()) return;
+        arthur.play('slash_finisher', 0.5);
+        world.fx.burst(arthur.chest(), { count: 16, color: 0xb5162a, speed: 2.5, life: 0.4, size: 0.15 });
+        tools.impact(arthur, shares[2], { sound: 'slashFinal', color: 0xb5162a, slash: true });
+      });
+    }
+
+    const F = S + 5.2;
+    tl.add(F - 0.45, () => {
+      if (!live()) return;
+      [kaiser, joui, arthur].forEach((actor, i) => {
+        if (!actor) return;
+        const at = tools.around(actor, (i - 1) * 0.85, 2.3);
+        actor.pos.set(at.x, 0, at.z);
+        actor.face(opp);
+      });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.7, radius: 4, height: 1.8, a0: -0.6, a1: 0.6 }), cut: true }]);
+    });
+    return F;
+  },
+
+  os_cinco({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
+    const END = S + 5.8;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const morato = tools.get('morato'), chico = tools.get('chico'), xande = tools.get('xande');
+    const lirio = tools.get('lirio'), guizo = tools.get('guizo'), dara = tools.get('dara');
+    const actors = [morato, chico, xande, lirio, guizo, dara].filter(Boolean);
+    const shares = splitDamage(crewTotal, actors.length || 1);
+    const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
+
+    if (morato) {
+      let start = null;
+      const target = tools.around(morato, -1.0, 2.4);
+      const walkStart = S + 0.24, walkEnd = S + 1.0;
+      tl.add(S, () => {
+        if (!live()) return;
+        tools.enter(morato, -1.8, 6);
+        morato.play('point', 0.65);
+        world.cameraRig.playShots([{ ...lowAngle(morato, { dur: 0.65, dist: 2.5, side: 0.8, fov: 44 }), cut: true }]);
+      });
+      tl.add(walkStart, () => {
+        if (!live()) return;
+        start = morato.pos.clone();
+        morato.play('run', walkEnd - walkStart);
+      });
+      tl.each((time) => {
+        if (!start || time < walkStart || time > walkEnd || !live()) return;
+        const t = smooth((time - walkStart) / (walkEnd - walkStart));
+        morato.pos.set(start.x + (target.x - start.x) * t, 0, start.z + (target.z - start.z) * t);
+        morato.face(opp);
+      });
+      const bullets = splitDamage(damageOf(morato), 3);
+      [0.4, 0.65, 0.9].forEach((offset, i) => {
+        tl.add(S + offset, () => {
+          if (!live()) return;
+          morato.play('shoot_rifle', 0.38);
+          world.fx.tracer(morato.chest(), opp.chestPos(), { color: 0x7f9a52, life: 0.18, width: 0.07 });
+          tools.impact(morato, bullets[i], { sound: 'sniper', color: 0x7f9a52 });
+        });
+      });
+    }
+
+    if (chico) {
+      tl.add(S + 1.15, () => {
+        if (!live()) return;
+        tools.enter(chico, -0.9, 4.5);
+        chico.play('point', 0.55);
+        world.cameraRig.playShots([{ ...twoShot(chico, opp, { dur: 0.65, dist: 3, height: 1.5, fov: 42 }), cut: true }]);
+        world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x2ab8c8, radius: 1.2, life: 0.45 });
+      });
+      tl.add(S + 1.52, () => {
+        if (!live()) return;
+        world.fx.flash(opp.chestPos(), { color: 0xf3dc9b, size: 2.1, life: 0.22 });
+        tools.impact(chico, damageOf(chico), { sound: 'impact', color: 0x2ab8c8 });
+      });
+    }
+
+    if (xande) {
+      const startAt = tools.around(xande, Math.PI, 6);
+      const targetAt = tools.around(xande, 0.5, 1.5);
+      const skateStart = S + 2.05, skateEnd = S + 2.37;
+      let start = null;
+      tl.add(skateStart, () => {
+        if (!live()) return;
+        xande.show(END - (S + 2.05), startAt);
+        xande.pos.set(startAt.x, 0, startAt.z);
+        xande.face(opp);
+        xande.play('skate_ride', 0.6);
+        start = xande.pos.clone();
+        world.fx.tracer(xande.chest(), opp.chestPos(), { color: 0x5aff6a, life: 0.38, width: 0.12 });
+      });
+      tl.each((time) => {
+        if (!start || time < skateStart || time > skateEnd || !live()) return;
+        const t = smooth((time - skateStart) / (skateEnd - skateStart));
+        xande.pos.set(start.x + (targetAt.x - start.x) * t, 0, start.z + (targetAt.z - start.z) * t);
+        xande.face(opp);
+      });
+      tl.add(S + 2.37, () => {
+        if (!live()) return;
+        xande.pos.set(targetAt.x, 0, targetAt.z);
+        xande.face(opp);
+        xande.play('slash_v', 0.48);
+        tools.impact(xande, damageOf(xande), { sound: 'heavyPunch', color: 0xf2c230, slash: true });
+      });
+    }
+
+    if (lirio) {
+      tl.add(S + 2.95, () => {
+        if (!live()) return;
+        tools.enter(lirio, 1.2, 2.5);
+        lirio.play('hammer_charge', 0.65);
+        world.cameraRig.playShots([{ ...lowAngle(lirio, { dur: 0.65, dist: 2.3, side: -0.7, fov: 43 }), cut: true }]);
+        world.fx.ring(opp.pos.clone().setY(0.08), { color: 0xa51528, radius: 1.7, life: 0.8 });
+        world.fx.tracer(lirio.chest(), opp.chestPos(), { color: 0xa51528, life: 0.5, width: 0.16 });
+      });
+      tl.add(S + 3.43, () => {
+        if (!live()) return;
+        lirio.play('hammer_heavy', 0.55);
+        tools.impact(lirio, damageOf(lirio), { sound: 'slashFinal', color: 0xd8c8a0 });
+      });
+    }
+
+    if (guizo) {
+      tl.add(S + 3.78, () => {
+        if (!live()) return;
+        tools.enter(guizo, 2.0, 3);
+        guizo.play('point', 0.55);
+        world.cameraRig.playShots([{ ...overShoulder(guizo, opp, { dur: 0.55, back: 1.8, side: 0.4, height: 1.65, fov: 42 }), cut: true }]);
+        world.fx.flash(guizo.chest(), { color: 0x9a9a96, size: 0.55, life: 0.2 });
+      });
+      tl.add(S + 4.12, () => {
+        if (!live()) return;
+        guizo.play('slash_h', 0.4);
+        tools.impact(guizo, damageOf(guizo), { sound: 'bladeHit', color: 0x9a9a96, slash: true });
+      });
+    }
+
+    if (dara) {
+      tl.add(S + 4.55, () => {
+        if (!live()) return;
+        tools.enter(dara, -2.0, 2.4);
+        dara.play('point', 0.55);
+        world.cameraRig.playShots([{ ...twoShot(dara, opp, { dur: 0.55, dist: 2.8, height: 1.45, fov: 40 }), cut: true }]);
+        world.fx.flash(opp.chestPos(), { color: 0x8bf5ff, size: 1.8, life: 0.25 });
+      });
+      tl.add(S + 4.88, () => {
+        if (!live()) return;
+        dara.play('heavy_punch', 0.4);
+        tools.impact(dara, damageOf(dara), { sound: 'heavyPunch', color: 0x8bf5ff });
+      });
+    }
+
+    const F = END;
+    tl.add(F - 0.5, () => {
+      if (!live()) return;
+      actors.forEach((actor, i) => {
+        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.5, 2.4);
+        actor.pos.set(at.x, 0, at.z);
+        actor.face(opp);
+      });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.8, radius: 4, height: 1.8, a0: -0.8, a1: 0.8 }), cut: true }]);
+    });
+    return F;
+  },
+
+  abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
+    const END = S + 4.8;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const dante = tools.get('dante'), balu = tools.get('balu'), joui = tools.get('joui'), arthur = tools.get('arthur');
+    const actors = [dante, balu, joui, arthur].filter(Boolean);
+    const shares = splitDamage(crewTotal, actors.length || 1);
+    const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
+
+    if (dante) {
+      tl.add(S, () => {
+        if (!live()) return;
+        tools.enter(dante, -1.7, 4.5);
+        dante.play('taunt_roar', 0.65);
+        world.cameraRig.playShots([{ ...lowAngle(dante, { dur: 0.7, dist: 2.4, fov: 44 }), cut: true }]);
+        world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x392d45, radius: 1.6, life: 0.6 });
+      });
+      tl.add(S + 0.52, () => {
+        if (!live()) return;
+        world.fx.burst(opp.chestPos(), { count: 22, color: 0x2a202e, speed: 2.8, spread: 1.3, life: 0.65, size: 0.18 });
+        tools.impact(dante, damageOf(dante), { sound: 'drain', color: 0x392d45 });
+      });
+    }
+
+    if (balu) {
+      tl.add(S + 1.05, () => {
+        if (!live()) return;
+        tools.enter(balu, 0.5, 2.8);
+        balu.play('hammer_charge', 0.65);
+        world.cameraRig.playShots([{ ...twoShot(balu, opp, { dur: 0.75, dist: 2.8, height: 1.5, fov: 40 }), cut: true }]);
+      });
+      tl.add(S + 1.62, () => {
+        if (!live()) return;
+        balu.play('hammer_diag', 0.48);
+        tools.impact(balu, damageOf(balu), { sound: 'axeHit', color: 0xb8b3c2, slash: true });
+      });
+    }
+
+    if (joui) {
+      tl.add(S + 2.1, () => {
+        if (!live()) return;
+        const at = findSpotBehind(world.arena, { x: opp.pos.x, z: opp.pos.z, yaw: opp.yaw }, { distance: 1.3, radius: 0.5 })
+          || tools.around(joui, Math.PI, 1.4);
+        joui.show(END - (S + 2.1), at);
+        joui.pos.set(at.x, 0, at.z);
+        joui.face(opp);
+        joui.play('iai_slash', 0.5);
+        world.cameraRig.playShots([{ ...twoShot(joui, opp, { dur: 0.7, dist: 2.4, height: 1.45, fov: 36 }), cut: true }]);
+      });
+      tl.add(S + 2.38, () => {
+        if (!live()) return;
+        tools.impact(joui, damageOf(joui), { sound: 'slashFinal', color: 0x9a94ae, slash: true });
+      });
+    }
+
+    if (arthur) {
+      let start = null;
+      const target = tools.around(arthur, -0.5, 1.4);
+      const runStart = S + 2.85, runEnd = S + 3.55;
+      tl.add(runStart, () => {
+        if (!live()) return;
+        const at = tools.around(arthur, Math.PI, 6.5);
+        arthur.show(END - runStart, at);
+        arthur.pos.set(at.x, 0, at.z);
+        arthur.face(opp);
+        arthur.play('run', 0.75);
+        start = arthur.pos.clone();
+        world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.7, back: 2, side: 0.5, height: 1.7, fov: 42 }), cut: true }]);
+        world.fx.burst(start.clone().lerp(new THREE.Vector3(target.x, 0, target.z), 0.5), {
+          count: 24, color: 0x777184, speed: 2, spread: 1.4, life: 0.7, size: 0.18,
+        });
+      });
+      tl.each((time) => {
+        if (!start || time < runStart || time > runEnd || !live()) return;
+        const t = smooth((time - runStart) / (runEnd - runStart));
+        arthur.pos.set(start.x + (target.x - start.x) * t, 0, start.z + (target.z - start.z) * t);
+        arthur.face(opp);
+      });
+      tl.add(runEnd, () => {
+        if (!live()) return;
+        arthur.play('slash_finisher', 0.5);
+        world.fx.burst(arthur.chest(), { count: 18, color: 0xb5162a, speed: 2.5, life: 0.4, size: 0.15 });
+        tools.impact(arthur, damageOf(arthur), { sound: 'slashFinal', color: 0xb5162a, slash: true });
+      });
+    }
+
+    const F = END;
+    tl.add(F - 0.45, () => {
+      if (!live()) return;
+      actors.forEach((actor, i) => {
+        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.65, 2.4);
+        actor.pos.set(at.x, 0, at.z);
+        actor.face(opp);
+      });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.75, radius: 4, height: 1.8, a0: -0.7, a1: 0.7 }), cut: true }]);
+    });
+    return F;
+  },
+
   // EXECUÇÃO DOS MASCARADOS (pedido do dono, 2026-11-01): a Kemi (Fantasma) atira de longe, o X (Jae) surge atrás e
   // crava a faca, o ??? (Labirinto) carrega um raio de energia e solta, e o Dalmo e o Aguiar fecham juntos — o Dalmo nos
   // socos e o Aguiar cortando com o machado. O Juan (se estiver na equipe) abre a carne com o Descarnar no meio da dupla.
@@ -544,12 +945,12 @@ export function teamScene(f, world, TS) {
   const h0 = opp.health;
   let caught = false;
   let inScene = false;
-  let unmask = () => {};
+  let undoSceneProps = () => {};
   const formed = [];
   const cleanup = () => {
     for (const a of formed.splice(0)) a.revertEmpower();
-    unmask();
-    unmask = () => {};
+    undoSceneProps();
+    undoSceneProps = () => {};
     for (const a of crew) if (a.active) a.leave();
     guests.forEach((g) => g.reset());
     if (f.teamGuests === guests) f.teamGuests = null;
@@ -600,7 +1001,12 @@ export function teamScene(f, world, TS) {
         if (want && !a.empowered && a.def.awakening && a.def.awakening.form === want) { a.empower(color); formed.push(a); }
       }
     }
-    unmask = wearMasks(link, [f, ...crew]);
+    const undoMasks = wearMasks(link, [f, ...crew]);
+    const undoProps = showSceneProps(link, [f, ...crew]);
+    undoSceneProps = () => {
+      undoProps();
+      undoMasks();
+    };
     // conta como o especial do líder (a sanidade do especial, a recarga e o uso na partida)
     f.spendEnergy(Math.min(f.energy, f.specialCost()));
     f.cooldowns.special = f.cooldownMax.special;

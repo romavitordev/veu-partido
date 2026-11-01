@@ -3,6 +3,7 @@ import { Timeline, yawTo, forwardFromYaw } from '../core/util.js';
 import { ABILITY_TYPES } from './abilities.js';
 import { applyHit } from './damage.js';
 import { part, glowMat } from '../models/rig.js';
+import { vehicleBlocked } from './vehicleCollision.js';
 
 // ------------------------------------------------------------------ CRISTOPHER "CRIS" COHEN (Ordo Realitas, OSNF)
 // DIREÇÃO AVANÇADA (wiki): "por ter feito vários filmes de ação, Cristopher tem um talento nato em dirigir e realizava
@@ -247,7 +248,7 @@ Object.assign(ABILITY_TYPES, {
           }
           // bateu numa parede: o carro capota numa nuvem de fumaça
           const nose = car.position.clone().addScaledVector(dir, 2.2).setY(0.6);
-          if (world.arena.blocksPoint(nose, 0.4) || travelled > total) {
+          if (vehicleBlocked(world.arena, a.vehicle, nose) || travelled > total) {
             world.fx.play('FX_EXPLOSION', car.position.clone().setY(0.8), { color: 0xffa040, scale: 1.4 });
             world.fx.burst(car.position.clone().setY(1), { count: 30, color: 0x3a3634, kind: 'smoke', speed: 3, up: 2, life: 1.2, size: 1.6, grow: 1 });
             world.audio.play('explosion', { volume: 0.8 });

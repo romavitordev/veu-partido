@@ -1,8 +1,13 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.7.0 (2026-11-01: Os Cinco completos — Chico e Morato, a Van dos Cinco; cenário Ilha de Tipora; fogueira pisável; Carniçal refeito sobre base CC0 e com o kit frio da Hipnose; Morato com as Magras; modelos refeitos; Palco com falas no centro inferior e a cena da Plateia; URL veu-partido). Antes: v4.6.0 Dara, v4.5.1 O Palco do Anfitrião. Antes: v4.4.0 O Carniçal, v4.3.0 Fiel ao Cânone, v4.2.0 Véu Partido.
+**Versão de referência atual:** v4.8.0 (2026-11-02: especiais de grupo da Força D e Os Cinco; primeira coreografia dos Abutres com o elenco existente; correção da Van dos Cinco em Tipora e dos comandos com uma assistência). Antes: v4.7.1 Transmissão nos Cinco, v4.7.0 Os Cinco completos.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
+
+## Nota de passagem — Copilot (v4.8.0)
+- Feito: especiais em equipe da Força D e de Os Cinco; primeira coreografia dos Abutres com o elenco atual; closes de impacto que mantêm atacante e alvo no quadro; Van dos Cinco em Tipora; comandos de assistência com um único parceiro.
+- Registrado para depois: jaqueta do Veríssimo na habilidade e na transformação. Carina e Rubens ainda não estão no elenco; a coreografia dos Abutres usa os membros disponíveis.
+- Teste visual no Treinamento em Equipe: Força D confirmada com o close enquadrando o grupo. Conferir também Os Cinco e Abutres em uma próxima rodada.
 
 ---
 
@@ -721,6 +726,9 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   mate"). INTELIGÊNCIA ESTRATÉGICA: no cânone ele dá a ORDEM aos aliados, que ganham um ataque extra — agora, além do
   corte extra (que passa para quem entrar em campo), na batalha em equipe as assistências ficam prontas na hora
   (testado: recarga 15 → 0). Sem loop: a ordem tem 18 s de recarga, o mesmo de uma assistência.
+  - [ ] **Jaqueta visível e transformação:** ao usar Jaqueta de Veríssimo, ele deve vestir a jaqueta e receber o buff da
+    habilidade; na transformação, veste uma versão ainda melhor, com o efeito visual persistindo até o fim da luta,
+    como a barba da Calamidade do Kian.
   - Diferenciar a esgrima disciplinada de Veríssimo da teatralidade de Arnaldo, apesar da mesma espada.
   - Inteligência Estratégica deve refletir comando e abertura tática.
   - Conferir Segredo de Veríssimo e Olhos Sempre Abertos com a fonte.
@@ -2022,21 +2030,16 @@ Confirmadas pelo pedido:
   `link.order` define quem entra antes. Testado com o Arnaldo e com o Veríssimo de líder (335 / 347).
 - Escriptas, outras duplas da Ordo Realitas e Portadores: o dono decidiu esperar ter mais personagens de cada equipe
   (2026-10-31).
-- [ ] **FORÇA D — coreografia melhor** (pedido do dono, 2026-11-01): 1) o KAISER conjura a CINERÁRIA no cenário (cânone:
-  acende o cigarro, os olhos acendem em roxo, sussurra "Cinerária" e a Névoa do Outro Lado sai entre os dentes) com
-  CLOSE NO ROSTO dele; 2) o JOUI aparece ATRÁS do alvo atacando com a espada, e as ESPIRAIS da espada parecem atacar
-  mais na ferida; 3) o ARTHUR surge CORRENDO no meio da névoa e ataca com a ARMA DE SANGUE.
-- [ ] **Equipe Abutres** (Calamidade): DANTE, CARINA, ARTHUR, JOUI, BALU e RUBENS (membros confirmados pelo dono,
-  2026-11-01). Faltam dois no elenco: **CARINA** e **RUBENS** (personagens novos: kit pela wiki, modelo, falas). Depois,
-  o especial de grupo dos Abutres com coreografia própria.
-- [ ] **OS CINCO — especial de grupo** (pedido do dono, 2026-11-01; o grupo está completo: Chico, Dara, Xande, Lírio,
-  Morato e Guizo). Coreografia: o MORATO dá a ordem e depois avança andando enquanto atira com a METRALHADORA; o CHICO
-  lança uma granada (conferido na wiki: granada NÃO está nos itens dele — o cânone dá o Scanner, as Joias e o Teclado
-  de Conexão Neural; decidir com o dono entre a granada como PROPOSTA ou o FAROL DA VAN/scanner, que são canon); o XANDE
-  vem de SKATE batendo com o TACO AMALDIÇOADO; o LÍRIO prende com as MAGRAS e bate com a LEONORA; o GUIZO grava com a
-  CÂMERA enquanto a DARA usa um ritual de paralisar (conferido na wiki: a Dara NÃO tem rituais — só Paramédico,
-  Eclético, Perito e Dedicação; decidir com o dono: PROPOSTA de ritual de paralisia, ou ela imobiliza o alvo com o
-  kit médico/lanterna UV).
+- [x] **FORÇA D — coreografia** (2026-11-02): Kaiser em close conjura a Cinerária e envolve a cena em névoa; Joui surge
+  atrás do alvo e as espirais da espada marcam o corte; Arthur atravessa a névoa correndo e ataca com a Arma de Sangue.
+  Efeitos visuais substituem cigarro/modelagem novos.
+- [~] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur (os quatro
+  disponíveis no elenco), usando lodo, machado, katana e Arma de Sangue. Carina e Rubens entram na cena quando seus
+  personagens forem adicionados; não foi criada modelagem nesta etapa.
+- [x] **OS CINCO — especial de grupo** (2026-11-02): Morato comanda e dispara a metralhadora; Chico combina pulso do
+  scanner e clarão do farol; Xande avança de skate com o taco; Lírio prende com as Magras e golpeia com a Leonora; Guizo
+  registra com a câmera e corta; Dara usa a lanterna UV e finaliza no corpo a corpo. Mantidos os itens e habilidades
+  canônicos, sem granada ou ritual inventado.
 - [x] **A Plateia** é só do ANFITRIÃO e do AMPHITRUO (o Amphitruo herda o kit do Anfitrião) — conferido em 2026-11-01.
 
 ### Fases

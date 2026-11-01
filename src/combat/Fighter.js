@@ -18,6 +18,7 @@ import './cristopherAbilities.js'; // e a do Cristopher (o carro de dublê)
 import './razielAbilities.js'; // e a do Raziel (Mordida e Maldição Sanguínea)
 import './danteAbilities.js'; // e as do Dante de Olhos Abertos (Paradoxo, Eco Espiral)
 import { SPECIALS } from './specials/index.js';
+import { resolveTeamActionSlots } from './teamInput.js';
 import { telegraphFor, startTelegraph, updateTelegraph, stopTelegraph, telegraphMissed, TELEGRAPH } from './specials/telegraph.js';
 import { hasPassive } from './passives.js';
 import { ELEMENTS } from '../config/elements.js';
@@ -689,12 +690,13 @@ export class Fighter {
     if (hostButtonGame) hostButtonGame.captureInput(this);
     this.bufferInputs();
 
-    // batalha em equipe: chamar assistência 1/2 (D-pad ◀/▶) ou TROCAR de personagem (analógico direito ◀/▶)
+    // batalha em equipe: com uma assistência, os dois ombros e os dois lados do analógico direito selecionam o único parceiro
     if (this.assists && !this.world.cinematic) {
-      if (this.input.pressed.assist1 && this.assists[0] && this.assists[0].call()) this.addTeamGauge(COMBAT.teamGauge.assist);
-      if (this.input.pressed.assist2 && this.assists[1] && this.assists[1].call()) this.addTeamGauge(COMBAT.teamGauge.assist);
-      if (this.input.pressed.switch1) this.trySwitch(0);
-      if (this.input.pressed.switch2) this.trySwitch(1);
+      const { assistSlots, switchSlots } = resolveTeamActionSlots(this.assists.length, this.input.pressed);
+      for (const slot of assistSlots) {
+        if (this.assists[slot] && this.assists[slot].call()) this.addTeamGauge(COMBAT.teamGauge.assist);
+      }
+      for (const slot of switchSlots) this.trySwitch(slot);
     }
 
     switch (this.state) {

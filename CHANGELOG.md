@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.8.0 — Especiais em Equipe
+
+### Adicionado
+- Força D: cena própria com Cinerária do Kaiser, corte de Joui pelas costas e avanço de Arthur com a Arma de Sangue.
+- Os Cinco: coreografia coletiva com ordem e metralhadora de Morato, scanner/farol de Chico, skate de Xande, Magras e Leonora de Lírio, câmera de Guizo e lanterna UV de Dara.
+- Abutres: primeira coreografia de grupo com Dante, Balu, Joui e Arthur; Carina e Rubens entram quando estiverem disponíveis no elenco.
+- Close nos impactos das coreografias: câmera mira atacante e alvo sem aproximar os golpes à distância.
+
+### Corrigido
+- Van dos Cinco: colisão na Ilha de Tipora agora permite atravessar objetos de cenário sem ultrapassar os limites da arena.
+- Com uma assistência, LB/RB chamam o mesmo parceiro e qualquer direção do analógico direito o seleciona; equipes com duas assistências mantêm os comandos separados.
+- Especial em equipe restaura armas e props temporários ao fim/cancelamento da cinemática.
+
+### Documentação
+- TODO registra o pedido da jaqueta visível na habilidade e na transformação de Veríssimo.
+
 ## v4.7.1 — Transmissão nos Cinco
 
 ### Alterado

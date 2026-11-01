@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.7.1';
+export const VERSION = '4.8.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.8.0',
+    date: '2026-11-02',
+    title: 'Especiais em Equipe',
+    items: [
+      'FORÇA D: Kaiser conjura a Cinerária, Joui ataca pelas costas e Arthur atravessa a névoa com a Arma de Sangue.',
+      'OS CINCO: Morato, Chico, Xande, Lírio, Guizo e Dara agora têm uma coreografia em equipe com suas armas e habilidades.',
+      'EQUIPE ABUTRES: especial próprio com Dante, Balu, Joui e Arthur; Carina e Rubens entram quando estiverem no elenco.',
+      'A Van dos Cinco agora atravessa os objetos da praça de Tipora sem ultrapassar os limites da arena.',
+      'Com uma assistência, os dois botões de assistência e as duas direções de troca chamam o mesmo parceiro.',
+    ],
+  },
   {
     v: '4.7.1',
     date: '2026-11-01',

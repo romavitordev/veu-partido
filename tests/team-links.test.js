@@ -19,6 +19,17 @@ test('team links identify Força D trio', () => {
   assert.equal(link.banner, 'Força D!');
 });
 
+test('team links identify Os Cinco and the available Abutres group', () => {
+  const five = getTeamLink(['morato', 'chico', 'xande']);
+  assert.equal(five.id, 'os_cinco');
+  assert.equal(five.choreo, 'os_cinco');
+
+  const abutres = getTeamLink(['dante', 'arthur', 'joui']);
+  assert.equal(abutres.id, 'abutres');
+  assert.equal(abutres.choreo, 'abutres');
+  assert.deepEqual(abutres.group, ['dante', 'carina', 'arthur', 'joui', 'balu', 'rubens']);
+});
+
 test('team links identify Cristopher and Kaiser duo', () => {
   const team = ['cristopher', 'kaiser', 'dante'];
   const link = getTeamLink(team);
