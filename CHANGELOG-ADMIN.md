@@ -2,7 +2,7 @@
 
 ## v4.5.0 — O Palco do Anfitrião
 
-- Versão: `VERSION` 4.4.0 → **4.5.0** (package.json/lock junto). Data: 2026-11-01.
+- Versão: `VERSION` 4.4.0 → **4.5.0** → **4.5.1** (provocações do narrador; package.json/lock junto). Data: 2026-11-01.
 - **Pedido do TODO (2026-10-31): "cenário O Palco do Anfitrião"**, dentro de "siga com o TODO, finalize tudo sem contar o Outro Lado". Feito: cenário, plateia que reage, narrador e eventos. Pendente (no TODO): poses da plateia por evento, vaia/grito, zoeira por personagem, close da Plateia, teste no celular.
 - **Testado:** `npm test`, `npm run check`; luta CPU × CPU no Palco sem erro no console (narrador, evento "só golpe físico" aplicado aos dois, plateia carregada); preview da seleção conferido.
 

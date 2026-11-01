@@ -7,6 +7,7 @@
 - glbArena: prefixo `CROWD_` (grupos da plateia, fora da junção por material e da transparência automática) e `arena.cheer(level, time)`.
 - `src/arena/palcoHost.js` (criado pelo Match só no `palco`): narrador na legenda (`config/palcoLines.js`), plateia por evento (encadeia `world.onHit/onKO/onTransform/onBattleDialogue`) e regras temporárias (buff `palcoRule`: `speedMult` 1,25, `takenMult` 1,25, `meleeOnly`; ou +30% de sanidade).
 - arena_lib.finalize: `CROWD_` fica de fora da junção.
+- 4.5.1: `PALCO_LINES.tease` (provocação a partir do 2º round) e `hostAudience` chama `world.arena.cheer(1, 3)`.
 
 ## v4.4.0 — O Carniçal
 

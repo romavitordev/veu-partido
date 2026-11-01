@@ -125,6 +125,12 @@ export class PalcoHost {
       this.critical.clear();
       this.eventAt = this.world.time + this.rand(...EVENT_EVERY);
       if (m.round === 1) this.say('start', null, null, true);
+      else {
+        // a partir do 2º round: provoca um dos dois (quem tem ligação com ele no cânone primeiro)
+        const fs = this.world.fighters;
+        const f = fs.find((x) => L.tease[x.def.id]) || fs[Math.floor(Math.random() * fs.length)];
+        this.say(L.tease[f.def.id] || L.tease.any, f, f.opponent, true);
+      }
     }
     for (const f of this.world.fighters) {
       if (f.state !== 'ko' && f.health / f.maxHealth < 0.2 && !this.critical.has(f)) {

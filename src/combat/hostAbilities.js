@@ -302,7 +302,11 @@ Object.assign(ABILITY_TYPES, {
       f.yaw = Math.atan2(cam.x - f.pos.x, cam.z - f.pos.z);
       f.anim.play('host_look', { restart: true, duration: 0.45 });
       tl.each(() => { f.yaw = Math.atan2(cam.x - f.pos.x, cam.z - f.pos.z); });
-      tl.add(0.45, () => { f.anim.play('host_bow', { restart: true, duration: 0.75 }); world.audio.play('applause', { volume: 0.8 }); });
+      tl.add(0.45, () => {
+        f.anim.play('host_bow', { restart: true, duration: 0.75 });
+        world.audio.play('applause', { volume: 0.8 });
+        world.arena.cheer && world.arena.cheer(1, 3); // no Palco do Anfitrião, a plateia de verdade se levanta
+      });
       tl.add(0.85, () => {
         world.audio.play('applause', { volume: 0.6 });
         const trail = world.fx.emitter({ rate: 20, follow: () => f.chestPos(), particle: { color: PINK, speed: 0.4, spread: 0.5, life: 0.4, size: 0.14 } });

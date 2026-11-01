@@ -6,6 +6,7 @@ Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 - Novo cenário: o Palco do Anfitrião, um coliseu roxo com a plateia cheia de Anfitriões.
 - O Anfitrião narra a luta e a plateia reage.
 - Regras novas no meio da luta, iguais para os dois lutadores.
+- 4.5.1: o Anfitrião provoca os lutadores a cada round e a plateia se levanta com a habilidade Plateia.
 
 ## v4.4.0 — O Carniçal
 - Novo lutador: o Carniçal (Outro Lado, Morte) — Garra da Morte, Investida Mortal, Salto, Pancada Poderosa, Hipnose Espiral e Comando.

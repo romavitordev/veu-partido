@@ -45,6 +45,29 @@ export const PALCO_LINES = {
     '{b} saiu de cena! Aplausos... ou não, tanto faz.',
     'E {a} sobra de pé! Que espetáculo!',
   ],
+  // a ZOEIRA: o Anfitrião provoca um dos lutadores na abertura (as ligações do cânone de hostLines.js; quem não tem
+  // ligação ganha a provocação geral)
+  tease: {
+    any: [
+      '{a}, que figurino corajoso. A plateia vai rir muito de você. Quer dizer, COM você.',
+      '{a}, você tem cara de quem cai no primeiro ato.',
+      'Palmas para {a}, que veio de tão longe só pra apanhar no meu palco!',
+    ],
+    arnaldo: ['Arnaldo! O meu velho figurino! Ainda tô com saudade do seu corpo, sabia?'],
+    gaius: ['Gaius! Como vão as costas? Ótimo, vão piorar.'],
+    celestine: ['Celestine, a campeã dos meus jogos! Vamos ver se ainda tem sorte.'],
+    magistrada: ['Ela! A única que pode me destronar! Plateia, VAIEM!'],
+    kian: ['O menino do orfanato! Cresceu! Ainda não conjura nada perto de mim?'],
+    dante: ['Dante, o estraga-prazeres do Jogo do Orfanato. Hoje não tem final feliz.'],
+    erin: ['Erin! Ela de novo no meu programa! A audiência ama quando ela explode.'],
+    verissimo: ['Veríssimo, o amigo do Arnaldo! Que reencontro emocionante. Pra mim.'],
+    o_diabo: ['Sócio! Nada pessoal. Na verdade é bem pessoal.'],
+    juan: ['O masoquista chegou! Plateia, ele GOSTA de apanhar!'],
+    anfitriao: ['Eu contra... alguém. Plateia, já sabem pra quem torcer.'],
+    amphitruo: ['Eu de toga! Que elegância a minha. Plateia, aplaudam a mim.'],
+    carnical: ['Uma criatura de Lodo no meu palco! Alguém limpa o chão depois.'],
+    amigo: ['O desenho da criança! Plateia, não olhem muito, mancha.'],
+  },
   // os EVENTOS do mapa: anúncio antes, efeito igual para os dois (palcoHost.js)
   event: {
     haste: ['REGRA NOVA: todo mundo mais rápido! Corram, corram!', 'Acelera! A plateia está entediada!'],
