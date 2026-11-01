@@ -4372,3 +4372,10 @@ Cada personagem deve possuir:
 E, principalmente:
 
 > **Nenhum buff, nerf ou valor de balanceamento deste TODO deve ser considerado definitivo antes da bateria de testes. Os dados de telemetria, partidas CPU × CPU e testes manuais devem determinar o balanceamento final.**
+
+- [x] **Nomes das Transformações com a cara do personagem** (pedido do dono, 2026-11-01: "gladiador paranormal e combate
+  perfeito não têm a cara do personagem; Kaiser transformado deveria ser Angel of the Night"): Kaiser **Angel of the
+  Night** (Combate Perfeito), Xande **Rei do Rolê** (Gladiador Paranormal), Balu **O Urso Acordou** (Resistência à Dor),
+  Lírio **A Fúria da Leonora** (Sangue de Ferro), Nubi **O Chacal Desperto** (Afinidade com a Morte). Os efeitos não
+  mudaram; o poder canônico fica no comentário. Os outros já tinham nome próprio (Olhos Sempre Abertos, Shi no Kage, O
+  Colosso, Em Nome do Caos, Tocado pela Coroa...).

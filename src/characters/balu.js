@@ -200,8 +200,8 @@ export default {
   // aguenta golpes sem recuar (até 2 guardados, um novo a cada 1,5 s), recupera um quarto da vida e bate mais forte; em
   // troca anda um pouco mais devagar.
   awakening: {
-    name: 'Resistência à Dor',
-    banner: 'Resistência à Dor',
+    name: 'O Urso Acordou', // o Balu é o urso; o poder é a Resistência à Dor do cânone
+    banner: 'O Urso Acordou',
     type: 'awakenMode',
     mult: 1.2, affects: ['melee'], takenMult: 0.55, armorEvery: 1.5, armorMax: 2, knockbackTakenMult: 0.4, speedMult: 0.92,
     aura: 'flame', color: 0xd04020, heal: 0.25,

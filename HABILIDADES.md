@@ -1,4 +1,4 @@
-# Habilidades — Arena Paranormal
+# Habilidades — Véu Partido
 
 > Gerado automaticamente a partir de `src/characters/` (`npm run moves`). Não edite à mão.
 
@@ -95,7 +95,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Teleporte das Sombras** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 5 s
   Afunda na própria sombra e emerge atrás do adversário, já podendo atacar. Não causa dano.
 - **Envelhecimento Localizado "Mateo"** — R2 + △ / RT + Y · custo 30 · cooldown 26 s
-  Recita o nome de Mateo e solta as cinzas sobre a ferida: o tempo corre só ali e ele recupera vida em instantes.
+  Recita o nome de Mateo e solta as cinzas sobre a ferida: o tempo corre só ali e ele recupera vida em instantes (a ferida fecha deixando a cicatriz em espiral).
 - **Olhar do Desespero** — △ + ○ / Y + B · custo 25 · cooldown 12 s · alcance 8 m
   Encara o adversário e libera uma manifestação de medo: quem estiver à frente fica paralisado por um instante, vulnerável a combo.
 - **Portal das Sombras** — △ + L2 / Y + LT · custo 22 · cooldown 11 s · dano 72 · alcance 14 m
@@ -152,7 +152,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Foto com Flash** — ranged+back · custo 15 · cooldown 12 s · alcance 9 m
   Ergue a câmera fotográfica, recua um passo e dispara o flash: quem estiver à frente e olhando para ele fica CEGO por 2 s (a guarda cai). De costas ou esquivando na hora, escapa.
 - **Sentir Através "Dendrobium"** — R2 + △ / RT + Y · custo 25 · cooldown 14 s · dano 45 · alcance 16 m
-  Raízes roxas e uma flor brotam do chão sob o alvo e o prendem por um instante.
+  Marca o alvo com o Símbolo da Emissão: raízes roxas e a flor de muitos olhos brotam sob ele — Kaiser o enxerga de perto e as raízes o prendem por um instante.
 - **Balas Amaldiçoadas** — R2 + × / RT + A · custo 25 · cooldown 11 s
   Saca a Desert Eagle e dispara três balas amaldiçoadas com Energia, que procuram o alvo.
 - **Granada "Nebulosa"** — △ + L2 / Y + LT · custo 20 · cooldown 16 s
@@ -160,7 +160,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Baforada Cinerária** — △ + □ / Y + X · custo 20 · cooldown 12 s
   Sopra uma nuvem de névoa à frente: engole projéteis inimigos, deixa o inimigo lento e sem regenerar energia dentro dela.
 - **Acácia** — △ + ○ / Y + B · custo 25 · cooldown 13 s · dano 70 · alcance 18 m
-  Dissipar Espíritos "Acácia": uma chuva de pequenas flores roxas cai sobre o alvo e machuca enquanto ele ficar na área.
+  Dissipar Espíritos "Acácia": uma chuva de pequenas flores roxas cai sobre o alvo e machuca enquanto ele ficar na área — 40% mais forte contra quem é de Energia.
 - **Passiva — Resistente:** −10% de dano físico recebido
 - **Passiva — Afinidade Elemental:** rituais +15%
 
@@ -168,7 +168,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 Solta a névoa e, dentro dela, conjura a **Acácia amplificada pela Cinerária** (250 de dano). Depois a névoa fica **parada no mapa** por 10 s; com o Kaiser dentro dela: +25% de dano, esquiva com 1.6× invulnerabilidade e metade do cooldown, corpo translúcido, área de 5 m onde o inimigo fica 20% mais lento, não regenera energia e os projéteis perdem 50% da velocidade. Custo 50 · cooldown 22 s.
 
-### Transformação: Combate Perfeito
+### Transformação: Angel of the Night
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano, +10% de velocidade, recargas 30% mais rápidas, cura 10% na hora.
 
@@ -352,7 +352,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: Resistência à Dor
+### Transformação: O Urso Acordou
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +20% de dano (físico), −45% de dano recebido, −8% de velocidade, aguenta 1 golpe sem reagir a cada 1.5 s, cura 25% na hora.
 
@@ -539,6 +539,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   O ritual do Leque da Fatalidade distorce o tempo em volta dele: por 6 s fica muito mais rápido, bate mais rápido, recupera as esquivas e deixa rastros dele no ar.
 - **Bloqueio Perfeito** — defender no instante exato (0.15 s) anula o dano e atordoa o atacante por 0.7 s
 - **Passiva — Desviar de Balas:** esquivar de um projétil não gasta carga
+- **Passiva — Resistente:** −7% de dano físico recebido
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
 - **Passiva:** o físico tira X de vida; o INIMIGO recupera Y (Y < X) e perde Y × 1.5 de sanidade (energia). O Injustiça não se cura.
 
 ### Especial: Injustiça né?
@@ -594,7 +596,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 250 de dano · custo 50 · cooldown 50 s.
 
-### Transformação: Afinidade com a Morte
+### Transformação: O Chacal Desperto
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (habilidades, especial, distância), recargas 40% mais rápidas, sanidade regenera +40%, cura 10% na hora.
 
@@ -642,7 +644,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: Gladiador Paranormal
+### Transformação: Rei do Rolê
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +20% de dano (físico), −10% de dano recebido, aguenta 1 golpe sem reagir a cada 4 s, cura 10% na hora.
 
@@ -738,7 +740,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: Sangue de Ferro
+### Transformação: A Fúria da Leonora
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +10% de dano, −25% de dano recebido, aguenta 1 golpe sem reagir a cada 3 s, cura 10% na hora.
 

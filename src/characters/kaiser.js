@@ -203,8 +203,8 @@ export default {
 
   // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Combate Perfeito — a névoa da Cinerária em volta e cada movimento no lugar certo. Até o fim do round.
   awakening: {
-    name: 'Combate Perfeito',
-    banner: 'Combate Perfeito',
+    name: 'Angel of the Night', // nome pedido pelo dono; o poder é o Combate Perfeito do cânone
+    banner: 'Angel of the Night',
     type: 'awakenMode',
     mult: 1.15, speedMult: 1.1, cdRate: 1.3, aura: 'smoke', color: 0xb8b4c0, heal: 0.1,
   },

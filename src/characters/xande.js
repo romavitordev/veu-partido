@@ -178,8 +178,8 @@ export default {
 
   // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Gladiador Paranormal — o caçador que aprendeu a lutar com o paranormal; aguenta golpes. Até o fim do round.
   awakening: {
-    name: 'Gladiador Paranormal',
-    banner: 'Gladiador Paranormal',
+    name: 'Rei do Rolê', // o skatista no auge; o poder é o Gladiador Paranormal do cânone
+    banner: 'Rei do Rolê',
     type: 'awakenMode',
     mult: 1.2, affects: ['melee'], takenMult: 0.9, armorEvery: 4, aura: 'flame', color: 0xd0102a, heal: 0.1,
   },

@@ -178,8 +178,8 @@ export default {
   // rápido para ela (a percepção de tempo distorcida, em versão de jogo) — o mesmo modelo, com os OLHOS TODOS PRETOS e o
   // Lodo escorrendo do rosto (face_nubi_open)
   awakening: {
-    name: 'Afinidade com a Morte',
-    banner: 'Afinidade com a Morte',
+    name: 'O Chacal Desperto', // a bengala de chacal; o poder é a Afinidade com a Morte do cânone
+    banner: 'O Chacal Desperto',
     type: 'awakenMode',
     mult: 1.15, affects: ['ability', 'special', 'ranged'], cdRate: 1.4, energyRegenMult: 1.4, aura: 'smoke', color: 0x5a5262, heal: 0.1,
     face: ['face_nubi', 'face_nubi_open'], eyeDrip: 0x0a080c,

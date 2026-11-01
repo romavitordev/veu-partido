@@ -204,8 +204,8 @@ export default {
 
   // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Sangue de Ferro e Casca Grossa — a raiva da Lírio vira uma muralha. Até o fim do round.
   awakening: {
-    name: 'Sangue de Ferro',
-    banner: 'Sangue de Ferro',
+    name: 'A Fúria da Leonora', // a marreta dela; o poder é o Sangue de Ferro do cânone
+    banner: 'A Fúria da Leonora',
     type: 'awakenMode',
     mult: 1.1, takenMult: 0.75, armorEvery: 3, aura: 'flame', color: 0xd8a040, heal: 0.1,
   },
