@@ -563,98 +563,98 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Separar mobilidade de sombra, corte físico e controle por medo em funções diferentes.
   - Testar troca de forma, modelo/arma, cancelamento de teleporte, distância máxima, ataques aéreos e retorno de round.
 
-- [ ] **3.3 Kaiser (`src/characters/kaiser.js`):**
+- [x] **3.3 Kaiser (`src/characters/kaiser.js`):** auditado em 2026-11-01 (wiki "Cesar Oliveira Cohen"): Acácia, Cinerária (névoa de 5 m, esquiva e rituais fortalecidos), Resistente, Afinidade Elemental e Combate Perfeito batem com o cânone. Feito: **Acácia +40% contra quem é de Energia** ("grande dano em entidades de Energia" — `vsElement` no `flowerRain`); **Dendrobium** marcado como proposta (no cânone compartilha a visão; no jogo marca e prende). Foto com Flash, Granada Nebulosa e Balas Amaldiçoadas: equipamento/proposta, ok. Saque Rápido e Iniciativa Aprimorada sem efeito próprio (o jogo já troca de arma na hora).
   - Confirmar quais armas aparecem em cada fase e não alternar entre M4, Desert Eagle e karambit sem transição visual.
   - Separar disparo balístico, bala amaldiçoada e ritual de área. Cada um deve ter telegraph, alcance e resposta diferentes.
   - Verificar a fidelidade visual de Cinerária/névoa e Acácia, evitando que o efeito de Energia vire explosão roxa genérica.
   - Auditar a interação com Rejeitar Névoa do Kian: responder aos efeitos compatíveis sem anular todo o kit da Kaiser.
   - Testar munição, cadência, recarga/cooldown, bloqueio, projéteis simultâneos e câmera.
 
-- [ ] **3.4 Dante (`src/characters/dante.js`; forma `forms/dante_aberto.js`):**
+- [x] **3.4 Dante (`src/characters/dante.js`; forma `forms/dante_aberto.js`):** auditado em 2026-11-01 (wiki "Dante"): Decadenza, Paradiso, Rotura, Trinitá (e o aprimorado com troca de lugar), Eco Dolor, Paradoxo, Tentáculos de Lodo e a Invocação da Marionete têm nome e efeito pelo cânone, cada um com um tipo próprio (`decadence`, `agingHeal`, `shuffle`, `echoPain`, `paradox`, `lodoTentacles`, `marionette`). A forma Olhos Abertos ganha kit de Calamidade (Paradoxo, Eco Dolor, Trinitá Aprimorado), não só números. Sem mudanças. Fora do kit (não-combate): Terceiro Olho, Leitura Psíquica, Mergulho Mental, Brute, Fortalecimento Sensorial, Disparo de Energia.
   - Conferir nome e efeito de cada ritual por fase; evitar que Decadenza, Paradiso e Rotura sejam confundidos como “lodo que causa dano”.
   - Diferenciar debuff/doença, controle de espaço, cura e especial temporal por animação, som e resposta do adversário.
   - Verificar se Invocação: A Marionete pertence à versão/fase correta e se sua execução representa a fonte.
   - A forma Olhos Abertos deve ter kit coerente com a mudança de fase, não só multiplicadores de dano.
   - Testar duração de efeitos, cura, hitboxes dos tentáculos e leitura visual em cenários escuros.
 
-- [ ] **3.5 Erin Parker (`src/characters/erin.js`; forma `forms/erin_caos.js`):**
+- [x] **3.5 Erin Parker (`src/characters/erin.js`; forma `forms/erin_caos.js`):** auditado em 2026-11-01 (wiki "Erin Parker"): Bênção Maldita e Envelhecimento Localizado Discente "Black Hole" canônicos; granadas Supernova/Nebulosa/Luz e a escopeta são equipamento da série. Sem mudanças. Mira Certeira (dobro de dano no extremo) fica como possível passiva futura.
   - Conferir o efeito de cada granada e manter diferenças reais de área, tempo de detonação e contrajogo.
   - Distinguir Bênção Maldita (visão/previsão) da cura de Black Hole; não transformar ambos em projéteis de dano.
   - Verificar a forma Em Nome do Caos na cena de origem: mudança de postura, poder, visual e intenção.
   - Confirmar se o amuleto elétrico deve atuar como reação ao ser atingida.
   - Testar explosões perto de ambos os jogadores, autocolisão, bloqueio, esquiva e tempo de detonação.
 
-- [ ] **3.6 Aghata (`src/characters/aghata.js`):**
+- [x] **3.6 Aghata (`src/characters/aghata.js`):** auditado em 2026-11-01 (wiki "Agatha"): Passagem de Conhecimento, Descarnar, Passagem de Conhecimento Expandido (Transformação), Leitura de Rituais e Amaldiçoar (Facas Amaldiçoadas — no cânone ela amaldiçoa balas com Sangue; no jogo a arma dela é a faca) batem. Sem mudanças.
   - Confirmar o que demonstra em cada campanha/fase e quais poderes pertencem à ficha de RPG.
   - Diferenciar leitura/análise de ritual, preparação de arma e dano direto.
   - Verificar se Passagem de Conhecimento muda uma condição do combate ou só causa dano; descrição, VFX e efeito devem coincidir.
   - Documentar qual habilidade se amplia na forma expandida.
   - Testar legibilidade de sigilos, custo de energia, interrupção e variedade de ataques.
 
-- [ ] **3.7 Gal Sal (`src/characters/gal_sal.js`):**
+- [x] **3.7 Gal Sal (`src/characters/gal_sal.js`):** auditado em 2026-11-01 (wiki "Gal"): Controle Mental, Teletransporte (faíscas douradas), Velocidade Mortal, Ereshkigal e Desviar de Balas batem. Feito: passivas **Resistente** e **Precognição** (canônicas, faltavam). Bênção Maldita Discente e Sugada Mortal (não usada na série) ficam fora.
   - Confirmar se cada habilidade está ligada ao personagem, à arma Ereškigal ou a um ritual.
   - Verificar a regra especial de “cura invertida”: quem recupera vida, quem perde energia e se o HUD corresponde ao código.
   - Distinguir puxão, captura, controle mental e teletransporte.
   - Confirmar a forma Realizador do Destino e comportamento próprio além de atributos.
   - Testar correntes em alvos no ar, bloqueio, esquiva, limites de distância e cancelamento de captura.
 
-- [ ] **3.8 Nubi (`src/characters/nubi.js`):**
+- [x] **3.8 Nubi (`src/characters/nubi.js`):** auditado em 2026-11-01 (wiki "Nubi"): a página só lista Afinidade Elemental (Morte) — está no jogo (`elementalAffinity`). O resto do kit (Decadência, Lodo, Drenagem, bengala de chacal, Carniçal da Esfinge) é proposta coerente com o elemento e já marcada na ficha. Sem mudanças.
   - Conferir a cena da Mansão Leone e separar o ritual do Carniçal da Esfinge dos ataques comuns de lodo.
   - Verificar se Desvio Imperturbável comunica antecipação/percepção alterada, em vez de esquiva instantânea sem leitura.
   - Distinguir aprisionamento, drenagem, decadência e invocação em funções e animações.
   - Revisar a classificação elemental para não deduzir apenas pela cor do VFX.
   - Testar invocação, colisão da criatura, alcance da bengala e duração do lodo.
 
-- [ ] **3.9 Xande / Alexandre (`src/characters/xande.js`):**
+- [x] **3.9 Xande / Alexandre (`src/characters/xande.js`):** auditado em 2026-11-01 (wiki "Alexandre"): Amaldiçoar Arma, Polarização Caótica, Tela de Ruído, Velocidade Mortal e Cicatrização são rituais da ficha dele. Sem mudanças.
   - Conferir se o skate aparece como ferramenta de mobilidade e ataque de modo consistente, sem sumiço/teleporte sem animação.
   - Diferenciar Polarização Caótica de Tela de Ruído por função e efeito visual; confirmar elemento e ritual de cada um.
   - Verificar a passiva Gladiador Paranormal e adaptação da recuperação de recurso sem gerar energia infinita.
   - Confirmar coerência entre cicatrização, velocidade e ataques com o taco.
   - Testar trajetória do skate arremessado, retorno à mão, colisão, hitbox do taco e cancelamento aéreo.
 
-- [ ] **3.10 Guizo (`src/characters/guizo.js`; formas ET, bombado e velho):**
+- [x] **3.10 Guizo (`src/characters/guizo.js`; formas ET, bombado e velho):** auditado em 2026-11-01 (wiki "Guizo"): Decadência, Amaldiçoar Arma com Sangue, Velocidade Mortal, Embaralhar, Espirais da Perdição, Cicatrização, Invadir Mente (o tiro), Distorcer Aparência (as formas), Desacelerar Impacto (`slowImpact`) e Eu Já Sabia (`iKnewIt`) batem. Sem mudanças.
   - Confirmar o que cada forma representa na narrativa e não tratar ET, bombado e velho como simples skins se houver habilidades diferentes.
   - A câmera deve fazer parte da identidade visual/comportamental sem ocupar a mão da faca de modo impossível.
   - Verificar se Invadir Mente, Embaralhar e Espirais da Perdição têm efeitos distintos.
   - Se as formas bombado/velho multiplicam dano e reduzem cooldown, avaliar suficiência da variação sem inventar poderes sem fonte.
   - Testar troca de forma, escala, hitbox e animação da faca com a câmera.
 
-- [ ] **3.11 Lírio Tellini (`src/characters/lirio.js`):**
+- [~] **3.11 Lírio Tellini (`src/characters/lirio.js`):** conferido em 2026-11-01 só contra a ficha do jogo (a página da wiki não abriu pela API com esse nome): Leonora, Magras, Golpe Pesado, Cai Dentro e Proteção Pesada já têm comentário de fonte na ficha. Falta reler a wiki.
   - Confirmar a modelagem exata da Leonora e como as miniaturas amaldiçoadas aparecem durante os ataques.
   - Diferenciar proteção/absorção de dano de superarmadura: resistir sem ignorar todos os ataques.
   - Verificar se Amarras de Sangue controla o alvo com duração, escape e telegraph.
   - Compensar lentidão e curta distância com impacto real sem invulnerabilidade absoluta.
   - Testar empurrão, agarrões, ataques aéreos, superarmadura e proteção de aliado.
 
-- [ ] **3.12 Balu (`src/characters/balu.js`):**
+- [x] **3.12 Balu (`src/characters/balu.js`):** auditado em 2026-11-01 (wiki "Balu"): Amaldiçoar Arma com Sangue, 110%, Língua de Prata (Fala Imponente), Machado Demônio e o colete batem. Técnica Secreta, Saque Rápido e Derrubar e Atacar sem efeito próprio. Sem mudanças.
   - Conferir a transformação do machado: a arma comum deve virar a maça-estrela de sangue na habilidade correta.
   - Distinguir Fala Imponente (pressão/controle), 110% (esforço físico) e Colete (defesa balística).
   - Verificar custo em sangue/vida associado ao Machado Demônio se presente na fonte.
   - A personalidade protetora deve aparecer em postura, reação e defesa.
   - Testar armadura contra tiros, corpo a corpo, agarrões e visual antes/depois da maldição.
 
-- [ ] **3.13 Cristino (`src/characters/cristino.js`; forma `forms/cristino_desertor.js`):**
+- [~] **3.13 Cristino (`src/characters/cristino.js`; forma `forms/cristino_desertor.js`):** conferido em 2026-11-01 só contra a ficha do jogo (a página "Cristino" não abriu pela API): Peixeira, Socadeira, lampiões, Corda do Telhado e Decepar já têm fonte na ficha. Falta reler a wiki.
   - Conferir ordem de uso das armas: espingarda carregada pela boca tem ritmo diferente de arma moderna.
   - Diferenciar lampiões como controle/preparação de área em vez de simples granada.
   - Validar a corda e deslocamento em relação às cenas sem conceder teleporte não mostrado.
   - Verificar mudança de kit na forma Desertor e se o rifle altera o ritmo e a distância preferencial.
   - Testar munição/cooldown, explosão, corda, troca de forma e hitboxes da peixeira.
 
-- [ ] **3.14 Cristopher Cohen (`src/characters/cristopher.js`):**
+- [x] **3.14 Cristopher Cohen (`src/characters/cristopher.js`):** auditado em 2026-11-01 (wiki "Cristopher Cohen"): Experiência de Dublê (Levanta, Grandão!), Físico (A Muralha, pele grossa) e Direção Avançada (o carro) batem. Sem mudanças.
   - Confirmar movimentos de dublê/luta coreografada: quedas, rolamentos e agarrões legíveis.
   - A Muralha e Último Sacrifício devem ter função defensiva e protetora clara, não apenas dano alto.
   - Conferir relação entre Último Sacrifício e Kaiser (ataque conjunto, assistência ou cena independente).
   - Evitar transformar o personagem num tanque genérico sem as técnicas de dublê.
   - Testar agarrões, rolamentos, proteção, invulnerabilidade e especial conjunto.
 
-- [ ] **3.15 Dalmo Magno (`src/characters/dalmo.js`; forma `forms/colosso.js`):**
+- [x] **3.15 Dalmo Magno (`src/characters/dalmo.js`; forma `forms/colosso.js`):** auditado em 2026-11-01 (wiki "Dalmo Magno"): Golpes de Arena (`arenaBlows`) e Pressão Atmosférica (atordoa) batem. Sem mudanças.
   - Conferir velocidade menor compensada por alcance e impacto.
   - Golpes de Arena deve recompensar combate corpo a corpo sem gerar ataques infinitos.
   - A Glória Era Viciante precisa refletir a sede de arena de forma mecânica/narrativa coerente.
   - Na forma Colosso, confirmar escala, câmera, alcance e hitbox sem desalinhar colisão.
   - Testar agarrões, atropelamento, pressão e limites da arena.
 
-- [ ] **3.16 Jonas Aguiar (`src/characters/aguiar.js`; forma `forms/aguiar_mutilador.js`):**
+- [x] **3.16 Jonas Aguiar (`src/characters/aguiar.js`; forma `forms/aguiar_mutilador.js`):** auditado em 2026-11-01 (wiki "Jonas Aguiar"): Ataque Especial, Predador de Sangue e, com a máscara, Ataque Mutilador / Predador Perfeito (forma `aguiar_mutilador`) batem; armadilha de urso e os cães são do acampamento da série. Sem mudanças.
   - Distinguir Aguiar sem máscara do Mutilador Noturno; não misturar poderes entre as duas fases.
   - Confirmar o machado arremessado pela corda com trajetória legível e puxão evitável.
   - Armadilha de Urso e Cães de Caça devem controlar e pressionar o espaço com funções distintas.

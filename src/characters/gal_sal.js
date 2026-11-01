@@ -237,6 +237,10 @@ export default {
 
   passives: [
     { type: 'bulletDodge' }, // Desviar de Balas: esquivar de projéteis não gasta carga
+    // auditoria 3.7 (wiki "Gal"): Resistente (armadura natural contra dano físico) e, de Calamidade, Precognição (sente
+    // os arredores mesmo cego: não leva bônus pelas costas)
+    { type: 'resistant', kinds: ['melee'], mult: 0.93 },
+    { type: 'precognition' },
     // a cura que cobra sanidade NÃO é mais passiva (pedido do usuário): só vale com a Ereshkigal ativada
     { type: 'meleeDrain', energyRatio: 1.5, giveEnergyToAttacker: true, whileBuff: 'ereshkigal' },
   ],
