@@ -98,11 +98,13 @@ export default {
       ai: { when: 'far', min: 2.5 },
     },
     {
+      // PROPOSTA de jogo (auditoria 3.3): no cânone o Sentir Através compartilha a VISÃO (Absorção em si, Emissão no alvo —
+      // raízes roxas e uma flor de muitos olhos, invisível aos outros). Aqui a flor marca o alvo e as raízes o seguram.
       id: 'dendrobium',
       name: 'Sentir Através "Dendrobium"',
       input: 'block+carga', // R2 + △ / RT + Y
       type: 'rootTrap',
-      description: 'Raízes roxas e uma flor brotam do chão sob o alvo e o prendem por um instante.',
+      description: 'Marca o alvo com o Símbolo da Emissão: raízes roxas e a flor de muitos olhos brotam sob ele — Kaiser o enxerga de perto e as raízes o prendem por um instante.',
       energyCost: 25,
       cooldown: 14,
       range: 16,
@@ -164,7 +166,8 @@ export default {
       name: 'Acácia',
       input: 'carga+physical', // △ + ○ / Y + B
       type: 'flowerRain',
-      description: 'Dissipar Espíritos "Acácia": uma chuva de pequenas flores roxas cai sobre o alvo e machuca enquanto ele ficar na área.',
+      description: 'Dissipar Espíritos "Acácia": uma chuva de pequenas flores roxas cai sobre o alvo e machuca enquanto ele ficar na área — 40% mais forte contra quem é de Energia.',
+      vsElement: { energia: 1.4 }, // cânone: o ritual ofensivo é feito contra entidades de Energia (nos outros, menos eficaz)
       energyCost: 25,
       cooldown: 13,
       range: 18,

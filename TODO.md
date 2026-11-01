@@ -18,7 +18,7 @@
   - [ ] `public/ordo-realitas.ico` ficou sem uso (mantido); apagar quando quiser.
 - [x] **Menu no celular deitado não cabia** (pedido do dono, v4.2.0): duas colunas em tela baixa.
 - [x] **Fundo único dos personagens na seleção** (pedido do dono, v4.2.0): `portraits.js`, no lugar da cor da equipe.
-- [~] **v4.2.0 — ESPECIAL EM EQUIPE (notas do dono, 2026-11-01, jogando com Os Mascarados):** feito em
+- [x] **v4.2.0 — ESPECIAL EM EQUIPE (notas do dono, 2026-11-01, jogando com Os Mascarados):** feito em
   2026-11-01 (`combat/teamSpecials.js teamScene`), falta só a máscara da Kemi. Testado: Mascarados (5 membros + Dalmo),
   dupla Cristopher + Kaiser, Força D, equipe sem ligação — 385 a 425 de dano, sem erro; errou (alvo invulnerável) → acaba
   em 0,9 s sem gastar o especial do líder.
@@ -52,8 +52,8 @@
         Dalmo. O especial em equipe tem que ser uma cena em que todos golpeiam em conjunto, um ajudando o outro a derrotar
         o adversário (cada um com o seu golpe, em sequência e ao mesmo tempo), não o especial de um só.
   - [x] **Câmera com ênfase:** close em quem está atacando naquele momento (troca de plano a cada golpe de cada membro).
-  - [~] **Os Mascarados vestem as máscaras** (`link.masks`: Dalmo o capacete, Aguiar a máscara, Jae o capuz do X,
-        Labirinto o elmo, Juan o capuz; **falta a Kemi** — o modelo não tem máscara: modelar) no momento do especial em equipe (e o mesmo cuidado com o visual de cada
+  - [x] **Os Mascarados vestem as máscaras** (`link.masks`: Dalmo o capacete, Aguiar a máscara, Jae o capuz do X,
+        Labirinto o elmo, Juan o capuz; a Kemi entra como **Fantasma** — a forma é a máscara dela, decisão do dono 2026-11-01) no momento do especial em equipe (e o mesmo cuidado com o visual de cada
         equipe: roupas/armas/formas próprias da cena).
   - [x] **Textos na tela organizados** (nome da equipe → retratos → a fala do líder no golpe final, um de cada vez): hoje "OS MASCARADOS", a fala ("Aí sim, neném") e as imagens deles aparecem todos ao
         mesmo tempo e se sobrepõem. Dar uma sequência: 1º o nome da equipe, depois os retratos, depois as falas, cada um

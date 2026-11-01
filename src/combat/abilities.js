@@ -1036,7 +1036,9 @@ Object.assign(ABILITY_TYPES, {
           world.after(0.15 + i * a.interval, () => {
             if (opp.state === 'ko' || distXZ(opp.pos, center) > a.radius + opp.radius) return;
             applyHit(world, f, opp, {
-              damage: a.damage / a.hits, kind: 'ability', knockback: 0.6, hitstun: 0.28, sound: 'clawHit',
+              // a.vsElement (Kaiser — Acácia, cânone: "grande dano em entidades formadas pelo Elemento de Energia"): o dano
+              // multiplica contra quem é daquele elemento
+              damage: (a.damage / a.hits) * ((a.vsElement && a.vsElement[opp.def.element]) || 1), kind: 'ability', knockback: 0.6, hitstun: 0.28, sound: 'clawHit',
               // com o aviso (Amalia), as flechas vêm de quem atirou: de frente para ela, a defesa segura
               color: a.color, scale: 0.8, dir: warn ? undefined : new THREE.Vector3().subVectors(opp.pos, center).setY(0).normalize(), hitstop: 0.03,
             });
