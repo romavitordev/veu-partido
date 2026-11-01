@@ -5,7 +5,7 @@
 // Do cânone (RPG): Paramédico (cura um aliado), Eclético e Perito (testes de perícia), Dedicação (+PE).
 // PROPOSTA de jogo (marcada): ela luta nos punhos (não tem arma no cânone), a lanterna UV cega, a bolsa vira o especial e
 // a Transformação "Ninguém Fica Pra Trás" (o luto dos Cinco pelo Voytek) — nada disso é cena da série.
-// Elemento: Medo (neutro), como o Veríssimo — ela não tem afinidade.
+// Elemento: Transmissão (a classificação anterior como Medo neutro estava errada).
 import kian from './kian.js';
 
 const CYAN = 0x2ab8c8;
@@ -21,7 +21,7 @@ export default {
   model: 'dara',
   color: '#2ab8c8',
   origin: 'Os Cinco',
-  element: 'medo',
+  element: 'transmissao',
   energyColor: CYAN,
   info: {
     weapon: 'Os punhos, a lanterna UV e a bolsa enorme de primeiros socorros',

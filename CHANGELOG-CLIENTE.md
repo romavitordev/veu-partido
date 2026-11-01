@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.7.1 — Transmissão nos Cinco
+- Elemento da Dara corrigido para Transmissão; agora aparece assim na luta, nos filtros e no elenco da página Sobre.
+- Página Sobre com retratos novos de Dara, Chico, Morato e Carniçal.
+
 ## v4.7.0 — Os Cinco Completos
 - Novos lutadores: Chico, o técnico (farol da van, scanner de Energia, remendo na fita) e Morato, o líder (metralhadora, "Tamo com Ele" e a Larva da Fúria).
 - Carniçal refeito: anatomia de verdade coberta de Lodo, crânio com o cérebro à mostra e a mandíbula de Lodo.

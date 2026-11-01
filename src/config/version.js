@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.7.0';
+export const VERSION = '4.7.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.7.1',
+    date: '2026-11-01',
+    title: 'Transmissão nos Cinco',
+    items: [
+      'DARA É DE TRANSMISSÃO: o elemento correto agora aparece na luta, nos filtros e no elenco da página Sobre.',
+      'Página Sobre: novos retratos de Dara, Chico, Morato e Carniçal, gerados com os modelos atuais do jogo.',
+    ],
+  },
   {
     v: '4.7.0',
     date: '2026-11-01',

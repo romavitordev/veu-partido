@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.7.1 — Transmissão nos Cinco
+
+- Versão: `VERSION` 4.7.0 → **4.7.1** (`package.json`/lock junto). Data: 2026-11-01.
+- **Correção de elemento:** Dara passa de Medo para Transmissão conforme a correção canônica do dono. Conferidos os demais personagens com origem Os Cinco: nenhum outro usa Transmissão como elemento-base; a forma ET do Guizo é de Conhecimento.
+- **Página Sobre:** `sobre.html` identifica Dara junto de O Estrangeiro e dos Alheios na Transmissão; o elenco e seus filtros seguem o elemento dos dados do jogo.
+- **Retratos:** geradas no jogo e convertidas para WebP as imagens de Dara, Chico, Morato e Carniçal em `public/sobre/elenco/`.
+
 ## v4.7.0 — Os Cinco Completos
 
 - Versão: `VERSION` 4.6.0 → **4.7.0** (package.json/lock junto). Data: 2026-11-01.

@@ -1,10 +1,10 @@
 # Padrão de qualidade — página SOBRE / BAIXAR (`sobre.html`)
 
-Status do checklist do padrão de qualidade de sites (Roma & Buganza) para esta página, em 2026-10-16 (v3.27.1).
+Status do checklist do padrão de qualidade de sites (Roma & Buganza) para esta página, reavaliado em 2026-11-01 (v4.7.1).
 `[x]` feito · `[~]` parcial · `[ ]` pendente · **N/A** não se aplica (com o motivo).
 
-Medido com Lighthouse 12 (modo celular, Edge headless) no build de produção: **Performance 99 · Acessibilidade 100 ·
-Boas práticas 100 · SEO 100** — LCP 1,7 s · CLS 0,059 · TBT 0 ms · FCP 0,9 s.
+As notas de Lighthouse abaixo de v3.27.1 são uma medição histórica e não representam esta versão. Reexecutar Lighthouse
+depois da atualização visual, especialmente Performance e Acessibilidade.
 
 ## 1. Design e referências
 - [x] Direção visual a partir de referências — ThoughtLab (Refero Styles), ver [DESIGN-SOBRE.md](DESIGN-SOBRE.md) e o README.
@@ -17,10 +17,11 @@ Boas práticas 100 · SEO 100** — LCP 1,7 s · CLS 0,059 · TBT 0 ms · FCP 0,
 - N/A Modelos 3D na página — usamos capturas reais do jogo (WebP), não o modelo.
 
 ## 2. Frontend
-- [x] Mobile first; conferido em 360, 768, 1280 e 1920 px, sem rolagem horizontal (a tabela de controles rola dentro dela).
-- [x] Áreas de toque ≥ 44 px (botões, links do menu, perguntas, "como instalar").
+- [x] Mobile first: hero com captura em largura total, ações empilhadas, navegação horizontal e conteúdo em uma coluna.
+- [x] Sem rolagem horizontal em viewports emulados de 320, 360 e 390 px; a tabela e as faixas de filtros têm rolagem local.
+- [x] Áreas de toque ≥ 44 px nos botões, navegação, filtros, perguntas e passos de instalação.
 - N/A Tema claro/escuro — a marca do jogo é escura (decisão registrada no DESIGN-SOBRE.md).
-- [x] CTA principal acima da dobra (no celular de 360 px termina em 541 de 780 px) e escolhido pelo aparelho de quem vê.
+- [x] CTAs e versão aparecem acima da dobra em viewports emulados de 320, 360 e 390 × 844 px; confirmar em aparelhos reais.
 - N/A WhatsApp, formulário e prova social de negócio — é um jogo grátis de fã, sem contato comercial. As "provas" são as
   telas reais do jogo ao lado de cada afirmação.
 - [x] Imagens WebP com `width`/`height`, `srcset` (480 px no celular), `loading="lazy"` abaixo da dobra e
@@ -48,13 +49,14 @@ Boas práticas 100 · SEO 100** — LCP 1,7 s · CLS 0,059 · TBT 0 ms · FCP 0,
 ## 5. Entrega
 - [x] README com a página e as referências visuais usadas.
 - [x] Textos e telas reais, sem placeholder (tamanhos dos downloads tirados da release v3.26.1).
-- [~] Testado em Chrome/Edge (preview e Lighthouse); falta conferir no Safari do iPhone e no Samsung Internet.
+- [~] Revisão visual local em desktop e celular (320, 360, 390, 768 e 1280 px); faltam Lighthouse atual e testes em aparelhos reais.
 - [x] Favicon e imagem de compartilhamento (`public/sobre/og.jpg`).
 - [x] Página 404 personalizada (`public/404.html`).
 - N/A Treinamento de painel — não há painel.
 
 ## Pendente
 - Search Console (conta do dono).
+- Lighthouse desta versão, especialmente Performance e Acessibilidade.
 - Teste em Safari (iOS) e Samsung Internet, em aparelho real.
 - Opcional: hospedar as fontes localmente para não depender do Google Fonts.
 - Opcional: traduzir a página (o jogo tem 13 idiomas; a página está só em pt-BR).

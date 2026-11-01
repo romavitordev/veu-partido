@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.7.1 — Transmissão nos Cinco
+
+### Alterado
+- Dara: elemento corrigido de Medo para Transmissão; o elenco, as cores e os filtros usam o elemento registrado no roster.
+- `sobre.html`: Transmissão passa a listar Dara, além de O Estrangeiro e os Alheios.
+
+### Atualizado
+- Página Sobre: novos retratos em WebP para Dara, Chico, Morato e Carniçal, renderizados com os modelos atuais do jogo.
+
 ## v4.7.0 — Os Cinco Completos
 
 ### Adicionado

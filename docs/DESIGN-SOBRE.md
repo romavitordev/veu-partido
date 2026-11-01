@@ -16,9 +16,11 @@ Arena Paranormal e baixa a versão do aparelho dele — ou joga no navegador.
 - Fontes do próprio jogo: **Bebas Neue** (display, caixa alta) + **Inter** (leitura). A referência usa uma fonte só;
   aqui são duas para manter a identidade do jogo (o limite do padrão é 2 famílias).
 - O carmesim é o vermelho do jogo, escurecido para o texto branco passar no AA (≥ 4,5:1).
-- As cores dos ELEMENTOS (Sangue, Morte, Conhecimento, Energia, Medo) aparecem só como marcadores do elenco — são
+- As cores dos ELEMENTOS (Sangue, Morte, Conhecimento, Energia, Medo, Transmissão e Tinta) aparecem só como marcadores do elenco — são
   informação, não decoração.
 - Fotos reais do jogo ao lado de cada afirmação (luta, transformação, invocação, seleção), capturadas no próprio jogo.
+- No celular, a captura atual do jogo abre o hero em largura total; o título, a descrição curta e as ações vêm logo depois.
+  Navegação por seções em faixa horizontal, filtros deslizáveis e cartões de personagem compactos preservam os alvos de toque.
 
 ## Typography
 Display: Bebas Neue 400, `clamp(64px, 14vw, 176px)` no hero, line-height 0.9, letter-spacing .02em; títulos de seção

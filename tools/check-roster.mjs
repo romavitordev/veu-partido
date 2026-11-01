@@ -378,6 +378,9 @@ const lir = get('lirio');
 ok(lir && lir.origin === 'Os Cinco' && lir.melee.name === 'Leonora' && lir.stats.moveSpeed < Math.min(...BASE_ROSTER.filter((c) => c.id !== 'lirio').map((c) => c.stats.moveSpeed)), 'Lírio: Os Cinco, Leonora e o mais lento do elenco');
 ok(lir && ['heavyBlow', 'caiDentro', 'bloodBind', 'curseWeapon', 'heavyProtection'].every((t) => abil('lirio', t)) && ['ironBlood', 'thickSkin', 'heavyHand'].every((t) => pas('lirio', t)), 'Lírio: Golpe Pesado, Cai Dentro, Amarras de Sangue, Leonora Amaldiçoada, Proteção Pesada + Sangue de Ferro, Casca Grossa, Mão Pesada');
 ok(lir && lir.melee.ground && lir.melee.ground.otg && lir.melee.strikes.some((s) => s.armor) && lir.assistAuto && lir.grip.twoHand, 'Lírio: golpe no chão, resistência em golpes pesados, Cai Dentro automático na equipe e Leonora com as duas mãos');
+const dara = get('dara');
+ok(dara && dara.origin === 'Os Cinco' && dara.element === 'transmissao', 'Dara: elemento Transmissão');
+ok(ROSTER.filter((c) => c.origin === 'Os Cinco' && c.id !== 'dara').every((c) => c.element !== 'transmissao'), 'Os Cinco: nenhum outro elemento-base de Transmissão');
 
 // ---------------- V2.3: combos verticais ----------------
 ok(ROSTER.every((c) => c.melee.up && c.melee.up.launcher && c.melee.up.finisher === 'launchHigh'), 'todos com ↑ + ○ (lançador próprio)');

@@ -8,7 +8,7 @@ import { gfxProfile } from '../config/settings.js';
 // aproximando devagar. Os modelos só são montados depois que os .glb carregam (ready()).
 // um lutador de cada equipe (pedido do usuário): Os Cinco, Escriptas, Ordo Realitas no centro, Mascarados e Portadores
 const LINEUP = [
-  { id: 'xande', x: -3.3, z: -1.6, yaw: 0.55 }, // Os Cinco
+  { id: 'dara', x: -3.3, z: -1.6, yaw: 0.55 }, // Os Cinco
   { id: 'kian', x: -1.7, z: -0.6, yaw: 0.3 }, // Escriptas
   { id: 'arthur', x: 0, z: 0, yaw: 0 }, // Ordo Realitas
   { id: 'jae', x: 1.7, z: -0.6, yaw: -0.3 }, // Mascarados
@@ -27,7 +27,7 @@ export class TitleStage {
     this.built = false;
     // luz baixa de frente (silhuetas) + luz de ambiente roxa
     this.scene.add(new THREE.HemisphereLight(0x3a2a5a, 0x050308, 0.55));
-    const front = new THREE.DirectionalLight(0xb8a8ff, 0.6);
+    const front = new THREE.DirectionalLight(0xb8a8ff, 0.9);
     front.position.set(0, 2, 8);
     this.scene.add(front);
     // chão escuro + círculo ritual que brilha

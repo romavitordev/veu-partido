@@ -7,7 +7,7 @@ export const ELEMENTS = {
   energia: { name: 'Energia', color: '#a865ff' },
   medo: { name: 'Medo', color: '#f4f1ff' },
   // elementos dos Sinos de Tenebris (fora do ciclo: neutros contra os outros)
-  transmissao: { name: 'Transmissão', color: '#5aff6a' }, // o Estrangeiro e os Alheios (Sinais do Outro Lado)
+  transmissao: { name: 'Transmissão', color: '#5aff6a' }, // Dara, o Estrangeiro e os Alheios (Sinais do Outro Lado)
   tinta: { name: 'Tinta', color: '#8a5a2a' }, // o Amigo Imaginário (O Segredo na Ilha)
 };
 
