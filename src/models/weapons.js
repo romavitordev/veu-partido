@@ -1098,6 +1098,94 @@ export function machineGun() {
   return g;
 }
 
+// SUBMETRALHADORA DA DARA (wiki "Dara Alice Venturini", Arsenal: "submetralhadora personalizada de cor vermelha e azul,
+// com um chaveiro de um emoji sorrindo"): compacta, corpo vermelho com guarda-mão e coronha azuis, o carregador na
+// frente do cabo e o CHAVEIRO de carinha amarela pendurado atrás. Mesma orientação do m4 (cano para -Y a partir da mão;
+// +Z é o alto da arma)
+export function daraSmg() {
+  const g = new THREE.Group();
+  const red = 0xc8282e, blue = 0x2a5ad0, dark = 0x1c1c20;
+  const recv = part(new THREE.BoxGeometry(0.05, 0.26, 0.065), red);
+  recv.position.set(0, -0.07, 0.045);
+  g.add(recv);
+  const guard = part(new THREE.BoxGeometry(0.056, 0.12, 0.045), blue);
+  guard.position.set(0, -0.16, 0.035);
+  g.add(guard);
+  const stock = part(new THREE.BoxGeometry(0.03, 0.13, 0.05), blue);
+  stock.position.set(0, 0.12, 0.04);
+  g.add(stock);
+  const barrel = part(new THREE.CylinderGeometry(0.012, 0.012, 0.1, 8), dark);
+  barrel.position.set(0, -0.26, 0.05);
+  g.add(barrel);
+  const grip = part(new THREE.BoxGeometry(0.034, 0.045, 0.085), dark);
+  grip.position.set(0, 0.01, -0.02);
+  grip.rotation.x = -0.25;
+  g.add(grip);
+  const mag = part(new THREE.BoxGeometry(0.028, 0.035, 0.13), dark);
+  mag.position.set(0, -0.1, -0.04);
+  mag.rotation.x = 0.2;
+  g.add(mag);
+  // o chaveiro: argola, corrente curta e a carinha sorrindo (olhos e sorriso pretos virados para fora)
+  const ring = part(new THREE.TorusGeometry(0.012, 0.003, 5, 10), 0xb8b8c0, { outline: false });
+  ring.position.set(0.03, 0.04, 0.05);
+  ring.rotation.y = Math.PI / 2;
+  g.add(ring);
+  const face = part(new THREE.SphereGeometry(0.02, 12, 8), 0xffd21a);
+  face.position.set(0.036, 0.05, 0.012);
+  g.add(face);
+  const ink = toon(0x111111);
+  for (const s of [1, -1]) {
+    const eye = part(new THREE.SphereGeometry(0.0035, 6, 4), 0x111111, { outline: false, mat: ink });
+    eye.position.set(0.019, 0.006 * s, 0.006);
+    face.add(eye);
+  }
+  const smile = part(new THREE.TorusGeometry(0.009, 0.0022, 4, 10, Math.PI), 0x111111, { outline: false, mat: ink });
+  smile.position.set(0.0185, 0, -0.002);
+  smile.rotation.set(Math.PI, Math.PI / 2, 0);
+  face.add(smile);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.32, 0.05);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
+// MAC-10 DO CHICO (wiki "Francisco Albuquerque", Arsenal: "submetralhadora do modelo Mac 10 com um detalhe vermelho na
+// parte superior e dois fios coloridos ligando ela ao Chico"): a caixa preta curta, o carregador dentro do cabo, a alça
+// na frente e a faixa VERMELHA em cima. Os fios saem de userData.wire (props.js liga ao corpo). Orientação do m4
+export function mac10() {
+  const g = new THREE.Group();
+  const dark = 0x1c1c20, steel = 0x3a3d44;
+  const recv = part(new THREE.BoxGeometry(0.05, 0.2, 0.075), dark);
+  recv.position.set(0, -0.06, 0.04);
+  g.add(recv);
+  const top = part(new THREE.BoxGeometry(0.052, 0.13, 0.012), 0xd02828);
+  top.position.set(0, -0.06, 0.082);
+  g.add(top);
+  const barrel = part(new THREE.CylinderGeometry(0.011, 0.011, 0.07, 8), steel);
+  barrel.position.set(0, -0.19, 0.05);
+  g.add(barrel);
+  const grip = part(new THREE.BoxGeometry(0.032, 0.04, 0.15), dark);
+  grip.position.set(0, 0.0, -0.06);
+  g.add(grip);
+  const strap = part(new THREE.TorusGeometry(0.018, 0.004, 4, 8), steel, { outline: false });
+  strap.position.set(0, -0.15, 0.0);
+  strap.rotation.y = Math.PI / 2;
+  g.add(strap);
+  const stock = part(new THREE.CylinderGeometry(0.006, 0.006, 0.12, 5), steel);
+  stock.position.set(0, 0.1, 0.06);
+  g.add(stock);
+  const wire = new THREE.Object3D();
+  wire.position.set(0, 0.04, 0.04);
+  g.add(wire);
+  g.userData.wire = wire;
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.23, 0.05);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
 // MAGNUM: revólver grande (o .38 da Kemi) de cano longo, preto com cabo de madeira
 export function magnum() {
   const g = new THREE.Group();

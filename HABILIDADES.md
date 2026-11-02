@@ -748,7 +748,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ## DARA
 
-*A médica de campo dos Cinco, a faixa ciano e as meias de cores diferentes* · arma: Os punhos, a lanterna UV e a bolsa enorme de primeiros socorros
+*A médica de campo dos Cinco, a faixa ciano e as meias de cores diferentes* · arma: A submetralhadora vermelha e azul, os punhos, a lanterna UV e a bolsa enorme de primeiros socorros
 
 ### Físico (○ / B)
 
@@ -767,12 +767,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | ↑ + ○ (no combo) | Gancho | 48 | 1.9 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Soco no chão | 60 | 1.9 m | finalizador: derruba |
 
-### Principal (□ / X): Lanterna UV
+### Principal (□ / X): Submetralhadora
 
-- Dano undefined · alcance 8 m · cooldown 7 s · custo 10
+- Dano 8 × 5 · alcance 24 m · cooldown 2.6 s · custo 0
 
 ### Habilidades
 
+- **Lanterna UV** — △ + □ / Y + X · custo 10 · cooldown 7 s · alcance 8 m
+  Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai). De costas ou esquivando na hora, escapa.
 - **Paramédico** — △ + ○ / Y + B · custo 25 · cooldown 20 s
   Abre a bolsa e se remenda no meio da luta: recupera vida por 2 s. Apanhar no meio não cancela.
 - **Olho de Investigadora** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 14 m
@@ -793,7 +795,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ## CHICO
 
-*O técnico dos Cinco: óculos refletivos com gambiarra, fones no pescoço e o toca-discos na bolsa* · arma: Os punhos, a chave inglesa, o scanner de Energia e a van
+*O técnico dos Cinco: óculos refletivos com gambiarra, fones no pescoço e o toca-discos na bolsa* · arma: A Mac-10 dos fios coloridos, os punhos, a chave inglesa, o scanner de Energia e a van
 
 ### Físico (○ / B)
 
@@ -812,12 +814,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | ↑ + ○ (no combo) | Gancho | 57 | 1.9 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Martelada no chão | 70 | 1.9 m | finalizador: derruba |
 
-### Principal (□ / X): Pulso do Scanner
+### Principal (□ / X): Mac-10
 
-- Dano 42 · alcance 16 m · cooldown 2.6 s · custo 0
+- Dano 7 × 6 · alcance 24 m · cooldown 2.6 s · custo 0
 
 ### Habilidades
 
+- **Pulso do Scanner** — R2 + × / RT + A · custo 10 · cooldown 6 s
+  Aumenta o ganho do Scanner de Energia até a antena estourar: uma onda de Energia corre pelo chão e empurra quem pegar.
 - **Farol da Van** — △ + ○ / Y + B · custo 18 · cooldown 12 s · alcance 10 m
   Liga o farol da van na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,8 s.
 - **Scanner de Energia** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 14 m

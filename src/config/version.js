@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.10.0';
+export const VERSION = '4.11.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.11.0',
+    date: '2026-11-02',
+    title: 'Submetralhadoras dos Cinco',
+    items: [
+      'DARA: o □ é a submetralhadora vermelha e azul com o chaveiro de carinha sorrindo; a Lanterna UV foi para △ + □.',
+      'CHICO: o □ é a Mac-10 com o detalhe vermelho e os dois fios coloridos ligados a ele; o Pulso do Scanner foi para R2 + ×.',
+    ],
+  },
   {
     v: '4.10.0',
     date: '2026-11-02',

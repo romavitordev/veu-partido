@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.11.0 — Submetralhadoras dos Cinco
+- Dara atira com a submetralhadora vermelha e azul (□); a Lanterna UV agora é △ + □.
+- Chico atira com a Mac-10 dos fios coloridos (□); o Pulso do Scanner agora é R2 + ×.
+
 ## v4.10.0 — A Jaqueta de Veríssimo
 - Veríssimo veste a Jaqueta de Veríssimo (couro marrom, gola de pele branca) ao usar a habilidade.
 - No despertar, a jaqueta fica até o fim do round, com as costuras acesas no azul da Ordo.

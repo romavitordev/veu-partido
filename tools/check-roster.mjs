@@ -425,6 +425,15 @@ ok(lir && lir.melee.ground && lir.melee.ground.otg && lir.melee.strikes.some((s)
 const dara = get('dara');
 ok(dara && dara.origin === 'Os Cinco' && dara.element === 'transmissao', 'Dara: elemento Transmissão');
 ok(ROSTER.filter((c) => c.origin === 'Os Cinco' && c.id !== 'dara').every((c) => c.element !== 'transmissao'), 'Os Cinco: nenhum outro elemento-base de Transmissão');
+{
+  // as submetralhadoras do cânone (wiki, Arsenal de cada um) são o □; o que era □ virou habilidade
+  const chico = get('chico');
+  const smg = (c) => c.ranged.type === 'projectile' && c.ranged.showProp === 'smg' && c.ranged.visual === 'bullet' && c.ranged.count * c.ranged.damage <= 45;
+  ok(dara && smg(dara) && dara.abilities.some((a) => a.id === 'lanternaUV' && a.type === 'photoFlash' && a.input === 'carga+ranged'), 'Dara: □ Submetralhadora (rajada ≤ 45) e Lanterna UV no △ + □');
+  ok(chico && smg(chico) && chico.ranged.name === 'Mac-10' && chico.abilities.some((a) => a.id === 'pulsoScanner' && a.type === 'throwProjectile' && a.input === 'block+jump'), 'Chico: □ Mac-10 (rajada ≤ 45) e Pulso do Scanner no R2 + ×');
+  const inputs = (c) => c.abilities.map((a) => a.input);
+  ok([dara, chico].every((c) => new Set(inputs(c)).size === inputs(c).length), 'Dara e Chico: sem dois comandos iguais');
+}
 
 // ---------------- V2.3: combos verticais ----------------
 ok(ROSTER.every((c) => c.melee.up && c.melee.up.launcher && c.melee.up.finisher === 'launchHigh'), 'todos com ↑ + ○ (lançador próprio)');

@@ -3,8 +3,10 @@
 // improviso no manuseio de aparelhos". Na primeira cena ele acende o FAROL DA VAN no Rastejador Sombrio para ele não
 // fugir. Itens: o SCANNER DE MANIFESTAÇÃO PARANORMAL DE ENERGIA, as JOIAS DE ESCUDO MENTAL (Conhecimento: resistência
 // mental) e o TECLADO DE CONEXÃO NEURAL (glifos de Energia). Do RPG: Remendão, Engenhosidade, Nerd, Perito, Eclético.
-// PROPOSTA de jogo (marcada): luta nos punhos e com a chave inglesa do cinto (não tem arma no cânone), o □ é um pulso do
-// scanner, o especial é a Conexão Neural e a Transformação é a Engenhosidade.
+// ARMA do cânone (wiki, Arsenal): a MAC-10 com o detalhe vermelho em cima e os dois fios coloridos ligando a arma a ele.
+// É o □.
+// PROPOSTA de jogo (marcada): no corpo a corpo luta nos punhos e com a chave inglesa do cinto, o pulso do scanner
+// (R2 + ×), o especial é a Conexão Neural e a Transformação é a Engenhosidade.
 // Elemento: Energia (o scanner e o teclado são de Energia).
 import kian from './kian.js';
 
@@ -24,8 +26,8 @@ export default {
   element: 'energia',
   energyColor: YELLOW,
   info: {
-    weapon: 'Os punhos, a chave inglesa, o scanner de Energia e a van',
-    style: 'Improvisa com o que tiver: pulso do scanner de longe, o farol da van na cara e a mente blindada pelas joias',
+    weapon: 'A Mac-10 dos fios coloridos, os punhos, a chave inglesa, o scanner de Energia e a van',
+    style: 'Improvisa com o que tiver: a Mac-10 e o pulso do scanner de longe, o farol da van na cara e a mente blindada pelas joias',
     identity: 'O técnico dos Cinco: óculos refletivos com gambiarra, fones no pescoço e o toca-discos na bolsa',
     tagline: 'Calma, eu conserto isso. Com fita.',
   },
@@ -43,28 +45,51 @@ export default {
     air: plain(kian.melee.air, 'Soco aéreo'),
   },
 
-  // □ PULSO DO SCANNER (proposta): a antena da bolsa solta uma onda de Energia pelo chão
+  // □ MAC-10 (cânone): a rajada mais rápida e mais espalhada que a da Dara
   ranged: {
-    name: 'Pulso do Scanner',
+    name: 'Mac-10',
+    description: 'A Mac-10 do detalhe vermelho, presa nele pelos dois fios coloridos: rajada rápida de 6 tiros.',
     type: 'projectile',
-    anim: 'point',
-    description: 'Aumenta o ganho do Scanner de Energia até a antena estourar: uma onda de Energia corre pelo chão e empurra quem pegar.',
-    windup: 0.26,
-    recovery: 0.32,
-    damage: 42,
-    range: 16,
-    speed: 22,
-    radius: 0.55,
-    knockback: 1.6,
-    hitstun: 0.45,
+    anim: 'shoot_rifle',
+    showProp: 'smg',
+    windup: 0.22,
+    recovery: 0.3,
+    count: 6,
+    interval: 0.055,
+    damage: 7, // por tiro (rajada = 42)
+    range: 24,
+    speed: 80,
+    radius: 0.22,
+    spread: 0.09,
+    knockback: 0.5,
+    hitstun: 0.14,
     cooldown: 2.6,
     energyCost: 0,
-    visual: 'shockwave',
-    element: 'energia',
-    color: ENERGY,
+    visual: 'bullet',
+    color: 0xffd27a,
+    sound: 'm4',
+    hitSound: 'impact',
   },
 
   abilities: [
+    {
+      // R2 + × PULSO DO SCANNER (proposta): a antena da bolsa solta uma onda de Energia pelo chão
+      id: 'pulsoScanner',
+      name: 'Pulso do Scanner',
+      input: 'block+jump',
+      type: 'throwProjectile',
+      anim: 'point',
+      description: 'Aumenta o ganho do Scanner de Energia até a antena estourar: uma onda de Energia corre pelo chão e empurra quem pegar.',
+      energyCost: 10,
+      cooldown: 6,
+      windup: 0.26,
+      recovery: 0.32,
+      sound: 'carga',
+      element: 'energia',
+      color: ENERGY,
+      projectile: { damage: 42, range: 16, speed: 22, radius: 0.55, knockback: 1.6, hitstun: 0.45, visual: 'shockwave', color: ENERGY },
+      ai: { when: 'far', min: 3 },
+    },
     {
       // △ + ○ FAROL DA VAN (cânone: acende o farol no Rastejador Sombrio para ele não fugir)
       id: 'farolVan',

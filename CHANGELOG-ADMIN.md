@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.11.0 — Submetralhadoras dos Cinco
+
+- Versão: `VERSION` 4.10.0 → **4.11.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `weapons.js`: `daraSmg()` (vermelha/azul, chaveiro de carinha) e `mac10()` (faixa vermelha, ponto `userData.wire`), na orientação do m4.
+- `props.js`: `addDaraProps`/`addChicoProps` (registrados em `models/index.js`): `props.smg` na mão, escondida fora do □, e `rig.muzzle`. `gunWires`: dois fios em segmentos refeitos no `onBeforeRender` entre a arma e `sockets.hip` (cores PROPOSTA), somem com a arma.
+- Dara: `ranged` = Submetralhadora (5 × 8, cd 2,6 s); `lanternaUV` (photoFlash) no `carga+ranged`. Chico: `ranged` = Mac-10 (6 × 7, cd 2,6 s); `pulsoScanner` (throwProjectile, onda de 42) no `block+jump`, custo 10, cd 6.
+- `check-roster`: submetralhadoras como □ (rajada ≤ 45), habilidades movidas e comandos sem repetição.
+- **Testado no jogo:** rajadas (≈30 de dano após as resistências), arma só na mão durante o □, fios seguindo a mão, Lanterna UV cegando de perto, Pulso do Scanner (36 após a resistência da Dara).
+
 ## v4.10.0 — A Jaqueta de Veríssimo
 
 - Versão: `VERSION` 4.9.1 → **4.10.0** (`package.json`/lock junto). Data: 2026-11-02.

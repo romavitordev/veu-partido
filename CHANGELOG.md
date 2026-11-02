@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.11.0 — Submetralhadoras dos Cinco
+
+### Adicionado
+- Dara: □ **Submetralhadora** — a arma do cânone, vermelha e azul, com o chaveiro de carinha sorrindo (rajada de 5 tiros).
+- Chico: □ **Mac-10** — a arma do cânone, com o detalhe vermelho em cima e os dois fios coloridos ligando a arma a ele (rajada de 6 tiros).
+
+### Alterado
+- Dara: a Lanterna UV passou para △ + □. Chico: o Pulso do Scanner passou para R2 + × (comandos: PROPOSTA).
+
 ## v4.10.0 — A Jaqueta de Veríssimo
 
 ### Adicionado

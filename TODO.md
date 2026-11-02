@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.10.0 (2026-11-02: Jaqueta de Veríssimo visível na habilidade e no despertar; fotos novas da página Sobre). Antes: v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.11.0 (2026-11-02: submetralhadoras da Dara e do Chico). Antes: v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1923,8 +1923,13 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         com `gut`, tripas trançadas e voltas no corpo) e, em seguida, ele engole a Calabresa (`buff` no bloodBind →
         `applySelfBuff`). Testada: prende o alvo e liga o ódio.
       - [x] O especial de grupo dos Cinco (Xande, Guizo, Lírio, Dara, Chico e Morato) — feito na v4.8.0 (`teamSpecials.js os_cinco`; ver "OS CINCO — especial de grupo" na seção dos especiais de grupo).
-      - [ ] PROPOSTA a decidir: Dara e Chico têm SUBMETRALHADORAS no cânone (artes da wiki) — hoje o □ deles é a Lanterna UV
-        e o Pulso do Scanner.
+      - [x] **SUBMETRALHADORAS da Dara e do Chico** (v4.11.0, 2026-11-02; pedido do dono). Cânone (wiki, Arsenal de cada
+        um): Dara — "submetralhadora personalizada de cor vermelha e azul, com um chaveiro de um emoji sorrindo"; Chico —
+        "Mac 10 com um detalhe vermelho na parte superior e dois fios coloridos ligando ela ao Chico". Viraram o □ (rajada
+        de 5×8 e 6×7, mais fraca que a metralhadora do Morato; `weapons.js daraSmg/mac10`, na mão só no □). Os fios do
+        Chico vão da arma ao quadril e seguem a mão a cada quadro (cores vermelho/azul: PROPOSTA). O que era □ virou
+        habilidade (PROPOSTA de comando): Lanterna UV no △ + □ da Dara, Pulso do Scanner no R2 + × do Chico.
+        A conferir depois: usar as submetralhadoras na coreografia de Os Cinco.
       - [x] **CARNIÇAL REFEITO SOBRE UMA BASE CC0** (pedido do dono, 2026-11-01, Blender MCP): o corpo masculino realista e o
         crânio realista do pacote "Human Base Meshes" da Blender Studio (CC0, `assets_src/README.md`) encaixados no
         esqueleto de lutador (`tools/blender/base_body.py`: armadura temporária com pesos automáticos, os mesmos pesos vão

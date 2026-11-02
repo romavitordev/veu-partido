@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1238,6 +1238,83 @@ export function addMoratoProps(rig) {
   sockets.handR.add(hand);
   props.mgHand = hand;
   rig.muzzle = hand.userData.muzzle;
+}
+
+// DARA: a SUBMETRALHADORA vermelha e azul do chaveiro de carinha (cânone); aparece na mão só no □
+export function addDaraProps(rig) {
+  const { sockets, props } = rig;
+  const gun = daraSmg();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.smg = gun;
+  rig.muzzle = gun.userData.muzzle;
+}
+
+// CHICO: a MAC-10 (cânone) na mão só no □, com os DOIS FIOS coloridos ligando a arma à bolsa no quadril (cores PROPOSTA)
+export function addChicoProps(rig) {
+  const { sockets, props } = rig;
+  const gun = mac10();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.smg = gun;
+  rig.muzzle = gun.userData.muzzle;
+  rig.root.add(gunWires(gun, sockets.hip, [0xe03030, 0x2a8ae0]));
+}
+
+// FIOS da arma até o corpo: cada fio são segmentos finos refeitos a cada quadro entre a arma e o ponto do corpo,
+// pendendo no meio (como a corrente da Celestine). Somem com a arma
+const _wa = new THREE.Vector3();
+const _wb = new THREE.Vector3();
+const _wp = new THREE.Vector3();
+const _wq = new THREE.Vector3();
+const _wd = new THREE.Vector3();
+const _UP = new THREE.Vector3(0, 1, 0);
+function gunWires(gun, body, colors, segs = 10) {
+  const g = new THREE.Group();
+  const geo = new THREE.CylinderGeometry(0.006, 0.006, 1, 5);
+  geo.translate(0, 0.5, 0); // da base para cima: escala em y = comprimento do segmento
+  const wires = colors.map((c, w) => {
+    const ms = [];
+    for (let i = 0; i < segs; i++) {
+      const m = new THREE.Mesh(geo, toon(c));
+      m.frustumCulled = false;
+      m.castShadow = false;
+      ms.push(m);
+      g.add(m);
+    }
+    return { ms, off: (w - (colors.length - 1) / 2) * 0.02 };
+  });
+  wires[0].ms[0].onBeforeRender = () => {
+    const show = gun.visible && !!g.parent;
+    for (const { ms } of wires) for (const m of ms) m.visible = show || m === wires[0].ms[0];
+    wires[0].ms[0].scale.setScalar(show ? 1 : 0.0001);
+    if (!show) return;
+    g.parent.updateWorldMatrix(true, false);
+    g.parent.worldToLocal(gun.userData.wire.getWorldPosition(_wa));
+    g.parent.worldToLocal(body.getWorldPosition(_wb));
+    const sag = Math.max(0.08, 0.9 - _wa.distanceTo(_wb)) * 0.4;
+    for (const { ms, off } of wires) {
+      for (let i = 0; i < segs; i++) {
+        const t0 = i / segs, t1 = (i + 1) / segs;
+        _wp.lerpVectors(_wa, _wb, t0);
+        _wp.y -= sag * 4 * t0 * (1 - t0);
+        _wp.x += off;
+        _wq.lerpVectors(_wa, _wb, t1);
+        _wq.y -= sag * 4 * t1 * (1 - t1);
+        _wq.x += off;
+        _wd.subVectors(_wq, _wp);
+        const m = ms[i];
+        m.position.copy(_wp);
+        m.quaternion.setFromUnitVectors(_UP, _wd.clone().normalize());
+        m.scale.set(1, _wd.length(), 1);
+      }
+    }
+  };
+  return g;
 }
 
 // DOPPELGANGER (os Homens de Terno do Estrangeiro): o Fuzil Alheio na mão direita — a pistola de plasma verde

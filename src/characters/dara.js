@@ -3,7 +3,9 @@
 // "auxiliando e protegendo seus aliados", e uma ótima INVESTIGADORA. Itens da arte: a LANTERNA UV, o RADAR, o ALICATE,
 // o WALKIE-TALKIE no braço e a BOLSA ENORME no ombro.
 // Do cânone (RPG): Paramédico (cura um aliado), Eclético e Perito (testes de perícia), Dedicação (+PE).
-// PROPOSTA de jogo (marcada): ela luta nos punhos (não tem arma no cânone), a lanterna UV cega, a bolsa vira o especial e
+// ARMA do cânone (wiki, Arsenal): a SUBMETRALHADORA vermelha e azul com o chaveiro de carinha sorrindo — ela a segura
+// "caso fosse necessário" na caçada ao parasita. É o □.
+// PROPOSTA de jogo (marcada): no corpo a corpo ela luta nos punhos, a lanterna UV cega (△ + □), a bolsa vira o especial e
 // a Transformação "Ninguém Fica Pra Trás" (o luto dos Cinco pelo Voytek) — nada disso é cena da série.
 // Elemento: Transmissão (a classificação anterior como Medo neutro estava errada).
 import kian from './kian.js';
@@ -24,7 +26,7 @@ export default {
   element: 'transmissao',
   energyColor: CYAN,
   info: {
-    weapon: 'Os punhos, a lanterna UV e a bolsa enorme de primeiros socorros',
+    weapon: 'A submetralhadora vermelha e azul, os punhos, a lanterna UV e a bolsa enorme de primeiros socorros',
     style: 'Suporte que aguenta: cega com a lanterna, se cura no meio da luta e acha a brecha do adversário',
     identity: 'A médica de campo dos Cinco, a faixa ciano e as meias de cores diferentes',
     tagline: 'Fica parado que eu já te remendo.',
@@ -43,24 +45,51 @@ export default {
     air: plain(kian.melee.air, 'Soco aéreo'),
   },
 
-  // □ LANTERNA UV (o item da arte): o facho na cara — cego quem estiver de frente e olhando
+  // □ SUBMETRALHADORA (cânone): rajada curta e espalhada — mais fraca que a metralhadora do Morato
   ranged: {
-    name: 'Lanterna UV',
-    type: 'photoFlash',
-    description: 'Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai). De costas ou esquivando na hora, escapa.',
-    energyCost: 10,
-    cooldown: 7,
-    windup: 0.26,
-    step: 1.5,
-    range: 8,
-    arc: 70,
-    lookArc: 110,
-    blind: 1.4,
-    color: UV,
-    ai: { when: 'far', min: 2 },
+    name: 'Submetralhadora',
+    description: 'A submetralhadora vermelha e azul do chaveiro de carinha sorrindo: rajada curta de 5 tiros.',
+    type: 'projectile',
+    anim: 'shoot_rifle',
+    showProp: 'smg',
+    windup: 0.22,
+    recovery: 0.3,
+    count: 5,
+    interval: 0.075,
+    damage: 8, // por tiro (rajada = 40)
+    range: 24,
+    speed: 80,
+    radius: 0.22,
+    spread: 0.06,
+    knockback: 0.5,
+    hitstun: 0.14,
+    cooldown: 2.6,
+    energyCost: 0,
+    visual: 'bullet',
+    color: 0xffd27a,
+    sound: 'm4',
+    hitSound: 'impact',
   },
 
   abilities: [
+    {
+      // △ + □ LANTERNA UV (o item da arte): o facho na cara — cego quem estiver de frente e olhando
+      id: 'lanternaUV',
+      name: 'Lanterna UV',
+      input: 'carga+ranged',
+      type: 'photoFlash',
+      description: 'Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai). De costas ou esquivando na hora, escapa.',
+      energyCost: 10,
+      cooldown: 7,
+      windup: 0.26,
+      step: 1.5,
+      range: 8,
+      arc: 70,
+      lookArc: 110,
+      blind: 1.4,
+      color: UV,
+      ai: { when: 'far', min: 2 },
+    },
     {
       // △ + ○ PARAMÉDICO (cânone: "cura 2d10 pontos de vida de um aliado") — na luta, nela mesma
       id: 'paramedico',
