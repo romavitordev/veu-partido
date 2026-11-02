@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { yawTo, distXZ, forwardFromYaw } from '../../core/util.js';
 import { applyHit } from '../damage.js';
 import { faceClose, orbit, twoShot } from '../../camera/shots.js';
+import { TELEGRAPH } from './telegraph.js';
 
 // ENVELHECIMENTO (Deus da Morte — o especial dele): avança, agarra o adversário PELO PESCOÇO, ergue e o envelhece.
 // O alvo muda de aparência (cabelo branco, pele acinzentada, corpo curvado) e fica fraco até o fim do round:
@@ -21,6 +22,7 @@ export const ageGrab = {
     let caught = false;
     let done = false;
     const REACH = sp.reach ?? 0.55; // preparo visível: a mão enorme se estende
+    const startAt = world.inputTime;
     f.yaw = yawTo(f.pos, opp.pos);
     f.anim.play('dm_lift', { restart: true, duration: REACH + 0.3 });
     world.audio.play('fearGaze', { volume: 0.9, pitch: 0.5 });
@@ -42,8 +44,13 @@ export const ageGrab = {
             f.vel.x = 0;
             f.vel.z = 0;
             const close = distXZ(f.pos, opp.pos) - opp.radius <= (sp.grabRange ?? 2.6) * (f.size || 1) * 0.6;
-            if (!close || opp.isInvulnerable() || opp.state === 'ko') {
+            // esquivou (ou Substituição) durante o preparo, ou logo antes dele: escapa, como nos especiais de investida
+            const ev = opp.lastEvadeAt;
+            const evaded = ev !== undefined && (ev >= startAt || world.inputTime - ev <= TELEGRAPH.evadeWindow);
+            if (!close || opp.isInvulnerable() || evaded || opp.state === 'ko') {
               finish();
+              if (evaded && opp.state === 'dodge' && opp.dodge) opp.dodge.threat = true;
+              if (evaded) opp.notify('DESVIOU!', true);
               f.notify('ERROU', true);
               phase = 'miss';
               t = 0;

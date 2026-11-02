@@ -283,6 +283,7 @@ export default {
   "install.button": "УСТАНОВИТЬ",
   "install.close": "Закрыть",
   "hud.damage": "УРОН",
+  "hud.hits": "{n} УДАРОВ",
   "hud.used": "ИСПОЛЬЗОВАНО",
   "hud.team_gauge": "КОМАНДА",
   "combat.reset": "СБРОС",

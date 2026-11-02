@@ -314,6 +314,9 @@ export class Fighter {
       const hp = Math.ceil(n * (P?.hpPerPoint ?? 1));
       if (this.health - hp < this.maxHealth * (P?.minHealth ?? 0.05)) { this.notify('SEM VIDA PARA PAGAR'); return false; }
       this.health -= hp;
+      // o preço aparece: sangue no peito e o número, como no "pagou com sangue"
+      this.world.fx.burst(this.chestPos(), { count: 14, color: 0xb01020, speed: 2.5, life: 0.5, size: 0.15, gravity: 7 });
+      this.notify(`−${hp} DE VIDA`);
       return true;
     }
     if (this.energy < n) return false;

@@ -283,6 +283,7 @@ export default {
   "install.button": "설치",
   "install.close": "닫기",
   "hud.damage": "대미지",
+  "hud.hits": "{n} 히트",
   "hud.used": "사용됨",
   "hud.team_gauge": "팀",
   "combat.reset": "리셋",

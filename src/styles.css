@@ -550,6 +550,7 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 .dmg.on { opacity: 1; transition: opacity .08s; }
 .dmg small { font-size: 16px; letter-spacing: .25em; color: #fff; opacity: .9; }
 .dmg b { font-weight: 400; font-size: 52px; line-height: .9; }
+.dmg i { font-style: normal; font-size: 18px; letter-spacing: .12em; color: #fff; opacity: .85; min-height: 18px; }
 .dmg.p1 b { color: var(--p1); }
 .dmg.p2 b { color: var(--p2); }
 .dmg.pop b { animation: dmgPop .16s ease-out; }

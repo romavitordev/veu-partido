@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.13.1';
+export const VERSION = '4.14.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.14.0',
+    date: '2026-11-02',
+    title: 'Contagem de Acertos',
+    items: [
+      'COMBO: o marcador de dano agora mostra quantos acertos você já encaixou.',
+      'DEUS DA MORTE: dá para escapar do Envelhecimento esquivando (ou com a Substituição) durante o preparo.',
+      'Erin em Nome do Caos: o preço em vida agora aparece na tela.',
+    ],
+  },
   {
     v: '4.13.1',
     date: '2026-11-02',

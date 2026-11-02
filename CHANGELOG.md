@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.14.0 — Contagem de Acertos
+
+### Adicionado
+- O marcador de dano do combo agora mostra quantos acertos o combo tem ("5 ACERTOS"), a partir do segundo, nos 13 idiomas.
+
+### Corrigido
+- Envelhecimento (especial do Deus da Morte): esquivar ou usar a Substituição durante o preparo agora escapa sempre. Antes só escapava se a invulnerabilidade da esquiva ainda durasse no instante do agarrão.
+- Quem não tem sanidade (Erin em Nome do Caos) perdia vida sem aviso ao gastar sanidade fora das habilidades; agora aparece o sangue e o número.
+
+### Conferido no jogo
+- Finalizadores de combo, △ + ○ dos 39 contra a defesa, anti-repetição, projéteis dos 39 (livre e na defesa), interrupção do especial no preparo, especiais do Anfitrião, as 37 transformações (cinemática, câmera, vitória na forma) e os custos de sanidade de todos os kits.
+
 ## v4.13.1 — Balanceamento com os 39
 
 ### Alterado

@@ -283,6 +283,7 @@ export default {
   "install.button": "YÜKLE",
   "install.close": "Kapat",
   "hud.damage": "HASAR",
+  "hud.hits": "{n} VURUŞ",
   "hud.used": "KULLANILDI",
   "hud.team_gauge": "TAKIM",
   "combat.reset": "SIFIRLA",

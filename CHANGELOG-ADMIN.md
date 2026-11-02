@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.14.0 — Contagem de Acertos
+
+- Versão: `VERSION` 4.13.1 → **4.14.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `HUD`: `.dmg` ganhou `<i>` com `t('hud.hits', { n: opp.comboHits })` a partir de 2 acertos; chave `hud.hits` nos 13 idiomas; estilo em `styles.css`.
+- `specials/ageGrab.js`: `startAt = world.inputTime`; no fim do preparo, `lastEvadeAt >= startAt` ou dentro de `TELEGRAPH.evadeWindow` → erra (`DESVIOU!`, a esquiva marca `threat`). Testado: esquiva aos 0–0,45 s escapa, 0,55 s pega; sem esquiva 146 de dano e ENVELHECIDO, que some no round seguinte.
+- `Fighter.spendEnergy` (passiva `noSanity`): o preço em vida mostra sangue e `−N DE VIDA`.
+- Testes no navegador (sem mudança de código): finalizadores dos 39 + 20 formas; △ + ○ dos 39 contra a defesa; □ dos 39 a 7 m (livre e na defesa); golpe no preparo do especial cancela nos 39; especiais e habilidades do Anfitrião/Arnaldo; as 37 transformações sem erro e com cinemática; custos/recargas de todos os kits.
+- TODO: §9, §13, §16, §17, §18, §19, §22 e itens do §5–7, KEMI e §32 (balanceamento da v4.13.1) marcados.
+
 ## v4.13.1 — Balanceamento com os 39
 
 - Versão: `VERSION` 4.13.0 → **4.13.1** (`package.json`/lock junto). Data: 2026-11-02.

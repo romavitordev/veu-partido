@@ -283,6 +283,7 @@ export default {
   "install.button": "INSTALAR",
   "install.close": "Fechar",
   "hud.damage": "DANO",
+  "hud.hits": "{n} GOLPES",
   "hud.used": "USADO",
   "hud.team_gauge": "EQUIPA",
   "combat.reset": "RESET",

@@ -283,6 +283,7 @@ export default {
   "install.button": "インストール",
   "install.close": "閉じる",
   "hud.damage": "ダメージ",
+  "hud.hits": "{n} ヒット",
   "hud.used": "使用済み",
   "hud.team_gauge": "チーム",
   "combat.reset": "リセット",

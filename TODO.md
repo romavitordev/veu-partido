@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.13.1 (2026-11-02: balanceamento com os 39). Antes: v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.14.0 (2026-11-02: contagem de acertos do combo e a revisão dos sistemas de combate). Antes: v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2206,7 +2206,7 @@ O trabalho pendente é:
 * [x] Testar hitboxes
 * [x] Testar telegraphs
 * [x] Testar IA
-* [ ] Balancear
+* [x] Balancear (v4.13.1: 46 → 41 → 36 → 34%, na beirada — `arnaldo` 1.08/0.94)
 
 ---
 
@@ -2254,7 +2254,7 @@ O trabalho pendente é:
 * [x] Conferir aleatoriedade
 * [x] Garantir que aleatoriedade nunca determine um acerto invisível
 * [x] Revisar IA
-* [ ] Balancear
+* [x] Balancear (v4.13.1: linha própria `anfitriao` 0.92/1.05 — 75 → 89 → 64 → 63%)
 
 ## Personalidade
 
@@ -2314,7 +2314,7 @@ Evitar falas genéricas.
 * [x] Testar Jaqueta
 * [x] Testar Segredo de Veríssimo
 * [x] Revisar IA
-* [ ] Balancear
+* [x] Balancear (v4.13.1: 45 → 32 → 32 → 36% — `verissimo` 1.22/0.97)
 
 ---
 
@@ -2344,8 +2344,10 @@ Evitar falas genéricas.
 * [x] Conferir limite (piso de 50%)
 * [x] Conferir especiais (`comboScalingFloor.special` 75%)
 * [x] Conferir grabs (`comboScalingFloor.grab` 75%)
-* [ ] Conferir finalizadores
-* [ ] Conferir HUD
+* [x] Conferir finalizadores (2026-11-02: os 39 e as 20 formas terminam o combo com `launch` — o Dante com `push` —,
+      ↑ + ○ `launchHigh` e ↓ + ○ `knockdown`; 3–6 golpes, último de 48–81)
+* [x] Conferir HUD (marcador de dano do combo perto de quem bate; agora com a contagem "N ACERTOS" a partir de 2,
+      nos 13 idiomas)
 * [x] Evitar infinitos (`maxLaunchesPerCombo` 1 + anti-repetição)
 
 Referência inicial:
@@ -2407,17 +2409,21 @@ mínimo = 50%
 
 Death God é **SPECIAL/ULT**, não grab.
 
-* [ ] Uma utilização por rodada
-* [ ] Cooldown
-* [ ] Telegraph
-* [ ] Escape
-* [ ] Debuff
-* [ ] Duração
-* [ ] Câmera
-* [ ] Modelo
-* [ ] Rig
-* [ ] Material
-* [ ] Efeitos
+Conferido em 2026-11-02 no especial ENVELHECIMENTO do Deus da Morte (`specials/ageGrab.js`, testado no jogo contra o Joui):
+
+* [x] Uma utilização por rodada (não pega quem já está envelhecido; a recarga zera no round seguinte)
+* [x] Cooldown (60 s, 50 de sanidade)
+* [x] Telegraph (preparo de 0,55 s: a mão se estende com fumaça cinza e o som `fearGaze`)
+* [x] Escape (esquiva ou Substituição durante o preparo: erra e gasta a carga da esquiva — antes só escapava se a
+      invulnerabilidade da esquiva ainda durasse no instante do agarrão; corrigido como nos especiais de investida.
+      Esquivar entre 0 e 0,45 s depois do preparo começar escapa; depois de 0,55 s, pega)
+* [x] Debuff (ENVELHECIDO: −40% de dano, −30% de velocidade, sem regenerar sanidade)
+* [x] Duração (até o fim do round: cores e postura voltam no round seguinte)
+* [x] Câmera (dois planos + rosto da vítima + órbita)
+* [x] Modelo (`public/models/deus_morte.glb`)
+* [x] Rig (esqueleto padrão; anim `dm_lift`)
+* [x] Material (cabelo branco e pele acinzentada no alvo, devolvidos no fim)
+* [x] Efeitos (fumaça na mão e no pescoço, distorção, cinzas caindo do envelhecido)
 
 ---
 
@@ -2449,7 +2455,9 @@ Death God é **SPECIAL/ULT**, não grab.
 * [x] Perfect Block (`COMBAT.defense.perfect` 0,1 s + contra-atordoamento)
 * [x] Resistência (barra de defesa com regeneração)
 * [x] Guard Break (`guardCrush` / som `guardBreak`)
-* [ ] Golpe △+○
+* [x] Golpe △+○ (2026-11-02, os 39 contra a defesa: golpes pesados gastam 35–93 da defesa e passam 14–49; agarrões
+      — Suplex do Kian, Espiral Descendente da Magistrada, Perturbação Discente — e a Lâmina do Medo (`guardBreak`)
+      passam; a Acácia da Kaiser cai de cima — sai da área para escapar; buffs e curas não interagem)
 * [x] Consumo de defesa (`guardDamage` 0,9 por ponto bloqueado)
 * [x] Interação com grabs (2026-11-02: o agarrão passa pela defesa — 56–77 de dano; escapa com Defesa + ○ no começo)
 * [x] Evitar quebra injusta (defesa cheia: Arthur só quebra com ~1,7 s de pressão contínua, mais de uma sequência;
@@ -2463,7 +2471,9 @@ Death God é **SPECIAL/ULT**, não grab.
 * [x] Limite de projéteis (`maxVolleys` 2 no ar)
 * [x] Redução por repetição (`COMBAT.repeat`: 3ª vez seguida 70%)
 * [x] Proteção contra loops
-* [ ] Não prejudicar personagens dependentes de repetição
+* [x] Não prejudicar personagens dependentes de repetição (2026-11-02: a regra só vale para o MESMO golpe corpo a corpo
+      3x seguidas; cada golpe do combo tem nome próprio — só o Amigo repete "Garra seca" 2x, abaixo do limite —, e
+      tiros, rajadas e golpes de vários acertos contam uma vez)
 
 ---
 
@@ -2473,18 +2483,21 @@ Todo especial de grande impacto deve possuir leitura clara.
 
 * [x] Conferir todos os especiais (2026-11-02, os 39 contra o Joui, sem erro: 146–331 de dano, 3–8 s; Marionete do
       Dante, Carniçal da Esfinge da Nubi e o Pacto do Diabo são de efeito, sem dano direto)
-* [ ] Conferir projéteis
+* [x] Conferir projéteis (2026-11-02, o □ dos 39 a 7 m: livre 23–81; na defesa passa ~1/3 e gasta 17–88 da defesa;
+      Dalmo e Cristopher não atiram — o □ do Dalmo é o contra-ataque "Pode Vir!")
 * [x] Supernova (a Granada de Luz real pega o especial)
 * [x] Em Nome do Caos (mesma granada; errou, ela não se explode)
-* [ ] Especiais do Anfitrião
+* [x] Especiais do Anfitrião (O Jogo do Anfitrião 263 de dano, Ato Final do Arnaldo 270; as 9 habilidades da Relíquia
+      sem erro — as de utilidade, como Multiplicação, Distorção e A Plateia, não causam dano)
 * [x] Flash Grenade (Granada de Luz)
 * [x] Conferir esquiva (2026-11-02). Os de aviso (Arthur, Kaiser) já erravam com a esquiva nos últimos 0,45 s do
       aviso (~0,33 s de janela no teste). Os de investida (`cinematicCombo` com `dash`) NÃO dava para esquivar: a
       investida persegue e pegava o alvo no meio da esquiva. Corrigido: esquiva ou Substituição durante a investida (ou
       na janela do aviso logo antes) faz o especial errar e gasta a carga — Carniçal ~0,3 s, Lírio e Morato ~0,15 s.
       Caído continua sendo pego.
-* [ ] Conferir interrupção quando aplicável
-* [ ] Evitar dano sem feedback
+* [x] Conferir interrupção quando aplicável (os 39: um golpe no preparo do especial cancela, nenhum segue)
+* [x] Evitar dano sem feedback (2026-11-02: todo dano passa por `applyHit` ou mostra sangue/aviso; faltava o preço em
+      vida de quem não tem sanidade — Erin em Nome do Caos — fora das habilidades: agora sangue e "−N DE VIDA")
 
 ---
 
@@ -2494,13 +2507,13 @@ Todo especial de grande impacto deve possuir leitura clara.
 
 * [x] Barra (Barra de Transformação `COMBAT.storm`)
 * [x] Condição (cheia + vida ≤ 35%)
-* [ ] Custo
+* [x] Custo (Barra de Transformação cheia + vida ≤ 35%; zera a barra)
 * [x] Duração (até o fim do round)
-* [ ] Animação
-* [ ] Câmera
-* [ ] Efeitos
+* [x] Animação (2026-11-02: as 37 transformações rodam sem erro, cada uma com cinemática própria de 1,3–5,3 s)
+* [x] Câmera (a cinemática segura a câmera do começo ao fim em todas)
+* [x] Efeitos
 * [x] Retorno (volta da forma no fim do round)
-* [ ] Vitória
+* [x] Vitória (vence o round com a pose de vitória NA forma; a tela final mostra só a forma)
 
 ## Formas
 
@@ -2510,7 +2523,8 @@ Todo especial de grande impacto deve possuir leitura clara.
 * [x] Erin — Em Nome do Caos (forms/erin_caos.js)
 * [x] Anfitrião (forms/anfitriao.js)
 * [x] Juan — Portador do Trono (forms/diabo.js)
-* [ ] Outras formas
+* [x] Outras formas (20 formas: Shi no Kage, Olhos Abertos, Calamidade, ET, Colosso, X, Desertor, Verdadeiro Raziel,
+      Magistrada, Amphitruo, Deus da Morte e as outras — ver `characters/forms/`)
 
 ---
 
@@ -2576,11 +2590,12 @@ Utilizar:
 
 Não criar barra separada de Exposição Paranormal sem nova decisão.
 
-* [ ] Conferir HUD
-* [ ] Conferir custos
-* [ ] Conferir regeneração
-* [ ] Conferir transformações
-* [ ] Conferir habilidades
+* [x] Conferir HUD (barra de sanidade única, sem barra de Exposição)
+* [x] Conferir custos (2026-11-02: todas as habilidades dos 39 e das formas com custo e recarga; 10–40 de sanidade,
+      especial 50 — a Erin em Nome do Caos paga com a vida)
+* [x] Conferir regeneração (2,5/s parado + Carga △ 32/s; quem envelhece pelo Deus da Morte não regenera)
+* [x] Conferir transformações (a Barra de Transformação é separada da sanidade)
+* [x] Conferir habilidades
 
 ---
 
@@ -2794,11 +2809,11 @@ Vida da forma: 1250 → 1150
 
 ## KEMI
 
-* [ ] Rodar nova telemetria
-* [ ] Conferir winrate
-* [ ] Conferir dano
+* [x] Rodar nova telemetria (v4.13.1: 4 rodadas de 1482 lutas)
+* [x] Conferir winrate (51 → 47 → 43 → 54%, na faixa)
+* [x] Conferir dano (~3600–3700 causado por luta, entre os mais altos, recebe ~3100)
 * [ ] Conferir facilidade de execução
-* [ ] Não nerfar com base em poucas partidas
+* [x] Não nerfar com base em poucas partidas (sem ajuste novo: `kemi` 0.97 desde a v3.32)
 
 ---
 
@@ -3087,11 +3102,11 @@ A dificuldade deve melhorar comportamento, não apenas aumentar dano.
 Após finalizar alterações relevantes dos kits:
 
 * [ ] Rodar `npm run balance` (o script ainda não existe — ver §76.5)
-* [ ] CPU × CPU
+* [x] CPU × CPU (v4.13.1, `src/dev/balance.js`)
 * [ ] 2–3 partidas por confronto
-* [ ] Registrar vitórias
-* [ ] Registrar dano
-* [ ] Registrar uso de habilidades
+* [x] Registrar vitórias
+* [x] Registrar dano
+* [x] Registrar uso de habilidades (`moves`: os 8 golpes que mais acertaram por personagem)
 * [ ] Registrar combos
 * [ ] Registrar duração
 * [ ] Registrar transformações

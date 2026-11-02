@@ -27,8 +27,8 @@ export class HUD {
       <div id="vignette"></div>
       <div id="npcbar"><b></b><div class="bar"><div class="fill"></div></div></div>
       <div id="riddle"><div class="rq"><small></small><p></p><i class="rt"><u></u></i></div><div class="ropts"></div></div>
-      <div class="dmg p1"><small>DANO</small><b></b></div>
-      <div class="dmg p2"><small>DANO</small><b></b></div>
+      <div class="dmg p1"><small>DANO</small><b></b><i></i></div>
+      <div class="dmg p2"><small>DANO</small><b></b><i></i></div>
       <div id="callout"></div>
       <div id="subtitle"><b></b><span></span></div>
       <div id="hostline"><b></b><span></span></div>
@@ -78,7 +78,7 @@ export class HUD {
     this.flashEl.style.opacity = '0';
     this.root.querySelectorAll('.popup').forEach((e) => e.remove());
     for (const p of this.panels) p.innerHTML = '';
-    for (const d of this.dmgEls) { d.classList.remove('on', 'pop'); d.querySelector('b').textContent = ''; d.querySelector('small').textContent = t('hud.damage'); }
+    for (const d of this.dmgEls) { d.classList.remove('on', 'pop'); d.querySelector('b').textContent = ''; d.querySelector('i').textContent = ''; d.querySelector('small').textContent = t('hud.damage'); }
     this.vignette.classList.remove('on');
     this.npcBar.classList.remove('on');
     this.riddle(null);
@@ -362,6 +362,9 @@ export class HUD {
       if (v !== st.value) {
         st.value = v;
         el.querySelector('b').textContent = v;
+        // quantos acertos o combo já tem (a partir de 2, como no Storm 4)
+        const n = opp.comboHits || 0;
+        el.querySelector('i').textContent = n >= 2 ? t('hud.hits', { n }) : '';
         el.classList.remove('pop');
         void el.offsetWidth;
         el.classList.add('pop');

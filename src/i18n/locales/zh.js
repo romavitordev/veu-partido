@@ -283,6 +283,7 @@ export default {
   "install.button": "安装",
   "install.close": "关闭",
   "hud.damage": "伤害",
+  "hud.hits": "{n} 连击",
   "hud.used": "已用",
   "hud.team_gauge": "团队",
   "combat.reset": "重置",

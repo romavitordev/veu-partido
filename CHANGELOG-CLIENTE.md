@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.14.0 — Contagem de Acertos
+- O marcador do combo mostra quantos acertos você já encaixou.
+- Dá para escapar do Envelhecimento do Deus da Morte esquivando durante o preparo.
+
 ## v4.13.1 — Balanceamento com os 39
 - Balanceamento do elenco inteiro: Juan (o Portador), Anfitrião, Amália, Chico, Dara e Estrangeiro ficaram mais fracos; Gaius, Nubi, Balu, Lírio, Aghata, O Diabo e outros 13 ficaram mais fortes.
 
