@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.13.1 — Balanceamento com os 39
+- Balanceamento do elenco inteiro: Juan (o Portador), Anfitrião, Amália, Chico, Dara e Estrangeiro ficaram mais fracos; Gaius, Nubi, Balu, Lírio, Aghata, O Diabo e outros 13 ficaram mais fortes.
+
 ## v4.13.0 — Esquiva nos Especiais
 - Dá para esquivar dos especiais em que o lutador corre até você: esquive (ou use a Substituição) durante a investida e ele erra.
 

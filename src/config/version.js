@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.13.0';
+export const VERSION = '4.13.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.13.1',
+    date: '2026-11-02',
+    title: 'Balanceamento com os 39',
+    items: [
+      'BALANCEAMENTO: o elenco inteiro medido em 4 rodadas de CPU contra CPU. Mais fracos: Juan (o Portador), Anfitrião, Amália, Chico, Dara e Estrangeiro. Mais fortes: Gaius, Nubi, Balu, Lírio, Aghata, O Diabo e outros.',
+      'As formas que dá para escolher na seleção agora têm o próprio ajuste de balanceamento.',
+    ],
+  },
   {
     v: '4.13.0',
     date: '2026-11-02',

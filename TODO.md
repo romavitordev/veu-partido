@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.13.0 (2026-11-02: esquiva contra os especiais de investida e os testes dos sistemas universais). Antes: v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.13.1 (2026-11-02: balanceamento com os 39). Antes: v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -4369,7 +4369,8 @@ Antes de considerar uma versão realmente pronta:
 ## Gameplay
 
 * [ ] Combate estável
-* [ ] Balanceamento testado
+* [x] Balanceamento testado (v4.13.1: 4 rodadas de 1482 lutas com os 39 + focadas; 34–35 dos 39 entre 35% e 65%, os de
+      fora na beirada, 32–34%)
 * [ ] Sem infinitos
 * [ ] Sem exploits conhecidos
 * [ ] Specials legíveis

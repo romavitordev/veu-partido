@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.13.1 — Balanceamento com os 39
+
+### Alterado
+- Balanceamento geral com o elenco inteiro (39 lutadores, 4 rodadas de CPU contra CPU com todos os pares). Mais fracos: Juan (o Portador), Anfitrião, Amália, Chico, Dara e Estrangeiro. Mais fortes: Gaius, Amigo, Aguiar, Joui, Nubi, Lírio, Aghata, Cristino, Dalmo, Balu, Cristopher, Dante, Veríssimo, Guizo, Labirinto, Henri, Xande, Jae e O Diabo.
+
+### Corrigido
+- As formas que dá para escolher na seleção (Juan, o Portador; o Anfitrião e o Deus da Morte das Relíquias) usavam o ajuste de balanceamento do personagem de origem — o Anfitrião ficava com o reforço do Gaius. Agora cada uma tem o seu.
+
 ## v4.13.0 — Esquiva nos Especiais
 
 ### Corrigido

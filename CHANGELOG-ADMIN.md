@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.13.1 — Balanceamento com os 39
+
+- Versão: `VERSION` 4.13.0 → **4.13.1** (`package.json`/lock junto). Data: 2026-11-02.
+- `src/config/balance.js`: 4 rodadas de `runBalance({ fights: 1, maxTime: 120 })` com os 39 (1482 lutas cada, 6 abas, ~1,5 h por rodada) + focadas no O Diabo e no Cristopher (76 lutas cada). Na faixa de 35–65%: 23 → 33 → 31 → 34 dos 39; os de fora na última rodada ficaram em 32–34% (Morato, Arnaldo, Cristino, Cristopher), dentro do ruído de ±7%. Histórico por personagem nos comentários do arquivo.
+- Entradas novas: `juan_odio` 0.82/1.1, `anfitriao` 0.92/1.05, `amalia` 0.93/1.04, `chico` 0.9/1.05, `dara` 0.95, `gaius` 1.15/0.9, `xande` 1.05/0.97, `jae` 1.04. O Diabo 0.7/1.2 → 0.76/1.14 (22% → 41% na focada).
+- `balanceOf`: forma selecionável (`def.selectableForm`, sem `baseForm`) usa `BALANCE[def.id]` em vez do `baseId` (o Anfitrião herdava o Gaius, o Portador o Henri e o Deus da Morte o Ferreiro). Transformado continua usando o personagem de origem.
+- TODO §80: "Balanceamento testado" marcado.
+
 ## v4.13.0 — Esquiva nos Especiais
 
 - Versão: `VERSION` 4.12.1 → **4.13.0** (`package.json`/lock junto). Data: 2026-11-02.
