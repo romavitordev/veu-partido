@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.13.0 — Esquiva nos Especiais
+
+### Corrigido
+- Especiais de investida (Carniçal, Lírio, Morato e os outros que correm até o alvo): esquivar ou usar a Substituição durante a investida agora faz o especial errar. Antes a investida perseguia e pegava o alvo no meio da esquiva.
+
+### Conferido no jogo
+- Esquiva contra combos e projéteis, Substituição (atordoado, no meio do combo e com os 39), levantar (ataque, pressão e loops), buffer de comandos, agarrões dos 39, defesa contra agarrão e quebra de guarda, e os 39 especiais.
+
 ## v4.12.1 — Os Cinco Armados
 
 ### Alterado

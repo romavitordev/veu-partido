@@ -3,6 +3,7 @@ import { Timeline, yawTo, distXZ, forwardFromYaw } from '../../core/util.js';
 import { COMBAT } from '../../config/combat.js';
 import { applyHit } from '../damage.js';
 import { splitDamage, specialHitFx, trySpecialBlock } from './common.js';
+import { TELEGRAPH } from './telegraph.js';
 import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose } from '../../camera/shots.js';
 import { HoloCopy } from '../holo.js';
 import { groundMark, blindFighter } from '../abilities.js';
@@ -218,6 +219,7 @@ export const cinematicCombo = {
     const prep = sp.prepare || { anim: 'charge', time: 0.3 };
     const dash = sp.dash || { speed: 22, maxTime: 0.45, contact: 1.7 };
     let phase = 'prepare';
+    let dashAt = 0; // quando a investida saiu (para a esquiva durante ela)
     let t = 0;
     let tl = null;
     let emitters = [];
@@ -520,6 +522,7 @@ export const cinematicCombo = {
               world.audio.play('chainThrow');
             } else {
               phase = 'dash';
+              dashAt = world.inputTime;
               if (dash.ride && f.def.mount) f.mount(true);
               f.anim.play(dash.anim || 'dash', { restart: true });
             }
@@ -582,6 +585,19 @@ export const cinematicCombo = {
           const reachable = Math.abs(opp.pos.y - f.pos.y) < 1.8 && opp.visible;
           if (d <= dash.contact && reachable) {
             f.vel.set(0, 0, 0);
+            // esquivou (ou usou a Substituição) na chegada ou DURANTE a investida: o especial erra e a esquiva gasta a
+            // carga. A investida persegue, então só a invulnerabilidade não bastava (acabava antes do contato, e a do
+            // Carniçal é mais lenta que a esquiva). Vale também a janela do aviso (telegraph.js) logo antes da saída.
+            // Caído continua sendo pego, como antes.
+            const ev = opp.lastEvadeAt;
+            const evaded = ev !== undefined && (ev >= dashAt || world.inputTime - ev <= TELEGRAPH.evadeWindow);
+            if ((opp.invuln > 0 || evaded) && opp.state !== 'grabbed' && opp.state !== 'downed') {
+              if (opp.state === 'dodge' && opp.dodge) opp.dodge.threat = true;
+              phase = 'whiff';
+              t = 0;
+              f.anim.play('idle', { restart: true });
+              return false;
+            }
             if (trySpecialBlock(world, f, opp, sp)) { cleanup(); return true; }
             beginCinematic();
             return false;

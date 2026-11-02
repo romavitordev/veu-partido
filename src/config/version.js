@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.12.1';
+export const VERSION = '4.13.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.13.0',
+    date: '2026-11-02',
+    title: 'Esquiva nos Especiais',
+    items: [
+      'ESPECIAIS DE INVESTIDA: esquive (ou use a Substituição) durante a investida e o especial erra.',
+      'Conferidos no jogo: esquiva, Substituição com o elenco todo, levantar, buffer de comandos, agarrões e defesa.',
+    ],
+  },
   {
     v: '4.12.1',
     date: '2026-11-02',

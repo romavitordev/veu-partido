@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.13.0 — Esquiva nos Especiais
+
+- Versão: `VERSION` 4.12.1 → **4.13.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `cinematicCombo` (fase `dash`): no contato, se o alvo está invulnerável (fora de caído/agarrado) ou esquivou/substituiu desde a saída da investida (`lastEvadeAt >= dashAt`) ou na janela `TELEGRAPH.evadeWindow`, o especial vai para `whiff` e a esquiva marca `threat` (gasta a carga), como já fazia a variante da corrente.
+- Testado no jogo (navegador, `setVirtual` + `__game.step`): Esquiva (reflexo até 2 quadros evita o golpe de 6 atacantes; tiro único evitado, rajada parcial); Substituição (atordoado, combo — o L2 no hitstop fica guardado —, defensor pune em 6/6, os 39 no meio e na borda, 78/78); Levantar (ataque invulnerável, golpe "meaty" não entra, 15–18 quadros livres entre quedas); Buffer (□ △ L2 até 6 quadros, descartados com 10+); Agarrão dos 39 (53–79, câmera e cena próprias), agarrão passa pela defesa, defesa só quebra com pressão contínua; os 39 especiais sem erro; janela de esquiva: Carniçal ~0,3 s, Lírio/Morato ~0,15 s, Arthur/Kaiser (aviso) ~0,33 s.
+- TODO: seções 10, 11, 12, 14, 15, 16 e 18 atualizadas.
+
 ## v4.12.1 — Os Cinco Armados
 
 - Versão: `VERSION` 4.12.0 → **4.12.1** (`package.json`/lock junto). Data: 2026-11-02.

@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.13.0 — Esquiva nos Especiais
+- Dá para esquivar dos especiais em que o lutador corre até você: esquive (ou use a Substituição) durante a investida e ele erra.
+
 ## v4.12.1 — Os Cinco Armados
 - No especial em equipe de Os Cinco, a Dara e o Chico atiram com as submetralhadoras.
 

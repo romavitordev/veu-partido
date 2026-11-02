@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.12.1 (2026-11-02: submetralhadoras na coreografia de Os Cinco). Antes: v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.13.0 (2026-11-02: esquiva contra os especiais de investida e os testes dos sistemas universais). Antes: v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2366,37 +2366,40 @@ mínimo = 50%
 
 # 10. DODGE
 
-* [ ] Testar contra combos
-* [ ] Testar contra projéteis
+* [x] Testar contra combos (2026-11-02, no jogo: L2 até 2 quadros depois do golpe começar evita o golpe de Arthur,
+      Kaiser, Dara, Morato, Carniçal e Balu, e gasta a carga; tarde demais o golpe entra e o L2 vira Substituição)
+* [x] Testar contra projéteis (tiro único do Arthur evitado por inteiro; numa rajada — Kaiser, Dara, Morato — os tiros
+      depois da invulnerabilidade ainda acertam: 59 → 32, 35 → 23, 51 → 37; é a regra, rajada se esquiva pela posição)
 
 ---
 
 # 11. SUBSTITUIÇÃO
 
-* [ ] Confirmar funcionamento durante stun
-* [ ] Confirmar interrupção de combo
+* [x] Confirmar funcionamento durante stun (2026-11-02: L2 atordoado sai andando 1,26 m, invulnerável, gasta 1 carga)
+* [x] Confirmar interrupção de combo (o L2 apertado no congelamento do acerto fica guardado e sai no fim dele; depois
+      da Substituição quem defendeu pune o atacante em 6 de 6 duelos, sem levar dano de volta)
 * [x] Conferir deslocamento lateral (passo curto para o lado — teste `positioning`)
 * [x] Evitar aparecer diretamente atrás por padrão (nunca nas costas do atacante — teste `positioning`)
 * [x] Conferir cargas (1 carga de esquiva — teste `combat-universal`)
 * [x] Conferir cooldown (1,2 s — `COMBAT.substitution`)
-* [ ] Testar com todo o elenco
+* [x] Testar com todo o elenco (2026-11-02: os 39, no meio da praça de Tipora e encostados na borda — 78/78)
 
 ---
 
 # 12. GRAB / THROW TECH
 
-* [ ] Conferir dano
+* [x] Conferir dano (2026-11-02, os 39 contra o Joui: 53–79, a diferença vem dos elementos e resistências)
 * [x] Conferir defesa (Defesa + ○ no começo escapa — `COMBAT.grabTech`, teste `combat-universal`)
-* [ ] Conferir cenas
-* [ ] Conferir câmera
-* [ ] Criar/revisar variações individuais
+* [x] Conferir cenas (as 39 rodam até o fim, ~2,2 s, sem erro)
+* [x] Conferir câmera (todas abrem a cena com câmera própria)
+* [x] Criar/revisar variações individuais (`GRAB_SCENES`: os 39 têm a sua; formas e versões reaproveitam a da base)
 
 ### Exemplos
 
-* [ ] Kaiser — braço
-* [ ] Juan — faca no pescoço
-* [ ] Aguiar — machado
-* [ ] Outros personagens
+* [x] Kaiser — braço (socos e a Acácia no fim)
+* [x] Juan — faca no pescoço (`fx: 'throat'`, cura 15)
+* [x] Aguiar — machado (corte, chute e o machado de cima, sangrando)
+* [x] Outros personagens
 
 ---
 
@@ -2422,21 +2425,21 @@ Death God é **SPECIAL/ULT**, não grab.
 
 * [x] Invulnerabilidade (`COMBAT.wakeupInvuln` + invulnerável caído)
 * [x] Roll (× ou L2 logo depois de cair levanta rolando — `COMBAT.down`)
-* [ ] Ataque
-* [ ] Pressão justa
-* [ ] Evitar loops
+* [x] Ataque (2026-11-02: ○ no fim do levantar sai no 1º quadro livre, ainda invulnerável)
+* [x] Pressão justa (caído é invulnerável e levanta com 0,35 s de invulnerabilidade: golpe "meaty" não entra)
+* [x] Evitar loops (derrubado 4× seguidas, o defensor tem 15–18 quadros livres a cada levantar para defender ou esquivar)
 
 ---
 
 # 15. INPUT BUFFER
 
-* [ ] □
-* [ ] ○
-* [ ] △
-* [ ] L2
+* [x] □ (2026-11-02, no fim de um soco no vazio: até 6 quadros antes sai o tiro no 1º quadro livre)
+* [x] ○ (durante o golpe entra na fila do combo)
+* [x] △ (até 6 quadros antes começa a carga)
+* [x] L2 (sai a esquiva; o L2 também cancela o golpe depois do ponto de cancelamento)
 * [x] Buffer durante recuperação (`COMBAT.inputBuffer` 0,12 s)
-* [ ] Evitar comandos acidentais
-* [ ] Conferir janela
+* [x] Evitar comandos acidentais (apertado 10 ou 16 quadros antes: descartado)
+* [x] Conferir janela (0,12 s ≈ 7 quadros)
 
 ---
 
@@ -2448,8 +2451,9 @@ Death God é **SPECIAL/ULT**, não grab.
 * [x] Guard Break (`guardCrush` / som `guardBreak`)
 * [ ] Golpe △+○
 * [x] Consumo de defesa (`guardDamage` 0,9 por ponto bloqueado)
-* [ ] Interação com grabs
-* [ ] Evitar quebra injusta
+* [x] Interação com grabs (2026-11-02: o agarrão passa pela defesa — 56–77 de dano; escapa com Defesa + ○ no começo)
+* [x] Evitar quebra injusta (defesa cheia: Arthur só quebra com ~1,7 s de pressão contínua, mais de uma sequência;
+      Balu, Dante, Lírio e Deus da Morte em 2,5 s não quebram; o desgaste é de 15–45 de vida)
 
 ---
 
@@ -2467,13 +2471,18 @@ Death God é **SPECIAL/ULT**, não grab.
 
 Todo especial de grande impacto deve possuir leitura clara.
 
-* [ ] Conferir todos os especiais
+* [x] Conferir todos os especiais (2026-11-02, os 39 contra o Joui, sem erro: 146–331 de dano, 3–8 s; Marionete do
+      Dante, Carniçal da Esfinge da Nubi e o Pacto do Diabo são de efeito, sem dano direto)
 * [ ] Conferir projéteis
 * [x] Supernova (a Granada de Luz real pega o especial)
 * [x] Em Nome do Caos (mesma granada; errou, ela não se explode)
 * [ ] Especiais do Anfitrião
 * [x] Flash Grenade (Granada de Luz)
-* [ ] Conferir esquiva
+* [x] Conferir esquiva (2026-11-02). Os de aviso (Arthur, Kaiser) já erravam com a esquiva nos últimos 0,45 s do
+      aviso (~0,33 s de janela no teste). Os de investida (`cinematicCombo` com `dash`) NÃO dava para esquivar: a
+      investida persegue e pegava o alvo no meio da esquiva. Corrigido: esquiva ou Substituição durante a investida (ou
+      na janela do aviso logo antes) faz o especial errar e gasta a carga — Carniçal ~0,3 s, Lírio e Morato ~0,15 s.
+      Caído continua sendo pego.
 * [ ] Conferir interrupção quando aplicável
 * [ ] Evitar dano sem feedback
 
