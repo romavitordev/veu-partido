@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.17.1 — O Grimório de Arnaldo
+
+- Versão: `VERSION` 4.17.0 → **4.17.1** (`package.json`/lock junto). Data: 2026-11-02. Pedido do dono: animação de abrir o grimório com o brilho e habilidade sem distância; as armas da Carina foram para o TODO (seção MODELOS).
+- `models/props.js`: `arnaldoGrimoire()` com as metades em pivôs na lombada (`userData.setOpen`) e o brilho (`userData.setGlow`: opacidade dos sigilos + plano de clarão); o livro na mão esquerda virado com as páginas para fora (`rotation.x = -2.1`).
+- `anim/clips.js`: `grimoire_open` (livro na frente do peito, a direita abre a capa) e `grimoire_raise` (ergue o livro acima da cabeça, cabeça para trás).
+- `combat/abilities.js` `leoneGrimoire`: castTime 1,2; a capa abre entre 0,25 e 0,6 do preparo, o brilho sobe até o grito; emissor e runas no livro; o rosto troca para os olhos brancos no fim da leitura; sem checagem de raio (o alvo é atingido em qualquer distância, com o traço e o clarão no alvo). `forms/carina_leone.js`: sem `radius`, sem `ai.when: 'near'`, texto atualizado.
+- Testado no navegador: Balu a 17,6 m levou o dano, ficou surdo e com as habilidades tomadas; capa abrindo (rotação 3,05 → −0,18), olhos brancos, livro erguido no grito. `npm test` 62/62, `npm run check` ok, build ok.
+
 ## v4.17.0 — Carina Leone
 
 - Versão: `VERSION` 4.16.0 → **4.17.0** (`package.json`/lock junto). Data: 2026-11-02. Pedido do usuário: personagem que completa equipe existente (Abutres); a forma transformada e o grimório seguem a decisão do dono.

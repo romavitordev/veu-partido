@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.17.1 — O Grimório de Arnaldo
+- A Carina transformada agora abre o Grimório de Arnaldo, os sigilos brilham e ela ergue o livro no grito.
+- O grimório vale de qualquer lugar do mapa.
+
 ## v4.17.0 — Carina Leone
 - Carina Leone, dos Abutres, entra no elenco com o mangual, as facas e a Glock Silenciada.
 - Transformada em Todos os Leone, usa o nunchaku dourado e abre o Grimório de Arnaldo, que toma as habilidades do adversário.

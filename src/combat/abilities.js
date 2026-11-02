@@ -3913,9 +3913,10 @@ Object.assign(ABILITY_TYPES, {
 
   // CARINA — GRIMÓRIO DE ARNALDO (só na forma Todos os Leone). Cânone (Calamidade): ao completar o grimório as páginas
   // ficam pretas com os sigilos dourados, ela sente "o próprio Outro Lado nas mãos" e TOMA OS RITUAIS do Kian; os olhos
-  // ficam COMPLETAMENTE BRANCOS e ela solta um grito ensurdecedor. No jogo: abre o livro, os olhos ficam brancos, o grito
-  // derruba quem estiver perto (guarda não segura), deixa SURDO, TOMA AS HABILIDADES do adversário por alguns segundos
-  // e ela fica muito mais forte enquanto o Outro Lado está nas mãos dela
+  // ficam COMPLETAMENTE BRANCOS e ela solta um grito ensurdecedor. No jogo: traz o livro fechado para a frente, ABRE, os
+  // sigilos acendem e o brilho dourado cresce; os olhos ficam brancos, ela ERGUE o livro e grita. Altera a realidade,
+  // então NÃO TEM DISTÂNCIA (pedido do dono, 2026-11-02): vale em qualquer lugar do mapa — a guarda não segura, o alvo
+  // fica SURDO, perde as habilidades por alguns segundos e ela fica muito mais forte enquanto o Outro Lado está nas mãos
   leoneGrimoire: {
     start(f, a, world) {
       const tl = new Timeline();
@@ -3923,37 +3924,72 @@ Object.assign(ABILITY_TYPES, {
       const col = a.color ?? 0xf2c230;
       f.vel.set(0, 0, 0);
       if (opp) f.yaw = yawTo(f.pos, opp.pos);
-      const castT = a.castTime ?? 1.0;
-      f.anim.play('concentrate', { restart: true, duration: castT });
-      if (f.rig.props.grimoireArnaldo) f.rig.showProp('grimoireArnaldo', true);
+      const castT = a.castTime ?? 1.2;
+      const openT = castT * 0.75; // o tempo de abrir e ler
+      f.anim.play('grimoire_open', { restart: true, duration: openT });
+      const book = f.rig.props.grimoireArnaldo;
+      const bookPos = () => (book && book.visible ? book.getWorldPosition(new THREE.Vector3()) : f.chestPos());
+      if (book) {
+        f.rig.showProp('grimoireArnaldo', true);
+        book.userData.setOpen && book.userData.setOpen(0);
+        book.userData.setGlow && book.userData.setGlow(0);
+      }
       world.audio.play('ritual', { volume: 0.8, pitch: 0.7 });
-      const glow = world.fx.emitter({ rate: 46, follow: () => f.chestPos(), particle: { color: col, speed: 1.2, up: 1.5, spread: 0.6, life: 0.6, size: 0.2 } });
+      // a capa abre (0,25–0,6 do preparo) e o brilho sobe até o grito
+      for (let t = 0; t <= castT + 0.001; t += 0.04) {
+        tl.add(t, () => {
+          if (!book || !book.userData.setOpen) return;
+          book.userData.setOpen((t / openT - 0.25) / 0.35);
+          book.userData.setGlow(Math.max(0, (t / castT - 0.35) / 0.65) * (0.85 + 0.15 * Math.sin(t * 30)));
+        });
+      }
+      let glow = null;
+      let runes = null;
+      tl.add(openT * 0.6, () => {
+        // as páginas abertas: os sigilos dourados acendem e o brilho sobe do livro
+        world.audio.play('fearGaze', { volume: 0.45, pitch: 1.4 });
+        world.fx.flash(bookPos(), { color: col, size: 1.4, life: 0.2 });
+        glow = world.fx.emitter({ rate: 70, follow: bookPos, particle: { color: col, speed: 0.9, up: 1.8, spread: 0.35, life: 0.6, size: 0.14 } });
+        runes = world.fx.runes(bookPos, { color: col, count: 6, radius: 0.55, size: 0.2 });
+      });
       let undoFace = null;
       const end = () => {
-        glow.stop();
+        if (glow) glow.stop();
+        if (runes) runes.stop();
+        glow = runes = null;
         if (undoFace) undoFace();
         undoFace = null;
-        if (f.rig.props.grimoireArnaldo) f.rig.showProp('grimoireArnaldo', false);
+        if (book) {
+          book.userData.setGlow && book.userData.setGlow(0);
+          book.userData.setOpen && book.userData.setOpen(0);
+          f.rig.showProp('grimoireArnaldo', false);
+        }
       };
-      tl.add(castT * 0.45, () => {
+      tl.add(openT, () => {
         undoFace = swapFace(f.rig, 'face_carina', 'face_carina_white'); // os olhos completamente brancos
-        world.fx.flash(f.chestPos(), { color: 0xffffff, size: 2.4, life: 0.25 });
+        world.fx.flash(bookPos(), { color: 0xffffff, size: 2.4, life: 0.25 });
         world.fx.ring(new THREE.Vector3(f.pos.x, 0.05, f.pos.z), { color: col, radius: 1.8, life: 0.6 });
         world.audio.play('heartbeat', { volume: 0.8 });
+        f.anim.play('grimoire_raise', { restart: true, duration: castT - openT + 0.7 });
       });
       tl.add(castT, () => {
-        // o GRITO ensurdecedor
-        f.anim.play('taunt_roar', { restart: true, duration: 0.7 });
+        // o GRITO ensurdecedor com o livro erguido
         f.invuln = Math.max(f.invuln, 0.35);
         world.audio.play('shockwave', { volume: 1 });
-        world.screenFlash && world.screenFlash('#fff4d0', 0.2);
+        world.screenFlash && world.screenFlash('#fff4d0', 0.25);
         world.cameraRig.shake(0.5, 0.4);
-        for (let i = 0; i < 3; i++) world.fx.ring(new THREE.Vector3(f.pos.x, 0.06 + i * 0.4, f.pos.z), { color: i === 1 ? 0xffffff : col, radius: a.radius * (0.5 + i * 0.25), life: 0.5 + i * 0.1 });
-        world.fx.burst(f.chestPos(), { count: 60, color: col, speed: 6, life: 0.7, size: 0.24 });
-        if (opp && opp.state !== 'ko' && distXZ(f.pos, opp.pos) <= a.radius && !opp.isInvulnerable()) {
+        world.fx.flash(bookPos(), { color: col, size: 3.2, life: 0.3 });
+        for (let i = 0; i < 3; i++) world.fx.ring(new THREE.Vector3(f.pos.x, 0.06 + i * 0.4, f.pos.z), { color: i === 1 ? 0xffffff : col, radius: 3.5 + i * 1.75, life: 0.5 + i * 0.1 });
+        world.fx.burst(bookPos(), { count: 70, color: col, speed: 6, life: 0.7, size: 0.24 });
+        // sem distância: a realidade muda em volta do alvo, onde quer que ele esteja
+        if (opp && opp.state !== 'ko' && !opp.isInvulnerable()) {
+          const at = opp.chestPos();
+          world.fx.tracer(bookPos(), at, { color: col, life: 0.25, width: 0.05 });
+          world.fx.flash(at, { color: col, size: 2.2, life: 0.25 });
+          for (let i = 0; i < 2; i++) world.fx.ring(new THREE.Vector3(opp.pos.x, 0.06, opp.pos.z), { color: i ? 0xffffff : col, radius: 1.6 + i * 0.8, life: 0.5 });
           const res = applyHit(world, f, opp, {
             damage: a.damage, kind: 'ability', element: 'conhecimento', knockback: a.knockback ?? 4, hitstun: 0.8, launch: true,
-            guardBreak: true, sound: 'shockwave', color: col, scale: 2, dir: forwardFromYaw(f.yaw),
+            guardBreak: true, sound: 'shockwave', color: col, scale: 2, dir: new THREE.Vector3().subVectors(opp.pos, f.pos).setY(0).normalize(),
           });
           if (typeof res === 'number' && res >= 0 && opp.state !== 'ko') {
             deafFighter(world, opp, a.deaf ?? 3);
@@ -3968,8 +4004,8 @@ Object.assign(ABILITY_TYPES, {
         f.addBuff({ type: 'grimorioArnaldo', name: 'O OUTRO LADO NAS MÃOS', time: a.duration, duration: a.duration, mult: a.damageMult, speedMult: a.speedMult, takenMult: a.takenMult, onEnd() { aura.stop(); } });
         f.notify('O OUTRO LADO NAS MÃOS', true);
       });
-      tl.add(castT + 0.6, end);
-      tl.end(castT + 0.7);
+      tl.add(castT + 0.7, end);
+      tl.end(castT + 0.8);
       return seqFrom(tl, { cancel: end });
     },
   },

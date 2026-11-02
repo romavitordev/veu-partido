@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.17.1 — O Grimório de Arnaldo
+
+### Alterado
+- Carina (Todos os Leone) — Grimório de Arnaldo com animação própria: ela traz o livro fechado para a frente, abre a capa e as páginas pretas mostram os sigilos dourados acendendo, com o brilho e as runas girando em volta; os olhos ficam brancos, ela ergue o grimório aceso acima da cabeça e grita.
+- Grimório de Arnaldo sem distância (pedido do dono): altera a realidade, então atinge o adversário em qualquer lugar do mapa (antes só até 7 m). O clarão dourado cai em cima do alvo.
+
+### Registrado
+- TODO: melhorar o uso e os modelos das armas da Carina (mangual, Glock, facas, nunchaku).
+
 ## v4.17.0 — Carina Leone
 
 ### Adicionado

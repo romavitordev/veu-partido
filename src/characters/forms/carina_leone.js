@@ -67,11 +67,11 @@ export default {
       name: 'Grimório de Arnaldo',
       input: 'block+jump',
       type: 'leoneGrimoire',
-      description: 'Abre o Grimório de Arnaldo completo: as páginas pretas com os sigilos dourados acendem, os olhos ficam BRANCOS e ela solta um grito ensurdecedor. Quem estiver perto é derrubado (a guarda não segura), fica SURDO e tem os rituais TOMADOS — sem habilidades por 5 s — e ela fica muito mais forte por 8 s (+30% de dano, mais rápida, recebe menos dano).',
+      description: 'Abre o Grimório de Arnaldo completo: as páginas pretas com os sigilos dourados acendem e brilham, os olhos ficam BRANCOS, ela ergue o livro e solta um grito ensurdecedor. Altera a realidade, então vale EM QUALQUER LUGAR DO MAPA: o adversário é derrubado (a guarda não segura), fica SURDO e tem os rituais TOMADOS — sem habilidades por 5 s — e ela fica muito mais forte por 8 s (+30% de dano, mais rápida, recebe menos dano).',
       energyCost: 40,
       cooldown: 26,
-      castTime: 1.0,
-      radius: 7,
+      castTime: 1.2, // abre o livro, lê e grita
+      // sem radius: altera a realidade, vale de qualquer lugar do mapa (pedido do dono, 2026-11-02)
       damage: 110,
       knockback: 4.5,
       deaf: 3,
@@ -81,7 +81,6 @@ export default {
       speedMult: 1.12,
       takenMult: 0.8,
       color: GOLD,
-      ai: { when: 'near' },
     },
   ],
 

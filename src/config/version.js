@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.17.0';
+export const VERSION = '4.17.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.17.1',
+    date: '2026-11-02',
+    title: 'O Grimório de Arnaldo',
+    items: [
+      'CARINA: o Grimório de Arnaldo agora abre na mão dela, os sigilos dourados brilham e ela ergue o livro no grito.',
+      'CARINA: o grimório altera a realidade e vale de qualquer lugar do mapa.',
+    ],
+  },
   {
     v: '4.17.0',
     date: '2026-11-02',

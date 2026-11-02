@@ -1405,7 +1405,7 @@ export function addCarinaLeoneProps(rig) {
   carinaGun(rig);
   const book = arnaldoGrimoire();
   book.position.set(0, -0.09, 0.05);
-  book.rotation.set(-0.9, 0, 0);
+  book.rotation.set(-2.1, 0, 0); // as páginas abertas viradas para fora: quem olha vê os sigilos acesos
   book.visible = false;
   sockets.handL.add(book);
   props.grimoireArnaldo = book;
@@ -1433,21 +1433,25 @@ export function addCarinaLeoneProps(rig) {
 }
 
 // o GRIMÓRIO DE ARNALDO completo (wiki: ao inserir a última página "as páginas começam a se tornar pretas com vários
-// detalhes e sigilos em dourado"): capa escura, páginas pretas e os sigilos dourados acesos nas duas
+// detalhes e sigilos em dourado"): capa escura, páginas pretas e os sigilos dourados nas duas. Começa FECHADO; a
+// habilidade abre o livro (userData.setOpen(0..1): a metade direita gira pela lombada) e acende o brilho
+// (userData.setGlow(0..1): os sigilos e o clarão dourado em cima das páginas)
 function arnaldoGrimoire() {
   const g = new THREE.Group();
   const cover = toon(0x1a1410);
   const page = toon(0x0c0a0c);
   const goldGlow = glowMat(0xf2c230, 0.95);
+  const halves = {};
   for (const s of [-1, 1]) {
+    const pivot = new THREE.Group(); // gira pela lombada (x = 0)
+    g.add(pivot);
+    halves[s] = pivot;
     const c = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.014, 0.19), cover);
     c.position.set(s * 0.07, 0, 0);
-    c.rotation.z = s * -0.18;
-    g.add(c);
+    pivot.add(c);
     const pg = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.022, 0.18), page);
     pg.position.set(s * 0.066, 0.012, 0);
-    pg.rotation.z = s * -0.18;
-    g.add(pg);
+    pivot.add(pg);
     const sig = new THREE.Group();
     sig.add(new THREE.Mesh(new THREE.TorusGeometry(0.032, 0.0035, 6, 20), goldGlow));
     sig.add(new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.003, 6, 3), goldGlow));
@@ -1458,7 +1462,26 @@ function arnaldoGrimoire() {
     }
     sig.rotation.x = -Math.PI / 2;
     sig.position.set(s * 0.066, 0.025, 0);
-    g.add(sig);
+    pivot.add(sig);
   }
+  // o clarão em cima das páginas abertas (só aparece com o brilho)
+  const haloMat = glowMat(0xffd870, 0);
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.36, 0.3), haloMat);
+  halo.rotation.x = -Math.PI / 2;
+  halo.position.y = 0.04;
+  g.add(halo);
+  halves[-1].rotation.z = 0.18;
+  g.userData.setOpen = (t) => {
+    t = Math.max(0, Math.min(1, t));
+    halves[1].rotation.z = Math.PI * 0.97 + (-0.18 - Math.PI * 0.97) * t; // fechado: dobrada por cima da outra
+  };
+  g.userData.setGlow = (v) => {
+    v = Math.max(0, Math.min(1, v));
+    goldGlow.opacity = 0.35 + 0.65 * v;
+    haloMat.opacity = 0.55 * v;
+    halo.scale.setScalar(0.8 + 0.6 * v);
+  };
+  g.userData.setOpen(0);
+  g.userData.setGlow(0);
   return g;
 }
