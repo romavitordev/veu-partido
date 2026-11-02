@@ -578,6 +578,15 @@ function danteFace(open) {
   });
 }
 
+function carinaFace(eye) {
+  return face(() => {}, {
+    skin: '#e2b89c',
+    eye: { w: 15, h: 8, tilt: 0.08, lid: 3.2, lashes: true, ...eye },
+    brow: { angry: 0.5, thick: 4, color: '#3a2418' },
+    mouth: { mouthW: 13, smile: 3, lip: 'rgba(150,80,70,0.4)' },
+  });
+}
+
 export const MATERIAL_TEXTURES = {
   // ---------------- KAISER: queimadura no lado ESQUERDO (x > 256)
   // KAISER depois do orfanato (wiki): a metade ESQUERDA do rosto queimada, sem barba e sem a sobrancelha esquerda; com
@@ -2151,6 +2160,42 @@ export const MATERIAL_TEXTURES = {
     // cicatrizes no antebraço
     g.strokeStyle = 'rgba(170,90,80,0.7)'; g.lineWidth = 1.5;
     for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(100 + i * 9, 170); g.lineTo(108 + i * 9, 196); g.stroke(); }
+  }, { wrap: true }),
+  // CARINA LEONE: os olhos VERDES (wiki), semblante sereno; na Transformação (a Marca) os olhos ficam DOURADOS e brilham;
+  // abrindo o Grimório de Arnaldo ficam COMPLETAMENTE BRANCOS (wiki)
+  face_carina: carinaFace({ iris: '#3a7a48', irisLight: '#7ac088' }),
+  face_carina_gold: carinaFace({ iris: '#e0a820', irisLight: '#fff0a0', glow: 'rgba(255,214,90,0.45)' }),
+  face_carina_white: carinaFace({ iris: '#f4f4f0', irisLight: '#ffffff', sclera: '#ffffff', glow: 'rgba(255,255,255,0.8)' }),
+  // os BRAÇOS TATUADOS da Carina (wiki: "muitas tatuagens pelos dois braços"): traços de tinta preta — a juba e as
+  // escamas do dragão que sobe das costas, estrelas e linhas
+  arms_carina: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#e2b89c';
+    g.fillRect(0, 0, 256, 256);
+    g.strokeStyle = 'rgba(22,20,26,0.85)';
+    g.lineWidth = 2.2;
+    for (let i = 0; i < 6; i++) { // escamas em arco
+      const x = 30 + Math.random() * 196, y = 30 + Math.random() * 196;
+      for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(x + k * 9, y + k * 5, 7, Math.PI, 0); g.stroke(); }
+    }
+    for (let i = 0; i < 5; i++) { // a juba: raios curvos em volta de um centro
+      const x = 30 + Math.random() * 196, y = 30 + Math.random() * 196;
+      for (let k = 0; k < 10; k++) {
+        const a = (k / 10) * Math.PI * 2;
+        g.beginPath(); g.moveTo(x + Math.cos(a) * 6, y + Math.sin(a) * 6);
+        g.quadraticCurveTo(x + Math.cos(a + 0.4) * 12, y + Math.sin(a + 0.4) * 12, x + Math.cos(a) * 16, y + Math.sin(a) * 16); g.stroke();
+      }
+    }
+    g.fillStyle = 'rgba(22,20,26,0.85)';
+    for (let i = 0; i < 8; i++) { // estrelas pequenas
+      const x = Math.random() * 256, y = Math.random() * 256, r = 3 + Math.random() * 3;
+      g.beginPath();
+      for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2 - Math.PI / 2, rr = k % 2 ? r * 0.45 : r; g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+      g.fill();
+    }
+    for (let i = 0; i < 18; i++) {
+      const x = Math.random() * 256, y = Math.random() * 256;
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + 14, y + (Math.random() - 0.5) * 10); g.stroke();
+    }
   }, { wrap: true }),
   // camisa de flanela CÁQUI amarrada na cintura (a arte de corpo inteiro): fundo mostarda e o xadrez marrom fino
   plaid: () => canvasTex(128, 128, (g) => {

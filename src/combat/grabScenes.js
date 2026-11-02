@@ -181,6 +181,8 @@ export const GRAB_SCENES = {
   // CHICO: dois socos e a chave inglesa na cabeça
   chico: scene({ ...S('jab'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('body_blow'), fx: { kind: 'punch' }, sound: 'punch' }, { anim: 'heavy_punch', fx: 'slam', sound: 'heavyPunch' }),
   lirio: scene({ ...S('hammer_h', 0.34), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.34), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
+  // CARINA: dois giros do nunchaku, o chute circular e a faca no olho antes do empurrão
+  carina: scene({ ...S('slash_h'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('slash_h_back'), fx: { kind: 'punch', flip: true }, sound: 'punch' }, { anim: 'spin_kick', fx: 'slam', sound: 'kick', bleed: { dps: 3, duration: 2 } }),
   balu: scene({ ...S('hammer_h', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { ...S('hammer_diag', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   ferreiro: scene({ ...S('slash_h', 0.32), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('slash_h_back', 0.32), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'slash_finisher', fx: 'consume', sound: 'slashFinal' }),
   dalmo: scene({ ...S('body_blow', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('headbutt', 0.34), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),

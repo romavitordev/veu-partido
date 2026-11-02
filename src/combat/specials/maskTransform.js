@@ -22,6 +22,7 @@ import { MATERIAL_TEXTURES } from '../../models/textures.js';
 //             'hate' (Juan → Ódio do Diabo: corta o braço, o sangue vira garras, puxa o capuz e o olho acende)
 //             'eyes' (Dante → Olhos Abertos: de olhos fechados, o Lodo sobe do chão, ele ABRE OS OLHOS — pretos, as
 //             faixas e as orelhas pontudas)
+//             'leone' (Carina → Todos os Leone: concentra, a mecha e os olhos acendem dourados)
 //             'watch' (Arnaldo → O Anfitrião: tira o relógio de bolso, abre a tampa, a Relíquia de Energia brilha lá
 //             dentro e ele ergue o relógio; a Energia toma o corpo em roxo, rosa e azul)
 //             omitido: concentra e o acessório aparece
@@ -371,6 +372,29 @@ export const maskTransform = {
         world.cameraRig.shake(0.4, 0.35);
       });
       total = 2.9;
+    } else if (scene === 'leone') {
+      // CARINA — TODOS OS LEONE (cânone: conectada com a Marca, ao entrar em combate os olhos ficam DOURADOS e a mecha
+      // ciano vira um dourado brilhante): concentra de olhos fechados, close no rosto, a mecha acende, os olhos abrem
+      // dourados e o brilho dourado explode
+      f.anim.play('concentrate', { restart: true, duration: 1.6 });
+      world.audio.play('heartbeat', { volume: 0.6 });
+      lightTo = 3;
+      world.cameraRig.playShots([
+        orbit(f, { dur: 0.8, radius: 3.2, height: 1.3, a0: -0.5, a1: 0.15, lookH: 1.2 }),
+        faceClose(f, { dur: 1.1, from: 1.5, to: 1.05, side: 0.25, height: hy, fov: 34 }),
+        lowAngle(f, { dur: 0.9, dist: 3.0, side: -0.6 }),
+      ]);
+      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.9, () => world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: tint, radius: 1.6, life: 0.8 }));
+      tl.add(1.3, () => {
+        scrap.push(swapFace(f.rig, 'face_carina', 'face_carina_gold'));
+        maskOn(true);
+      });
+      tl.add(1.6, () => {
+        f.anim.play('charge_fists', { restart: true, duration: 0.8 });
+        for (let i = 0; i < 2; i++) world.fx.ring(new THREE.Vector3(f.pos.x, 0.07, f.pos.z), { color: tint, radius: 2.2 + i * 1.3, life: 0.6 + i * 0.1 });
+      });
+      total = 2.5;
     } else if (scene === 'watch') {
       // RELÍQUIA DE ENERGIA (Arnaldo → O Anfitrião) — uma cutscene de verdade, em nove fases:
       //  1 olha o relógio, que começa a brilhar · 2 o ambiente distorce (som estranho) · 3 a Relíquia se manifesta ·

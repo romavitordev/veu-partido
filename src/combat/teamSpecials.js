@@ -717,8 +717,8 @@ const CHOREO = {
   abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const END = S + 4.8;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
-    const dante = tools.get('dante'), balu = tools.get('balu'), joui = tools.get('joui'), arthur = tools.get('arthur');
-    const actors = [dante, balu, joui, arthur].filter(Boolean);
+    const dante = tools.get('dante'), balu = tools.get('balu'), joui = tools.get('joui'), arthur = tools.get('arthur'), carina = tools.get('carina');
+    const actors = [dante, balu, joui, arthur, carina].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
 
@@ -796,6 +796,30 @@ const CHOREO = {
         arthur.play('slash_finisher', 0.5);
         world.fx.burst(arthur.chest(), { count: 18, color: 0xb5162a, speed: 2.5, life: 0.4, size: 0.15 });
         tools.impact(arthur, damageOf(arthur), { sound: 'slashFinal', color: 0xb5162a, slash: true });
+      });
+    }
+
+    // CARINA: entra de lado na queda do corte do Arthur, gira o nunchaku na cara do alvo e fecha com a Glock Silenciada
+    if (carina) {
+      tl.add(S + 3.75, () => {
+        if (!live()) return;
+        const at = tools.around(carina, 1.3, 1.5);
+        carina.show(END - (S + 3.75), at);
+        carina.pos.set(at.x, 0, at.z);
+        carina.face(opp);
+        carina.play('flurry', 0.4);
+        world.cameraRig.playShots([{ ...twoShot(carina, opp, { dur: 0.75, dist: 2.4, height: 1.45, fov: 38 }), cut: true }]);
+      });
+      tl.add(S + 3.95, () => {
+        if (!live()) return;
+        world.fx.burst(opp.chestPos(), { count: 14, color: 0x2a5ad0, speed: 2.4, life: 0.35, size: 0.14 });
+        tools.impact(carina, Math.floor(damageOf(carina) * 0.5), { sound: 'punch', color: 0x2a5ad0 });
+      });
+      tl.add(S + 4.2, () => {
+        if (!live()) return;
+        carina.play('point', 0.3);
+        world.fx.tracer(carina.chest(), opp.chestPos(), { color: 0xffe08a, life: 0.12, width: 0.03 });
+        tools.impact(carina, damageOf(carina) - Math.floor(damageOf(carina) * 0.5), { sound: 'impact', color: 0xf2c230 });
       });
     }
 

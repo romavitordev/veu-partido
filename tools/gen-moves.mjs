@@ -92,7 +92,10 @@ for (const c of ROSTER) {
 `;
     if (p.type === 'extraTurn') md += `- **Passiva — Turno Extra:** o finalizador do combo que acerta abre ${p.window} s em que a próxima habilidade não entra em recarga (uma vez a cada ${p.cooldown} s)
 `;
-    if (p.type === 'elementalAffinity') md += `- **Passiva — Afinidade${p.element ? ` com ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ' Elemental'}:** rituais${p.element ? ` de ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ''} +${Math.round(((p.mult ?? 1.15) - 1) * 100)}%${p.resist ? `; −${Math.round((1 - p.resist) * 100)}% de dano de rituais desse elemento` : ''}
+    const El = p.element ? `${p.element[0].toUpperCase()}${p.element.slice(1)}` : '';
+    if (p.type === 'elementalAffinity' && p.mult === 1) md += `- **Passiva — Resistência a ${El}:** −${Math.round((1 - p.resist) * 100)}% de dano de ${El}
+`;
+    else if (p.type === 'elementalAffinity') md += `- **Passiva — Afinidade${p.element ? ` com ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ' Elemental'}:** rituais${p.element ? ` de ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ''} +${Math.round(((p.mult ?? 1.15) - 1) * 100)}%${p.resist ? `; −${Math.round((1 - p.resist) * 100)}% de dano de rituais desse elemento` : ''}
 `;
     if (p.type === 'predator') md +=`- **Passiva — Predador:** +${Math.round((p.mult - 1) * 100)}% em quem está atordoado, caído, tomando golpe ou abaixo de ${Math.round(p.threshold * 100)}% da vida
 `;

@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.16.0 (2026-11-02: revisão do kit da Aghata pelo cânone). Antes: v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.17.0 (2026-11-02: Carina Leone entra no elenco e completa a coreografia dos Abutres). Antes: v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -24,7 +24,7 @@
 
 ## Nota de passagem — Copilot (v4.8.0)
 - Feito: especiais em equipe da Força D e de Os Cinco; primeira coreografia dos Abutres com o elenco atual; closes de impacto que mantêm atacante e alvo no quadro; Van dos Cinco em Tipora; comandos de assistência com um único parceiro.
-- Registrado para depois: jaqueta do Veríssimo na habilidade e na transformação. Carina e Rubens ainda não estão no elenco; a coreografia dos Abutres usa os membros disponíveis.
+- Registrado para depois: jaqueta do Veríssimo na habilidade e na transformação. Carina entrou no elenco na v4.17.0 e já está na coreografia dos Abutres; falta o Rubens.
 - Teste visual no Treinamento em Equipe: Força D confirmada com o close enquadrando o grupo. Conferir também Os Cinco e Abutres em uma próxima rodada.
 
 ---
@@ -397,7 +397,8 @@ Adicionar e aprimorar animações de movimentação para deixar os personagens m
 
 As animações deverão respeitar o estilo de luta de cada personagem e ser compatíveis com os sistemas atuais de movimentação, ataques, esquivas e habilidades.
 
-- [x] **Melhoria geral de todas as animações do jogo (pedido de 2026-10-26):** todas as animações de movimento (corrida, caminhada, esquivas, dash, pulo, transições), ataques normais, sequências de combo, finalizadores e habilidades precisam ser aprimoradas para maior fluidez, impacto e naturalidade. — feito em 6 levas (ver MELHORIA GERAL DE TODAS AS ANIMAÇÕES, 2026-11-01).
+- [x] **Melhoria geral de todas as animações do jogo (pedido de 2026-10-26):** todas as animações de movimento (corrida, caminhada, esquivas, dash, pulo, transições), ataques normais, sequências de combo, finalizadores e habilidades precisam ser aprimoradas para maior fluidez, impacto e naturalidade.
+ — feito em 6 levas (ver MELHORIA GERAL DE TODAS AS ANIMAÇÕES, 2026-11-01).
 - [ ] **Pesquisa e uso de referências visuais da internet:** buscar referências de alta qualidade em jogos de luta consagrados (Naruto Storm, Guilty Gear, Tekken, Street Fighter), coreografias de artes marciais reais e cenas de ação em animes para guiar o timing, arcos de movimento (anticipation, follow-through, peso e inércia).
 - [x] **Polimento individual por estilo de combate** (2026-11-01, `anim/animStyles.js`, ver a 5ª leva acima): garantir que cada combatente tenha animações fiéis ao seu estilo e personalidade narrativa (ex.: agilidade e esgrima de Joui, brutalidade pesada de Balu e Aguiar, técnica militar de Kaiser e Veríssimo, loucura caótica de Xande e Anfitrião, elegância sobrenatural de Kian).
 
@@ -444,12 +445,17 @@ A wiki comunitária é um índice e uma ferramenta para localizar fatos e cenas,
 
 #### 1. Processo obrigatório para cada personagem
 Antes de propor alterações:
-- [x] Conferir o código atual e listar todos os kits: base, forma(s), passivas, especial, agarrão, armas, assistências, efeitos de status e interações de equipe. (2026-11-01: script de kit para os 22 personagens + formas)
+- [x] Conferir o código atual e listar todos os kits: base, forma(s), passivas, especial, agarrão, armas, assistências, efeitos de status e interações de equipe.
+ (2026-11-01: script de kit para os 22 personagens + formas)
 - [x] Confirmar em quais arquivos estão definidos os golpes, animações, hitboxes, dano, cooldown, custo de energia, VFX, IA/CPU, HUD e transformações.
-- [x] Consultar a página da wiki do personagem, as páginas das habilidades/elementos/trilhas relacionadas e as referências indicadas nelas. (2026-11-01: wikitext pela API para todos de 3.2 a 3.28)
-- [~] Verificar as cenas relevantes nos episódios oficiais. Registrar episódio, cena e timestamp quando possível; não inventar timestamp se não foi conferido. — só os timestamps que a wiki cita; episódios não assistidos nesta passada.
-- [~] Para poderes que vêm do RPG, consultar a descrição mecânica no livro/suplemento. Se o texto integral não estiver disponível legalmente, não reconstruir regras detalhadas de memória: usar a descrição pública e marcar a incerteza. — usada a descrição mecânica da wiki; o livro não foi consultado.
-- [x] Criar uma tabela: **habilidade atual → comportamento real no código → referência canônica → divergência → proposta → impacto técnico → teste de aceite**. (tabela completa no 3.1/3.2; resumo por personagem nos demais)
+- [x] Consultar a página da wiki do personagem, as páginas das habilidades/elementos/trilhas relacionadas e as referências indicadas nelas.
+ (2026-11-01: wikitext pela API para todos de 3.2 a 3.28)
+- [~] Verificar as cenas relevantes nos episódios oficiais. Registrar episódio, cena e timestamp quando possível; não inventar timestamp se não foi conferido.
+ — só os timestamps que a wiki cita; episódios não assistidos nesta passada.
+- [~] Para poderes que vêm do RPG, consultar a descrição mecânica no livro/suplemento. Se o texto integral não estiver disponível legalmente, não reconstruir regras detalhadas de memória: usar a descrição pública e marcar a incerteza.
+ — usada a descrição mecânica da wiki; o livro não foi consultado.
+- [x] Criar uma tabela: **habilidade atual → comportamento real no código → referência canônica → divergência → proposta → impacto técnico → teste de aceite**.
+ (tabela completa no 3.1/3.2; resumo por personagem nos demais)
 - [x] Marcar cada conclusão como uma destas categorias:
   - **CONFIRMADO:** aparece em fonte oficial ou descrição mecânica identificável.
   - **ADAPTAÇÃO:** efeito criado para traduzir a habilidade para combate em tempo real.
@@ -2062,8 +2068,11 @@ ataca antes).
 ### Ligações (a tabela vai para `src/config/teamLinks.js`)
 Confirmadas pelo pedido:
 - [x] **Joui + Kaiser + Arthur** — virou o grupo **FORÇA D** (a equipe de Desconjuração; pedido do dono: a Equipe Abutres
-  é a de Calamidade, sem o Kaiser). Vale com 3 da equipe; Thiago e Liz entram quando estiverem no elenco. Joui surge
+  é a de Calamidade, sem o Kaiser). Vale com 3 da equipe. (2026-11-02) Thiago e Liz NÃO são da Força D. Joui surge
   atrás e corta, Kaiser a rajada de Balas Amaldiçoadas, Arthur o tiro do Rebirth (verde); o líder fecha com o especial.
+- [ ] **EQUIPE E** (Segredo na Floresta: Arthur, Kaiser e Joui MAIS NOVOS, Thiago e Liz) — correção do dono (2026-11-02):
+  o especial da Equipe E só entra quando existirem as versões jovens do Arthur, do Kaiser e do Joui. Até lá, o Thiago e a
+  Liz podem entrar no elenco como lutadores da Ordem (sem ligação de equipe).
 - [x] **Cristopher + Kaiser** — especial de dupla "A Muralha e o Disparo": o terceiro ataca primeiro, o Cristopher dá a
   ombrada e SEGURA o alvo e o Kaiser (o filho) dispara.
 - [x] **Mascarados** (Dalmo, Aguiar, Jae, Kemi, Labirinto, Juan) — especial de grupo com 3 ou mais na equipe: os seis
@@ -2079,9 +2088,9 @@ Confirmadas pelo pedido:
 - [x] **FORÇA D — coreografia** (2026-11-02): Kaiser em close conjura a Cinerária e envolve a cena em névoa; Joui surge
   atrás do alvo e as espirais da espada marcam o corte; Arthur atravessa a névoa correndo e ataca com a Arma de Sangue.
   Efeitos visuais substituem cigarro/modelagem novos.
-- [~] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur (os quatro
-  disponíveis no elenco), usando lodo, machado, katana e Arma de Sangue. Carina e Rubens entram na cena quando seus
-  personagens forem adicionados; não foi criada modelagem nesta etapa.
+- [~] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur, usando
+  lodo, machado, katana e Arma de Sangue. [x] Carina Leone (v4.17.0) entra no fim com o mangual e a Glock. [ ] Rubens
+  Naluti entra quando for adicionado ao elenco.
 - [x] **OS CINCO — especial de grupo** (2026-11-02): Morato comanda e dispara a metralhadora; Chico combina pulso do
   scanner e clarão do farol; Xande avança de skate com o taco; Lírio prende com as Magras e golpeia com a Leonora; Guizo
   registra com a câmera e corta; Dara usa a lanterna UV e finaliza no corpo a corpo. Mantidos os itens e habilidades

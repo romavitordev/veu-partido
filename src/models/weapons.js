@@ -2580,3 +2580,119 @@ export function tenebrisPendant() {
   }
   return g;
 }
+
+// NUNCHAKU DA CARINA (wiki "Carina Leone", Arsenal: o nunchaku AZUL; no 4º episódio de Calamidade ela o deixa DOURADO,
+// bastões e corrente, com o brasão dos Leone nas pontas): o bastão da mão na origem seguindo para -Y, a corrente curta e
+// o segundo bastão solto, um pouco aberto (o giro). `gold`: a versão aprimorada (a forma Todos os Leone)
+export function nunchaku({ gold = false } = {}) {
+  const g = new THREE.Group();
+  const goldMat = toon(0xe0b030, { emissive: 0x3a2604 });
+  const blue = gold ? 0 : 0x2a5ad0, ring = gold ? 0 : 0xb8b8c0;
+  const opt = (o = {}) => (gold ? { ...o, mat: goldMat } : o);
+  const L = 0.3;
+  const stick = (len) => {
+    const s = new THREE.Group();
+    const body = part(new THREE.CylinderGeometry(0.017, 0.015, len, 8), blue, opt());
+    body.position.y = -len / 2;
+    s.add(body);
+    for (const y of [-0.01, -len + 0.01]) {
+      const cap = part(new THREE.CylinderGeometry(0.0185, 0.0185, 0.014, 8), ring, opt({ outline: false }));
+      cap.position.y = y;
+      s.add(cap);
+    }
+    return s;
+  };
+  const a = stick(L);
+  a.position.y = 0.08; // o punho segura perto da ponta de cima
+  g.add(a);
+  const links = 4;
+  for (let i = 0; i < links; i++) {
+    const l = part(new THREE.TorusGeometry(0.008, 0.0022, 4, 8), ring, opt({ outline: false }));
+    l.position.y = 0.08 - L - 0.008 - i * 0.013;
+    l.rotation.y = i % 2 ? Math.PI / 2 : 0;
+    g.add(l);
+  }
+  const b = stick(L);
+  b.position.y = 0.08 - L - links * 0.013 - 0.004;
+  b.rotation.z = 0.35;
+  g.add(b);
+  return g;
+}
+
+// GLOCK SILENCIADA DA CARINA (cânone: dourada, com a CABEÇA DE LEÃO no cabo): cano para -Y, topo em +Z, o silenciador na
+// ponta; userData.muzzle na boca do silenciador
+export function glockLeone() {
+  const g = new THREE.Group();
+  const gold = toon(0xd4a838, { emissive: 0x2a1a04 });
+  const dark = 0x1c1c20;
+  const slide = part(new THREE.BoxGeometry(0.03, 0.19, 0.036), 0, { mat: gold });
+  slide.position.set(0, -0.06, 0.03);
+  g.add(slide);
+  const frame = part(new THREE.BoxGeometry(0.028, 0.15, 0.022), 0, { mat: gold });
+  frame.position.set(0, -0.05, 0.004);
+  g.add(frame);
+  const grip = part(new THREE.BoxGeometry(0.028, 0.048, 0.1), 0, { mat: gold });
+  grip.position.set(0, 0.004, -0.04);
+  grip.rotation.x = -0.22;
+  g.add(grip);
+  const guard = part(new THREE.TorusGeometry(0.016, 0.003, 4, 10, Math.PI), dark, { outline: false });
+  guard.position.set(0, -0.04, -0.008);
+  guard.rotation.set(0, Math.PI / 2, Math.PI);
+  g.add(guard);
+  // a cabeça de leão no pé do cabo: o rosto e a juba
+  const lion = part(new THREE.SphereGeometry(0.016, 10, 8), 0, { mat: gold, outline: false });
+  lion.position.set(0, 0.022, -0.09);
+  g.add(lion);
+  const mane = part(new THREE.TorusGeometry(0.017, 0.006, 5, 12), 0xa07818, { outline: false });
+  mane.position.copy(lion.position);
+  mane.rotation.y = Math.PI / 2;
+  g.add(mane);
+  const sil = part(new THREE.CylinderGeometry(0.015, 0.015, 0.13, 10), dark);
+  sil.position.set(0, -0.215, 0.03);
+  g.add(sil);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.285, 0.03);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
+// MANGUAL DE MARCO LEONE (wiki "Carina Leone", Arsenal: "um mangual decorado, utilizado por Marco Leone em sua juventude";
+// depois de "Olhos" a Carina passa a usá-lo): o cabo de madeira com as faixas douradas para -Y, a corrente e a bola de
+// espinhos pendendo, com o brasão dos Leone
+export function mangual() {
+  const g = new THREE.Group();
+  const gold = toon(0xd4a838, { emissive: 0x2a1a04 });
+  const handle = part(new THREE.CylinderGeometry(0.019, 0.017, 0.34, 8), 0x4a2c18);
+  handle.position.y = -0.09;
+  g.add(handle);
+  for (const y of [0.07, -0.25]) {
+    const band = part(new THREE.CylinderGeometry(0.023, 0.023, 0.03, 8), 0, { mat: gold, outline: false });
+    band.position.y = y;
+    g.add(band);
+  }
+  const links = 6;
+  for (let i = 0; i < links; i++) {
+    const l = part(new THREE.TorusGeometry(0.011, 0.003, 4, 8), 0x9a9aa2, { outline: false });
+    l.position.set(0.006 * i, -0.28 - i * 0.018, 0);
+    l.rotation.y = i % 2 ? Math.PI / 2 : 0;
+    g.add(l);
+  }
+  const bc = new THREE.Vector3(0.045, -0.4, 0);
+  const ball = part(new THREE.SphereGeometry(0.055, 12, 10), 0x2a2a30);
+  ball.position.copy(bc);
+  g.add(ball);
+  const dirs = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1], [0.7, 0.7, 0], [-0.7, -0.7, 0], [0.7, 0, 0.7], [-0.7, 0, -0.7], [0, 0.7, -0.7], [0, -0.7, 0.7]];
+  for (const d of dirs) {
+    const v = new THREE.Vector3(...d).normalize();
+    const sp = part(new THREE.ConeGeometry(0.014, 0.04, 5), 0xc8c4bc, { outline: false });
+    sp.position.copy(bc).addScaledVector(v, 0.064);
+    sp.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v);
+    g.add(sp);
+  }
+  const crest = part(new THREE.TorusGeometry(0.03, 0.006, 5, 14), 0, { mat: gold, outline: false });
+  crest.position.copy(bc);
+  crest.rotation.y = Math.PI / 2;
+  g.add(crest);
+  return g;
+}

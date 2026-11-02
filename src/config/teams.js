@@ -17,7 +17,7 @@ export const TEAM_COLORS = {
   'Ordo Calamitas': '#4a62e0', // a ordem de 67 d.C. (Celestine, Gaius, Amalia, Cornelius): azul-real, nenhuma outra usa
 };
 
-export const TEAM_SHORT = { 'Ordo Realitas': 'Ordo', 'Ordo Calamitas': 'Calamitas' }; // cabe no cartÃ£o pequeno
+export const TEAM_SHORT = { 'Ordo Realitas': 'Ordem', 'Ordo Calamitas': 'Calamitas' }; // cabe no cartÃ£o pequeno
 
 export function teamColor(def) {
   return TEAM_COLORS[def && def.origin] || null;

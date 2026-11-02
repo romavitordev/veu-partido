@@ -38,11 +38,12 @@ export const CHARACTER_NAMES = {
   amalia: 'Amalia',
   carnical: 'Carniçal',
   dara: 'Dara',
+  carina: 'Carina',
   chico: 'Chico',
   morato: 'Morato',
 };
 
-export const BASE_CHARACTER = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', anfitriao: 'arnaldo', aguiar_mutilador: 'aguiar', erin_caos: 'erin', labirinto_elmo: 'labirinto', jae_x: 'jae', colosso: 'dalmo', guizo_et: 'guizo', kian_calamidade: 'kian', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao' };
+export const BASE_CHARACTER = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', anfitriao: 'arnaldo', aguiar_mutilador: 'aguiar', erin_caos: 'erin', labirinto_elmo: 'labirinto', jae_x: 'jae', colosso: 'dalmo', guizo_et: 'guizo', kian_calamidade: 'kian', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina' };
 
 export const INTRO_IDS = Object.keys(CHARACTER_NAMES);
 // as equipes de cada lutador (a principal e as outras), pela ficha; o Anfitrião é o das Relíquias
@@ -1771,7 +1772,7 @@ const VICTORY_JAE = {
     kemi: ['Contrato cancelado, Kemi. Nada pessoal... ou talvez um pouco.', 'Você mira de longe. Eu prefiro sentir de perto.'],
     balu: ['Quanto mais alto, maior a queda, tio Balu.', 'Toda essa força e nenhum olho nas costas.'],
     arnaldo: ['Fim do espetáculo, Arnaldo. Sem aplausos.', 'A plateia era só eu. E eu gostei.'],
-    verissimo: ['Olhos sempre abertos? Eu entrei pelas costas, velho.', 'A Ordo perdeu o líder pra uma garota com um punhal.'],
+    verissimo: ['Olhos sempre abertos? Eu entrei pelas costas, velho.', 'A Ordem perdeu o líder pra uma garota com um punhal.'],
   },
   kaiser: { jae: ['Rápida. Mas a névoa vê quem se esconde nela.', 'Guarda esse punhal, Jae. Acabou o jogo.'] },
   arthur: { jae: ['Pelas costas de novo? Eu aprendi a olhar pra trás.', 'Sem jogo hoje, Jae. Só eu de pé.'] },
@@ -1815,7 +1816,7 @@ const VICTORY_DALMO = {
     kemi: ['Você hesitou da primeira vez, Kemi. Hesitou de novo.', 'Eu te trouxe pro grupo. Eu te tiro da arena.'],
     balu: ['Dois grandões, um só de pé. Adivinha qual.', 'Machado bonito, tio. Agora vai pro chão.'],
     arnaldo: ['Aplausos? Eu só escuto a plateia gritando o meu nome.', 'Teatro é bonito. Arena é de verdade.'],
-    verissimo: ['A Ordo inteira ia precisar de muito mais.', 'Relatório pronto, velho: perdeu pro motorista.'],
+    verissimo: ['A Ordem inteira ia precisar de muito mais.', 'Relatório pronto, velho: perdeu pro motorista.'],
     jae: ['Pequena, rápida... e embaixo do meu pé.', 'Esconde-esconde acabou, Jae. Te achei.'],
   },
   kaiser: { dalmo: ['Grande demais pra desviar da névoa.', 'Até um colosso precisa respirar, Dalmo.'] },
@@ -1835,7 +1836,7 @@ const VICTORY_DALMO = {
   kemi: { dalmo: ['Contrato antigo, Dalmo. Hoje eu terminei.', 'Você me poupou uma vez. Eu não poupei.'] },
   balu: { dalmo: ['Hahaha! Pode ser grande, mas o tio Balu é maior!', 'Que pancada! Bora comer alguma coisa depois?'] },
   arnaldo: { dalmo: ['Que entrada! O público adorou a queda.', 'Bravo, Colosso! Mas o último ato era meu.'] },
-  verissimo: { dalmo: ['Olhos sempre abertos, Dalmo. Até pros gigantes.', 'A Ordo tem um lugar pra você. Uma cela.'] },
+  verissimo: { dalmo: ['Olhos sempre abertos, Dalmo. Até pros gigantes.', 'A Ordem tem um lugar pra você. Uma cela.'] },
   jae: { dalmo: ['Shh, grandão. Dorme.', 'Quanto maior, mais barulho cai. Shh.'] },
 };
 for (const [w, m] of Object.entries(VICTORY_DALMO)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
@@ -1884,7 +1885,7 @@ const VICTORY_GUIZO = {
   juan: { guizo: ['Ha! Que vídeo bonito vai dar. Vermelho do começo ao fim.', 'Grava isso aqui, ó: você caindo.'] },
   balu: { guizo: ['Hahaha! Desculpa, menino! Bora comer um macarrão?', 'Ê, rapaz! Bom de faca, ruim de queda.'] },
   arnaldo: { guizo: ['Que entrada! Mas o protagonista sou eu.', 'Corta! Repete a cena, garoto.'] },
-  verissimo: { guizo: ['Ocultismo de iniciante. A Ordo tem um curso pra isso.', 'Olhos sempre abertos, Guizo. Até para câmeras.'] },
+  verissimo: { guizo: ['Ocultismo de iniciante. A Ordem tem um curso pra isso.', 'Olhos sempre abertos, Guizo. Até para câmeras.'] },
 };
 for (const [w, m] of Object.entries(VICTORY_GUIZO)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
 
@@ -1959,7 +1960,7 @@ const VICTORY_MAGISTRADA = {
     juan: ['O Equilíbrio não se negocia, Juan.', 'Seu novo começo eu já tinha visto.'],
     balu: ['Calma, senhor Balu. Era só o Equilíbrio.', 'A sua força é real. O meu saber também.'],
     arnaldo: ['O espetáculo acabou, Arnaldo. Como eu disse que acabaria.', 'Senhorita Dicionário venceu, viu?'],
-    verissimo: ['Olhos abertos não bastam, Veríssimo.', 'A Ordo esquece. A Máscara lembra.'],
+    verissimo: ['Olhos abertos não bastam, Veríssimo.', 'A Ordem esquece. A Máscara lembra.'],
     guizo: ['Pode gravar. Eu apago depois.', 'Ninguém vai lembrar desse vídeo, Guizo.'],
     o_diabo: ['Pactos também têm regras. Eu sou a Executora delas.', 'O Sangue se curva ao Conhecimento.'],
   },
@@ -2142,7 +2143,7 @@ const VICTORY_CRISTINO = {
   kemi: { cristino: ['Silêncio, cangaceiro. Você mesmo pediu.', 'Alvo abatido. Sem pressa, como você gosta.'] },
   balu: { cristino: ['Hahaha! Que chapéu de espinho, hein!', 'Bora tirar esses espinhos e comer alguma coisa?'] },
   arnaldo: { cristino: ['Que figurino! Pena o final.', 'Bravo, cangaceiro! O último ato era meu.'] },
-  verissimo: { cristino: ['Olhos abertos, Cristino. Até pra quem anda a pé.', 'Desertor de Hexatombe. A Ordo tem perguntas.'] },
+  verissimo: { cristino: ['Olhos abertos, Cristino. Até pra quem anda a pé.', 'Desertor de Hexatombe. A Ordem tem perguntas.'] },
   jae: { cristino: ['Shh... palavra cumprida.', 'Você odeia barulho. Então dorme quieto.'] },
   dalmo: { cristino: ['Aí sim, neném! Derrubei o cangaceiro!', 'Grande você. Maior eu.'] },
   guizo: { cristino: ['Gravei! Um cangaceiro de verdade! Ninguém vai acreditar!', 'Chapéu de espinho, óculos vermelho... isso é ouro!'] },
@@ -2222,7 +2223,7 @@ const VICTORY_RAZIEL = {
     erin: ['Explosões não me assustam, menina. Eu já ardi inteiro.','Que barulho. Agora, silêncio à mesa.'],
     aghata: ['Rituais de Sangue... para mim? Que gentil.','O seu grimório não ensina a fugir.'],
     balu: ['Tanta carne. Hoje teremos fartura.','O machado era pesado. A queda, mais ainda.'],
-    verissimo: ['A Ordo manda os velhos agora? Que deselegante.','Anote no relatório: o anfitrião venceu.'],
+    verissimo: ['A Ordem manda os velhos agora? Que deselegante.','Anote no relatório: o anfitrião venceu.'],
     cristopher: ['Um armário de carne. Que generoso.','Proteja o seu filho agora, se puder.'],
     kian: ['Você previu o meu bote? Não previu o gosto.','A Escrita não salva ninguém da fome.'],
     gal_sal: ['Correntes não seguram quem já foi devorado pelo Sangue.','Justiça? À mesa, só existe apetite.'],
@@ -2285,7 +2286,7 @@ const VICTORY_CELESTINE = {
     erin: ['Explodiu tudo e ainda perdeu. Que talento.','Gostei do barulho. Gostei mais do silêncio depois.'],
     aghata: ['Sangue no grimório não para machadinha.','Ritual demorado. Eu sou mais rápida.'],
     balu: ['Grandão, cai com classe pelo menos.','Machado grande, coração mole. Nada pessoal.'],
-    verissimo: ['Velhinho, a Ordo te mandou sozinho? Que crueldade.','Anota aí no relatório: Celestine passou.'],
+    verissimo: ['Velhinho, a Ordem te mandou sozinho? Que crueldade.','Anota aí no relatório: Celestine passou.'],
     cristopher: ['Dublê não substitui no chão, né?','Que muralha. Caiu igual.'],
     kian: ['Previu a corrente? Não previu a segunda machadinha.','Escripta forte. Ainda é Escripta.'],
     gal_sal: ['Correntes contra correntes. As minhas cortam.','Justiça é bonita. Traição ganha.'],
@@ -2893,7 +2894,88 @@ VICTORY_CHICO.dara = { ...(VICTORY_CHICO.dara || {}) };
 for (const [w, m] of Object.entries(VICTORY_CHICO)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
 for (const [w, m] of Object.entries(VICTORY_DARA)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
 
+// CARINA LEONE (Ordo Realitas, Equipe Abutres): fria, direta, mercenária; carrega o nome dos Leone. Próxima do Balu, do
+// Joui e do Arthur; inimiga do Diabo; tomou os rituais do Kian com o grimório completo (wiki)
+const VICTORY_CARINA = {
+  carina: {
+    arthur: ['Levanta, Arthur. Abutre não fica no chão.', 'Você ainda abre a guarda pra esquerda. Eu avisei.'],
+    joui: ['Sua katana é rápida, Joui. Eu já sabia pra onde ela ia.', 'Treino bom. Amanhã de novo.'],
+    kaiser: ['Fumaça não esconde o ombro que você vai mexer.', 'Guarda o fuzil, Kaiser. Perto assim ele não serve.'],
+    dante: ['Reza depois, Dante. Agora levanta.', 'Seu baralho não previu o nunchaku.'],
+    erin: ['Granada é barulho. Eu prefiro silêncio.', 'Explodiu tudo e errou eu. De novo.'],
+    aghata: ['Ritual demora. Faca no olho, não.', 'Guarda esse livro. Eu já tenho o meu.'],
+    balu: ['Valeu por segurar, grandão. Agora deita um pouco.', 'Calma, Balu. Foi só treino. Quase.'],
+    verissimo: ['Com todo respeito, senhor: eu vi o plano antes.', 'Comandante no chão. Ninguém vai saber por mim.'],
+    cristopher: ['Dublê cai bonito. Eu derrubo melhor.', 'Corta. Cena encerrada.'],
+    kian: ['Seus rituais agora são meus, Kian. O grimório tá completo.', 'Escreve aí: os Leone venceram.'],
+    gal_sal: ['Corrente quebrada. Prisão nenhuma me segura.', 'Justiça? Eu cobro por hora.'],
+    nubi: ['Paciência é boa. Precognição é melhor.', 'O tempo passou devagar. Pra você.'],
+    xande: ['Skate não é escudo, moleque.', 'Cai, levanta, cai. Já entendi.'],
+    guizo: ['Grava isso: perdeu pros Leone.', 'Sua câmera filmou meu nunchaku. Ótimo.'],
+    lirio: ['Martelo pesado. Eu sou mais rápida.', 'Parede caída, Lírio.'],
+    dara: ['Remenda a si mesma primeiro, doutora.', 'Desculpa. Foi limpo, pelo menos.'],
+    chico: ['Desliga o scanner. Eu não deixo rastro.', 'Gambiarra não para faca.'],
+    morato: ['Líder bom. Ainda assim, no chão.', 'Os Cinco treinam. Os Leone matam.'],
+    dalmo: ['Grande. Lento. Previsível.', 'Arena é sua. A luta foi minha.'],
+    aguiar: ['Caçador virou alvo.', 'Máscara não esconde o golpe que vem.'],
+    jae: ['Shh também. Eu sei andar no escuro.', 'Te vi antes de você sumir.'],
+    kemi: ['Bala abafada contra bala abafada. A minha chegou antes.', 'Nada pessoal. É contrato.'],
+    labirinto: ['Labirinto? Eu já sabia a saída.', 'Elmo bonito. Abre fácil.'],
+    juan: ['Gosta de dor? Toma mais.', 'Para de rir no chão.'],
+    cristino: ['Apaga esse lampião. Acabou.', 'Cangaço não para nunchaku.'],
+    raziel: ['Vampiro lento é vampiro morto.', 'Mordida nenhuma hoje.'],
+    arnaldo: ['O show acabou. Ninguém aplaudiu.', 'Sua finta é teatro. A minha é sério.'],
+    ferreiro: ['Espada enorme. Golpe óbvio.', 'Santo Berço caiu. Faz silêncio.'],
+    celestine: ['Traição eu enxergo de longe.', 'Nada pessoal, Celestine. É dinheiro.'],
+    gaius: ['Velho de Roma, sentado. Respeito.', 'Seus jogos acabaram há dois mil anos.'],
+    amalia: ['Flecha boa. Eu vi ela sair.', 'Mira linda. Reflexo meu.'],
+    o_diabo: ['Isso é por todos os Leone.', 'Volta pro inferno. Eu sigo viva.'],
+    magistrada: ['Você previu. Eu previ antes.', 'Equilíbrio quebrado, Magistrada.'],
+    estrangeiro: ['Seu sinal não entra na minha cabeça.', 'Ninguém esquece um Leone.'],
+    amigo: ['Desenho feio. Rasguei.', 'Volta pro papel.'],
+    carnical: ['Não olhei pra espiral. Olhei pra garganta.', 'Morto de novo. Fica.'],
+  },
+  arthur: { carina: ['Desculpa, Carina! Foi treino, juro.', 'Te peguei uma vez. Vou lembrar disso pra sempre.'] },
+  joui: { carina: ['Você leu o corte. Eu mudei no meio.', 'Treino bom. Amanhã você ganha.'] },
+  kaiser: { carina: ['Mercenária boa. Sem contrato hoje.', 'Rápida. Mas fumaça não tem guarda.'] },
+  dante: { carina: ['Os Leone descansam hoje, Carina.', 'Peça encerrada. Você foi bem.'] },
+  erin: { carina: ['KABOOM! Previu isso aí?', 'Precognição não lê explosão!'] },
+  aghata: { carina: ['Seus rituais vieram do livro errado.', 'Mais uma página: a Leone.'] },
+  balu: { carina: ['Ô Carina, desculpa! O machado escorregou!', 'Hahaha! Calma, calma, deixa o tio Balu te levantar.'] },
+  verissimo: { carina: ['Disciplina vence velocidade, agente.', 'Bom reflexo. Treine a paciência.'] },
+  cristopher: { carina: ['Eu sei cair. Você vai aprender também.', 'Corta! Cena do nunchaku, de novo!'] },
+  kian: { carina: ['Você tem o grimório. Eu tenho a Escrita.', 'Devolve meus rituais, Leone.'] },
+  gal_sal: { carina: ['Presa. Mercenária ou não.', 'A justiça não aceita pagamento.'] },
+  nubi: { carina: ['Você vê antes. Eu espero mais.', 'Devagar, menina. Respira.'] },
+  xande: { carina: ['Caramba, Carina! Ganhei de uma Abutre!', 'Bora de novo? Eu deixo você girar primeiro.'] },
+  guizo: { carina: ['Gravei! Precognição nenhuma vê a câmera.', 'Eu já sabia que ia acertar.'] },
+  lirio: { carina: ['Bah, guria, rápida demais. Mas a Leonora pegou.', 'Levanta. A parede segura.'] },
+  dara: { carina: ['Fica parada que eu olho esse supercílio.', 'Desculpa, Carina. Respira.'] },
+  chico: { carina: ['Peguei no scanner! Tu era um pico enorme!', 'Desculpa! Foi o farol!'] },
+  morato: { carina: ['Abutre rápida. Mas eu vi coisa pior.', 'Levanta, Leone. Tem Alheio lá fora.'] },
+  dalmo: { carina: ['Volta pro canto, neném.', 'Nunchaku contra escafandro? Coragem.'] },
+  aguiar: { carina: ['Presa rápida. Caçada boa.', 'Corre bem. Cai igual.'] },
+  jae: { carina: ['Shh... você não me viu.', 'Precognição não ouve sussurro.'] },
+  kemi: { carina: ['Nada pessoal, Leone. Contrato.', 'Silenciador bom. O meu é melhor.'] },
+  labirinto: { carina: ['Saída nenhuma, Leone.', 'Perdida no meu caminho.'] },
+  juan: { carina: ['Mais! Bate mais, Leone!', 'Seu nunchaku ficou vermelho.'] },
+  cristino: { carina: ['Moça brava. Agora quieta.', 'O lampião viu você chegar.'] },
+  raziel: { carina: ['Sangue Leone. Raro.', 'Rápida. Eu sou mais.'] },
+  arnaldo: { carina: ['A dançarina sai de cena! Aplausos!', 'Finta boa. A minha tem plateia.'] },
+  ferreiro: { carina: ['A Morte não erra o golpe.', 'Santo Berço não precisa de mercenários.'] },
+  celestine: { carina: ['Nada pessoal, gata. Ou quase.', 'Traição você vê. Machadinha não.'] },
+  gaius: { carina: ['Lutadora boa. Em Roma você ia longe.', 'Senta, menina. Os jogos acabaram.'] },
+  amalia: { carina: ['Flecha longe. Faca não chega.', 'Desculpa. Mira.'] },
+  o_diabo: { carina: ['Mais uma Leone. A família inteira é minha.', 'Os Leone vivem dentro de você? Então morrem juntos.'] },
+  magistrada: { carina: ['Você vê o próximo segundo. Eu vejo tudo.', 'Previsto. Como os Leone.'] },
+  estrangeiro: { carina: ['Ninguém vai lembrar da última Leone.', 'Sinal perdido, mercenária.'] },
+  amigo: { carina: ['...a moça do bastão... virou pintura...', '...leão... de tinta...'] },
+  carnical: { carina: ['(rosna para o nunchaku caído) ...FIQUE...', '...LEONE... DURMA...'] },
+};
+for (const [w, m] of Object.entries(VICTORY_CARINA)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
+
 export const VICTORY_FALLBACKS = {
+  carina: 'Todos os Leone vivem dentro de mim. Hoje, eles venceram.',
   kaiser: 'A névoa não escolheu por mim. Desta vez, eu fiquei.',
   arthur: 'Acabou. Agora posso garantir que ninguém mais se machuque.',
   joui: 'Terminou. Eu devia ter encontrado outro jeito.',
@@ -3103,7 +3185,7 @@ for (const k of ['critical', 'special', 'transform']) {
   Object.assign(BATTLE_REPLIES[k], BATTLE_REPLIES_EXTRA[k]);
 }
 
-const DIALOGUE_BASE_IDS = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao' };
+const DIALOGUE_BASE_IDS = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina' };
 
 export function battleLines(speakerId, opponentId, event) {
   const lines = BATTLE_DIALOGUES[event];

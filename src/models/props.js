@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1369,4 +1369,96 @@ export function addRazielProps(rig) {
 export function addRazielVerdadeiroProps(rig) {
   if (rig.props.up) rig.showProp('up', false);
   if (rig.props.true) rig.showProp('true', true);
+}
+
+// CARINA (forma normal): o MANGUAL do pai sempre na mão; a GLOCK SILENCIADA dourada só no □ (o Saque Rápido)
+function carinaGun(rig) {
+  const gun = glockLeone();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  rig.sockets.handR.add(gun);
+  rig.props.glock = gun;
+  rig.muzzle = gun.userData.muzzle;
+}
+export function addCarinaProps(rig) {
+  const { sockets, props } = rig;
+  const flail = mangual();
+  inFist(flail, GRIP_HEAVY);
+  sockets.handR.add(flail);
+  props.flail = flail;
+  carinaGun(rig);
+  for (const [p, v] of [['streakGold', false], ['streakCyan', true]]) if (props[p]) rig.showProp(p, v);
+}
+
+// CARINA — TODOS OS LEONE (a Transformação): as mechas DOURADAS acesas, os olhos dourados (face_carina_gold), o NUNCHAKU
+// DOURADO aprimorado na mão e o GRIMÓRIO DE ARNALDO completo (páginas pretas com os sigilos dourados) na mão esquerda,
+// só quando ela o abre
+const CARINA_GOLD = { face_carina: 'face_carina_gold' };
+const carinaGoldTex = {};
+export function addCarinaLeoneProps(rig) {
+  const { sockets, props } = rig;
+  const nun = nunchaku({ gold: true });
+  inFist(nun);
+  sockets.handR.add(nun);
+  props.nunchaku = nun;
+  carinaGun(rig);
+  const book = arnaldoGrimoire();
+  book.position.set(0, -0.09, 0.05);
+  book.rotation.set(-0.9, 0, 0);
+  book.visible = false;
+  sockets.handL.add(book);
+  props.grimoireArnaldo = book;
+  for (const [p, v] of [['streakGold', true], ['streakCyan', false]]) if (props[p]) rig.showProp(p, v);
+  const swapped = new Map();
+  rig.root.traverse((o) => {
+    if (!o.isMesh || !o.material || !o.material.name || o.userData.isOutline) return;
+    const key = Object.keys(CARINA_GOLD).find((k) => o.material.name.endsWith(k));
+    if (!key) return;
+    if (!swapped.has(o.material)) {
+      const m = o.material.clone();
+      const id = CARINA_GOLD[key];
+      if (!carinaGoldTex[id]) {
+        const t = MATERIAL_TEXTURES[id]();
+        t.flipY = false;
+        t.needsUpdate = true;
+        carinaGoldTex[id] = t;
+      }
+      m.map = carinaGoldTex[id];
+      m.userData.sharedMap = true;
+      swapped.set(o.material, m);
+    }
+    o.material = swapped.get(o.material);
+  });
+}
+
+// o GRIMÓRIO DE ARNALDO completo (wiki: ao inserir a última página "as páginas começam a se tornar pretas com vários
+// detalhes e sigilos em dourado"): capa escura, páginas pretas e os sigilos dourados acesos nas duas
+function arnaldoGrimoire() {
+  const g = new THREE.Group();
+  const cover = toon(0x1a1410);
+  const page = toon(0x0c0a0c);
+  const goldGlow = glowMat(0xf2c230, 0.95);
+  for (const s of [-1, 1]) {
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.014, 0.19), cover);
+    c.position.set(s * 0.07, 0, 0);
+    c.rotation.z = s * -0.18;
+    g.add(c);
+    const pg = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.022, 0.18), page);
+    pg.position.set(s * 0.066, 0.012, 0);
+    pg.rotation.z = s * -0.18;
+    g.add(pg);
+    const sig = new THREE.Group();
+    sig.add(new THREE.Mesh(new THREE.TorusGeometry(0.032, 0.0035, 6, 20), goldGlow));
+    sig.add(new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.003, 6, 3), goldGlow));
+    for (let k = 0; k < 4; k++) {
+      const r = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.05, 0.004), goldGlow);
+      r.rotation.z = (k / 4) * Math.PI;
+      sig.add(r);
+    }
+    sig.rotation.x = -Math.PI / 2;
+    sig.position.set(s * 0.066, 0.025, 0);
+    g.add(sig);
+  }
+  return g;
 }

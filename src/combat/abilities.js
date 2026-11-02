@@ -8,6 +8,7 @@ import { splitDamage } from './specials/common.js';
 import { fleshCut, rawFlesh } from './specials/ritual.js';
 import { hasPassive, betray } from './passives.js';
 import { startSelfHarmTrance } from './selfHarm.js';
+import { swapFace } from './specials/maskTransform.js';
 import { DanteClone, CLONE, BloodZombie } from './npcs.js';
 
 // ARMA AMALDIÇOADA: o que cada elemento faz nos golpes (lido em damage.js) e as cores
@@ -2379,6 +2380,17 @@ Object.assign(ABILITY_TYPES, {
             });
             if (a.blind && typeof res === 'number' && res > 0) blindFighter(world, opp, a.blind); // Punhal X (Jae)
             if (a.bleed && typeof res === 'number' && res > 0 && opp.state !== 'ko') opp.applyBleed(a.bleed, f); // Vulto Retalhador (Raziel)
+            // a.reposition (Carina — Bater e Reposicionar): no mesmo movimento ela rola para as costas do alvo, que fica
+            // desprevenido (a Precognição não deixa)
+            if (a.reposition && typeof res === 'number' && res > 0 && opp.state !== 'ko') {
+              const F = forwardFromYaw(f.yaw);
+              const spot = findSpotBehind(world.arena, { x: opp.pos.x, z: opp.pos.z, yaw: yawTo(f.pos, opp.pos) + Math.PI }, { distance: a.reposition, radius: f.radius || 0.5 });
+              const to = spot ? new THREE.Vector3(spot.x, f.pos.y, spot.z) : new THREE.Vector3(opp.pos.x + F.x * a.reposition, f.pos.y, opp.pos.z + F.z * a.reposition);
+              world.fx.burst(f.chestPos(), { count: 14, color: a.color, kind: 'smoke', speed: 1.6, life: 0.4, size: 0.3 });
+              f.pos.copy(to);
+              f.yaw = yawTo(f.pos, opp.pos);
+              if (!hasPassive(opp, 'precognition')) opp.surprised = Math.max(opp.surprised || 0, 0.6);
+            }
           }
         }
       });
@@ -3898,12 +3910,77 @@ Object.assign(ABILITY_TYPES, {
       return seqFrom(tl, { cancel: hide });
     },
   },
+
+  // CARINA — GRIMÓRIO DE ARNALDO (só na forma Todos os Leone). Cânone (Calamidade): ao completar o grimório as páginas
+  // ficam pretas com os sigilos dourados, ela sente "o próprio Outro Lado nas mãos" e TOMA OS RITUAIS do Kian; os olhos
+  // ficam COMPLETAMENTE BRANCOS e ela solta um grito ensurdecedor. No jogo: abre o livro, os olhos ficam brancos, o grito
+  // derruba quem estiver perto (guarda não segura), deixa SURDO, TOMA AS HABILIDADES do adversário por alguns segundos
+  // e ela fica muito mais forte enquanto o Outro Lado está nas mãos dela
+  leoneGrimoire: {
+    start(f, a, world) {
+      const tl = new Timeline();
+      const opp = f.opponent;
+      const col = a.color ?? 0xf2c230;
+      f.vel.set(0, 0, 0);
+      if (opp) f.yaw = yawTo(f.pos, opp.pos);
+      const castT = a.castTime ?? 1.0;
+      f.anim.play('concentrate', { restart: true, duration: castT });
+      if (f.rig.props.grimoireArnaldo) f.rig.showProp('grimoireArnaldo', true);
+      world.audio.play('ritual', { volume: 0.8, pitch: 0.7 });
+      const glow = world.fx.emitter({ rate: 46, follow: () => f.chestPos(), particle: { color: col, speed: 1.2, up: 1.5, spread: 0.6, life: 0.6, size: 0.2 } });
+      let undoFace = null;
+      const end = () => {
+        glow.stop();
+        if (undoFace) undoFace();
+        undoFace = null;
+        if (f.rig.props.grimoireArnaldo) f.rig.showProp('grimoireArnaldo', false);
+      };
+      tl.add(castT * 0.45, () => {
+        undoFace = swapFace(f.rig, 'face_carina', 'face_carina_white'); // os olhos completamente brancos
+        world.fx.flash(f.chestPos(), { color: 0xffffff, size: 2.4, life: 0.25 });
+        world.fx.ring(new THREE.Vector3(f.pos.x, 0.05, f.pos.z), { color: col, radius: 1.8, life: 0.6 });
+        world.audio.play('heartbeat', { volume: 0.8 });
+      });
+      tl.add(castT, () => {
+        // o GRITO ensurdecedor
+        f.anim.play('taunt_roar', { restart: true, duration: 0.7 });
+        f.invuln = Math.max(f.invuln, 0.35);
+        world.audio.play('shockwave', { volume: 1 });
+        world.screenFlash && world.screenFlash('#fff4d0', 0.2);
+        world.cameraRig.shake(0.5, 0.4);
+        for (let i = 0; i < 3; i++) world.fx.ring(new THREE.Vector3(f.pos.x, 0.06 + i * 0.4, f.pos.z), { color: i === 1 ? 0xffffff : col, radius: a.radius * (0.5 + i * 0.25), life: 0.5 + i * 0.1 });
+        world.fx.burst(f.chestPos(), { count: 60, color: col, speed: 6, life: 0.7, size: 0.24 });
+        if (opp && opp.state !== 'ko' && distXZ(f.pos, opp.pos) <= a.radius && !opp.isInvulnerable()) {
+          const res = applyHit(world, f, opp, {
+            damage: a.damage, kind: 'ability', element: 'conhecimento', knockback: a.knockback ?? 4, hitstun: 0.8, launch: true,
+            guardBreak: true, sound: 'shockwave', color: col, scale: 2, dir: forwardFromYaw(f.yaw),
+          });
+          if (typeof res === 'number' && res >= 0 && opp.state !== 'ko') {
+            deafFighter(world, opp, a.deaf ?? 3);
+            const old = opp.findBuff('ritualsTaken');
+            if (old) old.time = a.lock;
+            else opp.addBuff({ type: 'ritualsTaken', name: 'RITUAIS TOMADOS', time: a.lock, duration: a.lock, noAbilities: true, lockMsg: 'RITUAIS TOMADOS: SEM HABILIDADES' });
+            opp.notify('RITUAIS TOMADOS!', true);
+          }
+        }
+        // o Outro Lado nas mãos: mais forte e mais rápida enquanto dura
+        const aura = world.fx.emitter({ rate: 22, follow: () => f.chestPos(), particle: { color: col, speed: 0.8, up: 1.4, spread: 0.6, life: 0.5, size: 0.18 } });
+        f.addBuff({ type: 'grimorioArnaldo', name: 'O OUTRO LADO NAS MÃOS', time: a.duration, duration: a.duration, mult: a.damageMult, speedMult: a.speedMult, takenMult: a.takenMult, onEnd() { aura.stop(); } });
+        f.notify('O OUTRO LADO NAS MÃOS', true);
+      });
+      tl.add(castT + 0.6, end);
+      tl.end(castT + 0.7);
+      return seqFrom(tl, { cancel: end });
+    },
+  },
 });
 
 // o efeito do selfBuff (também usado pelo bloodBind com a.buff: o Morato estala as Magras e engole a Calabresa)
 function applySelfBuff(f, a, world) {
   const trail = a.trail === false ? null : world.fx.emitter({ rate: 24, follow: () => f.chestPos(), particle: { color: a.color, speed: 0.4, spread: 0.4, life: 0.4, size: 0.16 } });
   if (a.refillDodges) f.dodges = Math.max(f.dodges, a.refillDodges);
+  // a.energy: recupera sanidade na hora (Carina — Pergaminho da Pertinácia, "+PE temporário")
+  if (a.energy) f.energy = Math.min(f.maxEnergy, f.energy + a.energy);
   // a.orderAllies (Veríssimo — Inteligência Estratégica: "dar comandos para seus aliados, que, ao ouvirem a ordem,
   // ganham um ataque extra"): na batalha em equipe as assistências ficam prontas na hora
   if (a.orderAllies && f.assists) {

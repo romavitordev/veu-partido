@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.16.0';
+export const VERSION = '4.17.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.17.0',
+    date: '2026-11-02',
+    title: 'Carina Leone',
+    items: [
+      'CARINA LEONE (Equipe Abutres) entra no elenco: mangual, facas e Glock Silenciada.',
+      'CARINA: transforma em Todos os Leone (mecha e olhos dourados, nunchaku dourado) e abre o Grimório de Arnaldo.',
+      'ABUTRES: a Carina entra no especial de equipe.',
+      'Thiago e Liz são da Equipe E (não da Força D); a tag "Ordo" virou "Ordem".',
+    ],
+  },
   {
     v: '4.16.0',
     date: '2026-11-02',

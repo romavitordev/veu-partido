@@ -363,6 +363,53 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## CARINA LEONE
+
+*A última dos Leone, a mercenária da Equipe Abutres* · arma: O Mangual de Marco Leone, a Glock Silenciada dourada da cabeça de leão e as facas de arremesso
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Bola lateral | 27 | 2.3 m |  |
+| ○ 2 | Bola de volta | 27 | 2.3 m |  |
+| ○ 3 | Chute circular | 26 | 2 m |  |
+| ○ 4 | Bola por cima | 38 | 2.4 m |  |
+| ○ 5 | Giro do Mangual | 58 | 2.5 m | finalizador: lança |
+| Frente + ○ | Avanço do Leão | 36 | 2.3 m |  |
+| Trás + ○ | Fintar | 0 | 0 m | contra-ataque (revida 48) |
+| Lado + ○ | Chute lateral | 28 | 2 m |  |
+| No ar + ○ | Chute aéreo | 32 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Bola de baixo | 40 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 40 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Glock Silenciada
+
+- Dano 17 × 2 · alcance 30 m · cooldown 2.2 s · custo 0
+
+### Habilidades
+
+- **Faca no Olho** — △ + □ / Y + X · custo 12 · cooldown 7 s
+  Arremessa uma faca na altura dos olhos: quem é acertado fica ATORDOADO por meio segundo e sangra.
+- **Bater e Reposicionar** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 34 · alcance 1.9 m
+  Entra com o mangual quebrando a guarda e, no mesmo movimento, rola para as costas do alvo: ele fica DESPREVENIDO e sem chance de revidar.
+- **Furtividade** — △ + L2 / Y + LT · custo 20 · cooldown 14 s
+  Sai da vista do adversário (3 s): quase invisível e um pouco mais rápida; o primeiro ataque pega o alvo DESPREVENIDO (Ataque Furtivo). Tomar dano a revela.
+- **Pergaminho da Pertinácia** — R2 + △ / RT + Y · custo 0 · cooldown 24 s
+  Lê o Pergaminho da Pertinácia: recupera 30 de sanidade e as esquivas, e por 6 s aguenta um golpe sem recuar.
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
+- **Passiva — Resistência a Energia:** −20% de dano de Energia
+
+### Especial: Dança dos Leone
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Todos os Leone
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
 ## SENHOR VERÍSSIMO
 
 *Líder da Ordo Realitas: Inteligência Estratégica e o Segredo de Veríssimo* · arma: A espada do Arnaldo e uma escopeta curta

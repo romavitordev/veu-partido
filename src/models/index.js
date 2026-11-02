@@ -1,4 +1,4 @@
-import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps } from './props.js';
+import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps, addCarinaProps, addCarinaLeoneProps } from './props.js';
 import { loadGLB, rigFromGLB } from './glbRig.js';
 import { preloadNpcModels } from './npcRig.js';
 
@@ -25,6 +25,7 @@ const BLENDER_MODELS = {
   deus_morte: { url: 'models/deus_morte.glb', props: null }, // forma de chefe (sem armas)
   morato: { url: 'models/morato.glb', props: addMoratoProps }, // Os Cinco: o líder (faixa vermelha, jaqueta azul, colar militar)
   chico: { url: 'models/chico.glb', props: addChicoProps }, // Os Cinco: o técnico (óculos com gambiarra, fones, bolsa com toca-discos)
+  carina: { url: 'models/carina.glb', props: addCarinaProps }, // Equipe Abutres: a artista marcial (o Mangual do pai na mão, Glock no □)
   dara: { url: 'models/dara.glb', props: addDaraProps }, // Os Cinco: a médica de campo (lanterna, bolsa e walkie-talkie no modelo)
   carnical: { url: 'models/carnical.glb', props: null }, // o Carniçal jogável (garras no modelo); o NPC é public/npcs/carnical.glb
   juan: { url: 'models/juan.glb', props: addJuanProps },
@@ -64,6 +65,7 @@ const MODEL_VARIANTS = {
   guizo_bombado: { base: 'guizo', props: addGuizoBombadoProps }, // Distorcer Aparência: a versão bombada
   guizo_velho: { base: 'guizo', props: addGuizoVelhoProps }, // Distorcer Aparência: a versão velha
   juan_odio: { base: 'juan', props: addJuanOdioProps }, // Ódio do Diabo: garras de sangue, capuz e o olho vermelho
+  carina_leone: { base: 'carina', props: addCarinaLeoneProps }, // Todos os Leone: mechas e olhos dourados, nunchaku dourado e o Grimório de Arnaldo
   dante_aberto: { base: 'dante', props: addDanteAbertoProps }, // Olhos Abertos: olhos pretos, as faixas, as tatuagens e as orelhas pontudas
   cristino_desertor: { base: 'cristino', props: addCristinoDesertorProps }, // Tocado pela Coroa: rabiscos vermelhos e o rifle
   joui_shinokage: { base: 'joui', props: addJouiShinokageProps }, // sem a máscara, com a Shi no Kage (fase final)

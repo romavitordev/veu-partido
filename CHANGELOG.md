@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.17.0 — Carina Leone
+
+### Adicionado
+- Carina Leone (Equipe Abutres, Conhecimento). Forma normal: o Mangual de Marco Leone no corpo a corpo, a Glock Silenciada no □ e as habilidades Faca no Olho (atordoa e sangra), Bater e Reposicionar (quebra a guarda e rola para as costas do alvo, que fica desprevenido), Furtividade e Pergaminho da Pertinácia (energia, armadura e esquivas). Fintar no ← revida quem ataca. Passivas: Precognição e resistência a Energia. Especial: Dança dos Leone.
+- Transformação Todos os Leone (cânone de Calamidade): a mecha ciano e os olhos ficam dourados, ela troca o mangual pelo nunchaku dourado e as habilidades ficam mais fortes. Ganha o Grimório de Arnaldo: os olhos ficam brancos, o grito derruba quem estiver perto, deixa surdo, toma as habilidades do adversário por 5 s e a deixa muito mais forte por 8 s. Números são PROPOSTA.
+- Modelo novo pela arte de Calamidade, conferido no Blender pelo MCP: cabelo castanho longo e solto repartido no meio, mechas ciano que viram douradas, gola alta, jaqueta de couro cinza com o brasão Leone nas costas e mangas justas dobradas, cinto com facas e correntes, coldre na coxa e botas altas, retrato, falas de vitória contra o elenco todo, voz de apresentação e cena de agarrão.
+
+### Alterado
+- Especial dos Abutres: a Carina fecha a coreografia com o mangual e a Glock. Falta o Rubens.
+- Correção de cânone: Thiago e Liz são da Equipe E, não da Força D. O especial da Equipe E fica para quando existirem as versões jovens de Arthur, Kaiser e Joui (Segredo na Floresta).
+- A tag curta da organização e as falas trocaram "Ordo" por "Ordem" (o nome completo "Ordo Realitas" continua).
+
 ## v4.16.0 — O Kit da Aghata
 
 ### Adicionado

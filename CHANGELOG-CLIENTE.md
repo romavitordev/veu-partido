@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.17.0 — Carina Leone
+- Carina Leone, dos Abutres, entra no elenco com o mangual, as facas e a Glock Silenciada.
+- Transformada em Todos os Leone, usa o nunchaku dourado e abre o Grimório de Arnaldo, que toma as habilidades do adversário.
+- A Carina agora aparece no especial dos Abutres.
+- Thiago e Liz são da Equipe E; "Ordo" virou "Ordem".
+
 ## v4.16.0 — O Kit da Aghata
 - Aghata vê através de furtividade e clones (Identificação Macabra) e abre o grimório nos rituais.
 - No despertar, o □ dela vira o do adversário.

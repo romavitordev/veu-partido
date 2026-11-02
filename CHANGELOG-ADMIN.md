@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.17.0 — Carina Leone
+
+- Versão: `VERSION` 4.16.0 → **4.17.0** (`package.json`/lock junto). Data: 2026-11-02. Pedido do usuário: personagem que completa equipe existente (Abutres); a forma transformada e o grimório seguem a decisão do dono.
+- Novos: `characters/carina.js`, `characters/forms/carina_leone.js` (registrada em `forms/index.js`), `tools/blender/char_carina.py` → `public/models/carina.glb` (59,5k tris; cabelo solto prototipado e conferido no Blender ao vivo pelo MCP em 4 vistas, a parte de baixo do cabelo pesada no peito; mangas e quadril afinados) + `fonte/carina.blend`, retrato `public/sobre/elenco/carina.webp`.
+- `models/weapons.js`: `nunchaku({gold})`, `glockLeone()`, `mangual()`. `models/props.js`: `addCarinaProps`, `addCarinaLeoneProps`, `arnaldoGrimoire()`; `prop_streakCyan/streakGold` vêm do GLB. `models/textures.js`: `face_carina`, `face_carina_gold`, `face_carina_white`, `arms_carina`.
+- `combat/abilities.js`: `dashStrike.reposition` (vai para as costas com `findSpotBehind`, alvo desprevenido salvo Precognição); `selfBuff.energy`; tipo novo `leoneGrimoire` (troca o rosto com `swapFace`, grito com guardBreak, `deafFighter`, buff `ritualsTaken` com `noAbilities`, buff próprio de dano/velocidade/defesa). `specials/maskTransform.js`: cena `leone`.
+- `teamSpecials.js`: Carina na coreografia dos Abutres. `grabScenes.js`, `dialogues.js` (vitórias contra os 37 e de volta), `introVoices.js`, `teams.js`/`teamLinks.js` (FORÇA D sem Thiago/Liz, nota da Equipe E; Ordo → Ordem nas falas e na tag curta).
+- `tools/check-roster.mjs` (checagens da Carina e da forma) e `tools/gen-moves.mjs` (texto de resistência elemental); HABILIDADES.md regenerado.
+- Testado no navegador: Bater e Reposicionar (34, termina atrás, desprevenido 0,6), Faca no Olho (31, atordoa e sangra), Glock (2 tiros, 38), transformação (nunchaku, mecha e olhos dourados), Grimório (olhos brancos, livro, 80 no Balu com guarda, surdo + habilidade bloqueada). `npm test` 62/62, `npm run check` ok, build ok. Balanceamento da Carina fica para a próxima rodada.
+
 ## v4.16.0 — O Kit da Aghata
 
 - Versão: `VERSION` 4.15.1 → **4.16.0** (`package.json`/lock junto). Data: 2026-11-02. Revisão do kit pedida pelo usuário (itens 1–4 da revisão; o Projétil de Sangue ficou para decidir).

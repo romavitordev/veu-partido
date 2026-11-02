@@ -1,13 +1,13 @@
 // VOZES DAS INTRODUÇÕES (2026-10-29): cada personagem fala do JEITO DELE e reage a QUEM o adversário é — não só à arma.
 // Para os confrontos sem cena própria do cânone (INTRO_EXCHANGES em dialogues.js), a cena é montada daqui:
 //   ally  — os dois são da mesma equipe (defTeams): conversa de colega
-//   rival — equipes diferentes: a fala cita a equipe do outro (o.one = "alguém da Ordo", o.group = "a Ordo"...)
+//   rival — equipes diferentes: a fala cita a equipe do outro (o.one = "alguém da Ordem", o.group = "a Ordem"...)
 //   any   — duas falas soltas, da personalidade; o par escolhe uma (sempre a mesma para o mesmo par)
 // Cada fala recebe o = { name, one, group } do OUTRO. Nada de resultado da luta aqui (ganhar/perder/vencer ficam para
 // as falas de vitória — check-roster confere).
 
 export const TEAM_REF = {
-  'Ordo Realitas': { one: 'alguém da Ordo', group: 'a Ordo' },
+  'Ordo Realitas': { one: 'alguém da Ordem', group: 'a Ordem' },
   Escriptas: { one: 'um Escripta', group: 'os Escriptas' },
   'Os Cinco': { one: 'um dos Cinco', group: 'os Cinco' },
   Mascarados: { one: 'um Mascarado', group: 'os Mascarados' },
@@ -250,6 +250,19 @@ export const VOICES = {
       ally: (o) => `Rápido, ${o.name}. E sem drama.`,
       rival: (o) => `${o.group}. Paga bem, ${o.name}. Pouca coisa paga tão bem.`,
       any: [(o) => `Anotado, ${o.name}.`, (o) => `Fala o que quiser, ${o.name}. A bala não escuta.`],
+    },
+  },
+  // CARINA LEONE: fria, direta, mercenária; carrega o nome da família — "Todos os Leone vivem dentro de mim!"
+  carina: {
+    open: {
+      ally: (o) => `${o.name}. Fica do meu lado e não atrapalha o meu giro.`,
+      rival: (o) => `${o.name}... ${o.one}. Eu já matei por menos dinheiro.`,
+      any: [(o) => `Eu vi o seu primeiro golpe antes de você pensar nele, ${o.name}.`, (o) => `${o.name}, os Leone não fogem. Nunca.`],
+    },
+    reply: {
+      ally: (o) => `Tá, ${o.name}. Mas o último golpe é meu.`,
+      rival: (o) => `${o.group}? Já cobrei mais caro por gente como você, ${o.name}.`,
+      any: [(o) => `Fala menos, ${o.name}. Bate mais.`, (o) => `Pode vir, ${o.name}. Eu já sei pra onde você vai.`],
     },
   },
   balu: {
