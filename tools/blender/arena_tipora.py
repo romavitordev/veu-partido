@@ -223,6 +223,20 @@ for k in range(16):
         box(f'grave{k}', (x, y + 0.35, z), (0.6, 0.8, 0.16), M['grave'], rot_y=random.uniform(-0.25, 0.25), rot_z=random.uniform(-0.12, 0.12), bevel=0.05)
 _church = [bpy.data.objects[n] for n in bpy.data.objects.keys() if n not in _before]
 _move(join_objs(_church, 'church_all'), (CHURCH[0], 0, CHURCH[1]), CR)
+# PROPOSTA visual baseada na Torre do Sino da wiki "Tipora": marco alto de madeira junto à igreja
+BTX, BTZ = CHURCH[0] + 8.4, CHURCH[1] + 0.5
+col_cyl('bell_tower', (BTX, 0, BTZ), 2.2, 12)
+box('bell_tower_base', (BTX, 1.2, BTZ), (4.4, 2.4, 4.4), M['stone'])
+for sx in (-1, 1):
+    for sz in (-1, 1):
+        box(f'bell_tower_post{sx}{sz}', (BTX + sx * 1.7, 5.7, BTZ + sz * 1.7), (0.28, 6.6, 0.28), M['wood_d'])
+for y in (2.8, 8.9):
+    box(f'bell_tower_beam_x{y}', (BTX, y, BTZ), (4.0, 0.24, 0.24), M['wood'])
+    box(f'bell_tower_beam_z{y}', (BTX, y, BTZ), (0.24, 0.24, 4.0), M['wood'])
+cyl('village_bell', (BTX, 7.2, BTZ), 0.55, 0.85, M['iron'], seg=12, r_top=0.28)
+cyl('village_bell_clapper', (BTX, 6.65, BTZ), 0.09, 0.45, M['iron'], seg=8)
+cyl('bell_tower_roof', (BTX, 10.3, BTZ), 3.0, 2.4, M['shingle'], seg=4, r_top=0.04, rot_y=math.pi / 4)
+cyl('bell_tower_finial', (BTX, 11.7, BTZ), 0.18, 0.45, M['iron'], seg=8)
 # a churrasqueira de tijolo do CHURRASCO DA IGREJA ao pé do morro, com as brasas acesas
 GX, GZ = 15.5, 2.5
 box('grill', (GX, 0.45, GZ), (2.2, 0.9, 0.9), M['brick'], rot_y=CR)
@@ -288,6 +302,12 @@ for k, a in enumerate((0.75, 0.25, 2.05, -1.4, -0.75, -1.85, 1.35)):
     if not on_land(x, z, 4) or in_gap(a) or math.hypot(x - CHURCH[0], z - CHURCH[1]) < 12:
         continue
     house(f'far_house{k}', (x, 0, z), 4.0 + (k % 3) * 0.6, 3.6, 2.5, face_center(x, z), roof='tile' if k % 3 == 1 else 'shingle', porch=False)
+# PROPOSTA visual: casas simples adicionais para completar o vilarejo citado na wiki
+for k, (a, r) in enumerate(((1.9, 38.0), (2.6, 36.0), (-2.55, 35.0), (-2.3, 34.0))):
+    x, z = at(a, r)
+    if not on_land(x, z, 4) or in_gap(a) or math.hypot(x - CHURCH[0], z - CHURCH[1]) < 12:
+        continue
+    house(f'village_house{k}', (x, 0, z), 4.0 + (k % 2) * 0.5, 3.8, 2.5, face_center(x, z), roof='tile' if k % 2 else 'shingle', porch=k % 2 == 0)
 
 # ================================================================ LAMPIÕES nos postes de madeira (a ilha não tem luz elétrica)
 LAMPS = []
@@ -326,7 +346,7 @@ for ring_r, n in ((27, 30), (32, 36), (37, 40), (43, 44), (49, 46)):
             continue
         r = ring_r + random.uniform(-2.5, 2.5)
         x, z = at(a, r)
-        if not on_land(x, z, 2) or math.hypot(x - CHURCH[0], z - CHURCH[1]) < 11:
+        if not on_land(x, z, 2) or math.hypot(x - CHURCH[0], z - CHURCH[1]) < 11 or math.hypot(x - BTX, z - BTZ) < 6:
             continue
         if any((x - hx) ** 2 + (z - hz) ** 2 < 16 for hx, hz in [at(h[1], h[2]) for h in HOUSES]):
             continue
