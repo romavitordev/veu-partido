@@ -2659,7 +2659,6 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
       assistências e o agarrão
 * [x] Livro — v4.16.0: o grimório aberto na mão esquerda no Descarnar e na Leitura de Rituais
 * [x] Faca
-* [ ] Projétil de Sangue — sem fonte no cânone (o mais próximo é "Amaldiçoar Balas com Sangue"): decidir se fica ou sai
 * [x] Ritual de Leitura (Leitura de Rituais)
 * [x] Colar Encharcado de Sangue (passiva `bloodNecklace`) — v4.16.0 pelo cânone: −20% de dano de Sangue, rituais de Sangue
       +10% e sangramento +15% (a referência abaixo)
