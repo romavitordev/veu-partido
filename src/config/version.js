@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.14.1';
+export const VERSION = '4.15.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.15.0',
+    date: '2026-11-02',
+    title: 'Aghata Remodelada',
+    items: [
+      'AGHATA: modelo novo, mais detalhado, com o visual da Hexatombe (cabelo, jaqueta, correntes, coturnos e a camisa amarrada).',
+    ],
+  },
   {
     v: '4.14.1',
     date: '2026-11-02',

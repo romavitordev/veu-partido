@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.15.0 — Aghata Remodelada
+
+- Versão: `VERSION` 4.14.1 → **4.15.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `tools/blender/char_aghata.py` reescrito com `sculpt_lib` (técnica do Cristino/Cristopher): jaqueta, gola e camisa amarrada em `shell_grid` (o xadrez mantém o UV), mangas/jeans/coturnos/cabelo/gola alta por metaballs com relevo de dobras e fios, correntes com `chain_mesh`, busto por `relief`. Materiais e texturas do jogo mantidos (`face_vampira`, `arms_vampira`, `plaid`…); peças novas: `jacket_red`, `symbol_vampira`. Fonte em `tools/blender/fonte/aghata.blend`.
+- Auditoria: 61,5k triângulos e cabelo sem UV, no mesmo patamar dos outros modelos da técnica nova (Cristino 62,9k, Dante 64,5k). Conferido no Blender (frente, 3/4, costas, lado) e no jogo (Tipora).
+- TODO: §23.5 Aghata e "Utilizar referência visual definida" marcados.
+
 ## v4.14.1 — A Plateia em Toda Arena
 
 - Versão: `VERSION` 4.14.0 → **4.14.1** (`package.json`/lock junto). Data: 2026-11-02.

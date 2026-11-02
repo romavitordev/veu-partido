@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.14.1 (2026-11-02: plateia de Anfitriões fora do Palco e o contador de dano travado no canto). Antes: v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.15.0 (2026-11-02: a Aghata refeita na técnica nova). Antes: v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2653,7 +2653,7 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
 
 **Nome oficial: AGHATA**
 
-* [ ] Utilizar referência visual definida (remodel na técnica nova — §23.5)
+* [x] Utilizar referência visual definida (remodel na técnica nova — §23.5, v4.15.0)
 * [x] Descarnar (especial)
 * [ ] Livro
 * [x] Faca
@@ -2851,7 +2851,7 @@ qualidade do Cristino / Cristopher / Dante v2 — um por vez, com o kit e as jun
 
 ## Personagens jogáveis
 
-* [ ] Aghata
+* [x] Aghata (v4.15.0)
 * [x] Aguiar (v3.33.0)
 * [ ] Amigo Imaginário
 * [x] Arnaldo Fritz (2026-10-26)

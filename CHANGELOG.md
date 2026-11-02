@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.15.0 — Aghata Remodelada
+
+### Alterado
+- Aghata refeita na técnica nova de modelagem, pelo visual da Hexatombe: cabelo preto bagunçado até os ombros com a mecha vermelha, gola alta vermelha com o símbolo ritual, jaqueta preta de couro com bordas e bolsos vermelhos e as mangas puxadas, correntes de elos de verdade (pescoço e cinto), duas pulseiras, a camisa xadrez amarrada na cintura caindo do lado esquerdo, jeans rasgado nos joelhos e coturnos vermelhos de cadarço. Mesmas juntas: golpes e poses não mudaram.
+
 ## v4.14.1 — A Plateia em Toda Arena
 
 ### Alterado

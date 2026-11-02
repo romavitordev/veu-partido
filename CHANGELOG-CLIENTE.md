@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.15.0 — Aghata Remodelada
+- A Aghata ganhou um modelo novo, mais detalhado, com o visual da Hexatombe.
+
 ## v4.14.1 — A Plateia em Toda Arena
 - A Plateia do Anfitrião agora aparece em qualquer arena: Anfitriões se materializam em volta e batem palmas.
 - O dano do combo fica fixo no seu canto da tela.
