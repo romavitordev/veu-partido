@@ -715,10 +715,10 @@ const CHOREO = {
   },
 
   abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
-    const END = S + 4.8;
+    const END = S + 5.4;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
-    const dante = tools.get('dante'), balu = tools.get('balu'), joui = tools.get('joui'), arthur = tools.get('arthur'), carina = tools.get('carina');
-    const actors = [dante, balu, joui, arthur, carina].filter(Boolean);
+    const dante = tools.get('dante'), balu = tools.get('balu'), joui = tools.get('joui'), arthur = tools.get('arthur'), carina = tools.get('carina'), rubens = tools.get('rubens');
+    const actors = [dante, balu, joui, arthur, carina, rubens].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
 
@@ -820,6 +820,26 @@ const CHOREO = {
         carina.play('point', 0.3);
         world.fx.tracer(carina.chest(), opp.chestPos(), { color: 0xffe08a, life: 0.12, width: 0.03 });
         tools.impact(carina, damageOf(carina) - Math.floor(damageOf(carina) * 0.5), { sound: 'impact', color: 0xf2c230 });
+      });
+    }
+
+    // RUBENS: o Salto Fantasma — a estática rosa, azul, ciano e verde no lado do alvo — e a martelada por cima que fecha
+    if (rubens) {
+      tl.add(S + 4.45, () => {
+        if (!live()) return;
+        const at = tools.around(rubens, -1.2, 1.4);
+        rubens.show(END - (S + 4.45), at);
+        rubens.pos.set(at.x, 0, at.z);
+        rubens.face(opp);
+        for (const c of [0xff4ab0, 0x3a6aff, 0x4ae0ff, 0x4aff8a]) world.fx.burst(rubens.chest(), { count: 8, color: c, speed: 3, life: 0.35, size: 0.1 });
+        world.audio.play('blink', { volume: 0.7 });
+        rubens.play('hammer_v', 0.48);
+        world.cameraRig.playShots([{ ...lowAngle(rubens, { dur: 0.7, dist: 2.2, fov: 42 }), cut: true }]);
+      });
+      tl.add(S + 4.68, () => {
+        if (!live()) return;
+        world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x4ae0ff, radius: 1.4, life: 0.4 });
+        tools.impact(rubens, damageOf(rubens), { sound: 'heavyPunch', color: 0x4ae0ff });
       });
     }
 

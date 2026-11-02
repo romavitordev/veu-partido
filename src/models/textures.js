@@ -2197,6 +2197,21 @@ export const MATERIAL_TEXTURES = {
       g.beginPath(); g.moveTo(x, y); g.lineTo(x + 14, y + (Math.random() - 0.5) * 10); g.stroke();
     }
   }, { wrap: true }),
+  // RUBENS NALUTI: pardo, olhos CASTANHOS (wiki), o rosto sério e fechado de quem fala por palavras-chave
+  face_rubens: face(() => {}, {
+    skin: '#9a6a46',
+    eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },
+    brow: { angry: 1.5, thick: 4, color: '#d8d4cc' },
+    mouth: { mouthW: 11, smile: 0, lip: 'rgba(90,50,36,0.45)' },
+  }),
+  // a flanela VERDE amarrada na cintura: fundo verde-acinzentado, faixas escuras e o fio claro do xadrez
+  plaid_rubens: () => canvasTex(128, 128, (g) => {
+    g.fillStyle = '#3e5a44'; g.fillRect(0, 0, 128, 128);
+    g.fillStyle = 'rgba(16,26,20,0.45)';
+    for (let i = 0; i < 128; i += 32) { g.fillRect(i, 0, 12, 128); g.fillRect(0, i, 128, 12); }
+    g.fillStyle = 'rgba(200,210,190,0.35)';
+    for (let i = 20; i < 128; i += 32) { g.fillRect(i, 0, 2, 128); g.fillRect(0, i, 128, 2); }
+  }, { wrap: true, repeat: [3, 1] }),
   // camisa de flanela CÁQUI amarrada na cintura (a arte de corpo inteiro): fundo mostarda e o xadrez marrom fino
   plaid: () => canvasTex(128, 128, (g) => {
     g.fillStyle = '#a88e58'; g.fillRect(0, 0, 128, 128);

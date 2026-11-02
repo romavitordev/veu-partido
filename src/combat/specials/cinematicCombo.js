@@ -32,7 +32,7 @@ import { groundMark, blindFighter } from '../abilities.js';
 // tears (o Lodo escorrendo dos olhos do alvo até o fim da cena), rage (a aura vermelha do ódio em quem bate até o fim —
 // a Calabresa do Morato), burst { count, gap } (rajada: traçantes da boca da arma ao alvo), closeIn (quem bate vem
 // colado no alvo antes do golpe), smoke (granada de fumaça no alvo), mine (a mina de proximidade no pé do alvo) e boom
-// (a mina explode).
+// (a mina explode), props [[peça, visível], ...] (troca peças nesse passo; tudo volta no fim).
 
 const PREP_FX = {
   // Joui com a Shi no Kage: saca a Relíquia de Energia (relâmpago roxo na mão esquerda) e os sigilos dourados da Shi no
@@ -243,6 +243,7 @@ export const cinematicCombo = {
     let xMark = null; // h.xMark: o X no chão
     let hidden = false; // h.vanish: sumido
     let mine = null; // h.mine: a mina no chão
+    let propSwaps = []; // h.props: peças trocadas no meio da cena (a faca do Johnny no fim do especial do Rubens)
     const ownStrike = (i) => opp.def.melee?.strikes?.[i]?.anim || 'hit';
     const cleanup = () => {
       if (mine) { mine.stop(); mine = null; }
@@ -255,6 +256,8 @@ export const cinematicCombo = {
       copies = [];
       emitters.forEach((e) => e.stop());
       emitters = [];
+      propSwaps.reverse().forEach(([p, v]) => f.rig.showProp(p, v));
+      propSwaps = [];
       // a peça some no fim — a não ser que um estado ativo a mantenha (ex.: máscara do Aguiar)
       if (sp.prepare?.showProp && !(sp.prepare.keepIfBuff && f.findBuff(sp.prepare.keepIfBuff))) {
         f.rig.showProp(sp.prepare.showProp, false);
@@ -270,6 +273,7 @@ export const cinematicCombo = {
     // o que acontece no começo de um passo (com ou sem dano)
     const stepFx = (h) => {
       if (h.shout) f.notify(h.shout, true);
+      if (h.props) for (const [p, v] of h.props) { f.rig.showProp(p, v); propSwaps.push([p, !v]); }
       if (h.vanish) {
         // some numa fumaça e volta depois de h.vanish s (Jae — Shhh...)
         world.fx.burst(f.chestPos(), { count: 22, color: 0x0a0608, kind: 'smoke', speed: 2, life: 0.5, size: 0.6, grow: 1 });

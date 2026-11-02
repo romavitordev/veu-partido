@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.17.1';
+export const VERSION = '4.18.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.18.0',
+    date: '2026-11-02',
+    title: 'Rubens Naluti',
+    items: [
+      'RUBENS NALUTI (Equipe Abutres) entra no elenco: o Martelo de guerra, a Glock Silenciada e a faca do Johnny.',
+      'RUBENS: Salto Fantasma (some na estática colorida), Queima-Roupa, Mira de Elite, Tratar Ferimentos e Coração Pulsante.',
+      'RUBENS: especial Pelo Johnny e o despertar Ainda Bem Que Eu Voltei.',
+      'ABUTRES: o Rubens fecha o especial de equipe. A equipe está completa.',
+    ],
+  },
   {
     v: '4.17.1',
     date: '2026-11-02',

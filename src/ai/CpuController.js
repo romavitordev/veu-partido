@@ -151,6 +151,8 @@ export function abilityUsePrior(a, f, opp, { distance, lowHp, opening, threat, l
   if (a.type === 'calmEvade') return threat ? 1.8 : 0;
   // Aliança Falsa (Celestine): a armadilha só vale com o adversário perto e prestes a atacar (janela longa: um pouco antes)
   if (a.type === 'falseAlliance') return distance < 3.5 && (threat || opp.state === 'attack' || opp.state === 'ability') ? 2 : distance < 2.5 ? 0.25 : 0;
+  // Queima-Roupa (Rubens): só encostado — de longe a pistola nem sai
+  if (a.type === 'pointBlank') return distance < a.range + 0.3 ? 1.6 : 0;
 
   let prior = a.id === lastAbility ? 0.3 : 0.65;
   if (opening && !selfTarget) prior *= 2.5;

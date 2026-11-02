@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.18.0 — Rubens Naluti
+
+- Versão: `VERSION` 4.17.1 → **4.18.0** (`package.json`/lock junto). Data: 2026-11-02. Pedido do dono: o último Abutre que faltava; o especial ligado ao Johnny foi pedido durante o trabalho.
+- Novos: `characters/rubens.js`, `tools/blender/char_rubens.py` → `public/models/rubens.glb` (57,6k tris; cabelo de cachos com o coque, jaqueta curta, flanela e bainha conferidos no Blender ao vivo pelo MCP em 4 vistas; mangas engrossadas para a camisa não vazar) + `fonte/rubens.blend`, retrato `public/sobre/elenco/rubens.webp`.
+- `models/weapons.js`: `martelo()` (cabeça em −Y, face para −Z, espigão +Z) e `glockSilenciada()`. `models/props.js`: `addRubensProps` (martelo com GRIP_HEAVY, Glock escondida com `rig.muzzle`, faca do Johnny escondida na mão direita). `models/textures.js`: `face_rubens`, `plaid_rubens`.
+- `combat/abilities.js`: `blink.residue: 'glitch'` (estática rosa/azul/ciano/verde) e o tipo novo `pointBlank` (só até `a.range`; senão "LONGE DEMAIS"). `ai/CpuController.js`: a CPU só usa o `pointBlank` colada no alvo. `specials/cinematicCombo.js`: opção por golpe `props` (troca peças no passo e desfaz no fim).
+- `teamSpecials.js`: Rubens na coreografia dos Abutres (fim em S+5,4). `teamLinks.js` (nota), `grabScenes.js`, `dialogues.js` (vitórias contra os 37 e de volta), `introVoices.js`, `characters/index.js` (depois da Carina).
+- `tools/check-roster.mjs` (nome no elenco e checagem do kit); HABILIDADES.md regenerado.
+- Testado no navegador: Queima-Roupa 44 colado e recusado a 9 m, Mira de Elite 45, Salto Fantasma moveu 9,6 m, Coração Pulsante aplicado, especial 229 com martelo → Glock → faca → martelo e sangramento, despertar curou e aplicou o buff. `npm test` 62/62, `npm run check` ok. Balanceamento do Rubens fica para a próxima rodada.
+
 ## v4.17.1 — O Grimório de Arnaldo
 
 - Versão: `VERSION` 4.17.0 → **4.17.1** (`package.json`/lock junto). Data: 2026-11-02. Pedido do dono: animação de abrir o grimório com o brilho e habilidade sem distância; as armas da Carina foram para o TODO (seção MODELOS).

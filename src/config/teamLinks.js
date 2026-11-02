@@ -72,7 +72,7 @@ export const TEAM_LINKS = {
     kind: 'group',
     name: 'EQUIPE ABUTRES',
     banner: 'Equipe Abutres!',
-    // a Carina fecha a coreografia (v4.17.0); o Rubens entra quando estiver no elenco
+    // a Carina (v4.17.0) e o Rubens (v4.18.0) fecham a coreografia: a equipe completa
     group: ['dante', 'carina', 'arthur', 'joui', 'balu', 'rubens'],
     min: 3,
     order: ['dante', 'balu', 'joui', 'arthur', 'carina', 'rubens'],

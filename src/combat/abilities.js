@@ -707,6 +707,12 @@ export const ABILITY_TYPES = {
         world.fx.ring(origin, { color: a.color, radius: 0.9, life: 1.2 });
         world.fx.ring(origin, { color: a.color, radius: 0.5, life: 1.0 });
         world.fx.burst(origin.clone().setY(0.4), { count: 26, color: a.color, speed: 0.6, up: 1.2, life: 1.1, size: 0.08 });
+      } else if (a.residue === 'glitch') {
+        // Salto Fantasma (Rubens): a estática elétrica rosa, azul, ciano e verde que fica onde ele estava
+        for (const c of [0xff4ab0, 0x3a6aff, 0x4ae0ff, 0x4aff8a]) {
+          world.fx.burst(origin.clone().setY(0.9), { count: 10, color: c, speed: 2.4, up: 0.6, life: 0.5, size: 0.1 });
+          world.fx.tracer(origin.clone().setY(0.3 + Math.random() * 1.4), origin.clone().set(origin.x + (Math.random() - 0.5) * 1.4, 0.3 + Math.random() * 1.4, origin.z + (Math.random() - 0.5) * 1.4), { color: c, life: 0.25, width: 0.02 });
+        }
       } else if (a.residue === 'smoke') {
         world.fx.burst(origin.clone().setY(0.9), { count: 30, color: 0x0e0c12, kind: 'smoke', speed: 0.5, up: 0.4, life: 1.3, size: 0.6, grow: 0.8 });
       }
@@ -2930,6 +2936,38 @@ Object.assign(ABILITY_TYPES, {
         world.fx.flash(from, { color: 0xd8d4dc, size: 1.4, life: 0.1 });
         world.audio.play('sniper');
         f.anim.play(a.fireAnim || 'sniper_fire', { restart: true, duration: a.recovery + 0.1 });
+      });
+      const restore = () => {
+        if (a.showProp) f.rig.showProp(a.showProp, false);
+        if (a.hideProp) f.rig.showProp(a.hideProp, true);
+      };
+      tl.add(a.windup + a.recovery - 0.02, restore);
+      tl.end(a.windup + a.recovery);
+      return seqFrom(tl, { cancel: restore });
+    },
+  },
+
+  // QUEIMA-ROUPA (Rubens, cânone): saca a pistola COLADA no adversário e dispara — só vale de perto (a.range); longe
+  // demais nem sai. O tiro não dá para esquivar a essa distância, mas a guarda segura
+  pointBlank: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      if (!opp || opp.state === 'ko') return null;
+      if (distXZ(f.pos, opp.pos) - opp.radius > a.range) { f.notify('LONGE DEMAIS'); return null; }
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      f.yaw = yawTo(f.pos, opp.pos);
+      f.anim.play(a.anim || 'point', { restart: true, duration: a.windup + a.recovery });
+      if (a.showProp) f.rig.showProp(a.showProp, true);
+      if (a.hideProp) f.rig.showProp(a.hideProp, false);
+      world.audio.play('swing');
+      tl.add(a.windup, () => {
+        const from = f.rig.muzzle ? f.rig.muzzle.getWorldPosition(new THREE.Vector3()) : f.chestPos();
+        world.fx.flash(from, { color: a.color ?? 0xffe08a, size: 1.6, life: 0.1 });
+        world.audio.play(a.sound || 'sniper', { volume: 0.7 });
+        if (opp.state === 'ko' || opp.isInvulnerable() || distXZ(f.pos, opp.pos) - opp.radius > a.range + 0.6) return;
+        world.fx.tracer(from, opp.chestPos(), { color: a.color ?? 0xffe08a, life: 0.1, width: 0.04 });
+        applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: f.def.element, knockback: a.knockback ?? 2.4, hitstun: a.hitstun ?? 0.55, sound: 'impact', color: a.color, scale: 1.4, launch: a.launch, dir: new THREE.Vector3().subVectors(opp.pos, f.pos).setY(0).normalize() });
       });
       const restore = () => {
         if (a.showProp) f.rig.showProp(a.showProp, false);

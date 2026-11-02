@@ -1,8 +1,20 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.17.1 (2026-11-02: o Grimório de Arnaldo da Carina abre e brilha e vale de qualquer lugar do mapa). Antes: v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.18.0 (2026-11-02: Rubens Naluti entra no elenco e a Equipe Abutres fica completa). Antes: v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
+
+## Fila de personagens novos (pedido do dono, 2026-11-02)
+- [x] **Rubens Naluti** (Equipe Abutres, Calamidade) — v4.18.0: fecha os Abutres. Kit pelo cânone (Martelo, Glock
+      Silenciada, faca do Johnny; Salto Fantasma, Tratar Ferimentos, Queima-Roupa, Mira de Elite, Coração Pulsante),
+      especial Pelo Johnny (pedido do dono) e modelo no Blender pelo MCP com a arte de Calamidade. Balanceamento dele
+      fica para a próxima rodada.
+- [ ] **Depois do Rubens: um personagem que COMPLETE uma equipe que já existe no jogo** (correção do dono, 2026-11-02:
+      o Aaron NÃO é o próximo). Candidatos citados pelo dono: **Beatrice**, **Tristan**, **Luciano**, **Fernando** e
+      outros na mesma situação. Antes de escolher: conferir na wiki a equipe de cada um e quais equipes do jogo estão
+      incompletas, e dar prioridade a quem fecha uma equipe (o mesmo critério que trouxe a Carina e o Rubens). Depois,
+      o mesmo processo: kit pelo cânone com o que não for cânone marcado como PROPOSTA, modelo no Blender pelo MCP
+      conferido em 4 vistas contra as referências, retrato, falas de vitória, voz de apresentação e cena de agarrão.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no
@@ -24,7 +36,7 @@
 
 ## Nota de passagem — Copilot (v4.8.0)
 - Feito: especiais em equipe da Força D e de Os Cinco; primeira coreografia dos Abutres com o elenco atual; closes de impacto que mantêm atacante e alvo no quadro; Van dos Cinco em Tipora; comandos de assistência com um único parceiro.
-- Registrado para depois: jaqueta do Veríssimo na habilidade e na transformação. Carina entrou no elenco na v4.17.0 e já está na coreografia dos Abutres; falta o Rubens.
+- Registrado para depois: jaqueta do Veríssimo na habilidade e na transformação. Carina (v4.17.0) e Rubens (v4.18.0) entraram no elenco e na coreografia: a Equipe Abutres está completa.
 - Teste visual no Treinamento em Equipe: Força D confirmada com o close enquadrando o grupo. Conferir também Os Cinco e Abutres em uma próxima rodada.
 
 ---
@@ -2094,9 +2106,9 @@ Confirmadas pelo pedido:
 - [x] **FORÇA D — coreografia** (2026-11-02): Kaiser em close conjura a Cinerária e envolve a cena em névoa; Joui surge
   atrás do alvo e as espirais da espada marcam o corte; Arthur atravessa a névoa correndo e ataca com a Arma de Sangue.
   Efeitos visuais substituem cigarro/modelagem novos.
-- [~] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur, usando
-  lodo, machado, katana e Arma de Sangue. [x] Carina Leone (v4.17.0) entra no fim com o mangual e a Glock. [ ] Rubens
-  Naluti entra quando for adicionado ao elenco.
+- [x] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur, usando
+  lodo, machado, katana e Arma de Sangue. [x] Carina Leone (v4.17.0) entra no fim com o mangual e a Glock. [x] Rubens
+  Naluti (v4.18.0) fecha com o Salto Fantasma e a martelada.
 - [x] **OS CINCO — especial de grupo** (2026-11-02): Morato comanda e dispara a metralhadora; Chico combina pulso do
   scanner e clarão do farol; Xande avança de skate com o taco; Lírio prende com as Magras e golpeia com a Leonora; Guizo
   registra com a câmera e corta; Dara usa a lanterna UV e finaliza no corpo a corpo. Mantidos os itens e habilidades

@@ -2696,3 +2696,79 @@ export function mangual() {
   g.add(crest);
   return g;
 }
+
+// MARTELO DO RUBENS (wiki "Rubens Naluti", Arsenal: martelo de guerra longo): cabo de madeira escura com anéis de prata
+// e ornamentos dourados, cabeça de aço com a face de impacto para -Z, o espigão para +Z e a ponta no alto. Cabeça
+// em -Y, como o machado do Balu
+export function martelo() {
+  const g = new THREE.Group();
+  const steel = toon(0xb8bcc4);
+  const silver = toon(0xd8dce2, { emissive: 0x101014 });
+  const gold = toon(0xd4a838, { emissive: 0x2a1a04 });
+  const handle = part(new THREE.CylinderGeometry(0.022, 0.027, 1.0, 10), 0x3a2618);
+  handle.position.y = -0.3;
+  g.add(handle);
+  for (const y of [0.17, 0.02, -0.2, -0.62]) {
+    const band = part(new THREE.CylinderGeometry(0.03, 0.03, 0.022, 10), 0, { mat: silver, outline: false });
+    band.position.y = y;
+    g.add(band);
+  }
+  // espiral dourada entre os anéis e o pomo dourado
+  const pts = [];
+  for (let i = 0; i <= 80; i++) { const t = i / 80; const a = t * 7 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * 0.026, -0.2 - t * 0.42, Math.sin(a) * 0.026)); }
+  g.add(part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 200, 0.004, 4, false), 0, { mat: gold, outline: false }));
+  const pommel = part(new THREE.SphereGeometry(0.034, 10, 8), 0, { mat: gold });
+  pommel.position.y = 0.21;
+  g.add(pommel);
+  const head = new THREE.Group();
+  head.position.y = -0.84;
+  g.add(head);
+  head.add(part(new THREE.BoxGeometry(0.075, 0.13, 0.12), 0x2a2a30)); // o olho onde o cabo entra
+  const face = part(new THREE.CylinderGeometry(0.068, 0.06, 0.14, 8), 0, { mat: steel });
+  face.rotation.x = Math.PI / 2;
+  face.position.z = -0.12;
+  head.add(face);
+  const rim = part(new THREE.CylinderGeometry(0.071, 0.071, 0.02, 8), 0, { mat: gold, outline: false });
+  rim.rotation.x = Math.PI / 2;
+  rim.position.z = -0.07;
+  head.add(rim);
+  const spike = part(new THREE.ConeGeometry(0.035, 0.17, 6), 0, { mat: steel });
+  spike.rotation.x = Math.PI / 2;
+  spike.position.z = 0.14;
+  head.add(spike);
+  const top = part(new THREE.ConeGeometry(0.022, 0.12, 6), 0, { mat: steel });
+  top.rotation.x = Math.PI;
+  top.position.y = -0.12;
+  head.add(top);
+  for (const s of [-1, 1]) { // os pequenos espinhos laterais da cabeça
+    const sp = part(new THREE.ConeGeometry(0.012, 0.05, 5), 0, { mat: steel, outline: false });
+    sp.rotation.z = s * Math.PI / 2;
+    sp.position.set(-s * 0.06, 0, -0.12);
+    head.add(sp);
+  }
+  return g;
+}
+
+// GLOCK SILENCIADA (Rubens): a pistola preta comum, com o silenciador
+export function glockSilenciada() {
+  const g = new THREE.Group();
+  const black = toon(0x1a1a1e);
+  const slide = part(new THREE.BoxGeometry(0.03, 0.19, 0.036), 0, { mat: black });
+  slide.position.set(0, -0.06, 0.03);
+  g.add(slide);
+  const frame = part(new THREE.BoxGeometry(0.028, 0.15, 0.022), 0x2a2a2e);
+  frame.position.set(0, -0.05, 0.004);
+  g.add(frame);
+  const grip = part(new THREE.BoxGeometry(0.028, 0.048, 0.1), 0, { mat: black });
+  grip.position.set(0, 0.004, -0.04);
+  grip.rotation.x = -0.22;
+  g.add(grip);
+  const sil = part(new THREE.CylinderGeometry(0.015, 0.015, 0.13, 10), 0x101012);
+  sil.position.set(0, -0.215, 0.03);
+  g.add(sil);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.285, 0.03);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}

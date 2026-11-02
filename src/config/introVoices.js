@@ -265,6 +265,19 @@ export const VOICES = {
       any: [(o) => `Fala menos, ${o.name}. Bate mais.`, (o) => `Pode vir, ${o.name}. Eu já sei pra onde você vai.`],
     },
   },
+  // RUBENS NALUTI: fala por PALAVRAS-CHAVE, sério e econômico — "Ainda bem que eu voltei, e vou continuar voltando."
+  rubens: {
+    open: {
+      ally: (o) => `${o.name}. Treino. Rápido. Sem machucar.`,
+      rival: (o) => `${o.name}. ${o.group}. Martelo. Glock. Fim.`,
+      any: [(o) => `Palavras-chave, ${o.name}. Você. Chão. Agora.`, (o) => `Eu já morri uma vez, ${o.name}. Voltei.`],
+    },
+    reply: {
+      ally: (o) => `Certo, ${o.name}. Cuidado. Eu curo depois.`,
+      rival: (o) => `Muito texto, ${o.name}. Resumo: não.`,
+      any: [(o) => `Anotado. Fio, cobre, solto.`, (o) => `Fala menos, ${o.name}. Eu entendo pouco.`],
+    },
+  },
   balu: {
     open: {
       ally: (o) => `Hahaha! ${o.name}! Vem, que o tio Balu ensina umas coisinhas!`,

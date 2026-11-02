@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.18.0 — Rubens Naluti
+
+### Adicionado
+- Rubens Naluti (Equipe Abutres, Energia), o paramédico e atirador da equipe. Corpo a corpo com o Martelo de guerra (as pancadas do Balu, mais curtas e rápidas); □ Glock Silenciada (Saque Rápido, dois tiros abafados). Habilidades: Salto Fantasma (some numa estática elétrica rosa, azul, ciano e verde e reaparece), Queima-Roupa (só colado no alvo; de longe nem saca), Mira de Elite (tiro certeiro e forte), Tratar Ferimentos (cura por 3 s) e Coração Pulsante (metade do dano por 4 s). Passivas: rituais de Energia mais fortes e o Amuleto contra Sangue.
+- Especial Pelo Johnny (pedido do dono): saca a Glock, some na estática, reaparece nas costas atirando duas vezes e fecha com a faca de combate do Johnny Tabasco, que deixa sangrando. Despertar Ainda Bem Que Eu Voltei: os cabos do peito acendem, ele se cura e as recargas ficam mais rápidas até o fim do round. Números são PROPOSTA.
+- Modelo novo pela arte de Calamidade, conferido no Blender pelo MCP: 1,56 m, cabelo branco cacheado no coque, jaqueta preta curta aberta, camisa mostarda com o decote em V mostrando a cicatriz e os cabos que brilham, colar com o flamingo, flanela verde amarrada na cintura, a bainha da faca do Johnny na coxa e o amuleto de Sangue. Retrato, falas de vitória por palavras-chave contra o elenco todo, voz de apresentação e cena de agarrão.
+
+### Alterado
+- Especial dos Abutres: o Rubens fecha a coreografia com o Salto Fantasma e a martelada. A Equipe Abutres está completa.
+
 ## v4.17.1 — O Grimório de Arnaldo
 
 ### Alterado

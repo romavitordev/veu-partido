@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, martelo, glockSilenciada } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1484,4 +1484,26 @@ function arnaldoGrimoire() {
   g.userData.setOpen(0);
   g.userData.setGlow(0);
   return g;
+}
+
+// RUBENS NALUTI (Equipe Abutres): o MARTELO de guerra nas duas mãos, a GLOCK SILENCIADA escondida até o □ / Mira de
+// Elite e a faca do Johnny (a bainha está no modelo, na coxa) só no Queima-Roupa
+export function addRubensProps(rig) {
+  const { sockets, props } = rig;
+  const hammer = martelo();
+  inFist(hammer, GRIP_HEAVY);
+  sockets.handR.add(hammer);
+  props.hammer = hammer;
+  const gun = glockSilenciada();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.glock = gun;
+  rig.muzzle = gun.userData.muzzle;
+  const k = knife();
+  inFist(k);
+  k.visible = false;
+  sockets.handR.add(k);
+  props.knife = k;
 }

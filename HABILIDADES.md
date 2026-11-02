@@ -410,6 +410,54 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## RUBENS NALUTI
+
+*O paramédico baixinho da Equipe Abutres, que sempre volta* · arma: O Martelo de guerra, a Glock Silenciada e a faca de combate do Johnny Tabasco
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Martelada lateral | 28 | 2.3 m |  |
+| ○ 2 | Martelada cruzada | 30 | 2.3 m |  |
+| ○ 3 | Martelada por cima | 36 | 2.4 m |  |
+| ○ 4 | Fio, Cobre, Solto | 56 | 2.5 m | finalizador: lança |
+| Frente + ○ | Investida curta | 34 | 2.4 m |  |
+| Trás + ○ | Recua e martela | 30 | 2.3 m |  |
+| Lado + ○ | Martelada em movimento | 28 | 2.3 m |  |
+| No ar + ○ | Martelo aéreo | 34 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Martelo de baixo | 36 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Martelo no chão | 40 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Glock Silenciada
+
+- Dano 16 × 2 · alcance 30 m · cooldown 2 s · custo 0
+
+### Habilidades
+
+- **Salto Fantasma** — △ + L2 / Y + LT · custo 18 · cooldown 7 s
+  Some numa estática elétrica colorida e reaparece: na direção do analógico ou, sem direção, ao lado do adversário.
+- **Queima-Roupa** — △ + ○ / Y + B · custo 18 · cooldown 9 s · dano 46 · alcance 2.4 m
+  Encosta a Glock no adversário e dispara: só funciona COLADO nele (até 2,4 m) e joga longe. Longe demais, nem saca.
+- **Mira de Elite** — △ + □ / Y + X · custo 25 · cooldown 12 s
+  Para, mira com calma (o laser aparece no alvo) e dá um tiro certeiro e forte. A mira deixa ele parado um instante.
+- **Tratar Ferimentos** — R2 + △ / RT + Y · custo 25 · cooldown 20 s
+  O socorrista se remenda no meio da luta: recupera vida por 3 s (mais se ficar parado). Apanhar no meio não cancela.
+- **Coração Pulsante** — R2 + × / RT + A · custo 22 · cooldown 22 s
+  O Coração Pulsante bate no peito: por 4 s recebe METADE do dano.
+- **Passiva — Afinidade com Energia:** rituais de Energia +10%
+- **Passiva — Resistência a Sangue:** −20% de dano de Sangue
+
+### Especial: Pelo Johnny
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Ainda Bem Que Eu Voltei
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +10% de dano (distância, habilidades), −10% de dano recebido, +8% de velocidade, recargas 35% mais rápidas, regenera 3 de vida/s, cura 12% na hora.
+
+---
+
 ## SENHOR VERÍSSIMO
 
 *Líder da Ordo Realitas: Inteligência Estratégica e o Segredo de Veríssimo* · arma: A espada do Arnaldo e uma escopeta curta

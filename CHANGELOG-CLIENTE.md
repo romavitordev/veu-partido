@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.18.0 — Rubens Naluti
+- Rubens Naluti, o paramédico dos Abutres, entra no elenco com o Martelo, a Glock Silenciada e a faca do Johnny.
+- Ele some na estática colorida com o Salto Fantasma, atira à queima-roupa, se cura e aguenta metade do dano com o Coração Pulsante.
+- Especial Pelo Johnny e despertar Ainda Bem Que Eu Voltei.
+- O Rubens fecha o especial dos Abutres: a equipe está completa.
+
 ## v4.17.1 — O Grimório de Arnaldo
 - A Carina transformada agora abre o Grimório de Arnaldo, os sigilos brilham e ela ergue o livro no grito.
 - O grimório vale de qualquer lugar do mapa.
