@@ -141,7 +141,8 @@ def torso_fn(p):
     if z > 1.52 and ax < 0.08 * H:  # pescoço: tendões verticais
         v = ridge(math.atan2(p.x, p.y) * 9 + w)
     elif p.y < -0.05 * H and z > 1.36 and ax < 0.24 * H:  # peitorais em leque
-        v = ridge(math.atan2(p.z - 1.54 * H, ax + 0.02 * H) * 40 + w) * 0.8
+        # PROPOSTA visual: estrias mais discretas sob a luz roxa das arenas
+        v = ridge(math.atan2(p.z - 1.54 * H, ax + 0.02 * H) * 40 + w) * 0.55
     elif p.y < -0.05 * H and z <= 1.36 and ax < 0.09 * H:  # o abdômen (a forma vem da base): fibras verticais finas
         v = ridge(p.x / H * 120 + w) * 0.7
     elif p.y > 0.0 and ax < 0.03 * H:  # o sulco da coluna
@@ -213,7 +214,8 @@ for pl in bo.data.polygons:
 def body_col(p):
     fn = body_fn(p, DOM.get(key(p), 'hips'))
     k = lim(fn / AMP + 0.35) ** 2
-    c = C['lodo'].lerp(C['crest'], k * 0.6)
+    # PROPOSTA visual: reduzir o contraste das cristas no jogo
+    c = C['lodo'].lerp(C['crest'], k * 0.4)
     r = red_zone(p)
     return c.lerp(C['ember'].lerp(C['crest'], k * 0.3), r * 0.6) if r > 0 else c
 
