@@ -290,6 +290,10 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 - Dano 40 · alcance 24 m · cooldown 1.8 s · custo 0
 
+### Principal durante Passagem de Conhecimento Expandido: o □ do adversário
+
+- Até o fim do round o □ vira o do adversário (dano, recarga e custo dele)
+
 ### Habilidades
 
 - **Amaldiçoar Arma** — △ + □ / Y + X · custo 20 · cooldown 18 s
@@ -299,8 +303,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Passagem de Conhecimento** — R2 + × / RT + A · custo 25 · cooldown 14 s · alcance 14 m
   Troca de mente com o adversário por um instante: os dois trocam de lugar e ele volta desorientado, de costas e atordoado.
 - **Leitura de Rituais** — R2 + △ / RT + Y · custo 20 · cooldown 16 s
-  Lê os rituais do adversário antes de eles chegarem: por 7 s recebe 40% menos dano de rituais e especiais.
-- **Passiva — Colar Banhado em Sangue:** −15% de dano de Sangue; sangramento 10% mais forte
+  Abre o grimório e lê os rituais do adversário antes de eles chegarem: por 7 s recebe 40% menos dano de rituais e especiais.
+- **Passiva — Colar Banhado em Sangue:** −20% de dano de Sangue; rituais de Sangue +10%; sangramento 15% mais forte
+- **Passiva — Identificação Macabra:** não perde o rastro de quem fica furtivo e vê o sigilo de Sangue debaixo do verdadeiro no meio de clones e ilusões
 
 ### Especial: Descarnar
 

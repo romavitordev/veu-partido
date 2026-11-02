@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.15.1 (2026-11-02: o Descarnar arrancando a pele e derretendo a carne). Antes: v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.16.0 (2026-11-02: revisão do kit da Aghata pelo cânone). Antes: v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2657,12 +2657,17 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
 * [x] Descarnar (especial) — v4.15.1: o ritual de Sangue arranca a pele e derrete a carne (carne viva, pele em pedaços,
       a carne pingando com vapor de sangue e a poça no chão); sem o raio de antes. Vale também para o Juan, as
       assistências e o agarrão
-* [ ] Livro
+* [x] Livro — v4.16.0: o grimório aberto na mão esquerda no Descarnar e na Leitura de Rituais
 * [x] Faca
-* [ ] Projétil de Sangue
+* [ ] Projétil de Sangue — sem fonte no cânone (o mais próximo é "Amaldiçoar Balas com Sangue"): decidir se fica ou sai
 * [x] Ritual de Leitura (Leitura de Rituais)
-* [x] Colar Encharcado de Sangue (passiva `bloodNecklace`)
-* [ ] Conferir bleed
+* [x] Colar Encharcado de Sangue (passiva `bloodNecklace`) — v4.16.0 pelo cânone: −20% de dano de Sangue, rituais de Sangue
+      +10% e sangramento +15% (a referência abaixo)
+* [x] Identificação Macabra (PROPOSTA, v4.16.0): não perde o rastro de quem fica furtivo e vê o sigilo debaixo do verdadeiro
+      no meio de clones e ilusões
+* [x] Passagem de Conhecimento Expandido pelo cânone (v4.16.0): o □ vira o do adversário até o fim do round (testado
+      contra Kemi e Dante; falta conferir contra os 39)
+* [x] Conferir bleed (2026-11-02: 23 de dano no corte + 12 de sangramento em 3 s com a faca amaldiçoada)
 * [ ] Conferir dano físico
 * [ ] Conferir resistência
 * [ ] Avaliar aumento do combo

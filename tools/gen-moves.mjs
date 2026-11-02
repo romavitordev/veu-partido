@@ -68,6 +68,7 @@ for (const c of ROSTER) {
       md +=`- ${DIR[k].replace('○', '□')}: **${v.label}** — ${v.damage}${(v.count ?? r.count) > 1 ? ` × ${v.count ?? r.count}` : ''}\n`;
     }
   }
+  if (c.awakening && c.awakening.stealRanged) md += `\n### Principal durante ${c.awakening.name}: o □ do adversário\n\n- Até o fim do round o □ vira o do adversário (dano, recarga e custo dele)\n`;
   if (c.awakening && c.awakening.ranged) {
     const awakenedRanged = c.awakening.ranged;
     md += `\n### Principal durante ${c.awakening.name}: ${awakenedRanged.name}\n\n`;
@@ -85,7 +86,9 @@ for (const c of ROSTER) {
 `;
     if (p.type === 'resistant') md += `- **Passiva — Resistente:** −${Math.round((1 - p.mult) * 100)}% de dano físico recebido
 `;
-    if (p.type === 'bloodNecklace') md += `- **Passiva — Colar Banhado em Sangue:** −${Math.round((1 - p.resist) * 100)}% de dano de Sangue; sangramento ${Math.round((p.bleedMult - 1) * 100)}% mais forte
+    if (p.type === 'bloodNecklace') md += `- **Passiva — Colar Banhado em Sangue:** −${Math.round((1 - p.resist) * 100)}% de dano de Sangue; rituais de Sangue +${Math.round(((p.ritualMult ?? 1) - 1) * 100)}%; sangramento ${Math.round((p.bleedMult - 1) * 100)}% mais forte
+`;
+    if (p.type === 'macabreId') md += `- **Passiva — Identificação Macabra:** não perde o rastro de quem fica furtivo e vê o sigilo de Sangue debaixo do verdadeiro no meio de clones e ilusões
 `;
     if (p.type === 'extraTurn') md += `- **Passiva — Turno Extra:** o finalizador do combo que acerta abre ${p.window} s em que a próxima habilidade não entra em recarga (uma vez a cada ${p.cooldown} s)
 `;

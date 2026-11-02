@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.16.0 — O Kit da Aghata
+
+### Adicionado
+- Aghata — Identificação Macabra (passiva nova, PROPOSTA a partir do cânone): não perde o rastro de quem fica furtivo (o "Shhh..." da Jae) e vê o sigilo de Sangue debaixo do verdadeiro no meio de clones e ilusões (Multiplicação do Anfitrião, Embaralhar do Dante).
+- Aghata — o grimório: abre o livro na mão esquerda no Descarnar e na Leitura de Rituais.
+
+### Alterado
+- Aghata — Colar Banhado em Sangue pelo cânone: −20% de dano de Sangue (antes −15%), sangramento +15% (antes +10%) e os rituais de Sangue dela +10%.
+- Aghata — Passagem de Conhecimento Expandido (despertar) pelo cânone: na troca de corpos cada mente usa as habilidades do corpo novo, então até o fim do round o □ dela vira o do adversário.
+
 ## v4.15.1 — Descarnar
 
 ### Alterado

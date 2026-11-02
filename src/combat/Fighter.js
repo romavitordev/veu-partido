@@ -351,12 +351,15 @@ export class Fighter {
   // ele sozinha — quem joga tem que achá-la de olho
   lostTrack(opp) {
     if (!opp || !opp.findBuff) return false;
-    return (!!opp.findBuff('veil') && distXZ(this.pos, opp.pos) > 1.6) || !!this.findBuff('deaf');
+    if (this.findBuff('deaf')) return true;
+    return !!opp.findBuff('veil') && distXZ(this.pos, opp.pos) > 1.6 && !hasPassive(this, 'macabreId');
   }
 
   // SEM RASTRO (o "Shhh..." da Jae, buff veil com noLock): os especiais que GRUDAM no alvo (os que o prendem numa cena)
   // não conectam e os projéteis teleguiados não a seguem — é o que justifica a invisibilidade
-  untrackable() {
+  // by: quem procura. A Identificação Macabra (Aghata) acha o verdadeiro mesmo assim
+  untrackable(by) {
+    if (by && hasPassive(by, 'macabreId')) return false;
     return this.buffs.some((b) => b.type === 'veil' && b.noLock && b.time > 0);
   }
 
@@ -905,6 +908,7 @@ export class Fighter {
       if (b.stealth) { stealth = true; op = Math.min(op, this.stealthOpacity(b)); } else op = Math.min(op, b.opacity);
     }
     this.updateStealthMark(stealth && this.ownerSees());
+    this.updateMacabreMark(stealth);
     // escondido de quem olha a tela (só contra a CPU: no online a câmera precisa ser igual nos dois computadores, e no
     // P1 vs P2 a tela é uma só): a câmera fica no último lugar em que ele foi visto
     const hideCam = stealth && !this.ownerSees() && !this.world.netplay;
@@ -941,6 +945,39 @@ export class Fighter {
     }
     this._stealthRing.visible = on;
     if (on) this._stealthRing.position.set(this.pos.x, Math.max(0.03, this.pos.y + 0.03), this.pos.z);
+  }
+
+  // IDENTIFICAÇÃO MACABRA (Aghata, cânone: identifica o paranormal com extrema facilidade): quando este lutador some
+  // (furtivo) ou enche o campo de cópias (Multiplicação, Trinitá, ilusões), o adversário com a passiva vê o sigilo de
+  // Sangue debaixo do verdadeiro — só na tela de quem a controla
+  updateMacabreMark(stealth) {
+    const seer = this.opponent;
+    let on = false;
+    if (seer && seer !== this && this.state !== 'ko' && hasPassive(seer, 'macabreId') && seer.ownerSees()) {
+      const copies = (this.world.npcs || []).some((n) => n.owner === this && n.alive !== false && (n.isClone || n.illusion));
+      on = stealth || copies;
+    }
+    if (!on && !this._macabreMark) return;
+    if (!this._macabreMark) {
+      const g = new THREE.Group();
+      const mat = new THREE.MeshBasicMaterial({ color: 0xe0204a, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending });
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.62, 0.7, 40), mat);
+      const bar = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.05), mat);
+      const post = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 1.7), mat);
+      post.position.y = -0.12;
+      g.add(ring, bar, post);
+      g.rotation.x = -Math.PI / 2;
+      g.renderOrder = 3;
+      this.world.scene.add(g);
+      this._macabreMark = g;
+    }
+    const g = this._macabreMark;
+    if (on && !g.visible && seer.notify) seer.notify('IDENTIFICAÇÃO MACABRA', true);
+    g.visible = on;
+    if (on) {
+      g.position.set(this.pos.x, Math.max(0.04, this.pos.y + 0.04), this.pos.z);
+      g.rotation.z = (this.glowClock || 0) * 0.8;
+    }
   }
 
   // ------------------------------------------------ buffer de comandos
@@ -2940,7 +2977,7 @@ export class Fighter {
       }
     }
     // o alvo sumiu nas sombras (Shhh... da Jae): o especial que gruda nele não acha ninguém
-    if (STICKY_SPECIALS.has(p.sp.type) && this.opponent && this.opponent.untrackable()) {
+    if (STICKY_SPECIALS.has(p.sp.type) && this.opponent && this.opponent.untrackable(this)) {
       this.whiffSpecial('hidden');
       return;
     }

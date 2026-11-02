@@ -131,14 +131,21 @@ export const PASSIVES = {
       return (passive.kinds || ['melee']).includes(kind) ? passive.mult ?? 0.95 : 1;
     },
   },
-  // Agatha — Colar Banhado em Sangue: resiste a Sangue e faz o sangramento dela doer mais
+  // Agatha — Colar Banhado em Sangue (cânone): alta resistência a dano de Sangue e os RITUAIS de Sangue dela mais
+  // danosos; o sangramento que ela causa também dói mais (Fighter.applyBleed)
   bloodNecklace: {
+    damageMod({ attacker, kind, passive, o }) {
+      const ritual = kind === 'ability' || kind === 'special';
+      return ritual && (o.element || attacker.def.element) === 'sangue' ? passive.ritualMult ?? 1.1 : 1;
+    },
     damageTakenMod({ element, passive }) {
       return element === 'sangue' ? passive.resist ?? 0.8 : 1;
     },
   },
   // Kian — Precognição: imune a bônus de costas e a ficar "surpreso" (lido em abilities/passives)
   precognition: {},
+  // Aghata — Identificação Macabra: acha o verdadeiro (furtivo, clones e ilusões); lido no Fighter (lostTrack, untrackable, updateMacabreMark)
+  macabreId: {},
   // Gal — Desviar de Balas: esquivar de projéteis não gasta carga de esquiva (lido no Fighter)
   bulletDodge: {},
   // Celestine — NADA PESSOAL (ficha de Calamidade: "ganha mais um dado toda vez que trai alguém"): cada TRAIÇÃO —

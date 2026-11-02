@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.16.0 — O Kit da Aghata
+
+- Versão: `VERSION` 4.15.1 → **4.16.0** (`package.json`/lock junto). Data: 2026-11-02. Revisão do kit pedida pelo usuário (itens 1–4 da revisão; o Projétil de Sangue ficou para decidir).
+- `passives.js`: `bloodNecklace.damageMod` (+`ritualMult` em habilidade/especial de Sangue); `macabreId` novo. `aghata.js`: colar 0.8/1.15/1.1 e `macabreId`.
+- `Fighter`: `lostTrack` e `untrackable(by)` ignoram a furtividade para quem tem `macabreId` (chamadas em projectiles.js e no especial pegajoso passam quem procura); `updateMacabreMark` desenha o sigilo debaixo do verdadeiro quando ele está furtivo ou tem clones/ilusões, só na tela de quem controla a Aghata.
+- `props.js`: grimório (`props.grimoire`, mão esquerda); `selfBuff` aceita `a.showProp` durante a conjuração; `specials/ritual.js` mostra o livro do concentrar até o fim.
+- `awakenMode.stealRanged`: o buff `awakened` leva o `ranged` do adversário (forma atual), recarga zerada e aviso; fio dourado ligando os dois no clarão.
+- `tools/gen-moves.mjs`: textos do colar, da Identificação Macabra e do □ roubado; HABILIDADES.md regenerado.
+- Testado no navegador: colar (ritual 100 → 111 contra Morte, físico 119), grimório na Leitura, □ roubado da Kemi (Sniper Fantasma, 77) e do Dante (Decadenza, 95), Jae furtiva rastreável e marcada, clones do Anfitrião com o sigilo no verdadeiro. Os 39 adversários do □ roubado e o balanceamento ficam para depois.
+
 ## v4.15.1 — Descarnar
 
 - Versão: `VERSION` 4.15.0 → **4.15.1** (`package.json`/lock junto). Data: 2026-11-02. Correção de cânone pedida pelo usuário: o Descarnar não tem nada de eletrificado.

@@ -118,7 +118,9 @@ export default {
       buffType: 'ritualReading',
       label: 'LEITURA DE RITUAIS',
       anim: 'concentrate',
-      description: 'Lê os rituais do adversário antes de eles chegarem: por 7 s recebe 40% menos dano de rituais e especiais.',
+      animTime: 0.8,
+      showProp: 'grimoire', // abre o grimório
+      description: 'Abre o grimório e lê os rituais do adversário antes de eles chegarem: por 7 s recebe 40% menos dano de rituais e especiais.',
       energyCost: 20,
       cooldown: 16,
       duration: 7,
@@ -144,15 +146,22 @@ export default {
     ],
   },
 
-  // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Passagem de Conhecimento Expandido — o ritual dela levado ao máximo: os rituais voltam rápido e custam menos. Até o fim do round.
+  // DESPERTAR (Barra de Transformação cheia + vida baixa, segurando △) — cânone: Passagem de Conhecimento Expandido — a
+  // troca de corpos em que cada mente usa as habilidades do corpo novo: o □ dela vira o do ADVERSÁRIO (stealRanged) e os
+  // rituais voltam rápido e custam menos. Até o fim do round.
   awakening: {
     name: 'Passagem de Conhecimento Expandido',
     banner: 'Passagem de Conhecimento Expandido',
     type: 'awakenMode',
+    stealRanged: true,
     mult: 1.15, affects: ['ability', 'special'], cdRate: 1.5, energyRegenMult: 1.6, aura: 'sigil', color: 0xffd060, heal: 0.1,
   },
 
   passives: [
-    { type: 'bloodNecklace', resist: 0.85, bleedMult: 1.1 }, // Colar Banhado em Sangue: resiste a Sangue, sangramento um pouco mais forte
+    // Colar Banhado em Sangue (cânone): resiste a Sangue, rituais de Sangue dela mais danosos e o sangramento mais forte
+    { type: 'bloodNecklace', resist: 0.8, bleedMult: 1.15, ritualMult: 1.1 },
+    // Identificação Macabra (cânone, 30% de Exposição: identifica o paranormal com extrema facilidade): PROPOSTA —
+    // não perde o rastro de quem some (furtivo) e vê o sigilo debaixo do verdadeiro no meio dos clones e ilusões
+    { type: 'macabreId' },
   ],
 };

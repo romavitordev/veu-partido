@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.16.0 — O Kit da Aghata
+- Aghata vê através de furtividade e clones (Identificação Macabra) e abre o grimório nos rituais.
+- No despertar, o □ dela vira o do adversário.
+- O Colar dela ficou mais forte, como no cânone.
+
 ## v4.15.1 — Descarnar
 - O Descarnar agora arranca a pele e derrete a carne do alvo, como no cânone.
 

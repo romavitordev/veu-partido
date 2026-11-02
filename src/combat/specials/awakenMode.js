@@ -34,6 +34,8 @@ import { DanteClone } from '../npcs.js';
 //                       zerada, a larva ECLODE (dano + um Alheio que sai dela, `summon`) e outra é posta em `regrow` s
 //   glowMat             trecho do nome do material que BRILHA na cor do estado (o próprio desenho da textura vira o
 //                       brilho: na venda do Gal, as marcas douradas acendem e o pano preto continua escuro); pulsa
+//   stealRanged         o □ passa a ser o do ADVERSÁRIO até o fim do round (Passagem de Conhecimento Expandido da
+//                       Aghata: na troca de corpos cada mente usa as habilidades do corpo novo)
 //   props               [[peça, visível], ...]: troca peças do modelo no close e mantém até o fim do round (a Jaqueta de
 //                       Veríssimo); a habilidade que veste a mesma peça não a tira enquanto durar (buff.keepProps)
 export const awakenMode = {
@@ -72,6 +74,11 @@ export const awakenMode = {
       world.cameraRig.shake(0.45, 0.35);
       world.screenFlash && world.screenFlash('#' + new THREE.Color(col).getHexString(), 0.08);
       world.audio.play('armed');
+      const opp = f.opponent;
+      if (sp.stealRanged && opp && opp.state !== 'ko') {
+        world.fx.tracer(f.chestPos(), opp.chestPos(), { color: col, life: 0.4, width: 0.06 });
+        world.fx.burst(opp.chestPos(), { count: 30, color: col, speed: 4, life: 0.5, size: 0.2 });
+      }
     });
     tl.add(1.4, () => {});
     tl.end(1.4);
@@ -113,6 +120,9 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
   const aura = auraEmitter(f, world, sp.aura || 'flame', col);
   const tint = { color: col, base: 0.16 };
   f.buffTint = tint;
+  // a Passagem: o □ do adversário (a forma em que ele está agora), com a recarga e o custo dele
+  const src = sp.stealRanged && f.opponent && f.opponent.def.ranged;
+  const ranged = src ? { ...src, stolenFrom: f.opponent.def.name } : sp.ranged;
   let armorClock = 0;
   let regenAcc = 0;
   let drainAcc = 0;
@@ -121,7 +131,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
     type: 'awakened', name: (sp.label || sp.name).toUpperCase(), time: Infinity, duration: Infinity,
     mult: sp.lowHealth ? sp.lowHealth.min : sp.mult, affects: sp.affects || ['melee', 'ranged', 'ability'], takenMult: sp.takenMult, speedMult: sp.speedMult,
     cdRate: sp.cdRate, energyRegenMult: sp.energyRegenMult, knockbackTakenMult: sp.knockbackTakenMult, unblockable: !!sp.unblockable, meleeBleed: sp.meleeBleed,
-    bloodArmor: !!sp.bloodArmSide, bloodArmSide: sp.bloodArmSide, passives: sp.passives, perfectBlockWindow: sp.perfectBlockWindow, ranged: sp.ranged,
+    bloodArmor: !!sp.bloodArmSide, bloodArmSide: sp.bloodArmSide, passives: sp.passives, perfectBlockWindow: sp.perfectBlockWindow, ranged,
     keepProps: (sp.props || []).filter(([, v]) => v).map(([p]) => p),
     onTick(dt) {
       if (glow) glow.pulse(world.time);
@@ -154,7 +164,8 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
     },
     onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); if (f.buffTint === tint) f.buffTint = null; },
   });
-  if (sp.ranged) f.cooldownMax.ranged = sp.ranged.cooldown || 1;
+  if (ranged) f.cooldownMax.ranged = ranged.cooldown || 1;
+  if (src) { f.cooldowns.ranged = 0; f.notify(`□: ${(src.name || 'ATAQUE').toUpperCase()} (${f.opponent.def.name})`, true); }
   if (sp.larva) incubate(f, sp.larva, world, col);
   f.notify(`${(sp.label || sp.name).toUpperCase()}!`, true);
 }

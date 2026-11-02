@@ -73,7 +73,10 @@ export const ritual = {
     ]);
 
     // 1–2: encara e concentra-se (cabeça baixa, olhos fechados)
-    tl.add(0.6, () => f.anim.play('concentrate', { restart: true }));
+    tl.add(0.6, () => {
+      f.anim.play('concentrate', { restart: true });
+      if (f.rig.props.grimoire) f.rig.showProp('grimoire', true); // o grimório aberto (o ritual vem dele)
+    });
     // 3: energia vermelha percorre o corpo
     let body = null;
     tl.add(0.75, () => {
@@ -138,6 +141,7 @@ export const ritual = {
       body && body.stop();
       hand && hand.stop();
       f.glowTint = null;
+      if (f.rig.props.grimoire) f.rig.showProp('grimoire', false);
       // a carne ainda pinga e o vermelho some aos poucos (já na luta)
       let t = 0;
       const tint = opp.glowTint;

@@ -3888,9 +3888,14 @@ Object.assign(ABILITY_TYPES, {
       const castT = a.animTime ?? 0.45;
       f.anim.play(a.anim || 'concentrate', { restart: true, duration: castT });
       world.audio.play(a.sound || 'ritual', { volume: 0.5 });
+      // a.showProp: o objeto aparece enquanto conjura (Aghata: o grimório aberto na Leitura de Rituais)
+      const prop = a.showProp && f.rig.props[a.showProp];
+      const hide = () => prop && f.rig.showProp(a.showProp, false);
+      if (prop) f.rig.showProp(a.showProp, true);
       tl.add(Math.min(0.25, castT * 0.6), () => applySelfBuff(f, a, world));
+      tl.add(castT, hide);
       tl.end(castT);
-      return seqFrom(tl);
+      return seqFrom(tl, { cancel: hide });
     },
   },
 });

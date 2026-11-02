@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.15.1';
+export const VERSION = '4.16.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.16.0',
+    date: '2026-11-02',
+    title: 'O Kit da Aghata',
+    items: [
+      'AGHATA: Identificação Macabra — vê através de furtividade e clones.',
+      'AGHATA: abre o grimório nos rituais; no despertar, o □ vira o do adversário.',
+      'AGHATA: o Colar Banhado em Sangue ficou como no cânone (resiste mais a Sangue e fortalece os rituais de Sangue dela).',
+    ],
+  },
   {
     v: '4.15.1',
     date: '2026-11-02',

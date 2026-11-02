@@ -59,7 +59,8 @@ export function moveListHTML(c) {
     if (p.type === 'backstab') html += row('Passiva', 'Golpe pelas costas', `+${Math.round((p.mult - 1) * 100)}% de dano`);
     if (p.type === 'decepar') html += row('Passiva', 'Decepar', `finalizador +${Math.round((p.mult - 1) * 100)}% em quem está com menos de ${p.threshold * 100}% de vida`);
     if (p.type === 'resistant') html += row('Passiva', 'Resistente', `-${Math.round((1 - p.mult) * 100)}% de dano físico recebido`);
-    if (p.type === 'bloodNecklace') html += row('Passiva', 'Colar Banhado em Sangue', `-${Math.round((1 - p.resist) * 100)}% de dano de Sangue e sangramento ${Math.round((p.bleedMult - 1) * 100)}% mais forte`);
+    if (p.type === 'macabreId') html += row('Passiva', 'Identificação Macabra', 'Não perde o rastro de quem fica furtivo e vê o sigilo de Sangue debaixo do verdadeiro no meio de clones e ilusões');
+    if (p.type === 'bloodNecklace') html += row('Passiva', 'Colar Banhado em Sangue', `-${Math.round((1 - p.resist) * 100)}% de dano de Sangue, rituais de Sangue +${Math.round(((p.ritualMult ?? 1) - 1) * 100)}% e sangramento ${Math.round((p.bleedMult - 1) * 100)}% mais forte`);
     if (p.type === 'precognition') html += row('Passiva', 'Precognição', 'não é pego desprevenido: sem bônus de costas nem susto de teleporte');
     if (p.type === 'kianScript') html += row('Passiva', 'A Escrita', `cada golpe escreve no corpo do adversário; com ${p.max} marcas a escrita detona: ${p.burst} de dano de Conhecimento que não dá para defender e atordoa`);
     if (p.type === 'slowImpact') html += row('Passiva', 'Desacelerar Impacto', `-${Math.round((1 - p.mult) * 100)}% de dano de projéteis`);

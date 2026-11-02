@@ -94,6 +94,41 @@ export function addAghataProps(rig) {
   spare.visible = false;
   sockets.handR.add(spare);
   props.knifeThrow = spare;
+  // o GRIMÓRIO aberto na mão esquerda (o ritual dela vem dele: o mesmo sigilo da gola), só nos rituais
+  const book = grimoire();
+  book.position.set(0, -0.09, 0.05);
+  book.rotation.set(-0.9, 0, 0);
+  book.visible = false;
+  sockets.handL.add(book);
+  props.grimoire = book;
+}
+
+// livro aberto: capas de couro, as páginas e o sigilo de Sangue (círculo cortado por uma cruz alongada) aceso na página
+function grimoire() {
+  const g = new THREE.Group();
+  const cover = toon(0x3a2418);
+  const page = toon(0xe6dcc4);
+  for (const s of [-1, 1]) {
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.012, 0.18), cover);
+    c.position.set(s * 0.066, 0, 0);
+    c.rotation.z = s * -0.18;
+    g.add(c);
+    const pg = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.02, 0.17), page);
+    pg.position.set(s * 0.062, 0.012, 0);
+    pg.rotation.z = s * -0.18;
+    g.add(pg);
+  }
+  const red = glowMat(0xe0204a, 0.95);
+  const sig = new THREE.Group();
+  sig.add(new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.004, 6, 20), red));
+  sig.add(new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.005, 0.005), red));
+  const v = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.09, 0.005), red);
+  v.position.y = -0.01;
+  sig.add(v);
+  sig.rotation.x = -Math.PI / 2;
+  sig.position.set(0.062, 0.024, 0);
+  g.add(sig);
+  return g;
 }
 
 // ERIN: uma adaga em cada mão; a escopeta aparece no disparo; granada na mão antes do arremesso

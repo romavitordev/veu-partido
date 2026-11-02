@@ -601,7 +601,7 @@ export class Projectiles {
       if (a.curve) {
         const tg = w.opponentOf(p.owner);
         if (tg && !p.lost && tg.state === 'dodge' && tg.pos.distanceTo(p.pos) < 7) p.lost = true;
-        const alive = tg && tg.state !== 'ko' && tg.visible && !p.lost && !(tg.untrackable && tg.untrackable());
+        const alive = tg && tg.state !== 'ko' && tg.visible && !p.lost && !(tg.untrackable && tg.untrackable(p.owner));
         let goal = null;
         if (alive) {
           const aim = tg.chestPos();
@@ -641,7 +641,7 @@ export class Projectiles {
       // projétil que procura o alvo (ex.: Corrente de Captura): gira devagar na direção dele
       if (a.homing && !a.curve) {
         const tg = w.opponentOf(p.owner);
-        if (tg && tg.state !== 'ko' && tg.visible && !(tg.untrackable && tg.untrackable())) {
+        if (tg && tg.state !== 'ko' && tg.visible && !(tg.untrackable && tg.untrackable(p.owner))) {
           const want = tg.chestPos().sub(p.pos).normalize();
           const ang = p.dir.angleTo(want);
           if (ang > 1e-3) p.dir.lerp(want, Math.min(1, (a.homing * dt) / ang)).normalize();
