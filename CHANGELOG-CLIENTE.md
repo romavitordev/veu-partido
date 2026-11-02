@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.14.1 — A Plateia em Toda Arena
+- A Plateia do Anfitrião agora aparece em qualquer arena: Anfitriões se materializam em volta e batem palmas.
+- O dano do combo fica fixo no seu canto da tela.
+
 ## v4.14.0 — Contagem de Acertos
 - O marcador do combo mostra quantos acertos você já encaixou.
 - Dá para escapar do Envelhecimento do Deus da Morte esquivando durante o preparo.

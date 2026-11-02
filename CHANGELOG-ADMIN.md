@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.14.1 — A Plateia em Toda Arena
+
+- Versão: `VERSION` 4.14.0 → **4.14.1** (`package.json`/lock junto). Data: 2026-11-02.
+- `hostAbilities.js`: `spawnAudience(world, f)` — quando `arena.crowdPoint` não existe, 8 cópias de `f.def.model` (materiais clonados, transparentes) num anel de 6,2–7,8 m em volta do meio da luta (`findFreeSpotNear`), viradas para o centro, clipe `host_clap`; entram uma a uma (0,12 s) com distorção/anel neon, somem nos últimos 0,4 s (vida 4,2 s). Ticker do mundo + `drive(dt)` chamado pelo `tl.each` da habilidade enquanto `world.cinematic` congela os tickers. A câmera do plano 1 olha para o mais perto da câmera.
+- `charClips.js`: clipe `host_clap` (loop 0,34 s).
+- `HUD`/`styles.css`: `.dmg` sem projeção 3D; `.dmg.p1`/`.dmg.p2` fixos a 36% da altura nos cantos.
+- Testado no navegador (Anfitrião × Kemi em Tipora): plateia visível durante a cena e depois; contador no canto do P1 com "3 ACERTOS".
+
 ## v4.14.0 — Contagem de Acertos
 
 - Versão: `VERSION` 4.13.1 → **4.14.0** (`package.json`/lock junto). Data: 2026-11-02.

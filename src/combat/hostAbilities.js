@@ -3,6 +3,9 @@ import { Timeline, yawTo, distXZ, forwardFromYaw } from '../core/util.js';
 import { applyHit } from './damage.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { chooseButtonWinner } from './hostButtonRace.js';
+import { buildModel } from '../models/index.js';
+import { disposeSkeletons } from '../models/glbRig.js';
+import { Animator } from '../anim/Animator.js';
 import { ABILITY_TYPES } from './abilities.js';
 import {
   PURPLE, PINK, BLUE, YELLOW, RED, WHITE, NEON,
@@ -16,6 +19,83 @@ const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const alive = (x) => x && x.state !== 'ko';
 const seqFrom = (tl, extra = {}) => ({ update: (dt) => tl.update(dt), ...extra });
 const handL = (f) => (f.rig.sockets.handL ? f.rig.sockets.handL.getWorldPosition(new THREE.Vector3()) : f.chestPos());
+
+// ---------------------------------------------------------------- A Plateia (fora do Palco)
+// Fora do Palco do Anfitrião não há arquibancada: a plateia é ELE MESMO — cópias do Anfitrião se materializam em volta
+// da arena (um a um, num clarão neon), batem palmas e somem. Só visual: não ocupam espaço nem levam golpe.
+// O mundo fica congelado durante a cena (world.cinematic): enquanto ela dura, quem anda com eles é a própria habilidade
+// (drive); depois o ticker do mundo continua.
+function spawnAudience(world, f, { count = 8, life = 4.2 } = {}) {
+  const fs = world.fighters.filter(alive);
+  const cx = fs.reduce((n, x) => n + x.pos.x, 0) / (fs.length || 1);
+  const cz = fs.reduce((n, x) => n + x.pos.z, 0) / (fs.length || 1);
+  const others = fs.map((x) => ({ x: x.pos.x, z: x.pos.z, r: 2.6 }));
+  const crowd = [];
+  for (let i = 0; i < count; i++) {
+    const ang = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+    const r = 6.2 + Math.random() * 1.6;
+    const spot = findFreeSpotNear(world.arena, cx + Math.sin(ang) * r, cz + Math.cos(ang) * r, { radius: 0.5, others: [...others, ...crowd.map((c) => ({ x: c.root.position.x, z: c.root.position.z, r: 0.7 }))] });
+    if (!spot) continue;
+    const rig = buildModel(f.def.model);
+    const mats = [];
+    rig.root.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      o.material = o.material.clone();
+      o.material.transparent = true;
+      o.material.userData.baseOpacity = o.material.opacity;
+      o.material.opacity = 0;
+      o.castShadow = false;
+      mats.push(o.material);
+    });
+    rig.root.position.set(spot.x, 0, spot.z);
+    rig.root.rotation.y = Math.atan2(cx - spot.x, cz - spot.z);
+    const anim = new Animator(rig, f.def.anims);
+    anim.play('host_clap', { blend: 0 });
+    anim.speed = 0.85 + Math.random() * 0.35; // cada um no seu ritmo
+    rig.root.visible = false;
+    world.scene.add(rig.root);
+    crowd.push({ rig, root: rig.root, anim, mats, at: i * 0.12, col: NEON[i % 3], shown: false });
+  }
+  let t = 0;
+  const fade = (c, k) => { for (const m of c.mats) m.opacity = (m.userData.baseOpacity ?? 1) * k; };
+  const free = (c) => {
+    world.scene.remove(c.root);
+    disposeSkeletons(c.root);
+    for (const m of c.mats) m.dispose();
+  };
+  const ticker = world.addTicker({
+    update(dt) {
+      t += dt;
+      for (const c of crowd) {
+        const lt = t - c.at;
+        if (lt < 0) continue;
+        if (!c.shown) {
+          // se materializa: clarão neon, distorção e o corpo sobe do chão
+          c.shown = true;
+          c.root.visible = true;
+          const p = c.root.position.clone().setY(1.1);
+          world.fx.distort(p, { color: c.col, radius: 1.6, life: 0.4 });
+          world.fx.burst(p, { count: 16, color: c.col, speed: 2.6, life: 0.45, size: 0.16 });
+          world.fx.ring(c.root.position.clone().setY(0.06), { color: c.col, radius: 1.2, life: 0.4 });
+        }
+        const k = Math.min(1, lt / 0.35) * Math.min(1, Math.max(0, (life - lt) / 0.4));
+        fade(c, k);
+        c.root.scale.setScalar(0.85 + 0.15 * Math.min(1, lt / 0.35));
+        c.anim.update(dt);
+        if (Math.random() < dt * 1.5) world.fx.burst(c.root.position.clone().setY(1.5), { count: 2, color: c.col, speed: 1, life: 0.3, size: 0.1 });
+      }
+      const done = t >= life + crowd.length * 0.12;
+      return done;
+    },
+    dispose() {
+      for (const c of crowd) {
+        if (c.shown) world.fx.burst(c.root.position.clone().setY(1), { count: 10, color: c.col, kind: 'smoke', speed: 1.5, life: 0.4, size: 0.4 });
+        free(c);
+      }
+    },
+  });
+  return { crowd, drive: (dt) => { if (world.cinematic) ticker.update(dt); } };
+}
 
 // ---------------------------------------------------------------- Regra do Caos
 // 8 regras (valem para os DOIS; o Anfitrião conhece o jogo e leva metade). Quem quebrar leva um castigo sorteado.
@@ -301,7 +381,16 @@ Object.assign(ABILITY_TYPES, {
       const opp = f.opponent;
       // para onde ele se curva: a plateia de verdade (Palco do Anfitrião) ou, nas outras arenas, a câmera
       const chest = f.pos.clone().setY(1.4);
-      const crowdAt = world.arena.crowdPoint && world.arena.crowdPoint(chest);
+      let crowdAt = world.arena.crowdPoint && world.arena.crowdPoint(chest);
+      // nas outras arenas a plateia aparece: os Anfitriões em volta, batendo palmas; ele se curva para o mais perto da câmera
+      if (!crowdAt) {
+        const aud = spawnAudience(world, f);
+        tl.each((time, dt) => aud.drive(dt));
+        const crowd = aud.crowd;
+        const cam = world.camera.position;
+        const front = crowd.slice().sort((p, q) => p.root.position.distanceTo(cam) - q.root.position.distanceTo(cam))[0];
+        if (front) crowdAt = front.root.position.clone().setY(1.4);
+      }
       const face = crowdAt || world.camera.position.clone();
       const yawFace = Math.atan2(face.x - f.pos.x, face.z - f.pos.z);
       f.yaw = yawFace;

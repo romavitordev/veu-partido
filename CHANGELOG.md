@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.14.1 — A Plateia em Toda Arena
+
+### Alterado
+- A Plateia (Anfitrião e Amphitruo): fora do Palco do Anfitrião, onde não há arquibancada, 8 Anfitriões se materializam em volta da arena num clarão neon, batem palmas durante a cena e somem depois. Ele se curva para o que está mais perto da câmera.
+- O marcador de dano do combo não segue mais o lutador: fica travado no canto da tela de quem bate (P1 à esquerda, P2 à direita), como no Naruto Storm.
+
 ## v4.14.0 — Contagem de Acertos
 
 ### Adicionado

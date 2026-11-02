@@ -146,6 +146,12 @@ export function addCharClips(CLIPS, k) {
       k(0.64, { ...HOST, hd: [0.2, 0.1, 0.5] }),
       k(1, HOST),
     ] },
+    // palmas (A Plateia fora do Palco): as mãos se abrem e batem na frente do peito, a cabeça torta balançando
+    host_clap: { dur: 0.34, loop: true, keys: [
+      k(0, { ...HLEGS, sp: [0.05, 0, 0], hd: [0.05, 0, 0.35], sR: [-1.05, 0.3, 0], eR: [-1.4, 0, 0], sL: [-1.05, -0.3, 0], eL: [-1.4, 0, 0] }),
+      k(0.5, { ...HLEGS, sp: [0.08, 0, 0], hd: [0.1, 0, 0.42], sR: [-1.1, 0.78, 0], eR: [-1.55, 0, 0], sL: [-1.1, -0.78, 0], eL: [-1.55, 0, 0] }),
+      k(1, { ...HLEGS, sp: [0.05, 0, 0], hd: [0.05, 0, 0.35], sR: [-1.05, 0.3, 0], eR: [-1.4, 0, 0], sL: [-1.05, -0.3, 0], eL: [-1.4, 0, 0] }),
+    ] },
     // reverência de apresentador: um braço dobrado na barriga, o outro aberto para a "plateia"
     host_bow: { dur: 0.9, keys: [k(0, HOST), k(0.45, { ...HLEGS, sp: [0.6, 0, 0], hd: [0.3, 0, 0], sR: [-0.7, -0.9, 0], eR: [-1.8, 0, 0], sL: [-0.2, 0, 1.3], eL: [-0.1, 0, 0], lL: [-0.35, 0, 0.18] }), k(0.75, { ...HLEGS, sp: [0.62, 0, 0], hd: [0.32, 0, 0], sR: [-0.7, -0.9, 0], eR: [-1.8, 0, 0], sL: [-0.2, 0, 1.35], eL: [-0.1, 0, 0] }), k(1, HOST)] },
     // risada: cabeça para trás, ombros sacudindo

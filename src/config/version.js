@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.14.0';
+export const VERSION = '4.14.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.14.1',
+    date: '2026-11-02',
+    title: 'A Plateia em Toda Arena',
+    items: [
+      'ANFITRIÃO: em qualquer arena, A Plateia faz Anfitriões se materializarem em volta batendo palmas.',
+      'COMBO: o dano fica travado no canto da tela de quem bate.',
+    ],
+  },
   {
     v: '4.14.0',
     date: '2026-11-02',

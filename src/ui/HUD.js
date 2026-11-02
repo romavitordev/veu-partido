@@ -1,17 +1,14 @@
-import { viewSize } from '../core/viewport.js';
 import { COMBAT } from '../config/combat.js';
 import { actionLabel } from './labels.js';
 import { t } from '../i18n/index.js';
 import { SETTINGS } from '../config/settings.js';
 import { ELEMENTS } from '../config/elements.js';
 import { hasPassive } from '../combat/passives.js';
-import * as THREE from 'three';
 
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const DMG_HOLD = 1.2; // segundos que o marcador fica depois do combo acabar
 const SUBTITLE_WORD_INTERVAL = 0.12;
-const _v = new THREE.Vector3();
 
 const COMBO_STATES = new Set(['hitstun', 'stun', 'pulled', 'grabbed', 'downed']);
 
@@ -350,7 +347,7 @@ export class HUD {
   }
 
   // Marcador de dano do combo (estilo Storm 4): mostra só o dano do combo ATUAL de quem está batendo,
-  // perto dele na tela; quando o combo acaba, fica um instante e some.
+  // no canto dele da tela (styles.css); quando o combo acaba, fica um instante e some.
   updateDamageMarker(i, f, match) {
     const el = this.dmgEls[i];
     const st = this.dmgState[i];
@@ -376,19 +373,7 @@ export class HUD {
     }
     const visible = st.hold > 0 && st.value > 0;
     el.classList.toggle('on', visible);
-    if (!visible || !match || !match.world) return;
-    // posição: acima e ao lado de quem está batendo, para fora do centro da luta
-    const cam = match.world.camera;
-    _v.set(f.pos.x, f.pos.y + 2.3, f.pos.z).project(cam);
-    const { w: W, h: H } = viewSize();
-    const sx = (_v.x * 0.5 + 0.5) * W;
-    const sy = (-_v.y * 0.5 + 0.5) * H;
-    _v.set(opp.pos.x, opp.pos.y + 2.3, opp.pos.z).project(cam);
-    const ox = (_v.x * 0.5 + 0.5) * W;
-    const side = sx <= ox ? -1 : 1;
-    const x = Math.max(70, Math.min(W - 70, sx + side * 90));
-    const y = Math.max(150, Math.min(H - 60, sy));
-    el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px) translate(-50%, -50%)`;
+    // fica travado no canto de quem bate (P1 à esquerda, P2 à direita), como no Storm — não segue o lutador
   }
 
   callout(text, color = '#fff') {

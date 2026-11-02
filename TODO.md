@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.14.0 (2026-11-02: contagem de acertos do combo e a revisão dos sistemas de combate). Antes: v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.14.1 (2026-11-02: plateia de Anfitriões fora do Palco e o contador de dano travado no canto). Antes: v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2006,6 +2006,8 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         falas próprias de "narrar a si mesmo").
       - **A habilidade da PLATEIA** (`hostAudience`, combat/hostAbilities.js — ele se curva e a plateia aplaude): NESTE
         mapa a câmera corta para um CLOSE dos Anfitriões da arquibancada aplaudindo e volta.
+      - [x] **A Plateia FORA do Palco** (v4.14.1): nas outras arenas 8 Anfitriões se materializam em volta da arena
+        (clarão neon, um a um), batem palmas durante a cena e o buff, e somem; ele se curva para o mais perto da câmera.
       - Técnico: o cenário em `tools/blender/arena_*.py` (a técnica atual); a plateia como modelos instanciados com
         algumas poses prontas (trocadas por eventos da luta); os eventos e o narrador num módulo do mapa ligado ao
         Match/World (desligado nos outros cenários); conferir desempenho no celular.
@@ -2346,8 +2348,8 @@ Evitar falas genéricas.
 * [x] Conferir grabs (`comboScalingFloor.grab` 75%)
 * [x] Conferir finalizadores (2026-11-02: os 39 e as 20 formas terminam o combo com `launch` — o Dante com `push` —,
       ↑ + ○ `launchHigh` e ↓ + ○ `knockdown`; 3–6 golpes, último de 48–81)
-* [x] Conferir HUD (marcador de dano do combo perto de quem bate; agora com a contagem "N ACERTOS" a partir de 2,
-      nos 13 idiomas)
+* [x] Conferir HUD (marcador de dano do combo travado no canto de quem bate, como no Naruto Storm — P1 à esquerda,
+      P2 à direita; com a contagem "N ACERTOS" a partir de 2, nos 13 idiomas)
 * [x] Evitar infinitos (`maxLaunchesPerCombo` 1 + anti-repetição)
 
 Referência inicial:

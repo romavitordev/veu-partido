@@ -546,11 +546,13 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 }
 
 /* marcador de dano do combo (segue quem está batendo; cor do jogador) */
-.dmg { position: absolute; left: 0; top: 0; pointer-events: none; display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity .3s; font-family: 'Bebas Neue', Impact, sans-serif; text-shadow: 3px 3px 0 #000, 0 0 14px rgba(0,0,0,.6); z-index: 3; }
+.dmg { position: absolute; top: 36%; pointer-events: none; display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity .3s; font-family: 'Bebas Neue', Impact, sans-serif; text-shadow: 3px 3px 0 #000, 0 0 14px rgba(0,0,0,.6); z-index: 3; }
 .dmg.on { opacity: 1; transition: opacity .08s; }
 .dmg small { font-size: 16px; letter-spacing: .25em; color: #fff; opacity: .9; }
 .dmg b { font-weight: 400; font-size: 52px; line-height: .9; }
 .dmg i { font-style: normal; font-size: 18px; letter-spacing: .12em; color: #fff; opacity: .85; min-height: 18px; }
+.dmg.p1 { left: clamp(16px, 4vw, 64px); align-items: flex-start; }
+.dmg.p2 { right: clamp(16px, 4vw, 64px); align-items: flex-end; }
 .dmg.p1 b { color: var(--p1); }
 .dmg.p2 b { color: var(--p2); }
 .dmg.pop b { animation: dmgPop .16s ease-out; }
