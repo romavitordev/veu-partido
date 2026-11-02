@@ -783,7 +783,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Respira fundo e se concentra no paciente da vez: aguenta 2 golpes sem recuar e recupera as esquivas.
 - **Passiva — Resistente:** −14% de dano físico recebido
 
-### Especial: Bolsa de Emergência
+### Especial: Racha
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -832,7 +832,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Chama a van no walkie: ela vem por trás com a Dara no volante, o Chico pula de lado e a van atropela quem estiver na frente (quebra a defesa).
 - **Passiva — Resistente:** −15% de dano físico recebido
 
-### Especial: Conexão Neural
+### Especial: Mina de Proximidade
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -1853,7 +1853,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Passiva — Olhar ao Agressor:** ao sofrer dano corpo a corpo, 25% de chance de colocar o agressor em transe por 0.8 s para se golpear uma vez (20 de dano; recarga 12 s; parâmetros PROPOSTA de jogo).
 - **Passiva — Afinidade com Morte:** rituais de Morte +10%; −15% de dano de rituais desse elemento
 
-### Especial: Garra da Morte
+### Especial: Controle Absoluto
 
 250 de dano · custo 50 · cooldown 14 s.
 

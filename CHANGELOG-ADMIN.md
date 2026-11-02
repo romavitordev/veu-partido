@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.12.0 — Especiais pelo Cânone
+
+- Versão: `VERSION` 4.11.0 → **4.12.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `cinematicCombo`: opções novas `standOff` (distância da cena), `selfStrike` (o alvo toca o próprio golpe), `tears` (Lodo dos olhos), `rage` (aura vermelha), `burst` (rajada da `rig.muzzle`), `closeIn` (encurta até 1,15 m), `smoke`, `mine` (`proximityMine`) e `boom` (explosão); o close de rosto do `shots: 'control'` usa a altura do `sockets.head`.
+- `specials/racha.js` (novo, em `SPECIALS`): a van (`vanDosCinco`) surge atrás da Dara, duas passadas com cavalo de pau entre elas, para em parede (`vehicleBlocked`); a 1ª passada só atordoa (lançado, o alvo passava por cima da van na volta).
+- Carniçal, Morato, Chico e Dara: `special` trocado (fontes da wiki nos comentários; nomes e números PROPOSTA).
+- **Testado no jogo:** Controle Absoluto 247 + LENTO; Pelos Cinco 238; Mina de Proximidade 213 + cego; Racha 251 (as duas passadas). Testes 62/62, `check` e `build` verdes.
+
 ## v4.11.0 — Submetralhadoras dos Cinco
 
 - Versão: `VERSION` 4.10.0 → **4.11.0** (`package.json`/lock junto). Data: 2026-11-02.

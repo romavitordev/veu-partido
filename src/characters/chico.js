@@ -161,27 +161,32 @@ export default {
     },
   ],
 
-  // ESPECIAL CONEXÃO NEURAL (o Teclado de Conexão Neural, glifos de Energia): liga a mente na máquina e lê cada golpe
+  // ESPECIAL MINA DE PROXIMIDADE (wiki "Dara Alice Venturini", Granja Abobrinha: ela e o Chico armam uma MINA DE
+  // PROXIMIDADE, os outros atraem o Interflorado até ela "e Chico a explodindo"; na estação de rádio, contra o Fummu,
+  // "Chico lança uma granada de fumaça"). Na luta: a granada de fumaça, a mina no pé do alvo, a Mac-10 segurando ele em
+  // cima dela e a explosão. PROPOSTA: a ordem e os números. Antes: Conexão Neural (só socos).
   special: {
-    name: 'Conexão Neural',
-    banner: 'Conectado!',
+    name: 'Mina de Proximidade',
+    banner: 'Fogo no buraco!',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    color: ENERGY,
+    color: YELLOW,
     sound: 'specialStart',
     physical: true,
-    prepare: { anim: 'charge_fists', time: 0.45 },
-    dash: { speed: 17, maxTime: 0.5, contact: 1.9 },
+    prepare: { anim: 'throw_r', time: 0.35, showProp: 'smg' },
+    dash: { speed: 12, maxTime: 0.6, contact: 6 },
+    standOff: 4.5,
     hits: [
-      { t: 0.55, anim: 'jab', dur: 0.24, share: 0.1, fx: { kind: 'punch', color: ENERGY }, sound: 'punch', shout: 'TÔ NO SISTEMA!' },
-      { t: 0.85, anim: 'cross', dur: 0.26, share: 0.12, fx: { kind: 'punch', color: ENERGY }, sound: 'punch' },
-      { t: 1.15, anim: 'flurry', dur: 0.5, share: 0.23, fx: { kind: 'punch', color: ENERGY }, sound: 'punch' },
-      { t: 1.9, anim: 'heavy_punch', dur: 0.5, share: 0.55, fx: { kind: 'smash', big: true, color: ENERGY }, sound: 'heavyPunch', final: true, call: 'CONEXÃO NEURAL', push: 0.2 },
+      { t: 0.1, noHit: true, anim: 'throw_r', dur: 0.5, smoke: true, victimAnim: 'stagger', shout: 'SEGURA ESSA!' },
+      { t: 0.75, noHit: true, anim: 'point', dur: 0.55, mine: true, victimAnim: 'stagger', shout: 'MINA ARMADA!' },
+      { t: 1.35, anim: 'shoot_rifle', dur: 0.6, share: 0.3, burst: { count: 9, gap: 0.055 }, push: 0, victimAnim: 'stagger', fx: { kind: 'punch', color: 0xffd27a }, sound: 'impact' },
+      { t: 2.1, anim: 'point', dur: 0.5, share: 0.7, boom: true, final: true, push: 0, fx: { kind: 'smash', big: true, color: 0xffa040 }, sound: 'heavyPunch', call: 'BOOM!' },
     ],
-    endReaction: { knockback: 5, lowLaunch: true },
+    endReaction: { knockback: 6, lowLaunch: true },
+    endBlind: 1.2,
     bannerAt: 0.2,
-    length: 3.0,
+    length: 3.1,
   },
 
   // TRANSFORMAÇÃO ENGENHOSIDADE (habilidade do RPG): no limite, o improviso vira gênio — mais rápido e tudo volta antes

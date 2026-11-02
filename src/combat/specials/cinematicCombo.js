@@ -26,6 +26,12 @@ import { groundMark, blindFighter } from '../abilities.js';
 // corda ou corrente da aproximação), tether { at, color, rope, hands } (a corrente/corda presa ao alvo durante a cena),
 // e o que fica depois da cena: afterBuff (um estado no alvo), endBlind (cega o alvo), orderAllies (as assistências
 // ficam prontas), selfHeal (fração da vida que quem usa recupera).
+// sp.standOff: a distância em que a cena começa (padrão 1,15 m — de longe para quem atira).
+// Mais opções por golpe: selfStrike (o ALVO faz o próprio golpe nº tal da sequência dele — a Hipnose do Carniçal),
+// tears (o Lodo escorrendo dos olhos do alvo até o fim da cena), rage (a aura vermelha do ódio em quem bate até o fim —
+// a Calabresa do Morato), burst { count, gap } (rajada: traçantes da boca da arma ao alvo), closeIn (quem bate vem
+// colado no alvo antes do golpe), smoke (granada de fumaça no alvo), mine (a mina de proximidade no pé do alvo) e boom
+// (a mina explode).
 
 const PREP_FX = {
   // Joui com a Shi no Kage: saca a Relíquia de Energia (relâmpago roxo na mão esquerda) e os sigilos dourados da Shi no
@@ -111,6 +117,24 @@ const PREP_FX = {
 const NEGATIVE = new Set(['bleed', 'noHeal', 'dying', 'aging', 'burn', 'blind', 'deaf', 'ritualWeak', 'curseSlow', 'lodoWeak', 'withered', 'deathMark', 'impaled', 'grabSlow', 'chaosSlow']);
 
 // a ARMADILHA DE URSO (Aguiar) que se fecha no pé do alvo durante a cena: duas mandíbulas dentadas que sobem e travam
+// a MINA DE PROXIMIDADE (Chico): o disco verde-oliva com a luz vermelha piscando no pé do alvo
+function proximityMine(world, pos) {
+  const g = new THREE.Group();
+  const body = new THREE.MeshStandardMaterial({ color: 0x3e4a2e, metalness: 0.4, roughness: 0.6 });
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.2, 0.07, 14), body));
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.03, 10), new THREE.MeshStandardMaterial({ color: 0x24282a, metalness: 0.7, roughness: 0.4 }));
+  cap.position.y = 0.05;
+  g.add(cap);
+  const led = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 6), new THREE.MeshBasicMaterial({ color: 0xff2020 }));
+  led.position.set(0.1, 0.05, 0);
+  g.add(led);
+  let t = 0;
+  led.onBeforeRender = () => { t++; led.material.color.setHex(t % 20 < 10 ? 0xff2020 : 0x300404); };
+  g.position.set(pos.x, 0.035, pos.z);
+  world.scene.add(g);
+  return { pos: g.position.clone(), stop() { world.scene.remove(g); } };
+}
+
 function snapTrap(world, pos) {
   const mesh = new THREE.Group();
   const steel = new THREE.MeshStandardMaterial({ color: 0x6a6460, metalness: 0.8, roughness: 0.45 });
@@ -153,7 +177,9 @@ function buildShots(kind, f, opp, sp) {
     // o alvo dominado: por cima do ombro do Gal, olhando o alvo ajoelhar sob o sigilo, até o primeiro corte
     const firstReal = (sp.hits.find((h) => !h.noHit) || sp.hits[0]).t;
     shots.push(overShoulder(f, opp, { dur: firstReal * 0.55, back: 2.0, side: 2.2, height: 2.0, fov: 48 }));
-    shots.push(faceClose(f, { dur: firstReal * 0.45, from: 1.7, to: 1.25, side: 0.4 }));
+    // na altura da cabeça de verdade: o Carniçal é bem mais alto que o padrão de 1,55 m e o plano cortava o rosto
+    const faceH = f.rig.sockets.head.getWorldPosition(new THREE.Vector3()).y - f.pos.y - 0.1;
+    shots.push(faceClose(f, { dur: firstReal * 0.45, from: 1.7 + (faceH - 1.55), to: 1.25 + (faceH - 1.55), side: 0.4, height: faceH }));
     const mid2 = finalHit - firstReal;
     shots.push(twoShot(f, opp, { dur: mid2 * 0.6, dist: 3.6, push: 0.5, side: 1 }));
     shots.push(lowAngle(f, { dur: mid2 * 0.4, dist: 3.0, side: 1.6 }));
@@ -214,7 +240,10 @@ export const cinematicCombo = {
     let trap = null; // h.trap: a armadilha de urso no pé do alvo
     let xMark = null; // h.xMark: o X no chão
     let hidden = false; // h.vanish: sumido
+    let mine = null; // h.mine: a mina no chão
+    const ownStrike = (i) => opp.def.melee?.strikes?.[i]?.anim || 'hit';
     const cleanup = () => {
+      if (mine) { mine.stop(); mine = null; }
       if (sphere) { world.scene.remove(sphere.group); sphere = null; }
       if (trap) { trap.stop(); trap = null; }
       if (xMark) { const m = xMark; xMark = null; world.after(1.2, () => m.dispose()); }
@@ -247,6 +276,54 @@ export const cinematicCombo = {
         hidden = true;
         tl.add(h.t + h.vanish, () => { f.setVisible(true); hidden = false; world.fx.burst(f.chestPos(), { count: 18, color: 0x0a0608, kind: 'smoke', speed: 2, life: 0.45, size: 0.5, grow: 1 }); });
       }
+      if (h.closeIn) {
+        // vem colado no alvo (a investida tomada pelo ódio): um rastro de poeira no caminho
+        const F = forwardFromYaw(yawTo(f.pos, opp.pos));
+        const from = f.chestPos();
+        f.pos.set(opp.pos.x - F.x * 1.15, f.pos.y, opp.pos.z - F.z * 1.15);
+        f.yaw = yawTo(f.pos, opp.pos);
+        world.fx.tracer(from, f.chestPos(), { color: sp.color, life: 0.25, width: 0.25 });
+        world.fx.burst(new THREE.Vector3(f.pos.x, 0.2, f.pos.z), { count: 14, color: 0x9a8a72, kind: 'smoke', speed: 2, up: 0.6, life: 0.5, size: 0.6, grow: 1 });
+      }
+      if (h.selfStrike != null && opp.state !== 'ko') opp.anim.play(ownStrike(h.selfStrike), { restart: true, duration: h.dur, blend: 0.04 });
+      if (h.tears) {
+        const head = () => opp.rig.joints.hd.getWorldPosition(new THREE.Vector3());
+        emitters.push(world.fx.emitter({ rate: 28, follow: head, particle: { color: 0x0a0810, speed: 0.4, spread: 0.12, life: 0.6, size: 0.08 } }));
+      }
+      if (h.rage) {
+        emitters.push(world.fx.emitter({ rate: 22, follow: () => f.chestPos(), particle: { color: h.rage === true ? 0xd01a1a : h.rage, speed: 0.6, up: 1.4, spread: 0.5, life: 0.6, size: 0.3 } }));
+        world.fx.burst(f.chestPos(), { count: 30, color: 0xd01a1a, speed: 4, life: 0.5, size: 0.2 });
+        world.audio.play('drain', { volume: 0.6, pitch: 0.7 });
+      }
+      if (h.burst) {
+        const B = h.burst;
+        for (let k = 0; k < (B.count ?? 8); k++) {
+          tl.add(h.t + 0.08 + k * (B.gap ?? 0.07), () => {
+            if (opp.state === 'ko') return;
+            const from = f.rig.muzzle ? f.rig.muzzle.getWorldPosition(new THREE.Vector3()) : handPos();
+            const to = opp.chestPos().add(new THREE.Vector3((Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.4));
+            world.fx.tracer(from, to, { color: 0xffd27a, life: 0.06, width: 0.03 });
+            world.fx.flash(from, { color: 0xffd27a, size: 0.5, life: 0.05 });
+            world.fx.burst(to, { count: 3, color: 0xd8d4cc, speed: 2, life: 0.2, size: 0.06 });
+            world.audio.play(B.sound || 'm4', { volume: 0.45 });
+          });
+        }
+      }
+      if (h.smoke) {
+        // a granada de fumaça: o arco até o alvo e a nuvem cinza que o engole
+        const from = handPos();
+        const to = opp.chestPos();
+        world.fx.tracer(from, to, { color: 0x6a6e66, life: 0.25, width: 0.06 });
+        tl.add(h.t + 0.25, () => {
+          world.fx.burst(to, { count: 40, color: 0x8a8c86, kind: 'smoke', speed: 2.2, up: 1, life: 1.6, size: 1.4, grow: 1.4 });
+          world.audio.play('shockwave', { volume: 0.5, pitch: 1.6 });
+          if (opp.state !== 'ko') opp.notify('FUMAÇA!', true);
+        });
+      }
+      if (h.mine && !mine) {
+        mine = proximityMine(world, feet());
+        world.audio.play('ready', { volume: 0.7, pitch: 1.8 });
+      }
       if (h.behind) {
         // reaparece nas costas do alvo, de frente para ele (o alvo continua olhando para onde estava)
         const B = forwardFromYaw(opp.yaw);
@@ -272,6 +349,16 @@ export const cinematicCombo = {
         world.fx.ring(p, { color: sp.color, radius: 1.3, life: 0.28, vertical: true, yaw: f.yaw });
       }
       if (h.trap && !trap) { trap = snapTrap(world, feet()); world.audio.play('trapSnap'); world.fx.burst(feet().setY(0.3), { count: 26, color: 0x9a0010, speed: 4, up: 1.5, life: 0.6, size: 0.2, gravity: 8 }); }
+      if (h.boom) {
+        // a mina explode embaixo do alvo
+        const p = mine ? mine.pos.clone().setY(0.5) : feet().setY(0.5);
+        if (mine) { mine.stop(); mine = null; }
+        world.fx.play('FX_EXPLOSION', p, { color: 0xffa040, scale: 1.6 });
+        world.fx.burst(p, { count: 40, color: 0x3a3634, kind: 'smoke', speed: 3, up: 2.5, life: 1.2, size: 1.4, grow: 1 });
+        world.fx.burst(p, { count: 30, color: 0x6a5a48, speed: 6, up: 4, life: 0.7, size: 0.14, gravity: 12 });
+        world.audio.play('explosion', { volume: 0.9 });
+        world.cameraRig.shake(0.8, 0.4);
+      }
       if (h.xMark && !xMark) { xMark = groundMark(world, feet(), h.xMark, sp.color, 0.85); world.audio.play('ritual', { volume: 0.5, pitch: 1.3 }); }
       if (h.consume) {
         // a Espada Consumidora bebe a energia: o Lodo corre do alvo até a lâmina
@@ -296,7 +383,7 @@ export const cinematicCombo = {
       f.yaw = yaw;
       opp.yaw = yawTo(opp.pos, f.pos);
       const F = forwardFromYaw(yaw);
-      f.pos.set(opp.pos.x - F.x * 1.15, opp.pos.y, opp.pos.z - F.z * 1.15);
+      f.pos.set(opp.pos.x - F.x * (sp.standOff ?? 1.15), opp.pos.y, opp.pos.z - F.z * (sp.standOff ?? 1.15));
       if (f.riding) f.mount(false);
       f.anim.play('idle', { restart: true, blend: 0.05 });
       opp.anim.play('hit', { restart: true });
@@ -368,7 +455,8 @@ export const cinematicCombo = {
             }
             world.audio.play('chainPull', { volume: 0.6 });
           }
-          if (opp.state !== 'ko') opp.anim.play(h.victimAnim || (h.final ? 'launched' : 'hit'), { restart: true, blend: 0.02 });
+          // no golpe que ele mesmo dá (selfStrike) o alvo continua no próprio golpe
+          if (opp.state !== 'ko' && (h.selfStrike == null || h.final)) opp.anim.play(h.victimAnim || (h.final ? 'launched' : 'hit'), { restart: true, blend: 0.02 });
           // empurra um pouco e acompanha
           const F2 = forwardFromYaw(f.yaw);
           const push = h.push ?? (h.final ? 0.6 : 0.18);

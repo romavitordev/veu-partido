@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.12.0 — Especiais pelo Cânone
+
+### Alterado
+- Carniçal: especial **Controle Absoluto** — o Símbolo Espiral acende, o alvo chora Lodo e se golpeia três vezes com os próprios golpes, e leva uma Garra da Morte; sai lento (wiki: a morte de Brúlio).
+- Morato: especial **Pelos Cinco** refeito — duas rajadas da metralhadora, engole a Calabresa e investe de ombro (Sinais do Outro Lado, ep. 7).
+- Chico: especial **Mina de Proximidade** — granada de fumaça, mina no pé do alvo, rajada da Mac-10 e a explosão; o alvo sai cego (wiki: Interflorado e Fummu).
+- Dara: especial **Racha** — ela pega a van dos Cinco, atropela, dá o cavalo de pau e volta na segunda passada.
+- Nomes e números são PROPOSTA de jogo.
+
 ## v4.11.0 — Submetralhadoras dos Cinco
 
 ### Adicionado

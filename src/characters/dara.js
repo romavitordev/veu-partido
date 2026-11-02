@@ -141,28 +141,20 @@ export default {
     },
   ],
 
-  // ESPECIAL A BOLSA DE EMERGÊNCIA: a lanterna UV na cara, dois chutes e a bolsa enorme girada com tudo
+  // ESPECIAL RACHA (wiki "Dara Alice Venturini": a motorista fixa dos Cinco; segura a van quando a van preta bate neles
+  // na estrada e ganha um racha contra um rapaz de carro). Ela pega o volante da van: atropela, faz o cavalo de pau e
+  // volta na segunda passada; no fim pula da cabine (specials/racha.js). PROPOSTA: a cena e os números. Antes: Bolsa de
+  // Emergência (socos e chutes).
   special: {
-    name: 'Bolsa de Emergência',
-    banner: 'Segura essa!',
-    type: 'cinematicCombo',
+    name: 'Racha',
+    banner: 'Segura o volante!',
+    type: 'racha',
     energyCost: 50,
     cooldown: 14,
     color: CYAN,
-    sound: 'specialStart',
-    physical: true,
-    prepare: { anim: 'charge_fists', time: 0.4 },
-    dash: { speed: 17, maxTime: 0.5, contact: 1.9 },
-    hits: [
-      { t: 0.55, anim: 'jab', dur: 0.24, share: 0.1, fx: { kind: 'punch', color: UV }, sound: 'punch', shout: 'OLHA A LUZ!', victimAnim: 'stagger' },
-      { t: 0.85, anim: 'kick_front', dur: 0.3, share: 0.15, fx: { kind: 'punch' }, sound: 'kick' },
-      { t: 1.25, anim: 'spin_kick', dur: 0.45, share: 0.2, fx: { kind: 'punch' }, sound: 'kick' },
-      { t: 1.9, anim: 'heavy_punch', dur: 0.5, share: 0.55, fx: { kind: 'smash', big: true }, sound: 'heavyPunch', final: true, call: 'BOLSA DE EMERGÊNCIA', push: 0.2 },
-    ],
-    endReaction: { knockback: 5, lowLaunch: true },
-    selfHeal: 0.05,
-    bannerAt: 0.2,
-    length: 3.0,
+    behind: 6, // a van surge atrás dela, dentro da praça da Ilha de Tipora
+    speed: 26,
+    shares: [0.45, 0.55],
   },
 
   // TRANSFORMAÇÃO NINGUÉM FICA PRA TRÁS (proposta): a médica que não larga mais ninguém — mais rápida, as habilidades

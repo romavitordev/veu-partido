@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.12.0 — Especiais pelo Cânone
+- Carniçal: Controle Absoluto — o alvo hipnotizado se golpeia com os próprios golpes e leva a Garra da Morte.
+- Morato: Pelos Cinco — rajadas da metralhadora, a Calabresa e a investida de ombro.
+- Chico: Mina de Proximidade — fumaça, mina, rajada da Mac-10 e explosão.
+- Dara: Racha — ela atropela o adversário com a van dos Cinco, duas vezes.
+
 ## v4.11.0 — Submetralhadoras dos Cinco
 - Dara atira com a submetralhadora vermelha e azul (□); a Lanterna UV agora é △ + □.
 - Chico atira com a Mac-10 dos fios coloridos (□); o Pulso do Scanner agora é R2 + ×.

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.11.0';
+export const VERSION = '4.12.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.12.0',
+    date: '2026-11-02',
+    title: 'Especiais pelo Cânone',
+    items: [
+      'CARNIÇAL: Controle Absoluto — o alvo hipnotizado se golpeia com os próprios golpes e leva a Garra da Morte.',
+      'MORATO: Pelos Cinco — rajadas da metralhadora, a Calabresa e a investida de ombro.',
+      'CHICO: Mina de Proximidade — fumaça, mina, rajada da Mac-10 e explosão.',
+      'DARA: Racha — ela atropela o adversário com a van dos Cinco, duas vezes.',
+    ],
+  },
   {
     v: '4.11.0',
     date: '2026-11-02',

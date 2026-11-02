@@ -157,20 +157,34 @@ export default {
     },
   ],
 
-  // ESPECIAL GARRA DA MORTE: "dilacera suas vítimas destruindo carne, osso e vitalidade em poucos e velozes movimentos"
+  // ESPECIAL CONTROLE ABSOLUTO (wiki "Carniçal Preto da Morte": "Seu controle sobre suas vítimas é absoluto, as fazendo
+  // atacar seus próprios companheiros [...] ou então atacarem a si mesmas, como na morte de Brúlio"; quem é controlado
+  // chora Lodo). Frio: não corre — chega devagar, o Símbolo Espiral acende, o alvo trava olhando e se golpeia com os
+  // PRÓPRIOS golpes; no fim, UMA Garra da Morte ("golpes precisos e frios [...] em poucos e velozes movimentos") e o
+  // alvo sai LENTO. PROPOSTA: o nome (tirado do texto da wiki) e os números. Antes: a sequência de garras do Raziel.
   special: {
-    ...raziel.special,
-    name: 'Garra da Morte',
-    banner: 'Garra da Morte',
+    name: 'Controle Absoluto',
+    banner: 'Não olhe para a espiral.',
+    type: 'cinematicCombo',
+    energyCost: 50,
+    cooldown: 14,
     color: RED,
-    prepare: { anim: 'taunt_roar', time: 0.5 },
-    hits: raziel.special.hits.map((h) => ({
-      ...h,
-      anim: h.anim === 'raziel_feast' ? 'db_cross' : h.anim,
-      drain: undefined,
-      bleed: undefined,
-      fx: { ...h.fx, color: h.final ? RED : LODO, color2: h.final ? BONE : undefined },
-    })),
+    sound: 'specialStart',
+    prepare: { anim: 'gaze', time: 0.5 },
+    dash: { speed: 9, maxTime: 0.9, contact: 3.2 },
+    standOff: 2.4,
+    hits: [
+      { t: 0.1, noHit: true, anim: 'gaze', dur: 0.85, victimAnim: 'stagger', sigil: true, tears: true },
+      { t: 0.95, anim: 'gaze', dur: 0.45, share: 0.17, selfStrike: 0, push: 0, fx: { kind: 'punch', color: LODO }, sound: 'punch' },
+      { t: 1.42, anim: 'gaze', dur: 0.45, share: 0.19, selfStrike: 1, push: 0, fx: { kind: 'punch', color: LODO }, sound: 'punch' },
+      { t: 1.9, anim: 'gaze', dur: 0.5, share: 0.22, selfStrike: 2, push: 0, fx: { kind: 'punch', color: LODO }, sound: 'heavyPunch', call: 'CONTROLADO' },
+      { t: 2.55, anim: 'db_rend', dur: 0.4, share: 0.42, closeIn: true, fx: { kind: 'claw', big: true, color: RED, color2: BONE }, sound: 'slashFinal', final: true, call: 'GARRA DA MORTE' },
+    ],
+    afterBuff: { type: 'curseSlow', name: 'LENTO', duration: 3, speedMult: 0.6 },
+    shots: 'control',
+    bannerAt: 0.2,
+    length: 3.3,
+    endReaction: { knockback: 3, lowLaunch: true },
   },
 
   // INSTINTO MORTAL (wiki: "quando ferido, abandona a postura controlada e revela sua verdadeira natureza: mais agressivo e

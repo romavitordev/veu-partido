@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.11.0 (2026-11-02: submetralhadoras da Dara e do Chico). Antes: v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.12.0 (2026-11-02: especiais próprios do Carniçal, Morato, Chico e Dara). Antes: v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1930,6 +1930,22 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         Chico vão da arma ao quadril e seguem a mão a cada quadro (cores vermelho/azul: PROPOSTA). O que era □ virou
         habilidade (PROPOSTA de comando): Lanterna UV no △ + □ da Dara, Pulso do Scanner no R2 + × do Chico.
         A conferir depois: usar as submetralhadoras na coreografia de Os Cinco.
+      - [x] **ESPECIAIS PRÓPRIOS PELO CÂNONE** (v4.12.0, 2026-11-02; pedido do dono: "escolha o melhor especial pra cada
+        um"). Revisados os 39: os outros já tinham especial com a identidade do cânone (revisão de 2026-10-31); estes
+        quatro ainda usavam um especial genérico ou emprestado. Fonte: os resumos de episódio da wiki (os vídeos não
+        dão para assistir daqui). Nomes e números: PROPOSTA.
+        - Carniçal — **Controle Absoluto** (wiki: o controle "é absoluto", a vítima ataca a si mesma, como Brúlio, e chora
+          Lodo): o Símbolo Espiral acende, o alvo se golpeia 3× com os PRÓPRIOS golpes e leva UMA Garra da Morte; sai
+          LENTO. Antes: a sequência de garras do Raziel.
+        - Morato — **Pelos Cinco** (Sinais do Outro Lado, ep. 7: segura a horda com a metralhadora e engole a Calabresa
+          contra o Estrangeiro): duas rajadas, a Calabresa e a investida de ombro; deixa as assistências prontas.
+        - Chico — **Mina de Proximidade** (wiki: a mina armada com a Dara contra o Interflorado, "Chico a explodindo"; a
+          granada de FUMAÇA contra o Fummu): fumaça, mina no pé do alvo, rajada da Mac-10 e a explosão; o alvo sai cego.
+          Isso resolve a dúvida da "granada do Chico": no cânone é de fumaça, e a explosão é a mina.
+        - Dara — **Racha** (wiki: a motorista dos Cinco, segura a van na batida e ganha um racha): ela pega a van,
+          atropela, dá o cavalo de pau e volta na segunda passada (`specials/racha.js`; ~250 de dano nas duas).
+        - Motor (`cinematicCombo`): `standOff`, `selfStrike`, `tears`, `rage`, `burst`, `closeIn`, `smoke`,
+          `mine`, `boom`; o close de rosto do 'control' mira a altura real da cabeça (o Carniçal é mais alto).
       - [x] **CARNIÇAL REFEITO SOBRE UMA BASE CC0** (pedido do dono, 2026-11-01, Blender MCP): o corpo masculino realista e o
         crânio realista do pacote "Human Base Meshes" da Blender Studio (CC0, `assets_src/README.md`) encaixados no
         esqueleto de lutador (`tools/blender/base_body.py`: armadura temporária com pesos automáticos, os mesmos pesos vão

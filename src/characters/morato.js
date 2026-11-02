@@ -142,28 +142,32 @@ export default {
     },
   ],
 
-  // ESPECIAL PELOS CINCO (proposta): o líder entra na frente e bate por todos
+  // ESPECIAL PELOS CINCO (Sinais do Outro Lado, ep. 7): ele segura sozinho a horda de Doppelgangers com a METRALHADORA
+  // e, no último ato, engole a Larva da Fúria "Calabresa" e corre "tomado pelo ódio" contra o Estrangeiro para salvar Os
+  // Cinco. Na luta: duas rajadas de longe, a Calabresa e a investida de ombro; as assistências ficam prontas (Tamo com
+  // Ele). PROPOSTA: os números. Antes: só socos.
   special: {
     name: 'Pelos Cinco',
     banner: 'Pelos Cinco!',
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    color: GOLD,
+    color: RED,
     sound: 'specialStart',
     physical: true,
-    prepare: { anim: 'charge_fists', time: 0.45 },
-    dash: { speed: 17, maxTime: 0.5, contact: 1.9 },
+    prepare: { anim: 'shoot_rifle', time: 0.4, showProp: 'mgHand', hideProp: 'mgBack' },
+    dash: { speed: 14, maxTime: 0.6, contact: 6 },
+    standOff: 4.5,
     hits: [
-      { t: 0.55, anim: 'jab', dur: 0.24, share: 0.1, fx: { kind: 'punch', color: GOLD }, sound: 'punch', shout: 'TAMO COM ELE!' },
-      { t: 0.85, anim: 'cross', dur: 0.26, share: 0.12, fx: { kind: 'punch', color: GOLD }, sound: 'punch' },
-      { t: 1.15, anim: 'flurry', dur: 0.5, share: 0.23, fx: { kind: 'punch', color: GOLD }, sound: 'punch' },
-      { t: 1.9, anim: 'heavy_punch', dur: 0.5, share: 0.55, fx: { kind: 'smash', big: true, color: RED }, sound: 'heavyPunch', final: true, call: 'PELOS CINCO', push: 0.2 },
+      { t: 0.15, anim: 'shoot_rifle', dur: 0.75, share: 0.28, burst: { count: 10, gap: 0.07 }, push: 0, victimAnim: 'stagger', fx: { kind: 'punch', color: GOLD }, sound: 'impact', shout: 'TAMO COM ELE!' },
+      { t: 1.0, anim: 'shoot_rifle', dur: 0.6, share: 0.22, burst: { count: 8, gap: 0.07 }, push: 0, victimAnim: 'stagger', fx: { kind: 'punch', color: GOLD }, sound: 'impact' },
+      { t: 1.75, noHit: true, anim: 'breath', dur: 0.5, rage: true, shout: 'CALABRESA!' },
+      { t: 2.35, anim: 'shoulder_charge', dur: 0.45, share: 0.5, closeIn: true, fx: { kind: 'smash', big: true, color: RED }, sound: 'heavyPunch', final: true, call: 'PELOS CINCO', push: 0.3 },
     ],
-    endReaction: { knockback: 5, lowLaunch: true },
+    endReaction: { knockback: 6, lowLaunch: true },
     orderAllies: true,
     bannerAt: 0.2,
-    length: 3.0,
+    length: 3.3,
   },
 
   // TRANSFORMAÇÃO ÚLTIMO SACRIFÍCIO (proposta pelo cânone): tudo pelo grupo
