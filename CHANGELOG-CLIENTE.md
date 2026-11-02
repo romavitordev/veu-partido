@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.9.1 — Retoques
+- Página Sobre: foto nova, de perto, do Carniçal hipnotizando Joui em Tipora.
+
 ## v4.9.0 — O Carniçal Desperta
 - Carniçal: ao ser atingido de perto, pode hipnotizar o agressor para que ele se golpeie uma vez.
 - No Instinto Mortal, o □ vira a Investida Mortal.

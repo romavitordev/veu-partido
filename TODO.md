@@ -1,8 +1,18 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.9.0 (2026-11-02: passiva e Investida Mortal do Carniçal; modelos refinados; fotos novas da página Sobre; casas e Torre do Sino em Tipora). Antes: v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.9.1 (2026-11-02: revisão do trabalho do Copilot; foto de perto da Hipnose na página Sobre). Antes: v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
+
+## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
+- [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no
+      □ do Instinto Mortal (dashStrike, nome no HUD troca). Testes 62/62, `check` e `build` verdes.
+- [x] Página Sobre: a foto da Hipnose estava longe e escura e o texto de "Especiais e invocações" só falava da Marionete.
+      Foto nova de perto (Carniçal de garras estendidas, Joui curvado em transe em Tipora) e o Carniçal citado no texto.
+- [x] `char_carnical.py`: os comentários "PROPOSTA visual" viraram o porquê do ajuste (contraste não é cânone, é
+      leitura no jogo); o .glb não muda.
+- [ ] Tag `v4.7.1` não existe (a release saiu junto da v4.8.0); criar só se o dono quiser os apps dela separados.
+- [ ] Fotos da seleção e da luta na página Sobre também estão escuras/longe, com muito HUD; refazer de perto quando der.
 
 ## Nota de passagem — Copilot (v4.9.0)
 - [x] Carniçal: passiva canônica Olhar ao Agressor e Investida Mortal no Instinto Mortal; parâmetros de chance, recarga, transe e dano da passiva são PROPOSTA de jogo.
@@ -26,8 +36,8 @@
   da Membrana), ícones/favicon (`tools/make-icons.py`), títulos, manifest, Sobre, 404, 13 idiomas, nome do app no PC/Android,
   README e changelogs com a transição registrada. Mantidos: URL `/arena-paranormal/`, appId, chaves de save, ID do online,
   nomes dos arquivos baixados.
-  - [~] Repositório/URL → `veu-partido` (pedido do dono, 2026-11-01, v4.7.0): código e links trocados; falta o `gh repo rename`
-    + o Pages no push. Os arquivos `Arena-Paranormal-*.exe/.apk` continuam com o nome antigo (decidir à parte).
+  - [x] Repositório/URL → `veu-partido` (pedido do dono, 2026-11-01, v4.7.0): código e links trocados, `gh repo rename`
+    feito e o Pages publicado em https://romavitordev.github.io/veu-partido/. Os arquivos `Arena-Paranormal-*.exe/.apk` continuam com o nome antigo (decidir à parte).
   - [ ] `public/ordo-realitas.ico` ficou sem uso (mantido); apagar quando quiser.
 - [x] **Menu no celular deitado não cabia** (pedido do dono, v4.2.0): duas colunas em tela baixa.
 - [x] **Fundo único dos personagens na seleção** (pedido do dono, v4.2.0): `portraits.js`, no lugar da cor da equipe.

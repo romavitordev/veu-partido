@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.9.1 — Retoques
+
+### Atualizado
+- Página Sobre: foto de perto do Carniçal usando a Hipnose Espiral em Joui (Tipora), e o texto de "Especiais e invocações" cita o Carniçal.
+- Comentários do modelo do Carniçal explicam o ajuste de contraste (sem mudança no modelo).
+
 ## v4.9.0 — O Carniçal Desperta
 
 ### Adicionado

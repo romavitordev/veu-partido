@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.9.0';
+export const VERSION = '4.9.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.9.1',
+    date: '2026-11-02',
+    title: 'Retoques',
+    items: [
+      'Página Sobre: foto nova, de perto, do Carniçal hipnotizando Joui em Tipora, e o Carniçal citado nos especiais.',
+    ],
+  },
   {
     v: '4.9.0',
     date: '2026-11-02',

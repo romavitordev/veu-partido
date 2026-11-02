@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.9.1 — Retoques
+
+- Versão: `VERSION` 4.9.0 → **4.9.1** (`package.json`/lock junto). Data: 2026-11-02.
+- Revisão do trabalho do Copilot (v4.7.1–v4.9.0): passiva `aggressorGaze` e `awakening.ranged` do Carniçal conferidas no jogo.
+- Página Sobre: `marionete.webp`/`-480` trocadas por um close da Hipnose Espiral (câmera a ~3,5 m, render 1600×900 → WebP 800/480); parágrafo de especiais cita o Carniçal; `alt` revisado.
+- `char_carnical.py`: comentários "PROPOSTA visual" reescritos (ajuste de leitura, não de cânone); sem rebuild.
+- TODO: repositório `veu-partido` marcado como feito; pendências registradas (tag v4.7.1 opcional, fotos da seleção/luta).
+
 ## v4.9.0 — O Carniçal Desperta
 
 - Versão: `VERSION` 4.8.0 → **4.9.0** (`package.json`/lock junto). Data: 2026-11-02.
