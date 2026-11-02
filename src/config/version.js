@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.12.0';
+export const VERSION = '4.12.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.12.1',
+    date: '2026-11-02',
+    title: 'Os Cinco Armados',
+    items: [
+      'OS CINCO: no especial em equipe, o Chico emenda o pulso do scanner com a Mac-10 e a Dara abre com a submetralhadora.',
+    ],
+  },
   {
     v: '4.12.0',
     date: '2026-11-02',

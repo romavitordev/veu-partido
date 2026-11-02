@@ -555,6 +555,20 @@ const CHOREO = {
     const actors = [morato, chico, xande, lirio, guizo, dara].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
+    // rajada curta da submetralhadora (Dara) ou da Mac-10 (Chico): traçantes saindo do cano, o dano entra no último tiro
+    const smgBurst = (actor, at, count, damage, tint) => {
+      for (let i = 0; i < count; i++) {
+        tl.add(at + i * 0.06, () => {
+          if (!live()) return;
+          const from = actor.rig?.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest();
+          const to = opp.chestPos().add(new THREE.Vector3((Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.3, 0));
+          world.fx.tracer(from, to, { color: 0xffd27a, life: 0.08, width: 0.04 });
+          world.fx.flash(from, { color: 0xffc070, size: 0.5, life: 0.05 });
+          world.audio.play('m4', { volume: 0.5 });
+          if (i === count - 1) tools.impact(actor, damage, { sound: 'impact', color: tint });
+        });
+      }
+    };
 
     if (morato) {
       let start = null;
@@ -596,11 +610,14 @@ const CHOREO = {
         world.cameraRig.playShots([{ ...twoShot(chico, opp, { dur: 0.65, dist: 3, height: 1.5, fov: 42 }), cut: true }]);
         world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x2ab8c8, radius: 1.2, life: 0.45 });
       });
-      tl.add(S + 1.52, () => {
+      const [pulse, mac] = splitDamage(damageOf(chico), 2);
+      tl.add(S + 1.45, () => {
         if (!live()) return;
         world.fx.flash(opp.chestPos(), { color: 0xf3dc9b, size: 2.1, life: 0.22 });
-        tools.impact(chico, damageOf(chico), { sound: 'impact', color: 0x2ab8c8 });
+        tools.impact(chico, pulse, { sound: 'impact', color: 0x2ab8c8 });
       });
+      tl.add(S + 1.62, () => live() && chico.play('shoot_rifle', 0.4));
+      smgBurst(chico, S + 1.65, 6, mac, 0x2ab8c8);
     }
 
     if (xande) {
@@ -667,14 +684,20 @@ const CHOREO = {
       tl.add(S + 4.55, () => {
         if (!live()) return;
         tools.enter(dara, -2.0, 2.4);
-        dara.play('point', 0.55);
-        world.cameraRig.playShots([{ ...twoShot(dara, opp, { dur: 0.55, dist: 2.8, height: 1.45, fov: 40 }), cut: true }]);
-        world.fx.flash(opp.chestPos(), { color: 0x8bf5ff, size: 1.8, life: 0.25 });
+        dara.play('shoot_rifle', 0.35);
+        world.cameraRig.playShots([{ ...twoShot(dara, opp, { dur: 0.75, dist: 2.8, height: 1.45, fov: 40 }), cut: true }]);
       });
-      tl.add(S + 4.88, () => {
+      const [burst, punch] = splitDamage(damageOf(dara), 2);
+      smgBurst(dara, S + 4.6, 5, burst, 0x8bf5ff);
+      tl.add(S + 4.92, () => {
         if (!live()) return;
-        dara.play('heavy_punch', 0.4);
-        tools.impact(dara, damageOf(dara), { sound: 'heavyPunch', color: 0x8bf5ff });
+        dara.play('point', 0.2);
+        world.fx.flash(opp.chestPos(), { color: 0x8bf5ff, size: 1.8, life: 0.25 }); // a Lanterna UV
+      });
+      tl.add(S + 5.1, () => {
+        if (!live()) return;
+        dara.play('heavy_punch', 0.35);
+        tools.impact(dara, punch, { sound: 'heavyPunch', color: 0x8bf5ff });
       });
     }
 

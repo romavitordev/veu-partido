@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.12.1 — Os Cinco Armados
+- No especial em equipe de Os Cinco, a Dara e o Chico atiram com as submetralhadoras.
+
 ## v4.12.0 — Especiais pelo Cânone
 - Carniçal: Controle Absoluto — o alvo hipnotizado se golpeia com os próprios golpes e leva a Garra da Morte.
 - Morato: Pelos Cinco — rajadas da metralhadora, a Calabresa e a investida de ombro.

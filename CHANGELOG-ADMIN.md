@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.12.1 — Os Cinco Armados
+
+- Versão: `VERSION` 4.12.0 → **4.12.1** (`package.json`/lock junto). Data: 2026-11-02.
+- `teamLinks.os_cinco.sceneProps`: `smg` na mão do Chico e da Dara durante a cena.
+- `teamSpecials.js os_cinco`: `smgBurst` (traçantes do `rig.muzzle`, dano no último tiro). Chico: pulso (½ do dano) + Mac-10 (6 tiros, ½). Dara: submetralhadora (5 tiros, ½), clarão da Lanterna UV e soco (½).
+- **Testado no jogo** (Morato, Chico e Dara contra Kaiser, Joui e Arthur): 450 de dano, as duas armas aparecem disparando. Testes 62/62, `check` e `build` verdes.
+
 ## v4.12.0 — Especiais pelo Cânone
 
 - Versão: `VERSION` 4.11.0 → **4.12.0** (`package.json`/lock junto). Data: 2026-11-02.

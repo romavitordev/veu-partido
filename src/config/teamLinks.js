@@ -63,7 +63,8 @@ export const TEAM_LINKS = {
     order: ['morato', 'chico', 'xande', 'lirio', 'guizo', 'dara'],
     color: 0x2ab8c8,
     choreo: 'os_cinco',
-    sceneProps: { morato: { show: ['mgHand'], hide: ['mgBack'] } },
+    // as armas do cânone na mão: a metralhadora do Morato, a submetralhadora da Dara e a Mac-10 do Chico
+    sceneProps: { morato: { show: ['mgHand'], hide: ['mgBack'] }, chico: { show: ['smg'] }, dara: { show: ['smg'] } },
   },
   abutres: {
     id: 'abutres',

@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.12.0 (2026-11-02: especiais próprios do Carniçal, Morato, Chico e Dara). Antes: v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.12.1 (2026-11-02: submetralhadoras na coreografia de Os Cinco). Antes: v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1929,7 +1929,9 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         de 5×8 e 6×7, mais fraca que a metralhadora do Morato; `weapons.js daraSmg/mac10`, na mão só no □). Os fios do
         Chico vão da arma ao quadril e seguem a mão a cada quadro (cores vermelho/azul: PROPOSTA). O que era □ virou
         habilidade (PROPOSTA de comando): Lanterna UV no △ + □ da Dara, Pulso do Scanner no R2 + × do Chico.
-        A conferir depois: usar as submetralhadoras na coreografia de Os Cinco.
+        - [x] Usadas na coreografia de Os Cinco (v4.12.1): o Chico solta o pulso do scanner e emenda uma rajada da
+          Mac-10; a Dara abre com a rajada da submetralhadora, acende a Lanterna UV e fecha no soco (`sceneProps` com a
+          `smg` dos dois; o dano de cada um é dividido entre as partes).
       - [x] **ESPECIAIS PRÓPRIOS PELO CÂNONE** (v4.12.0, 2026-11-02; pedido do dono: "escolha o melhor especial pra cada
         um"). Revisados os 39: os outros já tinham especial com a identidade do cânone (revisão de 2026-10-31); estes
         quatro ainda usavam um especial genérico ou emprestado. Fonte: os resumos de episódio da wiki (os vídeos não

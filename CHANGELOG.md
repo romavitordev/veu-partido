@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.12.1 — Os Cinco Armados
+
+### Alterado
+- Especial em equipe de Os Cinco: o Chico emenda o pulso do scanner com uma rajada da Mac-10, e a Dara abre com a submetralhadora antes da Lanterna UV e do soco.
+
 ## v4.12.0 — Especiais pelo Cânone
 
 ### Alterado
