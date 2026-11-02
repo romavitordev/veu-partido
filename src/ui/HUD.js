@@ -212,6 +212,19 @@ export class HUD {
 
       // ícones de habilidade com cooldown
       const source = f.input.source;
+      const ranged = f.getRangedAbility();
+      const rangedAbil = e.abil[0];
+      if (rangedAbil.name !== (ranged ? ranged.name : '—')) {
+        rangedAbil.name = ranged ? ranged.name : '—';
+        rangedAbil.none = !ranged;
+        rangedAbil.cost = ranged?.energyCost || 0;
+        const rangedEl = e.abEls[0];
+        rangedEl.classList.toggle('none', rangedAbil.none);
+        rangedEl.title = rangedAbil.name;
+        const name = rangedEl.querySelector('.n');
+        name.textContent = rangedAbil.name;
+        name.classList.toggle('long', rangedAbil.name.length > 18 || rangedAbil.name.split(/\s+/).some((w) => w.length > 10));
+      }
       e.abil.forEach((a, k) => {
         const el = e.abEls[k];
         if (e.lastSource !== source) el.querySelector('.k').textContent = a.none ? '' : this.keyText(i, a.action, source);

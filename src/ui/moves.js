@@ -18,6 +18,12 @@ const DIR = { forward: 'Frente + ○', back: 'Trás + ○', side: 'Lado + ○', 
 
 export function moveListHTML(c) {
   const row = (cmd, name, info = '') => `<tr><td class="cmd">${cmd}</td><td><b>${name}</b>${info ? `<span>${info}</span>` : ''}</td></tr>`;
+  const ranged = (move, cmd) => {
+    const info = move.type === 'counter'
+      ? `${move.description} · ${move.damage} de dano · recarga ${move.cooldown}s`
+      : `${move.damage}${move.count > 1 ? ` × ${move.count}` : ''} de dano · recarga ${move.cooldown}s${move.energyCost ? ` · ${move.energyCost} de sanidade` : ''}`;
+    return row(cmd, move.name, info);
+  };
   const strike = (s) => [
     `${s.damage} de dano`,
     s.finisher && FIN[s.finisher],
@@ -29,8 +35,8 @@ export function moveListHTML(c) {
   html += row('○ ○ ○…', `Sequência: ${c.melee.strikes.map((s) => s.name).join(' → ')}`, `termina com ${FIN[c.melee.strikes.at(-1).finisher] || 'finalizador'}`);
   for (const k of ['forward', 'back', 'side', 'air', 'up', 'down']) if (c.melee[k]) html += row(DIR[k], c.melee[k].name, strike(c.melee[k]));
   const r = c.ranged;
-  if (r.type === 'counter') html += row('□ / X', r.name, `${r.description} · ${r.damage} de dano · recarga ${r.cooldown}s`);
-  else html += row('□ / X', r.name, `${r.damage}${r.count > 1 ? ` × ${r.count}` : ''} de dano · recarga ${r.cooldown}s${r.energyCost ? ` · ${r.energyCost} de sanidade` : ''}`);
+  html += ranged(r, '□ / X');
+  if (c.awakening && c.awakening.ranged) html += ranged(c.awakening.ranged, `□ / X (${c.awakening.name})`);
   if (r.variants) for (const [k, v] of Object.entries(r.variants)) if (!v.ability) html += row(DIR[k].replace('○', '□'), v.label.toLowerCase().replace(/^./, (x) => x.toUpperCase()), `${v.damage}${(v.count ?? r.count) > 1 ? ` × ${v.count ?? r.count}` : ''} de dano`);
   for (const a of c.abilities || []) html += row(INPUT[a.input] || a.input, a.name, `${a.description || ''} (${a.energyCost} de sanidade · recarga ${a.cooldown}s)`);
   html += row('△ → △ → ○', `Especial: ${c.special.name}`, specialSummary(c));
@@ -60,6 +66,7 @@ export function moveListHTML(c) {
     if (p.type === 'iKnewIt') html += row('Passiva', 'Eu Já Sabia', `resistência mental: -${Math.round((1 - p.mult) * 100)}% de dano de Conhecimento`);
     if (p.type === 'mindRead') html += row('Passiva', 'Leitura', `cada golpe físico lê o alvo: +${Math.round((p.takenMult - 1) * 100)}% de dano recebido por ${p.time}s`);
     if (p.type === 'bulletDodge') html += row('Passiva', 'Desviar de Balas', 'esquivar de um projétil não gasta carga de esquiva');
+    if (p.type === 'aggressorGaze') html += row('Passiva', 'Olhar ao Agressor', `${Math.round(p.chance * 100)}% de chance ao sofrer golpe corpo a corpo: transe de ${p.trance}s e um golpe de ${p.damage} (recarga ${p.cooldown}s; PROPOSTA de jogo)`);
   }
   return html + '</table>';
 }
@@ -97,6 +104,7 @@ export function specialSummary(c) {
       if ((sp.passives || []).some((p) => p.type === 'precognition')) parts.push('não é pego desprevenido');
       if (sp.perfectBlockWindow) parts.push(`Bloqueio Perfeito com janela de ${String(sp.perfectBlockWindow).replace('.', ',')} s`);
       if (sp.larva) parts.push(`a LARVA no adversário (${pct(sp.larva.takenMult)} de dano recebido, a sanidade não volta e escoa ${sp.larva.drain}/s; zerada, ECLODE: ${sp.larva.hatch.damage} de dano e um Alheio sai dela; outra larva em ${sp.larva.regrow} s)`);
+      if (sp.ranged) parts.push(`□ passa a ser ${sp.ranged.name}`);
       return `desperta até o fim do round: ${parts.join(', ')}`;
     }
     default: return `${sp.damage ?? COMBAT.specialDamage} de dano`;

@@ -483,7 +483,7 @@ export class CpuController {
     // adversário preparando o especial: um tiro pode interromper (quanto mais difícil, mais a CPU tenta)
     if (opp.state === 'specialStart' && !this.triedInterrupt && (f.state === 'idle' || f.state === 'charging')) {
       this.triedInterrupt = true;
-      if (f.cooldowns.ranged <= 0 && f.def.ranged && f.def.ranged.type !== 'counter' && Math.random() < 1 - this.L.mistake * 2.5) { this.tap('ranged'); return out; }
+      if (f.cooldowns.ranged <= 0 && f.getRangedAbility() && f.getRangedAbility().type !== 'counter' && Math.random() < 1 - this.L.mistake * 2.5) { this.tap('ranged'); return out; }
     }
     if (opp.state !== 'specialStart') this.triedInterrupt = false;
     // granada de luz da Supernova (Erin) caindo perto: sai de baixo esquivando, ou cobre os olhos defendendo
@@ -610,10 +610,11 @@ export class CpuController {
     const helpless = opp.state === 'downed' || opp.state === 'stun' || opp.state === 'hitstun' || opp.state === 'grabbed';
     // ...mas se a distância JÁ é segura, a janela é para CONVERTER em dano (o Arthur abria espaço e não atirava: o Raziel
     // levantava e fechava de novo): caído ou atordoado e longe o bastante, atira (o tiro carregado, se for o caso)
+    const rangedAbility = f.getRangedAbility();
     if (planZ.escapeAt > 0 && (opp.state === 'downed' || opp.state === 'stun') && d >= planZ.escapeAt + 0.5
-      && (f.state === 'idle' || f.state === 'charging') && f.cooldowns.ranged <= 0 && f.def.ranged && f.def.ranged.type === 'projectile'
+      && (f.state === 'idle' || f.state === 'charging') && f.cooldowns.ranged <= 0 && rangedAbility && rangedAbility.type === 'projectile'
       && Math.random() < (0.5 + L.tactics * 0.5) * k) {
-      if (f.def.ranged.chargeShot) { this.queue.push({ t: 0.06, held: { ranged: true } }); this.aimHold = Math.min(1.2, 0.2 + d / 14); } else this.tap('ranged');
+      if (rangedAbility.chargeShot) { this.queue.push({ t: 0.06, held: { ranged: true } }); this.aimHold = Math.min(1.2, 0.2 + d / 14); } else this.tap('ranged');
       return out;
     }
     if (planZ.escapeAt > 0 && helpless && d < planZ.keep - 1 && (f.state === 'idle' || f.state === 'charging') && f.onGround
@@ -756,8 +757,8 @@ export class CpuController {
       const KP = kitProfile(def);
       // à distância: principal (sniper do Arthur: segura para carregar — quanto mais longe, mais tempo); o atirador
       // atira mais (e já a partir de 3,5 m)
-      if (def.ranged && def.ranged.type !== 'counter' && f.cooldowns.ranged <= 0 && d > (KP.zoner ? 3.5 : 5) && d < (def.ranged.aiRange ?? def.ranged.range ?? 99) + 0.5 && r < L.ranged * (lowHp ? 1.4 : 1) * (KP.zoner ? 1.8 : 1) && f.energy >= (def.ranged.energyCost || 0)) {
-        if (def.ranged.chargeShot) {
+      if (rangedAbility && rangedAbility.type !== 'counter' && f.cooldowns.ranged <= 0 && d > (KP.zoner ? 3.5 : 5) && d < (rangedAbility.aiRange ?? rangedAbility.range ?? 99) + 0.5 && r < L.ranged * (lowHp ? 1.4 : 1) * (KP.zoner ? 1.8 : 1) && f.energy >= (rangedAbility.energyCost || 0)) {
+        if (rangedAbility.chargeShot) {
           this.queue.push({ t: 0.06, held: { ranged: true } });
           // perto (< 6 m) o tiro sai quase sem mirar — antes de o adversário chegar
           this.aimHold = d < 6 ? 0.15 : Math.min(1.6, 0.2 + d / 14);
@@ -881,7 +882,7 @@ export class CpuController {
     // médio: entra com dash curto
     if (d > 3.5 && d < 8 && f.cooldowns.dash <= 0 && !KP.zoner) add('dashIn', (lowHp ? 0.2 : open ? 1.4 : 0.6) * (matchupPlan(def, opp.def).pressure ? 2.5 : 1), () => this.queue.push({ t: 0.05, held: { jump: true } }, { t: 0.05, held: {} }, { t: 0.05, held: { jump: true } }, { t: 0.05, held: {} }));
     // à distância
-    const r = def.ranged;
+    const r = f.getRangedAbility();
     if (r && r.type !== 'counter' && f.cooldowns.ranged <= 0 && d > 3 && d < (r.aiRange ?? r.range ?? 99) + 0.5 && f.energy >= (r.energyCost || 0)) {
       add('ranged', (d > 5 ? 1.4 : 0.5) * (KP.zoner ? 2.2 : 1), () => {
         if (r.chargeShot) { this.queue.push({ t: 0.06, held: { ranged: true } }); this.aimHold = Math.min(1.6, 0.2 + d / 14); } else this.tap('ranged');

@@ -104,7 +104,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow) {
     type: 'awakened', name: (sp.label || sp.name).toUpperCase(), time: Infinity, duration: Infinity,
     mult: sp.lowHealth ? sp.lowHealth.min : sp.mult, affects: sp.affects || ['melee', 'ranged', 'ability'], takenMult: sp.takenMult, speedMult: sp.speedMult,
     cdRate: sp.cdRate, energyRegenMult: sp.energyRegenMult, knockbackTakenMult: sp.knockbackTakenMult, unblockable: !!sp.unblockable, meleeBleed: sp.meleeBleed,
-    bloodArmor: !!sp.bloodArmSide, bloodArmSide: sp.bloodArmSide, passives: sp.passives, perfectBlockWindow: sp.perfectBlockWindow,
+    bloodArmor: !!sp.bloodArmSide, bloodArmSide: sp.bloodArmSide, passives: sp.passives, perfectBlockWindow: sp.perfectBlockWindow, ranged: sp.ranged,
     onTick(dt) {
       if (glow) glow.pulse(world.time);
       if (f.state === 'ko') return;
@@ -136,6 +136,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow) {
     },
     onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (f.buffTint === tint) f.buffTint = null; },
   });
+  if (sp.ranged) f.cooldownMax.ranged = sp.ranged.cooldown || 1;
   if (sp.larva) incubate(f, sp.larva, world, col);
   f.notify(`${(sp.label || sp.name).toUpperCase()}!`, true);
 }

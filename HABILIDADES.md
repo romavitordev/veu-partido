@@ -1832,6 +1832,10 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 - Dano 28 · alcance 16 m · cooldown 2.8 s · custo 0
 
+### Principal durante Instinto Mortal: Investida Mortal
+
+- Dano 30 · alcance 1.6 m · cooldown 2.6 s · custo 0
+
 ### Habilidades
 
 - **Hipnose Espiral** — △ + ○ / Y + B · custo 30 · cooldown 13 s · dano 32 · alcance 11 m
@@ -1842,6 +1846,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Ergue os dois braços e desce com tudo: a vítima é arremessada para longe. Aguenta um golpe na preparação.
 - **Comando** — R2 + △ / RT + Y · custo 20 · cooldown 12 s · dano 30 · alcance 5 m
   Uma ordem que entra na cabeça de quem está perto: "PARE!" (paralisa), "VENHA!" (puxa) ou "AJOELHE!" (derruba).
+- **Passiva — Olhar ao Agressor:** ao sofrer dano corpo a corpo, 25% de chance de colocar o agressor em transe por 0.8 s para se golpear uma vez (20 de dano; recarga 12 s; parâmetros PROPOSTA de jogo).
 - **Passiva — Afinidade com Morte:** rituais de Morte +10%; −15% de dano de rituais desse elemento
 
 ### Especial: Garra da Morte
@@ -1850,4 +1855,4 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Transformação: Instinto Mortal
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano, +15% de velocidade, recargas 50% mais rápidas, cura 8% na hora.
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano, +15% de velocidade, recargas 50% mais rápidas, cura 8% na hora, □ passa a ser Investida Mortal.

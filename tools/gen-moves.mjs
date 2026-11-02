@@ -68,6 +68,11 @@ for (const c of ROSTER) {
       md +=`- ${DIR[k].replace('○', '□')}: **${v.label}** — ${v.damage}${(v.count ?? r.count) > 1 ? ` × ${v.count ?? r.count}` : ''}\n`;
     }
   }
+  if (c.awakening && c.awakening.ranged) {
+    const awakenedRanged = c.awakening.ranged;
+    md += `\n### Principal durante ${c.awakening.name}: ${awakenedRanged.name}\n\n`;
+    md += `- Dano ${awakenedRanged.damage}${awakenedRanged.count > 1 ? ` × ${awakenedRanged.count}` : ''} · alcance ${awakenedRanged.range} m · cooldown ${awakenedRanged.cooldown} s · custo ${awakenedRanged.energyCost || 0}\n`;
+  }
   md += `\n### Habilidades\n\n`;
   for (const a of c.abilities || []) {
     md += `- **${a.name}** — ${INPUT[a.input] || a.input} · custo ${a.energyCost} · cooldown ${a.cooldown} s${a.damage ? ` · dano ${a.damage}` : ''}${a.range ? ` · alcance ${a.range} m` : ''}\n  ${a.description || ''}\n`;
@@ -93,6 +98,7 @@ for (const c of ROSTER) {
     if (p.type === 'bulletDodge') md += `- **Passiva — Desviar de Balas:** esquivar de um projétil não gasta carga
 `;
     if (p.type === 'backstab') md += `- **Passiva:** golpes físicos pelas costas causam +${Math.round((p.mult - 1) * 100)}%\n`;
+    if (p.type === 'aggressorGaze') md += `- **Passiva — Olhar ao Agressor:** ao sofrer dano corpo a corpo, ${Math.round(p.chance * 100)}% de chance de colocar o agressor em transe por ${p.trance} s para se golpear uma vez (${p.damage} de dano; recarga ${p.cooldown} s; parâmetros PROPOSTA de jogo).\n`;
   }
   md += `\n### Especial: ${sp.name}\n\n`;
   if (sp.type === 'mistField') {
