@@ -5,6 +5,7 @@ import { COMBAT } from '../config/combat.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { applyHit } from './damage.js';
 import { splitDamage } from './specials/common.js';
+import { fleshCut, rawFlesh } from './specials/ritual.js';
 import { hasPassive, betray } from './passives.js';
 import { startSelfHarmTrance } from './selfHarm.js';
 import { DanteClone, CLONE, BloodZombie } from './npcs.js';
@@ -517,7 +518,7 @@ export const ABILITY_TYPES = {
   },
 
   // ------------------------------------------------------------------ AGHATA
-  // Descarnar: ritual que abre cortes sobrenaturais no corpo do alvo à distância.
+  // Descarnar: ritual de Sangue que arranca a pele e abre a carne do alvo à distância (sem raio: a carne abre sozinha).
   ritualCuts: {
     start(f, a, world) {
       const opp = f.opponent;
@@ -535,19 +536,16 @@ export const ABILITY_TYPES = {
         glow.stop();
         f.glowTint = null;
         connected = inCone(f, opp, a.range, a.arc) && !opp.isInvulnerable();
-        const end = connected ? opp.chestPos() : hand().addScaledVector(forwardFromYaw(f.yaw), a.range);
-        world.fx.tracer(hand(), end, { color: a.color, life: 0.18, width: 0.03 });
         world.audio.play('descarnar');
-        if (!connected) world.fx.burst(end, { count: 10, color: a.color, speed: 2, life: 0.4, size: 0.2 });
+        if (connected) rawFlesh(world, opp, { base: 0.35, time: a.cuts * a.interval + 1 });
+        else world.fx.burst(hand(), { count: 10, color: 0x5a0008, kind: 'debris', speed: 1.5, life: 0.5, size: 0.08, gravity: 9 }); // errou: o sangue escorre da mão
       });
       for (let i = 0; i < a.cuts; i++) {
         tl.add(a.windup + 0.05 + i * a.interval, () => {
           if (!connected || opp.state === 'ko') return;
           const joints = ['sp', 'hd', 'sL', 'sR', 'eL', 'eR', 'lL', 'lR', 'kL', 'kR'];
           const j = opp.rig.joints[joints[(i * 3 + 1) % joints.length]];
-          world.fx.cutMark(j, { color: a.color, life: 1.6 });
-          const p = j.getWorldPosition(new THREE.Vector3());
-          world.fx.burst(p, { count: 8, color: a.color, speed: 3, life: 0.4, size: 0.18, gravity: 6 });
+          const p = fleshCut(world, j, { life: 2 });
           const last = i === a.cuts - 1;
           applyHit(world, f, opp, {
             damage: parts[i], kind: 'ability', reaction: last, knockback: 2, hitstun: 0.45,

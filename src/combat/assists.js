@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Timeline, yawTo, distXZ, forwardFromYaw } from '../core/util.js';
 import { applyHit } from './damage.js';
+import { fleshCut, rawFlesh } from './specials/ritual.js';
 import { buildModel } from '../models/index.js';
 import { Animator } from '../anim/Animator.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
@@ -391,11 +392,12 @@ function ritualCuts(c, color, damage, label) {
   tl.add(0.5, () => c.as.play('point', 0.4));
   tl.add(0.75, () => {
     if (distXZ(c.as.pos, c.opp.pos) > 18) return;
-    c.world.fx.tracer(c.as.chest(), c.opp.chestPos(), { color, life: 0.2, width: 0.05 });
+    // a pele sai e a carne abre (sem raio: o ritual age direto no corpo)
     for (const j of ['hd', 'sp', 'sL', 'sR', 'lL', 'lR']) {
       const joint = c.opp.rig.joints[j];
-      if (joint) c.world.fx.cutMark(joint, { color, life: 1.8, size: 0.3 });
+      if (joint) fleshCut(c.world, joint, { life: 1.8, scale: 0.7 });
     }
+    rawFlesh(c.world, c.opp, { base: 0.35, time: 1 });
     c.world.audio.play('descarnar');
     const res = c.hit(damage, { kind: 'ability', knockback: 2, sound: 'bladeHit', color });
     if (typeof res === 'number') c.opp.notify(label, true);

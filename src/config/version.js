@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.15.0';
+export const VERSION = '4.15.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.15.1',
+    date: '2026-11-02',
+    title: 'Descarnar',
+    items: [
+      'DESCARNAR: o ritual de Sangue agora arranca a pele e derrete a carne do alvo, como no cânone.',
+    ],
+  },
   {
     v: '4.15.0',
     date: '2026-11-02',

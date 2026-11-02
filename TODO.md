@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.15.0 (2026-11-02: a Aghata refeita na técnica nova). Antes: v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.15.1 (2026-11-02: o Descarnar arrancando a pele e derretendo a carne). Antes: v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -2654,7 +2654,9 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
 **Nome oficial: AGHATA**
 
 * [x] Utilizar referência visual definida (remodel na técnica nova — §23.5, v4.15.0)
-* [x] Descarnar (especial)
+* [x] Descarnar (especial) — v4.15.1: o ritual de Sangue arranca a pele e derrete a carne (carne viva, pele em pedaços,
+      a carne pingando com vapor de sangue e a poça no chão); sem o raio de antes. Vale também para o Juan, as
+      assistências e o agarrão
 * [ ] Livro
 * [x] Faca
 * [ ] Projétil de Sangue

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { fleshCut, rawFlesh } from './specials/ritual.js';
 import { forwardFromYaw } from '../core/util.js';
 import { faceClose, twoShot } from '../camera/shots.js';
 import { inkSplash } from '../fx/inkFx.js';
@@ -42,6 +43,8 @@ export const FINISHERS = {
     w.fx.ring(b.chestPos(), { color: col, radius: 0.9, life: 0.5, vertical: true, yaw: a.yaw });
     w.fx.play('FX_BLOOD', b.chestPos(), { color: 0x9a0010 });
     w.fx.burst(b.chestPos(), { count: 40, color: 0x9a0010, speed: 5, up: 1.5, life: 0.6, size: 0.16, gravity: 9 });
+    for (const j of ['sp', 'sL', 'sR']) if (b.rig.joints[j]) fleshCut(w, b.rig.joints[j], { life: 2 });
+    rawFlesh(w, b, { base: 0.35, time: 1 });
   },
   // Dante — Tentáculos de Lodo: o Lodo sobe do chão em colunas e aperta o alvo
   lodo(w, a, b) {

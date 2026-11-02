@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.15.1 — Descarnar
+
+- Versão: `VERSION` 4.15.0 → **4.15.1** (`package.json`/lock junto). Data: 2026-11-02. Correção de cânone pedida pelo usuário: o Descarnar não tem nada de eletrificado.
+- `specials/ritual.js`: helpers `fleshCut(world, joint)` (corte em carne viva + pedaços de pele + sangue, partículas `debris`) e `rawFlesh(world, opp)` (tinta de carne viva que some num ticker). No especial: sangue escorrendo da mão, tinta de carne viva no alvo a cada onda, emissores de pingos e vapor (até 1,6 s depois do fim) e a poça só visual (`splatGeo`, não é a poça do Diabo). Sem `tracer`.
+- Usam os helpers: `abilities.js` (`ritualCuts`, do Juan), `assists.js` (`ritualCuts`) e `grabScenes.js` (`descarnar`, Aghata/Xande).
+- Testado no navegador: especial da Aghata (carne viva 0,55, poça, tinta some depois) e o Descarnar do Juan (62 de dano, sem erro).
+
 ## v4.15.0 — Aghata Remodelada
 
 - Versão: `VERSION` 4.14.1 → **4.15.0** (`package.json`/lock junto). Data: 2026-11-02.

@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.15.1 — Descarnar
+- O Descarnar agora arranca a pele e derrete a carne do alvo, como no cânone.
+
 ## v4.15.0 — Aghata Remodelada
 - A Aghata ganhou um modelo novo, mais detalhado, com o visual da Hexatombe.
 

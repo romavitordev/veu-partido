@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.15.1 — Descarnar
+
+### Alterado
+- Descarnar (Aghata, e também a habilidade do Juan, as assistências e o agarrão) refeito pelo cânone: é um ritual de Sangue que arranca a pele e derrete a carne. O alvo fica em carne viva, a pele sai em pedaços, a carne pinga com vapor de sangue e forma uma poça no chão. Saiu o raio que ligava a mão ao alvo. Dano e tempos iguais.
+
 ## v4.15.0 — Aghata Remodelada
 
 ### Alterado
