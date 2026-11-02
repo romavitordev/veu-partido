@@ -337,7 +337,7 @@ export function applyHit(world, attacker, victim, o) {
   // passivas de quem apanha (ex.: Amuleto Elétrico)
   for (const p of victim.def.passives || []) {
     const P = PASSIVES[p.type];
-    if (P && P.onHitTaken) P.onHitTaken({ attacker, victim, kind: o.kind, dealt, passive: p, world, o });
+    if (P && P.onHitTaken) P.onHitTaken({ attacker, victim, kind: o.kind, dealt, passive: p, world, o, applyHit: (a, v, hit) => applyHit(world, a, v, hit) });
   }
   // passivas de quem BATE, a cada acerto que tira vida (ex.: Caótica da Amalia)
   for (const p of (attacker && attacker.def && attacker.def.passives) || []) {

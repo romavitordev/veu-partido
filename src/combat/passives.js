@@ -1,6 +1,8 @@
 // Regras passivas de personagem, acionadas por eventos de combate.
 // Funções puras sempre que possível (testáveis sem navegador).
 
+import { startSelfHarmTrance } from './selfHarm.js';
+
 /**
  * Regra do Injustiça (determinística, sem aleatoriedade):
  *   1. o golpe tira X de vida do INIMIGO;
@@ -300,6 +302,23 @@ export const PASSIVES = {
   closedBody: {
     damageTakenMod({ passive, o }) {
       return o && o.ballistic ? passive.mult ?? 0.4 : 1;
+    },
+  },
+  // Carniçal — Olhar ao Agressor (wiki "Carniçal Preto da Morte"): encara quem o feriu e o controla por um instante
+  aggressorGaze: {
+    onHitTaken({ attacker, victim, kind, dealt, passive, world, applyHit }) {
+      if (kind !== 'melee' || !(dealt > 0) || !attacker || attacker.state === 'ko' || victim.state === 'ko') return;
+      if (world.time < (victim.aggressorGazeReadyAt || 0) || Math.random() >= (passive.chance ?? 0.25)) return;
+      victim.aggressorGazeReadyAt = world.time + (passive.cooldown ?? 12);
+      startSelfHarmTrance(world, victim, attacker, {
+        id: 'aggressorGaze',
+        label: 'OLHAR AO AGRESSOR',
+        color: victim.def.energyColor,
+        element: 'morte',
+        trance: passive.trance ?? 0.8,
+        hits: 1,
+        damage: passive.damage ?? 20,
+      }, applyHit);
     },
   },
   // Guizo — Eu Já Sabia: resistência mental (rituais e golpes de Conhecimento doem menos)

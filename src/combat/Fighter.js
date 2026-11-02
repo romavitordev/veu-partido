@@ -99,6 +99,7 @@ export class Fighter {
     if (this.baseForm) revertForm(this, { keepHealth: false });
     this.lethalHook = null;
     this.revengeUsed = false; // Sede de Vingança (Kemi): uma vez por round
+    this.aggressorGazeReadyAt = 0;
     this.storm = 0; // Barra de Transformação (0–100), zera a cada round
     this.overcharge = 0; // segurando △ com a sanidade cheia (0–1) → transforma
     this.health = this.maxHealth;
@@ -114,6 +115,7 @@ export class Fighter {
     this.secretRound = false; // Segredo de Veríssimo contra o Kian: uma vez por round
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
     for (const k in this.cooldowns) this.cooldowns[k] = 0;
+    this.cooldownMax.ranged = this.def.ranged?.cooldown || 1;
     this.carga = { stage: 0, timer: 0 };
     this.combo = { chain: -1, steps: 0, grace: 0, queued: null, strike: null, hits: [], windows: [] };
     this.endBuffs();
@@ -153,6 +155,10 @@ export class Fighter {
 
   get opponent() {
     return this.world.opponentOf(this);
+  }
+
+  getRangedAbility() {
+    return this.findBuff('awakened')?.ranged || this.def.ranged;
   }
 
   // ---------------------------------------------------------------- consultas
@@ -446,7 +452,7 @@ export class Fighter {
 
   hideRangedProps() {
     // o disparo em andamento (pode ser o tiro carregado/variante) ou, sem ele, o □ padrão
-    const r = this.activeRanged || this.def.ranged;
+    const r = this.activeRanged || this.getRangedAbility();
     this.activeRanged = null;
     if (!r) return;
     if (r.showProp) this.rig.showProp(r.showProp, false);
@@ -2260,7 +2266,7 @@ export class Fighter {
   // ------------------------------------------------ ataque principal (□/X)
   tryRanged() {
     if (this.meleeLocked()) return;
-    const base = this.def.ranged;
+    const base = this.getRangedAbility();
     if (!base) {
       this.notify('SEM ATAQUE À DISTÂNCIA');
       return;

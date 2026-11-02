@@ -5,8 +5,9 @@ import { GRAB_SCENES, FINISHERS } from '../src/combat/grabScenes.js';
 import { getForm, FORMS } from '../src/characters/forms/index.js';
 import { weaknessMult } from '../src/combat/forms.js';
 import { COMBAT } from '../src/config/combat.js';
-import { computeDrain, validatePassives } from '../src/combat/passives.js';
+import { computeDrain, validatePassives, PASSIVES } from '../src/combat/passives.js';
 import { CLIPS } from '../src/anim/clips.js';
+import * as THREE from 'three';
 import { GAMEPAD_LAYOUT } from '../src/config/controls.js';
 import { RIDDLES } from '../src/config/riddles.js';
 import { BEATS, ELEMENTS, elementMultiplier } from '../src/config/elements.js';
@@ -107,7 +108,50 @@ ok(guizo && guizo.origin === 'Os Cinco' && ['decadence', 'curseWeapon', 'deadlyS
 ok(guizo && guizo.awakening.scene === 'distort' && guizoEt && guizoEt.baseId === 'guizo' && guizoEt.element === 'conhecimento' && guizoEt.passives.some((p) => p.type === 'mindRead') && guizoEt.abilities.some((a) => a.type === 'mindLink'), 'Guizo: Distorcer Aparência → disfarce alienígena com a faca de Conhecimento (Leitura, Ligação Telepática)');
 ok(get('juan').origin === 'Mascarados', 'Juan com os Mascarados');
 const carn = get('carnical');
-ok(carn && carn.element === 'morte' && carn.model === 'carnical' && carn.passives.some((p) => p.type === 'closedBody' && p.mult < 1) && ['hipnoseCarnical', 'saltoCarnical', 'pancadaPoderosa', 'comandoCarnical'].every((id) => carn.abilities.some((a) => a.id === id)) && carn.ranged.onHit?.slow && carn.abilities.find((a) => a.id === 'hipnoseCarnical').type === 'spiralSelfHarm' && carn.awakening.name === 'Instinto Mortal', 'Carniçal (kit frio): Morte, Corpo Fechado, Hipnose Espiral (a vítima se golpeia e fica lenta), Salto, Pancada Poderosa, Comando, □ Lágrimas de Lodo (lento) e o Instinto Mortal');
+ok(carn && carn.element === 'morte' && carn.model === 'carnical' && carn.passives.some((p) => p.type === 'closedBody' && p.mult < 1) && ['hipnoseCarnical', 'saltoCarnical', 'pancadaPoderosa', 'comandoCarnical'].every((id) => carn.abilities.some((a) => a.id === id)) && carn.ranged.onHit?.slow && carn.abilities.find((a) => a.id === 'hipnoseCarnical').type === 'spiralSelfHarm' && carn.awakening.name === 'Instinto Mortal' && carn.passives.some((p) => p.type === 'aggressorGaze' && p.chance === 0.25 && p.cooldown === 12) && carn.awakening.ranged.name === 'Investida Mortal' && carn.awakening.ranged.type === 'dashStrike' && carn.awakening.ranged.element === 'morte' && !carn.awakening.ranged.bleed, 'Carniçal (kit frio): Olhar ao Agressor (25%, recarga de 12 s e um golpe), Hipnose Espiral, Investida Mortal no Instinto Mortal e demais habilidades');
+{
+  const delayed = [];
+  const attacker = {
+    state: 'idle',
+    def: { melee: { strikes: [{ anim: 'punch' }] } },
+    pos: new THREE.Vector3(),
+    vel: new THREE.Vector3(),
+    rig: { joints: { hd: { getWorldPosition: (p) => p.set(0, 1, 0) } } },
+    anim: { play() {} },
+    stun() { this.state = 'stun'; },
+    notify() {},
+  };
+  const carni = { def: carn, state: 'idle', aggressorGazeReadyAt: 0 };
+  const world = {
+    time: 4,
+    fx: { emitter: () => ({ stop() {} }), ring() {} },
+    after: (delay, callback) => delayed.push({ delay, callback }),
+  };
+  const hits = [];
+  const passive = carn.passives.find((p) => p.type === 'aggressorGaze');
+  const originalRandom = Math.random;
+  try {
+    Math.random = () => 0;
+    PASSIVES.aggressorGaze.onHitTaken({
+      attacker, victim: carni, kind: 'melee', dealt: 10, passive, world,
+      applyHit: (source, target, hit) => hits.push({ source, target, hit }),
+    });
+    delayed.find((entry) => entry.delay === 0.3).callback();
+    PASSIVES.aggressorGaze.onHitTaken({
+      attacker, victim: carni, kind: 'melee', dealt: 10, passive, world,
+      applyHit: (source, target, hit) => hits.push({ source, target, hit }),
+    });
+    world.time = 16;
+    Math.random = () => 0.99;
+    PASSIVES.aggressorGaze.onHitTaken({
+      attacker, victim: carni, kind: 'melee', dealt: 10, passive, world,
+      applyHit: (source, target, hit) => hits.push({ source, target, hit }),
+    });
+  } finally {
+    Math.random = originalRandom;
+  }
+  ok(hits.length === 1 && hits[0].hit.damage === 20 && hits[0].hit.kind === 'ability' && delayed.length === 2, 'Olhar ao Agressor: chance de 25%, recarga interna de 12 s e um golpe próprio');
+}
 const jaeX = getForm('jae_x');
 ok(jaeX && jaeX.abilities.some((a) => a.type === 'shadowTrap' && a.blind > 0 && a.deaf > 0) && jaeX.abilities.some((a) => a.id === 'assassinatoCruel' && a.strike.damage > jae.abilities.find((b) => b.id === 'assassinatoFurtivo').strike.damage), 'X: Zona das Sombras (cego e surdo) e Assassinato Cruel no lugar do Furtivo');
 const bal = get('balu');

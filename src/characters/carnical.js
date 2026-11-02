@@ -179,6 +179,7 @@ export default {
     name: 'Instinto Mortal',
     banner: 'Instinto Mortal',
     type: 'awakenMode',
+    ranged: { ...raziel.ranged, name: 'Investida Mortal', color: RED, element: 'morte', bleed: undefined },
     mult: 1.18, speedMult: 1.15, cdRate: 1.5, aura: 'smoke', color: RED, heal: 0.08,
   },
 
@@ -186,6 +187,8 @@ export default {
     // CORPO FECHADO (wiki: "imune a qualquer dano balístico; a única fraqueza é o crânio") — no jogo os tiros entram com
     // 40% (imunidade total anularia os atiradores do elenco)
     { type: 'closedBody', mult: 0.4 },
+    // PROPOSTA DE JOGO (valores pedidos): 25% de chance, recarga interna de 12 s e um golpe durante o transe curto.
+    { type: 'aggressorGaze', chance: 0.25, cooldown: 12, trance: 0.8, damage: 20 },
     { type: 'elementalAffinity', element: 'morte', mult: 1.1, resist: 0.85 },
   ],
 };

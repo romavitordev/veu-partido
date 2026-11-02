@@ -6,6 +6,7 @@ import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { applyHit } from './damage.js';
 import { splitDamage } from './specials/common.js';
 import { hasPassive, betray } from './passives.js';
+import { startSelfHarmTrance } from './selfHarm.js';
 import { DanteClone, CLONE, BloodZombie } from './npcs.js';
 
 // ARMA AMALDIÇOADA: o que cada elemento faz nos golpes (lido em damage.js) e as cores
@@ -1248,26 +1249,7 @@ Object.assign(ABILITY_TYPES, {
       tl.add(a.windup, () => {
         if (!opp || opp.state === 'ko' || opp.isInvulnerable() || !inCone(f, opp, a.range, a.arc)) { f.notify('ERROU', true); return; }
         if (Math.abs(angleDiff(opp.yaw, yawTo(opp.pos, f.pos))) > (a.lookArc * DEG) / 2) { opp.notify('NÃO OLHOU PARA A ESPIRAL', true); return; }
-        const tears = world.fx.emitter({ rate: 28, follow: () => head(opp), particle: { color: 0x0a0810, speed: 0.4, spread: 0.12, life: 0.6, size: 0.08 } });
-        world.fx.ring(head(opp).add(new THREE.Vector3(0, 0.35, 0)), { color: a.color, radius: 0.5, life: a.trance, vertical: false });
-        opp.vel.set(0, 0, 0);
-        opp.stun(a.trance, 'stagger');
-        opp.notify('HIPNOSE ESPIRAL', true);
-        world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
-        // o golpe é o do próprio alvo (a animação do primeiro golpe do combo dele) — o dano conta para o Carniçal
-        const s = opp.def.melee && opp.def.melee.strikes && opp.def.melee.strikes[0];
-        for (let i = 0; i < a.hits; i++) {
-          world.after(0.3 + i * a.gap, () => {
-            if (opp.state === 'ko') return;
-            if (s && s.anim) opp.anim.play(s.anim, { restart: true, duration: 0.4 });
-            applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: a.element || 'morte', knockback: 0, hitstun: 0.2, reaction: false, sound: 'punch', color: 0x1a1620, scale: 0.8 });
-            if (opp.state !== 'ko') opp.stun(Math.max(0.05, a.trance - (0.3 + i * a.gap)), 'stagger');
-          });
-        }
-        world.after(a.trance, () => {
-          tears.stop();
-          if (opp.state !== 'ko' && a.slow) opp.addBuff({ type: 'curseSlow', name: 'LENTO', time: a.slow.time, duration: a.slow.time, speedMult: a.slow.mult });
-        });
+        startSelfHarmTrance(world, f, opp, { ...a, label: 'HIPNOSE ESPIRAL' }, (source, target, hit) => applyHit(world, source, target, hit));
       });
       tl.end(a.windup + a.recovery);
       return seqFrom(tl);
