@@ -2704,7 +2704,8 @@ Object.assign(ABILITY_TYPES, {
         f.addBuff({
           type: 'heavyProtection', name: label, time: a.duration, duration: a.duration, takenMult: a.takenMult, speedMult: a.speedMult, bloodArmor: !!a.bloodArmor,
           ...bloodArmBuff(a),
-          onEnd() { if (a.prop) f.rig.showProp(a.prop, false); f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); },
+          // a peça que o despertar veste até o fim do round fica (a jaqueta do Veríssimo)
+          onEnd() { if (a.prop && !f.findBuff('awakened')?.keepProps?.includes(a.prop)) f.rig.showProp(a.prop, false); f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); },
         });
         f.notify(label, true);
       });

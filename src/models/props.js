@@ -550,6 +550,8 @@ export function addVerissimoProps(rig) {
   sockets.handR.add(gun);
   props.shotgun = gun;
   rig.muzzle = gun.userData.muzzle;
+  // a Jaqueta de Veríssimo e as costuras acesas da Ordo vêm do modelo (prop_jacket / prop_ordoSeams) e começam guardadas
+  for (const p of ['jacket', 'ordoSeams']) if (props[p]) rig.showProp(p, false);
 }
 
 // JAE (modelo próprio: tools/blender/char_jae.py): o PUNHAL X na mão direita. O capuz é do próprio modelo:

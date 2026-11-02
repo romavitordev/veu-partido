@@ -390,7 +390,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Em Seu Caminho** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
   "Nós estaremos em seu caminho." Avança em linha reta com a espada na frente e atravessa a guarda com força.
 - **Jaqueta de Veríssimo** — △ + L2 / Y + LT · custo 25 · cooldown 22 s
-  Fecha a jaqueta de couro passada entre os agentes: por 6 s recebe 20% menos dano e aguenta 1 golpe sem recuar.
+  Veste a jaqueta de couro passada entre os agentes: por 6 s recebe 20% menos dano e aguenta 1 golpe sem recuar.
 - **Bloqueio Perfeito** — defender no instante exato (0.16 s) anula o dano e atordoa o atacante por 0.6 s
 
 ### Especial: Oficial Comandante

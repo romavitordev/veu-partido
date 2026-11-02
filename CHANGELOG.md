@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.10.0 — A Jaqueta de Veríssimo
+
+### Adicionado
+- Veríssimo: a **Jaqueta de Veríssimo** aparece no modelo ao usar a habilidade — aviador, couro marrom, gola forrada de pele branca (wiki "Itens Amaldiçoados").
+- No despertar **Líder da Ordo Realitas** ele veste a jaqueta até o fim do round, com as costuras acesas no azul da Ordo (PROPOSTA visual).
+
+### Atualizado
+- Página Sobre: fotos de perto e sem HUD de uma luta em Tipora (Arthur × Kaiser) e da Hipnose Espiral (Carniçal × Joui).
+
 ## v4.9.1 — Retoques
 
 ### Atualizado

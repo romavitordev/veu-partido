@@ -34,6 +34,8 @@ import { DanteClone } from '../npcs.js';
 //                       zerada, a larva ECLODE (dano + um Alheio que sai dela, `summon`) e outra é posta em `regrow` s
 //   glowMat             trecho do nome do material que BRILHA na cor do estado (o próprio desenho da textura vira o
 //                       brilho: na venda do Gal, as marcas douradas acendem e o pano preto continua escuro); pulsa
+//   props               [[peça, visível], ...]: troca peças do modelo no close e mantém até o fim do round (a Jaqueta de
+//                       Veríssimo); a habilidade que veste a mesma peça não a tira enquanto durar (buff.keepProps)
 export const awakenMode = {
   canStart: (f) => !f.findBuff('awakened'),
   blockMsg: 'JÁ DESPERTOU',
@@ -59,6 +61,9 @@ export const awakenMode = {
     // o brilho acende no close (a câmera está no rosto)
     let glow = null;
     if (sp.glowMat) tl.add(0.45, () => { glow = glowMaterials(f.rig, sp.glowMat, col); });
+    // a roupa muda no mesmo close (Veríssimo veste a jaqueta) e fica até o fim do round
+    let undoProps = null;
+    if (sp.props) tl.add(0.45, () => { undoProps = showProps(f.rig, sp.props); });
     tl.add(0.35, () => world.showBanner(sp.banner || sp.name, f.def.color));
     tl.add(1.0, () => {
       world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: col, radius: 5, life: 0.7 });
@@ -73,9 +78,10 @@ export const awakenMode = {
     const finish = () => {
       rise.stop();
       world.endCinematic();
-      applyAwakening(f, sp, world, col, undoFace, glow);
+      applyAwakening(f, sp, world, col, undoFace, glow, undoProps);
       undoFace = null;
       glow = null;
+      undoProps = null;
     };
     return {
       update: (dt) => {
@@ -83,13 +89,24 @@ export const awakenMode = {
         if (done) finish();
         return done;
       },
-      cancel: () => { rise.stop(); world.endCinematic(); if (undoFace) { undoFace(); undoFace = null; } if (glow) { glow.undo(); glow = null; } },
+      cancel: () => { rise.stop(); world.endCinematic(); if (undoFace) { undoFace(); undoFace = null; } if (glow) { glow.undo(); glow = null; } if (undoProps) { undoProps(); undoProps = null; } },
     };
   },
 };
 
-function applyAwakening(f, sp, world, col, undoFace, glow) {
-  if (f.state === 'ko') { if (undoFace) undoFace(); if (glow) glow.undo(); return; }
+// mostra/esconde peças do modelo e devolve a função que volta como estavam
+function showProps(rig, list) {
+  const before = [];
+  for (const [p, v] of list) {
+    if (!rig.props[p]) continue;
+    before.push([p, rig.props[p].visible]);
+    rig.showProp(p, v);
+  }
+  return () => { for (const [p, v] of before) rig.showProp(p, v); };
+}
+
+function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
+  if (f.state === 'ko') { if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); return; }
   // o Lodo escorrendo do rosto (olhos e boca) enquanto durar
   const drip = sp.eyeDrip !== undefined ? world.fx.emitter({ rate: 14, follow: () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()), particle: { color: sp.eyeDrip, kind: 'smoke', speed: 0.15, up: -1.2, spread: 0.08, life: 0.6, size: 0.12, gravity: 3 } }) : null;
   if (sp.heal) f.health = Math.min(f.maxHealth, f.health + f.maxHealth * sp.heal);
@@ -105,6 +122,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow) {
     mult: sp.lowHealth ? sp.lowHealth.min : sp.mult, affects: sp.affects || ['melee', 'ranged', 'ability'], takenMult: sp.takenMult, speedMult: sp.speedMult,
     cdRate: sp.cdRate, energyRegenMult: sp.energyRegenMult, knockbackTakenMult: sp.knockbackTakenMult, unblockable: !!sp.unblockable, meleeBleed: sp.meleeBleed,
     bloodArmor: !!sp.bloodArmSide, bloodArmSide: sp.bloodArmSide, passives: sp.passives, perfectBlockWindow: sp.perfectBlockWindow, ranged: sp.ranged,
+    keepProps: (sp.props || []).filter(([, v]) => v).map(([p]) => p),
     onTick(dt) {
       if (glow) glow.pulse(world.time);
       if (f.state === 'ko') return;
@@ -134,7 +152,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow) {
         if (armorClock >= sp.armorEvery && (f.armorHits || 0) < (sp.armorMax ?? 1)) { armorClock = 0; f.armorHits = (f.armorHits || 0) + 1; }
       }
     },
-    onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (f.buffTint === tint) f.buffTint = null; },
+    onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); if (f.buffTint === tint) f.buffTint = null; },
   });
   if (sp.ranged) f.cooldownMax.ranged = sp.ranged.cooldown || 1;
   if (sp.larva) incubate(f, sp.larva, world, col);

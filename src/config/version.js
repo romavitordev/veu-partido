@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.9.1';
+export const VERSION = '4.10.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.10.0',
+    date: '2026-11-02',
+    title: 'A Jaqueta de Veríssimo',
+    items: [
+      'VERÍSSIMO: a Jaqueta de Veríssimo aparece no corpo — a jaqueta de aviador de couro marrom com a gola de pele branca.',
+      'LÍDER DA ORDO REALITAS: no despertar ele veste a jaqueta até o fim do round, com as costuras acesas no azul da Ordo.',
+      'Página Sobre: fotos novas, de perto, de uma luta e da Hipnose Espiral.',
+    ],
+  },
   {
     v: '4.9.1',
     date: '2026-11-02',

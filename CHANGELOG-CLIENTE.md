@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.10.0 — A Jaqueta de Veríssimo
+- Veríssimo veste a Jaqueta de Veríssimo (couro marrom, gola de pele branca) ao usar a habilidade.
+- No despertar, a jaqueta fica até o fim do round, com as costuras acesas no azul da Ordo.
+- Página Sobre com fotos novas, de perto, de uma luta e da Hipnose Espiral.
+
 ## v4.9.1 — Retoques
 - Página Sobre: foto nova, de perto, do Carniçal hipnotizando Joui em Tipora.
 

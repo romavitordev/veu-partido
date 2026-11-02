@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.9.1 (2026-11-02: revisão do trabalho do Copilot; foto de perto da Hipnose na página Sobre). Antes: v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.10.0 (2026-11-02: Jaqueta de Veríssimo visível na habilidade e no despertar; fotos novas da página Sobre). Antes: v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -12,7 +12,8 @@
 - [x] `char_carnical.py`: os comentários "PROPOSTA visual" viraram o porquê do ajuste (contraste não é cânone, é
       leitura no jogo); o .glb não muda.
 - [ ] Tag `v4.7.1` não existe (a release saiu junto da v4.8.0); criar só se o dono quiser os apps dela separados.
-- [ ] Fotos da seleção e da luta na página Sobre também estão escuras/longe, com muito HUD; refazer de perto quando der.
+- [x] Fotos da página Sobre (v4.10.0): luta refeita de perto e sem HUD (Arthur × Kaiser em Tipora); a da Hipnose refeita
+      fora do clarão de dano (no primeiro close o Joui saiu branco). A da seleção é a tela do jogo e ficou.
 
 ## Nota de passagem — Copilot (v4.9.0)
 - [x] Carniçal: passiva canônica Olhar ao Agressor e Investida Mortal no Instinto Mortal; parâmetros de chance, recarga, transe e dano da passiva são PROPOSTA de jogo.
@@ -743,9 +744,11 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   mate"). INTELIGÊNCIA ESTRATÉGICA: no cânone ele dá a ORDEM aos aliados, que ganham um ataque extra — agora, além do
   corte extra (que passa para quem entrar em campo), na batalha em equipe as assistências ficam prontas na hora
   (testado: recarga 15 → 0). Sem loop: a ordem tem 18 s de recarga, o mesmo de uma assistência.
-  - [ ] **Jaqueta visível e transformação:** ao usar Jaqueta de Veríssimo, ele deve vestir a jaqueta e receber o buff da
-    habilidade; na transformação, veste uma versão ainda melhor, com o efeito visual persistindo até o fim da luta,
-    como a barba da Calamidade do Kian.
+  - [x] **Jaqueta visível e transformação** (v4.10.0, 2026-11-02): a jaqueta canônica (wiki "Itens Amaldiçoados": aviador,
+    couro marrom, gola forrada de pele branca) está no modelo (`prop_jacket`, escondida). A habilidade a veste durante o
+    buff; o despertar Líder da Ordo Realitas a veste até o fim do round com as costuras acesas no azul da Ordo
+    (`prop_ordoSeams`, PROPOSTA visual) — `awakenMode` ganhou `props`, e a habilidade não tira a jaqueta do despertar.
+    Testado: começo, despertar, habilidade durante o despertar, fim da habilidade e fim do round.
   - Diferenciar a esgrima disciplinada de Veríssimo da teatralidade de Arnaldo, apesar da mesma espada.
   - Inteligência Estratégica deve refletir comando e abertura tática.
   - Conferir Segredo de Veríssimo e Olhos Sempre Abertos com a fonte.
@@ -1890,7 +1893,8 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       Ainda sem cânone no jogo: "quem foi afetado pelas pinturas não consegue se afastar" (sem pinturas no jogo).
 - [ ] **NOVOS PERSONAGENS — O SEGREDO NA ILHA** (pedido de 2026-10-31): os protagonistas da campanha (levantar na wiki
       quem são e o que fazem antes de modelar).
-- [~] **NOVOS PERSONAGENS — OS CINCO** (pedido de 2026-10-31): completar o grupo. No jogo: Xande, Guizo e Lírio; faltam
+- [x] **NOVOS PERSONAGENS — OS CINCO** (pedido de 2026-10-31; grupo completo e especial de grupo na v4.8.0 — sobram só a
+      PROPOSTA das submetralhadoras e o polimento dos modelos, abaixo): completar o grupo. No jogo: Xande, Guizo e Lírio; faltam
       (pela wiki, `lore/MEMBROS.md`) Dara Alice Venturini (Médica de Campo), Francisco "Chico" Albuquerque (Técnico) e
       Morato Vertaler (o líder). O Voytek Nowak fica de fora (decisão do dono, 2026-10-31). Com o grupo completo, entra o
       especial de grupo dos Cinco.
@@ -1918,7 +1922,7 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         antes de ele dar ao Lírio, então a Larva da Fúria "Calabresa" agora estala as MESMAS Magras do Lírio (`bloodBind`
         com `gut`, tripas trançadas e voltas no corpo) e, em seguida, ele engole a Calabresa (`buff` no bloodBind →
         `applySelfBuff`). Testada: prende o alvo e liga o ódio.
-      - [ ] O especial de grupo dos Cinco (Xande, Guizo, Lírio, Dara, Chico e Morato) — coreografia na seção dos especiais de grupo.
+      - [x] O especial de grupo dos Cinco (Xande, Guizo, Lírio, Dara, Chico e Morato) — feito na v4.8.0 (`teamSpecials.js os_cinco`; ver "OS CINCO — especial de grupo" na seção dos especiais de grupo).
       - [ ] PROPOSTA a decidir: Dara e Chico têm SUBMETRALHADORAS no cânone (artes da wiki) — hoje o □ deles é a Lanterna UV
         e o Pulso do Scanner.
       - [x] **CARNIÇAL REFEITO SOBRE UMA BASE CC0** (pedido do dono, 2026-11-01, Blender MCP): o corpo masculino realista e o

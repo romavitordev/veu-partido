@@ -239,6 +239,74 @@ for s in (1, -1):
         Mu.chain(pts, [0.015 * H, 0.017 * H, 0.012 * H, 0.008 * H][:len(pts)], step=0.45)
 b.add('mustache', Mu.mesh(res=0.0035, smooth=2, target=1000), beardm, region='body', weight_fn=HEAD, subdiv=0)
 
+# ================================================================ a JAQUETA DE VERÍSSIMO (item amaldiçoado; wiki "Itens Amaldiçoados": "jaqueta de
+# estilo aviador feita de couro marrom com a gola forrada de pele branca", passada entre os agentes da Ordem). Fica
+# ESCONDIDA: a habilidade Jaqueta de Veríssimo a veste (heavyProtection `prop`) e o despertar a veste até o fim do round.
+# prop_jacket = a jaqueta aberta na frente (o colete e a gravata aparecem), com a gola de pele, a barra e os punhos;
+# prop_ordoSeams = PROPOSTA (a "versão ainda melhor" do despertar Líder da Ordo Realitas): as costuras acendem no azul
+# da Ordo. Nomes sem prefixo comum: b.group junta por prefixo.
+leather = material('jacket_leather_verissimo', '#5a3620', 0.55)
+leather_dk = material('jacket_band_leather_verissimo', '#3a2414', 0.7)
+fur = material('jacket_fur_verissimo', '#ece6da', 0.95)
+seam = material('jacket_glow_verissimo', '#8cc0ff', 0.4, emission='#3a7cff', strength=2.5)
+JO = 0.022 * H  # folga do couro sobre o colete
+opened = lambda p: not (p.y < 0 and abs(p.x) < 0.07 * H)
+jb = b.add('prop_jacket_body', clothe(tor, lambda p: p.z > hz - 0.03 * H and opened(p), JO, cuts=1), leather, region='body', weight_fn=W('torso'), subdiv=0)
+relief(jb, lambda p: 0.003 * H * (ridge(p.z / H * 9 + n3(p, 6) * 1.6, 2) - 0.5))  # o couro amassado
+for side in ('L', 'R'):
+    s_, e_, h_ = sk['s' + side], sk['e' + side], sk['hand' + side]
+    ax = (e_ - s_).normalized()
+    roll_c = s_.lerp(e_, 0.92)
+    sv, sf, su = clothe(part('arm' + side), lambda p: True, JO, cuts=1)
+
+    def over_roll(v, ax=ax, roll_c=roll_c):
+        # a manga passa POR CIMA da dobra arregaçada da camisa no cotovelo: empurra para fora perto dela
+        v = Vector(v)
+        t = (v - roll_c).dot(ax)
+        k = max(0.0, 1 - abs(t) / (0.05 * H))
+        if k <= 0:
+            return tuple(v)
+        r = v - (roll_c + ax * t)
+        return tuple(v + r.normalized() * 0.018 * H * k)
+    b.add('prop_jacket_sleeve' + side, ([over_roll(v) for v in sv], sf, su), leather, region='body', weight_fn=W('arm' + side), subdiv=0)
+    cuff = limb_ring('arm' + side, e_.lerp(h_, 0.9), h_ - e_, JO + 0.006 * H)
+    b.add('prop_jacket_cuff' + side, rod(cuff, 0.012 * H, 6, caps=False), leather_dk, region='body', weight_fn=W('arm' + side), subdiv=0)
+    b.add('prop_ordoSeams_cuff' + side, rod(cuff, 0.0135 * H, 6, caps=False, flat=(outward((0, 0)), 0.15)), seam, region='body', weight_fn=W('arm' + side), subdiv=0)
+# a barra de couro na cintura (aberta na frente) e a gola de pele: arco nas costas descendo pelas lapelas
+hem = [q for q in around('torso', hz - 0.01 * H, JO + 0.004 * H, 48) if opened(q)]
+collar = [q for q in around('torso', top - 0.025 * H, JO + 0.016 * H, 48) if opened(q)]
+
+
+def arc(pts):
+    """around() começa na frente: sem a frente, junta os dois pedaços para o arco ir de um lado ao outro pelas costas"""
+    if len(pts) < 3:
+        return pts
+    gaps = [i for i in range(1, len(pts)) if (pts[i] - pts[i - 1]).length > 0.06 * H]
+    return pts[gaps[0]:] + pts[:gaps[0]] if gaps else pts
+
+
+hem, collar = arc(hem), arc(collar)
+if len(hem) > 3:
+    b.add('prop_jacket_hem', rod(hem, 0.014 * H, 6, caps=False), leather_dk, region='body', weight_fn=W('torso'), subdiv=0)
+for s in (1, -1):
+    # a lapela de pele dobrada sobre o peito: larga e achatada junto à gola, afinando até a ponta
+    lap = [front('torso', s * (0.1 - 0.006 * k) * H, top - (0.015 + 0.04 * k) * H, JO + 0.01 * H) for k in range(5)]
+    lap = [q for q in lap if q]
+    if len(lap) > 1:
+        b.add(f'prop_jacket_lapel{s}', rod(lap, [0.04 * H, 0.036 * H, 0.03 * H, 0.022 * H, 0.012 * H][:len(lap)], 8, flat=(lambda p: Vector((0, -1, 0)), 0.35)), fur, region='body', weight_fn=W('torso'), subdiv=0)
+        edge = [front('torso', s * 0.07 * H, z, JO + 0.002 * H) for z in [top - 0.25 * H + 0.03 * k * H for k in range(9)]]
+        edge = [q for q in edge if q]
+        if len(edge) > 1:
+            b.add(f'prop_ordoSeams_edge{s}', rod(edge, 0.004 * H, 4), seam, region='body', weight_fn=W('torso'), subdiv=0)
+if len(collar) > 3:
+    C = Sculpt()
+    C.chain(collar, [0.026 * H] * len(collar), step=0.45)
+    b.add('prop_jacket_fur', C.mesh(res=0.004, smooth=2, disp=lambda p: 0.002 * H * (n3(p, 90) - 0.5), target=1800), fur, region='body', weight_fn=W('torso'), subdiv=0)
+if len(hem) > 3:
+    b.add('prop_ordoSeams_hem', rod([q + (q - Vector((0, 0, q.z))).normalized() * 0.012 * H for q in hem], 0.004 * H, 4, caps=False), seam, region='body', weight_fn=W('torso'), subdiv=0)
+b.group('prop_jacket')
+b.group('prop_ordoSeams')
+
 b.export(OUT)
 
 src = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonte')

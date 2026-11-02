@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.10.0 — A Jaqueta de Veríssimo
+
+- Versão: `VERSION` 4.9.1 → **4.10.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `tools/blender/char_verissimo.py`: `prop_jacket` (corpo pelo `clothe` do tronco aberto na frente, mangas por cima da dobra arregaçada da camisa, barra, punhos, gola e lapelas de pele) e `prop_ordoSeams` (costuras emissivas, PROPOSTA). `verissimo.glb` 1,75 → 2,29 MB.
+- `props.js addVerissimoProps`: as duas peças começam escondidas. `verissimo.js`: `jaqueta.prop = 'jacket'`; `awakening.props`.
+- `awakenMode`: nova opção `props` ([peça, visível]) aplicada no close e desfeita no `onEnd` (fim do round) ou no cancelamento; o buff `awakened` leva `keepProps` e o `heavyProtection` não esconde uma peça que o despertar mantém.
+- Página Sobre: `luta.webp` (Arthur × Kaiser, câmera própria sem HUD) e `marionete.webp` (Hipnose fora do clarão de dano — o `setTint` branco do acerto tinha pegado o Joui) refeitas; `alt` revisados.
+- TODO: especial de grupo de Os Cinco e "completar o grupo" marcados como feitos (v4.8.0).
+
 ## v4.9.1 — Retoques
 
 - Versão: `VERSION` 4.9.0 → **4.9.1** (`package.json`/lock junto). Data: 2026-11-02.

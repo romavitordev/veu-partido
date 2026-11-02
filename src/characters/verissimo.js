@@ -138,7 +138,8 @@ export default {
       input: 'carga+dodge', // △ + L2 / Y + LT
       type: 'heavyProtection',
       label: 'JAQUETA DE VERÍSSIMO',
-      description: 'Fecha a jaqueta de couro passada entre os agentes: por 6 s recebe 20% menos dano e aguenta 1 golpe sem recuar.',
+      description: 'Veste a jaqueta de couro passada entre os agentes: por 6 s recebe 20% menos dano e aguenta 1 golpe sem recuar.',
+      prop: 'jacket', // a jaqueta de aviador marrom com a gola de pele branca (wiki "Itens Amaldiçoados") aparece no corpo
       energyCost: 25,
       cooldown: 22,
       duration: 6,
@@ -183,6 +184,9 @@ export default {
     type: 'awakenMode',
     anim: 'point',
     mult: 1.15, affects: ['melee', 'ranged', 'ability'], takenMult: 0.85, cdRate: 1.3, aura: 'sigil', color: BLUE, heal: 0.1,
+    // veste a Jaqueta de Veríssimo até o fim do round, numa versão melhor: as costuras acendem no azul da Ordo
+    // (PROPOSTA visual, pedido do dono: "como a barba da Calamidade do Kian")
+    props: [['jacket', true], ['ordoSeams', true]],
   },
 
   passives: [
