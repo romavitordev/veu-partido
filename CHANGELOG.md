@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.9.0 — O Carniçal Desperta
+
+### Adicionado
+- Carniçal: a passiva canônica **Olhar ao Agressor** pode fazer um agressor corpo a corpo entrar em transe e se golpear uma vez (parâmetros de jogo marcados como PROPOSTA).
+- No **Instinto Mortal**, o □ troca Lágrimas de Lodo pela **Investida Mortal**, derivada do golpe de Raziel e ajustada para Morte.
+- Ilha de Tipora: casas adicionais no vilarejo e a Torre do Sino como marco visual (geometria da torre — PROPOSTA).
+
+### Atualizado
+- Modelo do Carniçal com cristas menos contrastadas e peitorais mais discretos.
+- Página Sobre com capturas atuais da seleção, de uma luta em Tipora e da Hipnose Espiral, em WebP de 800 px e 480 px.
+
 ## v4.8.0 — Especiais em Equipe
 
 ### Adicionado

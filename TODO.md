@@ -1,8 +1,15 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.8.0 (2026-11-02: especiais de grupo da Força D e Os Cinco; primeira coreografia dos Abutres com o elenco existente; correção da Van dos Cinco em Tipora e dos comandos com uma assistência). Antes: v4.7.1 Transmissão nos Cinco, v4.7.0 Os Cinco completos.
+**Versão de referência atual:** v4.9.0 (2026-11-02: passiva e Investida Mortal do Carniçal; modelos refinados; fotos novas da página Sobre; casas e Torre do Sino em Tipora). Antes: v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
+
+## Nota de passagem — Copilot (v4.9.0)
+- [x] Carniçal: passiva canônica Olhar ao Agressor e Investida Mortal no Instinto Mortal; parâmetros de chance, recarga, transe e dano da passiva são PROPOSTA de jogo.
+- [x] Modelo do Carniçal: cristas e peitorais menos contrastados; geometria visual refinada marcada como PROPOSTA no código.
+- [x] Página Sobre: capturas atuais da seleção, luta em Tipora e Hipnose Espiral em WebP (800/480 px), com textos alternativos atualizados.
+- [x] Ilha de Tipora: casas adicionais e Torre do Sino; a geometria visual da torre é PROPOSTA baseada no marco citado pela wiki.
+- Testes e builds do Blender concluídos; PvE continua em espera.
 
 ## Nota de passagem — Copilot (v4.8.0)
 - Feito: especiais em equipe da Força D e de Os Cinco; primeira coreografia dos Abutres com o elenco atual; closes de impacto que mantêm atacante e alvo no quadro; Van dos Cinco em Tipora; comandos de assistência com um único parceiro.

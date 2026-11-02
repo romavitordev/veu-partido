@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.9.0 — O Carniçal Desperta
+- Carniçal: ao ser atingido de perto, pode hipnotizar o agressor para que ele se golpeie uma vez.
+- No Instinto Mortal, o □ vira a Investida Mortal.
+- Ilha de Tipora ganhou casas e a Torre do Sino.
+- Página Sobre com imagens novas da seleção, da luta em Tipora e da Hipnose Espiral.
+
 ## v4.8.0 — Especiais em Equipe
 - Força D: Kaiser, Joui e Arthur atacam juntos em uma cena com a Cinerária e a Arma de Sangue.
 - Os Cinco: os seis membros combinam suas armas e habilidades em uma coreografia de equipe.

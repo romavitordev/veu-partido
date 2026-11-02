@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.8.0';
+export const VERSION = '4.9.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.9.0',
+    date: '2026-11-02',
+    title: 'O Carniçal Desperta',
+    items: [
+      'CARNIÇAL: ao ser atingido de perto, pode hipnotizar o agressor para que ele se golpeie uma vez.',
+      'INSTINTO MORTAL: o □ troca Lágrimas de Lodo pela Investida Mortal.',
+      'ILHA DE TIPORA: o vilarejo ganhou casas e a Torre do Sino.',
+      'Página Sobre: capturas novas da seleção, de uma luta em Tipora e da Hipnose Espiral.',
+    ],
+  },
   {
     v: '4.8.0',
     date: '2026-11-02',

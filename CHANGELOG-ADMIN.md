@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.9.0 — O Carniçal Desperta
+
+- Versão: `VERSION` 4.8.0 → **4.9.0** (`package.json`/lock junto). Data: 2026-11-02.
+- `combat/selfHarm.js`: lógica compartilhada de transe e auto-golpe; `aggressorGaze` em `combat/passives.js` reage somente a dano corpo a corpo efetivamente causado, com chance de 25%, recarga interna de 12 s, transe de 0,8 s e um golpe de 20 — parâmetros PROPOSTA.
+- Carniçal: `awakening.ranged` usa Investida Mortal durante Instinto Mortal; Fighter, HUD e CPU consultam o ataque ativo.
+- Blender: cristas e peitorais do Carniçal suavizados; Tipora recebeu casas e uma Torre do Sino de geometria visual PROPOSTA, conforme o marco descrito na wiki.
+- Página Sobre: capturas novas da seleção do elenco atual, da luta em Tipora e da Hipnose Espiral, convertidas para WebP 800×450 e 480×270; `alt` revisados.
+- **Validado:** `npm test` (62/62), `npm run check`, `npm run build`, `npm run moves`; builds Blender de Carniçal e Tipora concluídos e capturas conferidas no jogo.
+
 ## v4.8.0 — Especiais em Equipe
 
 - Versão: `VERSION` 4.7.1 → **4.8.0** (`package.json`/lock junto). Data: 2026-11-02.
