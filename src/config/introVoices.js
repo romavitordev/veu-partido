@@ -286,7 +286,7 @@ export const VOICES = {
       any: [(o) => `Oi, ${o.name}! Desculpa desde já. O Orpheu fica bravo quando apanha.`, (o) => `${o.name}, o Orpheu já te viu. Ele sempre vê primeiro.`],
     },
     reply: {
-      ally: (o) => `Combinado, ${o.name}. Mas se eu ganhar, você me conta uma história.`,
+      ally: (o) => `Combinado, ${o.name}. Depois você me conta uma história.`,
       rival: (o) => `${o.group}? Então eu não vou errar, ${o.name}.`,
       any: [(o) => `Tá bom, ${o.name}. Vem.`, (o) => `Pode vir, ${o.name}. Eu não tenho mais medo.`],
     },

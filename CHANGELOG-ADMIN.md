@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.19.0 — Beatrice Portinari
+
+- Versão: `VERSION` 4.18.0 → **4.19.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: a próxima personagem que completa uma equipe (Força D); o Orpheu lutando com ela e a Existida refeita pelo cânone dos Existidos foram pedidos durante o trabalho.
+- O código do kit, do modelo e das falas já tinha subido no commit do dono `b860ed5` ("Adiciona Beatrice Portinari ao elenco"). Esta versão traz a Existida refeita, o retrato, a correção de uma fala de introdução e a documentação. `.claude/prompt-copilot.md` (subiu junto no `b860ed5`) saiu do controle de versão; o arquivo local fica.
+- Novos (desde a v4.18.0): `characters/beatrice.js`, `characters/forms/beatrice_existida.js`, `models/orpheu.js` (`buildOrpheu`, o urutau em voo), `tools/blender/char_beatrice.py` → `public/models/beatrice.glb` + `fonte/beatrice.blend`, retrato `public/sobre/elenco/beatrice.webp`.
+- `models/weapons.js`: `balestra()`. `models/props.js`: `ORPHEU_PROPS`, `beatriceWeapons`, `addBeatriceProps`, `addBeatriceExistidaProps` (esconde o Orpheu e o canivete; troca o rosto e a pele pelas texturas da Existida). `models/textures.js`: `face_beatrice`, `face_beatrice_existida`, `skin_beatrice_existida`. `combat/projectiles.js`: visual `bolt`.
+- `combat/abilities.js`: tipo novo `orpheuFlight`; `selfBuff.coin` (cara ou coroa); `deathTouch` ganhou `anim`, `label`, `element` e `execute` (mata quem está com essa fração da vida ou menos); `fearGaze.selfBuff` (o estado vem com o brilho). `specials/maskTransform.js`: cena `existida`. `ai/CpuController.js`: a CPU não chama o Orpheu enquanto ele está fora.
+- `teamLinks.js` (FORCA_D + Beatrice, props da cena), `teamSpecials.js` (a Beatrice na coreografia da Força D), `grabScenes.js`, `dialogues.js` (vitórias contra os 38 e de volta), `introVoices.js` (sem palavras de resultado na intro), `characters/index.js` (depois do Rubens), `tools/check-roster.mjs`; HABILIDADES.md regenerado.
+- Testado no navegador: Voo do Orpheu 3 acertos (o ombro esvazia e volta), moeda (COROA ×1,35 / recebe ×1,2), Virote Silencioso 56, Clarão cega 1,5 s, especial 254 com os props restaurados; Existida sem canivete nem Orpheu, Pancada mais lenta (37 contra 19 quadros), Não Vai Embora segurou o golpe e devolveu 49, Olha pra Mim zerou a sanidade e matou o alvo com 25% de vida, Brilho paralisou e aplicou o Fortalecimento. `npm test` 62/62, `npm run check` ok. Balanceamento da Beatrice fica para a próxima rodada.
+
 ## v4.18.0 — Rubens Naluti
 
 - Versão: `VERSION` 4.17.1 → **4.18.0** (`package.json`/lock junto). Data: 2026-11-02. Pedido do dono: o último Abutre que faltava; o especial ligado ao Johnny foi pedido durante o trabalho.

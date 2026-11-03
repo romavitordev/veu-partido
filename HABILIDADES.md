@@ -458,6 +458,50 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## BEATRICE PORTINARI
+
+*A florista recruta da Força D, a Menina do Pássaro* · arma: A balestra dos LEDs, o canivete e o urutau Orpheu
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte curto | 21 | 1.5 m |  |
+| ○ 2 | Corte de volta | 21 | 1.5 m |  |
+| ○ 3 | Chute | 24 | 1.8 m |  |
+| ○ 4 | Estocada do canivete | 48 | 1.8 m | finalizador: lança |
+| Frente + ○ | Avanço | 30 | 1.8 m |  |
+| Trás + ○ | Recua e corta | 34 | 1.7 m | invulnerável no começo |
+| Lado + ○ | Corte de lado | 24 | 1.6 m |  |
+| No ar + ○ | Corte aéreo | 30 | 1.7 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte para cima | 32 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 36 | 1.8 m | finalizador: derruba |
+
+### Principal (□ / X): Balestra
+
+- Dano 32 · alcance 34 m · cooldown 1.7 s · custo 0
+
+### Habilidades
+
+- **Voo do Orpheu** — △ + ○ / Y + B · custo 20 · cooldown 12 s · dano 13
+  O Orpheu sai do ombro, voa em volta da cabeça do adversário e ataca três vezes; a última deixa CEGO por 1 s. Ela continua lutando enquanto ele voa.
+- **Virote Silencioso** — △ + □ / Y + X · custo 25 · cooldown 12 s
+  Mira com calma (o ponto vermelho no alvo) e dispara o virote mais forte; a mais de 9 m o alvo não consegue esquivar nem defender. A mira deixa ela parada um instante.
+- **Vício em Adrenalina** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
+  Joga a moeda. CARA: por 6 s bate 25% mais forte e anda mais rápido. COROA: bate 35% mais forte, mas recebe 20% a mais de dano.
+- **Clarão dos LEDs** — R2 + △ / RT + Y · custo 18 · cooldown 13 s · alcance 9 m
+  Acende os LEDs da balestra na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,5 s.
+
+### Especial: Menina do Pássaro
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Lembrar
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
 ## SENHOR VERÍSSIMO
 
 *Líder da Ordo Realitas: Inteligência Estratégica e o Segredo de Veríssimo* · arma: A espada do Arnaldo e uma escopeta curta

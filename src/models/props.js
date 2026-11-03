@@ -1538,6 +1538,7 @@ const existidaTex = {};
 export function addBeatriceExistidaProps(rig) {
   beatriceWeapons(rig);
   rig.showProp(ORPHEU_PROPS, false);
+  rig.showProp('knife', false); // a Existida não luta com armas: só as mãos
   const swapped = new Map();
   rig.root.traverse((o) => {
     if (!o.isMesh || !o.material || !o.material.name || o.userData.isOutline) return;

@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.19.0 — Beatrice Portinari
+
+### Adicionado
+- Beatrice Portinari (Força D, Conhecimento), a recruta de Desconjuração, com o Orpheu no ombro. Corpo a corpo com o canivete; □ Balestra (virote preto, mira de ponto vermelho, dois LEDs nas pontas). Habilidades: Voo do Orpheu (o urutau sai do ombro, voa em volta da cabeça do adversário, bica 3 vezes, deixa cego e volta), Virote Silencioso (tiro mais forte de longe), Vício em Adrenalina (joga a moeda: CARA bate mais forte e anda mais rápido; COROA bate ainda mais forte e recebe mais dano) e Clarão dos LEDs (cega quem está olhando). Passiva: ótima balesteira, mais dano de longe.
+- Especial Menina do Pássaro (o apelido que o Sidney deu a ela): virotes, o Orpheu e o canivete, fechando com "Saber tudo é perder tudo."
+- Transformação: a EXISTIDA, pelo cânone dos Existidos (wiki "Existidos e Lembrados"). A pele se enche de textos, os olhos ficam brancos e o Orpheu some. Ela fica lenta e frágil, sem armas, sem rituais e sem especial: Pancada (golpes fracos e hesitantes), □ Não Vai Embora (fica parada; quem bate nela de frente é agarrado), Olha pra Mim (o toque zera a sanidade, faz definhar e MATA quem está com 30% da vida ou menos) e Brilho Enlouquecedor (paralisa quem olha e ativa o Fortalecimento Paranormal: 50% mais dano e 30% menos dano recebido por 8 s). O Pingente da Lua Dourada segue com ela (resiste a Conhecimento). O toque que mata e os números são PROPOSTA.
+- Modelo novo conferido no Blender pelo MCP: 1,69 m, cabelo castanho ondulado na altura dos ombros, sardas, casaco escuro aberto com a gola de pelo, corpete, pingente da lua, bolsa transversal e sandálias. Orpheu (urutau pardo de olhos amarelos) no ombro esquerdo e em voo. Retrato, falas de vitória contra o elenco todo, voz de apresentação e cena de agarrão.
+
+### Alterado
+- Especial da Força D: a Beatrice entra com um virote (o Orpheu marca o caminho). A ligação da Força D agora é Arthur, Kaiser, Joui e Beatrice. Dante e Erin, também da Força D no cânone, ainda ficam de fora (pergunta ao dono no TODO).
+
 ## v4.18.0 — Rubens Naluti
 
 ### Adicionado

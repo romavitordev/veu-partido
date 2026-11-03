@@ -395,6 +395,8 @@ export const ABILITY_TYPES = {
       const eyes = world.fx.emitter({ rate: 40, follow: head, particle: { color: a.color, speed: 0.5, spread: 0.3, life: 0.3, size: 0.15 } });
       tl.add(a.windup, () => {
         eyes.stop();
+        // a.selfBuff (Beatrice Existida — o Brilho Enlouquecedor vira FORTALECIMENTO PARANORMAL): o estado vem com o brilho
+        if (a.selfBuff && !f.findBuff(a.selfBuff.buffType)) applySelfBuff(f, a.selfBuff, world);
         const F = forwardFromYaw(f.yaw);
         // onda de medo em cone
         for (let i = 1; i <= 4; i++) {
@@ -1179,7 +1181,7 @@ Object.assign(ABILITY_TYPES, {
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
       if (opp && distXZ(f.pos, opp.pos) < 6) f.yaw = yawTo(f.pos, opp.pos);
-      f.anim.play('point', { restart: true, duration: a.windup + a.recovery });
+      f.anim.play(a.anim || 'point', { restart: true, duration: a.windup + a.recovery });
       world.audio.play('drain', { volume: 0.7 });
       const hand = () => f.rig.sockets.handR.getWorldPosition(new THREE.Vector3());
       const aura = world.fx.emitter({ rate: 40, follow: hand, particle: { color: 0x2a2632, kind: 'smoke', speed: 0.4, spread: 0.2, life: 0.5, size: 0.25 } });
@@ -1195,7 +1197,7 @@ Object.assign(ABILITY_TYPES, {
         aura.stop();
         if (!opp || opp.state === 'ko' || opp.isInvulnerable()) return;
         if (distXZ(f.pos, opp.pos) - opp.radius > a.range) { f.notify('ERROU', true); return; }
-        const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: 'morte', unblockable: true, knockback: 1.5, hitstun: 0.4, sound: 'drain', color: 0x8a8090, scale: 1.2 });
+        const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: a.element || 'morte', unblockable: true, knockback: 1.5, hitstun: 0.4, sound: 'drain', color: 0x8a8090, scale: 1.2 });
         if (typeof res !== 'number' || opp.state === 'ko') return;
         world.fx.burst(opp.chestPos(), { count: 30, color: 0x8a8090, kind: 'smoke', speed: 1.5, up: 0.6, life: 1, size: 0.5 });
         const old = opp.findBuff('aging');
@@ -1230,7 +1232,13 @@ Object.assign(ABILITY_TYPES, {
           world.fx.chain(() => opp.chestPos(), () => f.rig.sockets.handR.getWorldPosition(new THREE.Vector3()), { color: 0x8a8090, life: 0.5 });
           opp.notify('SANIDADE SUGADA', true);
         }
-        opp.notify('TOQUE DA MORTE', true);
+        // a.execute (Beatrice Existida — Olha pra Mim): quem já está com essa fração da vida ou menos não aguenta o toque
+        if (a.execute && opp.state !== 'ko' && opp.health <= opp.maxHealth * a.execute) {
+          applyHit(world, f, opp, { damage: opp.health + 1, kind: 'ability', element: a.element || 'morte', unblockable: true, ignoreInvuln: true, knockback: 1, hitstun: 0.6, sound: 'drain', color: a.color, scale: 1.6 });
+          world.fx.burst(opp.chestPos(), { count: 40, color: a.color || 0x8a8090, speed: 2.5, up: 1, life: 1, size: 0.3 });
+          return;
+        }
+        opp.notify(a.label || 'TOQUE DA MORTE', true);
       });
       tl.end(a.windup + a.recovery);
       return seqFrom(tl, { cancel: () => aura.stop() });

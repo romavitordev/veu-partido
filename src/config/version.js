@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.18.0';
+export const VERSION = '4.19.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.19.0',
+    date: '2026-11-03',
+    title: 'Beatrice Portinari',
+    items: [
+      'BEATRICE PORTINARI (Força D) entra no elenco: o canivete, a balestra com os LEDs e o Orpheu no ombro.',
+      'BEATRICE: Voo do Orpheu (o urutau voa, bica 3 vezes e cega), Virote Silencioso, Vício em Adrenalina (cara ou coroa) e Clarão dos LEDs.',
+      'BEATRICE: especial Menina do Pássaro. A Transformação é a Existida: lenta, sem armas, segura quem bate e suga a sanidade com o toque.',
+      'FORÇA D: a Beatrice entra no especial de equipe com um virote.',
+    ],
+  },
   {
     v: '4.18.0',
     date: '2026-11-02',

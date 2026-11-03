@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.19.0 — Beatrice Portinari
+- Beatrice Portinari, a recruta da Força D, entra no elenco com o canivete, a balestra e o Orpheu no ombro.
+- O Orpheu voa, bica o adversário e o deixa cego. Ela ainda joga a moeda (cara ou coroa) e acende os LEDs da balestra na cara de quem olha.
+- Especial Menina do Pássaro. Na Transformação ela vira a Existida: lenta e sem armas, segura quem bate nela e suga a sanidade com um toque.
+- A Beatrice entra no especial da Força D.
+
 ## v4.18.0 — Rubens Naluti
 - Rubens Naluti, o paramédico dos Abutres, entra no elenco com o Martelo, a Glock Silenciada e a faca do Johnny.
 - Ele some na estática colorida com o Salto Fantasma, atira à queima-roupa, se cura e aguenta metade do dano com o Coração Pulsante.
