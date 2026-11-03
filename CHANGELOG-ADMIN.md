@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.19.1 — Força D completa
+
+- Versão: `VERSION` 4.19.0 → **4.19.1** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: colocar Dante e Erin na ligação da Força D (pergunta deixada no TODO na v4.19.0).
+- `config/teamLinks.js`: `FORCA_D` = arthur, kaiser, joui, dante, erin, beatrice; `abutres.priority = 1` (Dante + Arthur + Joui é subconjunto dos dois grupos e o teste existente espera os Abutres).
+- `combat/teamSpecials.js` (CHOREO.forca_d): Dante em S+2,2 (wave_punch, twoShot, impacto em S+2,6), Arthur passa para S+3,0–3,6, Erin em S+3,95 (throw_r, explosão em S+4,35), Beatrice para S+4,75/5,2, fim em S+6,4. Correção: `head(opp)` chamava `opp.chest()` (não existe no Fighter) e lançava TypeError na entrada da Beatrice — trocado por `opp.chestPos()`.
+- `tests/team-links.test.js`: Erin + Kaiser + Dante e Erin + Beatrice + Joui valem Força D.
+- Testado no navegador (Erin, Dante, Kaiser contra o Balu): os seis golpes entram em ordem (3,3 / 4,4 / 5,25 / 6,3 / 7,1 / 8,05 s) e o final em 9,7 s, 395 de dano no total, sem erro. `npm test` 62/62, `npm run check` ok.
+
 ## v4.19.0 — Beatrice Portinari
 
 - Versão: `VERSION` 4.18.0 → **4.19.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: a próxima personagem que completa uma equipe (Força D); o Orpheu lutando com ela e a Existida refeita pelo cânone dos Existidos foram pedidos durante o trabalho.

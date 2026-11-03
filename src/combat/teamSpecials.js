@@ -449,13 +449,14 @@ function splitDamage(total, count) {
 // COREOGRAFIAS PRÓPRIAS DAS LIGAÇÕES (link.choreo). Recebem a cena e devolvem o instante do golpe final.
 const CHOREO = {
   forca_d({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
-    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 5.2 });
-    const kaiser = tools.get('kaiser'), joui = tools.get('joui'), arthur = tools.get('arthur'), beatrice = tools.get('beatrice');
-    const actors = [kaiser, joui, arthur, beatrice].filter(Boolean);
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 6.4 });
+    const kaiser = tools.get('kaiser'), joui = tools.get('joui'), dante = tools.get('dante'), arthur = tools.get('arthur');
+    const erin = tools.get('erin'), beatrice = tools.get('beatrice');
+    const actors = [kaiser, joui, dante, arthur, erin, beatrice].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
-    const END = S + 5.2;
+    const END = S + 6.4;
 
     if (kaiser) {
       tl.add(S, () => {
@@ -500,10 +501,26 @@ const CHOREO = {
       });
     }
 
+    // DANTE: o ocultista ergue o Lodo e fecha a Espiral no alvo
+    if (dante) {
+      tl.add(S + 2.2, () => {
+        if (!live()) return;
+        tools.enter(dante, 1.2, 2.2);
+        dante.play('wave_punch', 0.56);
+        world.cameraRig.playShots([{ ...twoShot(dante, opp, { dur: 0.6, dist: 3, height: 1.5, fov: 42 }), cut: true }]);
+        world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x392d45, radius: 1.5, life: 0.5 });
+      });
+      tl.add(S + 2.6, () => {
+        if (!live()) return;
+        world.fx.burst(opp.chestPos(), { count: 24, color: 0x1a161e, kind: 'smoke', speed: 2.6, spread: 1.2, life: 0.7, size: 0.4 });
+        tools.impact(dante, damageOf(dante), { sound: 'drain', color: 0x392d45 });
+      });
+    }
+
     if (arthur) {
       let start = null;
       const target = tools.around(arthur, 0.4, 1.5);
-      const runStart = S + 2.65, runEnd = S + 3.25;
+      const runStart = S + 3.0, runEnd = S + 3.6;
       tl.add(runStart, () => {
         if (!live()) return;
         const at = tools.around(arthur, Math.PI, 7);
@@ -535,20 +552,44 @@ const CHOREO = {
       });
     }
 
+    // ERIN: a granada Supernova cai no pé do alvo — KABOOM
+    if (erin) {
+      tl.add(S + 3.95, () => {
+        if (!live()) return;
+        const at = tools.around(erin, 1.6, 4.6);
+        erin.show(END - (S + 3.95), at);
+        erin.pos.set(at.x, 0, at.z);
+        erin.face(opp);
+        erin.play('throw_r', 0.5);
+        world.cameraRig.playShots([{ ...twoShot(erin, opp, { dur: 0.7, dist: 3.2, height: 1.5, fov: 42 }), cut: true }]);
+        world.fx.tracer(erin.chest(), opp.chestPos(), { color: 0xff7a2a, life: 0.3, width: 0.05 });
+      });
+      tl.add(S + 4.35, () => {
+        if (!live()) return;
+        const at = opp.pos.clone();
+        world.fx.flash(at.clone().setY(1), { color: 0xff7a2a, size: 3, life: 0.2 });
+        world.fx.ring(at.clone().setY(0.08), { color: 0xff7a2a, radius: 2, life: 0.45 });
+        world.fx.burst(at.clone().setY(0.6), { count: 40, color: 0x0c0a0e, kind: 'smoke', speed: 4, up: 1.5, life: 0.9, size: 0.7, grow: 1 });
+        world.fx.burst(at.clone().setY(0.6), { count: 36, color: 0xff7a2a, speed: 8, life: 0.5, size: 0.22 });
+        world.cameraRig.shake(0.3, 0.2);
+        tools.impact(erin, damageOf(erin), { sound: 'explosion', color: 0xff7a2a });
+      });
+    }
+
     // BEATRICE: de longe, o Orpheu levanta voo do ombro dela e ela fecha com o virote da balestra (os LEDs acesos)
     if (beatrice) {
-      tl.add(S + 3.7, () => {
+      tl.add(S + 4.75, () => {
         if (!live()) return;
         const at = tools.around(beatrice, -1.0, 4.2);
-        beatrice.show(END - (S + 3.7), at);
+        beatrice.show(END - (S + 4.75), at);
         beatrice.pos.set(at.x, 0, at.z);
         beatrice.face(opp);
         beatrice.play('point', 0.7);
         world.cameraRig.playShots([{ ...overShoulder(beatrice, opp, { dur: 0.8, back: 1.6, side: 0.45, height: 1.6, fov: 40 }), cut: true }]);
         world.fx.burst(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), { count: 14, color: 0x8a7458, speed: 2, life: 0.6, size: 0.09, gravity: 3 });
-        world.fx.tracer(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), head(opp), { color: 0x8a7458, life: 0.35, width: 0.08 });
+        world.fx.tracer(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), opp.chestPos().add(new THREE.Vector3(0, 0.55, 0)), { color: 0x8a7458, life: 0.35, width: 0.08 });
       });
-      tl.add(S + 4.15, () => {
+      tl.add(S + 5.2, () => {
         if (!live()) return;
         world.fx.tracer(beatrice.chest(), opp.chestPos(), { color: 0xf4f0d8, life: 0.15, width: 0.035 });
         world.fx.flash(beatrice.chest(), { color: 0xf4f0d8, size: 0.8, life: 0.12 });
@@ -556,7 +597,7 @@ const CHOREO = {
       });
     }
 
-    const F = S + 5.2;
+    const F = S + 6.4;
     tl.add(F - 0.45, () => {
       if (!live()) return;
       actors.forEach((actor, i) => {

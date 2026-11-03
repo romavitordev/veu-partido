@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.19.0';
+export const VERSION = '4.19.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.19.1',
+    date: '2026-11-03',
+    title: 'Força D completa',
+    items: [
+      'FORÇA D: Dante e Erin entram na ligação. O especial de equipe agora tem os seis: Kaiser, Joui, Dante, Arthur, Erin e Beatrice.',
+      'FORÇA D: o Dante fecha a Espiral de Lodo e a Erin joga a granada Supernova.',
+      'CORREÇÃO: o especial da Força D travava quando a Beatrice entrava na cena.',
+    ],
+  },
   {
     v: '4.19.0',
     date: '2026-11-03',

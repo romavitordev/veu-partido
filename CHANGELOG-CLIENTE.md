@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.19.1 — Força D completa
+- Dante e Erin entram na Força D: o especial de equipe agora tem os seis membros.
+- O Dante fecha a Espiral de Lodo e a Erin joga a granada Supernova.
+- Corrigido: o especial da Força D travava quando a Beatrice entrava na cena.
+
 ## v4.19.0 — Beatrice Portinari
 - Beatrice Portinari, a recruta da Força D, entra no elenco com o canivete, a balestra e o Orpheu no ombro.
 - O Orpheu voa, bica o adversário e o deixa cego. Ela ainda joga a moeda (cara ou coroa) e acende os LEDs da balestra na cara de quem olha.

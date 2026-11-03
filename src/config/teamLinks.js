@@ -15,11 +15,12 @@
 // depois grupo > trio > dupla (regra do TODO), depois a mais ESPECÍFICA (mais versões exatas), depois a que tem o líder.
 
 export const MASCARADOS = ['dalmo', 'aguiar', 'jae', 'kemi', 'labirinto', 'juan'];
-// FORÇA D (Desconjuração): Arthur, Kaiser, Joui e a Beatrice (v4.19.0). A Equipe Abutres é a equipe de Calamidade (sem o Kaiser) — outra
+// FORÇA D (Desconjuração): Arthur, Kaiser, Joui, Dante, Erin (v4.19.1, pedido do dono) e a Beatrice (v4.19.0). Elizabeth e
+// Fernando entram quando estiverem no elenco. A Equipe Abutres é a equipe de Calamidade (sem o Kaiser) — outra
 // ligação. (2026-11-02, correção do dono) THIAGO e LIZ NÃO são da Força D: são da EQUIPE E (Segredo na Floresta), com o
 // Arthur, o Kaiser e o Joui MAIS NOVOS. O especial da Equipe E só entra quando existirem essas versões jovens; até lá o
 // Thiago e a Liz podem entrar no elenco como lutadores da Ordem, sem ligação de equipe.
-export const FORCA_D = ['arthur', 'kaiser', 'joui', 'beatrice'];
+export const FORCA_D = ['arthur', 'kaiser', 'joui', 'dante', 'erin', 'beatrice'];
 // ORDO CALAMITAS (Calamidade, 67 d.C.): os guerreiros dos jogos de Amphitruo — Celestine, Gaius e Amalia hoje; Faustus,
 // Marius, Remus e Cascadia entram quando estiverem no elenco
 export const ORDO_CALAMITAS = ['celestine', 'gaius', 'amalia', 'faustus', 'marius', 'remus', 'cascadia'];
@@ -78,6 +79,8 @@ export const TEAM_LINKS = {
     order: ['dante', 'balu', 'joui', 'arthur', 'carina', 'rubens'],
     color: 0x9a94ae,
     choreo: 'abutres',
+    // Dante, Arthur e Joui também são da Força D: uma equipe só com os três é a dos Abutres (a de Calamidade)
+    priority: 1,
     sceneProps: { arthur: { show: ['bloodBlade'] } },
   },
   // Ordo Calamitas: vale com 3 da equipe; cada um com o golpe próprio (a corrente da Celestine, o gládio do Gaius, a

@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.19.1 — Força D completa
+
+### Alterado
+- Força D: Dante e Erin (da Força D no cânone de Desconjuração) entram na ligação, a pedido do dono. Vale com 3 dos 6 (Arthur, Kaiser, Joui, Dante, Erin e Beatrice) e aparecem todos. Coreografia: Kaiser, Joui, Dante (Espiral de Lodo), Arthur, Erin (granada Supernova, explosão no pé do alvo) e Beatrice; o especial passou de 5,2 s para 6,4 s.
+- Dante, Arthur e Joui sozinhos continuam sendo a Equipe Abutres (a de Calamidade), que ganhou prioridade no desempate.
+
+### Corrigido
+- O especial da Força D travava quando a Beatrice entrava na cena (o rastro do Orpheu buscava a cabeça do alvo pelo método errado). Vinha da v4.19.0.
+
 ## v4.19.0 — Beatrice Portinari
 
 ### Adicionado
