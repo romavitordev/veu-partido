@@ -84,7 +84,11 @@ for (const c of ROSTER) {
     if (p.type === 'meleeDrain') md += `- **Passiva:** o físico tira X de vida; o INIMIGO recupera Y (Y < X) e perde Y × ${p.energyRatio} de sanidade (energia). O Injustiça não se cura.\n`;
     if (p.type === 'decepar') md += `- **Passiva — Decepar:** finalizador +${Math.round((p.mult - 1) * 100)}% em quem está com menos de ${p.threshold * 100}% de vida
 `;
-    if (p.type === 'resistant') md += `- **Passiva — Resistente:** −${Math.round((1 - p.mult) * 100)}% de dano físico recebido
+    if (p.type === 'resistant') md += `- **Passiva — Resistente:** −${Math.round((1 - p.mult) * 100)}% de dano ${(p.kinds || ['melee']).map((x) => ({ melee: 'físico', ranged: 'de tiros e projéteis', ability: 'de habilidades' })[x] || x).join(' e ')} recebido
+`;
+    if (p.type === 'mercenaria') md += `- **Passiva — Mercenária:** a primeira habilidade do round abre ${p.window} s em que a próxima não entra em recarga
+`;
+    if (p.type === 'athleticRise') md += `- **Passiva — Treinada em Atletismo:** derrubada, fica ${Math.round((1 - p.mult) * 100)}% menos tempo no chão e levanta mais rápido
 `;
     if (p.type === 'bloodNecklace') md += `- **Passiva — Colar Banhado em Sangue:** −${Math.round((1 - p.resist) * 100)}% de dano de Sangue; rituais de Sangue +${Math.round(((p.ritualMult ?? 1) - 1) * 100)}%; sangramento ${Math.round((p.bleedMult - 1) * 100)}% mais forte
 `;

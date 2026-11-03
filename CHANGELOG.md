@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.23.0 — Carina: Mercenária e Atletismo
+
+### Adicionado
+- Carina ganha o que faltava das habilidades do cânone (wiki "Carina Leone"), como passivas:
+  - Mercenária (2 PE para duas ações principais no primeiro turno): a primeira habilidade do round abre 2,5 s em que a próxima não entra em recarga.
+  - Treinada em Atletismo (caída, levanta como ação livre): fica metade do tempo no chão.
+  - Afinidade com Precognição (+5 de defesa contra ataques de longo alcance): −12% de dano de tiros e projéteis. A forma Todos os Leone mantém as três.
+- O Saque Rápido já estava no □ (a Glock sai do coldre quase na hora). Os números são PROPOSTA.
+
+### Corrigido
+- HABILIDADES.md: a passiva Resistente dizia sempre "dano físico", mesmo quando também valia contra tiros.
+
 ## v4.22.0 — Beatrice: Merintofobia e a Existida acesa
 
 ### Adicionado

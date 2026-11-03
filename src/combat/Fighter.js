@@ -114,7 +114,7 @@ export class Fighter {
     this.chronoCd = 0; // Percepção Anacrônica (Anfitrião): recarga da esquiva automática
     this.secretRound = false; // Segredo de Veríssimo contra o Kian: uma vez por round
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
-    this.surgeUsed = false; // Surto Temporal (Rubens): uma vez por round
+    this.surgeUsed = false; // Surto Temporal (Rubens) / Mercenária (Carina): uma vez por round
     this.watchUsed = false; // Relógio de Arnaldo (Rubens): uma vez por round
     for (const k in this.cooldowns) this.cooldowns[k] = 0;
     this.cooldownMax.ranged = this.def.ranged?.cooldown || 1;
@@ -2893,13 +2893,15 @@ export class Fighter {
     // TURNO EXTRA (Raziel): a habilidade usada dentro da janela é a ação extra — gasta a janela, não a recarga
     const xt = a.cooldown > 0 && this.findBuff('extraTurn');
     if (xt) { xt.done = true; this.cooldowns[a.id] = 0; } else this.cooldowns[a.id] = a.cooldown;
-    // SURTO TEMPORAL (Rubens, cânone: uma vez por cena, uma ação padrão a mais): a primeira habilidade do round abre a
-    // janela do Turno Extra — a próxima habilidade dentro dela não entra em recarga
-    const surge = !xt && a.cooldown > 0 && !this.surgeUsed && (this.def.passives || []).find((p) => p.type === 'surtoTemporal');
+    // SURTO TEMPORAL (Rubens, cânone: uma vez por cena, uma ação padrão a mais) e MERCENÁRIA (Carina, cânone: duas ações
+    // principais no primeiro turno): a primeira habilidade do round abre a janela do Turno Extra — a próxima habilidade
+    // dentro dela não entra em recarga
+    const surge = !xt && a.cooldown > 0 && !this.surgeUsed && (this.def.passives || []).find((p) => p.type === 'surtoTemporal' || p.type === 'mercenaria');
     if (surge) {
+      const label = surge.type === 'mercenaria' ? 'MERCENÁRIA' : 'SURTO TEMPORAL';
       this.surgeUsed = true;
-      this.addBuff({ type: 'extraTurn', name: 'SURTO TEMPORAL', time: surge.window ?? 2.5, duration: surge.window ?? 2.5 });
-      this.notify('SURTO TEMPORAL', true);
+      this.addBuff({ type: 'extraTurn', name: label, time: surge.window ?? 2.5, duration: surge.window ?? 2.5 });
+      this.notify(label, true);
       this.world.fx.ring(this.chestPos(), { color: surge.color ?? 0x4ae0ff, radius: 1.3, life: 0.3 });
     }
     this.setState('ability');
@@ -3114,9 +3116,12 @@ export class Fighter {
       this.world.audio.play('jump', { volume: 0.5 });
       return;
     }
-    if (this.stateTime >= D.lie) {
-      d.getup = this.stateTime + D.getup;
-      this.anim.play('getup', { restart: true, duration: D.getup });
+    // TREINADA EM ATLETISMO (Carina, cânone: levantar é ação livre): fica menos tempo no chão e levanta mais rápido
+    const ath = (this.def.passives || []).find((p) => p.type === 'athleticRise');
+    const k = ath ? ath.mult ?? 0.5 : 1;
+    if (this.stateTime >= D.lie * k) {
+      d.getup = this.stateTime + D.getup * k;
+      this.anim.play('getup', { restart: true, duration: D.getup * k });
     }
   }
 

@@ -277,6 +277,10 @@ export const PASSIVES = {
   phantomReaction: {},
   // Beatrice — Merintofobia: amarras (stun com bind) duram passive.mult vezes mais (Fighter.stun)
   merintofobia: {},
+  // Carina — Mercenária: igual ao Surto Temporal (a 1ª habilidade do round abre o Turno Extra; Fighter.useAbility)
+  mercenaria: {},
+  // Carina — Treinada em Atletismo: o tempo no chão e o de levantar × passive.mult (Fighter.updateDowned)
+  athleticRise: {},
   // Beatrice Existida — Acesa: apanhar acende os olhos e a boca e dá passive.mult de dano (Fighter.takeDamage)
   litWhenHit: {},
   // Erin (Em Nome do Caos) — Sem Sanidade: barra zerada e travada; os custos saem da vida (Fighter.addEnergy/spendEnergy)

@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.23.0 — Carina: Mercenária e Atletismo
+- Mercenária: a primeira habilidade do round da Carina abre uma janela em que a próxima não entra em recarga.
+- Treinada em Atletismo: derrubada, a Carina levanta na metade do tempo.
+- A Precognição dela agora protege também contra tiros.
+
 ## v4.22.0 — Beatrice: Merintofobia e a Existida acesa
 - Merintofobia: a Beatrice tem medo de ser amarrada; cordas, raízes e veias a prendem mais tempo.
 - A Existida acende os olhos e a boca em amarelo quando apanha e bate mais forte por alguns segundos.

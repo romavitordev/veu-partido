@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.23.0 — Carina: Mercenária e Atletismo
+
+- Versão: `VERSION` 4.22.0 → **4.23.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: o pacote de cânone da Carina, depois do Rubens e da Beatrice.
+- `Fighter.useAbility`: o código do Surto Temporal passou a aceitar também a passiva `mercenaria` (o mesmo `surgeUsed` por round; rótulo MERCENÁRIA).
+- `Fighter.updateDowned`: a passiva `athleticRise` multiplica `COMBAT.down.lie` e `getup` por `mult` (0,5).
+- `characters/carina.js`: `resistant` com `kinds: ['ranged']` (0,88), `mercenaria` (2,5 s) e `athleticRise` (0,5). A forma Leone herda pelo `...base.passives`.
+- `tools/gen-moves.mjs`: descreve as passivas novas, e a Resistente agora lê `kinds`. Isso corrigiu o texto de outros dois personagens no HABILIDADES.md, que diziam "físico" numa resistência que vale também contra tiros. `check-roster` ganhou a checagem.
+- Testado no navegador contra o Kaiser: Pergaminho da Pertinácia abriu a MERCENÁRIA e a Furtividade saiu sem recarga; derrubada, levantou em 46 quadros (o Kaiser em 91); um tiro de 100 tirou 88, um golpe físico de 100 tirou 100. `npm test` 62/62, `npm run check` ok.
+
 ## v4.22.0 — Beatrice: Merintofobia e a Existida acesa
 
 - Versão: `VERSION` 4.21.0 → **4.22.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: seguir com o pacote de cânone da Beatrice depois do Rubens.

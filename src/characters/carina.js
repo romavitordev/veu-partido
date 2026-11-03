@@ -216,5 +216,12 @@ export default {
   passives: [
     { type: 'precognition' }, // Afinidade com Precognição: não é pega desprevenida
     { type: 'elementalAffinity', element: 'energia', mult: 1, resist: 0.8 }, // Resistência a Energia: −20% de dano de Energia
+    // Afinidade com Precognição (cânone: +5 de defesa contra ataques de longo alcance): os tiros pegam menos
+    { type: 'resistant', kinds: ['ranged'], mult: 0.88 },
+    // Mercenária (cânone: 2 PE, duas ações principais no primeiro turno): a 1ª habilidade do round abre 2,5 s em que a
+    // próxima não entra em recarga
+    { type: 'mercenaria', window: 2.5 },
+    // Treinada em Atletismo (cânone: caída, levanta como ação livre): metade do tempo no chão
+    { type: 'athleticRise', mult: 0.5 },
   ],
 };

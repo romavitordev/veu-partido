@@ -399,6 +399,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Lê o Pergaminho da Pertinácia: recupera 30 de sanidade e as esquivas, e por 6 s aguenta um golpe sem recuar.
 - **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
 - **Passiva — Resistência a Energia:** −20% de dano de Energia
+- **Passiva — Resistente:** −12% de dano de tiros e projéteis recebido
+- **Passiva — Mercenária:** a primeira habilidade do round abre 2.5 s em que a próxima não entra em recarga
+- **Passiva — Treinada em Atletismo:** derrubada, fica 50% menos tempo no chão e levanta mais rápido
 
 ### Especial: Dança dos Leone
 
@@ -929,7 +932,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Liga o radar, observa e acha onde dói: por 7 s o adversário recebe 30% a mais de dano dos golpes físicos e do especial.
 - **Dedicação** — R2 + △ / RT + Y · custo 15 · cooldown 18 s
   Respira fundo e se concentra no paciente da vez: aguenta 2 golpes sem recuar e recupera as esquivas.
-- **Passiva — Resistente:** −14% de dano físico recebido
+- **Passiva — Resistente:** −14% de dano físico e de tiros e projéteis recebido
 
 ### Especial: Racha
 
@@ -978,7 +981,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Silver tape em tudo: remenda o que quebrou e recupera vida por 2 s.
 - **A Van dos Cinco** — △ + □ / Y + X · custo 30 · cooldown 18 s · dano 74
   Chama a van no walkie: ela vem por trás com a Dara no volante, o Chico pula de lado e a van atropela quem estiver na frente (quebra a defesa).
-- **Passiva — Resistente:** −15% de dano físico recebido
+- **Passiva — Resistente:** −15% de dano físico e de tiros e projéteis recebido
 
 ### Especial: Mina de Proximidade
 
@@ -1023,7 +1026,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Estala as Magras (as Amarras de Sangue que depois deu ao Lírio) e prende o alvo; logo em seguida engole a Calabresa, a Larva de Sangue: por 6 s tomado pelo ódio — golpes físicos 35% mais fortes que sangram, mas recebe 10% a mais de dano.
 - **Linha de Frente** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
   Fica na frente dos Cinco: por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar.
-- **Passiva — Resistente:** −10% de dano físico recebido
+- **Passiva — Resistente:** −10% de dano físico e de tiros e projéteis recebido
 
 ### Especial: Pelos Cinco
 

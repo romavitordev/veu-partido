@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.22.0';
+export const VERSION = '4.23.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.23.0',
+    date: '2026-11-03',
+    title: 'Carina: Mercenária e Atletismo',
+    items: [
+      'CARINA: Mercenária. A primeira habilidade do round abre uma janela curta em que a próxima não entra em recarga.',
+      'CARINA: Treinada em Atletismo. Derrubada, ela levanta na metade do tempo.',
+      'CARINA: a Afinidade com Precognição agora protege também contra tiros e projéteis.',
+    ],
+  },
   {
     v: '4.22.0',
     date: '2026-11-03',
