@@ -68,6 +68,14 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 .bar.health.hb-knowledge .fill { background: repeating-linear-gradient(45deg, rgba(90,60,0,.28) 0 2px, transparent 2px 9px), repeating-linear-gradient(-45deg, rgba(90,60,0,.28) 0 2px, transparent 2px 9px), linear-gradient(180deg, #ffe7a0, #c8860e 55%, #4a2e04); }
 .bar.health.hb-knowledge .trail { background: #fffbe0; }
 .bar.health.hb-knowledge .fx { background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.75) 48%, transparent 60%); background-size: 260% 100%; animation: hbSweep 2.2s ease-in-out infinite; mix-blend-mode: screen; }
+/* Existida (Beatrice — A Existida): Barra de Existência em amarelo de Conhecimento, com os textos da pele correndo e o brilho dourado */
+.bar.health.hb-existida { border-color: #2a2004; box-shadow: 0 0 0 1px #8a6c10, 0 0 12px rgba(242,194,48,.65), inset 0 -2px 6px rgba(0,0,0,.5); }
+.bar.health.hb-existida .fill { background: repeating-linear-gradient(90deg, transparent 0 20px, rgba(40,28,0,.35) 20px 22px, transparent 22px 48px), linear-gradient(180deg, #fff0a0 0%, #f2c230 45%, #b08010 85%, #4a3404 100%); background-size: 60px 100%, 100% 100%; animation: hbSweep 3s ease-in-out infinite; }
+.bar.health.hb-existida .trail { background: linear-gradient(180deg, #fffbe0, #f2c230); }
+.bar.health.hb-existida .fx { background: repeating-linear-gradient(45deg, rgba(255,255,255,.2) 0 2px, transparent 2px 8px), linear-gradient(100deg, transparent 30%, rgba(255,240,160,.65) 50%, transparent 70%); background-size: 32px 100%, 200% 100%; animation: hbFlow 2s linear infinite, hbSweep 2.5s ease-in-out infinite; mix-blend-mode: screen; }
+.bar.health.hb-existida.low .fill { background: linear-gradient(180deg, #fff4b8 0%, #ffd84a 45%, #d49810 85%, #6a4a06 100%); filter: drop-shadow(0 0 6px #f2c230); }
+.bar.health .bar-lbl { position: absolute; right: 6px; top: 1px; font-size: 9px; font-weight: 800; letter-spacing: .15em; color: #fff8d0; text-shadow: 1px 1px 2px #000; pointer-events: none; z-index: 2; font-family: 'Bebas Neue', sans-serif; }
+.panel.p2 .bar.health .bar-lbl { right: auto; left: 6px; }
 /* Transmissão (O Estrangeiro): verde de sinal, linhas de varredura e chiado */
 .bar.health.hb-signal { box-shadow: 0 0 0 1px #0e5a1a, 0 0 10px rgba(90,255,106,.5); }
 .bar.health.hb-signal .fill { background: linear-gradient(180deg, #c8ffc8, #3adf5a 55%, #0a6a1e); animation: hbFlicker 2.8s steps(1) infinite; }
@@ -101,6 +109,8 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 .bar.energy .fill { background: linear-gradient(180deg, #b5ecff, var(--energy)); }
 .bar.energy.locked { background: repeating-linear-gradient(135deg, #3a0a10 0 6px, #1a0408 6px 12px); border-color: #8a1020; }
 .bar.energy.locked::after { content: "SEM SANIDADE"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; letter-spacing: .12em; color: #ff5a5a; }
+.bar.energy.locked.knowledge { background: repeating-linear-gradient(135deg, #3a2e04 0 6px, #1a1402 6px 12px); border-color: #f2c230; box-shadow: 0 0 6px rgba(242,194,48,.4); }
+.bar.energy.locked.knowledge::after { color: #f2c230; }
 .bar.energy .mark { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(0,0,0,.7); }
 /* Barra de Transformação: enche apanhando; pulsa quando dá para transformar; "over" = segurando além da sanidade cheia */
 .bar.storm { height: 7px; width: 60%; margin-top: 3px; position: relative; overflow: visible; }

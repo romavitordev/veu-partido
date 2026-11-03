@@ -93,9 +93,9 @@ export class HUD {
       const p = this.panels[i];
       const def = f.def;
       const abil = [];
-      abil.push({ key: 'ranged', action: 'ranged', name: def.ranged ? def.ranged.name : '—', none: !def.ranged, cost: def.ranged?.energyCost || 0 });
+      if (def.ranged) abil.push({ key: 'ranged', action: 'ranged', name: def.ranged.name, cost: def.ranged?.energyCost || 0 });
       for (const a of def.abilities || []) abil.push({ key: a.id, action: a.input, name: a.name, cost: a.energyCost || 0 });
-      abil.push({ key: 'special', action: 'special', name: def.special ? def.special.name : '—', none: !def.special, cost: f.specialCost() });
+      if (def.special) abil.push({ key: 'special', action: 'special', name: def.special.name, cost: f.specialCost() });
       abil.push({ key: 'dodge', action: 'dodge', name: def.dodge?.name || 'Esquiva', cost: 0 });
       p.style.setProperty('--c', def.color);
       p.innerHTML = `
@@ -163,8 +163,22 @@ export class HUD {
         if (hb) e.hp.classList.add(hb, 'custom');
         e.hpStyle = hb;
       }
+      if (hb && f.def.hpBar?.label) {
+        let lbl = e.hp.querySelector('.bar-lbl');
+        if (!lbl) {
+          lbl = document.createElement('span');
+          lbl.className = 'bar-lbl';
+          e.hp.appendChild(lbl);
+        }
+        if (lbl.textContent !== f.def.hpBar.label) lbl.textContent = f.def.hpBar.label;
+      } else {
+        const lbl = e.hp.querySelector('.bar-lbl');
+        if (lbl) lbl.remove();
+      }
       e.en.style.width = `${(f.energy / f.maxEnergy) * 100}%`;
-      e.en.parentNode.classList.toggle('locked', hasPassive(f, 'noSanity')); // Erin sem sanidade: barra travada
+      const noSanity = hasPassive(f, 'noSanity');
+      e.en.parentNode.classList.toggle('locked', noSanity); // Erin/Existida sem sanidade: barra travada
+      e.en.parentNode.classList.toggle('knowledge', noSanity && (f.def.element === 'conhecimento' || f.def.color === '#f2c230'));
       e.guard.style.width = `${(f.guard / f.maxGuard) * 100}%`;
       e.guardBar.classList.toggle('active', f.state === 'block');
       e.guardBar.classList.toggle('low', f.guard < f.maxGuard * 0.3);
@@ -210,17 +224,22 @@ export class HUD {
       // ícones de habilidade com cooldown
       const source = f.input.source;
       const ranged = f.getRangedAbility();
-      const rangedAbil = e.abil[0];
-      if (rangedAbil.name !== (ranged ? ranged.name : '—')) {
+      const rangedIdx = e.abil.findIndex((x) => x.key === 'ranged');
+      const rangedAbil = rangedIdx >= 0 ? e.abil[rangedIdx] : null;
+      if (rangedAbil && rangedAbil.name !== (ranged ? ranged.name : '—')) {
         rangedAbil.name = ranged ? ranged.name : '—';
         rangedAbil.none = !ranged;
         rangedAbil.cost = ranged?.energyCost || 0;
-        const rangedEl = e.abEls[0];
-        rangedEl.classList.toggle('none', rangedAbil.none);
-        rangedEl.title = rangedAbil.name;
-        const name = rangedEl.querySelector('.n');
-        name.textContent = rangedAbil.name;
-        name.classList.toggle('long', rangedAbil.name.length > 18 || rangedAbil.name.split(/\s+/).some((w) => w.length > 10));
+        const rangedEl = e.abEls[rangedIdx];
+        if (rangedEl) {
+          rangedEl.classList.toggle('none', rangedAbil.none);
+          rangedEl.title = rangedAbil.name;
+          const name = rangedEl.querySelector('.n');
+          if (name) {
+            name.textContent = rangedAbil.name;
+            name.classList.toggle('long', rangedAbil.name.length > 18 || rangedAbil.name.split(/\s+/).some((w) => w.length > 10));
+          }
+        }
       }
       e.abil.forEach((a, k) => {
         const el = e.abEls[k];

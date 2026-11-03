@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.23.0';
+export const VERSION = '4.24.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.24.0',
+    date: '2026-11-03',
+    title: 'Ajustes: Beatrice Existida e Mangual da Carina',
+    items: [
+      'EXISTIDA: Sem Sanidade. A criatura agora utiliza a barra de Existência em amarelo de Conhecimento e paga suas habilidades com a própria vida.',
+      'EXISTIDA: Adicionado o especial canônico "Lembra de Mim" (Desconjuração ep. 11), corrigindo o slot vazio no HUD.',
+      'EXISTIDA: Movimentação decrépita e lenta por padrão, acelerando em corrida ensandecida (1.8x) ao ser agredida.',
+      'CARINA: Corrigido o bug na animação de bater com o mangual — a arma agora permanece empunhada corretamente nos ataques em vez de ser guardada nas costas.',
+    ],
+  },
   {
     v: '4.23.0',
     date: '2026-11-03',

@@ -255,10 +255,21 @@ export class Fighter {
     const lit = dealt > 0 && this.health > 0 && (this.def.passives || []).find((p) => p.type === 'litWhenHit');
     if (lit) {
       const cur = this.findBuff('litWhenHit');
-      if (cur) cur.time = lit.time;
-      else {
+      if (cur) {
+        cur.time = lit.time;
+        if (lit.speedMult) cur.speedMult = lit.speedMult;
+      } else {
         const rig = this.rig;
-        this.addBuff({ type: 'litWhenHit', name: 'ACESA', time: lit.time, duration: lit.time, mult: lit.mult, affects: ['melee', 'ability'], onEnd: () => rig.showProp('litGlow', false) });
+        this.addBuff({
+          type: 'litWhenHit',
+          name: 'ACESA',
+          time: lit.time,
+          duration: lit.time,
+          mult: lit.mult,
+          speedMult: lit.speedMult,
+          affects: ['melee', 'ability'],
+          onEnd: () => rig.showProp('litGlow', false),
+        });
         rig.showProp('litGlow', true);
       }
     }
@@ -322,15 +333,16 @@ export class Fighter {
   }
 
   spendEnergy(n) {
-    // sem sanidade, tudo que gastaria sanidade sai da vida (bloodPrice)
+    // sem sanidade, tudo que gastaria sanidade sai da vida ou existência (bloodPrice)
     if (n > 0 && hasPassive(this, 'noSanity')) {
       const P = (this.def.passives || []).find((p) => p.type === 'bloodPrice');
       const hp = Math.ceil(n * (P?.hpPerPoint ?? 1));
-      if (this.health - hp < this.maxHealth * (P?.minHealth ?? 0.05)) { this.notify('SEM VIDA PARA PAGAR'); return false; }
+      const resName = P?.resource || 'VIDA';
+      if (this.health - hp < this.maxHealth * (P?.minHealth ?? 0.05)) { this.notify(`SEM ${resName} PARA PAGAR`); return false; }
       this.health -= hp;
-      // o preço aparece: sangue no peito e o número, como no "pagou com sangue"
-      this.world.fx.burst(this.chestPos(), { count: 14, color: 0xb01020, speed: 2.5, life: 0.5, size: 0.15, gravity: 7 });
-      this.notify(`−${hp} DE VIDA`);
+      // o preço aparece: partículas no peito e o número
+      this.world.fx.burst(this.chestPos(), { count: 14, color: P?.color ?? 0xb01020, speed: 2.5, life: 0.5, size: 0.15, gravity: 7 });
+      this.notify(`−${hp} DE ${resName}`);
       return true;
     }
     if (this.energy < n) return false;

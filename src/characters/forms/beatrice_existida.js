@@ -6,7 +6,8 @@
 // até a vítima ou ela morrer. Habilidades canônicas: PANCADA ("fraco e hesitante, reflexo de sua fragilidade"), BRILHO
 // ENLOUQUECEDOR (os textos brilham em dourado, difícil de enxergar, o terror dos escritos afeta a mente) e
 // FORTALECIMENTO PARANORMAL (depois do brilho fica mais resistente e os golpes mais danosos). Corpo decrépito e LENTO.
-// Ela NÃO luta como agente: sem canivete, sem balestra, sem rituais e sem especial (pedido do dono, 2026-11-03).
+// Ela NÃO luta como agente: sem canivete, sem balestra, sem rituais normais e sem Sanidade (usa Existência).
+// Especial canônico dos Existidos: "Lembra de Mim" (Desconjuração ep. 11).
 // PROPOSTA de jogo (marcada): o toque que suga a sanidade e mata quem já está fraco, e os números.
 // O PINGENTE DA LUA DOURADA (item amaldiçoado por Conhecimento com as memórias dela) segue com ela: resiste a Conhecimento.
 // Visual: o mesmo modelo com a pele de textos, os olhos brancos, sem o Orpheu e sem armas (models/props.js).
@@ -32,7 +33,8 @@ export default {
     identity: 'A Existida (até o fim do round)',
     tagline: 'Olha pra mim. Lembra de mim.',
   },
-  stats: { ...base.stats, moveSpeed: 5.2, attackSpeed: 0.75, maxHealth: 1600 }, // cabe a vida extra da transformação
+  stats: { ...base.stats, moveSpeed: 4.4, attackSpeed: 0.75, maxHealth: 1600 }, // corpo decrépito e lento
+  hpBar: { style: 'existida', label: 'EXISTÊNCIA' },
   anims: { ...base.anims, idle: 'ai_idle', block: 'block' },
   grip: undefined,
   chargeFx: { style: 'aura', color: GOLD },
@@ -128,14 +130,28 @@ export default {
     },
   ],
 
-  special: undefined,
+  // Especial canônico (Desconjuração ep. 11 "Lembrar"): "Lembra de mim."
+  special: {
+    id: 'lembraDeMim',
+    name: 'Lembra de Mim',
+    banner: 'Lembra de mim.',
+    type: 'lembraDeMim',
+    energyCost: 0,
+    cooldown: 24,
+    damage: 360,
+    range: 14,
+    color: GOLD,
+    description: 'Os textos da pele se desprendem e explodem numa tempestade dourada de memórias: paralisa o adversário de terror e causa dano massivo de Conhecimento.',
+  },
   awakening: undefined,
 
   passives: [
+    { type: 'noSanity' },
+    { type: 'bloodPrice', resource: 'EXISTÊNCIA', color: GOLD, hpPerPoint: 1, minHealth: 0.03 },
     { type: 'elementalAffinity', element: 'conhecimento', mult: 1.1, resist: 0.8 }, // o Pingente da Lua Dourada
-    // ACESA (cânone: "quando é atacada, os olhos e a boca brilham em amarelo, agressiva e forte"): apanhar acende 3 s de
-    // golpes 20% mais fortes (PROPOSTA nos números)
-    { type: 'litWhenHit', time: 3, mult: 1.2 },
+    // ACESA (cânone: "quando é atacada, os olhos e a boca brilham em amarelo, agressiva e forte"): apanhar acende 3.5 s de
+    // golpes 25% mais fortes e velocidade multiplicada por 1.8 (avança rápido e ensandecida ao ser agredida)
+    { type: 'litWhenHit', time: 3.5, mult: 1.25, speedMult: 1.8 },
     ...base.passives.filter((p) => p.type === 'merintofobia'),
   ],
 };

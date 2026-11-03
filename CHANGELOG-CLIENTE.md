@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.24.0 — Beatrice Existida e Mangual da Carina
+- Beatrice Existida: agora não possui Sanidade, exibindo a barra de "EXISTÊNCIA" na cor amarela de Conhecimento (#f2c230). Suas habilidades drenam da própria Existência.
+- Beatrice Existida: adicionado o especial canônico "Lembra de Mim" (Desconjuração ep. 11), completando a trinca de frases da criatura e eliminando o traço vazio no HUD.
+- Beatrice Existida: velocidade de movimento reduzida para 4.4 m/s (passo decrépito de Existido), acelerando em corrida de 1.8x por 3.5 segundos ao ser atacada.
+- Carina Leone: corrigido o bug em que o mangual ia para as costas e ela desferia socos/chutes vazios ao atacar. A arma agora permanece na mão direita durante toda a sequência.
+
 ## v4.23.0 — Carina: Mercenária e Atletismo
 - Mercenária: a primeira habilidade do round da Carina abre uma janela em que a próxima não entra em recarga.
 - Treinada em Atletismo: derrubada, a Carina levanta na metade do tempo.

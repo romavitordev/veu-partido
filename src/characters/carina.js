@@ -35,7 +35,6 @@ export default {
   },
   stats: { moveSpeed: 8.1, attackSpeed: 1.1 }, // Agilidade (cânone)
   anims: { idle: 'idle_flail', run: 'run', charge: 'charge_fists', victory: 'victory', block: 'block' },
-  grip: { prop: 'flail', reach: 0.42 },
   chargeFx: { style: 'default', color: GOLD },
   dodge: { style: 'default', distance: 5.4 },
 

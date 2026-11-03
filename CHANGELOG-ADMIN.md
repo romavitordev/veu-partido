@@ -1,5 +1,25 @@
 # Registro administrativo de alterações
 
+## v4.24.0 — Beatrice Existida (Existência e Lembra de Mim) e Mangual da Carina
+
+- Versão: `VERSION` 4.23.0 → **4.24.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: correções e canonicidade de Beatrice Existida (sem sanidade, barra amarela de existência, especial e velocidade) e bug da animação de mangual da Carina.
+- `characters/carina.js`: remoção da propriedade `grip: { prop: 'flail', reach: 0.42 }`. O manuseio de empunhadura bimanual em `Fighter.updateGrip` forçava o item para as costas (`sockets.back`) e bloqueava os braços com poses de soco/chute durante ataques. Sem o `grip`, o mangual permanece firmemente acoplado ao socket da mão direita (`sockets.handR`) e executa as animações de balanço da maça normalmente.
+- `characters/forms/beatrice_existida.js`:
+  - `stats.moveSpeed`: reduzido de 5.2 para 4.4 m/s (passo decrépito e hesitante de criatura existida).
+  - `hpBar`: `{ style: 'existida', label: 'EXISTÊNCIA' }`.
+  - Passivas: adicionada `{ type: 'noSanity' }` e `{ type: 'bloodPrice', resource: 'EXISTÊNCIA', color: 0xf2c230, hpPerPoint: 1, minHealth: 0.03 }`. Atualizado `litWhenHit` para `{ type: 'litWhenHit', time: 3.5, mult: 1.25, speedMult: 1.8 }`.
+  - `special`: implementado "Lembra de Mim" (`id: 'lembraDeMim'`), com dano de 360, custo 0 de sanidade (gasta existência via `bloodPrice` se aplicável), paralisação por terror e tempestade de sigilos e textos dourados.
+- `combat/specials/lembraDeMim.js`: novo arquivo de especial canônico para a Existida ("Lembra de Mim"), registrando a sequência dramática de olhos/boca acesos em dourado e expulsão de letras e sigilos de Conhecimento que congelam a mente do oponente.
+- `combat/specials/index.js`: registro do especial `lembraDeMim`.
+- `combat/Fighter.js`:
+  - `takeDamage`: aprimorado o manipulador da passiva `litWhenHit` para registrar `speedMult` no buff `ACESA` e atualizar o multiplicador em golpes subsequentes.
+  - `spendEnergy`: suporte para consumir nome de recurso personalizado (`resource: 'EXISTÊNCIA'`) nas notificações de custo em vida/existência (`−X DE EXISTÊNCIA`) e cores de partículas correspondentes.
+- `ui/HUD.js`:
+  - Suporte à exibição da classe e rótulo `.hb-existida` na barra de vida (`f.def.hpBar?.label`).
+  - Atualização do indicador de sanidade bloqueada (`.energy.locked`) para renderizar a classe `.knowledge` quando o personagem é de Conhecimento, com texto "SEM SANIDADE" dourado.
+  - Correção na montagem da lista de habilidades e slots: eliminação da geração de botão vazio `'—'` quando `special` ou `ranged` não estavam definidos.
+- `styles.css`: estilos visuais para `.hb-existida` com paleta de Conhecimento (`#f2c230`, `#fff0a0`, `#b08010`), scanlines de sigilos e visualização refinada de "SEM SANIDADE".
+
 ## v4.23.0 — Carina: Mercenária e Atletismo
 
 - Versão: `VERSION` 4.22.0 → **4.23.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: o pacote de cânone da Carina, depois do Rubens e da Beatrice.
