@@ -275,6 +275,10 @@ export const PASSIVES = {
   arnaldoWatch: {},
   // Rubens — Salto Fantasma como reação: sem carga de esquiva, a Substituição vira o ritual (Fighter.trySubstitution)
   phantomReaction: {},
+  // Beatrice — Merintofobia: amarras (stun com bind) duram passive.mult vezes mais (Fighter.stun)
+  merintofobia: {},
+  // Beatrice Existida — Acesa: apanhar acende os olhos e a boca e dá passive.mult de dano (Fighter.takeDamage)
+  litWhenHit: {},
   // Erin (Em Nome do Caos) — Sem Sanidade: barra zerada e travada; os custos saem da vida (Fighter.addEnergy/spendEnergy)
   noSanity: {},
   // O Anfitrião — Percepção Anacrônica: sabe o que ainda vai acontecer; de tempos em tempos desvia sozinho de um golpe

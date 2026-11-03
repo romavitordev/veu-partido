@@ -133,5 +133,9 @@ export default {
 
   passives: [
     { type: 'elementalAffinity', element: 'conhecimento', mult: 1.1, resist: 0.8 }, // o Pingente da Lua Dourada
+    // ACESA (cânone: "quando é atacada, os olhos e a boca brilham em amarelo, agressiva e forte"): apanhar acende 3 s de
+    // golpes 20% mais fortes (PROPOSTA nos números)
+    { type: 'litWhenHit', time: 3, mult: 1.2 },
+    ...base.passives.filter((p) => p.type === 'merintofobia'),
   ],
 };

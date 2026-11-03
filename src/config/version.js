@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.21.0';
+export const VERSION = '4.22.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.22.0',
+    date: '2026-11-03',
+    title: 'Beatrice: Merintofobia e a Existida acesa',
+    items: [
+      'BEATRICE: Merintofobia, o medo de ser amarrada. Cordas, raízes e veias a prendem mais tempo.',
+      'EXISTIDA: atacada, os olhos e a boca brilham em amarelo e ela bate mais forte por alguns segundos.',
+      'BEATRICE: as foices de jardinagem aparecem saindo da bolsa.',
+    ],
+  },
   {
     v: '4.21.0',
     date: '2026-11-03',

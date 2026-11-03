@@ -1588,4 +1588,17 @@ export function addBeatriceExistidaProps(rig) {
     }
     o.material = swapped.get(o.material);
   });
+  // ACESA: atacada, os olhos e a boca brilham em amarelo (escondido até a passiva litWhenHit acender)
+  const lit = new THREE.Group();
+  const spots = [[-0.039, 0.154, 0.118, 0.011], [0.039, 0.154, 0.118, 0.011], [0, 0.072, 0.122, 0.013]];
+  for (const [x, y, z, r] of spots) {
+    const e = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 6), glowMat(0xffd84a, 1));
+    e.position.set(x, y, z);
+    const halo = new THREE.Mesh(new THREE.SphereGeometry(r * 1.8, 8, 6), glowMat(0xf2c230, 0.3));
+    halo.position.copy(e.position);
+    lit.add(e, halo);
+  }
+  lit.visible = false;
+  rig.sockets.head.add(lit);
+  rig.props.litGlow = lit;
 }

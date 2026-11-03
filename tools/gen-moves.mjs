@@ -98,7 +98,11 @@ for (const c of ROSTER) {
 `;
     if (p.type === 'phantomReaction') md += `- **Passiva — Salto Fantasma como reação:** sem carga de esquiva, o L2 apanhando vira o Salto Fantasma (custa o ritual + ${p.extraCost} e ele entra em recarga)
 `;
-    const El = p.element ?`${p.element[0].toUpperCase()}${p.element.slice(1)}` : '';
+    if (p.type === 'merintofobia') md += `- **Passiva — Merintofobia:** o medo de ser amarrada: cordas, raízes e veias a prendem ${Math.round((p.mult - 1) * 100)}% mais tempo
+`;
+    if (p.type === 'litWhenHit') md += `- **Passiva — Acesa:** atacada, os olhos e a boca brilham em amarelo: ${p.time} s de golpes ${Math.round((p.mult - 1) * 100)}% mais fortes (renova a cada golpe recebido)
+`;
+    const El = p.element ? `${p.element[0].toUpperCase()}${p.element.slice(1)}` : '';
     if (p.type === 'elementalAffinity' && p.mult === 1) md += `- **Passiva — Resistência a ${El}:** −${Math.round((1 - p.resist) * 100)}% de dano de ${El}
 `;
     else if (p.type === 'elementalAffinity') md += `- **Passiva — Afinidade${p.element ? ` com ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ' Elemental'}:** rituais${p.element ? ` de ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ''} +${Math.round(((p.mult ?? 1.15) - 1) * 100)}%${p.resist ? `; −${Math.round((1 - p.resist) * 100)}% de dano de rituais desse elemento` : ''}

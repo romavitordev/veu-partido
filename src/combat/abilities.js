@@ -2273,7 +2273,7 @@ Object.assign(ABILITY_TYPES, {
         world.fx.burst(c.clone().setY(0.5), { count: 30, color: a.color, speed: 4, up: 2, life: 0.5, size: 0.18 });
         if (!opp.isInvulnerable() && Math.hypot(opp.pos.x - c.x, opp.pos.z - c.z) <= a.radius + opp.radius) {
           const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', knockback: 0, hitstun: 0.3, reaction: false, color: a.color, sound: 'clawHit' });
-          if (typeof res === 'number' && opp.state !== 'ko') { opp.stun(a.hold, 'stagger'); opp.vel.set(0, 0, 0); opp.notify('PRESO PELAS RAÍZES', true); }
+          if (typeof res === 'number' && opp.state !== 'ko') { opp.stun(a.hold, 'stagger', { bind: true }); opp.vel.set(0, 0, 0); opp.notify('PRESO PELAS RAÍZES', true); }
         }
       });
       tl.end(a.delay + 0.2);
@@ -2649,8 +2649,7 @@ Object.assign(ABILITY_TYPES, {
         if (typeof res === 'number' && opp.state !== 'ko') {
           caught = true;
           // feitas para prender criaturas de Conhecimento: seguram mais tempo quem é de Conhecimento
-          const hold = a.hold * (opp.def.element === 'conhecimento' ? (a.vsConhecimento || 1) : 1);
-          opp.stun(hold, 'stagger');
+          const hold = opp.stun(a.hold * (opp.def.element === 'conhecimento' ? (a.vsConhecimento || 1) : 1), 'stagger', { bind: true });
           if (a.gut) wrapCoils(world, opp, hold, rope);
           else if (a.mummy) mummyWrap(world, opp, hold, rope, { color: a.ropeColor });
           else world.after(hold * 0.85, stopRope);
@@ -3555,7 +3554,7 @@ Object.assign(ABILITY_TYPES, {
         }
         const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: 0, hitstun: 0.3, reaction: false, sound: 'chainPull', color: 0xc01828, scale: 1 });
         if (typeof res !== 'number' || opp.state === 'ko') return;
-        opp.stun(a.hold, 'stagger');
+        opp.stun(a.hold, 'stagger', { bind: true });
         opp.vel.set(0, 0, 0);
         opp.notify('PRESO PELAS PRÓPRIAS VEIAS', true);
         world.fx.burst(opp.chestPos(), { count: 40, color: 0xb01020, speed: 4, life: 0.6, size: 0.2, gravity: 8 });

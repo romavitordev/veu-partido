@@ -171,6 +171,16 @@ bc = Vector((0.225 * H, -0.0 * H, hz - 0.03 * H))
 b.add('bag', box(tuple(bc), (0.05 * H, 0.15 * H, 0.12 * H), bevel=0.012), leather, region='torso', subdiv=0)
 b.add('bagFlap', box((bc.x + 0.004 * H, bc.y, bc.z + 0.03 * H), (0.052 * H, 0.152 * H, 0.06 * H), bevel=0.01), coat_dk, region='torso', subdiv=0)
 b.add('bagShears', box((bc.x - 0.004 * H, bc.y + 0.045 * H, bc.z + 0.09 * H), (0.012 * H, 0.012 * H, 0.05 * H), bevel=0.003), gold, region='torso', subdiv=0)
+# as FOICES DE JARDINAGEM (wiki, Arsenal: "equipamentos de jardinagem carregados pela agente", nunca usadas): duas
+# foicinhas com o cabo de madeira saindo da bolsa e a lâmina curva por cima da aba
+wood = material('sickle_wood_beatrice', '#7a5434', 0.8)
+steel = material('sickle_steel_beatrice', '#b8bcc2', 0.35, metal=0.8)
+for k, dy in enumerate((-0.035, -0.008)):
+    x0, y0, z0 = bc.x - 0.006 * H, bc.y + dy * H, bc.z + 0.05 * H
+    b.add(f'sickleGrip{k}', rod([(x0, y0, z0), (x0, y0, z0 + 0.075 * H)], 0.0065 * H, 6), wood, region='torso', subdiv=0)
+    tip = z0 + 0.075 * H
+    arc = [(x0, y0 + 0.042 * H * math.sin(t / 6 * math.pi) * (1 if k else -1), tip + 0.05 * H * (1 - math.cos(t / 6 * math.pi)) * 0.5 + t * 0.004 * H) for t in range(7)]
+    b.add(f'sickleBlade{k}', rod(arc, [0.0045 * H] * 6 + [0.0012 * H], 5, flat=(lambda p: Vector((1, 0, 0)), 0.3)), steel, region='torso', subdiv=0)
 
 # ================================================================ CALÇA escura e os CHINELOS
 for side in ('L', 'R'):

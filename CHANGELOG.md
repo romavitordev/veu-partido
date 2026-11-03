@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.22.0 — Beatrice: Merintofobia e a Existida acesa
+
+### Adicionado
+- Beatrice ganha o que faltava do cânone (wiki "Beatrice Portinari"):
+  - Merintofobia (o medo de ser amarrada, desde a noite presa no depósito do orfanato): cordas, raízes e veias a prendem 40% mais tempo. Vale também na Existida.
+  - A Existida ACESA ("quando é atacada, os olhos e a boca brilham em amarelo, agressiva e forte"): cada golpe recebido acende o brilho e dá 3 s de golpes 20% mais fortes.
+  - As foices de jardinagem (Arsenal: carregadas, nunca usadas) saindo da bolsa de couro.
+- Os números são PROPOSTA.
+
 ## v4.21.0 — Rubens: Surto Temporal e Relógio de Arnaldo
 
 ### Adicionado

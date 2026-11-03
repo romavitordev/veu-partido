@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.22.0 — Beatrice: Merintofobia e a Existida acesa
+
+- Versão: `VERSION` 4.21.0 → **4.22.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: seguir com o pacote de cânone da Beatrice depois do Rubens.
+- `Fighter.stun(time, anim, { bind })`: devolve o tempo efetivo; com `bind` e a passiva `merintofobia`, multiplica por `mult` e avisa MERINTOFOBIA. Marcados como amarra: as Magras/cordas (`ropes`, o tempo devolvido alimenta as voltas e a corda), as raízes e as Veias de Sangue.
+- `Fighter.takeDamage`: a passiva `litWhenHit` acende ou renova o buff ACESA (`mult` em melee e ability) e mostra `props.litGlow`; o `onEnd` apaga. `models/props.js` (`addBeatriceExistidaProps`): dois olhos e a boca em `glowMat` amarelo na `sockets.head`, posições conferidas de perto no jogo.
+- `tools/blender/char_beatrice.py`: duas foicinhas (cabo de madeira e lâmina curva) saindo da bolsa; `beatrice.glb` reexportado.
+- Ficaram no TODO para decidir com o dono: o canivete embaixo da asa do Orpheu e a moeda do Vício em Adrenalina atacando o aliado.
+- Testado no navegador: amarra 1 s → 1,4 s na Beatrice e na Existida; atordoamento comum continua 1 s; um golpe na Existida acende o brilho (dano ×1,2) e ele apaga depois de 3 s. `npm test` 62/62, `npm run check` ok.
+
 ## v4.21.0 — Rubens: Surto Temporal e Relógio de Arnaldo
 
 - Versão: `VERSION` 4.20.0 → **4.21.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: ver o que falta do cânone nos personagens novos, começando pelo Rubens. A comparação com a wiki da Beatrice e da Carina ficou no TODO.

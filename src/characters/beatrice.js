@@ -198,5 +198,8 @@ export default {
 
   passives: [
     { type: 'longShot', minDist: 10, mult: 1.1 }, // ótima balesteira: de longe, um pouco mais de dano
+    // Merintofobia (cânone: o medo de ser amarrada, desde a noite no depósito do orfanato): cordas, raízes e veias a
+    // prendem 40% mais tempo (PROPOSTA nos números)
+    { type: 'merintofobia', mult: 1.4 },
   ],
 };

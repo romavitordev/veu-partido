@@ -494,6 +494,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Joga a moeda. CARA: por 6 s bate 25% mais forte e anda mais rápido. COROA: bate 35% mais forte, mas recebe 20% a mais de dano.
 - **Clarão dos LEDs** — R2 + △ / RT + Y · custo 18 · cooldown 13 s · alcance 9 m
   Acende os LEDs da balestra na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,5 s.
+- **Passiva — Merintofobia:** o medo de ser amarrada: cordas, raízes e veias a prendem 40% mais tempo
 
 ### Especial: Menina do Pássaro
 

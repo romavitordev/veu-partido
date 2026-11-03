@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.22.0 — Beatrice: Merintofobia e a Existida acesa
+- Merintofobia: a Beatrice tem medo de ser amarrada; cordas, raízes e veias a prendem mais tempo.
+- A Existida acende os olhos e a boca em amarelo quando apanha e bate mais forte por alguns segundos.
+- As foices de jardinagem aparecem saindo da bolsa.
+
 ## v4.21.0 — Rubens: Surto Temporal e Relógio de Arnaldo
 - Surto Temporal: a primeira habilidade do round do Rubens abre uma janela em que a próxima não entra em recarga.
 - Relógio de Arnaldo: uma vez por round, a Mira de Elite que erra volta na hora.

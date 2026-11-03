@@ -250,6 +250,18 @@ export class Fighter {
       if (this.dodges < COMBAT.dodge.charges) this.dodges++;
     }
     this.flash = 0.12;
+    // ACESA (a Existida, cânone: atacada, os olhos e a boca brilham em amarelo e ela fica agressiva e forte): cada golpe
+    // recebido acende ou renova o brilho e o dano a mais
+    const lit = dealt > 0 && this.health > 0 && (this.def.passives || []).find((p) => p.type === 'litWhenHit');
+    if (lit) {
+      const cur = this.findBuff('litWhenHit');
+      if (cur) cur.time = lit.time;
+      else {
+        const rig = this.rig;
+        this.addBuff({ type: 'litWhenHit', name: 'ACESA', time: lit.time, duration: lit.time, mult: lit.mult, affects: ['melee', 'ability'], onEnd: () => rig.showProp('litGlow', false) });
+        rig.showProp('litGlow', true);
+      }
+    }
     // SEGREDO DE VERÍSSIMO: ele sabe como vai morrer — uma vez por partida, o golpe que o mataria o deixa com 1 de vida
     // (contra o Kian, que não pode matá-lo, vale uma vez por round)
     if (this.health <= 0 && !this.sacrificeWin && hasPassive(this, 'verissimoSecret')) {
@@ -417,17 +429,25 @@ export class Fighter {
   }
 
   // Atordoamento genérico (quebra de defesa, medo, contra-ataque recebido)
-  stun(time, anim = 'stagger') {
-    if (this.state === 'ko') return;
+  // bind: o atordoamento é uma AMARRA (cordas, raízes, veias) — devolve o tempo que vale de fato
+  stun(time, anim = 'stagger', { bind = false } = {}) {
+    if (this.state === 'ko') return time;
     // Mente Labiríntica (Labirinto): a mente se protege — atordoamentos duram menos
     const mm = (this.def.passives || []).find((p) => p.type === 'mentalMaze');
     if (mm) time *= mm.stunMult ?? 0.6;
+    // MERINTOFOBIA (Beatrice, cânone: medo de ser amarrada): amarrada, o pânico a segura mais tempo
+    const fear = bind && (this.def.passives || []).find((p) => p.type === 'merintofobia');
+    if (fear) {
+      time *= fear.mult ?? 1.4;
+      this.notify('MERINTOFOBIA', true);
+    }
     this.cancelAction();
     this.carga.stage = 0;
     this.setState('stun');
     this.stunTime = time;
     this.whiffRecovery = false;
     this.anim.play(anim, { restart: true, blend: 0.05 });
+    return time;
   }
 
   // Puxado (corrente do Injustiça): vai até `target` e fica vulnerável
