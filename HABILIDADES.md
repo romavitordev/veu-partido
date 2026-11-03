@@ -447,6 +447,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   O Coração Pulsante bate no peito: por 4 s recebe METADE do dano.
 - **Passiva — Afinidade com Energia:** rituais de Energia +10%
 - **Passiva — Resistência a Sangue:** −20% de dano de Sangue
+- **Passiva — Surto Temporal:** a primeira habilidade do round abre 2.5 s em que a próxima não entra em recarga
+- **Passiva — Relógio de Arnaldo:** uma vez por round, a Mira de Elite que erra volta na hora (recarga zerada, sanidade de volta menos 5)
+- **Passiva — Salto Fantasma como reação:** sem carga de esquiva, o L2 apanhando vira o Salto Fantasma (custa o ritual + 6 e ele entra em recarga)
 
 ### Especial: Pelo Johnny
 

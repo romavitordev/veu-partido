@@ -92,7 +92,13 @@ for (const c of ROSTER) {
 `;
     if (p.type === 'extraTurn') md += `- **Passiva — Turno Extra:** o finalizador do combo que acerta abre ${p.window} s em que a próxima habilidade não entra em recarga (uma vez a cada ${p.cooldown} s)
 `;
-    const El = p.element ? `${p.element[0].toUpperCase()}${p.element.slice(1)}` : '';
+    if (p.type === 'surtoTemporal') md += `- **Passiva — Surto Temporal:** a primeira habilidade do round abre ${p.window} s em que a próxima não entra em recarga
+`;
+    if (p.type === 'arnaldoWatch') md += `- **Passiva — Relógio de Arnaldo:** uma vez por round, a Mira de Elite que erra volta na hora (recarga zerada, sanidade de volta menos ${p.cost})
+`;
+    if (p.type === 'phantomReaction') md += `- **Passiva — Salto Fantasma como reação:** sem carga de esquiva, o L2 apanhando vira o Salto Fantasma (custa o ritual + ${p.extraCost} e ele entra em recarga)
+`;
+    const El = p.element ?`${p.element[0].toUpperCase()}${p.element.slice(1)}` : '';
     if (p.type === 'elementalAffinity' && p.mult === 1) md += `- **Passiva — Resistência a ${El}:** −${Math.round((1 - p.resist) * 100)}% de dano de ${El}
 `;
     else if (p.type === 'elementalAffinity') md += `- **Passiva — Afinidade${p.element ? ` com ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ' Elemental'}:** rituais${p.element ? ` de ${p.element[0].toUpperCase()}${p.element.slice(1)}` : ''} +${Math.round(((p.mult ?? 1.15) - 1) * 100)}%${p.resist ? `; −${Math.round((1 - p.resist) * 100)}% de dano de rituais desse elemento` : ''}

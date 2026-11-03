@@ -269,6 +269,12 @@ export const PASSIVES = {
   },
   // Raziel — Turno Extra: o finalizador abre a janela da ação extra (lido no acerto e em useAbility, Fighter.js)
   extraTurn: {},
+  // Rubens — Surto Temporal: a 1ª habilidade do round abre a janela do Turno Extra (Fighter.useAbility)
+  surtoTemporal: {},
+  // Rubens — Relógio de Arnaldo: uma vez por round o tiro que erra devolve a habilidade (Projectiles.rerollMiss)
+  arnaldoWatch: {},
+  // Rubens — Salto Fantasma como reação: sem carga de esquiva, a Substituição vira o ritual (Fighter.trySubstitution)
+  phantomReaction: {},
   // Erin (Em Nome do Caos) — Sem Sanidade: barra zerada e travada; os custos saem da vida (Fighter.addEnergy/spendEnergy)
   noSanity: {},
   // O Anfitrião — Percepção Anacrônica: sabe o que ainda vai acontecer; de tempos em tempos desvia sozinho de um golpe

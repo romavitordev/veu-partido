@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.20.0';
+export const VERSION = '4.21.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.21.0',
+    date: '2026-11-03',
+    title: 'Rubens: Surto Temporal e Relógio de Arnaldo',
+    items: [
+      'RUBENS: Surto Temporal. A primeira habilidade do round abre uma janela curta em que a próxima não entra em recarga.',
+      'RUBENS: Relógio de Arnaldo. Uma vez por round, a Mira de Elite que erra volta na hora.',
+      'RUBENS: sem carga de esquiva, o L2 apanhando vira o Salto Fantasma, que leva mais longe que a Substituição.',
+    ],
+  },
   {
     v: '4.20.0',
     date: '2026-11-03',

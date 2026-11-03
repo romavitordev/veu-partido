@@ -114,6 +114,8 @@ export class Fighter {
     this.chronoCd = 0; // Percepção Anacrônica (Anfitrião): recarga da esquiva automática
     this.secretRound = false; // Segredo de Veríssimo contra o Kian: uma vez por round
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
+    this.surgeUsed = false; // Surto Temporal (Rubens): uma vez por round
+    this.watchUsed = false; // Relógio de Arnaldo (Rubens): uma vez por round
     for (const k in this.cooldowns) this.cooldowns[k] = 0;
     this.cooldownMax.ranged = this.def.ranged?.cooldown || 1;
     this.carga = { stage: 0, timer: 0 };
@@ -2871,6 +2873,15 @@ export class Fighter {
     // TURNO EXTRA (Raziel): a habilidade usada dentro da janela é a ação extra — gasta a janela, não a recarga
     const xt = a.cooldown > 0 && this.findBuff('extraTurn');
     if (xt) { xt.done = true; this.cooldowns[a.id] = 0; } else this.cooldowns[a.id] = a.cooldown;
+    // SURTO TEMPORAL (Rubens, cânone: uma vez por cena, uma ação padrão a mais): a primeira habilidade do round abre a
+    // janela do Turno Extra — a próxima habilidade dentro dela não entra em recarga
+    const surge = !xt && a.cooldown > 0 && !this.surgeUsed && (this.def.passives || []).find((p) => p.type === 'surtoTemporal');
+    if (surge) {
+      this.surgeUsed = true;
+      this.addBuff({ type: 'extraTurn', name: 'SURTO TEMPORAL', time: surge.window ?? 2.5, duration: surge.window ?? 2.5 });
+      this.notify('SURTO TEMPORAL', true);
+      this.world.fx.ring(this.chestPos(), { color: surge.color ?? 0x4ae0ff, radius: 1.3, life: 0.3 });
+    }
     this.setState('ability');
     this.seq = seq;
   }
@@ -3094,9 +3105,18 @@ export class Fighter {
     const S = COMBAT.substitution;
     if (this.world.cinematic) return false;
     if (!free && this.cooldowns.substitution > 0) return false;
+    // SALTO FANTASMA COMO REAÇÃO (Rubens, cânone: o ritual sai como reação pagando mais PE): sem carga de esquiva, o
+    // L2 apanhando vira o Salto Fantasma — paga a sanidade do ritual com o extra e o ritual entra em recarga
+    let phantom = null;
     if (!free && this.dodges < S.charges) {
-      this.notify('SEM ESQUIVAS');
-      return false;
+      const P = (this.def.passives || []).find((p) => p.type === 'phantomReaction');
+      const ab = P && this.def.abilities.find((x) => x.id === P.ability);
+      const cost = ab ? this.abilityCost(ab) + (P.extraCost ?? 6) : 0;
+      if (ab && !(this.cooldowns[ab.id] > 0) && this.energy >= cost) phantom = { ab, cost, color: ab.color };
+      else {
+        this.notify('SEM ESQUIVAS');
+        return false;
+      }
     }
     const opp = this.opponent;
     if (!opp) return false;
@@ -3105,13 +3125,20 @@ export class Fighter {
     const away = new THREE.Vector3().subVectors(this.pos, opp.pos).setY(0).normalize();
     const lateral = stick.x * -away.z + stick.z * away.x;
     const spot = findSubstitutionSpot(this.world.arena, this.pos, opp.pos, {
-      sidestep: S.sidestep,
-      back: S.back,
+      sidestep: phantom ? S.sidestep * 2 : S.sidestep, // o ritual leva mais longe que o passo da Substituição
+      back: phantom ? S.back * 5 : S.back,
       radius: this.radius,
       attackerRadius: opp.radius,
       side: Math.abs(lateral) > 0.3 ? Math.sign(lateral) : 0,
     });
-    if (!free) {
+    if (phantom) {
+      this.spendEnergy(phantom.cost);
+      this.cooldowns[phantom.ab.id] = phantom.ab.cooldown;
+      this.cooldowns.substitution = S.cooldown;
+      label = 'SALTO FANTASMA!';
+      // a estática elétrica rosa, azul, ciano e verde no lugar onde ele estava
+      for (const c of [0xff4ab0, 0x4a7aff, 0x4ae0ff, 0x4aff8a]) this.world.fx.burst(this.chestPos(), { count: 8, color: c, speed: 3, life: 0.35, size: 0.14 });
+    } else if (!free) {
       this.spendDodges(S.charges);
       this.cooldowns.substitution = S.cooldown;
     }

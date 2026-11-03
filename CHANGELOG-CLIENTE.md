@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.21.0 — Rubens: Surto Temporal e Relógio de Arnaldo
+- Surto Temporal: a primeira habilidade do round do Rubens abre uma janela em que a próxima não entra em recarga.
+- Relógio de Arnaldo: uma vez por round, a Mira de Elite que erra volta na hora.
+- Sem carga de esquiva, o L2 apanhando vira o Salto Fantasma.
+
 ## v4.20.0 — As armas da Carina
 - O mangual de Marco Leone, a Glock dourada, as facas e o nunchaku dourado da Carina têm modelos novos, com a cabeça de leão dos Leone.
 - A bola do mangual pende e balança de verdade na corrente; no nunchaku o segundo bastão fica solto.

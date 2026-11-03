@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.21.0 — Rubens: Surto Temporal e Relógio de Arnaldo
+
+### Adicionado
+- Rubens ganha o que faltava da ficha do cânone (wiki "Rubens Naluti", Habilidades e Itens Amaldiçoados), como passivas:
+  - Surto Temporal ("uma vez por cena, uma ação padrão adicional"): a primeira habilidade do round abre 2,5 s em que a próxima não entra em recarga.
+  - Relógio de Arnaldo (rola de novo o dado que caiu 1): uma vez por round, a Mira de Elite que erra (acaba o alcance ou bate numa parede) volta na hora, com a sanidade devolvida menos 5.
+  - Salto Fantasma como reação (o ritual pode sair como reação pagando mais PE): sem carga de esquiva, o L2 apanhando vira o Salto Fantasma. Custa o ritual + 6 de sanidade, coloca o ritual em recarga e leva mais longe que a Substituição.
+- Os tempos e custos são PROPOSTA.
+
 ## v4.20.0 — As armas da Carina
 
 ### Alterado

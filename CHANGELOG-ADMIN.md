@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.21.0 — Rubens: Surto Temporal e Relógio de Arnaldo
+
+- Versão: `VERSION` 4.20.0 → **4.21.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: ver o que falta do cânone nos personagens novos, começando pelo Rubens. A comparação com a wiki da Beatrice e da Carina ficou no TODO.
+- Passivas novas (`combat/passives.js`, registradas vazias como a `extraTurn`):
+  - `surtoTemporal` em `Fighter.useAbility`: reaproveita o buff `extraTurn` do Raziel com o nome SURTO TEMPORAL; `surgeUsed` zera no `reset()` do round.
+  - `arnaldoWatch` em `Projectiles.rerollMiss`: chamado quando o projétil com `rerollAbility` acaba o alcance ou bate na parede; zera a recarga e devolve `abilityCost − cost`. `watchUsed` zera no round.
+  - `phantomReaction` em `Fighter.trySubstitution`: sem carga de esquiva e com o ritual pronto, paga `abilityCost + extraCost` de sanidade no lugar das cargas, põe o ritual em recarga, usa o rótulo SALTO FANTASMA!, a estática nas 4 cores do cânone e o dobro do passo lateral e 5× o recuo da Substituição.
+- `characters/rubens.js`: as três passivas; `miraElite.projectile.rerollAbility = 'miraElite'`. `tools/gen-moves.mjs` descreve as passivas; `check-roster` ganhou a checagem.
+- Testado no navegador contra o Kaiser: Coração Pulsante abriu o SURTO TEMPORAL e o Tratar Ferimentos saiu sem recarga; a 3ª habilidade recarregou normal. A Mira de Elite que errou voltou com recarga 0, e a segunda que errou recarregou normal. Sem cargas, apanhando, a Substituição virou o Salto Fantasma (60 → 36 de sanidade, ritual em 7 s, 3,1 m); sem sanidade, não sai. `npm test` 62/62, `npm run check` ok.
+
 ## v4.20.0 — As armas da Carina
 
 - Versão: `VERSION` 4.19.1 → **4.20.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: o item do TODO "Carina — armas: melhorar o USO e os MODELOS".

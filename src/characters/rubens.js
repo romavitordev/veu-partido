@@ -136,7 +136,7 @@ export default {
       showProp: 'glock',
       hideProp: 'hammer',
       aimColor: CYAN,
-      projectile: { name: 'Mira de Elite', type: 'projectile', visual: 'bullet', color: 0xffe08a, damage: 52, range: 40, speed: 95, radius: 0.3, knockback: 2.2, hitstun: 0.6, hitSound: 'impact', impactScale: 1.4 },
+      projectile: { name: 'Mira de Elite', type: 'projectile', visual: 'bullet', color: 0xffe08a, damage: 52, range: 40, speed: 95, radius: 0.3, knockback: 2.2, hitstun: 0.6, hitSound: 'impact', impactScale: 1.4, rerollAbility: 'miraElite' },
       ai: { when: 'far', min: 5 },
     },
     {
@@ -209,5 +209,13 @@ export default {
   passives: [
     { type: 'elementalAffinity', element: 'energia', mult: 1.1 }, // rituais de Energia dele um pouco mais fortes
     { type: 'elementalAffinity', element: 'sangue', mult: 1, resist: 0.8 }, // Amuleto de Proteção Elemental (Sangue): −20%
+    // Surto Temporal (cânone: uma vez por cena, uma ação padrão a mais): a 1ª habilidade do round abre 2,5 s em que a
+    // próxima não entra em recarga
+    { type: 'surtoTemporal', window: 2.5, color: CYAN },
+    // Relógio de Arnaldo (cânone: 1 PE para rolar de novo o dado que caiu 1): uma vez por round, a Mira de Elite que
+    // erra volta na hora, devolvendo a sanidade menos 5
+    { type: 'arnaldoWatch', cost: 5, color: 0xe8c060 },
+    // Salto Fantasma como reação (cânone: +2 PE): sem carga de esquiva, o L2 apanhando vira o Salto Fantasma
+    { type: 'phantomReaction', ability: 'saltoFantasma', extraCost: 6 },
   ],
 };

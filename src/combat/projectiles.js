@@ -765,12 +765,14 @@ export class Projectiles {
           w.fx.impact(p.pos, a.color, 0.6);
           if (a.stick) this.stick(p);
           if (a.pool) this.poolBelow(p);
+          if (a.rerollAbility) this.rerollMiss(p.owner, a.rerollAbility);
           dead = true;
           break;
         }
         if (p.traveled >= a.range && !a.boomerang) {
           w.fx.burst(p.pos, { count: 8, color: a.color, speed: 2, life: 0.3, size: 0.25 });
           if (a.expireFn) a.expireFn(w, p); // ex.: o tiro PRETO "falha" e volta de outra direção
+          if (a.rerollAbility) this.rerollMiss(p.owner, a.rerollAbility);
           if (a.pool) this.poolBelow(p);
           dead = true;
         }
@@ -971,6 +973,19 @@ export class Projectiles {
       const prop = fb && !(p.owner.findBuff && p.owner.findBuff(fb.buff)) ? fb.prop : a.returnsProp;
       p.owner.rig.showProp(prop, true);
     }
+  }
+
+  // RELÓGIO DE ARNALDO (Rubens, cânone: gasta PE e rola de novo o dado que caiu 1): uma vez por round, o tiro que erra
+  // (acaba o alcance ou bate na parede) devolve a habilidade — recarga zerada e a sanidade de volta
+  rerollMiss(owner, abilityId) {
+    const P = owner && !owner.watchUsed && (owner.def.passives || []).find((x) => x.type === 'arnaldoWatch');
+    const ab = P && owner.def.abilities.find((x) => x.id === abilityId);
+    if (!ab || owner.state === 'ko') return;
+    owner.watchUsed = true;
+    owner.cooldowns[ab.id] = 0;
+    owner.energy = Math.min(owner.maxEnergy, owner.energy + Math.max(0, owner.abilityCost(ab) - (P.cost ?? 5)));
+    owner.notify('RELÓGIO DE ARNALDO', true);
+    this.world.fx.ring(owner.chestPos(), { color: P.color ?? 0xe8c060, radius: 1.1, life: 0.35 });
   }
 
   remove(p, fizzle = false) {
