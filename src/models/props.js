@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, martelo, glockSilenciada } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, martelo, glockSilenciada, balestra } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1506,4 +1506,58 @@ export function addRubensProps(rig) {
   k.visible = false;
   sockets.handR.add(k);
   props.knife = k;
+}
+
+// BEATRICE PORTINARI (Força D): o CANIVETE na mão direita (o que ficava amarrado embaixo da asa do Orpheu), a BALESTRA
+// escondida até o □ e o ORPHEU no ombro (prop_orpheu*, vem do GLB; some enquanto ele voa)
+export const ORPHEU_PROPS = 'orpheu+orpheuEye1+orpheuEye-1+orpheuPupil1+orpheuPupil-1+orpheuBeak+orpheuFeet';
+function beatriceWeapons(rig) {
+  const { sockets, props } = rig;
+  const k = knife();
+  inFist(k);
+  k.scale.setScalar(0.85);
+  sockets.handR.add(k);
+  props.knife = k;
+  const bow = balestra();
+  bow.rotation.x = -0.1;
+  bow.position.y = -0.03;
+  bow.visible = false;
+  sockets.handR.add(bow);
+  props.crossbow = bow;
+  rig.muzzle = bow.userData.muzzle;
+}
+export function addBeatriceProps(rig) {
+  beatriceWeapons(rig);
+}
+
+// BEATRICE — A EXISTIDA (a Transformação, wiki: a 90% de exposição a pele emagrece e se enche de TEXTOS como os das
+// criaturas do Orfanato, os olhos ficam esbranquiçados; atacada, olhos e boca brilham em amarelo). O Orpheu não está
+// mais lá (a morte dele devolveu as memórias)
+const EXISTIDA = { face_beatrice: 'face_beatrice_existida', skin_beatrice: 'skin_beatrice_existida' };
+const existidaTex = {};
+export function addBeatriceExistidaProps(rig) {
+  beatriceWeapons(rig);
+  rig.showProp(ORPHEU_PROPS, false);
+  const swapped = new Map();
+  rig.root.traverse((o) => {
+    if (!o.isMesh || !o.material || !o.material.name || o.userData.isOutline) return;
+    const key = Object.keys(EXISTIDA).find((k) => o.material.name.endsWith(k));
+    if (!key) return;
+    if (!swapped.has(o.material)) {
+      const m = o.material.clone();
+      const id = EXISTIDA[key];
+      if (!existidaTex[id]) {
+        const t = MATERIAL_TEXTURES[id]();
+        t.flipY = false;
+        t.needsUpdate = true;
+        existidaTex[id] = t;
+      }
+      m.map = existidaTex[id];
+      if (m.color) m.color.set(0xffffff);
+      m.userData.sharedMap = true;
+      m.needsUpdate = true;
+      swapped.set(o.material, m);
+    }
+    o.material = swapped.get(o.material);
+  });
 }

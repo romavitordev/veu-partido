@@ -450,8 +450,10 @@ function splitDamage(total, count) {
 const CHOREO = {
   forca_d({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 5.2 });
-    const kaiser = tools.get('kaiser'), joui = tools.get('joui'), arthur = tools.get('arthur');
-    const shares = splitDamage(crewTotal, 3);
+    const kaiser = tools.get('kaiser'), joui = tools.get('joui'), arthur = tools.get('arthur'), beatrice = tools.get('beatrice');
+    const actors = [kaiser, joui, arthur, beatrice].filter(Boolean);
+    const shares = splitDamage(crewTotal, actors.length || 1);
+    const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
     const END = S + 5.2;
 
@@ -473,7 +475,7 @@ const CHOREO = {
         if (!live()) return;
         world.fx.burst(head(kaiser), { count: 28, color: 0x777184, speed: 2.4, spread: 1.2, life: 0.8, size: 0.19 });
         world.fx.distort(opp.chestPos(), { color: 0x817097, radius: 2.2, life: 0.65 });
-        tools.impact(kaiser, shares[0], { sound: 'impact', color: 0xa46bff });
+        tools.impact(kaiser, damageOf(kaiser), { sound: 'impact', color: 0xa46bff });
       });
     }
 
@@ -491,7 +493,7 @@ const CHOREO = {
       });
       tl.add(S + 1.83, () => {
         if (!live()) return;
-        tools.impact(joui, shares[1], { sound: 'slashFinal', color: 0x8f4cff, slash: true });
+        tools.impact(joui, damageOf(joui), { sound: 'slashFinal', color: 0x8f4cff, slash: true });
         const wound = opp.chestPos();
         world.fx.slash(wound, joui.yaw + 0.5, { color: 0xd7b5ff, radius: 1.05, arc: 2.3, life: 0.32, width: 0.25, roll: 0.9 });
         world.fx.slash(wound, joui.yaw - 0.5, { color: 0x6a2fe0, radius: 0.85, arc: 2.1, life: 0.28, width: 0.2, roll: -0.8 });
@@ -529,16 +531,37 @@ const CHOREO = {
         if (!live()) return;
         arthur.play('slash_finisher', 0.5);
         world.fx.burst(arthur.chest(), { count: 16, color: 0xb5162a, speed: 2.5, life: 0.4, size: 0.15 });
-        tools.impact(arthur, shares[2], { sound: 'slashFinal', color: 0xb5162a, slash: true });
+        tools.impact(arthur, damageOf(arthur), { sound: 'slashFinal', color: 0xb5162a, slash: true });
+      });
+    }
+
+    // BEATRICE: de longe, o Orpheu levanta voo do ombro dela e ela fecha com o virote da balestra (os LEDs acesos)
+    if (beatrice) {
+      tl.add(S + 3.7, () => {
+        if (!live()) return;
+        const at = tools.around(beatrice, -1.0, 4.2);
+        beatrice.show(END - (S + 3.7), at);
+        beatrice.pos.set(at.x, 0, at.z);
+        beatrice.face(opp);
+        beatrice.play('point', 0.7);
+        world.cameraRig.playShots([{ ...overShoulder(beatrice, opp, { dur: 0.8, back: 1.6, side: 0.45, height: 1.6, fov: 40 }), cut: true }]);
+        world.fx.burst(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), { count: 14, color: 0x8a7458, speed: 2, life: 0.6, size: 0.09, gravity: 3 });
+        world.fx.tracer(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), head(opp), { color: 0x8a7458, life: 0.35, width: 0.08 });
+      });
+      tl.add(S + 4.15, () => {
+        if (!live()) return;
+        world.fx.tracer(beatrice.chest(), opp.chestPos(), { color: 0xf4f0d8, life: 0.15, width: 0.035 });
+        world.fx.flash(beatrice.chest(), { color: 0xf4f0d8, size: 0.8, life: 0.12 });
+        tools.impact(beatrice, damageOf(beatrice), { sound: 'bladeHit', color: 0xf2c230 });
       });
     }
 
     const F = S + 5.2;
     tl.add(F - 0.45, () => {
       if (!live()) return;
-      [kaiser, joui, arthur].forEach((actor, i) => {
+      actors.forEach((actor, i) => {
         if (!actor) return;
-        const at = tools.around(actor, (i - 1) * 0.85, 2.3);
+        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.75, 2.3);
         actor.pos.set(at.x, 0, at.z);
         actor.face(opp);
       });

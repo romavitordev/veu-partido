@@ -34,6 +34,7 @@ import carnical from './carnical.js';
 import dara from './dara.js';
 import carina from './carina.js';
 import rubens from './rubens.js';
+import beatrice from './beatrice.js';
 import chico from './chico.js';
 import morato from './morato.js';
 import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectableForms.js';
@@ -49,7 +50,7 @@ import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectable
 // Para adicionar um personagem: crie o arquivo de definição aqui, registre o modelo em models/index.js e coloque-o
 // junto da equipe dele nesta lista.
 export const ROSTER = [
-  arthur, joui, kaiser, dante, erin, aghata, balu, carina, rubens, verissimo, cristopher, // Ordo Realitas (o Cris fecha a Equipe E de OSNF; Carina e Rubens, dos Abutres, ao lado do Balu)
+  arthur, joui, kaiser, dante, erin, aghata, balu, carina, rubens, beatrice, verissimo, cristopher, // Ordo Realitas (o Cris fecha a Equipe E de OSNF; Carina e Rubens, dos Abutres, ao lado do Balu; a Beatrice, da Força D)
   kian, gal_sal, nubi, // Escriptas
   xande, guizo, lirio, dara, chico, morato, // Os Cinco (Sinais do Outro Lado) — o Guizo do lado do melhor amigo; a Dara, a médica
   dalmo, aguiar, jae, kemi, labirinto, juan, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan

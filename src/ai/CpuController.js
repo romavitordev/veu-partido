@@ -153,6 +153,7 @@ export function abilityUsePrior(a, f, opp, { distance, lowHp, opening, threat, l
   if (a.type === 'falseAlliance') return distance < 3.5 && (threat || opp.state === 'attack' || opp.state === 'ability') ? 2 : distance < 2.5 ? 0.25 : 0;
   // Queima-Roupa (Rubens): só encostado — de longe a pistola nem sai
   if (a.type === 'pointBlank') return distance < a.range + 0.3 ? 1.6 : 0;
+  if (a.type === 'orpheuFlight' && f.orpheuOut) return 0; // o Orpheu ainda está voando
 
   let prior = a.id === lastAbility ? 0.3 : 0.65;
   if (opening && !selfTarget) prior *= 2.5;

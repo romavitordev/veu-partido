@@ -73,6 +73,7 @@ export function applyWeaponCurse(world, f, el, { duration = 8, props = null, ble
 
 export { DanteClone }; // o Embaralhar do Dante (guizoAbilities.js) usa as cópias que lutam
 import { buildHuntingDog } from '../models/dog.js';
+import { buildOrpheu } from '../models/orpheu.js';
 import { bloodCoat, elementCoat, SEITA_MASKS } from '../models/weapons.js';
 import { addBloodPool, poolsOf, splatGeo } from './bloodPools.js';
 import { inscribe } from './kianPowers.js';
@@ -3783,6 +3784,75 @@ Object.assign(ABILITY_TYPES, {
     },
   },
 
+  // VOO DO ORPHEU (Beatrice; pedido do dono: o urutau voa e ataca o inimigo): ele sai do ombro, voa em volta da cabeça
+  // do adversário dando a.hits bicadas/garradas (a última deixa CEGO por a.blind) e volta para o ombro. Enquanto ele voa
+  // a Beatrice luta normalmente; o ombro fica vazio (a.shoulderProps) até ele voltar
+  orpheuFlight: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      if (!opp || opp.state === 'ko') return null;
+      if (f.orpheuOut) { f.notify('O ORPHEU JÁ ESTÁ VOANDO'); return null; }
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      f.yaw = yawTo(f.pos, opp.pos);
+      f.anim.play(a.anim || 'point', { restart: true, duration: 0.4 });
+      world.audio.play('swing', { pitch: 1.7, volume: 0.6 });
+      tl.add(0.15, () => {
+        const shoulder = () => (f.rig.joints.sL ? f.rig.joints.sL.getWorldPosition(new THREE.Vector3()) : f.chestPos()).add(new THREE.Vector3(0, 0.25, 0));
+        const bird = buildOrpheu();
+        bird.root.position.copy(shoulder());
+        world.scene.add(bird.root);
+        f.rig.showProp(a.shoulderProps, false);
+        f.orpheuOut = true;
+        world.fx.burst(bird.root.position, { count: 10, color: 0x8a7458, speed: 1.6, life: 0.5, size: 0.08, gravity: 3 });
+        let t = 0, phase = 'go', hits = 0, cd = 0.2;
+        const home = () => {
+          f.orpheuOut = false;
+          if (f.def.id === a.ownerId && f.state !== 'ko') f.rig.showProp(a.shoulderProps, true);
+        };
+        world.addTicker({
+          update(dt) {
+            t += dt;
+            cd -= dt;
+            const target = f.opponent;
+            if (phase !== 'back' && (!target || target.state === 'ko' || f.state === 'ko' || t > a.maxTime)) phase = 'back';
+            let goal;
+            if (phase === 'back') goal = shoulder();
+            else {
+              const hp = target.chestPos().add(new THREE.Vector3(0, 0.45, 0));
+              goal = cd > 0.12 ? hp.clone().add(new THREE.Vector3(Math.sin(t * 6) * 0.8, 0.35, Math.cos(t * 6) * 0.8)) : hp; // circula e mergulha
+              if (cd <= 0 && bird.root.position.distanceTo(hp) < 0.55) {
+                cd = a.interval;
+                hits++;
+                if (!target.isInvulnerable()) {
+                  const res = applyHit(world, f, target, { damage: a.damage, kind: 'ability', element: f.def.element, knockback: 0.3, hitstun: 0.28, sound: 'bladeHit', color: 0x8a7458, scale: 0.8, pos: hp, dir: new THREE.Vector3().subVectors(target.pos, f.pos).setY(0).normalize() });
+                  world.fx.burst(hp, { count: 8, color: 0x8a7458, speed: 2.2, life: 0.5, size: 0.08, gravity: 4 });
+                  if (typeof res === 'number' && hits >= a.hits && a.blind) { blindFighter(world, target, a.blind); target.notify('CEGO', true); }
+                }
+                if (hits >= a.hits) phase = 'back';
+              }
+            }
+            const to = goal.clone().sub(bird.root.position);
+            const d = to.length();
+            const step = (phase === 'back' ? a.speed * 1.3 : a.speed) * dt;
+            if (phase === 'back' && d < Math.max(0.15, step)) { home(); return true; }
+            bird.root.position.addScaledVector(to.normalize(), Math.min(d, step));
+            bird.root.lookAt(goal);
+            bird.update(world.time, 1);
+            return false;
+          },
+          dispose() {
+            if (f.orpheuOut) home();
+            world.scene.remove(bird.root);
+            bird.dispose();
+          },
+        });
+      });
+      tl.end(0.4);
+      return seqFrom(tl);
+    },
+  },
+
   // Xande — Polarização Caótica: aura magnética. Alvo LONGE é puxado até ele; alvo PERTO é repelido e cai.
   polarize: {
     start(f, a, world) {
@@ -3942,7 +4012,20 @@ Object.assign(ABILITY_TYPES, {
       const prop = a.showProp && f.rig.props[a.showProp];
       const hide = () => prop && f.rig.showProp(a.showProp, false);
       if (prop) f.rig.showProp(a.showProp, true);
-      tl.add(Math.min(0.25, castT * 0.6), () => applySelfBuff(f, a, world));
+      // a.coin (Beatrice — Vício em Adrenalina: ela joga a moeda e o resultado decide): { heads, tails } com os campos do
+      // estado de cada lado; a moeda sobe dourada da mão e o lado que saiu aparece em cima dela
+      tl.add(Math.min(0.25, castT * 0.6), () => {
+        let A = a;
+        if (a.coin) {
+          const side = Math.random() < 0.5 ? a.coin.heads : a.coin.tails;
+          A = { ...a, ...side };
+          const hand = f.rig.sockets.handR.getWorldPosition(new THREE.Vector3());
+          world.fx.tracer(hand, hand.clone().add(new THREE.Vector3(0, 0.9, 0)), { color: 0xf2c230, life: 0.3, width: 0.03 });
+          world.fx.burst(hand.add(new THREE.Vector3(0, 0.9, 0)), { count: 10, color: 0xf2c230, speed: 1.4, life: 0.4, size: 0.08 });
+          world.audio.play('ready', { volume: 0.5, pitch: 2 });
+        }
+        applySelfBuff(f, A, world);
+      });
       tl.add(castT, hide);
       tl.end(castT);
       return seqFrom(tl, { cancel: hide });

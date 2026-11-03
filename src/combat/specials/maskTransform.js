@@ -395,6 +395,39 @@ export const maskTransform = {
         for (let i = 0; i < 2; i++) world.fx.ring(new THREE.Vector3(f.pos.x, 0.07, f.pos.z), { color: tint, radius: 2.2 + i * 1.3, life: 0.6 + i * 0.1 });
       });
       total = 2.5;
+    } else if (scene === 'existida') {
+      // BEATRICE — A EXISTIDA (cânone, Desconjuração ep. 11 "Lembrar"): o Orpheu cai (a morte dele era a barreira das
+      // memórias) e as penas se espalham · ela leva as mãos à cabeça e TUDO volta: os textos sobem em volta dela ·
+      // close no rosto: os olhos ficam brancos · a pele se enche de textos e o brilho amarelo explode
+      f.anim.play('concentrate', { restart: true, duration: 1.7 });
+      world.audio.play('heartbeat', { volume: 0.7 });
+      lightTo = 3;
+      world.cameraRig.playShots([
+        orbit(f, { dur: 0.9, radius: 3.0, height: 1.3, a0: 0.5, a1: -0.1, lookH: 1.3 }),
+        faceClose(f, { dur: 1.1, from: 1.5, to: 1.05, side: -0.25, height: hy, fov: 34 }),
+        lowAngle(f, { dur: 0.9, dist: 3.0, side: 0.6 }),
+      ]);
+      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.45, () => {
+        const sh = f.rig.joints.sL ? f.rig.joints.sL.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.25, 0)) : head();
+        f.rig.showProp(sp.hideProps || '', false);
+        world.fx.burst(sh, { count: 30, color: 0x8a7458, speed: 2, up: 0.5, life: 1.2, size: 0.1, gravity: 2 });
+        world.audio.play('impact', { volume: 0.5, pitch: 1.6 });
+      });
+      const runes = world.fx.runes(() => f.chestPos(), { color: 0x1a1214, count: 10, radius: 1.1, size: 0.3 });
+      scrap.push(() => runes.stop());
+      tl.add(1.3, () => {
+        scrap.push(swapFace(f.rig, 'face_beatrice', 'face_beatrice_existida'));
+        maskOn(true);
+        world.audio.play('fearGaze', { volume: 0.8, pitch: 0.7 });
+      });
+      tl.add(1.7, () => {
+        runes.stop();
+        world.fx.burst(f.chestPos(), { count: 50, color: tint, speed: 5, life: 0.7, size: 0.16 });
+        for (let i = 0; i < 2; i++) world.fx.ring(new THREE.Vector3(f.pos.x, 0.07, f.pos.z), { color: tint, radius: 2.2 + i * 1.3, life: 0.6 + i * 0.1 });
+        world.cameraRig.shake(0.3, 0.3);
+      });
+      total = 2.6;
     } else if (scene === 'watch') {
       // RELÍQUIA DE ENERGIA (Arnaldo → O Anfitrião) — uma cutscene de verdade, em nove fases:
       //  1 olha o relógio, que começa a brilhar · 2 o ambiente distorce (som estranho) · 3 a Relíquia se manifesta ·

@@ -278,6 +278,19 @@ export const VOICES = {
       any: [(o) => `Anotado. Fio, cobre, solto.`, (o) => `Fala menos, ${o.name}. Eu entendo pouco.`],
     },
   },
+  // BEATRICE PORTINARI: gentil, curiosa e altruísta, mas firme com os Escriptas — "Saber tudo é perder tudo."
+  beatrice: {
+    open: {
+      ally: (o) => `${o.name}! Treino, né? Eu e o Orpheu vamos pegar leve.`,
+      rival: (o) => `${o.name}... ${o.one}. Já tiraram muita coisa de mim. Você não vai tirar mais nada.`,
+      any: [(o) => `Oi, ${o.name}! Desculpa desde já. O Orpheu fica bravo quando apanha.`, (o) => `${o.name}, o Orpheu já te viu. Ele sempre vê primeiro.`],
+    },
+    reply: {
+      ally: (o) => `Combinado, ${o.name}. Mas se eu ganhar, você me conta uma história.`,
+      rival: (o) => `${o.group}? Então eu não vou errar, ${o.name}.`,
+      any: [(o) => `Tá bom, ${o.name}. Vem.`, (o) => `Pode vir, ${o.name}. Eu não tenho mais medo.`],
+    },
+  },
   balu: {
     open: {
       ally: (o) => `Hahaha! ${o.name}! Vem, que o tio Balu ensina umas coisinhas!`,

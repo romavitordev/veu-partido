@@ -2772,3 +2772,53 @@ export function glockSilenciada() {
   g.userData.muzzle = muzzle;
   return g;
 }
+
+// BALESTRA DA BEATRICE (wiki "Beatrice Portinari", Arsenal: "carregada com virotes e com dois LEDs para iluminação nas
+// extremidades"; a miniatura: preta e compacta, a mira de ponto vermelho em cima). Corpo para -Y, topo em +Z, os
+// braços do arco abertos em X na frente, a corda e o virote armado
+export function balestra() {
+  const g = new THREE.Group();
+  const black = toon(0x1a1a1e);
+  const dark = 0x2a2a30;
+  const stock = part(new THREE.BoxGeometry(0.04, 0.36, 0.05), 0, { mat: black });
+  stock.position.y = -0.12;
+  g.add(stock);
+  const grip = part(new THREE.BoxGeometry(0.034, 0.05, 0.11), dark);
+  grip.position.set(0, 0.0, -0.06);
+  grip.rotation.x = -0.25;
+  g.add(grip);
+  const butt = part(new THREE.BoxGeometry(0.036, 0.12, 0.07), 0, { mat: black });
+  butt.position.set(0, 0.11, -0.01);
+  g.add(butt);
+  // os braços do arco: curvos, para trás nas pontas
+  const pts = [];
+  for (let i = 0; i <= 12; i++) { const t = i / 12 * 2 - 1; pts.push(new THREE.Vector3(t * 0.26, -0.29 + Math.abs(t) ** 1.6 * 0.07, 0.01)); }
+  const limbs = part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, 0.012, 5, false), 0, { mat: black });
+  g.add(limbs);
+  const string = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([pts[0], new THREE.Vector3(0, -0.16, 0.01), pts[12]]), 8, 0.0025, 3, false), toon(0xb8b4ac));
+  g.add(string);
+  const led = glowMat(0xf4f0d8, 0.95);
+  for (const s of [-1, 1]) { // os dois LEDs nas extremidades
+    const l = new THREE.Mesh(new THREE.SphereGeometry(0.013, 8, 6), led);
+    l.position.set(s * 0.26, -0.22, 0.01);
+    g.add(l);
+  }
+  const bolt = part(new THREE.CylinderGeometry(0.005, 0.005, 0.26, 6), 0x6a5a48, { outline: false });
+  bolt.position.set(0, -0.26, 0.032);
+  g.add(bolt);
+  const tip = part(new THREE.ConeGeometry(0.012, 0.035, 6), 0xc8ccd2, { outline: false });
+  tip.rotation.x = Math.PI;
+  tip.position.set(0, -0.405, 0.032);
+  g.add(tip);
+  const sight = part(new THREE.CylinderGeometry(0.014, 0.014, 0.06, 10), 0, { mat: black });
+  sight.position.set(0, -0.08, 0.05);
+  g.add(sight);
+  const dot = new THREE.Mesh(new THREE.SphereGeometry(0.009, 8, 6), glowMat(0xff2a20, 0.95));
+  dot.position.set(0, -0.112, 0.05);
+  g.add(dot);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.42, 0.032);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}

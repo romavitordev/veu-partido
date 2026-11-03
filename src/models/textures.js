@@ -2197,6 +2197,54 @@ export const MATERIAL_TEXTURES = {
       g.beginPath(); g.moveTo(x, y); g.lineTo(x + 14, y + (Math.random() - 0.5) * 10); g.stroke();
     }
   }, { wrap: true }),
+  // BEATRICE PORTINARI: as SARDAS (rosto, mais nas bochechas e no nariz arrebitado), olhos castanhos, semblante gentil
+  face_beatrice: face((g) => {
+    const rnd = seeded(169);
+    g.fillStyle = 'rgba(150,84,52,0.55)';
+    for (let i = 0; i < 140; i++) {
+      const s = rnd() < 0.5 ? -1 : 1;
+      const x = CX + s * (8 + rnd() * 64), y = EYE_Y + 16 + rnd() * 38;
+      if (Math.abs(y - MOUTH_Y) < 8 && Math.abs(x - CX) < 22) continue;
+      g.beginPath(); g.arc(x, y, 1 + rnd() * 1.3, 0, Math.PI * 2); g.fill();
+    }
+  }, {
+    skin: '#eac6aa',
+    eye: { iris: '#5a3a24', irisLight: '#8a6040', w: 14, h: 8, tilt: 0.04, lid: 3, lashes: true },
+    brow: { angry: 0, thick: 3.6, color: '#4a2e1e' },
+    mouth: { mouthW: 12, smile: 2, lip: 'rgba(170,96,90,0.45)' },
+  }),
+  // a EXISTIDA (wiki): pele magra e pálida, cheia de TEXTOS como os das criaturas do Orfanato Santa Menefreda, os olhos
+  // esbranquiçados com o brilho amarelo (atacada, olhos e boca brilham em amarelo)
+  face_beatrice_existida: face((g) => {
+    const rnd = seeded(1690);
+    g.fillStyle = 'rgba(24,18,20,0.75)';
+    g.font = 'italic 11px serif';
+    const words = ['saber', 'tudo', 'é', 'perder', 'lembra', 'de', 'mim', 'Beatrice', 'eu', 'era', 'marcada', 'Lilian'];
+    for (let i = 0; i < 70; i++) {
+      const x = 40 + rnd() * 430, y = 20 + rnd() * 230;
+      if (Math.abs(y - EYE_Y) < 14 && Math.abs(Math.abs(x - CX) - 32) < 24) continue;
+      g.save(); g.translate(x, y); g.rotate((rnd() - 0.5) * 0.6); g.fillText(words[Math.floor(rnd() * words.length)], 0, 0); g.restore();
+    }
+    g.fillStyle = 'rgba(255,214,90,0.5)';
+    g.beginPath(); g.ellipse(CX, MOUTH_Y + 1, 12, 3, 0, 0, Math.PI * 2); g.fill();
+  }, {
+    skin: '#c8c4b8',
+    eye: { iris: '#f4f0e0', irisLight: '#ffffff', sclera: '#f8f6ee', glow: 'rgba(255,214,90,0.55)', w: 15, h: 9, lid: 2.6 },
+    brow: { angry: 1, thick: 3, color: '#5a4a40' },
+    mouth: { mouthW: 13, smile: -1, lip: 'rgba(60,40,40,0.5)' },
+  }),
+  skin_beatrice_existida: () => canvasTex(256, 256, (g) => {
+    const rnd = seeded(1691);
+    g.fillStyle = '#c8c4b8'; g.fillRect(0, 0, 256, 256);
+    g.fillStyle = 'rgba(24,18,20,0.7)';
+    g.font = 'italic 10px serif';
+    const words = ['saber', 'tudo', 'perder', 'lembra', 'mim', 'marcada', 'Orpheu', 'Dante', 'Clara', 'Lilian', 'Kian'];
+    for (let i = 0; i < 60; i++) {
+      g.save(); g.translate(rnd() * 256, rnd() * 256); g.rotate((rnd() - 0.5) * 0.8); g.fillText(words[Math.floor(rnd() * words.length)], 0, 0); g.restore();
+    }
+    g.strokeStyle = 'rgba(90,80,80,0.35)'; g.lineWidth = 1;
+    for (let i = 0; i < 20; i++) { g.beginPath(); g.moveTo(rnd() * 256, rnd() * 256); g.lineTo(rnd() * 256, rnd() * 256); g.stroke(); }
+  }, { wrap: true, repeat: [2, 2] }),
   // RUBENS NALUTI: pardo, olhos CASTANHOS (wiki), o rosto sério e fechado de quem fala por palavras-chave
   face_rubens: face(() => {}, {
     skin: '#9a6a46',

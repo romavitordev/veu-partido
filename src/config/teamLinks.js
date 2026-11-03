@@ -15,11 +15,11 @@
 // depois grupo > trio > dupla (regra do TODO), depois a mais ESPECÍFICA (mais versões exatas), depois a que tem o líder.
 
 export const MASCARADOS = ['dalmo', 'aguiar', 'jae', 'kemi', 'labirinto', 'juan'];
-// FORÇA D (Desconjuração): Arthur, Kaiser e Joui. A Equipe Abutres é a equipe de Calamidade (sem o Kaiser) — outra
+// FORÇA D (Desconjuração): Arthur, Kaiser, Joui e a Beatrice (v4.19.0). A Equipe Abutres é a equipe de Calamidade (sem o Kaiser) — outra
 // ligação. (2026-11-02, correção do dono) THIAGO e LIZ NÃO são da Força D: são da EQUIPE E (Segredo na Floresta), com o
 // Arthur, o Kaiser e o Joui MAIS NOVOS. O especial da Equipe E só entra quando existirem essas versões jovens; até lá o
 // Thiago e a Liz podem entrar no elenco como lutadores da Ordem, sem ligação de equipe.
-export const FORCA_D = ['arthur', 'kaiser', 'joui'];
+export const FORCA_D = ['arthur', 'kaiser', 'joui', 'beatrice'];
 // ORDO CALAMITAS (Calamidade, 67 d.C.): os guerreiros dos jogos de Amphitruo — Celestine, Gaius e Amalia hoje; Faustus,
 // Marius, Remus e Cascadia entram quando estiverem no elenco
 export const ORDO_CALAMITAS = ['celestine', 'gaius', 'amalia', 'faustus', 'marius', 'remus', 'cascadia'];
@@ -52,7 +52,7 @@ export const TEAM_LINKS = {
     min: 3,
     color: 0x4a90e2,
     choreo: 'forca_d',
-    sceneProps: { arthur: { show: ['bloodBlade'] } },
+    sceneProps: { arthur: { show: ['bloodBlade'] }, beatrice: { show: ['crossbow'], hide: ['knife'] } },
   },
   os_cinco: {
     id: 'os_cinco',

@@ -185,6 +185,7 @@ export const GRAB_SCENES = {
   carina: scene({ ...S('slash_h'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('slash_h_back'), fx: { kind: 'punch', flip: true }, sound: 'punch' }, { anim: 'spin_kick', fx: 'slam', sound: 'kick', bleed: { dps: 3, duration: 2 } }),
   // RUBENS: duas marteladas curtas e a martelada no chão
   rubens: scene({ ...S('hammer_h', 0.3), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.3), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
+  beatrice: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('knife_2'), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'slam', sound: 'slashFinal' }),
   balu: scene({ ...S('hammer_h', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { ...S('hammer_diag', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   ferreiro: scene({ ...S('slash_h', 0.32), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('slash_h_back', 0.32), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'slash_finisher', fx: 'consume', sound: 'slashFinal' }),
   dalmo: scene({ ...S('body_blow', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('headbutt', 0.34), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),

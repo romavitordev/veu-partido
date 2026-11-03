@@ -15,6 +15,23 @@
       incompletas, e dar prioridade a quem fecha uma equipe (o mesmo critério que trouxe a Carina e o Rubens). Depois,
       o mesmo processo: kit pelo cânone com o que não for cânone marcado como PROPOSTA, modelo no Blender pelo MCP
       conferido em 4 vistas contra as referências, retrato, falas de vitória, voz de apresentação e cena de agarrão.
+      **Conferido na wiki (2026-11-02):**
+      - Força D (Desconjuração): Arthur, Kaiser, Joui, Dante, Erin, Beatrice, Fernando e Elizabeth. No jogo a ligação
+        só tem Arthur, Kaiser e Joui; Dante e Erin já estão no elenco. **Beatrice Portinari** (a recruta, protagonista
+        de Desconjuração, com o urutau Orpheu; vira a Existida) é a mais central que falta → recomendação para o próximo.
+      - Equipe Brasa: Tristan Monteiro, Erin Parker, Luciano Carvalho e depois Fernando Carvalho. No jogo só tem a Erin;
+        Tristan e Luciano juntos criariam a equipe. **Fernando** fecha as duas (Brasa e Força D).
+      - Escriptas: Kian, Gal Sal e Nubi já estão no jogo, sem ligação de equipe; Beatrice aparece só como prisioneira.
+      - Ordem sugerida: Beatrice → Fernando → Tristan + Luciano (a Equipe Brasa); ao entrarem, a ligação da Força D
+        passa a ter os membros de Desconjuração.
+- [~] **Beatrice Portinari** (Força D, Desconjuração) — escolhida pelo dono em 2026-11-02, em andamento. **O ORPHEU luta
+      com ela** (pedido do dono): o urutau sai do ombro, VOA e ATACA o adversário (habilidade própria), depois volta para
+      o ombro. Na forma Existida ele não aparece (no cânone a morte dele devolve as memórias).
+- [ ] **Fernando + Luciano = UM personagem com duas fichas** (pedido do dono, 2026-11-02): os irmãos Carvalho (Equipe
+      Brasa) são o MESMO lutador no elenco, cada um com habilidades, mecânicas e rituais diferentes. Durante a luta dá
+      para TROCAR entre os dois usando uma habilidade com o NOME DO OUTRO (na ficha do Fernando, a habilidade "Luciano";
+      na do Luciano, "Fernando"); a troca muda o modelo e o kit na hora. Base técnica: as formas (`characters/forms`,
+      `baseId`), como a Carina ↔ Todos os Leone, só que de ida e volta e sem gastar a barra de transformação.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no
@@ -2109,6 +2126,10 @@ Confirmadas pelo pedido:
 - [x] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur, usando
   lodo, machado, katana e Arma de Sangue. [x] Carina Leone (v4.17.0) entra no fim com o mangual e a Glock. [x] Rubens
   Naluti (v4.18.0) fecha com o Salto Fantasma e a martelada.
+- [ ] **Balu + Rubens — especial de dupla** (pedido do dono, 2026-11-02; os dois amigos dos Abutres): o Balu avança
+  para bater gritando **"RUBINHOO! VAMOS DAR UMA COÇA NELE!"**, o Rubens responde **"É RUBENS!"** e entra junto,
+  ajudando a bater. Entra como `kind: 'duo'` em `config/teamLinks.js` (com `order`: o Balu primeiro). **As habilidades
+  e golpes que cada um usa na cena serão escolhidos com o dono antes de implementar.**
 - [x] **OS CINCO — especial de grupo** (2026-11-02): Morato comanda e dispara a metralhadora; Chico combina pulso do
   scanner e clarão do farol; Xande avança de skate com o taco; Lírio prende com as Magras e golpeia com a Leonora; Guizo
   registra com a câmera e corta; Dara usa a lanterna UV e finaliza no corpo a corpo. Mantidos os itens e habilidades

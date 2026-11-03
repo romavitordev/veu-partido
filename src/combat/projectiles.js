@@ -333,6 +333,25 @@ const VISUALS = {
   flameArrow(color) {
     return flameArrow(color);
   },
+  // VIROTE da balestra (Beatrice): a haste curta escura, a ponta de aço e as penas claras atrás (aponta para +Z)
+  bolt(color) {
+    const g = new THREE.Group();
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.34, 6), new THREE.MeshBasicMaterial({ color: 0x4a3a2a }));
+    shaft.rotation.x = Math.PI / 2;
+    g.add(shaft);
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.05, 6), new THREE.MeshBasicMaterial({ color: 0xd8dce2 }));
+    tip.rotation.x = Math.PI / 2;
+    tip.position.z = 0.19;
+    g.add(tip);
+    for (const r of [0, Math.PI / 2]) {
+      const fl = new THREE.Mesh(new THREE.PlaneGeometry(0.04, 0.07), new THREE.MeshBasicMaterial({ color: 0xece8e0, side: THREE.DoubleSide }));
+      fl.rotation.set(Math.PI / 2, r, 0);
+      fl.position.z = -0.14;
+      g.add(fl);
+    }
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 4), glowMat(color, 0.3)));
+    return g;
+  },
   // GAIUS: a maça de ferro arremessada, girando
   ironMace() {
     const g = new THREE.Group();
