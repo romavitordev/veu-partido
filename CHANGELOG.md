@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.20.0 — As armas da Carina
+
+### Alterado
+- Carina: as quatro armas refeitas no Blender pelas artes e pelo texto da wiki ("Carina Leone", Arsenal), no lugar das primitivas em código. O MANGUAL de Marco Leone (cabo verde-acinzentado com os colares de bronze, a corrente preta longa e a bola de espinhos que é uma cabeça de leão com a juba em pontas); a GLOCK SILENCIADA dourada (silenciador comprido e a cabeça de leão no pé do cabo); o NUNCHAKU dourado da forma Todos os Leone ("LEONE" gravado nos bastões, as faixas escuras e a cabeça de leão em cada ponta); e a FACA de arremesso (lâmina em folha, cabo enrolado e o medalhão do leão, forma PROPOSTA: a wiki não tem arte dela).
+- O mangual e o nunchaku balançam de verdade: a corrente é simulada elo por elo, a bola do mangual atrasa e gira no golpe e o segundo bastão do nunchaku fica solto.
+- A Glock fica no coldre da coxa direita e passa para a mão só no tiro. Na Faca no Olho a faca sai do cinto e é lançada da mão esquerda (o projétil é a faca nova).
+- Pose de guarda própria com o mangual (a bola pende na altura da cintura, não na frente do rosto).
+- A Glock ficou dourada como diz o texto da wiki; a arte oficial a mostra preta.
+
 ## v4.19.1 — Força D completa
 
 ### Alterado

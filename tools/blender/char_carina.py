@@ -184,8 +184,10 @@ for side, a0, a1 in ((1, 0.35, 1.5), (-1, -0.35, -1.5)):  # as duas correntes em
 for i in range(3):  # as facas de arremesso no lado esquerdo do cinto (x > 0)
     a = 1.05 + i * 0.16
     p = Vector((math.sin(a) * 0.19 * H, -math.cos(a) * 0.14 * H, hz + 0.03 * H))
-    b.add(f'knifeHandle{i}', box(tuple(p), (0.012, 0.012, 0.05), bevel=0.002), beltm, region='torso', subdiv=0)
-    b.add(f'knifeBlade{i}', box((p.x, p.y, p.z - 0.06), (0.006, 0.02, 0.07), bevel=0.001), steel, region='torso', subdiv=0)
+    # a da frente é a que ela tira no arremesso (Faca no Olho): vira peça (prop_beltKnife*) para sumir do cinto
+    hn, bn = ('prop_beltKnifeH', 'prop_beltKnifeB') if i == 0 else (f'knifeHandle{i}', f'knifeBlade{i}')
+    b.add(hn, box(tuple(p), (0.012, 0.012, 0.05), bevel=0.002), beltm, region='torso', subdiv=0)
+    b.add(bn, box((p.x, p.y, p.z - 0.06), (0.006, 0.02, 0.07), bevel=0.001), steel, region='torso', subdiv=0)
 
 # ================================================================ CABELO castanho LONGO E SOLTO + as MECHAS
 # (arte de Calamidade: repartido no meio, as cortinas caem pela frente dos ombros até o peito e o resto até o meio

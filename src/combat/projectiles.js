@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { applyHit } from './damage.js';
 import { inBounds } from './positioning.js';
 import { glowMat } from '../models/rig.js';
-import { knife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow } from '../models/weapons.js';
+import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow } from '../models/weapons.js';
 import { createMistZone } from './abilities.js';
 import { addBloodPool } from './bloodPools.js';
 import { inscribe } from './kianPowers.js';
@@ -135,6 +135,17 @@ const VISUALS = {
       wire.add(s);
     }
     g.userData.spin = wire;
+    return g;
+  },
+  // a faca de arremesso da Carina com a cabeça de leão (models/weapons.js → leoneKnife)
+  leoneKnife(color) {
+    const g = new THREE.Group();
+    const k = leoneKnife();
+    k.rotation.x = Math.PI / 2;
+    g.add(k);
+    const glow = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6), glowMat(color, 0.3));
+    g.add(glow);
+    g.userData.spin = k;
     return g;
   },
   knife(color) {

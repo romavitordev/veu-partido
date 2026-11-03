@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.20.0 — As armas da Carina
+- O mangual de Marco Leone, a Glock dourada, as facas e o nunchaku dourado da Carina têm modelos novos, com a cabeça de leão dos Leone.
+- A bola do mangual pende e balança de verdade na corrente; no nunchaku o segundo bastão fica solto.
+- A Glock sai do coldre da coxa no tiro e a Faca no Olho sai do cinto.
+
 ## v4.19.1 — Força D completa
 - Dante e Erin entram na Força D: o especial de equipe agora tem os seis membros.
 - O Dante fecha a Espiral de Lodo e a Erin joga a granada Supernova.

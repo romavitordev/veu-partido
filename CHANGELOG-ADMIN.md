@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v4.20.0 — As armas da Carina
+
+- Versão: `VERSION` 4.19.1 → **4.20.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: o item do TODO "Carina — armas: melhorar o USO e os MODELOS".
+- Modelos no Blender (`tools/blender/npc_carina_{flail,glock,knife,nunchaku}.py`, peças em comum em `npc_carina_lib.py`: cabeça de leão, corrente em juntas, texto em relevo) → `public/npcs/carina_*.glb`, registrados em `NPC_MODELS` (`models/npcRig.js`). Cada elo da corrente é uma junta `J_c0..J_c11` / `J_n0..J_n3`; a bola é `J_ball`, o 2º bastão `J_stickB`, a boca do silenciador `J_muzzle`.
+- O Blender MCP não conectou nesta sessão (localhost:9876 sem resposta): as 4 vistas foram conferidas em renders sem interface (`preview_npc.py`). Falta a conferência pelo MCP.
+- `models/weapons.js`: `ropeChain(joints, tail, opts)` (verlet com gravidade, amortecimento e chão; re-semeia se a âncora saltar mais de 2 m) devolve `tick(dt)`; `mangual()`, `nunchaku({gold})`, `glockLeone()` e o novo `leoneKnife()` usam o GLB e caem no modelo em código se faltar.
+- `models/props.js`: `holsterGlock` (2ª Glock presa na coxa direita, `rig.attach('lR')`), `throwKnife` na mão esquerda, `addTicker` registra o `tick` da arma em `rig.tickers`; `combat/Fighter.js` chama os tickers depois do `anim.update`.
+- `characters/carina.js`: ranged `hideProp: 'flail+holsterGlock'`; Faca no Olho com `throw_l`, `hand: 'L'`, `showProp: 'throwKnife'`, `hideProp: 'beltKnifeH+beltKnifeB'`, projétil `leoneKnife`; guarda `idle_flail` (novo clipe em `anim/clips.js`). `forms/carina_leone.js`: ranged esconde `nunchaku+holsterGlock`. `combat/abilities.js`: `throwProjectile` sai da mão do `a.hand`.
+- `tools/blender/char_carina.py`: a faca do cinto virou `prop_beltKnifeH`/`prop_beltKnifeB` (some no arremesso); `carina.glb` reexportado. `check-roster` aceita `hideProp` com vários props.
+- Testado no navegador: a bola atrasa e varre o arco no combo; □ troca a Glock do coldre para a mão e volta; a faca do cinto some, aparece na mão e volta; na forma Leone o 2º bastão balança. `npm test` 62/62, `npm run check` ok.
+
 ## v4.19.1 — Força D completa
 
 - Versão: `VERSION` 4.19.0 → **4.19.1** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: colocar Dante e Erin na ligação da Força D (pergunta deixada no TODO na v4.19.0).

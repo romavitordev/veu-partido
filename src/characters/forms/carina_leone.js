@@ -54,7 +54,7 @@ export default {
     air: base.melee.air,
   },
 
-  ranged: { ...base.ranged, hideProp: 'nunchaku', count: 3, cooldown: 1.9 },
+  ranged: { ...base.ranged, hideProp: 'nunchaku+holsterGlock', count: 3, cooldown: 1.9 },
 
   abilities: [
     { ...byId.facaNoOlho, cooldown: 6, projectile: { ...byId.facaNoOlho.projectile, damage: 36, onHit: { ...byId.facaNoOlho.projectile.onHit, stun: 0.7 } } },

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, martelo, glockSilenciada, balestra } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1372,6 +1372,9 @@ export function addRazielVerdadeiroProps(rig) {
 }
 
 // CARINA (forma normal): o MANGUAL do pai sempre na mão; a GLOCK SILENCIADA dourada só no □ (o Saque Rápido)
+// (2026-11-03, pedido do dono: "a Glock saindo do coldre da coxa; a faca saindo do cinto no arremesso") a Glock fica
+// no COLDRE da coxa direita (holsterGlock) e vai para a mão no □; a faca de arremesso aparece na mão ESQUERDA (o lado
+// do cinto em que elas ficam) e a da frente do cinto some enquanto ela arremessa (prop_beltKnife* do modelo)
 function carinaGun(rig) {
   const gun = glockLeone();
   gun.rotation.x = -0.1;
@@ -1380,6 +1383,28 @@ function carinaGun(rig) {
   rig.sockets.handR.add(gun);
   rig.props.glock = gun;
   rig.muzzle = gun.userData.muzzle;
+  // o coldre (tools/blender/char_carina.py): na coxa direita, a 35% do quadril ao joelho, por fora; a pistola entra de
+  // cano para baixo, o cabo com a cabeça de leão para cima e para trás
+  if (rig.attach && rig.joints && rig.joints.lR && rig.joints.kR) {
+    const wp = (n) => rig.joints[n].getWorldPosition(new THREE.Vector3());
+    const H = (wp('hd').y - wp('hips').y) / 0.73;
+    const hp = wp('lR').lerp(wp('kR'), 0.35);
+    const holstered = glockLeone();
+    holstered.position.copy(hp.sub(wp('lR'))).add(new THREE.Vector3(-0.088 * H, 0.08 * H, 0.012 * H));
+    rig.attach('lR', holstered);
+    rig.props.holsterGlock = holstered;
+  }
+  const kn = leoneKnife();
+  kn.position.y = -0.02;
+  kn.rotation.x = -0.25;
+  kn.visible = false;
+  rig.sockets.handL.add(kn);
+  rig.props.throwKnife = kn;
+}
+// a corrente do mangual / do nunchaku balança a cada quadro (Fighter.updateVisuals chama rig.tickers)
+function addTicker(rig, obj) {
+  if (!obj.userData.tick) return;
+  (rig.tickers || (rig.tickers = [])).push(obj.userData.tick);
 }
 export function addCarinaProps(rig) {
   const { sockets, props } = rig;
@@ -1387,6 +1412,7 @@ export function addCarinaProps(rig) {
   inFist(flail, GRIP_HEAVY);
   sockets.handR.add(flail);
   props.flail = flail;
+  addTicker(rig, flail);
   carinaGun(rig);
   for (const [p, v] of [['streakGold', false], ['streakCyan', true]]) if (props[p]) rig.showProp(p, v);
 }
@@ -1402,6 +1428,7 @@ export function addCarinaLeoneProps(rig) {
   inFist(nun);
   sockets.handR.add(nun);
   props.nunchaku = nun;
+  addTicker(rig, nun);
   carinaGun(rig);
   const book = arnaldoGrimoire();
   book.position.set(0, -0.09, 0.05);

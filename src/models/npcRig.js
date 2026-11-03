@@ -20,6 +20,11 @@ export const NPC_MODELS = {
   xande_skate: 'npcs/xande_skate.glb', // o Skate Caótico (escudo) do Xande
   aguiar_axe: 'npcs/aguiar_axe.glb', // o machado do Mutilador Noturno
   gal_blade: 'npcs/gal_blade.glb', // a Ereškigal, as lâminas em meia-lua do Gal
+  // as armas da Carina pelas artes oficiais (tools/blender/npc_carina_*.py): a corrente do mangual e do nunchaku em juntas
+  carina_flail: 'npcs/carina_flail.glb',
+  carina_nunchaku: 'npcs/carina_nunchaku.glb',
+  carina_glock: 'npcs/carina_glock.glb',
+  carina_knife: 'npcs/carina_knife.glb',
 };
 const loaded = {};
 

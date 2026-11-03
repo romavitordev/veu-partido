@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.19.1';
+export const VERSION = '4.20.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.20.0',
+    date: '2026-11-03',
+    title: 'As armas da Carina',
+    items: [
+      'CARINA: o mangual de Marco Leone, a Glock dourada, as facas e o nunchaku dourado têm modelos novos, com a cabeça de leão dos Leone.',
+      'CARINA: a bola do mangual pende e balança de verdade na corrente; no nunchaku o segundo bastão fica solto.',
+      'CARINA: a Glock sai do coldre da coxa no tiro e a Faca no Olho sai do cinto, na mão esquerda.',
+    ],
+  },
   {
     v: '4.19.1',
     date: '2026-11-03',

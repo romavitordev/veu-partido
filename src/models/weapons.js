@@ -20,6 +20,66 @@ function extrude(shape, depth = 0.012) {
   return g;
 }
 
+// CORRENTE QUE BALANÇA DE VERDADE (pedido do dono, 2026-11-03: "a bola do mangual pendendo e girando de verdade na
+// corrente em vez de seguir rígida; o nunchaku com os dois bastões soltos"): uma corda de partículas (Verlet) no espaço do
+// mundo, presa na primeira junta. A mão puxa, a inércia e a gravidade fazem o resto; cada junta gira para apontar para a
+// próxima partícula. joints: as juntas encadeadas (cada uma filha da anterior); tail: o ponto, local à última junta, que
+// ela deve apontar (o centro da bola / a ponta do bastão). Devolve tick(dt) — o lutador chama a cada quadro.
+const _ra = new THREE.Vector3(), _rb = new THREE.Vector3(), _rq = new THREE.Quaternion(), _rd = new THREE.Vector3();
+export function ropeChain(joints, tail, { gravity = 9.8, damping = 0.985, floor = 0.04, iterations = 6 } = {}) {
+  const offs = joints.map((j, i) => (i < joints.length - 1 ? joints[i + 1].position.clone() : tail.clone()));
+  const lens = offs.map((o) => o.length());
+  const dirs = offs.map((o) => o.clone().normalize());
+  const rest = joints.map((j) => j.quaternion.clone());
+  const n = joints.length + 1;
+  const P = Array.from({ length: n }, () => new THREE.Vector3());
+  const Q = Array.from({ length: n }, () => new THREE.Vector3());
+  let live = false;
+  const seed = () => {
+    joints.forEach((j, i) => j.quaternion.copy(rest[i]));
+    joints[0].updateWorldMatrix(true, true);
+    joints.forEach((j, i) => j.getWorldPosition(P[i]));
+    P[n - 1].copy(tail).applyMatrix4(joints[joints.length - 1].matrixWorld);
+    P.forEach((p, i) => Q[i].copy(p));
+    live = true;
+  };
+  return function tick(dt) {
+    if (!joints[0].parent) return;
+    joints[0].parent.updateWorldMatrix(true, false);
+    const anchor = _ra.copy(joints[0].position).applyMatrix4(joints[0].parent.matrixWorld);
+    // na primeira vez, ou se o lutador foi teleportado (a âncora pulou longe), a corrente recomeça pendurada
+    if (!live || anchor.distanceTo(P[0]) > 2) seed();
+    const h = Math.min(Math.max(dt, 1 / 240), 1 / 30);
+    P[0].copy(anchor);
+    Q[0].copy(anchor);
+    for (let i = 1; i < n; i++) {
+      _rb.copy(P[i]).sub(Q[i]).multiplyScalar(damping);
+      Q[i].copy(P[i]);
+      P[i].add(_rb);
+      P[i].y -= gravity * h * h;
+    }
+    for (let k = 0; k < iterations; k++) {
+      for (let i = 0; i < n - 1; i++) {
+        _rd.copy(P[i + 1]).sub(P[i]);
+        const d = _rd.length() || 1e-6;
+        const diff = (d - lens[i]) / d;
+        if (i === 0) P[1].addScaledVector(_rd, -diff);
+        else { P[i].addScaledVector(_rd, diff * 0.5); P[i + 1].addScaledVector(_rd, -diff * 0.5); }
+      }
+      for (let i = 1; i < n; i++) if (P[i].y < floor) P[i].y = floor; // não atravessa o chão
+    }
+    // cada junta aponta para a próxima partícula (de cima para baixo: a junta de baixo usa a rotação já atualizada)
+    for (let i = 0; i < joints.length; i++) {
+      const j = joints[i];
+      j.parent.updateWorldMatrix(false, false);
+      j.parent.getWorldQuaternion(_rq).invert();
+      _rd.copy(P[i + 1]).sub(P[i]).normalize().applyQuaternion(_rq);
+      j.quaternion.setFromUnitVectors(dirs[i], _rd);
+      j.updateWorldMatrix(false, false);
+    }
+  };
+}
+
 // Perfil de uma lâmina CURVA de katana no plano XY (empunhadura em y=0, ponta em y=-len, curvatura para +X).
 // side: 'ji' = corpo (do dorso até a linha do hamon), 'ha' = fio (do hamon até o gume), 'all' = inteira.
 function katanaShape(len, width, sori, side = 'all') {
@@ -327,6 +387,13 @@ export function knife() {
   blade.rotation.y = Math.PI / 2;
   g.add(blade);
   return g;
+}
+
+// FACA DE ARREMESSO DA CARINA (wiki: "algumas decoradas com o símbolo dos Leone"; tools/blender/npc_carina_knife.py):
+// a lâmina em folha, o cabo enrolado, a argola e o medalhão com a cabeça de leão. Sem o .glb, a faca comum.
+export function leoneKnife() {
+  const m = buildNpcModel('carina_knife', { outline: 0.003, noOutline: ['lion', 'wrap'] });
+  return m ? m.root : knife();
 }
 
 // Lâmina longa curva do Injustiça (arco dos dois lados, empunhadura com aro dourado)
@@ -2585,6 +2652,16 @@ export function tenebrisPendant() {
 // bastões e corrente, com o brasão dos Leone nas pontas): o bastão da mão na origem seguindo para -Y, a corrente curta e
 // o segundo bastão solto, um pouco aberto (o giro). `gold`: a versão aprimorada (a forma Todos os Leone)
 export function nunchaku({ gold = false } = {}) {
+  // o DOURADO da forma Todos os Leone vem do Blender (tools/blender/npc_carina_nunchaku.py, pela arte oficial): o
+  // "LEONE" gravado, as faixas escuras, a cabeça de leão nas pontas; o bastão B pende solto na corrente (ropeChain)
+  if (gold) {
+    const m = buildNpcModel('carina_nunchaku', { outline: 0.004, noOutline: ['text', 'lion', 'band'] });
+    if (m) {
+      const joints = ['n0', 'n1', 'n2', 'n3', 'stickB'].map(m.joint);
+      if (joints.every(Boolean)) m.root.userData.tick = ropeChain(joints, new THREE.Vector3(0, -0.33, 0), { damping: 0.975 });
+      return m.root;
+    }
+  }
   const g = new THREE.Group();
   const goldMat = toon(0xe0b030, { emissive: 0x3a2604 });
   const blue = gold ? 0 : 0x2a5ad0, ring = gold ? 0 : 0xb8b8c0;
@@ -2622,6 +2699,13 @@ export function nunchaku({ gold = false } = {}) {
 // GLOCK SILENCIADA DA CARINA (cânone: dourada, com a CABEÇA DE LEÃO no cabo): cano para -Y, topo em +Z, o silenciador na
 // ponta; userData.muzzle na boca do silenciador
 export function glockLeone() {
+  // o modelo do Blender (tools/blender/npc_carina_glock.py): o ferrolho com as ranhuras, o cabo com a cabeça de leão e o
+  // silenciador comprido da arte oficial; a junta J_muzzle é a boca do silenciador
+  const m = buildNpcModel('carina_glock', { outline: 0.003, noOutline: ['lion'] });
+  if (m) {
+    m.root.userData.muzzle = m.joint('muzzle') || m.root;
+    return m.root;
+  }
   const g = new THREE.Group();
   const gold = toon(0xd4a838, { emissive: 0x2a1a04 });
   const dark = 0x1c1c20;
@@ -2661,6 +2745,15 @@ export function glockLeone() {
 // depois de "Olhos" a Carina passa a usá-lo): o cabo de madeira com as faixas douradas para -Y, a corrente e a bola de
 // espinhos pendendo, com o brasão dos Leone
 export function mangual() {
+  // o modelo do Blender (tools/blender/npc_carina_flail.py, pela arte oficial "Mangual de Marco Leone em Calamidade"): o
+  // cabo de metal com os colares de bronze, a corrente longa e a CABEÇA DE LEÃO com a juba em pontas; a corrente é uma
+  // corda de verdade (ropeChain): a bola fica para trás no golpe, gira e pende quando ela para
+  const m = buildNpcModel('carina_flail', { outline: 0.004, noOutline: ['chain', 'lion'] });
+  if (m) {
+    const joints = [...Array.from({ length: 12 }, (_, i) => m.joint('c' + i)), m.joint('ball')];
+    if (joints.every(Boolean)) m.root.userData.tick = ropeChain(joints, new THREE.Vector3(0, -0.09, 0));
+    return m.root;
+  }
   const g = new THREE.Group();
   const gold = toon(0xd4a838, { emissive: 0x2a1a04 });
   const handle = part(new THREE.CylinderGeometry(0.019, 0.017, 0.34, 8), 0x4a2c18);

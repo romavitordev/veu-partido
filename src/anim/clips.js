@@ -73,6 +73,15 @@ export const CLIPS = {
     ],
   },
   // Arthur: só o braço direito existe. Nada aqui move o braço esquerdo.
+  // CARINA com o mangual (2026-11-03): o punho esquerdo na guarda e o braço do mangual BAIXO e aberto, o cabo à frente
+  // da coxa — a cabeça de leão pende na corrente ao lado da perna e balança com o corpo (models/weapons.js → ropeChain)
+  idle_flail: {
+    dur: 1.5, loop: true, keys: [
+      k(0, { ...GUARD, sR: [-0.35, 0, -0.32], eR: [-0.75, 0, 0] }),
+      k(0.5, { ...GUARD, h: -0.11, sp: [0.14, 0.35, 0], sR: [-0.42, 0, -0.36], eR: [-0.85, 0, 0] }),
+      k(1, { ...GUARD, sR: [-0.35, 0, -0.32], eR: [-0.75, 0, 0] }),
+    ],
+  },
   idle_onearm: {
     dur: 1.6, loop: true, keys: [
       k(0, { ...LEGS, hip: [0, -0.2, 0], sp: [0.12, 0.25, 0.04], hd: [0, -0.2, 0], sR: [-0.8, 0, -0.2], eR: [-1.9, 0, 0] }),

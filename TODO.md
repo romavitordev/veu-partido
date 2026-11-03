@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.19.1 (2026-11-03: Dante e Erin na Força D e o especial da equipe com os seis). Antes: v4.19.0 Beatrice Portinari e o Orpheu; v4.18.0 Rubens Naluti fecha a Equipe Abutres; v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.20.0 (2026-11-03: as armas da Carina refeitas no Blender, o mangual e o nunchaku balançando na corrente, a Glock no coldre e a faca no cinto). Antes: v4.19.1 Dante e Erin na Força D e o especial da equipe com os seis; v4.19.0 Beatrice Portinari e o Orpheu; v4.18.0 Rubens Naluti fecha a Equipe Abutres; v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1691,7 +1691,7 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 
 # MODELOS — PRÓXIMOS PASSOS
 
-- [ ] **Carina — armas: melhorar o USO e os MODELOS** (pedido do dono, 2026-11-02). Os modelos do MANGUAL de Marco
+- [x] **Carina — armas: melhorar o USO e os MODELOS** (pedido do dono, 2026-11-02; feito na v4.20.0). Os modelos do MANGUAL de Marco
       Leone, da GLOCK SILENCIADA dourada (cabeça de leão), das FACAS de arremesso e do NUNCHAKU dourado ainda são
       primitivas em código (`models/weapons.js`): refazer no Blender pelo MCP com as referências da wiki (o nunchaku com
       "Leone" escrito e o brasão nas pontas; o mangual decorado). E o USO: a pegada e os golpes (a bola do mangual

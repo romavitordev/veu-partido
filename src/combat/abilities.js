@@ -1920,7 +1920,8 @@ Object.assign(ABILITY_TYPES, {
       };
       tl.add(a.windup, () => {
         if (a.showProp) f.rig.showProp(a.showProp, false); // o objeto sai da mão
-        const origin = f.rig.sockets.handR.getWorldPosition(new THREE.Vector3());
+        // a.hand 'L': sai da mão esquerda (a Carina tira a faca do lado esquerdo do cinto e arremessa com ela)
+        const origin = f.rig.sockets[a.hand === 'L' ? 'handL' : 'handR'].getWorldPosition(new THREE.Vector3());
         origin.y = Math.max(origin.y, 1.3);
         const target = opp && opp.state !== 'ko' ? opp.chestPos() : origin.clone().add(forwardFromYaw(f.yaw).multiplyScalar(10));
         const dir = target.sub(origin).normalize();
