@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "ALLENATI",
   "menu.sec.game": "GIOCO",
   "menu.pve": "L'ALTRO LATO",
-  "menu.pve.desc": "Modalità PvE: dungeon, boss dell'Altro Lato e progressione. Prossimamente.",
+  "menu.pve.desc": "Modalità PvE: dungeon, boss dell'Altro Lato e progressione.",
   "menu.soon": "PROSSIMAMENTE",
   "menu.soon.text": "L'Altro Lato è ancora in preparazione: dungeon nel territorio delle creature, boss, progressione durante la campagna e cooperativa. Attendi i prossimi aggiornamenti.",
   "menu.soon.ok": "OK",

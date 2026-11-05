@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "PRATICAR",
   "menu.sec.game": "JOGO",
   "menu.pve": "OUTRO LADO",
-  "menu.pve.desc": "Modo PvE: dungeons, chefes do Outro Lado e progressão. Em breve.",
+  "menu.pve.desc": "Modo PvE: a 1ª dungeon, o Território do Espreitador, com chefe, melhorias e progressão.",
   "menu.soon": "EM BREVE",
   "menu.soon.text": "O Outro Lado ainda está sendo preparado: dungeons no território das criaturas, chefes, evolução durante a campanha e cooperativo. Aguarde as próximas atualizações.",
   "menu.soon.ok": "OK",

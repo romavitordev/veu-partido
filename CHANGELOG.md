@@ -1,5 +1,23 @@
 # Changelog
 
+## v4.25.0 — Outro Lado: o Território do Espreitador
+
+### Adicionado
+- OUTRO LADO (modo PvE, TODO §3–§14): a opção do menu principal abre (sai o selo EM BREVE) com a 1ª fase jogável.
+  - Hub do modo: continuar, nova tentativa (com confirmação), melhorias permanentes, reiniciar campanha e apagar só os dados do Outro Lado.
+  - Dificuldade Fácil, Normal e Difícil (CPU do chefe e dos Devorados, vida, dano e chance de cura).
+  - Mapa novo, a Mansão Endiabrada (`tools/blender/arena_mansao.py`): hall com o relógio parado às 2:11, sala de estar, corredor, biblioteca, quarto principal e o corredor de saída, com a goteira ao fundo.
+  - Os DEVORADOS (cânone, Cópia Observada): cópias cinzentas do lutador do jogador, com olhos amarelos e lágrimas. Cada sala de luta tranca as portas até cair o Devorado e as cópias menores. Os inimigos menores podem deixar cura.
+  - A fresta do corredor: os olhos do Espreitador espiam, e quem olha para a fresta perde Sanidade (ensina o Drenar Energia antes da luta).
+  - O chefe, O ESPREITADOR, com modelo próprio (`tools/blender/char_espreitador.py`): Pancada, Drenar Energia pelo olhar, Correr pelas Frestas (os armários do quarto), o bote de dentro do armário, Cópia Observada e Fortalecer. O Enigma de Medo: bater nos armários os TRANCA; sem fresta aberta ele fica apavorado, lento e vulnerável.
+  - A recompensa surge onde o chefe caiu; ao pegar, a porta de saída se abre e a câmera acompanha o personagem pelo corredor.
+  - Experiência e níveis da tentativa, com 3 cartas de melhoria a cada nível (10 melhorias, 4 sinergias).
+  - Progressão permanente por personagem: cada chefe derrotado dá +1 nível e +1 ponto, gastos numa árvore de vida, dano, defesa e sanidade.
+  - Profundidade: com uma dungeon só, a saída leva de novo ao Território, mais forte (+12% de vida e dano por nível).
+  - HUD do modo: a vida do jogador no canto inferior esquerdo, a barra do chefe no centro do alto, o lugar e o objetivo, nível e experiência, as melhorias e as sinergias.
+- Salvamento separado (`veu_pve_v1`), com versão e proteção contra dado corrompido; a morte apaga só a tentativa; o ponto permanente não duplica.
+- `docs/outro-lado-playtest.md`: as notas da 1ª rodada de testes e o que mudou por causa delas.
+
 ## v4.24.1 — Ajustes: Existida e o mangual da Carina
 
 ### Removido

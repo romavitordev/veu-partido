@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v4.25.0 — Outro Lado: o Território do Espreitador
+
+- Versão: `VERSION` 4.24.1 → **4.25.0** (`package.json` e `package-lock.json`). Data: 2026-11-05. Pedido do dono: "leia tudo sobre o modo Outro Lado e comece a produção. Quero que tenha pelo menos uma fase jogável pra lançar".
+- Plano escrito antes de produzir: TODO §3.4 (cânone, arquitetura, mapa, progressão, save, transição, HUD, fora do escopo e a ordem). Os 9 passos foram feitos.
+- Módulos novos em `src/pve/`: `Dungeon.js` (no lugar da `Match`, sobre o `World` com 2 lutadores, o jogador e o "inimigo da vez", trocado por `applyDef`; quem espera fica `lurking`), `espreitador.js` (cérebro do chefe, `Closet`, `PeekingCrack`), `devorado.js`, `pickups.js`, `pveHud.js`, `upgrades.js`, `save.js`, `dungeons.js` e `flow.js` (telas). Chefe em `src/characters/bosses/espreitador.js`, fora do elenco.
+- Ganchos no código comum, sem efeito fora do modo: `World.cameraFocus`, `arena.focus` + `lightPool` no `glbArena` (7 luzes reaproveitadas pelas mais perto do jogador), `opp.lurking` em `lostTrack`/`separate`, `pveMods` em `damage.js` e `Fighter` (dano, dano recebido, custo, regeneração, roubo de vida), `ensureModels`/modelos `lazy`, sons sintetizados `drip`, `closetSlam`, `creak`, `pickup` e `levelUp`.
+- `Screens.js`: sai o `soon` do Outro Lado; `MODES.pve` (só o P1 escolhe). `main.js`: estados `pve*` delegados ao `flow.js`, opção de pausa "sair da dungeon". `menu.pve.desc` nas 13 línguas sem o "em breve".
+- Arquivos: `public/arenas/mansao.glb` (824 KB) e `public/models/espreitador.glb` (1,5 MB), carregados só ao entrar no modo.
+- Playtest (rodada 1, `docs/outro-lado-playtest.md`): achados e corrigidos a saída trancada depois do chefe, os armários abertos depois da morte dele, a 1ª sala pesada (Devorado 700 → 560, −20% de dano), o chefe pesado (2600 → 2100, armário trancado 15 → 20 s), o 1º nível tardio (XP 25/12 → 35/15), a luta escapando de sala, a falta do modelo, o fim desmontando o mundo no meio do quadro e a câmera de exploração.
+- O Blender MCP estava desconectado: o modelo foi conferido nas 4 vistas dentro do jogo. Fica a passada de polimento no Blender MCP.
+- Testes: `tests/pve.test.js` (6). `npm test` 68/68, `npm run check` ok, `vite build` ok.
+
 ## v4.24.1 — Ajustes: Existida e o mangual da Carina
 
 - Versão: `VERSION` 4.24.0 → **4.24.1** (`package.json` e `package-lock.json`, que tinha ficado em 4.23.0). Data: 2026-11-05. Revisão do commit `8866b77` (v4.24.0, feito fora desta sessão) contra o pedido do dono.

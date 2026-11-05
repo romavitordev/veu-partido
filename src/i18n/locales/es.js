@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "PRACTICAR",
   "menu.sec.game": "JUEGO",
   "menu.pve": "EL OTRO LADO",
-  "menu.pve.desc": "Modo PvE: mazmorras, jefes del Otro Lado y progresión. Próximamente.",
+  "menu.pve.desc": "Modo PvE: mazmorras, jefes del Otro Lado y progresión.",
   "menu.soon": "PRÓXIMAMENTE",
   "menu.soon.text": "El Otro Lado aún se está preparando: mazmorras en el territorio de las criaturas, jefes, progresión durante la campaña y cooperativo. Espera las próximas actualizaciones.",
   "menu.soon.ok": "OK",

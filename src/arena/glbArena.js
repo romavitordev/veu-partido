@@ -36,6 +36,34 @@ export function createGLBArena(cfg) {
   let mist = null;
   let fires = [];
   let beacons = [];
+  const lightPool = { spots: [], lights: [], clock: 0 };
+  // as luzes do pool vão para as lâmpadas mais perto do foco (refeito 4x por segundo; a troca acende devagar)
+  function updateLightPool(dt) {
+    const P = lightPool;
+    P.clock -= dt;
+    const f = arena.focus;
+    if (P.clock <= 0 && f) {
+      P.clock = 0.25;
+      const near = P.spots.map((L) => ({ L, d: (L.pos[0] - f.x) ** 2 + (L.pos[2] - f.z) ** 2 })).sort((a, b) => a.d - b.d).slice(0, P.lights.length).map((x) => x.L);
+      const free = P.lights.filter((pl) => !near.includes(pl.spot));
+      for (const L of near) {
+        if (P.lights.some((pl) => pl.spot === L)) continue;
+        const pl = free.shift();
+        if (!pl) break;
+        pl.spot = L;
+        pl.fade = 0;
+        pl.light.color.set(L.color);
+        pl.light.distance = L.distance ?? 15;
+        pl.light.position.set(...L.pos);
+      }
+    }
+    for (const pl of P.lights) {
+      if (!pl.spot) continue;
+      pl.fade = Math.min(1, (pl.fade ?? 1) + dt * 3);
+      const k = pl.spot.flicker ? (Math.sin(time * 23 + pl.seed) * Math.sin(time * 7.3 + pl.seed * 2) > 0.93 ? 0.15 : 0.85 + Math.sin(time * 9 + pl.seed) * 0.1) : 1;
+      pl.light.intensity = pl.spot.intensity * pl.fade * k;
+    }
+  }
 
   const arena = {
     id: cfg.id,
@@ -47,6 +75,7 @@ export function createGLBArena(cfg) {
     occluders,
     solids,
     spawns: cfg.spawns,
+    focus: cfg.lightPool ? null : undefined, // o foco do pool de luzes (World o move para o jogador)
     fireZones: cfg.fireZones || [], // fogo pisável que queima (arena/fireZones.js)
 
     build(scene) {
@@ -156,8 +185,20 @@ export function createGLBArena(cfg) {
       // (a luz delas some do cálculo, não do cenário: o fogo e as lâmpadas continuam acesos como objetos)
       const G = gfxProfile();
       const points = cfg.lights.filter((L) => L.type === 'point').sort((a, b) => b.intensity - a.intensity).slice(0, G.pointLights);
+      // cfg.lightPool (mapas longos do OUTRO LADO): poucas luzes pontuais de verdade, que vão para as lâmpadas MAIS
+      // PERTO do foco (arena.focus, o jogador). O número de luzes não muda (trocar faria recompilar os materiais)
+      if (cfg.lightPool) {
+        lightPool.spots = cfg.lights.filter((L) => L.type === 'point');
+        const n = Math.min(lightPool.spots.length, Math.max(2, Math.min(cfg.lightPool, G.pointLights + 2)));
+        for (let i = 0; i < n; i++) {
+          const light = new THREE.PointLight(0xffffff, 0, 10, 2);
+          group.add(light);
+          lightPool.lights.push({ light, spot: null, seed: Math.random() * 10 });
+        }
+        lightPool.clock = 0;
+      }
       for (const L of cfg.lights) {
-        if (L.type === 'point' && !points.includes(L)) continue;
+        if (L.type === 'point' && (cfg.lightPool || !points.includes(L))) continue;
         let light;
         if (L.type === 'hemi') light = new THREE.HemisphereLight(L.sky, L.ground, L.intensity);
         else if (L.type === 'ambient') light = new THREE.AmbientLight(L.color, L.intensity);
@@ -188,6 +229,7 @@ export function createGLBArena(cfg) {
 
     update(dt) {
       time += dt;
+      if (lightPool.lights.length) updateLightPool(dt);
       for (const f of flicker) {
         const k = Math.sin(time * 23 + f.seed) * Math.sin(time * 7.3 + f.seed * 2) > 0.93 ? 0.15 : 1;
         if (f.light) f.light.intensity = f.base * (0.85 + Math.sin(time * 9 + f.seed) * 0.1) * k;

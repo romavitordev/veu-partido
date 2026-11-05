@@ -1,5 +1,5 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
 const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA };
@@ -89,6 +89,20 @@ export const ARENAS = {
     create: () => createGLBArena(TIPORA),
   },
 };
+
+// mapas do OUTRO LADO (PvE): fora da seleção (não entram em ARENA_ORDER) e carregados só ao entrar no modo
+export const PVE_ARENAS = { mansao: MANSAO };
+ARENAS.mansao = {
+  name: 'Mansão Endiabrada',
+  description: 'O território do Espreitador: corredores, armários entreabertos e o relógio parado nas 2:11.',
+  colors: ['#020203', '#3e2a1c', '#f2c230'],
+  available: true,
+  pve: true,
+  create: () => createGLBArena(MANSAO),
+};
+export async function preloadPveArena(id) {
+  return preloadArena(PVE_ARENAS[id]);
+}
 
 export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora'];
 export const DEFAULT_ARENA = 'ruinas';

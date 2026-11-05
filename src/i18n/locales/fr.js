@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "S'ENTRAÎNER",
   "menu.sec.game": "JEU",
   "menu.pve": "L'AUTRE CÔTÉ",
-  "menu.pve.desc": "Mode JcE : donjons, boss de l'Autre Côté et progression. Bientôt.",
+  "menu.pve.desc": "Mode JcE : donjons, boss de l'Autre Côté et progression.",
   "menu.soon": "BIENTÔT",
   "menu.soon.text": "L'Autre Côté est encore en préparation : donjons sur le territoire des créatures, boss, progression pendant la campagne et coop. Attends les prochaines mises à jour.",
   "menu.soon.ok": "OK",

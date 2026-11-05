@@ -27,7 +27,8 @@ const BLENDER_MODELS = {
   chico: { url: 'models/chico.glb', props: addChicoProps }, // Os Cinco: o técnico (óculos com gambiarra, fones, bolsa com toca-discos)
   carina: { url: 'models/carina.glb', props: addCarinaProps }, // Equipe Abutres: a artista marcial (o Mangual do pai na mão, Glock no □)
   rubens: { url: 'models/rubens.glb', props: addRubensProps }, // Equipe Abutres: o paramédico (o Martelo nas duas mãos, Glock Silenciada no □)
-  beatrice: { url: 'models/beatrice.glb', props: addBeatriceProps }, // Força D: a florista (o canivete na mão, a balestra no □, o Orpheu no ombro)
+  beatrice: { url: 'models/beatrice.glb', props: addBeatriceProps },
+  espreitador: { url: 'models/espreitador.glb', props: null, lazy: true }, // OUTRO LADO: o chefe da Mansão (só carrega no modo) // Força D: a florista (o canivete na mão, a balestra no □, o Orpheu no ombro)
   dara: { url: 'models/dara.glb', props: addDaraProps }, // Os Cinco: a médica de campo (lanterna, bolsa e walkie-talkie no modelo)
   carnical: { url: 'models/carnical.glb', props: null }, // o Carniçal jogável (garras no modelo); o NPC é public/npcs/carnical.glb
   juan: { url: 'models/juan.glb', props: addJuanProps },
@@ -100,7 +101,7 @@ async function loadWithRetry(url) {
 
 // Carrega todos os .glb (chamado uma vez no início do jogo). Falhou mesmo tentando de novo → erro (o jogo avisa)
 export async function preloadModels(onProgress) {
-  const ids = Object.keys(BLENDER_MODELS);
+  const ids = Object.keys(BLENDER_MODELS).filter((id) => !BLENDER_MODELS[id].lazy);
   let done = 0;
   const npcs = preloadNpcModels(); // invocações (Marionete, Zumbis de Sangue)
   const failed = [];
@@ -117,6 +118,19 @@ export async function preloadModels(onProgress) {
   }));
   await npcs;
   if (failed.length) throw new Error(`Modelos que não carregaram: ${failed.join(', ')}`);
+}
+
+// modelos `lazy` (os chefes do OUTRO LADO): baixados só quando o modo precisa deles
+export async function ensureModels(ids) {
+  await Promise.all(ids.map(async (id) => {
+    const base = MODEL_VARIANTS[id] ? MODEL_VARIANTS[id].base : id;
+    if (loaded[base] || !BLENDER_MODELS[base]) return;
+    loaded[base] = await loadWithRetry(import.meta.env.BASE_URL + BLENDER_MODELS[base].url);
+  }));
+}
+
+export function isModelLoaded(id) {
+  return !!loaded[MODEL_VARIANTS[id] ? MODEL_VARIANTS[id].base : id];
 }
 
 export function buildModel(id) {

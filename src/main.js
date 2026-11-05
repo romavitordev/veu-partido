@@ -27,6 +27,7 @@ import { VERSION } from './config/version.js';
 import { t, tAlert, setLanguage } from './i18n/index.js';
 import { OptionsScreen } from './ui/OptionsScreen.js';
 import { TouchControls, isTouchDevice } from './ui/touchControls.js';
+import { createPveFlow } from './pve/flow.js';
 import { registerPWA, InstallHint } from './ui/installHint.js';
 
 const touchDevice = isTouchDevice();
@@ -596,6 +597,7 @@ function openPause(by = game.pausedBy) {
   audio.stopAllLoops();
   const tut = game.tutorial;
   const tr = !tut && game.match && game.match.training ? game.match.trainingOpts : null;
+  const dungeon = game.match && game.match.isDungeon;
   setOverlay('pause', new MenuScreen(screens, {
     audio,
     title: tut ? t('menu.tutorial') : tr ? t('menu.training') : t('pause.title'),
@@ -615,8 +617,8 @@ function openPause(by = game.pausedBy) {
         { id: 'tr_reset', label: t('pause.tr_reset') },
       ] : []),
       { id: 'commands', label: t('pause.commands') },
-      ...(tut ? [] : [{ id: 'time', label: timeLabel }, { id: 'rematch', label: t('pause.restart') }]),
-      game.mode.kind === 'tower' ? { id: 'tower_quit', label: t('tower.quit') } : game.mode.kind === 'tournament' ? { id: 'tour_quit', label: t('tour.quit') } : { id: 'select', label: tut ? t('pause.other_char') : t('ui.char_select') },
+      ...(tut || dungeon ? [] : [{ id: 'time', label: timeLabel }, { id: 'rematch', label: t('pause.restart') }]),
+      dungeon ? { id: 'pve_quit', label: 'SAIR DA DUNGEON (A TENTATIVA FICA SALVA)' } : game.mode.kind === 'tower' ? { id: 'tower_quit', label: t('tower.quit') } : game.mode.kind === 'tournament' ? { id: 'tour_quit', label: t('tour.quit') } : { id: 'select', label: tut ? t('pause.other_char') : t('ui.char_select') },
       { id: 'main', label: t('ui.main_menu') },
     ],
   }));
@@ -656,6 +658,10 @@ game.quick = (a, b, cpu = false, arenaId = DEFAULT_ARENA, dialogue = false) => {
   match.beginIntro();
   return match;
 };
+
+// OUTRO LADO (modo PvE): hub, escolha, dungeon e resultado (pve/flow.js)
+const pve = createPveFlow({ game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect });
+game.pve = pve;
 
 window.addEventListener('pointerdown', () => audio.unlock());
 window.addEventListener('keydown', () => audio.unlock());
@@ -991,6 +997,7 @@ function tick(dt) {
         game.mode = { kind: 'tournament', cpu: true, team: false };
         toTourSetup();
       }
+      else if (c === 'pve') { audio.play('confirm'); pve.toHub(); }
       else if (c === 'tower') {
         audio.play('confirm');
         game.mode = { kind: 'tower', cpu: true, team: false };
@@ -1024,6 +1031,7 @@ function tick(dt) {
       const pick = game.screen.update(input);
       if (pick === 'back') {
         if (game.mode.kind === 'tower' && game.towerRun) toTowerView('intro');
+        else if (game.mode.kind === 'pve') pve.toHub();
         else if (game.mode.kind === 'tournament') { const i = game.tourPickSlot; game.tourPickSlot = null; toTourSetup(i === null || i === undefined ? null : [1 + Math.floor(i / 4), i % 4]); }
         else toMainMenu();
       }
@@ -1044,6 +1052,7 @@ function tick(dt) {
         game.lastSelect = { cursor: [...game.screen.cursor] };
         game.pick = pick;
         if (game.mode.kind === 'tower') { game.towerRun.player = pick.p1; toTowerView('diff'); }
+        else if (game.mode.kind === 'pve') pve.onSelect(pick);
         else if (game.mode.kind === 'tutorial') {
           // tutorial: direto para a luta, sem configuração nem escolha de cenário
           game.arenaId = DEFAULT_ARENA;
@@ -1174,6 +1183,10 @@ function tick(dt) {
         toMainMenu();
       } else if (choice === 'tower_next') {
         towerWin();
+      } else if (choice === 'pve_quit') {
+        restorePauseController();
+        setOverlay('fight', null);
+        pve.quit();
       } else if (choice === 'tower_quit') {
         toTowerMenu(game.towerIndex || 0);
       } else if (choice === 'rematch') {
@@ -1199,6 +1212,7 @@ function tick(dt) {
       }
       break;
     default:
+      pve.update(game.state);
       break;
   }
 }

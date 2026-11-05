@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "練習",
   "menu.sec.game": "ゲーム",
   "menu.pve": "アザーサイド",
-  "menu.pve.desc": "PvEモード：ダンジョン、アザーサイドのボス、成長要素。近日公開。",
+  "menu.pve.desc": "PvEモード：ダンジョン、アザーサイドのボス、成長要素。",
   "menu.soon": "近日公開",
   "menu.soon.text": "アザーサイドは準備中です：クリーチャーの縄張りのダンジョン、ボス、キャンペーン中の成長、協力プレイ。次のアップデートをお待ちください。",
   "menu.soon.ok": "OK",

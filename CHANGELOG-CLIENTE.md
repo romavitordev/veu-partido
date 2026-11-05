@@ -2,6 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.25.0 — Outro Lado: o Território do Espreitador
+- OUTRO LADO abriu: o modo PvE no menu principal, com a 1ª dungeon jogável na Mansão Endiabrada.
+- Enfrente os Devorados, cópias cinzentas do seu lutador, e cuidado com a fresta do corredor: não olhe para ela.
+- O chefe é o Espreitador: ele se esconde nos armários e dá o bote de dentro deles. Bata nos armários para trancar as frestas e deixá-lo sem saída.
+- Pegue a recompensa, atravesse a porta e desça mais fundo. Suba de nível e escolha melhorias; a morte encerra a tentativa.
+- Cada chefe derrotado dá um ponto permanente ao personagem para a árvore de vida, dano, defesa e sanidade.
+
 ## v4.24.1 — Ajustes: Existida e o mangual da Carina
 - A Existida não tem mais o especial "Lembra de Mim": um Existido não tem técnicas, só instinto.
 - A bola do mangual da Carina chicoteia para a frente no golpe, e os chutes do combo viraram golpes com o mangual.

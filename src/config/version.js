@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.24.1';
+export const VERSION = '4.25.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,21 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.25.0',
+    date: '2026-11-05',
+    title: 'Outro Lado: o Território do Espreitador',
+    items: [
+      'OUTRO LADO abriu: o modo PvE no menu principal, com a 1ª dungeon jogável na Mansão Endiabrada.',
+      'Explore o hall, a sala de estar, o corredor e a biblioteca enfrentando os DEVORADOS, cópias cinzentas do seu lutador com olhos amarelos e lágrimas. Eles podem deixar cura.',
+      'No corredor, uma fresta espia você: não olhe para ela (defender desvia o olhar).',
+      'O chefe: O ESPREITADOR. Ele se esconde nos armários e dá o bote de dentro deles, drena quem olha para ele e chama Devorados. Bata nos armários para TRANCAR as frestas; sem fresta aberta ele fica apavorado e vulnerável.',
+      'Derrotado o chefe, pegue a recompensa onde ele caiu, atravesse a porta de saída e desça mais fundo: cada profundidade deixa os inimigos mais fortes.',
+      'Ganhe experiência e escolha melhorias ao subir de nível, com sinergias entre elas. A morte encerra a tentativa e as melhorias se perdem.',
+      'Cada chefe derrotado dá +1 nível e +1 ponto ao personagem, para a árvore permanente (vida, dano, defesa e sanidade).',
+      'Dificuldade Fácil, Normal ou Difícil, e o salvamento próprio do modo: continuar, nova tentativa, reiniciar a campanha e apagar só os dados do Outro Lado.',
+    ],
+  },
   {
     v: '4.24.1',
     date: '2026-11-05',

@@ -377,6 +377,7 @@ export class Fighter {
   // ele sozinha — quem joga tem que achá-la de olho
   lostTrack(opp) {
     if (!opp || !opp.findBuff) return false;
+    if (opp.lurking) return true; // OUTRO LADO: o inimigo da próxima sala, escondido (não trava a mira)
     if (this.findBuff('deaf')) return true;
     return !!opp.findBuff('veil') && distXZ(this.pos, opp.pos) > 1.6 && !hasPassive(this, 'macabreId');
   }
@@ -711,6 +712,7 @@ export class Fighter {
     if (this.state !== 'ko' && this.state !== 'special' && !this.buffs.some((b) => b.noRegen)) {
       let enMult = 1;
       for (const b of this.buffs) if (typeof b.energyRegenMult === 'number') enMult *= b.energyRegenMult; // 0 vale (a Larva do Incubar: a sanidade não volta)
+      if (this.pveMods) enMult *= this.pveMods.regenMult; // OUTRO LADO: Lucidez
       this.addEnergy(COMBAT.energyRegen * dt * this.world.energyRegenFactor(this) * enMult);
     }
     // resistência da defesa
@@ -2863,6 +2865,7 @@ export class Fighter {
     // usar de novo dentro da janela de "spam" fica mais caro (ex.: Teleporte das Sombras)
     const last = this.lastAbilityUse && this.lastAbilityUse[a.id];
     if (a.spamWindow && last !== undefined && this.world.time - last < a.spamWindow) cost *= a.spamMult || 1.6;
+    if (this.pveMods) cost *= this.pveMods.costMult; // OUTRO LADO: Calma / árvore de Sanidade
     return Math.round(cost);
   }
 

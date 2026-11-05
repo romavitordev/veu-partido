@@ -200,6 +200,31 @@ export class AudioManager {
 
 // Biblioteca de sons sintetizados. Nome → função.
 const SYNTHS = {
+  // OUTRO LADO — a Mansão Endiabrada: a goteira, a porta do armário batendo, o rangido, a cura e o subir de nível
+  drip: (a, t, v, o = {}) => {
+    const p = o.pitch ?? 1;
+    a.tone(t, 0.09, { vol: 0.2 * v, freq: 1400 * p, freqEnd: 2600 * p, type: 'sine', attack: 0.002 });
+    a.tone(t + 0.05, 0.16, { vol: 0.08 * v, freq: 900 * p, freqEnd: 1500 * p, type: 'sine' });
+  },
+  closetSlam: (a, t, v, o = {}) => {
+    const p = o.pitch ?? 1;
+    a.tone(t, 0.3, { vol: 0.6 * v, freq: 120 * p, freqEnd: 45 * p, type: 'sine' });
+    a.noise(t, 0.18, { vol: 0.5 * v, type: 'lowpass', freq: 1400 * p, freqEnd: 300 });
+    a.noise(t + 0.06, 0.25, { vol: 0.12 * v, type: 'bandpass', freq: 3000, q: 6 }); // a tranca de ferro
+  },
+  creak: (a, t, v, o = {}) => {
+    const p = o.pitch ?? 1;
+    a.tone(t, 0.7, { vol: 0.1 * v, freq: 210 * p, freqEnd: 330 * p, type: 'sawtooth', attack: 0.15 });
+    a.noise(t, 0.7, { vol: 0.12 * v, type: 'bandpass', freq: 700 * p, freqEnd: 1100 * p, q: 9, attack: 0.2 });
+  },
+  pickup: (a, t, v) => {
+    a.tone(t, 0.12, { vol: 0.18 * v, freq: 660, freqEnd: 990, type: 'triangle' });
+    a.tone(t + 0.08, 0.2, { vol: 0.14 * v, freq: 990, freqEnd: 1320, type: 'sine' });
+  },
+  levelUp: (a, t, v) => {
+    [523, 659, 784, 1047].forEach((f, i) => a.tone(t + i * 0.08, 0.35, { vol: 0.16 * v, freq: f, type: 'triangle' }));
+    a.noise(t, 0.6, { vol: 0.06 * v, type: 'highpass', freq: 5000, attack: 0.1 });
+  },
   // a SIRENE de Santo Berço (um Manancial morreu): sobe e desce, estridente, e some ao longe
   siren: (a, t, v) => {
     for (let i = 0; i < 2; i++) {

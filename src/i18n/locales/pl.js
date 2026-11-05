@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "TRENING",
   "menu.sec.game": "GRA",
   "menu.pve": "DRUGA STRONA",
-  "menu.pve.desc": "Tryb PvE: lochy, bossowie z Drugiej Strony i rozwój. Wkrótce.",
+  "menu.pve.desc": "Tryb PvE: lochy, bossowie z Drugiej Strony i rozwój.",
   "menu.soon": "WKRÓTCE",
   "menu.soon.text": "Druga Strona jest jeszcze przygotowywana: lochy na terytorium stworzeń, bossowie, rozwój w kampanii i co-op. Czekaj na kolejne aktualizacje.",
   "menu.soon.ok": "OK",

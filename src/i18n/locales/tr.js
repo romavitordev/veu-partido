@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "ANTRENMAN",
   "menu.sec.game": "OYUN",
   "menu.pve": "ÖTEKİ TARAF",
-  "menu.pve.desc": "PvE modu: zindanlar, Öteki Taraf'ın bossları ve ilerleme. Yakında.",
+  "menu.pve.desc": "PvE modu: zindanlar, Öteki Taraf'ın bossları ve ilerleme.",
   "menu.soon": "YAKINDA",
   "menu.soon.text": "Öteki Taraf hâlâ hazırlanıyor: yaratıkların bölgesinde zindanlar, bosslar, kampanya boyunca gelişim ve co-op. Sonraki güncellemeleri bekleyin.",
   "menu.soon.ok": "Tamam",

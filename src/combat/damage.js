@@ -129,6 +129,9 @@ export function applyHit(world, attacker, victim, o) {
   // vantagem do nível Super Difícil (CpuController.attach): a CPU bate mais e aguenta mais, como um chefe
   if (attacker.cpuEdge) mult *= attacker.cpuEdge.dealt;
   if (victim.cpuEdge) mult *= victim.cpuEdge.taken;
+  // OUTRO LADO (PvE): as melhorias da tentativa e da árvore permanente (pve/upgrades.js → computeMods)
+  if (attacker.pveMods) mult *= attacker.pveMods.dealt[o.kind] ?? 1;
+  if (victim.pveMods) mult *= victim.pveMods.taken;
   // BALANCEAMENTO GERAL (config/balance.js): o ajuste fino de cada personagem
   const balA = balanceOf(attacker);
   const balV = balanceOf(victim);
@@ -210,6 +213,7 @@ export function applyHit(world, attacker, victim, o) {
     if (shield.shield <= 0) { shield.time = 0; victim.notify('TELA ROMPIDA', true); }
   }
   const dealt = victim.takeDamage(incoming);
+  if (attacker.pveMods && attacker.pveMods.onDealt && dealt > 0) attacker.pveMods.onDealt(dealt, o.kind, victim); // roubo de vida (PvE)
   if (!victim.comboHits) victim.comboStart = world.time; // começo do combo (para o limite de combo)
   victim.comboHits = (victim.comboHits || 0) + 1;
   victim.comboDamage = (victim.comboDamage || 0) + dealt;

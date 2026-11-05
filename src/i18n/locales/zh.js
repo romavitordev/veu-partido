@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "练习",
   "menu.sec.game": "游戏",
   "menu.pve": "另一侧",
-  "menu.pve.desc": "PvE 模式：地下城、另一侧的首领与成长。即将推出。",
+  "menu.pve.desc": "PvE 模式：地下城、另一侧的首领与成长。",
   "menu.soon": "即将推出",
   "menu.soon.text": "另一侧仍在准备中：怪物领地中的地下城、首领、战役中的成长以及合作模式。敬请期待后续更新。",
   "menu.soon.ok": "确定",

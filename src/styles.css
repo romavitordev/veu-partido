@@ -1268,3 +1268,64 @@ body.touch-capable #options .opt-hint { display: none; }
 /* no celular, os botões de canto do toque (← voltar e tela cheia) ficam fora do painel */
 body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 @media (max-width: 560px) { body.touch-capable #options { padding-left: 10px; padding-right: 10px; padding-top: 58px; } }
+
+/* ================= OUTRO LADO (PvE): a vida do jogador no canto inferior esquerdo, o chefe no centro do alto (TODO §10) */
+#hud.pve #center { display: none; }
+#hud.pve .panel.p1 { top: auto; bottom: 14px; left: 16px; width: min(40vw, 460px); }
+#hud.pve .panel.p2 { left: 50%; right: auto; top: 14px; transform: translateX(-50%); width: min(58vw, 640px); text-align: center; }
+#hud.pve .panel.p2 .name { justify-content: center; font-size: 26px; letter-spacing: .14em; }
+#hud.pve .panel.p2 .name .tag, #hud.pve .panel.p2 .bar.energy, #hud.pve .panel.p2 .bar.guard, #hud.pve .panel.p2 .row,
+#hud.pve .panel.p2 .abilities, #hud.pve .panel.p2 .bar.storm, #hud.pve .panel.p2 .buff, #hud.pve .panel.p2 .el { display: none; }
+#hud.pve .panel.p2 .bar.health { transform: none; height: 16px; border-color: #f2c23088; }
+#hud.pve .panel.p2 .bar.health .fill, #hud.pve .panel.p2 .bar.health .trail { left: 0; right: auto; }
+#hud.pve .panel.p2 .msg { text-align: center; }
+#hud.pve.pve-noboss .panel.p2 { display: none; }
+#hud.pve.pve-minor .panel.p2 { width: min(34vw, 380px); }
+#hud.pve.pve-minor .panel.p2 .name { font-size: 20px; }
+#hud.pve.pve-minor .panel.p2 .bar.health { height: 10px; }
+#pvehud { position: absolute; inset: 0; pointer-events: none; font-family: Inter, system-ui, sans-serif; }
+#pvehud .pv-top { position: absolute; left: 16px; top: 12px; display: flex; flex-direction: column; gap: 2px; text-shadow: 1px 1px 0 #000, 0 0 8px #000; max-width: 30vw; }
+#pvehud .pv-place { font-size: 11px; font-weight: 800; letter-spacing: .16em; color: #f2c230; text-transform: uppercase; }
+#pvehud .pv-room { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 26px; letter-spacing: .06em; line-height: 1; color: #fff; }
+#pvehud .pv-obj { font-size: 13px; color: #e8e0cc; }
+#pvehud .pv-obj::before { content: '◆ '; color: #f2c230; }
+#pvehud .pv-obj:empty { display: none; }
+#pvehud .pv-xp { position: absolute; left: 16px; top: 82px; display: flex; align-items: center; gap: 8px; }
+#pvehud .pv-lv { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 20px; color: #f2c230; text-shadow: 1px 1px 0 #000; }
+#pvehud .pv-bar { width: 150px; height: 6px; background: rgba(0,0,0,.6); border: 1px solid #f2c23066; border-radius: 3px; overflow: hidden; }
+#pvehud .pv-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #a8801a, #ffd84a); transition: width .3s; }
+#pvehud .pv-depth { font-size: 11px; font-weight: 800; letter-spacing: .1em; color: #c8b8a0; }
+#pvehud .pv-ups { position: absolute; left: 16px; top: 106px; display: flex; flex-wrap: wrap; gap: 4px; max-width: 32vw; }
+#pvehud .pv-up { position: relative; width: 26px; height: 26px; border-radius: 4px; background: rgba(10,8,14,.8); border: 1px solid #f2c23077; display: grid; place-items: center; color: #ffd84a; font-size: 14px; }
+#pvehud .pv-up u { position: absolute; right: -4px; bottom: -4px; font-size: 10px; text-decoration: none; background: #f2c230; color: #000; border-radius: 6px; padding: 0 3px; font-weight: 800; }
+#pvehud .pv-syn { height: 26px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: linear-gradient(90deg, #4a3a10, #2a2008); border: 1px solid #ffd84a; color: #ffe8a0; font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+#pvehud .pv-hint { position: absolute; left: 50%; bottom: 23vh; transform: translateX(-50%); padding: 8px 16px; border-radius: 6px; background: rgba(8,6,10,.82); border: 1px solid #f2c230aa; color: #ffe8a0; font-weight: 700; font-size: 15px; opacity: 0; transition: opacity .25s; text-align: center; max-width: 80vw; }
+#pvehud .pv-hint.on { opacity: 1; }
+#pvehud .pv-choose { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: radial-gradient(ellipse at center, rgba(20,14,4,.88), rgba(0,0,0,.92)); pointer-events: auto; }
+#pvehud .pv-choose[hidden] { display: none; }
+#pvehud .pv-choose h3 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 44px; letter-spacing: .1em; color: #ffd84a; }
+#pvehud .pv-choose p { margin: 0 0 8px; color: #e8e0cc; }
+#pvehud .pv-choose small { color: #a89a80; }
+#pvehud .pv-cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; padding: 0 16px; }
+#pvehud .pv-card { width: min(28vw, 220px); min-width: 150px; padding: 16px 14px; border-radius: 10px; background: #14100a; border: 2px solid #4a3a20; color: #eee; cursor: pointer; transition: transform .15s, border-color .15s; display: flex; flex-direction: column; gap: 6px; text-align: center; }
+#pvehud .pv-card i { font-style: normal; font-size: 34px; color: #ffd84a; }
+#pvehud .pv-card b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 26px; letter-spacing: .06em; }
+#pvehud .pv-card p { margin: 0; font-size: 13px; color: #d8d0bc; }
+#pvehud .pv-card small { color: #ffd84a; font-size: 11px; }
+#pvehud .pv-card.on { border-color: #ffd84a; transform: translateY(-6px) scale(1.04); box-shadow: 0 0 24px #f2c23055; }
+#pvehud .pv-fade { position: absolute; inset: 0; background: #000; opacity: 0; }
+#pvehud .pv-fade.on { opacity: 1; }
+@media (max-width: 760px) {
+  #pvehud .pv-top { max-width: 44vw; }
+  #pvehud .pv-room { font-size: 20px; }
+  #pvehud .pv-xp { top: 70px; }
+  #pvehud .pv-ups { top: 92px; max-width: 44vw; }
+  #hud.pve .panel.p2 { width: min(52vw, 640px); }
+}
+
+/* OUTRO LADO — as telas do modo (hub, dificuldade, árvore, resultado) */
+.pve-box { position: absolute; left: 50%; bottom: 7vh; transform: translateX(-50%); width: min(720px, calc(100% - 32px)); padding: 12px 18px; border: 1px solid #f2c23055; border-left: 3px solid #f2c230; background: #0b0806cc; color: #e8dcc0; font-size: 15px; line-height: 1.5; text-align: center; }
+.pve-box b { color: #f2c230; }
+.screen .menu .opt.disabled { opacity: .38; }
+.pve-loading .side.r img { filter: grayscale(1) brightness(.75) sepia(.35); }
+@media (max-height: 560px) { .pve-box { position: static; transform: none; margin: 10px auto 0; font-size: 13px; } }

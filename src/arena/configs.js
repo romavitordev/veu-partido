@@ -272,3 +272,52 @@ export const TIPORA = {
   particles: { color: 0xffd890, count: 70, area: 30, height: 4, rise: 0.04, drift: 0.5, size: 0.06, opacity: 0.6 }, // vaga-lumes
   camera: { radius: 21, maxY: 14 },
 };
+
+// MANSÃO ENDIABRADA (OUTRO LADO: o território do Espreitador) — mapa em linha, sem teto, no breu. Só no modo PvE
+// (fora da seleção de cenários). As luzes pontuais são um POOL que acompanha o jogador (lightPool). As portas trancadas,
+// os armários do quarto, a fresta do corredor B e a porta de saída são do jogo (src/pve/Dungeon.js).
+export const MANSAO = {
+  id: 'mansao',
+  name: 'Mansão Endiabrada',
+  glb: 'arenas/mansao.glb',
+  bounds: {
+    rects: [
+      { minX: -17.6, maxX: -10.2, minZ: -4.6, maxZ: 4.6 }, // hall
+      { minX: -11.6, maxX: -4.4, minZ: -1.25, maxZ: 1.25 }, // corredor A
+      { minX: -5.8, maxX: 5.8, minZ: -5.7, maxZ: 5.7 }, // sala de estar
+      { minX: 4.4, maxX: 17.6, minZ: -1.45, maxZ: 1.45 }, // corredor B
+      { minX: 16.2, maxX: 29.8, minZ: -6.2, maxZ: 6.2 }, // biblioteca
+      { minX: 28.4, maxX: 39.6, minZ: -1.45, maxZ: 1.45 }, // corredor C
+      { minX: 38.2, maxX: 61.8, minZ: -10.2, maxZ: 10.2 }, // quarto principal
+      { minX: 60.4, maxX: 75.6, minZ: -1.1, maxZ: 1.1 }, // corredor de saída
+    ],
+  },
+  spawns: [{ x: -14.5, z: 0.5 }, { x: 2.5, z: 0 }],
+  sky: 0x020203,
+  fog: { color: 0x050406, density: 0.045 },
+  lightPool: 7,
+  lights: [
+    { type: 'hemi', sky: 0x3a3450, ground: 0x1a1008, intensity: 0.55 },
+    { type: 'ambient', color: 0x2a2228, intensity: 0.4 },
+    { type: 'dir', color: 0x6a80c0, intensity: 0.35, pos: [30, 30, 18], shadow: false },
+    { type: 'point', color: 0xffb060, intensity: 22, distance: 11, pos: [-14, 2.4, 0], flicker: true }, // lustre do hall
+    { type: 'point', color: 0xffb060, intensity: 8, distance: 6, pos: [-11.9, 1.2, -4.4] },
+    { type: 'point', color: 0xffa050, intensity: 7, distance: 6, pos: [-8, 2.0, 1.4] }, // corredor A
+    { type: 'point', color: 0xff7a30, intensity: 26, distance: 10, pos: [0, 0.8, -4.8], flicker: true }, // lareira
+    { type: 'point', color: 0xffb060, intensity: 9, distance: 7, pos: [-5.6, 2.0, 2.5] },
+    { type: 'point', color: 0xffb060, intensity: 9, distance: 7, pos: [5.6, 2.0, 2.5] },
+    { type: 'point', color: 0xffb060, intensity: 8, distance: 7, pos: [8.6, 1.2, 1.3] }, // corredor B
+    { type: 'point', color: 0xffa050, intensity: 6, distance: 6, pos: [10, 2.0, 1.6], flicker: true },
+    { type: 'point', color: 0xffb060, intensity: 24, distance: 13, pos: [23, 2.4, 0], flicker: true }, // biblioteca
+    { type: 'point', color: 0xffb060, intensity: 7, distance: 6, pos: [21.6, 1.2, 0.2] },
+    { type: 'point', color: 0xffa050, intensity: 7, distance: 6, pos: [34, 2.0, 1.6] }, // corredor C
+    { type: 'point', color: 0xffb060, intensity: 20, distance: 12, pos: [45, 2.5, 0], flicker: true }, // quarto
+    { type: 'point', color: 0xffb060, intensity: 20, distance: 12, pos: [55, 2.5, 0], flicker: true },
+    { type: 'point', color: 0x6a80c0, intensity: 10, distance: 9, pos: [41.2, 2, -9.5] }, // a lua nas janelas
+    { type: 'point', color: 0x6a80c0, intensity: 10, distance: 9, pos: [58.8, 2, -9.5] },
+    { type: 'point', color: 0xffb060, intensity: 6, distance: 6, pos: [42, 1.0, 8.6] },
+    { type: 'point', color: 0x8090c0, intensity: 8, distance: 8, pos: [75, 1.5, 0] }, // fim do corredor de saída
+  ],
+  particles: { color: 0xc8b8a0, count: 140, area: 30, height: 3, rise: 0.04, drift: 0.2, size: 0.03, opacity: 0.45, center: [20, 0, 0] }, // poeira
+  camera: { rect: { minX: -26, maxX: 82, minZ: -22, maxZ: 22 }, maxY: 11 },
+};

@@ -72,7 +72,7 @@ const homeOptions = () => [
   { id: 'team', group: 'play', label: t('menu.team'), desc: t('menu.team.desc'), sub: VS_OPTIONS('team', true) },
   { id: 'tower', group: 'play', label: t('menu.tower'), desc: t('menu.tower.desc') },
   { id: 'tournament', group: 'play', label: t('menu.tournament'), desc: t('menu.tournament.desc') },
-  { id: 'pve', group: 'play', label: t('menu.pve'), desc: t('menu.pve.desc'), soon: true },
+  { id: 'pve', group: 'play', label: t('menu.pve'), desc: t('menu.pve.desc') },
   { id: 'lan', group: 'play', label: t('menu.lan'), desc: t('menu.lan.desc') },
   { id: 'tutorial', group: 'practice', label: t('menu.tutorial'), desc: t('menu.tutorial.desc') },
   { id: 'training', group: 'practice', label: t('menu.training'), desc: t('menu.training.desc'), sub: [
@@ -307,6 +307,7 @@ export const MODES = {
   get tutorial() { return { title: t('menu.tutorial'), slots: ['P1', t('mode.target')], single: true }; },
   get tower() { return { title: t('menu.tower'), slots: ['P1', 'CPU'], single: true, soloPick: true }; },
   get tournament() { return { title: t('menu.tournament'), slots: ['P1', 'CPU'], single: true, soloPick: true }; },
+  get pve() { return { title: t('menu.pve'), slots: ['P1', 'CHEFE'], single: true, soloPick: true }; },
 };
 
 // Seleção de personagem no estilo Storm 4: a grade do P1 fica à esquerda e a do P2 à direita;
@@ -527,7 +528,7 @@ export class SelectScreen {
     }
     this.startEl.classList.toggle('on', this.ready[0] && this.ready[1]);
     const keys = { move: moveLabel(0), jump: actionLabel(0, 'jump'), phys: actionLabel(0, 'physical'), jump2: actionLabel(1, 'jump'), phys2: actionLabel(1, 'physical') };
-    this.hint.innerHTML = t(this.M.soloPick ? 'tower.sel_hint' : this.cpu ? 'sel.hint_cpu' : 'sel.hint_pvp', keys)
+    this.hint.innerHTML = this.mode === 'pve' ? `<b>P1</b> escolhe quem entra no Outro Lado · <kbd>${keys.jump}</kbd>/<kbd>Enter</kbd> confirma · <kbd>${keys.phys}</kbd>/<kbd>Esc</kbd> volta` : t(this.M.soloPick ? 'tower.sel_hint' : this.cpu ? 'sel.hint_cpu' : 'sel.hint_pvp', keys)
       + t('sel.hint_common', { ok: OK, rand: RAND, back: BACK })
       + (this.home.some((h) => versionsOf(h).length > 1) ? t('sel.hint_version', { l: actionLabel(0, 'pageL'), r: actionLabel(0, 'pageR') }) : '');
   }

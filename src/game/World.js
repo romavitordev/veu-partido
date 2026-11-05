@@ -324,7 +324,7 @@ export class World {
       // botões apertados durante a pausa de impacto não se perdem
       for (const f of this.fighters) f.captureInputs();
       this.fx.update(dt * 0.15);
-      this.cameraRig.update(dt, this.fighters);
+      this.cameraRig.update(dt, this.cameraFocus ? this.cameraFocus() : this.fighters);
       return;
     }
 
@@ -363,14 +363,16 @@ export class World {
       for (const f of this.fighters) f.updatePresentation(dt);
     }
     this.fx.update(dt);
-    this.cameraRig.update(dt, this.fighters);
+    // OUTRO LADO: a dungeon escolhe o que a câmera enquadra (o jogador e um ponto à frente na exploração)
+    this.cameraRig.update(dt, this.cameraFocus ? this.cameraFocus() : this.fighters);
+    if (this.arena.focus !== undefined) this.arena.focus = this.fighters[0].pos;
   }
 
   // corpos não se sobrepõem
   separate() {
     if (this.hostButtonGame?.phase === 'running') return;
     const [a, b] = this.fighters;
-    if (!a.visible || !b.visible) return;
+    if (!a.visible || !b.visible || a.lurking || b.lurking) return;
     const dx = b.pos.x - a.pos.x;
     const dz = b.pos.z - a.pos.z;
     const d = Math.hypot(dx, dz);

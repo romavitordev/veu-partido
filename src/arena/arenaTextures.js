@@ -587,6 +587,95 @@ export const ARENA_TEXTURES = {
     g.fillStyle = '#5a2424'; g.fillRect(0, 0, s, s);
     noise(g, s, ['#2a0a0a', '#8a3a34', '#000'], 5000, [1, 4], 0.35);
   }),
+
+  // ---------------- Mansão Endiabrada (OUTRO LADO: o território do Espreitador)
+  // papel de parede adamascado, desbotado, com manchas de umidade escorrendo (a goteira)
+  wallpaper_mansao: () => tex(512, 1.6, (g, s) => {
+    g.fillStyle = '#4a3a34'; g.fillRect(0, 0, s, s);
+    for (let x = 0; x < s; x += 64) { g.fillStyle = 'rgba(20,12,10,0.35)'; g.fillRect(x, 0, 6, s); }
+    g.fillStyle = 'rgba(150,120,90,0.22)';
+    for (let y = 0; y < s; y += 64) for (let x = 0; x < s; x += 64) {
+      const ox = x + 32 + ((y / 64) % 2 ? 0 : 0);
+      g.beginPath(); g.ellipse(ox, y + 32, 10, 18, 0, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.moveTo(ox, y + 8); g.lineTo(ox + 14, y + 32); g.lineTo(ox, y + 56); g.lineTo(ox - 14, y + 32); g.closePath(); g.globalAlpha = 0.5; g.fill(); g.globalAlpha = 1;
+    }
+    for (let i = 0; i < 5; i++) {
+      const x = rnd(0, s); const w = rnd(20, 60); const h = rnd(80, 300);
+      const grd = g.createLinearGradient(0, 0, 0, h);
+      grd.addColorStop(0, 'rgba(30,22,14,0.55)'); grd.addColorStop(1, 'rgba(30,22,14,0)');
+      g.fillStyle = grd; g.fillRect(x, 0, w, h);
+    }
+    noise(g, s, ['#000', '#7a6a5a'], 2500, [1, 3], 0.25);
+  }),
+  // taco de madeira em espinha de peixe, gasto
+  parquet_mansao: () => tex(512, 2, (g, s) => {
+    g.fillStyle = '#3e2a1c'; g.fillRect(0, 0, s, s);
+    const L = 64; const W = 16;
+    for (let y = -L; y < s + L; y += W * 2) for (let x = -L; x < s + L; x += L) {
+      for (const k of [0, 1]) {
+        g.save(); g.translate(x + k * W, y); g.rotate(k ? -Math.PI / 4 : Math.PI / 4);
+        const c = 46 + Math.floor(rnd(-10, 12));
+        g.fillStyle = `rgb(${c + 16},${c},${c - 14})`; g.fillRect(0, 0, L * 0.7, W);
+        g.strokeStyle = 'rgba(10,5,2,0.6)'; g.strokeRect(0, 0, L * 0.7, W);
+        g.restore();
+      }
+    }
+    noise(g, s, ['#000', '#6a4a30'], 3000, [1, 3], 0.3);
+  }),
+  // tapete persa vermelho escuro, puído
+  rug_mansao: () => tex(512, 3, (g, s) => {
+    g.fillStyle = '#4a1414'; g.fillRect(0, 0, s, s);
+    g.strokeStyle = '#a8803a'; g.lineWidth = 10; g.strokeRect(20, 20, s - 40, s - 40);
+    g.strokeStyle = '#1a2a3a'; g.lineWidth = 18; g.strokeRect(48, 48, s - 96, s - 96);
+    g.fillStyle = 'rgba(168,128,58,0.5)';
+    for (let i = 0; i < 8; i++) { g.save(); g.translate(s / 2, s / 2); g.rotate((i / 8) * Math.PI * 2); g.beginPath(); g.ellipse(0, 80, 18, 50, 0, 0, Math.PI * 2); g.fill(); g.restore(); }
+    g.fillStyle = '#1a2a3a'; g.beginPath(); g.arc(s / 2, s / 2, 40, 0, Math.PI * 2); g.fill();
+    noise(g, s, ['#000', '#7a3a2a'], 6000, [1, 4], 0.35);
+  }),
+  // lombadas de livros nas estantes da biblioteca
+  books_mansao: () => tex(512, 1.4, (g, s) => {
+    g.fillStyle = '#140c08'; g.fillRect(0, 0, s, s);
+    const shelf = s / 4;
+    const cols = ['#5a1a14', '#1a3a24', '#2a2a4a', '#6a4a1a', '#3a1a2a', '#4a3a2a', '#1a1a1a'];
+    for (let r = 0; r < 4; r++) {
+      let x = 0;
+      while (x < s) {
+        const w = rnd(10, 26); const h = shelf * rnd(0.62, 0.9);
+        g.fillStyle = cols[Math.floor(Math.random() * cols.length)];
+        g.fillRect(x, (r + 1) * shelf - h - 6, w - 2, h);
+        g.fillStyle = 'rgba(200,170,90,0.45)'; g.fillRect(x + 2, (r + 1) * shelf - h + 8, w - 6, 3);
+        x += w;
+      }
+      g.fillStyle = '#2a1a10'; g.fillRect(0, (r + 1) * shelf - 6, s, 6);
+    }
+    noise(g, s, ['#000'], 2000, [1, 3], 0.3);
+  }),
+  // o relógio parado nas 2:11 (a hora do Espreitador na Mansão Endiabrada)
+  clock_211: () => tex(256, 1, (g, s) => {
+    g.fillStyle = '#d8ccb0'; g.fillRect(0, 0, s, s);
+    const c = s / 2;
+    g.fillStyle = '#eee4cc'; g.beginPath(); g.arc(c, c, c - 10, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#2a1a10'; g.lineWidth = 6; g.stroke();
+    g.fillStyle = '#2a1a10'; g.font = 'bold 26px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const R = ['XII', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
+    R.forEach((n, i) => { const a = (i / 12) * Math.PI * 2 - Math.PI / 2; g.fillText(n, c + Math.cos(a) * (c - 34), c + Math.sin(a) * (c - 34)); });
+    const hand = (ang, len, w) => { g.lineWidth = w; g.beginPath(); g.moveTo(c, c); g.lineTo(c + Math.cos(ang) * len, c + Math.sin(ang) * len); g.stroke(); };
+    hand(((2 + 11 / 60) / 12) * Math.PI * 2 - Math.PI / 2, c * 0.45, 8);
+    hand((11 / 60) * Math.PI * 2 - Math.PI / 2, c * 0.7, 5);
+    g.fillStyle = '#2a1a10'; g.beginPath(); g.arc(c, c, 8, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(40,30,20,0.5)'; g.lineWidth = 2; g.beginPath(); g.moveTo(c - 60, 40); g.lineTo(c + 10, c + 30); g.stroke(); // o vidro trincado
+  }),
+  // retrato a óleo escurecido (o rosto apagado)
+  portrait_mansao: () => tex(256, 1, (g, s) => {
+    const grd = g.createRadialGradient(s / 2, s * 0.42, 10, s / 2, s / 2, s * 0.7);
+    grd.addColorStop(0, '#5a4a36'); grd.addColorStop(1, '#120c08');
+    g.fillStyle = grd; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#2a2018'; g.beginPath(); g.ellipse(s / 2, s * 0.4, 40, 52, 0, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(s / 2, s * 0.92, 90, 70, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(242,194,48,0.9)'; // olhos amarelos riscados no quadro
+    for (const x of [-14, 14]) { g.beginPath(); g.arc(s / 2 + x, s * 0.38, 4, 0, Math.PI * 2); g.fill(); }
+    g.strokeStyle = '#7a5a2a'; g.lineWidth = 16; g.strokeRect(8, 8, s - 16, s - 16);
+  }),
 };
 
 function crate(color) {

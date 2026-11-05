@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "PRACTICE",
   "menu.sec.game": "GAME",
   "menu.pve": "THE OTHER SIDE",
-  "menu.pve.desc": "PvE mode: dungeons, bosses from the Other Side and progression. Coming soon.",
+  "menu.pve.desc": "PvE mode: dungeons, bosses from the Other Side and progression.",
   "menu.soon": "COMING SOON",
   "menu.soon.text": "The Other Side is still being prepared: dungeons in the creatures' territory, bosses, progression through the campaign and co-op. Stay tuned for the next updates.",
   "menu.soon.ok": "OK",

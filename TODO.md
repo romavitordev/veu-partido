@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.24.1 (2026-11-05: a Existida sem o especial inventado, a corrente do mangual chicoteando no golpe, a Carina batendo com o mangual e o nunchaku em vez de chutes, o nunchaku na mão no ataque). Antes: v4.24.0 a Existida com a barra amarela de Existência, sem Sanidade, lenta e correndo ao apanhar; v4.23.0 (a Carina com o que faltava do cânone: Mercenária, Treinada em Atletismo e a Precognição contra tiros); v4.22.0 a Beatrice com o que faltava do cânone: Merintofobia, a Existida acesa e as foices na bolsa; v4.21.0 o Rubens com o que faltava da ficha: Surto Temporal, Relógio de Arnaldo e Salto Fantasma como reação; v4.20.0 as armas da Carina refeitas no Blender, o mangual e o nunchaku balançando na corrente, a Glock no coldre e a faca no cinto; v4.19.1 Dante e Erin na Força D e o especial da equipe com os seis; v4.19.0 Beatrice Portinari e o Orpheu; v4.18.0 Rubens Naluti fecha a Equipe Abutres; v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.25.0 (2026-11-05: o OUTRO LADO abre com a 1ª fase jogável, o Território do Espreitador na Mansão Endiabrada: Devorados, a fresta do corredor, o chefe com as frestas nos armários, recompensa, saída, profundidade, melhorias da tentativa e a árvore permanente). Antes: v4.24.1 a Existida sem o especial inventado, a corrente do mangual chicoteando no golpe, a Carina batendo com o mangual e o nunchaku em vez de chutes, o nunchaku na mão no ataque; v4.24.0 a Existida com a barra amarela de Existência, sem Sanidade, lenta e correndo ao apanhar; v4.23.0 (a Carina com o que faltava do cânone: Mercenária, Treinada em Atletismo e a Precognição contra tiros); v4.22.0 a Beatrice com o que faltava do cânone: Merintofobia, a Existida acesa e as foices na bolsa; v4.21.0 o Rubens com o que faltava da ficha: Surto Temporal, Relógio de Arnaldo e Salto Fantasma como reação; v4.20.0 as armas da Carina refeitas no Blender, o mangual e o nunchaku balançando na corrente, a Glock no coldre e a faca no cinto; v4.19.1 Dante e Erin na Força D e o especial da equipe com os seis; v4.19.0 Beatrice Portinari e o Orpheu; v4.18.0 Rubens Naluti fecha a Equipe Abutres; v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -234,9 +234,10 @@
         descarnado com as costelas à mostra e os braços rasgados até o osso, a língua comprida; descontrolado, mais rápido
         e forte, SEDE INCONTROLÁVEL: devora quem está morrendo e se cura).
         Equipe nova "Vampiros" (Alvira, Velisar, Zéfero, Sabara quando entrarem).
-- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** — **EM ESPERA (pedido do dono, 2026-11-01: "esqueça o pve, por
-  enquanto, finalizarei e polirei primeiro o modo que já existe")**. As ideias do dono estão na seção 3.0. (dungeons, Espreitador como chefe, progressão, salvamento,
-  cooperativo): não iniciado; já anunciado como "em desenvolvimento, sem data" na página Sobre. Na v3.47.0 entrou só a
+- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** — **EM PRODUÇÃO desde 2026-11-05; a 1ª fase jogável (Território do Espreitador) saiu na v4.25.0** — falta o cooperativo, o backup e mais dungeons (pedido do dono: "leia tudo
+  sobre o modo Outro Lado e comece a produção. Quero que tenha pelo menos uma fase jogável pra lançar"; antes ficou em
+  espera de 2026-11-01 a 2026-11-05). O plano de produção está na seção 3.4; as ideias do dono, na seção 3.0. (dungeons, Espreitador como chefe, progressão, salvamento,
+  cooperativo): antes da v4.25.0, já anunciado como "em desenvolvimento, sem data" na página Sobre. Na v3.47.0 entrou só a
   opção OUTRO LADO no menu principal (selo EM BREVE e aviso ao escolher), como pedido.
 - [x] **Menu principal em seções** (v3.47.0): LUTAR / PRATICAR / JOGO, Outro Lado com EM BREVE, descrição em cartão ao
   lado (telas grandes), opções de JOGO menores, lista que rola em telas baixas.
@@ -891,8 +892,8 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
 
 ## 3. Novo modo PvE — dungeons e chefes
 
-> **EM ESPERA (2026-11-01):** o dono vai primeiro finalizar e polir o modo de luta que já existe. Não começar o PvE
-> antes de ele pedir.
+> **EM PRODUÇÃO (2026-11-05).** Ficou em espera de 2026-11-01 a 2026-11-05. O plano de produção da primeira fase jogável
+> está na seção 3.4.
 
 ### 3.0. Ideias do dono (2026-11-01)
 
@@ -932,6 +933,161 @@ Os jogadores poderão utilizar os personagens jogáveis disponíveis no jogo, re
 Criaturas do Outro Lado que forem utilizadas como chefes não deverão poder ser selecionadas pelos jogadores naquela dungeon enquanto isso permitiria escolher o próprio chefe ou quebrar a proposta do confronto.
 
 Essa restrição deverá ser definida por dungeon, evitando uma proibição global desnecessária de personagens que não sejam chefes naquele conteúdo.
+
+### 3.4. Plano de produção da primeira fase jogável (2026-11-05)
+
+Escrito antes de produzir, depois de ler as seções 3 a 13 e a página "O Espreitador" da wiki. As escolhas que não vêm
+do documento nem do cânone estão marcadas como **PROPOSTA**.
+
+#### O que o cânone dá (wiki "O Espreitador")
+
+- **Aparência:** criatura de Medo, pele cinza enrugada; MUITOS OLHOS amarelos cujas pupilas se multiplicam; lágrimas;
+  um OLHO GRANDE dentro da boca; dentes tortos; pernas curtas; braços e dedos longos.
+- **Comportamento e habilidades:** Pancada (braços longos se debatendo, fracos); Drenar Energia (o contato visual drena
+  quem está no campo de visão dele; desviar o olhar ou quebrar a linha de visão escapa); Correr pelas Frestas (vai de
+  um armário/fresta a outro); Cópia Observada (gera os Devorados, cópias cinzentas de quem ele observa, com olhos
+  amarelos e lágrimas); Fortalecer (segura a cabeça de um Devorado e o deixa mais forte).
+- **Enigma de Medo (a fraqueza):** bloquear ou fechar a fresta dele; sem ter para onde voltar, ele fica indefeso,
+  tremendo e tentando fugir. Morreu com um tiro do Kaiser no olho da boca.
+- **Ambiente:** a Mansão Endiabrada, armários e frestas, o relógio das 2:11, o som de goteira.
+
+#### Arquitetura (reuso, sem mexer nas lutas tradicionais)
+
+- **`src/pve/Dungeon.js`** faz o papel da `Match` (mesma interface: `update`, `render`, `dispose`, `fighters`,
+  `phase`). Usa o `World` de sempre com DOIS lutadores: o jogador e o "inimigo da vez".
+- **O inimigo da vez** é um `Fighter` de verdade (golpes, defesa, projéteis, habilidades e a CPU funcionam sem
+  adaptação). Primeiro um Devorado (a cópia do lutador do jogador), depois o Espreitador. A troca usa `applyDef`, o
+  mesmo caminho da troca de personagem da equipe.
+- **Entre um encontro e outro** o inimigo fica escondido e parado na próxima sala (`lurking`: invisível, sem CPU e sem
+  travar a mira do jogador).
+- **Os Devorados extras** são NPCs (`DanteClone` com o modelo do jogador repintado). Os golpes e tiros do jogador já
+  acertam NPCs.
+- **Câmera de exploração:** o `World` aceita um foco próprio (`cameraFocus`). Nos corredores, a câmera enquadra o
+  jogador e um ponto à frente no sentido do mapa; nos encontros, volta a enquadrar os dois.
+- **Arquivos novos:**
+  - `src/pve/dungeons.js`: cadastro de dungeons (mapa, chefe, salas, restrições, drops, sorteio da próxima);
+  - `src/pve/save.js`: salvamento separado em `veu_pve_v1`, com perfil, campanha e tentativa;
+  - `src/pve/upgrades.js`: melhorias temporárias, sinergias e árvore permanente;
+  - `src/pve/espreitador.js`: a IA própria do chefe por cima do lutador;
+  - `src/pve/pickups.js`: cura e recompensa;
+  - `src/pve/pveHud.js`: a camada de HUD do modo;
+  - `src/ui/pveScreens.js`: menus;
+  - `src/characters/espreitador.js`: a definição do chefe, fora do elenco;
+  - `tools/blender/arena_mansao.py`: o mapa;
+  - `tools/blender/char_espreitador.py`: o modelo.
+
+#### A primeira dungeon: "Território do Espreitador" (Mansão Endiabrada)
+
+**Mapa próprio** (`arena_mansao.py`), em linha para a câmera ficar legível:
+
+1. **Hall de entrada:** onde o jogador nasce. O relógio parado nas 2:11.
+2. **Corredor estreito** com armários nas paredes.
+3. **Sala de estar:** 1º encontro, 2 Devorados.
+4. **Corredor 2:** o Espreitador aparece numa fresta e drena quem olha para ele. É a etapa "perseguição e domínio do
+   território", que ensina a mecânica sem prender o jogador.
+5. **Biblioteca:** 2º encontro, 3 Devorados.
+6. **Quarto principal**, a sala do chefe, com 4 ARMÁRIOS.
+7. **Porta de saída**, trancada até a vitória.
+
+Detalhes do mapa:
+
+- Cada porta entre salas fica bloqueada (névoa escura) enquanto o encontro da sala não acaba.
+- O som de goteira acompanha a fase.
+- Pouca luz: lampiões que piscam.
+
+**Etapas do confronto com o chefe (§5.3):**
+
+- **Ataques:**
+  - Pancada: o combo de garras, fraco e longo;
+  - Drenar Energia: o olhar. Avisa antes, drena a Sanidade de quem está no cone dele E olhando para ele, e escapa quem
+    vira de costas ou se esconde atrás de algo;
+  - Correr pelas Frestas: some num armário aberto e sai de outro, com um bote;
+  - Cópia Observada: 2 Devorados;
+  - Fortalecer: para, segura a cabeça de um Devorado e o fortalece. É a janela para bater nele.
+- **Enigma de Medo** (**PROPOSTA** de controle, fiel à fraqueza do cânone):
+  - um armário ABERTO tem a fresta com olhos; um golpe ou um tiro nele FECHA e TRANCA a porta, que reabre sozinha
+    depois de um tempo;
+  - quando o Espreitador tenta fugir e não há fresta aberta, ele fica APAVORADO (tremendo, lento, toma muito mais dano
+    e mostra o olho da boca);
+  - tiros no APAVORADO contam como o tiro no olho e dão dano extra.
+
+#### Progressão (§6–§7), escopo da 1ª versão
+
+- **Experiência na tentativa:**
+  - Devorado: 25 (o NPC, 12);
+  - chefe: 120, pela recompensa física que cai onde ele morreu e é coletada indo até lá.
+- **Níveis:** o jogo pausa e oferece **3 melhorias sorteadas** entre 10 (vida máxima, dano físico, dano de
+  habilidades, defesa, custo de Sanidade, regeneração de Sanidade, roubo de vida, cura ao derrotar, esquiva extra,
+  velocidade).
+- **Sinergias**, legíveis no HUD:
+  - Fúria + Foco → +10% de dano das habilidades;
+  - Couraça + Vigor → regeneração lenta de vida;
+  - Sanguessuga + Fúria → o roubo de vida dobra no físico.
+- **Drops de cura** configuráveis por dungeon: `drops.heal.chance` e `amount`, 45% e 20% da vida.
+- **Ao derrotar o chefe:**
+  - o personagem sobe 1 NÍVEL PERMANENTE (ideia do dono, §3.0) e ganha 1 PONTO PERMANENTE;
+  - os pontos são POR PERSONAGEM ("cada lutador evolui separado") e vão na árvore permanente: Vida, Dano, Defesa e
+    Sanidade, 5 graus cada, 1 ponto por grau.
+- **Morte:**
+  - perde níveis, experiência e melhorias da tentativa, e a tentativa acaba;
+  - a campanha e os pontos ficam;
+  - a próxima dungeon sai do sorteio, sem repetir a anterior quando houver mais de uma.
+- **Sequência:** com uma dungeon só, a saída leva de novo ao Território do Espreitador numa PROFUNDIDADE maior
+  (inimigos +12% de vida e dano por nível de profundidade), mantendo as melhorias. O cadastro já sorteia entre as
+  dungeons válidas quando houver mais.
+
+#### Salvamento (§8)
+
+- Chave própria `veu_pve_v1`, em `localStorage`, como o resto do jogo; IndexedDB fica para quando o volume pedir.
+- Três partes:
+  - **perfil:** os pontos e a árvore de cada personagem;
+  - **campanha:** profundidade máxima, chefes derrotados, mortes;
+  - **tentativa:** personagem, profundidade, nível, experiência, melhorias e dificuldade, salva no começo de cada
+    dungeon.
+- Menu do Outro Lado:
+  - CONTINUAR, se houver tentativa;
+  - NOVA TENTATIVA, que pede confirmação se apagar uma;
+  - MELHORIAS PERMANENTES;
+  - APAGAR DADOS DO OUTRO LADO, com confirmação, sem tocar nas opções nem nos recordes da Torre.
+- Exportar e importar backup fica para depois.
+
+#### Transição (§9)
+
+- Ao derrotar o chefe, a porta destranca com luz e aviso.
+- Ao atravessá-la, a câmera vai para trás do personagem, que anda pelo corredor escuro.
+- A tela escurece, a próxima dungeon carrega por trás e o controle volta.
+- Se o carregamento falhar, volta ao menu do modo com a tentativa salva.
+
+#### Interface (§10)
+
+- **Vida do jogador:** canto inferior esquerdo.
+- **Chefe:** nome e barra no centro superior. Os Devorados usam a mesma barra, menor.
+- **Faixa do modo:** nível e barra de experiência, as melhorias com as sinergias, o objetivo atual ("Derrote os
+  Devorados", "Tranque as frestas") e os avisos de cura, saída liberada e próxima dungeon.
+
+#### Fora desta versão (próximas etapas)
+
+- Cooperativo local e online (Etapas 6–7).
+- Exportar e importar backup.
+- O Espreitador jogável.
+- Mais dungeons, que liberam o sorteio de verdade.
+- Dificuldade por opção no menu do modo: começa com Fácil, Normal e Difícil, que mudam a CPU e os multiplicadores do
+  chefe.
+
+#### Ordem de produção
+
+1. Cadastro, salvamento e melhorias, com testes `node --test`.
+2. Mapa da mansão no Blender.
+3. Dungeon, encontros e drops.
+4. O chefe e o Enigma de Medo.
+5. HUD.
+6. Menus e fluxo.
+7. Modelo do Espreitador.
+8. Testes jogando, notas de feedback (`docs/outro-lado-playtest.md`) e ajustes.
+9. Release.
+
+**Feito na v4.25.0 (2026-11-05):** os 9 passos. A rodada 1 de playtest, com os problemas achados e o que mudou, está em `docs/outro-lado-playtest.md`.
+
 
 ---
 
@@ -1367,41 +1523,41 @@ A atualização deverá ser considerada funcional quando os seguintes pontos apl
 ### Jogo de luta
 
 - [ ] As melhorias de animações, modelos, especiais em equipe e câmera foram implementadas sem quebrar as batalhas existentes.
-- [ ] A interface foi ajustada sem prejudicar o modo de luta tradicional.
+- [x] A interface foi ajustada sem prejudicar o modo de luta tradicional.
 
 ### Dungeons e chefes
 
-- [ ] Existe pelo menos uma dungeon PvE funcional com mapa próprio.
-- [ ] O jogador consegue entrar, explorar, enfrentar o chefe e concluir a dungeon.
-- [ ] A presença de inimigos menores foi avaliada e, caso implementada, eles possuem uma chance configurável de deixar itens de cura antes do chefe.
-- [ ] A saída é liberada após a vitória.
-- [ ] A transição para a próxima dungeon funciona sem erros.
-- [ ] A estrutura permite adicionar novas dungeons futuramente.
-- [ ] A seleção aleatória fica prevista para quando houver conteúdo suficiente.
+- [x] Existe pelo menos uma dungeon PvE funcional com mapa próprio.
+- [x] O jogador consegue entrar, explorar, enfrentar o chefe e concluir a dungeon.
+- [x] A presença de inimigos menores foi avaliada e, caso implementada, eles possuem uma chance configurável de deixar itens de cura antes do chefe.
+- [x] A saída é liberada após a vitória.
+- [x] A transição para a próxima dungeon funciona sem erros.
+- [x] A estrutura permite adicionar novas dungeons futuramente.
+- [x] A seleção aleatória fica prevista para quando houver conteúdo suficiente.
 
 ### Progressão e salvamentos
 
-- [ ] As melhorias temporárias são perdidas conforme as regras da morte.
-- [ ] A progressão permanente permanece salva.
-- [ ] O jogador consegue iniciar, continuar e reiniciar uma campanha com segurança.
-- [ ] O salvamento não apaga dados não relacionados ao PvE.
+- [x] As melhorias temporárias são perdidas conforme as regras da morte.
+- [x] A progressão permanente permanece salva.
+- [x] O jogador consegue iniciar, continuar e reiniciar uma campanha com segurança.
+- [x] O salvamento não apaga dados não relacionados ao PvE.
 
 ### Interface
 
-- [ ] A barra de vida do jogador fica no canto inferior esquerdo.
-- [ ] A barra de vida do chefe fica centralizada na parte superior.
-- [ ] As informações continuam legíveis durante o combate.
+- [x] A barra de vida do jogador fica no canto inferior esquerdo.
+- [x] A barra de vida do chefe fica centralizada na parte superior.
+- [x] As informações continuam legíveis durante o combate.
 
 ### Cooperativo
 
-- [ ] As regras de progressão, cura e recompensas estão definidas.
+- [x] As regras de progressão, cura e recompensas estão definidas.
 - [ ] A sincronização funciona no formato cooperativo efetivamente implementado.
 - [ ] O jogo trata falhas de conexão e transições de maneira previsível.
 
 ### Escopo futuro
 
-- [ ] O Espreitador funciona como chefe conforme o escopo da dungeon.
-- [ ] Sua implementação como personagem selecionável não é tratada como requisito obrigatório desta atualização.
+- [x] O Espreitador funciona como chefe conforme o escopo da dungeon.
+- [x] Sua implementação como personagem selecionável não é tratada como requisito obrigatório desta atualização.
 
 ---
 

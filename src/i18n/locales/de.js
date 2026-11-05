@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "ÜBEN",
   "menu.sec.game": "SPIEL",
   "menu.pve": "DIE ANDERE SEITE",
-  "menu.pve.desc": "PvE-Modus: Dungeons, Bosse der Anderen Seite und Fortschritt. Demnächst.",
+  "menu.pve.desc": "PvE-Modus: Dungeons, Bosse der Anderen Seite und Fortschritt.",
   "menu.soon": "DEMNÄCHST",
   "menu.soon.text": "Die Andere Seite wird noch vorbereitet: Dungeons im Revier der Kreaturen, Bosse, Fortschritt in der Kampagne und Koop. Warte auf die nächsten Updates.",
   "menu.soon.ok": "OK",

@@ -383,7 +383,7 @@ export default {
   "menu.sec.practice": "연습",
   "menu.sec.game": "게임",
   "menu.pve": "저편",
-  "menu.pve.desc": "PvE 모드: 던전, 저편의 보스, 성장. 출시 예정.",
+  "menu.pve.desc": "PvE 모드: 던전, 저편의 보스, 성장.",
   "menu.soon": "출시 예정",
   "menu.soon.text": "저편은 아직 준비 중입니다: 괴물 영역의 던전, 보스, 캠페인 중 성장, 협동. 다음 업데이트를 기다려 주세요.",
   "menu.soon.ok": "확인",
