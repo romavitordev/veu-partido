@@ -26,7 +26,9 @@ function extrude(shape, depth = 0.012) {
 // próxima partícula. joints: as juntas encadeadas (cada uma filha da anterior); tail: o ponto, local à última junta, que
 // ela deve apontar (o centro da bola / a ponta do bastão). Devolve tick(dt) — o lutador chama a cada quadro.
 const _ra = new THREE.Vector3(), _rb = new THREE.Vector3(), _rq = new THREE.Quaternion(), _rd = new THREE.Vector3();
-export function ropeChain(joints, tail, { gravity = 9.8, damping = 0.985, floor = 0.04, iterations = 6 } = {}) {
+// whip: no golpe (fighter.state === 'attack') cada partícula é puxada para o prolongamento do cabo — a bola acompanha o
+// arco do braço e chicoteia para a frente em vez de ficar para trás pendurada
+export function ropeChain(joints, tail, { gravity = 9.8, damping = 0.985, floor = 0.04, iterations = 6, whip = 0.35 } = {}) {
   const offs = joints.map((j, i) => (i < joints.length - 1 ? joints[i + 1].position.clone() : tail.clone()));
   const lens = offs.map((o) => o.length());
   const dirs = offs.map((o) => o.clone().normalize());
@@ -43,7 +45,7 @@ export function ropeChain(joints, tail, { gravity = 9.8, damping = 0.985, floor 
     P.forEach((p, i) => Q[i].copy(p));
     live = true;
   };
-  return function tick(dt) {
+  return function tick(dt, fighter) {
     if (!joints[0].parent) return;
     joints[0].parent.updateWorldMatrix(true, false);
     const anchor = _ra.copy(joints[0].position).applyMatrix4(joints[0].parent.matrixWorld);
@@ -57,6 +59,18 @@ export function ropeChain(joints, tail, { gravity = 9.8, damping = 0.985, floor 
       Q[i].copy(P[i]);
       P[i].add(_rb);
       P[i].y -= gravity * h * h;
+    }
+    const pull = fighter && fighter.state === 'attack' ? whip : 0;
+    if (pull > 0) {
+      // o eixo do cabo no mundo: a direção de repouso do 1º elo girada com o cabo
+      joints[0].parent.getWorldQuaternion(_rq);
+      _rd.copy(dirs[0]).applyQuaternion(rest[0]).applyQuaternion(_rq);
+      let reach = 0;
+      for (let i = 1; i < n; i++) {
+        reach += lens[i - 1];
+        _rb.copy(anchor).addScaledVector(_rd, reach);
+        P[i].lerp(_rb, pull);
+      }
     }
     for (let k = 0; k < iterations; k++) {
       for (let i = 0; i < n - 1; i++) {

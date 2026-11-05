@@ -30,7 +30,8 @@ export default {
     tagline: 'Todos os Leone vivem dentro de mim!',
   },
   stats: { ...base.stats, moveSpeed: 8.6, attackSpeed: 1.18, maxHealth: 1600 }, // cabe a vida extra da transformação
-  grip: { prop: 'nunchaku', reach: 0.3 },
+  // sem def.grip: o updateGrip guardaria o nunchaku nas costas a cada golpe (ela bate COM ele)
+  grip: undefined,
   chargeFx: { style: 'aura', color: GOLD },
   dodge: { style: 'default', distance: 5.8 },
 

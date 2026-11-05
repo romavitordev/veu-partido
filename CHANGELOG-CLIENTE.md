@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.24.1 — Ajustes: Existida e o mangual da Carina
+- A Existida não tem mais o especial "Lembra de Mim": um Existido não tem técnicas, só instinto.
+- A bola do mangual da Carina chicoteia para a frente no golpe, e os chutes do combo viraram golpes com o mangual.
+- Na forma Todos os Leone, o nunchaku fica na mão ao bater.
+
 ## v4.24.0 — Beatrice Existida e Mangual da Carina
 - Beatrice Existida: agora não possui Sanidade, exibindo a barra de "EXISTÊNCIA" na cor amarela de Conhecimento (#f2c230). Suas habilidades drenam da própria Existência.
 - Beatrice Existida: adicionado o especial canônico "Lembra de Mim" (Desconjuração ep. 11), completando a trinca de frases da criatura e eliminando o traço vazio no HUD.

@@ -914,7 +914,7 @@ export class Fighter {
     this.rig.groundLock = this.onGround && !['launched', 'ko', 'downed', 'grabbed', 'pulled', 'special'].includes(this.state);
     this.anim.update(dt);
     // peças com movimento próprio (a corrente do mangual e do nunchaku da Carina: models/weapons.js → ropeChain)
-    if (this.rig.tickers) for (const t of this.rig.tickers) t(dt);
+    if (this.rig.tickers) for (const t of this.rig.tickers) t(dt, this);
     if (this.def.inkStream) this.updateInkStream();
     this.glowClock = (this.glowClock || 0) + dt;
     if (this.flash > 0) {

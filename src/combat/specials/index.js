@@ -25,10 +25,9 @@ import { inkRequiem } from './inkRequiem.js';
 import { lanternCount } from './lanternCount.js';
 import { sphinx } from './sphinx.js';
 import { racha } from './racha.js';
-import { lembraDeMim } from './lembraDeMim.js';
 
 // Tipos de especial disponíveis. Cada personagem escolhe um em `special.type`.
 // Para criar um tipo novo: { canStart(f, sp, world), start(f, sp, world) → {update(dt)→done, cancel()} }
 // Se acerta à distância sem projétil, defina também telegraph(f, sp) → aviso antes de conectar (ver telegraph.js).
 
-export const SPECIALS = { lembraDeMim, racha, sphinx, mistField, cinematicCombo, teleportStrike, ritual, erase, marionette, supernova, abyssMaze, santoPact, devilPact, devilDeal, ghostBands, spiralSnipe, eliteShot, headshot, awakenMode, realityRewrite, ageGrab, maskTransform, kamikaze, hostGame, actFinal, mindTorture, inkRequiem, lanternCount };
+export const SPECIALS = { racha, sphinx, mistField, cinematicCombo, teleportStrike, ritual, erase, marionette, supernova, abyssMaze, santoPact, devilPact, devilDeal, ghostBands, spiralSnipe, eliteShot, headshot, awakenMode, realityRewrite, ageGrab, maskTransform, kamikaze, hostGame, actFinal, mindTorture, inkRequiem, lanternCount };

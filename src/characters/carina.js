@@ -44,22 +44,22 @@ export default {
     strikes: [
       { name: 'Bola lateral', anim: 'slash_h', dur: 0.32, active: [0.09, 0.19], damage: 27, range: 2.3, arc: 130, knockback: 1.0, lunge: 1.1, sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, tilt: 0.05 } },
       { name: 'Bola de volta', anim: 'slash_h_back', dur: 0.32, active: [0.09, 0.19], damage: 27, range: 2.3, arc: 130, knockback: 1.0, lunge: 1.0, sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, flip: true } },
-      { name: 'Chute circular', anim: 'kick_round', dur: 0.32, active: [0.1, 0.19], damage: 26, range: 2.0, arc: 140, knockback: 1.1, lunge: 1.0, sound: 'swing', hitSound: 'kick' },
+      { name: 'Bola em diagonal', anim: 'slash_d', dur: 0.34, active: [0.1, 0.2], damage: 27, range: 2.3, arc: 130, knockback: 1.1, lunge: 1.0, sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, roll: 0.8 } },
       { name: 'Bola por cima', anim: 'slash_v', dur: 0.44, active: [0.16, 0.26], damage: 38, range: 2.4, arc: 80, knockback: 1.5, lunge: 1.1, guardCrush: 18, sound: 'swing', hitSound: 'heavyPunch', impactFx: 'smash', impactScale: 1.3, trail: { color: FLAIL, roll: 1.5 } },
       // o fecho: a bola gira em volta do corpo inteiro e lança
       { name: 'Giro do Mangual', anim: 'slash_finisher', dur: 0.62, active: [0.26, 0.4], damage: 58, range: 2.5, arc: 180, lunge: 1.5, finisher: 'launch', sound: 'slashFinal', hitSound: 'heavyPunch', impactFx: 'smash', impactScale: 1.6, hitstop: 0.09, trail: { color: FLAIL, roll: 1.4, big: true } },
     ],
     up: { name: 'Bola de baixo', anim: 'slash_up', dur: 0.46, active: [0.16, 0.26], damage: 40, range: 2.3, arc: 120, lunge: 0.9, finisher: 'launchHigh', launcher: true, sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, tilt: -1.3 } },
-    down: { name: 'Rasteira', anim: 'kick_low', dur: 0.42, active: [0.15, 0.25], damage: 40, range: 1.9, arc: 130, lunge: 1, finisher: 'knockdown', sound: 'swing', hitSound: 'kick' },
+    down: { name: 'Bola no chão', anim: 'hammer_ground', dur: 0.46, active: [0.18, 0.28], damage: 40, range: 2.3, arc: 110, lunge: 1, finisher: 'knockdown', sound: 'swing', hitSound: 'heavyPunch', impactFx: 'smash', groundFx: 'dust', groundScale: 0.6, trail: { color: FLAIL, roll: 1.5 } },
     forward: { name: 'Avanço do Leão', anim: 'dash_slash', dur: 0.44, active: [0.13, 0.25], damage: 36, range: 2.3, arc: 110, knockback: 1.8, motion: [{ t: [0, 0.25], fwd: 5.6, stopClose: true }], sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, tilt: 0.1 } },
     // FINTAR (cânone): abre a guarda de propósito — quem morder a isca leva o contra-ataque
     back: {
       name: 'Fintar', anim: 'counter_stance', dur: 0.6, active: [0.6, 0.6], damage: 0, range: 0, arc: 0, knockback: 0,
-      counter: { window: [0.05, 0.48], riposte: { damage: 48, finisher: 'launch', anim: 'spin_kick', sound: 'slashFinal' } },
+      counter: { window: [0.05, 0.48], riposte: { damage: 48, finisher: 'launch', anim: 'slash_finisher', sound: 'slashFinal' } },
       sound: 'swing',
     },
-    side: { name: 'Chute lateral', anim: 'side_kick', dur: 0.34, active: [0.11, 0.2], damage: 28, range: 2.0, arc: 140, knockback: 1.6, motion: [{ t: [0, 0.2], side: 2.8 }], sound: 'swing', hitSound: 'kick' },
-    air: { name: 'Chute aéreo', anim: 'air_kick', dur: 0.4, active: [0.12, 0.28], damage: 32, range: 1.9, arc: 110, knockback: 2.6, slam: 15, vertical: 2.2, sound: 'swing', hitSound: 'kick' },
+    side: { name: 'Bola em movimento', anim: 'slash_h', dur: 0.36, active: [0.11, 0.21], damage: 28, range: 2.3, arc: 150, knockback: 1.6, motion: [{ t: [0, 0.2], side: 2.8 }], sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, tilt: 0.2 } },
+    air: { name: 'Bola aérea', anim: 'air_slash', dur: 0.42, active: [0.12, 0.28], damage: 32, range: 2.3, arc: 110, knockback: 2.6, slam: 15, vertical: 2.2, sound: 'swing', hitSound: 'heavyPunch', trail: { color: FLAIL, roll: 1.4 } },
   },
 
   // □ GLOCK SILENCIADA (cânone) com o SAQUE RÁPIDO (cânone): saca, dois tiros abafados e guarda

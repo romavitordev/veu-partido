@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v4.24.1 — Ajustes: Existida e o mangual da Carina
+
+- Versão: `VERSION` 4.24.0 → **4.24.1** (`package.json` e `package-lock.json`, que tinha ficado em 4.23.0). Data: 2026-11-05. Revisão do commit `8866b77` (v4.24.0, feito fora desta sessão) contra o pedido do dono.
+- Saiu `combat/specials/lembraDeMim.js` e o `special` da `beatrice_existida`: não é canônico e contraria a decisão de 2026-11-03 (Existida sem especial). O HUD da v4.24.0 já esconde o espaço vazio.
+- `models/weapons.js ropeChain`: opção `whip` (0,35); `tick(dt, fighter)`; com `fighter.state === 'attack'`, cada partícula é puxada para o eixo do cabo (`dirs[0]` girado por `rest[0]` e pelo quaternion do pai). `Fighter` passa `this` aos tickers. Medido: a bola fica 0,15–0,4 m à frente da mão no `slash_h` (antes ficava atrás).
+- `characters/carina.js`: `kick_round` → `slash_d`, Rasteira → Bola no chão (`hammer_ground`), Chute lateral → Bola em movimento (`slash_h`), Chute aéreo → Bola aérea (`air_slash`), riposte do Fintar `spin_kick` → `slash_finisher`. `forms/carina_leone.js`: `grip: undefined` (o `updateGrip` guardava o nunchaku nas costas no ataque; conferido no jogo, agora fica na `handR`).
+- `tools/check-roster.mjs`: lia `car.grip.prop` e quebrava desde a v4.24.0; agora checa a falta da pegada e que o combo do mangual não tem chute.
+- `.claude/prompt-copilot.md` voltou a sair do controle de versão (entrou de novo no `8866b77`); o arquivo local fica.
+- Tag `v4.24.0` criada no `8866b77`, que tinha ficado sem.
+- Testado no navegador: Existida com a barra EXISTÊNCIA, Sanidade travada em amarelo, HUD sem espaço vazio, o Brilho custando 22 de vida, ACESA ×1,8; mangual e nunchaku na mão no ataque. `npm test` 62/62, `npm run check` ok.
+
 ## v4.24.0 — Beatrice Existida (Existência e Lembra de Mim) e Mangual da Carina
 
 - Versão: `VERSION` 4.23.0 → **4.24.0** (`package.json`/lock junto). Data: 2026-11-03. Pedido do dono: correções e canonicidade de Beatrice Existida (sem sanidade, barra amarela de existência, especial e velocidade) e bug da animação de mangual da Carina.

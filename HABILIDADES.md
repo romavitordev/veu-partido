@@ -373,15 +373,15 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 |---|---|---|---|---|
 | ○ 1 | Bola lateral | 27 | 2.3 m |  |
 | ○ 2 | Bola de volta | 27 | 2.3 m |  |
-| ○ 3 | Chute circular | 26 | 2 m |  |
+| ○ 3 | Bola em diagonal | 27 | 2.3 m |  |
 | ○ 4 | Bola por cima | 38 | 2.4 m |  |
 | ○ 5 | Giro do Mangual | 58 | 2.5 m | finalizador: lança |
 | Frente + ○ | Avanço do Leão | 36 | 2.3 m |  |
 | Trás + ○ | Fintar | 0 | 0 m | contra-ataque (revida 48) |
-| Lado + ○ | Chute lateral | 28 | 2 m |  |
-| No ar + ○ | Chute aéreo | 32 | 1.9 m | desce com impacto |
+| Lado + ○ | Bola em movimento | 28 | 2.3 m |  |
+| No ar + ○ | Bola aérea | 32 | 2.3 m | desce com impacto |
 | ↑ + ○ (no combo) | Bola de baixo | 40 | 2.3 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Rasteira | 40 | 1.9 m | finalizador: derruba |
+| ↓ + ○ (no combo) | Bola no chão | 40 | 2.3 m | finalizador: derruba |
 
 ### Principal (□ / X): Glock Silenciada
 

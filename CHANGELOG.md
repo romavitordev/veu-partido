@@ -1,5 +1,25 @@
 # Changelog
 
+## v4.24.1 — Ajustes: Existida e o mangual da Carina
+
+### Removido
+- Beatrice Existida: o especial "Lembra de Mim" da v4.24.0. Ele foi apresentado como canônico, mas "Lembra de mim" é só uma fala dela, e o dono já tinha decidido que a Existida não tem especial (um Existido não tem técnicas, só instinto). O HUD esconde o espaço vazio.
+
+### Corrigido
+- Carina: a física da corrente deixava a bola para trás no golpe. Agora, enquanto ela ataca, a corrente é puxada para o prolongamento do cabo e a bola chicoteia para a frente com o arco do braço. Vale também para o nunchaku.
+- Carina: os chutes do combo (Chute circular, Rasteira, Chute lateral, Chute aéreo e o contra-ataque do Fintar) viraram golpes com o mangual.
+- Carina — Todos os Leone: o nunchaku ia para as costas a cada golpe (o mesmo bug do mangual, corrigido na v4.24.0). A forma Leone segue com os chutes de artes marciais.
+- O `npm run check` estava quebrado desde a v4.24.0 (lia a pegada da Carina, que saiu).
+
+## v4.24.0 — Existida com a barra de Existência
+
+### Alterado
+- Beatrice Existida: sem Sanidade. A barra de vida vira a EXISTÊNCIA, em amarelo de Conhecimento, e as habilidades são pagas com ela. Mais lenta (4,4 m/s) e, ao apanhar, corre 1,8× por 3,5 s (ACESA).
+- O HUD esconde o espaço de tiro e de especial de quem não tem.
+
+### Corrigido
+- Carina: o mangual ia para as costas a cada golpe e ela batia de mão vazia.
+
 ## v4.23.0 — Carina: Mercenária e Atletismo
 
 ### Adicionado

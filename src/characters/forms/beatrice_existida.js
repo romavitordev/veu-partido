@@ -6,8 +6,8 @@
 // até a vítima ou ela morrer. Habilidades canônicas: PANCADA ("fraco e hesitante, reflexo de sua fragilidade"), BRILHO
 // ENLOUQUECEDOR (os textos brilham em dourado, difícil de enxergar, o terror dos escritos afeta a mente) e
 // FORTALECIMENTO PARANORMAL (depois do brilho fica mais resistente e os golpes mais danosos). Corpo decrépito e LENTO.
-// Ela NÃO luta como agente: sem canivete, sem balestra, sem rituais normais e sem Sanidade (usa Existência).
-// Especial canônico dos Existidos: "Lembra de Mim" (Desconjuração ep. 11).
+// Ela NÃO luta como agente: sem canivete, sem balestra, sem rituais, sem especial e sem Sanidade: o que ela gasta sai
+// da EXISTÊNCIA (a vida, na barra amarela de Conhecimento).
 // PROPOSTA de jogo (marcada): o toque que suga a sanidade e mata quem já está fraco, e os números.
 // O PINGENTE DA LUA DOURADA (item amaldiçoado por Conhecimento com as memórias dela) segue com ela: resiste a Conhecimento.
 // Visual: o mesmo modelo com a pele de textos, os olhos brancos, sem o Orpheu e sem armas (models/props.js).
@@ -130,19 +130,8 @@ export default {
     },
   ],
 
-  // Especial canônico (Desconjuração ep. 11 "Lembrar"): "Lembra de mim."
-  special: {
-    id: 'lembraDeMim',
-    name: 'Lembra de Mim',
-    banner: 'Lembra de mim.',
-    type: 'lembraDeMim',
-    energyCost: 0,
-    cooldown: 24,
-    damage: 360,
-    range: 14,
-    color: GOLD,
-    description: 'Os textos da pele se desprendem e explodem numa tempestade dourada de memórias: paralisa o adversário de terror e causa dano massivo de Conhecimento.',
-  },
+  // sem especial: um Existido não tem técnicas, só o instinto (pedido do dono, 2026-11-03). O HUD esconde o espaço vazio
+  special: undefined,
   awakening: undefined,
 
   passives: [
