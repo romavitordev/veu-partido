@@ -3,6 +3,7 @@
 // (limpou → a próxima, mais funda; morreu → a tentativa acaba) e o "abandonar" da pausa.
 // O main.js entrega as peças dele (telas, estado do jogo) e chama update(state) nos estados 'pve*'.
 import { MenuScreen, LoadingScreen } from '../ui/Screens.js';
+import { seededRandom } from '../net/NetSession.js';
 import { ROSTER } from '../characters/index.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels } from '../models/index.js';
@@ -21,6 +22,12 @@ export function createPveFlow(ctx) {
   const { game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect } = ctx;
   let data = loadPve();
   const save = () => savePve(data);
+  // EXPEDIÇÃO ONLINE (pedido do dono, 2026-11-06): os dados que cada computador mandou na sala ([anfitrião, convidado]:
+  // personagens liberados e a árvore de cada um) e a tentativa da expedição — só na memória, o save local não muda
+  let net = null;
+  const online = () => !!(game.net && net);
+  const attempt = () => (online() ? net.attempt : data.attempt);
+  const snapshot = () => JSON.parse(JSON.stringify({ unlocked: data.unlocked || [], profiles: data.profiles || {}, coins: data.coins || 0 }));
 
   const extraBox = (html) => `<div class="pve-box">${html}</div>`;
 
@@ -92,14 +99,14 @@ export function createPveFlow(ctx) {
       { id: 'solo', label: 'SOZINHO' },
       { id: 'team', label: 'EM EQUIPE (LÍDER + 2 ASSISTÊNCIAS)' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'Em equipe, só o líder luta: os outros dois são chamados como assistência (não dá para trocar). O Espreitador copia o time inteiro.' });
+    ], { subtitle: online() ? 'EXPEDIÇÃO ONLINE: cada um escolhe o próprio personagem e joga com a própria câmera. Em equipe, os outros dois são assistência.' : 'Em equipe, só o líder luta: os outros dois são chamados como assistência (não dá para trocar). O Espreitador copia o time inteiro.' });
   }
 
   // ------------------------------------------------ escolha do personagem (só o P1) → dificuldade
   function pickCharacter(purpose, team = false) {
     game.pvePurpose = purpose; // 'new' | 'tree'
     const coop = purpose === 'new' && !!game.pveCoop;
-    game.mode = { kind: 'pve', cpu: !coop, team, coop };
+    game.mode = { kind: 'pve', cpu: !coop, team, coop, net: online() };
     game.lastSelect = null;
     toSelect();
   }
@@ -112,7 +119,11 @@ export function createPveFlow(ctx) {
     // coop: o P2 e as assistências dele
     const coop = game.pveCoop && pick.p2 ? { charId: pick.p2.id, team: pick.teams && pick.teams[1] ? pick.teams[1].slice(1).map((d) => d.id) : [] } : null;
     const ids = [def.id, ...team, ...(coop ? [coop.charId, ...coop.team] : [])];
-    if (!ids.every((id) => isAllowed('espreitador', id) && isUnlocked(data, id))) { audio.play('denied'); return; }
+    // online: o lado do P1 confere os dados do anfitrião, o do P2 os do convidado
+    const ok = online()
+      ? [def.id, ...team].every((id) => isAllowed('espreitador', id) && isUnlocked(net.data[0], id)) && (!coop || [coop.charId, ...coop.team].every((id) => isAllowed('espreitador', id) && isUnlocked(net.data[1], id)))
+      : ids.every((id) => isAllowed('espreitador', id) && isUnlocked(data, id));
+    if (!ok) { audio.play('denied'); return; }
     game.pveChar = def.id;
     game.pveTeam = team;
     game.pveCoopPick = coop;
@@ -146,14 +157,14 @@ export function createPveFlow(ctx) {
 
   // ------------------------------------------------ a dungeon
   async function startDungeon() {
-    const a = data.attempt;
-    if (!a) { toHub(); return; }
+    const net0 = online();
+    const a = attempt();
+    if (!a) { if (net0) toFormat(); else toHub(); return; }
     const def = byId(a.charId);
-    if (!def) { data.attempt = null; save(); toHub(); return; }
+    if (!def) { if (!net0) { data.attempt = null; save(); } toHub(); return; }
     const D = DUNGEONS[a.dungeon] || DUNGEONS.espreitador;
     a.dungeon = D.id;
-    data.campaign.lastDungeon = D.id;
-    save();
+    if (!net0) { data.campaign.lastDungeon = D.id; save(); }
     endMatch();
     setOverlay(null, null);
     const loading = new LoadingScreen(screens, { p1: def, p2: { id: def.id, name: 'O ESPREITADOR', color: D.color }, arena: { name: `${D.name} — profundidade ${a.depth}` }, cpu: true, mode: 'pve', portraits });
@@ -165,39 +176,70 @@ export function createPveFlow(ctx) {
     try { await ensureModels([D.boss]); } catch (e) { console.warn('Outro Lado: modelo do chefe', e); }
     loading.progress(0.8);
     if (game.state !== 'loading' || game.screen !== loading) return;
+    if (net0 && !online()) return; // a conexão caiu durante o carregamento
     const teamDefs = (a.team || []).map(byId).filter(Boolean);
     const coopDef = a.coop ? byId(a.coop.charId) : null;
-    const dungeon = new Dungeon({
-      renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: profileOf(data, def.id), dungeonId: D.id,
-      coopDef, coopTeam: coopDef ? (a.coop.team || []).map(byId).filter(Boolean) : [], coopProfile: coopDef ? profileOf(data, coopDef.id) : null,
-      onEnd: (r) => onDungeonEnd(dungeon, r),
-    });
+    // online: a árvore de cada um vem dos dados que ele mandou; a montagem da dungeon (rotas, gavetas, baús) usa um
+    // sorteio com semente, igual nos dois computadores
+    const d1 = net0 ? net.data[0] : data;
+    const d2 = net0 ? net.data[1] : data;
+    const nativeRandom = Math.random;
+    if (net0) Math.random = seededRandom((game.net.seed ^ (a.depth * 7919) ^ (net.runs * 104729)) >>> 0);
+    let dungeon;
+    try {
+      dungeon = new Dungeon({
+        renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: profileOf(d1, def.id), dungeonId: D.id,
+        coopDef, coopTeam: coopDef ? (a.coop.team || []).map(byId).filter(Boolean) : [], coopProfile: coopDef ? profileOf(d2, coopDef.id) : null,
+        net: net0 ? { slot: game.net.slot } : null,
+        onEnd: (r) => onDungeonEnd(dungeon, r),
+      });
+    } finally { Math.random = nativeRandom; }
     dungeon.onReward = () => {
-      rewardBoss(data, def.id, `${a.startedAt}:${a.depth}`);
-      if (coopDef && coopDef.id !== def.id) rewardBoss(data, coopDef.id, `${a.startedAt}:${a.depth}`);
+      // online: cada computador guarda a recompensa do PRÓPRIO personagem
+      if (net0) { const mine = game.net && game.net.slot === 1 ? coopDef : def; if (mine) rewardBoss(data, mine.id, `${a.startedAt}:${a.depth}`); }
+      else {
+        rewardBoss(data, def.id, `${a.startedAt}:${a.depth}`);
+        if (coopDef && coopDef.id !== def.id) rewardBoss(data, coopDef.id, `${a.startedAt}:${a.depth}`);
+      }
       save();
     };
     // moedas dos baús: entram no save na hora (a morte não leva)
-    dungeon.coinsTotal = () => data.coins || 0;
-    dungeon.onCoins = (n) => { data.coins = (data.coins || 0) + n; save(); };
+    // moedas: online, as de cada um andam igual nos dois computadores (net.coins); o save local recebe só as dele
+    if (net0) {
+      const me = game.net.slot;
+      dungeon.coinsTotal = () => net.coins[me];
+      dungeon.onCoins = (n) => { net.coins[0] += n; net.coins[1] += n; data.coins = (data.coins || 0) + n; save(); };
+      dungeon.wallet = { coins: (i) => net.coins[i] || 0, spend: (i, n) => { net.coins[i] -= n; if (i === me) { data.coins = Math.max(0, (data.coins || 0) - n); save(); } } };
+    } else {
+      dungeon.coinsTotal = () => data.coins || 0;
+      dungeon.onCoins = (n) => { data.coins = (data.coins || 0) + n; save(); };
+      // no mesmo computador as moedas são uma bolsa só
+      dungeon.wallet = { coins: () => data.coins || 0, spend: (i, n) => { data.coins = Math.max(0, (data.coins || 0) - n); save(); } };
+    }
     renderer.compile(dungeon.world.scene, dungeon.world.camera);
     loading.progress(1);
     await new Promise((r) => setTimeout(r, 350));
-    if (game.state !== 'loading' || game.screen !== loading) { dungeon.dispose(); return; }
-    input.players[0].cpu = null;
-    input.players[0].setVirtual(null);
-    if (coopDef) { input.players[1].cpu = null; input.players[1].setVirtual(null); }
-    game.match = dungeon;
-    setScreen('fight', null);
-    dungeon.beginIntro();
+    if (game.state !== 'loading' || game.screen !== loading || (net0 && !online())) { dungeon.dispose(); return; }
+    const begin = () => {
+      input.players[0].cpu = null;
+      input.players[0].setVirtual(null);
+      if (coopDef) { input.players[1].cpu = null; input.players[1].setVirtual(null); }
+      game.match = dungeon;
+      setScreen('fight', null);
+      dungeon.beginIntro();
+    };
+    // online: começa no MESMO quadro nos dois (o main.js espera os dois avisarem que carregaram)
+    if (net0) { game.netLoaded = { pveStart: begin, dispose: () => dungeon.dispose() }; return; }
+    begin();
   }
 
   function onDungeonEnd(dungeon, { result, stats }) {
     if (game.match !== dungeon) return;
-    const a = data.attempt;
+    const a = attempt();
     const s = stats || {};
     const time = fmtTime(s.time);
     const statLine = `Tempo ${time} · Devorados ${s.kills || 0} · cópias ${s.copias || 0} · baús ${s.chests || 0} · moedas +${s.coins || 0} · dano causado ${Math.round(s.damage || 0)}`;
+    if (online()) { onlineEnd(result, a, statLine); return; }
     if (result === 'death') {
       const depth = a ? a.depth : 1;
       endAttemptByDeath(data);
@@ -235,6 +277,8 @@ export function createPveFlow(ctx) {
   // ------------------------------------------------ estados das telas
   function update(state) {
     if (!state || !state.startsWith('pve')) return false;
+    if (state === 'pveonline') pollRoom();
+    if (game.state !== state) return true;
     const c = game.screen && game.screen.update(input);
     if (!c) return true;
     if (state === 'pveentry') {
@@ -246,8 +290,9 @@ export function createPveFlow(ctx) {
       else if (c === 'multi') { game.pveCoop = true; toFormat(); }
       else toHub();
     } else if (state === 'pveonline') {
-      ctx.leaveOnlinePve && ctx.leaveOnlinePve();
-      toEntry();
+      if (c === 'start' && game.pveNet && game.pveNet.peerData) startOnline(true);
+      else if (c === 'start') audio.play('denied');
+      else { ctx.leaveOnlinePve && ctx.leaveOnlinePve(); toEntry(); }
     } else if (state === 'pvehub') {
       if (c === 'continue') startDungeon();
       else if (c === 'new') {
@@ -264,6 +309,7 @@ export function createPveFlow(ctx) {
     } else if (state === 'pveformat') {
       if (c === 'solo') pickCharacter('new');
       else if (c === 'team') pickCharacter('new', true);
+      else if (online()) toMainMenu(); // sai da expedição online (o main.js fecha a conexão)
       else toPlayers();
     } else if (state === 'pverestart') {
       if (c === 'yes') { data.campaign = emptyData().campaign; data.attempt = null; save(); }
@@ -273,7 +319,13 @@ export function createPveFlow(ctx) {
       toHub();
     } else if (state === 'pvediff') {
       if (c === 'back') toFormat();
-      else if (c.startsWith('diff:')) {
+      else if (c.startsWith('diff:') && online()) {
+        // online: a tentativa é da expedição (na memória); o save local de cada um não muda
+        net.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoopPick, difficulty: c.slice(5), dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
+        net.attempt.startedAt = game.net.seed + net.runs;
+        net.runs++;
+        startDungeon();
+      } else if (c.startsWith('diff:')) {
         const difficulty = c.slice(5);
         data.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoop ? game.pveCoopPick : null, difficulty, dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
         data.campaign.runs++;
@@ -296,6 +348,10 @@ export function createPveFlow(ctx) {
         else audio.play('denied');
         game.screen.render();
       }
+    } else if (state === 'pveresult' && online()) {
+      if (c === 'next') startDungeon();
+      else if (c === 'new') toFormat();
+      else toMainMenu();
     } else if (state === 'pveresult') {
       if (c === 'next') startDungeon();
       else if (c === 'new') toPlayers();
@@ -305,14 +361,78 @@ export function createPveFlow(ctx) {
     return true;
   }
 
-  // ONLINE (etapa 1): os dois conectados na sala do Outro Lado. A expedição online (a dungeon sincronizada) é a próxima
-  // etapa; por enquanto a sala mostra quem entrou e volta.
+  // ------------------------------------------------ ONLINE: a sala de espera e a EXPEDIÇÃO ONLINE
+  // Conectados, cada computador manda os próprios dados (liberados + árvore). O anfitrião (P1) começa; daí os dois entram
+  // no lockstep da partida online (main.js startNet): a mesma simulação nos dois, só os comandos viajam — a câmera de
+  // cada um inclusive. O anfitrião é o P1, quem entrou é o P2.
   function onlineRoom(session) {
+    data = loadPve();
+    session.myData = snapshot();
+    session.send({ t: 'pd', d: session.myData });
+    session.onPeerData = () => { if (game.state === 'pveonline') renderRoom(session); };
+    renderRoom(session);
+  }
+
+  function renderRoom(session) {
     const names = (session.names || []).map((n) => esc(n || '?'));
-    menu('pveonline', 'SALA DO OUTRO LADO', [{ id: 'leave', label: 'SAIR DA SALA' }], {
+    const host = session.role === 'host';
+    const ready = !!session.peerData;
+    const opts = host ? [{ id: 'start', label: ready ? 'COMEÇAR A EXPEDIÇÃO' : 'ESPERANDO O OUTRO JOGADOR…', disabled: !ready }, { id: 'leave', label: 'SAIR DA SALA' }] : [{ id: 'leave', label: 'SAIR DA SALA' }];
+    menu('pveonline', 'SALA DO OUTRO LADO', opts, {
       subtitle: `Sala ${esc(session.code || '')} · ${names.join(' e ') || 'conectados'}`,
-      extra: extraBox('Vocês estão conectados. A expedição online (a mansão sincronizada entre os dois computadores) chega na próxima atualização: cada um vai jogar com a própria câmera, no próprio monitor.'),
+      extra: extraBox(`${host ? 'Você é o <b>P1</b>: quando os dois estiverem prontos, comece a expedição.' : 'Você é o <b>P2</b>: esperando o anfitrião começar a expedição.'}<br>Cada um joga no próprio monitor, com a própria câmera, e escolhe o próprio personagem (os liberados e as melhorias permanentes de cada um valem). A tentativa online não mexe na tentativa salva de cada um.`),
     });
+  }
+
+  // a sala, a cada quadro: o outro saiu? o anfitrião começou?
+  function pollRoom() {
+    const s = game.pveNet;
+    if (!s) { toEntry(); return; }
+    if (s.closed) { game.pveNet = null; toEntry(); return; }
+    if (s.role !== 'host' && s.go && s.peerData) startOnline(false);
+  }
+
+  function startOnline(isHost) {
+    const s = game.pveNet;
+    if (!s) return;
+    if (isHost) s.send({ t: 'pgo' });
+    audio.play('confirm');
+    ctx.startNetPve(s);
+  }
+
+  // já no lockstep (main.js startNet): os dados dos dois, na ordem [P1 (anfitrião), P2]
+  function beginOnline(session) {
+    const mine = session.myData || snapshot();
+    const theirs = session.peerData || { unlocked: [], profiles: {} };
+    net = { data: session.slot === 0 ? [mine, theirs] : [theirs, mine], attempt: null, runs: 0 };
+    net.coins = net.data.map((d) => d.coins || 0);
+    game.pveCoop = true;
+    toFormat();
+  }
+
+  // fim de uma dungeon da expedição online (as telas são iguais nos dois computadores)
+  function onlineEnd(result, a, statLine) {
+    if (result === 'death') {
+      const depth = a ? a.depth : 1;
+      net.attempt = null;
+      menu('pveresult', 'VOCÊS FORAM DEVORADOS', [{ id: 'new', label: 'NOVA EXPEDIÇÃO' }, { id: 'main', label: 'SAIR DA SALA' }], {
+        subtitle: `A expedição acabou na profundidade ${depth}. O nível e os pontos de cada personagem ficam.`,
+        extra: extraBox(statLine),
+      });
+      return;
+    }
+    if (result === 'clear' && a) {
+      a.cleared++;
+      a.depth++;
+      const adv = advanceAfterClear(a, a.dungeon);
+      a.dungeon = adv.dungeon;
+      menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER (PROFUNDIDADE ${a.depth})` }, { id: 'main', label: 'SAIR DA SALA' }], {
+        subtitle: 'O Espreitador caiu. Cada um ganhou nível e ponto no próprio personagem.',
+        extra: extraBox(`${statLine}<br>A próxima dungeon é mais forte. As melhorias da expedição continuam.`),
+      });
+      return;
+    }
+    toMainMenu(); // saiu pela pausa: fecha a expedição online
   }
 
   // a pausa da dungeon: abandonar volta ao hub (a tentativa fica salva no começo desta dungeon)
@@ -322,5 +442,10 @@ export function createPveFlow(ctx) {
     else toHub();
   }
 
-  return { toHub, toEntry, onlineRoom, onSelect, update, quit, startDungeon, lockedChars: () => lockedMap(data, ROSTER), get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
+  // a seleção: VOLTAR (online volta ao formato; local, ao hub)
+  const selectBack = () => (online() ? toFormat() : toHub());
+  // online: os bloqueados de cada lado (P1 pelos dados do anfitrião, P2 pelos do convidado)
+  const lockedChars = () => (online() ? [lockedMap(net.data[0], ROSTER), lockedMap(net.data[1], ROSTER)] : lockedMap(data, ROSTER));
+
+  return { toHub, toEntry, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
 }

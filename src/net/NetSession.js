@@ -250,6 +250,7 @@ export class NetSession {
           if (h.v !== VERSION) return deny(`Versões diferentes do jogo (${VERSION_LABEL} na sala, ${formatVersion(h.v)} aí). Atualizem a página.`);
           if (password && h.password !== password) return deny('Senha errada.');
           if (h.watch) {
+            if (s.settings && s.settings.mode === 'pve') return deny('A expedição do Outro Lado não tem espectadores.');
             if (!s.link) return deny('A partida ainda não começou.');
             if (s.watchers.length >= MAX_WATCHERS) return deny('A sala já tem espectadores demais.');
             s.addWatcher(l, h);
@@ -385,6 +386,9 @@ export class NetSession {
     if (m.t === 'i') this.remote.set(m.f, m.d);
     else if (m.t === 'h') this.checkHash(m.f, m.h);
     else if (m.t === 'fix') this.fixes.push(m.s);
+    // OUTRO LADO online: os dados de cada um (personagens liberados e a árvore) e o "começar" do anfitrião
+    else if (m.t === 'pd') { this.peerData = m.d; if (this.onPeerData) this.onPeerData(m.d); }
+    else if (m.t === 'pgo') { this.go = true; if (this.onGo) this.onGo(); }
     else if (m.t === 'ping') this.send({ t: 'pong', k: m.k });
     else if (m.t === 'pong') this.ping = Math.round(performance.now() - m.k);
     else if (m.t === 'bye') this.close('O outro jogador saiu da partida.');
@@ -616,16 +620,22 @@ export class Lobby {
 }
 
 // comandos de um quadro em formato compacto: movimento (-100..100) e botões (bits)
-export const NET_ACTIONS = ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'start', 'select', 'assist1', 'assist2', 'switch1', 'switch2', 'pageL', 'pageR'];
-export function packInput(mx, my, held, flags = 0) {
+// (as teclas simples e o interagir do Outro Lado no fim; a CÂMERA LIVRE vai junto quando existe: analógico direito em
+// centésimos, o mouse em pixels e o botão de travar a mira — cada computador simula a câmera dos dois)
+export const NET_ACTIONS = ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'start', 'select', 'assist1', 'assist2', 'switch1', 'switch2', 'pageL', 'pageR', 'quick1', 'quick2', 'quick3', 'quick4', 'quick5', 'quickSp', 'grab', 'interact'];
+const clampI = (v, m) => Math.max(-m, Math.min(m, Math.round(v || 0)));
+export function packInput(mx, my, held, flags = 0, look = null) {
   let b = 0;
   NET_ACTIONS.forEach((a, i) => { if (held[a]) b |= 1 << i; });
-  return [Math.round(mx * 100), Math.round(my * 100), b, flags];
+  const d = [Math.round(mx * 100), Math.round(my * 100), b, flags];
+  if (look && (look.x || look.y || look.mx || look.my || look.lockBtn)) d.push(clampI(look.x * 100, 100), clampI(look.y * 100, 100), clampI(look.mx, 3000), clampI(look.my, 3000), look.lockBtn ? 1 : 0);
+  return d;
 }
 export function unpackInput(d) {
   const held = {};
   NET_ACTIONS.forEach((a, i) => { held[a] = !!(d[2] & (1 << i)); });
-  return { moveX: d[0] / 100, moveY: d[1] / 100, held, flags: d[3] || 0 };
+  const look = d.length > 4 ? { x: d[4] / 100, y: d[5] / 100, mx: d[6], my: d[7], lockBtn: !!d[8] } : { x: 0, y: 0, mx: 0, my: 0, lockBtn: false };
+  return { moveX: d[0] / 100, moveY: d[1] / 100, held, flags: d[3] || 0, look };
 }
 
 // sorteio com semente (a simulação usa este no lugar do Math.random durante a partida em rede)

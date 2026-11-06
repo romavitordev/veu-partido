@@ -91,10 +91,16 @@ export class PveHud {
 
   // a escolha ao subir de nível, no estilo Vampire Survivors: uma lista de linhas (ícone, nome, NOVO! ou o nível que
   // vai ganhar, a descrição) e, embaixo, a build atual. onPick(id). Também pode clicar/tocar
-  openChoice(choices, run, onPick) {
+  // who: quem escolhe (coop: P1 e P2 alternam); noClick: online o clique não vale (só o controle/teclado, que viaja
+  // na rede); mine: esta tela é de quem escolhe
+  openChoice(choices, run, onPick, { who = 0, coop = false, noClick = false, mine = true } = {}) {
     const box = this.q('.pv-choose');
     const picks = run.picks || [];
-    this.choice = { choices, index: 0, onPick };
+    this.choice = { choices, index: 0, onPick, who };
+    const panel = box.querySelector('.pv-panel') || box;
+    const head = panel.querySelector('.pv-who') || panel.insertBefore(Object.assign(document.createElement('div'), { className: 'pv-who' }), panel.firstChild);
+    head.hidden = !coop;
+    head.textContent = coop ? (mine ? `P${who + 1}: sua vez de escolher a melhoria do grupo` : `O P${who + 1} está escolhendo a melhoria do grupo…`) : '';
     this.q('.pv-cards').innerHTML = choices.map((u, i) => {
       const n = countOf(picks, u.id);
       const syn = SYNERGIES.filter((s) => s.needs.includes(u.id));
@@ -108,7 +114,7 @@ export class PveHud {
       return `<span class="pv-up" title="${esc(u.name)}"><i>${u.icon}</i><s>${pipsHtml(countOf(picks, id), u.max)}</s></span>`;
     }).join('') : '<em>nenhuma melhoria ainda</em>');
     box.hidden = false;
-    box.querySelectorAll('.pv-card').forEach((c) => c.addEventListener('click', () => { this.choice.index = Number(c.dataset.i); this.pick(); }));
+    if (!noClick) box.querySelectorAll('.pv-card').forEach((c) => c.addEventListener('click', () => { if (!this.choice) return; this.choice.index = Number(c.dataset.i); this.pick(); }));
     this.renderChoice();
   }
 
@@ -120,11 +126,11 @@ export class PveHud {
   // menu das cartas: devolve true enquanto estiver aberto
   updateChoice(input, audio) {
     if (!this.choice) return false;
-    const p = input.players[0];
+    const p = input.players[this.choice.who || 0];
     const n = this.choice.choices.length;
     if (p.menu.up || p.menu.left) { this.choice.index = (this.choice.index + n - 1) % n; audio.play('select'); this.renderChoice(); }
     if (p.menu.right || p.menu.down) { this.choice.index = (this.choice.index + 1) % n; audio.play('select'); this.renderChoice(); }
-    if (p.pressed.jump || input.keyPressedOnce('Enter')) { audio.play('confirm'); this.pick(); }
+    if (p.pressed.jump || (!this.choice.who && input.keyPressedOnce('Enter'))) { audio.play('confirm'); this.pick(); }
     return !!this.choice;
   }
 
@@ -156,6 +162,28 @@ export class PveHud {
     const b = el.querySelector('b');
     if (b.textContent !== name) b.textContent = name;
     el.querySelector('i').style.width = `${Math.max(0, Math.min(1, frac)) * 100}%`;
+  }
+
+  // EXPEDIÇÃO ONLINE: o nome do parceiro em cima do personagem dele (x, y em pixels da tela; null esconde)
+  setMate(name, x, y, color = '#7ec8ff') {
+    let el = this.q('.pv-mate');
+    if (!el) { el = document.createElement('div'); el.className = 'pv-mate'; this.el.appendChild(el); }
+    if (name === null || x === null) { el.hidden = true; return; }
+    el.hidden = false;
+    if (el.textContent !== name) el.textContent = name;
+    el.style.color = color;
+    el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px) translate(-50%, -100%)`;
+  }
+
+  // VOLTAR À VIDA: a oferta (null esconde). o = { price, t, who: [{ name, coins, ok }], coop }
+  showRevive(o) {
+    let el = this.q('.pv-revive');
+    if (!o) { if (el) el.hidden = true; return; }
+    if (!el) { el = document.createElement('div'); el.className = 'pv-revive'; this.el.appendChild(el); }
+    el.hidden = false;
+    const rows = o.who.map((w) => `<li class="${w.ok ? 'ok' : ''}">${esc(w.name)}: ● ${w.coins}${w.ok ? '' : ' (não dá)'}</li>`).join('');
+    const html = `<div class="pv-panel"><h3>VOLTAR À VIDA?</h3><p>Pague <b>● ${o.price}</b> moedas e ${o.coop ? 'os dois voltam' : 'você volta'} com metade da vida.</p><ul>${rows}</ul><small>A/× (Espaço / K) paga${o.coop ? ' — quem apertar primeiro' : ''} · B/○ (L) desiste · ${o.t}s</small></div>`;
+    if (el.innerHTML !== html) el.innerHTML = html;
   }
 
   setSplit(on) {

@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.30.0 — Outro Lado: coop online e volta à vida com moedas
+
+### Adicionado
+- Expedição online sincronizada: dois jogadores, cada um no próprio computador e com sua própria câmera, entram na mesma dungeon.
+- Retorno por moedas no coop quando os jogadores caem: qualquer jogador pode pagar; ambos voltam com 50% da vida. O preço sobe com a profundidade e dobra a cada resgate naquela dungeon.
+- Se ninguém puder pagar ou o grupo desistir, a tentativa termina normalmente.
+
 ## v4.29.0 — Outro Lado: rodada 5 — coop local em tela dividida, Local x Online e a câmera nas paredes
 
 ### Adicionado

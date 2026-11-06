@@ -90,9 +90,20 @@ export class InputManager {
       this.frameTaps = new Set();
       this.players.forEach((p, i) => {
         const v = this.netFrame[i];
+        if (!v) {
+          // o 3º lugar (o inimigo do Outro Lado online): a CPU roda igual nos dois computadores (sorteio com semente)
+          const c = p.cpu ? p.cpu.produce(dt) : p._virtual || { held: {} };
+          const held = {};
+          for (const a of ACTIONS) held[a] = !!(c.held && c.held[a]);
+          this.applyHeld(p, c.moveX || 0, c.moveY || 0, held);
+          p.source = 'cpu';
+          return;
+        }
         this.applyHeld(p, v.moveX, v.moveY, v.held);
         p.humanPressed = { start: p.pressed.start, select: p.pressed.select };
         p.source = i === this.netSlot ? this.localSource || 'keyboard' : 'keyboard';
+        // a câmera livre de cada um (Outro Lado online) vem no quadro sincronizado
+        if (p.look && v.look) Object.assign(p.look, v.look);
       });
       return;
     }
@@ -272,9 +283,20 @@ export class InputManager {
   readLocal() {
     const taps = this.tapped;
     this.tapped = new Set();
-    const d = this.readDevice(0, this.connectedPads(), taps, this.localSource);
+    const pads = this.connectedPads();
+    const d = this.readDevice(0, pads, taps, this.localSource);
     this.localSource = d.source;
     d.escape = taps.has('Escape') || this.keys.has('Escape');
+    // a câmera livre (Outro Lado online): o analógico direito, o mouse e o botão de travar deste computador
+    d.look = null;
+    if (this.freeLook) {
+      const pad = pads[PLAYER_DEVICES[0].gamepadSlot];
+      const rx = pad ? pad.axes[2] || 0 : 0;
+      const ry = pad ? pad.axes[3] || 0 : 0;
+      d.look = { x: Math.abs(rx) > 0.15 ? rx : 0, y: Math.abs(ry) > 0.15 ? ry : 0, mx: this.mouseDX, my: this.mouseDY, lockBtn: this.keys.has('KeyF') || this.mouseHeld.has(1) || !!(pad && pad.buttons[11] && pad.buttons[11].pressed) };
+    }
+    this.mouseDX = 0;
+    this.mouseDY = 0;
     return d;
   }
 

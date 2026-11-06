@@ -223,3 +223,9 @@ Botão de interagir, gavetas e cadeados:
 - **Entrada do Outro Lado:** LOCAL x ONLINE. LOCAL → hub → NOVA TENTATIVA → **SOLO ou MULTIPLAYER**.
 - **Coop local (tela dividida em cima e embaixo):** P1 na metade de cima, P2 na de baixo, cada um com a própria câmera (P2: analógico direito do 2º controle, R3 trava a mira, B ou a tecla de defesa interage). Os dois escolhem personagem (e assistências, no formato em equipe). O inimigo mira o jogador mais perto. Quem cai volta com 35% da vida ao limpar a sala ou mudar de sala; a tentativa só acaba se os dois caírem. Nível, melhorias e recompensas são do grupo (o chefe recompensa os dois personagens). Cutscene do chefe, saída e fim em tela cheia.
 - **Online, etapa 1:** criar sala, entrar por código e lista de salas do Outro Lado (separada das salas de luta; código de sala de luta é recusado). Conectados, os dois veem a "SALA DO OUTRO LADO". **Próxima etapa:** a expedição sincronizada (cada um no próprio monitor, com a câmera de sempre).
+
+### Rodada 6 (pedidos do dono, 2026-11-06) — v4.30.0
+
+- **Expedição online:** agora os dois jogadores iniciam a expedição em computadores diferentes, cada um com sua tela e câmera.
+- **Voltar à vida no coop:** quando aparece a oferta, o P2 pode pagar com as próprias moedas. Pagando, os dois voltam com metade da vida. O preço inicial é 40 moedas e dobra no resgate seguinte (80); a profundidade também aumenta o custo.
+- **Desistência/sem moedas:** desistir encerra a tentativa normalmente; sem saldo elegível, a oferta não impede o fim da tentativa.

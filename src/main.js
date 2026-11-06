@@ -620,7 +620,7 @@ function openPause(by = game.pausedBy) {
       ] : []),
       { id: 'commands', label: t('pause.commands') },
       ...(tut || dungeon ? [] : [{ id: 'time', label: timeLabel }, { id: 'rematch', label: t('pause.restart') }]),
-      dungeon ? { id: 'pve_quit', label: 'SAIR DA DUNGEON (A TENTATIVA FICA SALVA)' } : game.mode.kind === 'tower' ? { id: 'tower_quit', label: t('tower.quit') } : game.mode.kind === 'tournament' ? { id: 'tour_quit', label: t('tour.quit') } : { id: 'select', label: tut ? t('pause.other_char') : t('ui.char_select') },
+      dungeon ? { id: 'pve_quit', label: game.net ? 'SAIR DA EXPEDIÇÃO ONLINE' : 'SAIR DA DUNGEON (A TENTATIVA FICA SALVA)' } : game.mode.kind === 'tower' ? { id: 'tower_quit', label: t('tower.quit') } : game.mode.kind === 'tournament' ? { id: 'tour_quit', label: t('tour.quit') } : { id: 'select', label: tut ? t('pause.other_char') : t('ui.char_select') },
       { id: 'main', label: t('ui.main_menu') },
     ],
   }));
@@ -662,7 +662,7 @@ game.quick = (a, b, cpu = false, arenaId = DEFAULT_ARENA, dialogue = false) => {
 };
 
 // OUTRO LADO (modo PvE): hub, escolha, dungeon e resultado (pve/flow.js)
-const pve = createPveFlow({ game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect, openOnline, leaveOnlinePve: () => { if (game.pveNet) { game.pveNet.leave(); game.pveNet = null; } } });
+const pve = createPveFlow({ game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect, openOnline, startNetPve: (s) => startNet(s, { pve: true }), leaveOnlinePve: () => { if (game.pveNet) { game.pveNet.leave(); game.pveNet = null; } } });
 game.pve = pve;
 
 window.addEventListener('pointerdown', () => audio.unlock());
@@ -730,7 +730,7 @@ function packLocal() {
   if (d.escape && game.state !== 'fight') { held.start = false; held.physical = true; }
   // um toque na tela por quadro (código da tela + nº da tela em que foi tocado): ver Screens.js NET_UI
   const tap = game.netTaps && game.netTaps.length ? game.netTaps.shift() : 0;
-  return packInput(d.mx, d.my, held, (game.netLoaded ? 1 : 0) | (tap << 1));
+  return packInput(d.mx, d.my, held, (game.netLoaded ? 1 : 0) | (tap << 1), d.look);
 }
 
 // aplica os toques que vieram no quadro sincronizado (dos dois jogadores), na tela que está aberta
@@ -824,8 +824,10 @@ function netToast(text) {
 }
 
 // conectou: os dois começam do mesmo estado (seleção de personagens P1 × P2) e daqui em diante andam juntos
-function startNet(session) {
+// pve: a EXPEDIÇÃO ONLINE do Outro Lado (os dois na mesma mansão, cada um com a própria câmera no próprio monitor)
+function startNet(session, { pve: pveRun = false } = {}) {
   game.net = session;
+  game.pveNet = null;
   game.netSettings = { ...SETTINGS };
   Object.assign(SETTINGS, session.settings || {});
   game.simRandom = seededRandom(session.seed);
@@ -855,17 +857,19 @@ function startNet(session) {
   netBadge.id = 'net-badge';
   if (watching) netBadge.addEventListener('click', () => { if (game.net && game.net.role === 'watch') endNet(null, true); });
   document.body.appendChild(netBadge);
-  game.mode = { kind: 'pvp', cpu: false, team: false, net: true };
+  game.mode = pveRun ? { kind: 'pve', cpu: false, team: false, coop: true, net: true } : { kind: 'pvp', cpu: false, team: false, net: true };
   game.lastSelect = null;
   game.arenaId = null;
   game.pausedBy = 0;
   game.menuGuard = 0;
   audio.play('confirm');
-  toSelect();
+  if (pveRun) pve.beginOnline(session);
+  else toSelect();
 }
 
 function endNet(reason, byMe = false) {
   const net = game.net;
+  const wasPve = game.mode && game.mode.kind === 'pve';
   game.net = null;
   game.netLoaded = null;
   input.netFrame = null;
@@ -880,7 +884,7 @@ function endNet(reason, byMe = false) {
   hud.names = null;
   if (netBadge) { netBadge.remove(); netBadge = null; }
   if (reason) netToast(reason);
-  toMainMenu();
+  if (wasPve) { endMatch(); setOverlay(null, null); pve.toEntry(); } else toMainMenu();
 }
 
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && game.net && game.net.role === 'watch') endNet(null, true); });
@@ -1039,7 +1043,7 @@ function tick(dt) {
       const pick = game.screen.update(input);
       if (pick === 'back') {
         if (game.mode.kind === 'tower' && game.towerRun) toTowerView('intro');
-        else if (game.mode.kind === 'pve') pve.toHub();
+        else if (game.mode.kind === 'pve') pve.selectBack();
         else if (game.mode.kind === 'tournament') { const i = game.tourPickSlot; game.tourPickSlot = null; toTourSetup(i === null || i === undefined ? null : [1 + Math.floor(i / 4), i % 4]); }
         else toMainMenu();
       }
@@ -1128,7 +1132,8 @@ function tick(dt) {
       if (game.net && game.netLoaded && input.netFrame && input.netFrame.every((v) => v.flags & 1)) {
         const m = game.netLoaded;
         game.netLoaded = null;
-        beginLoadedMatch(m);
+        if (m.pveStart) m.pveStart(); // Outro Lado online: a dungeon começa no MESMO quadro nos dois
+        else beginLoadedMatch(m);
       }
       break;
     case 'lan':

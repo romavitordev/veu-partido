@@ -366,8 +366,11 @@ export class SelectScreen {
     // cursor = o lutador escolhido (a VERSÃO, índice no ROSTER); home = o cartão em que o cursor está na grade. As setas
     // mudam o cartão (e a versão volta para a do cartão); RB/LB trocam só a versão (versionsOf)
     this.cursor = prev ? [...prev.cursor] : [0, 1];
-    // OUTRO LADO: o cursor começa num liberado
-    if (locked && locked.has(ROSTER[this.cursor[0]].id)) { const f = GRID.find((i) => !locked.has(ROSTER[i].id)); if (f !== undefined) this.cursor[0] = f; }
+    // OUTRO LADO: o cursor começa num liberado (online, `locked` é uma lista por lado: os dados de cada computador)
+    [0, 1].forEach((s) => {
+      const L = this.lockedFor(s);
+      if (L && L.has(ROSTER[this.cursor[s]].id)) { const f = GRID.find((i) => !L.has(ROSTER[i].id)); if (f !== undefined) this.cursor[s] = f; }
+    });
     this.home = this.cursor.map((i) => versionsOf(i)[0]);
     this.portraits = portraits;
     this.ready = [false, false];
@@ -413,11 +416,12 @@ export class SelectScreen {
       pg.querySelector('.pg-next').addEventListener('click', () => this.tapSide(p, 252));
     });
     this.hint = this.el.querySelector('.hint');
-    if (locked) this.cards.forEach((list) => list.forEach((c) => {
+    if (locked) this.cards.forEach((list, side) => list.forEach((c) => {
       const id = ROSTER[Number(c.dataset.i)].id;
-      if (!locked.has(id)) return;
+      const L = this.lockedFor(side);
+      if (!L || !L.has(id)) return;
       c.classList.add('locked');
-      c.insertAdjacentHTML('beforeend', `<span class="lk" title="${locked.get(id)}">🔒</span>`);
+      c.insertAdjacentHTML('beforeend', `<span class="lk" title="${L.get(id)}">🔒</span>`);
     }));
     // toque no lutador: o 1º toque olha, o 2º no mesmo confirma
     this.cards.forEach((list, p) => list.forEach((c) => c.addEventListener('click', () => this.tapSide(p, 1 + Number(c.dataset.i)))));
@@ -540,7 +544,7 @@ export class SelectScreen {
     }
     this.startEl.classList.toggle('on', this.ready[0] && this.ready[1]);
     const keys = { move: moveLabel(0), jump: actionLabel(0, 'jump'), phys: actionLabel(0, 'physical'), jump2: actionLabel(1, 'jump'), phys2: actionLabel(1, 'physical') };
-    const lk = this.locked && this.locked.get(ROSTER[this.cursor[0]].id);
+    const lk = this.lockedFor(0) && this.lockedFor(0).get(ROSTER[this.cursor[0]].id);
     this.hint.innerHTML = lk ? `🔒 <b>${ROSTER[this.cursor[0]].name}</b> ainda está bloqueado no Outro Lado · ${lk}` : this.mode === 'pve' ? `<b>P1</b> escolhe quem entra no Outro Lado · <kbd>${keys.jump}</kbd>/<kbd>Enter</kbd> confirma · <kbd>${keys.phys}</kbd>/<kbd>Esc</kbd> volta` : t(this.M.soloPick ? 'tower.sel_hint' : this.cpu ? 'sel.hint_cpu' : 'sel.hint_pvp', keys)
       + t('sel.hint_common', { ok: OK, rand: RAND, back: BACK })
       + (this.home.some((h) => versionsOf(h).length > 1) ? t('sel.hint_version', { l: actionLabel(0, 'pageL'), r: actionLabel(0, 'pageR') }) : '');
@@ -634,7 +638,7 @@ export class SelectScreen {
     if (target !== null && GRID[target] !== home) { this.home[slot] = this.cursor[slot] = GRID[target]; this.audio.play('select'); changed = true; }
     if (confirm(p)) { if (this.lockPick(slot) !== false) this.audio.play('confirm'); changed = true; }
     else if (random(p)) {
-      this.cursor[slot] = pickRandom(n, this.cursor[slot], (i) => (!this.team || !this.picks[slot].includes(i)) && !(this.locked && this.locked.has(ROSTER[i].id)));
+      this.cursor[slot] = pickRandom(n, this.cursor[slot], (i) => (!this.team || !this.picks[slot].includes(i)) && !(this.lockedFor(slot) && this.lockedFor(slot).has(ROSTER[i].id)));
       this.home[slot] = versionsOf(this.cursor[slot])[0];
       this.lockPick(slot);
       this.audio.play('confirm');
@@ -678,8 +682,12 @@ export class SelectScreen {
 
   // confirma a escolha do lado; na equipe fica pronto com 3 personagens diferentes — ou com 2, confirmando de novo o
   // segundo que acabou de escolher (Kaiser → Cris → Cris)
+  lockedFor(slot) {
+    return Array.isArray(this.locked) ? this.locked[slot] : this.locked;
+  }
+
   lockPick(slot) {
-    const lk = this.locked && this.locked.get(ROSTER[this.cursor[slot]].id);
+    const lk = this.lockedFor(slot) && this.lockedFor(slot).get(ROSTER[this.cursor[slot]].id);
     if (lk && (slot === 0 || !this.M.soloPick)) {
       this.audio.play('denied');
       return false;

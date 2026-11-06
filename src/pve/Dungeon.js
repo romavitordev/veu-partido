@@ -36,12 +36,13 @@ const COPIA_DMG = 0.45;
 const LOCK_RANGE = 15; // até onde a mira trava num inimigo
 const v1 = new THREE.Vector3();
 const v2 = new THREE.Vector3();
+const MATE_V = new THREE.Vector3(); // o nome do parceiro (online): a projeção na tela
 const v3 = new THREE.Vector3();
 // coop local: um objeto só aparece na câmera de um jogador (layer 1 = P1, 2 = P2); 0 = nas duas
 const onLayer = (o, layer) => { if (layer) o.traverse((c) => c.layers.set(layer)); };
 
 export class Dungeon {
-  constructor({ renderer, audio, input, hud, playerDef, teamDefs = [], run, profile, dungeonId = 'espreitador', onEnd, coopDef = null, coopTeam = [], coopProfile = null }) {
+  constructor({ renderer, audio, input, hud, playerDef, teamDefs = [], run, profile, dungeonId = 'espreitador', onEnd, coopDef = null, coopTeam = [], coopProfile = null, net = null }) {
     this.isDungeon = true;
     this.training = false;
     this.timer = 0;
@@ -55,6 +56,10 @@ export class Dungeon {
     this.profile = profile; // o perfil permanente do personagem (a árvore)
     // COOP LOCAL (pedido do dono, 2026-11-06): o 2º jogador no mesmo PC, com a própria câmera (tela dividida)
     this.coop = !!coopDef;
+    // EXPEDIÇÃO ONLINE: os dois computadores rodam esta MESMA simulação (lockstep); net.slot = o lado deste (0 = P1)
+    this.net = net;
+    this.local = net ? net.slot : null; // a vista que esta tela mostra (null = todas: solo ou tela dividida)
+    this.chooser = 0; // quem escolhe a próxima melhoria (no coop, alternam)
     this.coopProfile = coopProfile || profile;
     this.D = DUNGEONS[dungeonId];
     this.diff = PVE_DIFFICULTIES[run.difficulty] || PVE_DIFFICULTIES.normal;
@@ -68,6 +73,7 @@ export class Dungeon {
     this.cloneDefs = [playerDef, ...this.teamDefs, ...(coopDef ? [coopDef, ...this.coopTeam] : [])];
     this.stats = { kills: 0, copias: 0, time: 0, damage: 0, coins: 0, chests: 0 };
     this.world = new World({ renderer, audio, input, ui: hud });
+    if (net) { this.world.netplay = true; this.world.viewSlot = net.slot ? 2 : 0; }
     const devDef = devoradoDef(playerDef, { hp: Math.round(DEVORADO_HP * this.scale.hp) });
     this.devDef = devDef;
     this.world.setup([playerDef, devDef], this.D.arena);
@@ -129,7 +135,9 @@ export class Dungeon {
     if (this.coop) {
       const cam2 = new THREE.PerspectiveCamera(50, w.camera.aspect, 0.12, 300);
       const rig2 = new CameraRig(cam2, w);
-      rig2.noOcclusion = true;
+      // as paredes que somem na frente da câmera: só a câmera de quem olha esta tela (online, a do P2 no computador dele)
+      rig2.noOcclusion = this.local !== 1;
+      if (this.local === 1) w.cameraRig.noOcclusion = true;
       rig2.distance = 4.4;
       rig2.height = 2.3;
       this.views.push(this.makeView(1, this.player2, input.players[1], rig2));
@@ -147,6 +155,7 @@ export class Dungeon {
     w.scene.add(this.lamp);
     this.drip = 2;
     this.player.simpleKeys = true; // teclas simples no teclado + mouse (InputManager / Fighter.tryQuick)
+    if (net && this.player2) this.player2.simpleKeys = true; // online o P2 também joga com o teclado do P1 do computador dele
   }
 
   get fighters() { return this.world.fighters; }
@@ -197,7 +206,7 @@ export class Dungeon {
     this.bindHud();
     h.show(true);
     this.hudAdd('pve-noboss');
-    if (this.coop) { h.root.classList.add('pve-coop'); this.pveHud.setSplit(true); }
+    if (this.coop) { h.root.classList.add('pve-coop'); h.root.classList.toggle('pve-online', !!this.net); this.pveHud.setSplit(!this.net); }
     this.pveHud.setPlace(this.D.place, ''); // as salas não têm nome na tela (pedido do dono, 2026-11-06)
     this.pveHud.setObjective(this.mod.objective);
     this.pveHud.setRun(this.run, this.run.depth);
@@ -311,6 +320,76 @@ export class Dungeon {
   }
 
   // coop: quem caiu volta de pé, com um terço da vida
+  // ------------------------------------------------ VOLTAR À VIDA com moedas (pedido do dono, 2026-11-06; preço: PROPOSTA)
+  // O preço sobe com a profundidade e a cada vez que o grupo volta nesta dungeon. Quem paga: quem apertar A/× e tiver
+  // as moedas (no coop, qualquer um dos dois; online, as moedas de cada computador).
+  revivePrice() {
+    return Math.round(40 * (1 + 0.5 * Math.max(0, this.run.depth - 1)) * (1 + (this.revives || 0)));
+  }
+
+  coinsOf(i) {
+    return this.wallet ? this.wallet.coins(i) : 0;
+  }
+
+  canAffordRevive() {
+    const price = this.revivePrice();
+    return this.players.some((q, i) => this.coinsOf(i) >= price);
+  }
+
+  openRevive() {
+    const price = this.revivePrice();
+    this.reviveOffer = { price, t: 12 };
+    this.audio.play('select', { volume: 0.8, pitch: 0.7 });
+    this.pveHud.showRevive(this.reviveLines());
+  }
+
+  reviveLines() {
+    const o = this.reviveOffer;
+    const names = this.hud.names || [];
+    const who = this.players.map((q, i) => ({ name: (this.coop && names[i]) || (this.coop ? `P${i + 1}` : 'Você'), coins: this.coinsOf(i), ok: this.coinsOf(i) >= o.price }));
+    return { price: o.price, t: Math.ceil(o.t), who, coop: this.coop };
+  }
+
+  updateRevive(dt) {
+    const o = this.reviveOffer;
+    o.t -= dt;
+    let payer = -1;
+    let quit = o.t <= 0;
+    this.views.forEach((V, i) => {
+      const pr = V.inp.pressed || {};
+      if (pr.jump && this.coinsOf(i) >= o.price && payer < 0) payer = i;
+      if (pr.physical) quit = true;
+    });
+    if (payer >= 0) {
+      this.wallet.spend(payer, o.price);
+      this.reviveOffer = null;
+      this.pveHud.showRevive(null);
+      this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : 0);
+      this.revives = (this.revives || 0) + 1;
+      for (const pl of this.players) {
+        pl.health = Math.round(pl.maxHealth * 0.5);
+        pl.vel.set(0, 0, 0);
+        pl.setState('idle');
+        pl.anim.play('idle', { restart: true });
+        pl.invuln = Math.max(pl.invuln || 0, 2.5);
+      }
+      this.phase = this.deadFrom || 'explore';
+      this.phaseTime = 0;
+      this.reviveAsked = false;
+      this.hud.callout('DE VOLTA!', '#7dffb0');
+      this.audio.play('levelUp', { volume: 0.9 });
+      this.popup(payer, `-${o.price} MOEDAS`, '#ffc040');
+      return;
+    }
+    if (quit) {
+      this.reviveOffer = null;
+      this.pveHud.showRevive(null);
+      this.phaseTime = 2.6; // segue para o fim (a tela escurece)
+      return;
+    }
+    this.pveHud.showRevive(this.reviveLines());
+  }
+
   revivePlayers() {
     if (!this.coop) return;
     for (const pl of this.players) {
@@ -556,6 +635,7 @@ export class Dungeon {
         this.hintT = 4;
         return;
       }
+      this.deadFrom = this.phase === 'bossDown' ? 'bossDown' : this.encounter && !this.encounter.done ? 'fight' : 'explore';
       this.phase = 'dead';
       this.phaseTime = 0;
       this.hud.callout('DEVORADO', '#ff4a3a');
@@ -622,13 +702,15 @@ export class Dungeon {
     if (!choices.length) return;
     this.audio.play('levelUp', { volume: 1 });
     this.choosing = true;
+    const who = this.coop ? this.chooser : 0;
+    if (this.coop) this.chooser = 1 - this.chooser;
     this.pveHud.openChoice(choices, this.run, (id) => {
       this.run.picks.push(id);
       this.applyPlayerMods(false);
       this.pveHud.setRun(this.run, this.run.depth);
       this.choosing = false;
       this.hud.callout(choices.find((u) => u.id === id).name.toUpperCase(), '#ffd84a');
-    });
+    }, { who, coop: this.coop, noClick: !!this.net || (this.coop && who === 1), mine: this.local === null || this.local === who });
   }
 
   // ------------------------------------------------ câmera: luta = os dois; exploração = o jogador e um ponto à frente
@@ -1016,6 +1098,7 @@ export class Dungeon {
   // ------------------------------------------------ loop
   update(dt) {
     this.lastDt = dt;
+    if (this.endQueued) { this.flushEnd(); return; }
     if (this.phase === 'loading' || this.phase === 'over' || this.disposed) return;
     // a cena de entrada do Espreitador: o mundo anda (animações, câmera), mas ninguém luta
     if (this.bossIntro) {
@@ -1028,9 +1111,16 @@ export class Dungeon {
       this.hud.update(this);
       return;
     }
+    // a oferta de voltar à vida: o mundo para até alguém pagar ou desistir
+    if (this.reviveOffer) {
+      this.updateRevive(dt);
+      this.hud.update(this);
+      return;
+    }
     // escolhendo melhoria: o mundo para
     if (this.choosing) {
       this.pveHud.updateChoice(this.input, this.audio);
+      if (this.endQueued) this.flushEnd();
       this.hud.update(this);
       return;
     }
@@ -1112,7 +1202,12 @@ export class Dungeon {
         this.updateExit(dt);
         break;
       case 'dead':
-        if (this.phaseTime > 2.6 && !this.ended) {
+        // VOLTAR À VIDA com moedas (pedido do dono, 2026-11-06): antes do fim, quem tiver moedas pode pagar
+        if (this.phaseTime > 1.6 && !this.ended && !this.reviveAsked) {
+          this.reviveAsked = true;
+          if (this.canAffordRevive()) { this.openRevive(); break; }
+        }
+        if (this.phaseTime > 2.6 && !this.ended && !this.reviveOffer) {
           this.ended = true;
           this.pveHud.fade(true, 0.8);
           w.after(0.9, () => this.finish('death'));
@@ -1211,7 +1306,15 @@ export class Dungeon {
   finish(result) {
     if (this.phase === 'over') return;
     this.phase = 'over';
+    // online: no próximo quadro da simulação (igual nos dois computadores); local: fora do quadro atual
+    if (this.net) { this.endQueued = { result, stats: this.stats, run: this.run }; return; }
     setTimeout(() => { if (!this.disposed) this.onEnd && this.onEnd({ result, stats: this.stats, run: this.run }); }, 0);
+  }
+
+  flushEnd() {
+    const e = this.endQueued;
+    this.endQueued = null;
+    if (e && !this.disposed && this.onEnd) this.onEnd(e);
   }
 
   // a tentativa abandonada pelo menu de pausa
@@ -1225,7 +1328,15 @@ export class Dungeon {
     const w = this.world;
     const r = w.renderer;
     const size = r.getSize(v2);
-    const full = !this.coop || this.bossIntro || this.phase === 'exit' || this.phase === 'over';
+    if (this.net) this.placeMate();
+    if (this.net && this.local === 1 && !(this.bossIntro || this.phase === 'exit' || this.phase === 'over')) {
+      const cam = this.views[1].rig.camera;
+      const asp = size.x / Math.max(1, size.y);
+      if (Math.abs(cam.aspect - asp) > 1e-3) { cam.aspect = asp; cam.updateProjectionMatrix(); }
+      r.render(w.scene, cam);
+      return;
+    }
+    const full = !this.coop || this.net || this.bossIntro || this.phase === 'exit' || this.phase === 'over';
     if (full) {
       const asp = size.x / Math.max(1, size.y);
       if (Math.abs(w.camera.aspect - asp) > 1e-3) { w.camera.aspect = asp; w.camera.updateProjectionMatrix(); }
@@ -1245,6 +1356,22 @@ export class Dungeon {
     });
     r.setScissorTest(false);
     r.setViewport(0, 0, size.x, size.y);
+  }
+
+  // online: o nome do outro jogador flutuando em cima dele, na câmera desta tela (só desenho: não mexe na simulação)
+  placeMate() {
+    if (!this.pveHud) return;
+    const mate = this.local === 1 ? this.player : this.player2;
+    const names = this.hud.names || [];
+    const name = names[this.local === 1 ? 0 : 1];
+    const fullCam = this.bossIntro || this.phase === 'exit' || this.phase === 'over';
+    const cam = this.local === 1 && !fullCam ? this.views[1].rig.camera : this.world.camera;
+    if (!mate || !name || !mate.visible || this.phase === 'loading') { this.pveHud.setMate(null); return; }
+    const s = MATE_V.set(mate.pos.x, mate.pos.y + 2.15, mate.pos.z).project(cam);
+    if (s.z > 1 || s.z < -1 || Math.abs(s.x) > 1.1 || Math.abs(s.y) > 1.1) { this.pveHud.setMate(null); return; }
+    const k = mate.state === 'ko' ? ' (caído)' : '';
+    const el = this.world.renderer.domElement;
+    this.pveHud.setMate(name + k, (s.x + 1) / 2 * el.clientWidth, (1 - s.y) / 2 * el.clientHeight, this.local === 1 ? '#ffb24a' : '#7ec8ff');
   }
 
   dispose() {
@@ -1274,7 +1401,7 @@ export class Dungeon {
     for (const g of this.gates) if (g.mesh) { this.world.scene.remove(g.mesh); g.mesh.geometry.dispose(); g.mesh.material.dispose(); }
     this.world.dispose();
     this.pveHud && this.pveHud.dispose();
-    this.hud.root.classList.remove('pve', 'pve-noboss', 'pve-minor', 'pve-coop');
+    this.hud.root.classList.remove('pve', 'pve-noboss', 'pve-minor', 'pve-coop', 'pve-online');
     this.hud.reset();
     this.hud.show(false);
   }

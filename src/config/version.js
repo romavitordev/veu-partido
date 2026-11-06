@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.29.0';
+export const VERSION = '4.30.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.30.0',
+    date: '2026-11-06',
+    title: 'Outro Lado: coop online e volta à vida com moedas',
+    items: [
+      'OUTRO LADO ONLINE: agora a expedição é jogada em dois computadores, com cada pessoa usando sua própria tela e câmera.',
+      'Ao cair no coop, aparece uma oferta para voltar: qualquer jogador com moedas suficientes pode pagar. Os dois voltam com metade da vida; o preço aumenta a cada resgate e com a profundidade.',
+      'Sem moedas suficientes ou ao desistir, a tentativa termina normalmente.',
+    ],
+  },
   {
     v: '4.29.0',
     date: '2026-11-06',

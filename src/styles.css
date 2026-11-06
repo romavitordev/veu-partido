@@ -1281,6 +1281,17 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #hud.pve.pve-coop .panel.p2 { top: auto; bottom: 14px; left: auto; right: 16px; width: min(40vw, 460px); }
 #hud.pve.pve-coop .panel { transform: scale(.78); transform-origin: bottom left; }
 #hud.pve.pve-coop .panel.p2 { transform-origin: bottom right; }
+/* EXPEDIÇÃO ONLINE: tela cheia (cada um no próprio monitor): o P1 no pé à esquerda, o P2 no pé à direita */
+#hud.pve.pve-coop.pve-online .panel.p1 { bottom: 14px; }
+#pvehud .pv-mate { position: fixed; left: 0; top: 0; pointer-events: none; font-weight: 800; font-size: 14px; letter-spacing: .06em; text-shadow: 0 1px 3px #000, 0 0 8px #000; white-space: nowrap; z-index: 3; }
+#pvehud .pv-revive { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #2a0000aa, #000c); z-index: 6; pointer-events: none; }
+#pvehud .pv-revive[hidden] { display: none; }
+#pvehud .pv-revive .pv-panel { text-align: center; max-width: min(92vw, 520px); }
+#pvehud .pv-revive h3 { color: #ff6a5a; letter-spacing: .14em; }
+#pvehud .pv-revive ul { list-style: none; padding: 0; margin: 10px 0; }
+#pvehud .pv-revive li { color: #b9a9a0; }
+#pvehud .pv-revive li.ok { color: #ffd84a; font-weight: 800; }
+#pvehud .pv-who { text-align: center; font-weight: 800; letter-spacing: .08em; color: #ffd84a; margin-bottom: 10px; text-transform: uppercase; font-size: 14px; }
 #hud.pve:not(.pve-coop) .panel.p2 { left: 50%; right: auto; top: 14px; transform: translateX(-50%); width: min(58vw, 640px); text-align: center; }
 #hud.pve:not(.pve-coop) .panel.p2 .name { justify-content: center; font-size: 26px; letter-spacing: .14em; }
 #hud.pve:not(.pve-coop) .panel.p2 .name .tag, #hud.pve:not(.pve-coop) .panel.p2 .bar.energy, #hud.pve:not(.pve-coop) .panel.p2 .bar.guard, #hud.pve:not(.pve-coop) .panel.p2 .row,
