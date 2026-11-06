@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.26.0';
+export const VERSION = '4.27.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,24 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.27.0',
+    date: '2026-11-05',
+    title: 'Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência',
+    items: [
+      'OUTRO LADO: os caminhos agora têm ESCOLHA. Ao limpar a sala, as portas da esquerda, da frente e da direita se abrem, e cada uma mostra a sala e quantos monstros tem (2, 3 ou 4).',
+      'O número de salas até o chefe muda a cada tentativa. O chefe é sempre a última sala.',
+      'A escada do hall leva ao 2º andar: o Quarto infantil e o Quarto dos Olhos de Gatos, com a porta emperrada cheia de olhos. Tem também uma Sala de jantar nova.',
+      'Portas de verdade entre as salas: abrem quando você chega perto, fecham quando se afasta, e a porta por onde você entrou se fecha atrás de você.',
+      'Setas no chão: AZUL aponta o baú (é opcional abrir) e AMARELAS apontam as portas.',
+      'Câmera livre com o mouse ou o analógico direito, sem atravessar paredes. O personagem gira junto e os ataques vão para onde a câmera aponta.',
+      'Em equipe, o time entra só como ASSISTÊNCIA (sem trocar de personagem), e os Devorados e as cópias são do jogador e das assistências.',
+      'Os olhos dos corredores agora espiam por frestas que mudam de lugar enquanto você avança.',
+      'O Espreitador mais fiel ao cânone: a massa de olhos, a boca de dentes tortos com um olho dentro e a baba; ele foge e só dá a Pancada quando encurralado, drena a energia escondido e o olhar dele deixa você lento.',
+      'Sem território novo para jogar, a próxima tentativa volta ao primeiro numa dificuldade maior (depois do Difícil, Difícil +1, +2…).',
+      'O tremor de tela ficou suave (antes ele chiava).',
+    ],
+  },
   {
     v: '4.26.0',
     date: '2026-11-05',

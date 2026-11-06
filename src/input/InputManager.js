@@ -18,6 +18,7 @@ export class PlayerInput {
     this._prevDir = {};
     this.source = 'keyboard';
     this.cpu = null; // controlador de IA opcional
+    this.look = { x: 0, y: 0, mx: 0, my: 0 }; // CÂMERA LIVRE (Outro Lado): analógico direito (-1..1) e mouse (pixels no quadro)
   }
 
   // Usado pela IA e por testes: injeta um estado completo.
@@ -47,7 +48,29 @@ export class InputManager {
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Tab', 'NumpadDecimal'].includes(e.code)) e.preventDefault();
     });
     window.addEventListener('keyup', (e) => this.keys.delete(e.code));
-    window.addEventListener('blur', () => this.keys.clear());
+    window.addEventListener('blur', () => { this.keys.clear(); this.mouseHeld.clear(); });
+    // CÂMERA LIVRE (Outro Lado, pedido do dono 2026-11-05): com freeLook ligado, um clique no jogo trava o ponteiro e o
+    // mouse gira a câmera (o personagem gira junto para mirar); travado, o botão esquerdo é o ataque físico e o direito
+    // o à distância. O analógico direito também gira a câmera (e deixa de trocar o personagem).
+    this.freeLook = false;
+    this.mouseDX = 0;
+    this.mouseDY = 0;
+    this.mouseHeld = new Set();
+    const locked = () => !!document.pointerLockElement;
+    window.addEventListener('mousemove', (e) => { if (this.freeLook && locked()) { this.mouseDX += e.movementX || 0; this.mouseDY += e.movementY || 0; } });
+    window.addEventListener('mousedown', (e) => {
+      if (!this.freeLook) return;
+      if (!locked()) {
+        const cv = e.target && e.target.tagName === 'CANVAS' ? e.target : null;
+        if (cv && cv.requestPointerLock) { try { const r = cv.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch { /* sem trava */ } }
+        return;
+      }
+      this.mouseHeld.add(e.button);
+      this.tapped.add(`Mouse${e.button}`);
+      e.preventDefault();
+    });
+    window.addEventListener('mouseup', (e) => this.mouseHeld.delete(e.button));
+    window.addEventListener('contextmenu', (e) => { if (this.freeLook && locked()) e.preventDefault(); });
   }
 
   connectedPads() {
@@ -108,6 +131,23 @@ export class InputManager {
       }
 
       this.applyHeld(p, mx, my, held);
+      // a câmera livre é só do jogador 1 neste computador
+      if (i === 0) {
+        const L = p.look;
+        L.x = 0; L.y = 0; L.mx = 0; L.my = 0;
+        if (this.freeLook && !p.cpu && !p._virtual) {
+          if (pad) {
+            const rx = pad.axes[2] || 0;
+            const ry = pad.axes[3] || 0;
+            L.x = Math.abs(rx) > 0.15 ? rx : 0;
+            L.y = Math.abs(ry) > 0.15 ? ry : 0;
+          }
+          L.mx = this.mouseDX;
+          L.my = this.mouseDY;
+        }
+        this.mouseDX = 0;
+        this.mouseDY = 0;
+      }
     });
   }
 
@@ -148,6 +188,11 @@ export class InputManager {
     let source = prevSource;
     const kbHeld = (codes) => codes && codes.some((c) => this.keys.has(c) || taps.has(c));
     for (const a of ACTIONS) held[a] = kbHeld(layout[a]);
+    // mouse travado (câmera livre): esquerdo = físico, direito = à distância
+    if (i === 0 && this.freeLook && document.pointerLockElement) {
+      if (this.mouseHeld.has(0) || taps.has('Mouse0')) held.physical = true;
+      if (this.mouseHeld.has(2) || taps.has('Mouse2')) held.ranged = true;
+    }
     mx += (kbHeld(layout.right) ? 1 : 0) - (kbHeld(layout.left) ? 1 : 0);
     my += (kbHeld(layout.up) ? 1 : 0) - (kbHeld(layout.down) ? 1 : 0);
 
@@ -172,8 +217,8 @@ export class InputManager {
       // analógico direito ◀/▶: TROCA o personagem em campo pelo da assistência 1/2
       // (as assistências são chamadas por L1/LB e R1/RB)
       const rx = pad.axes[2] || 0;
-      if (rx < -0.6) held.switch1 = true;
-      if (rx > 0.6) held.switch2 = true;
+      if (!this.freeLook && rx < -0.6) held.switch1 = true;
+      if (!this.freeLook && rx > 0.6) held.switch2 = true;
       let ax = pad.axes[0] || 0;
       let ay = -(pad.axes[1] || 0);
       const mag = Math.hypot(ax, ay);

@@ -9,9 +9,11 @@ import { World } from '../game/World.js';
 import { buildModel, isModelLoaded } from '../models/index.js';
 import { CpuController } from '../ai/CpuController.js';
 import { DanteClone } from '../combat/npcs.js';
+import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
-import { DUNGEONS, PVE_DIFFICULTIES, depthScale, rollHeal } from './dungeons.js';
+import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, chestChance } from './dungeons.js';
+import { RoomDoor, makeArrow, aimArrow } from './roomDoors.js';
 import { computeMods, gainXp, rollChoices } from './upgrades.js';
 import { devoradoDef, restyleDevorado, copiaOpts } from './devorado.js';
 import { Pickup, Chest } from './pickups.js';
@@ -29,9 +31,11 @@ const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador cop
 const COPIA_HP = 160;
 const COPIA_DMG = 0.45;
 const v1 = new THREE.Vector3();
+const v2 = new THREE.Vector3();
+const v3 = new THREE.Vector3();
 
 export class Dungeon {
-  constructor({ renderer, audio, input, hud, playerDef, run, profile, dungeonId = 'espreitador', onEnd }) {
+  constructor({ renderer, audio, input, hud, playerDef, teamDefs = [], run, profile, dungeonId = 'espreitador', onEnd }) {
     this.isDungeon = true;
     this.training = false;
     this.timer = 0;
@@ -45,9 +49,13 @@ export class Dungeon {
     this.profile = profile; // o perfil permanente do personagem (a árvore)
     this.D = DUNGEONS[dungeonId];
     this.diff = PVE_DIFFICULTIES[run.difficulty] || PVE_DIFFICULTIES.normal;
-    const depth = depthScale(run.depth);
+    const depth = depthScale(run.depth) * heatScale(run);
     this.scale = { hp: this.diff.hp * depth, dealt: this.diff.dealt * depth };
     this.playerDef = playerDef;
+    // EM EQUIPE (pedido do dono, 2026-11-05): o time entra só como ASSISTÊNCIA (sem trocar quem luta), e os Devorados e as
+    // cópias saem de todo o time que o Espreitador está observando
+    this.teamDefs = teamDefs.filter(Boolean).slice(0, 2);
+    this.cloneDefs = [playerDef, ...this.teamDefs];
     this.stats = { kills: 0, copias: 0, time: 0, damage: 0, coins: 0, chests: 0 };
     this.world = new World({ renderer, audio, input, ui: hud });
     const devDef = devoradoDef(playerDef, { hp: Math.round(DEVORADO_HP * this.scale.hp) });
@@ -61,6 +69,12 @@ export class Dungeon {
     enemy.maxHealth = devDef.stats.maxHealth;
     enemy.health = enemy.maxHealth;
     this.applyPlayerMods(true);
+    if (this.teamDefs.length) {
+      const p = this.player;
+      p.assists = this.teamDefs.map((d, slot) => new Assist(d, p, w, slot));
+      p.noSwitch = true;
+      input.teamMode = true;
+    } else input.teamMode = false;
     w.onKO = (f) => this.onKO(f);
     w.onTransform = (f) => { if (f === this.player) this.applyPlayerMods(false, true); this.hud.bind(w.fighters); };
     w.onSwitch = () => this.hud.bind(w.fighters);
@@ -73,29 +87,32 @@ export class Dungeon {
     this.pickups = [];
     this.gates = [];
     this.copias = [];
-    this.roomIdx = 0;
+    this.doors = [];
+    this.cracks = {};
     this.phase = 'loading';
     this.phaseTime = 0;
-    // o território: os armários do quarto, a fresta do corredor, a porta de saída e as portas trancadas
+    // o território: os armários do quarto (a sala do chefe) e a porta de saída
     this.closets = this.D.closets.map((s, i) => new Closet(w, enemy, s, i));
-    const stalk = this.D.rooms.find((r) => r.kind === 'stalk');
-    this.crack = stalk ? new PeekingCrack(w, stalk.peek) : null;
-    this.exitRoom = this.D.rooms.find((r) => r.kind === 'exit');
-    this.exitDoor = this.makeExitDoor(this.exitRoom.door);
-    this.lurk(this.nextFightRoom(0));
-    this.spawnChests();
+    this.exitDoor = this.makeExitDoor(this.D.exit.door);
+    // a ROTA desta tentativa: quantas salas até o chefe (varia), e as salas por onde já passou
+    this.routeLen = rollRouteLength(this.D, run.depth);
+    this.step = 0;
+    this.visited = [];
+    this.lurk(null);
     this.ambience = new MansionAmbience(this);
-    this.player.pos.set(w.arena.spawns[0].x, 0, w.arena.spawns[0].z);
-    this.player.yaw = Math.PI / 2;
-    // câmera fixa em 3ª pessoa (CameraRig.updateChase), começando nas costas de quem entra (olhando para +x)
-    w.cameraRig.chase = () => this.chaseTarget();
-    w.cameraRig.yaw = -Math.PI / 2;
     w.cameraRig.distance = 4.4;
     w.cameraRig.height = 2.3;
+    this.enterModule(this.D.start, null);
+    this.arriveModule();
+    // câmera fixa em 3ª pessoa (CameraRig.updateChase), começando nas costas de quem entra (olhando para +x)
+    w.cameraRig.chase = () => this.chaseTarget();
     w.cameraRig.update(0, [this.player], true);
     // a luz fraca que anda com o jogador: na 3ª pessoa a câmera olha para os cantos que as luzes da casa não pegam
     this.lamp = new THREE.PointLight(0xffd8a8, 7, 8, 1.6);
     w.scene.add(this.lamp);
+    // as setas: amarelas para as portas, azul para o baú (opcional)
+    this.arrowChest = makeArrow(w.scene, 0x4aa8ff);
+    this.arrowDoors = [0, 1, 2].map(() => makeArrow(w.scene, 0xf2c230));
     this.drip = 2;
   }
 
@@ -131,8 +148,8 @@ export class Dungeon {
     h.bind(this.world.fighters);
     h.show(true);
     h.root.classList.add('pve-noboss');
-    this.pveHud.setPlace(this.D.place, this.D.rooms[0].title);
-    this.pveHud.setObjective(this.D.rooms[0].objective);
+    this.pveHud.setPlace(this.D.place, this.mod.title);
+    this.pveHud.setObjective(this.mod.objective);
     this.pveHud.setRun(this.run, this.run.depth);
     this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : 0);
     this.pveHud.fade(true, 0);
@@ -144,31 +161,131 @@ export class Dungeon {
     this.audio.play('creak', { volume: 0.7, pitch: 0.7 });
   }
 
-  // ------------------------------------------------ salas
-  nextFightRoom(from) {
-    for (let i = from; i < this.D.rooms.length; i++) if (this.D.rooms[i].kind === 'fight' || this.D.rooms[i].kind === 'boss') return this.D.rooms[i];
-    return null;
-  }
-
-  // o inimigo some e espera na próxima sala de luta
+  // ------------------------------------------------ salas (MÓDULOS: pedido do dono, 2026-11-05)
+  // o inimigo some e espera (invisível, sem agir) até a próxima luta
   lurk(room) {
     const e = this.enemy;
     e.lurking = true;
     e.setVisible(false);
     e.setState('intro');
     e.vel.set(0, 0, 0);
-    if (room) e.pos.set(room.spawn.x, 0, room.spawn.z);
+    if (room && room.spawn) e.pos.set(room.spawn.x, 0, room.spawn.z);
     this.hud.root.classList.add('pve-noboss');
   }
 
-  enterRoom(i) {
-    this.roomIdx = i;
-    const r = this.D.rooms[i];
-    this.pveHud.setPlace(this.D.place, r.title);
-    this.pveHud.setObjective(r.objective);
-    if (r.kind === 'fight') this.startEncounter(r);
-    else if (r.kind === 'boss') this.startBoss(r);
-    else if (r.kind === 'stalk') this.pveHud.hint('Uma fresta no corredor… NÃO OLHE para ela (defenda para desviar o olhar)');
+  // monta o módulo `id`: só a área dele vale (o resto da casa fica atrás das portas), o jogador aparece na entrada, a
+  // porta por onde entrou se fecha atrás dele e as saídas sorteiam o que há atrás de cada uma. `via` = a porta escolhida.
+  enterModule(id, via) {
+    const w = this.world;
+    const p = this.player;
+    const M = this.D.modules[id];
+    this.modId = id;
+    this.mod = M;
+    this.via = via;
+    if (M.kind !== 'start') this.step++;
+    this.visited.push(id);
+    w.arena.bounds.rects = M.rects;
+    for (const d of this.doors) d.dispose();
+    this.doors = [];
+    // o que ficou na sala anterior some (curas não pegas, baús não abertos)
+    for (const k of this.pickups) if (k !== this.reward) k.dispose();
+    this.pickups = this.pickups.filter((k) => k === this.reward);
+    for (const c of this.copias) if (c.alive) c.kill();
+    this.copias = [];
+    p.pos.set(M.entry.x, 0, M.entry.z);
+    p.vel.set(0, 0, 0);
+    p.yaw = M.entry.yaw;
+    for (const n of w.npcs) if (n.owner === p && n.alive && n.pos) n.pos.set(M.entry.x, 0, M.entry.z);
+    w.cameraRig.yaw = M.entry.yaw - Math.PI;
+    w.cameraRig.update(0, [p], true);
+    // a porta de entrada: começa aberta e se fecha atrás de quem chegou
+    if (M.entry.door) {
+      const d = new RoomDoor(w, M.entry.door, { locked: true, open: via ? 1 : 0 });
+      d.entry = true;
+      this.doors.push(d);
+    }
+    // as saídas: cada uma com a sala sorteada e quantos monstros tem (o número aparece na porta)
+    this.exits = rollExits(this.D, id, { step: this.step, total: this.routeLen, visited: this.visited });
+    for (const slot of Object.keys(M.exits)) {
+      const spot = M.exits[slot];
+      const e = this.exits.find((x) => x.slot === slot);
+      if (!e && spot.stairs) continue;
+      const lab = e ? this.exitLabel(M, e) : {};
+      const d = new RoomDoor(w, spot, { ...lab, locked: true });
+      d.exit = e || null;
+      this.doors.push(d);
+    }
+    // o baú (opcional): mais provável nas salas com mais monstros
+    if (M.chests && M.chests.length && Math.random() < chestChance(this.D, M.kind, via ? via.count : 0)) {
+      const s = M.chests[Math.floor(Math.random() * M.chests.length)];
+      const pos = new THREE.Vector3(s.x, 0, s.z);
+      resolveBody(w.arena, pos, 0.6);
+      this.pickups.push(new Chest(w, { pos, yaw: Math.random() * Math.PI * 2, onOpen: (pp, c) => this.openChest(c) }));
+    }
+    // a fresta das salas de espreita
+    if (M.peek && !this.cracks[id]) this.cracks[id] = new PeekingCrack(w, M.peek);
+    this.lurk(M);
+  }
+
+  // o que a porta mostra: o nome da sala e quantos monstros (↑ / ↓ se troca de andar)
+  exitLabel(M, e) {
+    const to = this.D.modules[e.to];
+    const floor = to.floor > M.floor ? '↑ 2º andar · ' : to.floor < M.floor ? '↓ térreo · ' : '';
+    if (e.kind === 'boss') return { title: to.title, sub: `${floor}algo enorme espera`, color: '#ff5a3a' };
+    if (e.kind === 'stalk') return { title: to.title, sub: `${floor}algo espreita`, color: '#c8a0ff' };
+    return { title: to.title, sub: `${floor}${e.count} monstro${e.count > 1 ? 's' : ''}`, color: '#f2c230' };
+  }
+
+  // a sala começa (depois que a tela clareia): luta, chefe, espreita ou o hall
+  arriveModule() {
+    const M = this.mod;
+    if (this.pveHud) {
+      this.pveHud.setPlace(this.D.place, M.title);
+      this.pveHud.setObjective(M.objective || (M.kind === 'fight' ? `Derrote os ${this.via ? this.via.count : 2} monstros` : 'Escolha uma porta'));
+    }
+    this.activeCrack = this.cracks[this.modId] || null;
+    if (M.kind === 'fight') this.startEncounter(M, this.via ? this.via.count : 2);
+    else if (M.kind === 'boss') this.startBoss(M);
+    else {
+      this.encounter = null;
+      this.unlockExits(M.kind === 'stalk' ? 'Uma fresta… NÃO OLHE para ela (defenda para desviar o olhar) · escolha uma porta' : null);
+    }
+  }
+
+  unlockExits(hint) {
+    for (const d of this.doors) if (d.exit) d.setLocked(false);
+    if (!this.pveHud) return;
+    this.pveHud.setObjective('Escolha uma porta');
+    this.pveHud.hint(hint || 'Setas AMARELAS: as portas · seta AZUL: um baú (opcional)');
+    this.hintT = 4;
+  }
+
+  // atravessou uma porta: a tela escurece, a próxima sala monta, a tela clareia
+  startTransit(e) {
+    const p = this.player;
+    this.transit = { e, t: 0, moved: false, shown: false };
+    this.pveHud.fade(true, 0.35);
+    p.cancelAction && p.cancelAction();
+    p.setState('intro');
+    p.vel.set(0, 0, 0);
+    p.anim.play('walk', { restart: true });
+    this.audio.play('steps', { volume: 0.6 });
+  }
+
+  updateTransit(dt) {
+    const T = this.transit;
+    T.t += dt;
+    if (T.t > 0.4 && !T.moved) {
+      T.moved = true;
+      this.enterModule(T.e.to, T.e);
+      this.audio.play('creak', { volume: 0.7, pitch: 0.8 });
+    }
+    if (T.t > 0.5 && !T.shown) { T.shown = true; this.pveHud.fade(false, 0.5); }
+    if (T.t > 0.8) {
+      this.transit = null;
+      this.player.setState('idle');
+      this.arriveModule();
+    }
   }
 
   addGate(x, side, { visual = true } = {}) {
@@ -207,10 +324,17 @@ export class Dungeon {
     }
   }
 
-  startEncounter(r) {
+  startEncounter(r, count = 2) {
     const e = this.enemy;
-    this.encounter = { room: r, gate: this.addGate(r.gate, 'max'), back: this.addGate(r.enter - 0.9, 'min'), done: false, koAt: null };
+    this.encounter = { room: r, done: false, koAt: null };
     e.lurking = false;
+    // o Devorado da sala: o próximo do time (sala 1 o líder, sala 2 a 1ª assistência…)
+    const src = this.cloneDefs[(this.encounterN = (this.encounterN ?? -1) + 1) % this.cloneDefs.length];
+    if (e.def.copyOf !== src.id) {
+      this.world.scene.remove(e.rig.root);
+      this.devDef = devoradoDef(src, { hp: Math.round(DEVORADO_HP * this.scale.hp) });
+      e.applyDef(this.devDef, restyleDevorado(buildModel(src.model)));
+    }
     e.maxHealth = Math.round(DEVORADO_HP * this.scale.hp);
     e.reset();
     e.pos.set(r.spawn.x, 0, r.spawn.z);
@@ -224,9 +348,9 @@ export class Dungeon {
     this.hud.root.classList.add('pve-minor');
     this.hud.bind(this.world.fighters);
     // as cópias menores (Cópia Observada) junto do Devorado
-    const n = r.enemies.copias || 0;
+    const n = Math.max(0, count - 1); // o Devorado + as cópias = os monstros da porta
     for (let i = 0; i < n; i++) {
-      const o = copiaOpts(this.playerDef, { hp: Math.round(COPIA_HP * this.scale.hp), damageMult: COPIA_DMG, onSlain: (c) => this.onCopiaSlain(c) });
+      const o = copiaOpts(this.cloneDefs[(i + 1) % this.cloneDefs.length], { hp: Math.round(COPIA_HP * this.scale.hp), damageMult: COPIA_DMG, onSlain: (c) => this.onCopiaSlain(c) });
       const c = new DanteClone(e, this.world, i, Infinity, o);
       const ang = Math.PI / 2 + ((i + 0.5) / n) * Math.PI * 2; // em volta do Devorado
       c.pos.set(r.spawn.x + Math.sin(ang) * 2.2, 0, r.spawn.z + Math.cos(ang) * 2.2);
@@ -248,7 +372,7 @@ export class Dungeon {
     const w = this.world;
     const e = this.enemy;
     const def = BOSSES[this.D.boss];
-    this.encounter = { room: r, gate: this.addGate(r.gate, 'max', { visual: false }), back: this.addGate(r.enter - 0.9, 'min'), boss: true, done: false };
+    this.encounter = { room: r, boss: true, done: false };
     w.scene.remove(e.rig.root);
     // sem o modelo próprio (falhou o download): o corpo do Carniçal, para a luta não travar
     e.applyDef(def, buildModel(isModelLoaded(def.model) ? def.model : 'carnical'));
@@ -273,7 +397,7 @@ export class Dungeon {
     this.attachEnemyCpu(this.diff.cpu);
     e.cpuEdge = { dealt: this.scale.dealt, taken: 1 };
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
-    this.brain = new EspreitadorBrain(this, { closets: this.closets, playerDef: this.playerDef });
+    this.brain = new EspreitadorBrain(this, { closets: this.closets, playerDef: this.playerDef, cloneDefs: this.cloneDefs });
     this.hud.root.classList.remove('pve-noboss', 'pve-minor');
     this.hud.bind(w.fighters);
     this.pveHud.hint('Os ARMÁRIOS são as frestas dele: bata neles para TRANCAR · OLHOS AMARELOS acesos = ele vai sair por ali');
@@ -285,18 +409,6 @@ export class Dungeon {
   }
 
   // ------------------------------------------------ baús
-  spawnChests() {
-    const C = this.D.chests;
-    if (!C) return;
-    const spots = C.spots.slice();
-    for (let i = 0; i < C.count && spots.length; i++) {
-      const s = spots.splice(Math.floor(Math.random() * spots.length), 1)[0];
-      const pos = new THREE.Vector3(s.x, 0, s.z);
-      resolveBody(this.world.arena, pos, 0.6);
-      this.pickups.push(new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, onOpen: (p, c) => this.openChest(c) }));
-    }
-  }
-
   openChest(c) {
     this.stats.chests++;
     const r = rollChest(Math.random, this.run.depth);
@@ -339,8 +451,6 @@ export class Dungeon {
       for (const c of this.copias) if (c.alive) c.kill();
       // as frestas morrem com ele: os armários fecham e o quarto se abre
       for (const c of this.closets) if (c.open) c.lock({ forever: true });
-      this.openGate(this.encounter.gate);
-      this.openGate(this.encounter.back);
       return;
     }
     this.encounter.koAt = this.world.time;
@@ -414,11 +524,34 @@ export class Dungeon {
     return [p, this.focusAt(p.pos.x + 4.5, p.pos.z * 0.6)]; // um ponto à frente: a câmera abre e mostra para onde ir
   }
 
-  // 3ª pessoa: com inimigo por perto, a câmera fica atrás do jogador olhando para ele
+  // ------------------------------------------------ as SETAS (pedido do dono, 2026-11-05): com a sala limpa, AMARELAS
+  // para as portas abertas (ou a recompensa / a saída, depois do chefe) e AZUL para o baú ainda fechado (opcional)
+  updateArrows(dt) {
+    const p = this.player.pos;
+    const time = this.world.time;
+    const hide = this.bossIntro || this.choosing || this.transit || ['intro', 'dead', 'exit', 'over'].includes(this.phase) || (this.encounter && !this.encounter.done);
+    let chest = null;
+    const yellow = [];
+    if (!hide) {
+      let bd = Infinity;
+      for (const k of this.pickups) {
+        if (!(k instanceof Chest) || k.opened) continue;
+        const d = distXZ(k.pos, p);
+        if (d < bd) { bd = d; chest = k.pos; }
+      }
+      if (this.reward && this.reward.alive) yellow.push(this.reward.pos);
+      else if (this.exitDoor.unlocked) yellow.push(v3.set(this.D.exit.door.x, 0, this.D.exit.door.z));
+      else for (const d of this.doors) if (d.exit && !d.locked) yellow.push(d.target(new THREE.Vector3()));
+    }
+    aimArrow(this.arrowChest, p, chest, dt, time, 1.25);
+    this.arrowDoors.forEach((m, i) => aimArrow(m, p, yellow[i] || null, dt, time, 1.6));
+  }
+
   chaseTarget() {
     const p = this.player;
     const e = this.enemy;
-    const out = { player: p, focus: null };
+    // CÂMERA LIVRE: o jogador gira a câmera (mouse / analógico direito) e o personagem mira para onde ela aponta
+    const out = { player: p, focus: null, free: !this.bossIntro && this.phase !== 'exit', look: this.input.players[0].look };
     if (e.visible && !e.lurking && e.state !== 'intro' && distXZ(p.pos, e.pos) < 16) { out.focus = e.pos; return out; }
     let near = null; let nd = 9;
     for (const n of this.world.npcs) {
@@ -481,6 +614,8 @@ export class Dungeon {
     if (this.phase === 'loading' || this.phase === 'over' || this.disposed) return;
     // a cena de entrada do Espreitador: o mundo anda (animações, câmera), mas ninguém luta
     if (this.bossIntro) {
+      this.player.aimYaw = null;
+      this.updateArrows(dt);
       this.phaseTime += dt;
       this.world.update(dt);
       for (const c of this.closets) if (c !== this.bossIntro.c) c.tick(dt);
@@ -502,11 +637,21 @@ export class Dungeon {
     this.stats.time += dt;
     const w = this.world;
     const p = this.player;
+    // CÂMERA LIVRE: o mouse/analógico direito giram a câmera e o corpo mira para onde ela olha (frente = yaw + π)
+    this.input.freeLook = true;
+    p.aimYaw = this.phase === 'exit' || this.phase === 'dead' || p.input?.cpu ? null : w.cameraRig.yaw + Math.PI;
     w.update(dt);
     this.applyGates(dt);
     this.updateExitDoor(dt);
     this.lamp.position.set(p.pos.x, p.pos.y + 2.4, p.pos.z);
     this.ambience.update(dt);
+    this.updateArrows(dt);
+    if (this.transit) this.updateTransit(dt);
+    for (const d of this.doors) {
+      const pass = d.update(dt, p.pos);
+      if (d.creaked) this.audio.play('creak', { volume: 0.55, pitch: d.entry ? 0.75 : 0.9 + Math.random() * 0.2 });
+      if (pass && d.exit && !this.transit && (this.phase === 'explore' || this.phase === 'fight')) this.startTransit(d.exit);
+    }
     for (const c of this.closets) if (!this.brain) c.tick(dt);
     for (const k of this.pickups) k.update(dt, [p]);
     this.pickups = this.pickups.filter((k) => k.alive);
@@ -558,45 +703,36 @@ export class Dungeon {
       default:
         break;
     }
-    // o crack do corredor (etapa 2: perseguição)
-    if (this.crack) {
-      const inside = p.pos.x > 7 && p.pos.x < 16.5;
-      const draining = this.crack.update(dt, p, inside && this.phase === 'explore');
-      this.hud.vignette.classList.toggle('on', draining);
+    // a fresta das salas de espreita: só a da sala atual olha
+    let draining = false;
+    for (const id in this.cracks) {
+      const c = this.cracks[id];
+      if (c.update(dt, p, c === this.activeCrack && this.phase === 'explore' && !this.transit)) draining = true;
     }
+    this.hud.vignette.classList.toggle('on', draining);
     this.pveHud.setTime(this.stats.time);
     this.hud.update(this);
   }
 
   updateRooms() {
     const p = this.player;
-    // entrou numa sala nova (o mapa é em linha: pela posição x)
-    const rooms = this.D.rooms;
-    for (let i = this.roomIdx + 1; i < rooms.length; i++) {
-      const r = rooms[i];
-      if (r.enter !== undefined && p.pos.x > r.enter && (!this.encounter || this.encounter.done)) { this.enterRoom(i); break; }
-    }
     const enc = this.encounter;
     if (enc && !enc.done && !enc.boss) {
       // o Devorado caiu: some, e a sala termina quando não sobra cópia
       if (enc.koAt !== null && this.world.time - enc.koAt > 1.3 && !this.enemy.lurking) {
         this.world.fx.burst(this.enemy.chestPos(v1).clone(), { count: 30, color: 0x6c6a66, kind: 'smoke', speed: 2, life: 0.7, size: 0.7, grow: 1 });
-        this.lurk(this.nextFightRoom(this.roomIdx + 1));
+        this.lurk(null);
       }
       if (enc.koAt !== null && this.enemy.lurking && !this.copias.length) {
         enc.done = true;
-        this.openGate(enc.gate);
-        this.openGate(enc.back);
         this.hud.root.classList.remove('pve-minor');
         this.hud.callout('SALA LIMPA', '#7dffb0');
-        this.pveHud.setObjective('Siga em frente');
-        this.pveHud.hint('A porta se abriu →');
-        this.hintT = 3;
+        this.unlockExits();
       }
     }
     if (this.brain && enc && enc.boss && !enc.done) this.brain.update(this.lastDt);
     // atravessou a porta de saída
-    if (this.exitDoor.unlocked && p.pos.x > this.exitRoom.door.x + 0.4 && this.phase !== 'exit') this.startExit();
+    if (this.exitDoor.unlocked && p.pos.x > this.D.exit.door.x + 0.4 && this.phase !== 'exit') this.startExit();
   }
 
   takeReward() {
@@ -658,12 +794,18 @@ export class Dungeon {
 
   dispose() {
     this.disposed = true;
+    this.input.teamMode = false;
+    this.input.freeLook = false;
+    if (this.player) this.player.aimYaw = null;
+    if (document.pointerLockElement) document.exitPointerLock();
     this.bossIntro && this.bossIntro.dispose();
     this.ambience && this.ambience.dispose();
     this.brain && this.brain.dispose();
     for (const k of this.pickups) k.dispose();
     for (const c of this.closets) c.dispose();
-    this.crack && this.crack.dispose();
+    for (const id in this.cracks) this.cracks[id].dispose();
+    for (const d of this.doors) d.dispose();
+    for (const m of [this.arrowChest, ...(this.arrowDoors || [])]) if (m) { this.world.scene.remove(m); m.geometry.dispose(); m.material.dispose(); }
     for (const g of this.gates) if (g.mesh) { this.world.scene.remove(g.mesh); g.mesh.geometry.dispose(); g.mesh.material.dispose(); }
     this.world.dispose();
     this.pveHud && this.pveHud.dispose();

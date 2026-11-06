@@ -25,7 +25,14 @@ export const ESPREITADOR_CFG = {
   fresta: { hide: [1.6, 2.6], warn: 0.95, lunge: { speed: 13, time: 0.42, damage: 62, reach: 1.9 }, walk: 9.5, maxWalk: 2.4 },
   copia: { count: 2, max: 3, hp: 110 },
   fortify: { hold: 1.6, breakDamage: 110, reach: 1.4, hpMult: 2, dmgMult: 1.7 },
-  terror: { time: 7, taken: 2.0, ranged: 1.6, speed: 2.2 },
+  terror: { time: 7, taken: 2.0, ranged: 2.4, speed: 2.2 }, // o tiro no olho da boca (Kaiser) é o que acaba com ele
+  // TÍMIDO (wiki, "Pancada": só ataca "quando encurralado ou sem alternativa"): mantém distância observando; a CPU de
+  // luta só assume (os golpes desesperados) com o jogador colado nele ou com ele sem para onde recuar
+  shy: { keep: 6, corner: 2.6, retreat: 3.4, stuck: 0.6, release: 4.2 },
+  // ESPREITAR (wiki): escondido na fresta, ele devora a Sanidade de quem observa (e a goteira acelera)
+  stalk: { drain: 3.5, drip: 0.55 },
+  // DRENAR ENERGIA (wiki): "dificulta qualquer tipo de aproximação" — quem olha para ele fica lento
+  gazeSlow: 0.6,
   closet: { lockTime: 20 },
 };
 
@@ -247,11 +254,12 @@ export function isLookingAt(f, from, arc = 60) {
 
 // ================================================================== O CÉREBRO
 export class EspreitadorBrain {
-  constructor(dungeon, { closets, playerDef }) {
+  constructor(dungeon, { closets, playerDef, cloneDefs }) {
     this.d = dungeon;
     this.w = dungeon.world;
     this.closets = closets;
     this.playerDef = playerDef;
+    this.cloneDefs = cloneDefs && cloneDefs.length ? cloneDefs : [playerDef]; // Cópia Observada: de quem ele vê (o time todo)
     this.state = 'duel';
     this.t = 0;
     this.next = 3.5; // a primeira habilidade sai cedo (mostra quem ele é)
@@ -329,13 +337,15 @@ export class EspreitadorBrain {
       this.startFresta();
       return;
     }
-    this.next -= dt;
-    if (this.next > 0 || !['idle', 'charging', 'block'].includes(b.state)) return;
     const d = distXZ(b.pos, p.pos);
+    this.updateShy(dt, d);
+    this.next -= dt;
+    if (this.next > 0 || !['idle', 'charging', 'block', 'run'].includes(b.state)) return;
     const opts = [];
     if (d > 3 && d < ESPREITADOR_CFG.gaze.range && lineOfSight(this.w, b.pos, p.pos)) opts.push(['gaze', 3]);
     opts.push(['fresta', 2.2]);
-    if (this.copias.length < 2) opts.push(['summon', this.copias.length ? 1.2 : 2.6]);
+    // ameaçado (o jogador perto): gera os Devorados para protegê-lo (wiki)
+    if (this.copias.length < 2) opts.push(['summon', (this.copias.length ? 1.2 : 2.6) * (d < 4 ? 2 : 1)]);
     if (this.copias.some((n) => !n.fortified)) opts.push(['fortify', 2.2]);
     let r = Math.random() * opts.reduce((s, o) => s + o[1], 0);
     let pick = opts[0][0];
@@ -344,6 +354,53 @@ export class EspreitadorBrain {
     else if (pick === 'fresta') this.startFresta();
     else if (pick === 'summon') this.startSummon();
     else this.startFortify();
+  }
+
+  // a CPU de luta: guardada enquanto ele só observa / recua, devolvida para a Pancada
+  holdCpu(on) {
+    const b = this.boss;
+    if (on) {
+      if (b.input.cpu) { this.cpuRef = b.input.cpu; b.input.cpu = null; b.input.setVirtual({ moveX: 0, moveY: 0, held: {} }); }
+    } else if (this.cpuRef && !b.input.cpu) {
+      b.input.setVirtual(null);
+      b.input.cpu = this.cpuRef;
+    }
+  }
+
+  // TÍMIDO: longe, recua observando (de frente para o jogador); encurralado (colado ou preso na parede), a Pancada
+  updateShy(dt, d) {
+    const K = ESPREITADOR_CFG.shy;
+    const b = this.boss;
+    const p = this.player;
+    if (this.cornered) {
+      this.cornerT = (this.cornerT || 0) + dt;
+      if (d > K.release && this.cornerT > 1.5) { this.cornered = false; this.stuckT = 0; }
+      else { this.holdCpu(false); return; }
+    }
+    if (d < K.corner || (this.stuckT || 0) > K.stuck) {
+      this.cornered = true;
+      this.cornerT = 0;
+      this.holdCpu(false);
+      if (Math.random() < 0.5) this.w.audio.play('fearGaze', { volume: 0.4, pitch: 1.8 });
+      return;
+    }
+    this.holdCpu(true);
+    if (!['idle', 'run'].includes(b.state)) return;
+    b.yaw = turnTowards(b.yaw, yawTo(b.pos, p.pos), dt * 6);
+    if (d < K.keep) {
+      const away = yawTo(p.pos, b.pos) + Math.sin(this.t * 0.7) * 0.6; // recua de lado, sem dar as costas
+      const x0 = b.pos.x;
+      const z0 = b.pos.z;
+      b.pos.x += Math.sin(away) * K.retreat * dt;
+      b.pos.z += Math.cos(away) * K.retreat * dt;
+      resolveBody(this.w.arena, b.pos, b.radius);
+      const moved = Math.hypot(b.pos.x - x0, b.pos.z - z0);
+      this.stuckT = moved < K.retreat * dt * 0.35 ? (this.stuckT || 0) + dt : Math.max(0, (this.stuckT || 0) - dt);
+      if (b.anim.currentName !== b.anim.resolve('run')) b.anim.play('run');
+    } else {
+      this.stuckT = 0;
+      if (b.anim.currentName !== b.anim.resolve('idle')) b.anim.play('idle');
+    }
   }
 
   // ------------------------------------------------ DRENAR ENERGIA
@@ -409,6 +466,7 @@ export class EspreitadorBrain {
       p.energy -= take;
       this.drained += take;
       if (p.energy <= 0.5) p.takeDamage(G.burn * dt * k); // sem Sanidade, o olhar consome a vida
+      if (!p.buffs.some((x) => x.type === 'pveGazeSlow')) p.addBuff({ type: 'pveGazeSlow', name: 'OBSERVADO', time: 0.35, duration: 0.35, speedMult: ESPREITADOR_CFG.gazeSlow });
       if (Math.random() < dt * 8) this.w.fx.burst(p.chestPos(v2).clone(), { count: 2, color: 0xf2c230, speed: 1.4, life: 0.4, size: 0.12, up: 1 });
       this.d.hud.vignette && this.d.hud.vignette.classList.add('on');
     } else {
@@ -481,6 +539,12 @@ export class EspreitadorBrain {
 
   updateHidden(dt) {
     this.st += dt;
+    // ESPREITAR: de dentro da fresta ele devora a Sanidade de quem observa, e a goteira acelera
+    const S = ESPREITADOR_CFG.stalk;
+    const pl = this.player;
+    if (pl.state !== 'ko') pl.energy = Math.max(0, pl.energy - S.drain * dt * (pl.pveMods ? pl.pveMods.drainTaken : 1));
+    this.dripT = (this.dripT ?? S.drip) - dt;
+    if (this.dripT <= 0) { this.dripT = S.drip * (0.7 + Math.random() * 0.6); this.w.audio.play('drip', { volume: 0.5, pitch: 1 + Math.random() * 0.3 }); }
     const open = this.openClosets();
     if (!open.length) {
       // TODAS as frestas trancadas com ele dentro: arromba a última e sai APAVORADO
@@ -587,7 +651,7 @@ export class EspreitadorBrain {
     const p = this.player;
     const C = ESPREITADOR_CFG.copia;
     const ang = p.yaw + Math.PI + (i - 0.5) * 1.6;
-    const o = copiaOpts(this.playerDef, { hp: Math.round(C.hp * this.d.scale.hp), damageMult: 0.42 * this.d.scale.dealt, onSlain: (n) => this.d.onCopiaSlain(n) });
+    const o = copiaOpts(this.cloneDefs[(i + this.copias.length) % this.cloneDefs.length], { hp: Math.round(C.hp * this.d.scale.hp), damageMult: 0.42 * this.d.scale.dealt, onSlain: (n) => this.d.onCopiaSlain(n) });
     const npc = new DanteClone(this.boss, this.w, i + this.copias.length, Infinity, o);
     npc.pos.set(p.pos.x + Math.sin(ang) * 3, 0, p.pos.z + Math.cos(ang) * 3);
     resolveBody(this.w.arena, npc.pos, npc.radius);
@@ -674,9 +738,8 @@ export class EspreitadorBrain {
     b.addBuff({ type: 'pveTerrorEye', name: 'O OLHO DA BOCA', time: T.time, duration: T.time, takenMult: T.ranged, takenKinds: ['ranged'] });
     if (b.rig.props && b.rig.props.mouthEye) b.rig.showProp('mouthEye', true);
     // sem a CPU: ele não reage, só foge (tremendo)
-    this.cpu = b.input.cpu;
-    b.input.cpu = null;
-    b.input.setVirtual({ moveX: 0, moveY: 0, held: {} });
+    this.cornered = false;
+    this.holdCpu(true);
     this.terrorT = T.time;
   }
 
@@ -700,8 +763,6 @@ export class EspreitadorBrain {
     // passou: arromba as frestas de novo (todas reabrem) e volta a lutar
     if (b.rig.body) b.rig.body.position.x = 0;
     if (b.rig.props && b.rig.props.mouthEye) b.rig.showProp('mouthEye', false);
-    b.input.setVirtual(null);
-    b.input.cpu = this.cpu;
     for (const c of this.closets) if (!c.open) c.reopen();
     this.say('AS FRESTAS SE ABREM', '#f2c230');
     this.d.hint(null);
@@ -711,7 +772,7 @@ export class EspreitadorBrain {
   dispose() {
     this.stopGazeFx();
     const b = this.boss;
-    if (b && this.state === 'terror' && this.cpu) { b.input.setVirtual(null); b.input.cpu = this.cpu; }
+    if (b) this.holdCpu(false);
   }
 }
 
@@ -734,9 +795,10 @@ export class PeekingCrack {
     this.door.add(door);
     this.eyes = new THREE.Group();
     const m = new THREE.MeshBasicMaterial({ color: 0xffd84a, toneMapped: false });
-    for (let i = 0; i < 7; i++) {
+    const n = spot.eyes || 7; // o Quarto dos Olhos de Gatos: a porta emperrada cheia deles
+    for (let i = 0; i < n; i++) {
       const e = new THREE.Mesh(new THREE.SphereGeometry(0.02 + Math.random() * 0.012, 8, 6), m);
-      e.position.set(0.32 + (Math.random() - 0.5) * 0.1, 1.0 + Math.random() * 0.9, 0.18);
+      e.position.set(0.32 + (Math.random() - 0.5) * (n > 7 ? 0.18 : 0.1), (n > 7 ? 0.5 : 1.0) + Math.random() * (n > 7 ? 1.6 : 0.9), 0.18);
       this.eyes.add(e);
     }
     g.add(dark, this.door, this.eyes);

@@ -14,8 +14,9 @@ import raziel from '../raziel.js';
 
 const FEAR = 0xf2c230; // o amarelo dos olhos (Medo usa o amarelo-pálido; aqui é a cor dos olhos da arte)
 const GREY = 0x8a8478;
-// a Pancada: os golpes de garra do Raziel, com dano menor e mais alcance (os braços longos)
-const slap = (s, name) => ({ ...s, name, element: 'medo', bleed: undefined, damage: Math.round(s.damage * 0.8), range: (s.range ?? 2) + 0.6, hitSound: 'punch', trail: { ...(s.trail || {}), color: GREY } });
+// a Pancada (wiki: ataques desesperados, descoordenados e trêmulos, "causando pouco estrago"): os golpes de garra do
+// Raziel com dano baixo e mais alcance (os braços longos). Ele só bate encurralado (pve/espreitador.js, shy).
+const slap = (s, name) => ({ ...s, name, element: 'conhecimento', bleed: undefined, damage: Math.round(s.damage * 0.65), range: (s.range ?? 2) + 0.6, hitSound: 'punch', trail: { ...(s.trail || {}), color: GREY } });
 
 export default {
   id: 'espreitador',
@@ -23,7 +24,7 @@ export default {
   model: 'espreitador',
   color: '#c8b070',
   origin: 'Outro Lado',
-  element: 'medo',
+  element: 'conhecimento', // wiki: criatura de Conhecimento com complemento de Medo
   energyColor: FEAR,
   boss: true,
   info: {

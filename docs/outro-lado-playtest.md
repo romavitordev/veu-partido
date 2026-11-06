@@ -80,3 +80,88 @@ Pedidos e o que foi feito:
   (quadril baixo, joelhos dobrados, corcunda, braços até o chão). Os ossos e nomes são os do lutador, então as
   animações continuam as mesmas. Ele tem a massa de olhos no alto da cabeça, as mãos grandes com dedos de galho
   e olhos no ombro, no braço e na coxa. Conferido em 4 vistas no Blender MCP e no jogo, e ficou maior (tamanho 1,28).
+
+## Rodada 3 (feedback do dono sobre a v4.26.0) — FEITA (aguarda o lançamento da v4.27.0)
+
+Pedidos:
+1. A câmera não pode atravessar as paredes: sempre dentro da dungeon.
+2. Câmera movimentável (mouse ou analógico direito), com o personagem girando junto para mirar os ataques.
+3. Sem troca de personagem na luta: o time entra só como assistência.
+4. Os olhos dos corredores não ficam nas paredes: aparecem em frestas que mudam de lugar enquanto o jogador avança.
+5. Uma seta guia até o baú depois de limpar a sala, e depois até a próxima sala.
+6. Os clones (Devorados e cópias) são do jogador e das assistências.
+7. O Espreitador mais fiel ao cânone (modelo e habilidades): reler a wiki e o livro.
+8. Sem dungeon nova, a saída leva à primeira numa dificuldade maior.
+
+Plano técnico (implementado; a seção de rotas abaixo substitui a seta-guia linear):
+- **Câmera.**
+  - `CameraRig.updateChase` (`src/camera/CameraRig.js:285`): trocar `clampToArena` e `avoidSolids` por um raio contra as paredes da mansão a cada quadro.
+  - O `avoidSolids` atual só refaz o raio 10× por segundo e só para os `solids`; incluir as paredes do `mansao.glb`.
+  - Entrada `look` em `InputManager.readDevice`: analógico direito (`axes[2]` e `axes[3]`) e mouse (pointer lock, `movementX`/`movementY`).
+  - Uma flag `input.freeLook` no modo: o analógico direito hoje faz a troca (`switch1`/`switch2`).
+- **Mira.**
+  - `Fighter.aimYaw`, ligado pela Dungeon a partir da câmera, usado:
+    - no movimento (`Fighter.js:1367`, andar de lado olhando a mira);
+    - no início do golpe (`Fighter.js:1939`, alvo mais perto do cone da mira);
+    - no tiro (`fireProjectile:2647` e o `seq` de `:2424`, mirar na direção da câmera em vez do `opp`).
+- **Equipe.**
+  - Seleção em equipe no Outro Lado (`SelectScreen team`, `pick.teams`).
+  - A Dungeon cria `player.assists = teams.slice(1).map(new Assist)` (`src/combat/assists.js`), como em `Match.js:36`.
+  - Uma flag `fighter.noSwitch` checada em `Fighter.js:747` (`trySwitch`).
+  - Devorados e cópias sorteados entre o líder e as assistências.
+- **Olhos nas frestas:** trocar `ambience.js buildEyes` por frestas (portas entreabertas ou rachaduras) que surgem à frente do jogador, espiam e somem.
+- **Seta-guia:** um mesh no chão (ou uma seta no HUD) apontando para o baú mais perto não aberto quando `encounter.done`, e depois para `r.enter` da próxima sala.
+- **Dificuldade maior:** no `flow.js onDungeonEnd`, quando `pickNextDungeon` não tiver dungeon nova, voltar à primeira e subir a dificuldade (Fácil → Normal → Difícil, depois "Difícil +N"), além da profundidade.
+
+### Rodada 3, parte 2: rotas com escolha, portas e setas (pedidos do dono, 2026-11-05)
+Pedidos:
+- Número de salas até o chefe variável, em todas as dungeons.
+- Caminhos com escolha: sala à esquerda, à frente e à direita.
+- Cada sala com 2, 3 ou 4 monstros; o chefe é um só e é sempre a última.
+- A escada do hall leva ao andar de cima.
+- Portas que abrem e fecham entre as salas.
+- Setas: azul para os baús (opcionais), amarelas para as portas.
+
+O que foi feito:
+- **Módulos.** `DUNGEONS.*.modules` em `src/pve/dungeons.js`. Cada sala tem:
+  - a área andável (`rects`): só ela vale enquanto o jogador está ali;
+  - a entrada;
+  - as saídas `left`/`front`/`right` (o hall tem a escada `up`);
+  - os lugares de baú.
+- **Rota.**
+  - `rollRouteLength`: 3 a 5 salas, +1 a partir da profundidade 3.
+  - `rollExits` sorteia o que há atrás de cada porta: a sala e de 2 a 4 monstros.
+  - A escada sempre troca de andar.
+  - Pelo menos uma porta tem luta.
+  - Depois da última sala, uma porta só: o chefe.
+- **Portas** (`src/pve/roomDoors.js`):
+  - trancadas na luta;
+  - com a sala limpa, abrem quando o jogador chega perto e fecham quando ele se afasta;
+  - a placa mostra a sala e quantos monstros (↑/↓ quando troca de andar);
+  - atravessar escurece a tela e leva à próxima sala;
+  - a porta de entrada se fecha atrás de quem chegou.
+- **Salas novas** em `arena_mansao.py` (faixa z 34…46):
+  - Sala de jantar (PROPOSTA, térreo);
+  - Quarto infantil (2º andar);
+  - Quarto dos Olhos de Gatos (2º andar, porta emperrada com 18 olhos).
+
+  Também saiu a estante do meio da biblioteca, para dar lugar à porta.
+- **Monstros:** a sala de N monstros tem o Devorado e N−1 cópias.
+- **Baús opcionais:** um por sala, mais provável com mais monstros (30%, 50%, 80%).
+- **Setas:** AZUL para o baú; AMARELAS para cada porta aberta, a recompensa e a saída.
+
+Testado no navegador:
+- hall com 3 saídas;
+- corredor com a fresta;
+- biblioteca com 4 monstros;
+- a rota inteira até o quarto (5 salas e o chefe);
+- o Quarto infantil.
+
+Teste novo de rotas em `tests/pve.test.js`.
+
+### Revisão com as skills (antes da v4.27.0)
+- Aplicado (skill `game-feel`): o tremor de tela era um sorteio por quadro, que "chiava". Agora são ondas suaves que decaem (`CameraRig`).
+- Propostas, ainda não feitas:
+  - parada de impacto (hit-stop) escalonada por importância do golpe;
+  - placa de dano maior no golpe final;
+  - tremor da câmera no bote do Espreitador.

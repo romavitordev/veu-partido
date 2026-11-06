@@ -7,7 +7,7 @@ import { ROSTER } from '../characters/index.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels } from '../models/index.js';
 import { Dungeon } from './Dungeon.js';
-import { DUNGEONS, PVE_DIFFICULTIES, pickNextDungeon, isAllowed } from './dungeons.js';
+import { DUNGEONS, PVE_DIFFICULTIES, pickNextDungeon, isAllowed, advanceAfterClear, diffLabel } from './dungeons.js';
 import { PveTreeScreen } from './treeScreen.js';
 import { lockedMap, isUnlocked, buyChar } from './unlocks.js';
 import { PveUnlockScreen } from './unlockScreen.js';
@@ -30,7 +30,7 @@ export function createPveFlow(ctx) {
     const lines = [];
     if (a) {
       const d = byId(a.charId);
-      lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)} · profundidade ${a.depth} · nível ${a.level} · ${esc(PVE_DIFFICULTIES[a.difficulty]?.label || a.difficulty)}`);
+      lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)}${a.team && a.team.length ? ` + ${a.team.map((id) => esc(byId(id)?.name || id)).join(' e ')} (assistências)` : ''} · profundidade ${a.depth} · nível ${a.level} · ${esc(diffLabel(a))}`);
     } else lines.push('Nenhuma tentativa em andamento.');
     lines.push(`Maior profundidade: ${c.bestDepth} · chefes derrotados: ${c.bossKills} · mortes: ${c.deaths}`);
     const free = ROSTER.length - lockedMap(data, ROSTER).size;
@@ -65,10 +65,19 @@ export function createPveFlow(ctx) {
     menu(state, title, [{ id: 'no', label: 'NÃO' }, { id: 'yes', label: yes }], { extra: extraBox(text) });
   }
 
+  // ------------------------------------------------ sozinho ou em equipe (o time entra só como ASSISTÊNCIA)
+  function toFormat() {
+    menu('pveformat', 'COMO VAI ENTRAR?', [
+      { id: 'solo', label: 'SOZINHO' },
+      { id: 'team', label: 'EM EQUIPE (LÍDER + 2 ASSISTÊNCIAS)' },
+      { id: 'back', label: 'VOLTAR' },
+    ], { subtitle: 'Em equipe, só o líder luta: os outros dois são chamados como assistência (não dá para trocar). O Espreitador copia o time inteiro.' });
+  }
+
   // ------------------------------------------------ escolha do personagem (só o P1) → dificuldade
-  function pickCharacter(purpose) {
+  function pickCharacter(purpose, team = false) {
     game.pvePurpose = purpose; // 'new' | 'tree'
-    game.mode = { kind: 'pve', cpu: true, team: false };
+    game.mode = { kind: 'pve', cpu: true, team };
     game.lastSelect = null;
     toSelect();
   }
@@ -77,8 +86,10 @@ export function createPveFlow(ctx) {
   function onSelect(pick) {
     const def = pick.p1;
     if (game.pvePurpose === 'tree') { toTree(def.id); return; }
-    if (!isAllowed('espreitador', def.id) || !isUnlocked(data, def.id)) { audio.play('denied'); return; }
+    const team = pick.teams ? pick.teams[0].slice(1).map((d) => d.id) : [];
+    if (![def.id, ...team].every((id) => isAllowed('espreitador', id) && isUnlocked(data, id))) { audio.play('denied'); return; }
     game.pveChar = def.id;
+    game.pveTeam = team;
     toDifficulty();
   }
 
@@ -128,8 +139,9 @@ export function createPveFlow(ctx) {
     try { await ensureModels([D.boss]); } catch (e) { console.warn('Outro Lado: modelo do chefe', e); }
     loading.progress(0.8);
     if (game.state !== 'loading' || game.screen !== loading) return;
+    const teamDefs = (a.team || []).map(byId).filter(Boolean);
     const dungeon = new Dungeon({
-      renderer, audio, input, hud, playerDef: def, run: a, profile: profileOf(data, def.id), dungeonId: D.id,
+      renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: profileOf(data, def.id), dungeonId: D.id,
       onEnd: (r) => onDungeonEnd(dungeon, r),
     });
     dungeon.onReward = () => {
@@ -176,13 +188,14 @@ export function createPveFlow(ctx) {
       a.cleared++;
       data.campaign.bestDepth = Math.max(data.campaign.bestDepth, a.depth);
       a.depth++;
-      a.dungeon = pickNextDungeon({ depth: a.depth, previous: a.dungeon }) || a.dungeon;
+      const adv = advanceAfterClear(a, a.dungeon);
+      a.dungeon = adv.dungeon;
       save();
       const p = profileOf(data, a.charId);
       const unlockLine = `<br>Moedas: +${s.coins || 0} nesta dungeon · ${data.coins} no total`;
       menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER (PROFUNDIDADE ${a.depth})` }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO' }], {
         subtitle: `O Espreitador caiu. Personagem: nível ${p.level} do Outro Lado, ${p.points} ponto(s) para gastar nas melhorias permanentes.`,
-        extra: extraBox(`${statLine}${recordLine}${unlockLine}<br>A próxima dungeon é mais forte (+12% de vida e dano dos inimigos por profundidade). As melhorias da tentativa continuam.`),
+        extra: extraBox(`${statLine}${recordLine}${unlockLine}${adv.looped ? `<br><b>Não há território novo: você volta ao primeiro, agora no ${esc(diffLabel(a))}.</b>` : ''}<br>A próxima dungeon é mais forte (+12% de vida e dano dos inimigos por profundidade). As melhorias da tentativa continuam.`),
       });
       return;
     }
@@ -198,14 +211,18 @@ export function createPveFlow(ctx) {
       if (c === 'continue') startDungeon();
       else if (c === 'new') {
         if (data.attempt) confirmBox('pveconfirm', 'NOVA TENTATIVA?', 'A tentativa atual será perdida (o nível e os pontos dos personagens ficam).', 'SIM, COMEÇAR OUTRA');
-        else pickCharacter('new');
+        else toFormat();
       } else if (c === 'tree') pickCharacter('tree');
       else if (c === 'unlock') toUnlock();
       else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. O nível, os pontos e a árvore de cada personagem ficam.', 'SIM, REINICIAR');
       else if (c === 'wipe') confirmBox('pvewipe', 'APAGAR DADOS?', 'Apaga TODO o progresso do Outro Lado: níveis, pontos, a campanha e a tentativa. O resto do jogo não muda.', 'SIM, APAGAR');
       else if (c === 'back') toMainMenu();
     } else if (state === 'pveconfirm') {
-      if (c === 'yes') pickCharacter('new');
+      if (c === 'yes') toFormat();
+      else toHub();
+    } else if (state === 'pveformat') {
+      if (c === 'solo') pickCharacter('new');
+      else if (c === 'team') pickCharacter('new', true);
       else toHub();
     } else if (state === 'pverestart') {
       if (c === 'yes') { data.campaign = emptyData().campaign; data.attempt = null; save(); }
@@ -214,10 +231,10 @@ export function createPveFlow(ctx) {
       if (c === 'yes') { clearPve(); data = loadPve(); audio.play('ko', { volume: 0.5 }); }
       toHub();
     } else if (state === 'pvediff') {
-      if (c === 'back') pickCharacter('new');
+      if (c === 'back') toFormat();
       else if (c.startsWith('diff:')) {
         const difficulty = c.slice(5);
-        data.attempt = newAttempt({ charId: game.pveChar, difficulty, dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
+        data.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], difficulty, dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
         data.campaign.runs++;
         save();
         startDungeon();
@@ -240,7 +257,7 @@ export function createPveFlow(ctx) {
       }
     } else if (state === 'pveresult') {
       if (c === 'next') startDungeon();
-      else if (c === 'new') pickCharacter('new');
+      else if (c === 'new') toFormat();
       else if (c === 'main') toMainMenu();
       else toHub();
     }

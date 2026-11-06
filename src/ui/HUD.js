@@ -212,7 +212,8 @@ export class HUD {
           el.querySelector('.ak').textContent = actionLabel(i, k ? 'assist2' : 'assist1', f.input.source);
           // troca de personagem (analógico direito): mostra a tecla e se está liberada
           const sk = el.querySelector('.sk');
-          sk.textContent = `⇄ ${actionLabel(i, k ? 'switch2' : 'switch1', f.input.source)}`;
+          sk.textContent = f.noSwitch ? '' : `⇄ ${actionLabel(i, k ? 'switch2' : 'switch1', f.input.source)}`; // Outro Lado: só assistência
+          sk.hidden = !!f.noSwitch;
           sk.classList.toggle('off', f.cooldowns.switch > 0 || !!a.active);
         });
       }

@@ -1,5 +1,34 @@
 # Changelog
 
+## v4.27.0 — Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência
+
+### Adicionado
+- ROTAS com escolha no Outro Lado (`src/pve/dungeons.js`): cada sala é um módulo (`modules`), com área andável própria, entrada, saídas `left`/`front`/`right` (o hall tem a escada `up`) e lugares de baú.
+  - `rollRouteLength`: de 3 a 5 salas até o chefe (+1 a partir da profundidade 3).
+  - `rollExits` sorteia a sala atrás de cada porta e de 2 a 4 monstros. A escada sempre troca de andar, sempre há pelo menos uma porta com luta, e depois da última sala sobra uma porta só: a do chefe.
+  - Vale para toda dungeon nova: basta definir os `modules`.
+- Portas entre as salas (`src/pve/roomDoors.js`):
+  - trancadas durante a luta;
+  - abrem com o jogador perto e fecham quando ele se afasta;
+  - uma placa com a sala e os monstros (↑/↓ quando troca de andar);
+  - atravessar escurece a tela e monta a próxima sala;
+  - a porta de entrada se fecha atrás de quem chegou.
+- Salas novas na `mansao.glb`: Sala de jantar (PROPOSTA), Quarto infantil e Quarto dos Olhos de Gatos (2º andar, a porta emperrada com 18 olhos).
+- Setas no chão: azul para o baú (opcional) e amarelas para as portas abertas, a recompensa e a saída.
+- Câmera livre em 3ª pessoa: mouse (pointer lock) e analógico direito (`InputManager.freeLook`, `PlayerInput.look`). `CameraRig.keepInside` anda pelo chão andável e para antes das paredes; perto delas, a câmera desce para o ombro.
+- Mira pela câmera: `Fighter.aimYaw` e `aimTarget` (cone de mira) no movimento, nos golpes e nos tiros.
+- Equipe no Outro Lado: o menu SOZINHO / EM EQUIPE, o time como assistência (`noSwitch`), e Devorados e cópias sorteados no time.
+- Dificuldade em ciclo: `advanceAfterClear`, `diffLabel`, `heatScale` (Difícil +N: +20% de vida e dano cada).
+
+### Alterado
+- Os olhos das paredes viraram frestas que abrem à frente do jogador, espiam e fecham (`ambience.js`).
+- Espreitador:
+  - Modelo: a massa de 70 olhos no alto da cabeça, a boca larga de dentes tortos com um olho dentro, a baba e os pés deformados.
+  - Kit: foge e só dá a Pancada encurralado (`updateShy`); escondido, drena a energia; o olhar deixa o jogador mais lento; elemento Conhecimento.
+- O número de monstros por sala vem da porta escolhida (o Devorado + N−1 cópias), e os baús são um por sala, mais prováveis nas salas com mais monstros.
+- Tremor de tela suave, em ondas que decaem, em vez de um sorteio por quadro (`CameraRig`).
+- A biblioteca perdeu a estante do meio, para dar lugar à porta.
+
 ## v4.26.0 — Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito
 
 ### Adicionado

@@ -2,6 +2,17 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.27.0 — Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência
+- Agora você escolhe o caminho: ao limpar a sala, as portas da esquerda, da frente e da direita se abrem, e cada uma mostra a sala e quantos monstros tem (2, 3 ou 4).
+- O número de salas até o Espreitador muda a cada tentativa. Ele é sempre a última.
+- A escada do hall leva ao 2º andar, com o Quarto infantil e o Quarto dos Olhos de Gatos. Tem também uma Sala de jantar nova.
+- Portas que abrem e fecham entre as salas.
+- Seta azul: o baú (abrir é opcional). Setas amarelas: as portas.
+- Câmera livre com o mouse ou o analógico direito, sem atravessar paredes. Seus ataques vão para onde a câmera aponta.
+- Em equipe, seus parceiros entram como assistência, e os Devorados copiam todo o time.
+- O Espreitador está mais fiel à série: foge, espreita, drena a sua energia e só ataca de perto quando encurralado.
+- Terminou todos os territórios? Você volta ao primeiro, mais difícil.
+
 ## v4.26.0 — Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito
 - Outro Lado com câmera em 3ª pessoa, atrás do ombro.
 - O Espreitador foi refeito: um bicho grande e agachado, cheio de olhos, com mãos enormes de dedos como galhos.

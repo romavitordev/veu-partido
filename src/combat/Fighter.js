@@ -375,6 +375,27 @@ export class Fighter {
 
   // Perdeu o rastro do adversário (Jae no "Shhh..." ou este lutador SURDO pela Zona das Sombras): a mira não acompanha
   // ele sozinha — quem joga tem que achá-la de olho
+  // MIRA PELA CÂMERA (Outro Lado): com aimYaw ligado, o alvo é quem estiver no cone da mira (o adversário ou um NPC
+  // inimigo), o mais alinhado; ninguém no cone → null (o golpe/tiro vai reto para onde a câmera aponta)
+  aimTarget(maxDist = 16, cone = 0.42) {
+    if (this.aimYaw == null) return null;
+    let best = null;
+    let bs = Infinity;
+    const opp = this.opponent;
+    const cands = [];
+    if (opp && opp.visible !== false && !opp.lurking && opp.state !== 'ko' && opp.state !== 'intro') cands.push(opp);
+    for (const n of this.world.hostileNpcs(this)) if (n.alive !== false && !n.isCloset) cands.push(n);
+    for (const c of cands) {
+      const d = distXZ(this.pos, c.pos);
+      if (d > maxDist || d < 0.01) continue;
+      const a = Math.abs(angleDiff(this.aimYaw, yawTo(this.pos, c.pos)));
+      if (a > cone + Math.min(0.5, 0.6 / d)) continue; // perto, o cone abre (corpo a corpo)
+      const s = a * 3 + d * 0.08;
+      if (s < bs) { bs = s; best = c; }
+    }
+    return best;
+  }
+
   lostTrack(opp) {
     if (!opp || !opp.findBuff) return false;
     if (opp.lurking) return true; // OUTRO LADO: o inimigo da próxima sala, escondido (não trava a mira)
@@ -744,7 +765,7 @@ export class Fighter {
       for (const slot of assistSlots) {
         if (this.assists[slot] && this.assists[slot].call()) this.addTeamGauge(COMBAT.teamGauge.assist);
       }
-      for (const slot of switchSlots) this.trySwitch(slot);
+      if (!this.noSwitch) for (const slot of switchSlots) this.trySwitch(slot); // Outro Lado: o time só entra como assistência
     }
 
     switch (this.state) {
@@ -1364,7 +1385,8 @@ export class Fighter {
     } else if (this.riding && mag > 0.05) {
       // no skate: o corpo vira para onde está andando (não fica travado no adversário)
       this.yaw = turnTowards(this.yaw, Math.atan2(dir.x, dir.z), dt * 9);
-    } else if (this.lockOn && opp && !this.lostTrack(opp)) this.yaw = turnTowards(this.yaw, yawTo(this.pos, opp.pos), dt * 12);
+    } else if (this.aimYaw != null) this.yaw = turnTowards(this.yaw, this.aimYaw, dt * 16); // câmera livre: o corpo gira com a câmera
+    else if (this.lockOn && opp && !this.lostTrack(opp)) this.yaw = turnTowards(this.yaw, yawTo(this.pos, opp.pos), dt * 12);
     else if (mag > 0.05) this.yaw = turnTowards(this.yaw, Math.atan2(dir.x, dir.z), dt * 14);
 
     // A/× + A/× (toque duplo) = dash curto para frente
@@ -1936,6 +1958,7 @@ export class Fighter {
       const dn = distXZ(this.pos, n.pos);
       if (dn < 3 && dn < dOpp - 0.5) { aim = n; break; }
     }
+    if (this.aimYaw != null) { aim = this.aimTarget(8); if (!aim) this.yaw = this.aimYaw; } // câmera livre: quem está na mira
     if (aim) this.yaw = yawTo(this.pos, aim.pos);
     this.vel.x = 0;
     this.vel.z = 0;
@@ -2420,8 +2443,9 @@ export class Fighter {
       t: 0,
       update(dt) {
         this.t += dt;
-        const opp = self.opponent;
+        const opp = self.aimYaw != null ? self.aimTarget() : self.opponent;
         if (opp) self.yaw = turnTowards(self.yaw, yawTo(self.pos, opp.pos), dt * 10);
+        else if (self.aimYaw != null) self.yaw = turnTowards(self.yaw, self.aimYaw, dt * 10);
         // movimento durante o disparo (recuo / lateral)
         self.vel.x = 0;
         self.vel.z = 0;
@@ -2625,7 +2649,8 @@ export class Fighter {
       ws.shots--;
       if (ws.shots <= 0) ws.done = true;
     }
-    const opp = this.opponent;
+    // câmera livre: o tiro vai em quem está na mira; ninguém → reto para onde a câmera aponta
+    const opp = this.aimYaw != null ? this.aimTarget() : this.opponent;
     const origin = new THREE.Vector3();
     this.rig.root.updateMatrixWorld(true);
     if (r.origin === 'chest') {
@@ -2645,7 +2670,7 @@ export class Fighter {
       this.rig.sockets.handR.getWorldPosition(origin);
     }
     // r.aimAt: ponto mirado (sniper do Arthur: onde o laser está, que pode ter ficado para trás do alvo)
-    const target = r.aimAt ? v2.copy(r.aimAt) : opp ? opp.chestPos(v2) : origin.clone().add(forwardFromYaw(this.yaw, v1).multiplyScalar(10));
+    const target = r.aimAt ? v2.copy(r.aimAt) : opp ? (opp.chestPos ? opp.chestPos(v2) : v2.set(opp.pos.x, (opp.pos.y || 0) + 1.1, opp.pos.z)) : origin.clone().add(forwardFromYaw(this.yaw, v1).multiplyScalar(10));
     if (r.visual === 'shockwave' || r.origin === 'ground') target.y = origin.y;
     const dir = target.clone().sub(origin).normalize();
     if (r.spread) {

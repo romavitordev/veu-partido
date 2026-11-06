@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v4.27.0 — Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência
+
+- Versão: `VERSION` 4.26.0 → **4.27.0** (`package.json` e `package-lock.json`). Data: 2026-11-05.
+- Origem: feedback do dono sobre a v4.26.0 (câmera, mira, equipe, frestas, seta, clones, cânone, dificuldade) e os pedidos seguintes (salas variáveis, caminhos com escolha, escada, portas e setas coloridas).
+- Arquivo novo: `src/pve/roomDoors.js`.
+- Formato novo de dungeon: `modules`, `route`, `start`, `bossModule` e `exit` substituem a lista `rooms` em linha. A área andável é trocada por sala (`arena.bounds.rects`).
+- Código comum, sem efeito fora do modo:
+  - `CameraRig.keepInside` e o tremor suave;
+  - `InputManager.freeLook`;
+  - `Fighter.aimYaw`, `aimTarget` e `noSwitch`;
+  - o HUD esconde a troca com `noSwitch`.
+- Save do Outro Lado: `team` na tentativa, `heat` e `played` no ciclo de dificuldade.
+- Modelo e mapa: `char_espreitador.py` e `arena_mansao.py` refeitos. Conferidos em renders headless (o Blender MCP estava desconectado) e no jogo.
+- Testes: `npm test` 68/68 (teste novo de rotas), `npm run check` ok, `vite build` ok.
+
 ## v4.26.0 — Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito
 
 - Versão: `VERSION` 4.25.0 → **4.26.0** (`package.json` e `package-lock.json`). Data: 2026-11-05.

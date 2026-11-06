@@ -140,7 +140,7 @@ HC = V(0, -0.54, 1.18)
 S.ell(HC, r3(0.21, 0.2, 0.18))
 S.chain([V(0, -0.2, 1.16), HC], [0.16 * MB, 0.17 * MB])  # o 'pescoço' é só a corcunda descendo para a cabeça
 S.ell(V(0, -0.6, 1.05), r3(0.19, 0.15, 0.1))
-S.ell(V(0, -0.77, 1.05), r3(0.13, 0.07, 0.055), neg=True)
+S.ell(V(0, -0.77, 1.05), r3(0.22, 0.1, 0.085), neg=True)  # a boca aberta (dentes e o olho à mostra)
 MOUTH = V(0, -0.7, 1.05)
 body_mesh = S.mesh(res=0.012, smooth=3, disp=lambda p: wrinkle(p, 1.2), target=9000)
 bo = b.add('body', body_mesh, skin, region='torso', weight_fn=lambda p: bone_w(p, BODY_B), subdiv=0)
@@ -199,26 +199,50 @@ for s in 'LR':
     b.add('nails' + s, merge(*nails_), nail, region='torso', weight_fn=lambda p, s=s: {'hand' + s: 1.0}, subdiv=0)
 
 # ================================================================ A BOCA: dentes tortos e o OLHO GRANDE dentro dela
-b.add('mouthIn', ellipsoid(tuple(MOUTH + V(0, 0.02, 0)), (0.11, 0.05, 0.05), 16, 10), mouth_in, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+b.add('mouthIn', ellipsoid(tuple(MOUTH + V(0, 0.03, 0)), (0.17, 0.05, 0.07), 16, 10), mouth_in, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 teeth, gums = [], []
-for row, zs, dz in ((0, 0.036, -1), (1, -0.038, 1)):
-    n = 13 if row == 0 else 12
+for row, zs, dz in ((0, 0.05, -1), (1, -0.052, 1)):
+    n = 17 if row == 0 else 15
     arc = []
     for i in range(n):
         t = (i + 0.5) / n
         a = (t - 0.5) * 2.4
-        base = MOUTH + V(math.sin(a) * 0.105, -math.cos(a) * 0.05 - 0.01, zs)
+        base = MOUTH + V(math.sin(a) * 0.15, -math.cos(a) * 0.05 - 0.01, zs)
         arc.append(base)
-        L = 0.02 + random.random() * 0.026
-        tip = base + V(random.uniform(-0.01, 0.01), random.uniform(-0.012, 0.004), dz * L)
+        L = 0.04 + random.random() * 0.045  # wiki: dentes tortos e COMPRIDOS
+        tip = base + V(random.uniform(-0.02, 0.02), random.uniform(-0.02, 0.006), dz * L)
         teeth.append(cone(tuple(base), tuple(tip), 0.007 + random.random() * 0.005, 6))
     gums.append(rod(arc, [0.01] * len(arc), 5))
 b.add('teeth', merge(*teeth), tooth, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 b.add('gums', merge(*gums), gum, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-me_c = MOUTH + V(0, -0.005, 0)
-b.add('mouthEye', ellipsoid(tuple(me_c), (0.038, 0.032, 0.036), 16, 12), eye_y, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+me_c = MOUTH + V(0, -0.02, 0)
+b.add('mouthEye', ellipsoid(tuple(me_c), (0.045, 0.036, 0.042), 16, 12), eye_y, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 b.add('mouthPupil', ellipsoid(tuple(me_c + V(0, -0.032, 0)), (0.011, 0.005, 0.02), 10, 8), pupil, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 
+
+# a SALIVA escorrendo da boca (wiki: "sai saliva que pode ser confundida com as lágrimas")
+drool = []
+for i in range(5):
+    x = random.uniform(-0.08, 0.08)
+    top = MOUTH + V(x, -0.03, -0.04)
+    L = random.uniform(0.08, 0.2)
+    pts = [top + V(random.uniform(-0.005, 0.005), -0.004 * k, -L * k / 3) for k in range(4)]
+    drool.append(rod(pts, [0.006, 0.004, 0.003, 0.007], 5))
+b.add('drool', merge(*drool), tear, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+# o PÉ DEFORMADO (wiki): dedos tortos e desiguais, com unhas escuras
+for s_ in 'LR':
+    ff = sk['foot' + s_]
+    toes, tnails = [], []
+    for i in range(4):
+        a = (i - 1.5) * 0.38 + random.uniform(-0.15, 0.15)
+        L = random.uniform(0.06, 0.12)
+        base = ff + V(math.sin(a) * 0.07, -0.16, -0.04)
+        tip = base + V(math.sin(a) * L * 0.6, -L, -0.02)
+        toes.append(rod([base, base.lerp(tip, 0.5) + V(0, 0, 0.015), tip], [0.026, 0.022, 0.014], 6))
+        tnails.append(cone(tuple(tip), tuple(tip + V(0, -0.03, -0.01)), 0.012, 6))
+    fo = b.add('toes' + s_, merge(*toes), skin, region='torso', weight_fn=lambda p, s_=s_: {'foot' + s_: 1.0}, subdiv=0)
+    paint(fo, skin_col)
+    b.add('toenails' + s_, merge(*tnails), nail, region='torso', weight_fn=lambda p, s_=s_: {'foot' + s_: 1.0}, subdiv=0)
 
 # ================================================================ OS OLHOS: a massa no alto da cabeça + ombro, braço, coxa
 def on_surf(tree, origin, d):
@@ -261,26 +285,28 @@ def eye_at(tree, origin, d, R, bones, drip=0.5):
 # a MASSA DE OLHOS: amontoados no alto e na frente da cabeça, grandes e pequenos
 placed = []
 for _ in range(3000):
-    if len(placed) >= 46:
+    if len(placed) >= 70:
         break
     th = random.uniform(-1.7, 1.7)  # em volta (0 = de frente)
     ph = random.uniform(0.0, 1.45)  # da testa até o topo (a massa fica em cima)
     if ph < 0.35 and abs(th) < 0.6:
         continue  # a cara de baixo é da boca
     d = V(math.sin(th) * math.cos(ph), -math.cos(th) * math.cos(ph), math.sin(ph))
-    R = random.uniform(0.04, 0.1) * (1.0 if ph > 0.45 else 0.7)
+    R = random.uniform(0.022, 0.055) * (1.0 if ph > 0.45 else 0.75)  # wiki: no topo, a maior concentração de olhos MENORES
+    if random.random() < 0.08:
+        R *= 1.8  # alguns maiores no meio (tamanhos diferentes)
     q = HC + d * 0.22
     if any((q - p).length < (R + r) * 0.72 for p, r in placed):
         continue
     placed.append((q, R))
     eye_at(BVH['body'], HC, d, R, ['hd'], drip=0.3 if ph < 0.6 else 0.05)
 # e pelo corpo, como nas artes: o ombro, o braço e a coxa (e um na corcunda)
-eye_at(BVH['body'], V(0.38, -0.19, 1.15), V(0.3, -0.2, 1), 0.055, BODY_B)
+eye_at(BVH['body'], V(0.38, -0.19, 1.15), V(0.3, -0.2, 1), 0.055, BODY_B, drip=1)
 eye_at(BVH['body'], V(0.36, -0.18, 1.12), V(0.4, -0.6, 0.5), 0.04, BODY_B)
 eye_at(BVH['body'], V(-0.34, -0.16, 1.15), V(-0.2, -0.4, 1), 0.045, BODY_B)
 eye_at(BVH['armR'], sk['eR'].lerp(sk['sR'], 0.45), V(-0.6, -0.8, 0.1), 0.04, ARM_B['R'])
 eye_at(BVH['armL'], sk['eL'].lerp(sk['handL'], 0.4), V(0.5, -0.8, 0), 0.032, ARM_B['L'])
-eye_at(BVH['body'], V(0.24, -0.05, 0.48), V(0.6, -0.8, 0.1), 0.055, BODY_B)
+eye_at(BVH['body'], V(0.24, -0.05, 0.48), V(0.6, -0.8, 0.1), 0.055, BODY_B, drip=1)
 eye_at(BVH['body'], V(-0.26, -0.08, 0.42), V(-0.5, -0.85, -0.1), 0.035, BODY_B)
 eye_at(BVH['body'], V(0, 0.1, 1.05), V(0.15, 0.6, 0.8), 0.045, BODY_B, drip=0)
 eye_at(BVH['body'], V(0, -0.15, 0.62), V(-0.2, -1, -0.1), 0.03, BODY_B)

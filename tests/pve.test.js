@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE } from '../src/pve/upgrades.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY } from '../src/pve/save.js';
-import { DUNGEONS, pickNextDungeon, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
+import { DUNGEONS, rollRouteLength, rollExits, chestChance, pickNextDungeon, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
 
 const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k), m }; };
@@ -81,9 +81,35 @@ test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a prof
   assert.equal(rollHeal('espreitador', () => 0.1), DUNGEONS.espreitador.drops.heal.amount);
   assert.equal(rollHeal('espreitador', () => 0.99), 0);
   for (const d of Object.values(PVE_DIFFICULTIES)) { assert.ok(CPU_LEVELS[d.cpu], d.cpu); assert.ok(CPU_LEVELS[d.minion], d.minion); }
-  const rooms = DUNGEONS.espreitador.rooms;
-  assert.equal(rooms[0].kind, 'start');
-  assert.equal(rooms.at(-1).kind, 'exit');
-  assert.ok(rooms.some((r) => r.kind === 'boss'));
+  const D = DUNGEONS.espreitador;
+  assert.equal(D.modules[D.start].kind, 'start');
+  assert.equal(D.modules[D.bossModule].kind, 'boss');
+  // rotas: tamanho variável, portas com 2 a 4 monstros, a escada troca de andar, e o fim é sempre o chefe
+  let seed = 7;
+  const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const lens = new Set();
+  for (let t = 0; t < 200; t++) {
+    const total = rollRouteLength(D, 1, rng);
+    lens.add(total);
+    assert.ok(total >= D.route.rooms[0] && total <= D.route.rooms[1]);
+    let cur = D.start;
+    const visited = [cur];
+    for (let step = 0; step <= total; step++) {
+      const exits = rollExits(D, cur, { step, total, visited, rng });
+      assert.ok(exits.length >= 1, `${cur} sem saída`);
+      if (step === total) { assert.equal(exits.length, 1); assert.equal(exits[0].to, D.bossModule); break; }
+      assert.ok(exits.some((e) => e.kind === 'fight'), 'pelo menos uma luta');
+      for (const e of exits) {
+        assert.ok(D.modules[cur].exits[e.slot], e.slot);
+        assert.notEqual(e.to, cur);
+        if (e.kind === 'fight') assert.ok(e.count >= 2 && e.count <= 4);
+        if (D.modules[cur].exits[e.slot].stairs) assert.notEqual(D.modules[e.to].floor, D.modules[cur].floor);
+      }
+      cur = exits[Math.floor(rng() * exits.length)].to;
+      visited.push(cur);
+    }
+  }
+  assert.ok(lens.size > 1, 'o número de salas varia');
+  assert.ok(chestChance(D, 'fight', 4) > chestChance(D, 'fight', 2));
   assert.ok(TREE.every((n) => n.ranks > 0));
 });

@@ -2,17 +2,14 @@
 //  · EVENTOS ao acaso, de tempos em tempos: batidas na parede, sussurros, passos no andar de cima, rangidos e as luzes
 //    falhando com o zumbido da lâmpada (mais raros durante as lutas, para não atrapalhar a leitura);
 //  · o CORAÇÃO: bate quando a vida está baixa e quando o Espreitador está escondido nas frestas (ele vai sair);
-//  · os OLHOS NAS PAREDES dos corredores (como o Seek do Doors, e fiel ao cânone: ele observa de todo canto): abrem
-//    quando o jogador chega perto, as pupilas acompanham, e fecham quando ele passa.
+//  · as FRESTAS que espiam (pedido do dono, 2026-11-05: nada de olhos fixos nas paredes): uma fresta se abre numa
+//    parede à frente de quem avança, os olhos amarelos espiam de dentro e acompanham o jogador, e ela fecha e some
+//    para abrir em outro lugar — o monstro seguindo o jogador por dentro das paredes.
 import * as THREE from 'three';
 
 const v1 = new THREE.Vector3();
-// os corredores: x de/até, a parede de cada lado (|z|) e quantos olhos
-const CORRIDORS = [
-  { minX: -11.2, maxX: -4.8, wall: 1.56, n: 6 },
-  { minX: 4.8, maxX: 17.2, wall: 1.76, n: 12 },
-  { minX: 28.8, maxX: 39.2, wall: 1.76, n: 10 },
-];
+const ray = new THREE.Raycaster();
+const PEEK = { first: 4, every: [3.5, 7], life: [2.6, 4.2], ahead: [2.5, 7], maxActive: 2, fightSlow: 0.35 };
 const EVENTS = [
   ['knock', 3], ['whisper', 2.5], ['steps', 2], ['creak', 2], ['flicker', 3],
 ];
@@ -24,52 +21,127 @@ export class MansionAmbience {
     this.next = 6 + Math.random() * 5;
     this.beat = 0;
     this.flickerT = 0;
-    this.buildEyes();
+    this.buildPeeks();
   }
 
-  buildEyes() {
-    const ball = new THREE.SphereGeometry(0.12, 16, 12);
-    const pupil = new THREE.SphereGeometry(0.045, 10, 8);
-    const lid = new THREE.SphereGeometry(0.14, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+  buildPeeks() {
+    const ball = new THREE.SphereGeometry(0.06, 14, 10);
+    const pupil = new THREE.SphereGeometry(0.024, 8, 6);
+    // a fresta: um rasgo escuro e torto na parede (abre na largura)
+    const sh = new THREE.Shape();
+    const pts = [[0, 0.55], [0.05, 0.3], [0.03, 0.1], [0.07, -0.12], [0.02, -0.3], [0, -0.55], [-0.03, -0.32], [-0.06, -0.08], [-0.02, 0.12], [-0.06, 0.32]];
+    sh.moveTo(...pts[0]);
+    for (const q of pts.slice(1)) sh.lineTo(...q);
+    sh.closePath();
+    const slit = new THREE.ShapeGeometry(sh);
     const yellow = new THREE.MeshBasicMaterial({ color: 0xf2c230, toneMapped: false });
     const black = new THREE.MeshBasicMaterial({ color: 0x050403 });
-    const skin = new THREE.MeshToonMaterial({ color: 0x5a5650 });
-    this.mats = [yellow, black, skin];
-    this.geos = [ball, pupil, lid];
+    const dark = new THREE.MeshBasicMaterial({ color: 0x010101, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2 });
+    // a borda da fresta: um brilho amarelado fraco (no papel de parede escuro, o rasgo preto sozinho sumia)
+    const rim = new THREE.MeshBasicMaterial({ color: 0x5a4210, transparent: true, opacity: 0.55, side: THREE.DoubleSide, toneMapped: false, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 });
+    this.mats = [yellow, black, dark, rim];
+    this.geos = [ball, pupil, slit];
     this.group = new THREE.Group();
-    this.eyes = [];
-    for (const c of CORRIDORS) {
-      for (let i = 0; i < c.n; i++) {
-        const side = Math.random() < 0.5 ? 1 : -1;
-        const e = new THREE.Group();
-        const s = 0.7 + Math.random() * 0.9;
-        e.scale.setScalar(s);
-        e.position.set(c.minX + Math.random() * (c.maxX - c.minX), 0.7 + Math.random() * 1.7, side * c.wall);
-        e.rotation.y = side > 0 ? Math.PI : 0; // olhando para dentro do corredor (+z local)
-        // o globo gira inteiro para olhar o jogador (de perfil o olho sumia na parede)
+    this.w.scene.add(this.group);
+    this.peeks = [];
+    this.peekT = PEEK.first;
+    this.mk = () => {
+      const g = new THREE.Group();
+      const crack = new THREE.Group();
+      const edge = new THREE.Mesh(slit, rim);
+      edge.scale.set(1.6, 1.12, 1);
+      edge.position.z = -0.002;
+      crack.add(edge, new THREE.Mesh(slit, dark));
+      g.add(crack);
+      const eyes = [];
+      const n = Math.random() < 0.4 ? 2 : 1;
+      for (let k = 0; k < n; k++) {
         const look = new THREE.Group();
-        const b = new THREE.Mesh(ball, yellow);
-        look.add(b);
-        const pupils = [];
-        const np = Math.random() < 0.3 ? 2 : 1; // as pupilas que se multiplicam
-        for (let k = 0; k < np; k++) {
+        look.position.set(0, (n > 1 ? (k ? -0.14 : 0.12) : 0.05) + (Math.random() - 0.5) * 0.08, -0.03);
+        look.add(new THREE.Mesh(ball, yellow));
+        const np = Math.random() < 0.35 ? 2 : 1; // as pupilas que se multiplicam
+        for (let q = 0; q < np; q++) {
           const pu = new THREE.Mesh(pupil, black);
           pu.scale.z = 0.4;
-          pu.position.set(np > 1 ? (k - 0.5) * 0.06 : 0, 0, 0.105);
+          pu.position.set(np > 1 ? (q - 0.5) * 0.035 : 0, 0, 0.052);
           look.add(pu);
-          pupils.push(pu);
         }
-        // as pálpebras (pele cinza): fecham por cima e por baixo
-        const top = new THREE.Mesh(lid, skin);
-        const bot = new THREE.Mesh(lid, skin);
-        bot.rotation.x = Math.PI;
-        e.add(look, top, bot);
-        e.visible = false;
-        this.group.add(e);
-        this.eyes.push({ g: e, look, top, bot, open: 0, seed: Math.random() * 10 });
+        g.add(look);
+        eyes.push(look);
+      }
+      return { g, crack, eyes, open: 0, t: 0, life: 0 };
+    };
+  }
+
+  // um ponto de parede à frente do jogador (raio horizontal contra o cenário, de um ponto à frente para o lado)
+  findWall() {
+    const d = this.d;
+    const p = d.player;
+    const arena = this.w.arena;
+    if (!arena || !arena.group) return null;
+    const sp = Math.hypot(p.vel.x, p.vel.z);
+    // à frente: para onde anda (ou para onde a câmera olha)
+    let fx = 1;
+    let fz = 0;
+    if (sp > 0.5) { fx = p.vel.x / sp; fz = p.vel.z / sp; } else { const y = this.w.cameraRig.yaw; fx = -Math.sin(y); fz = -Math.cos(y); }
+    for (let tries = 0; tries < 6; tries++) {
+      const ahead = PEEK.ahead[0] + Math.random() * (PEEK.ahead[1] - PEEK.ahead[0]);
+      const ox = p.pos.x + fx * ahead;
+      const oz = p.pos.z + fz * ahead;
+      if (arena.bounds && !arena.bounds.rects.some((r) => ox > r.minX && ox < r.maxX && oz > r.minZ && oz < r.maxZ)) continue;
+      const y = 0.9 + Math.random() * 1.1;
+      // de lado (perpendicular ao avanço), para uma das paredes
+      const s = Math.random() < 0.5 ? 1 : -1;
+      const dir = v1.set(-fz * s, 0, fx * s).normalize();
+      ray.set(new THREE.Vector3(ox, y, oz), dir);
+      ray.far = 9;
+      const hit = ray.intersectObject(arena.group, true).find((h) => h.face && h.object.visible);
+      if (!hit || hit.distance < 0.6) continue;
+      const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+      if (Math.abs(n.y) > 0.3) continue; // chão/teto
+      if (this.peeks.some((q) => q.g.position.distanceTo(hit.point) < 1.5)) continue;
+      return { point: hit.point.clone().addScaledVector(n, 0.015), normal: n.setY(0).normalize() };
+    }
+    return null;
+  }
+
+  updatePeeks(dt) {
+    const d = this.d;
+    const p = d.player;
+    const fighting = d.encounter && !d.encounter.done;
+    const quiet = d.bossIntro || d.phase === 'exit' || d.phase === 'dead' || (d.encounter && d.encounter.boss && !d.encounter.done);
+    this.peekT -= dt * (fighting ? PEEK.fightSlow : 1);
+    if (!quiet && this.peekT <= 0 && this.peeks.length < PEEK.maxActive) {
+      this.peekT = PEEK.every[0] + Math.random() * (PEEK.every[1] - PEEK.every[0]);
+      const at = this.findWall();
+      if (at) {
+        const k = this.mk();
+        k.g.position.copy(at.point);
+        k.g.lookAt(v1.copy(at.point).add(at.normal)); // a face (+z local) sai da parede
+        k.g.scale.setScalar(0.9 + Math.random() * 0.5);
+        k.life = PEEK.life[0] + Math.random() * (PEEK.life[1] - PEEK.life[0]);
+        this.group.add(k.g);
+        this.peeks.push(k);
+        this.w.audio.play('creak', { volume: 0.25, pitch: 1.3 + Math.random() * 0.3 });
+        if (Math.random() < 0.6) this.w.audio.play('whisper', { volume: 0.3, pitch: 0.8 + Math.random() * 0.4 });
       }
     }
-    this.w.scene.add(this.group);
+    const t = this.w.time;
+    for (const k of this.peeks) {
+      k.t += dt;
+      // abre, espia, e fecha mais rápido se o jogador chegar muito perto (ele se esconde)
+      const close = k.t > k.life || k.g.position.distanceTo(v1.set(p.pos.x, k.g.position.y, p.pos.z)) < 1.1 || quiet;
+      if (close && !k.closing) k.closing = true;
+      k.open += ((k.closing ? 0 : 1) - k.open) * Math.min(1, dt * (k.closing ? 7 : 3));
+      k.crack.scale.set(0.2 + k.open * 1.3, 0.6 + k.open * 0.4, 1);
+      const blink = Math.sin(t * 1.7 + k.life * 9) > 0.96 ? 0.15 : 1;
+      for (const e of k.eyes) {
+        e.scale.set(k.open, k.open * blink, k.open);
+        e.lookAt(v1.set(p.pos.x, p.pos.y + 1.4, p.pos.z));
+      }
+    }
+    for (const k of this.peeks.filter((q) => q.closing && q.open < 0.03)) this.group.remove(k.g);
+    this.peeks = this.peeks.filter((q) => !(q.closing && q.open < 0.03));
   }
 
   update(dt) {
@@ -77,23 +149,8 @@ export class MansionAmbience {
     const w = this.w;
     const p = d.player;
     const t = w.time;
-    // ---- os olhos nas paredes
-    for (const e of this.eyes) {
-      const dx = p.pos.x - e.g.position.x;
-      const near = Math.abs(dx) < 3.6 && d.phase !== 'exit';
-      const want = near ? 1 : 0;
-      if (want && !e.open && Math.random() < 0.3) w.audio.play('whisper', { volume: 0.25, pitch: 0.8 + Math.random() * 0.4 });
-      e.open += (want - e.open) * Math.min(1, dt * (near ? 5 : 2.5));
-      e.g.visible = e.open > 0.02;
-      if (!e.g.visible) continue;
-      // pálpebras abrindo (piscam de vez em quando)
-      const blink = Math.sin(t * 1.3 + e.seed * 5) > 0.97 ? 0.1 : 1;
-      const k = e.open * blink;
-      e.top.rotation.x = -0.15 - k * 1.25;
-      e.bot.rotation.x = Math.PI + 0.15 + k * 1.25;
-      // o olho acompanha o jogador
-      e.look.lookAt(v1.set(p.pos.x, p.pos.y + 1.3, p.pos.z));
-    }
+    // ---- as frestas que espiam
+    this.updatePeeks(dt);
     // ---- o coração: vida baixa, ou ele escondido nas frestas
     const low = p.health / p.maxHealth < 0.3 && p.state !== 'ko';
     const hidden = d.brain && d.brain.state === 'hidden';

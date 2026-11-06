@@ -46,6 +46,15 @@ export const CHASE_CFG = {
   maxYawSpeed: 2.6,
   distanceDamping: 3,
   targetDamping: 8,
+  // CÂMERA LIVRE (pedido do dono, 2026-11-05): o jogador gira a câmera e o personagem gira junto
+  stickYaw: 3.2, // rad/s com o analógico no fim
+  stickPitch: 1.6,
+  mouseYaw: 0.0032, // rad por pixel
+  mousePitch: 0.0024,
+  pitchMin: -0.45, // olhando para cima (a câmera desce)
+  pitchMax: 0.7, // olhando para baixo (a câmera sobe)
+  wallMargin: 0.28, // a câmera nunca chega mais perto que isto de uma parede (nunca atravessa)
+  ceiling: 2.95, // abaixo do teto da casa
 };
 
 // transições da câmera de cutscenes (segundos): entrar na cinemática, de um plano para o outro, voltar à luta
@@ -258,9 +267,12 @@ export class CameraRig {
     cam.position.copy(this.pos);
     if (this.shakeTime > 0) {
       this.shakeTime -= dt;
-      const s = this.shakeAmt * Math.max(0, this.shakeTime / 0.3);
-      cam.position.x += (Math.random() - 0.5) * s;
-      cam.position.y += (Math.random() - 0.5) * s;
+      // tremor SUAVE (ondas que decaem), não um sorteio por quadro — o sorteio "chia" como estática
+      const k = Math.max(0, Math.min(1, this.shakeTime / 0.3));
+      const s = this.shakeAmt * k * k;
+      this.shakeT = (this.shakeT || 0) + dt * 38;
+      cam.position.x += Math.sin(this.shakeT * 1.7) * s * 0.5;
+      cam.position.y += Math.sin(this.shakeT * 2.3 + 1.1) * s * 0.5;
       if (this.shakeTime <= 0) this.shakeAmt = 0;
     }
     cam.lookAt(this.look);
@@ -284,6 +296,8 @@ export class CameraRig {
   //    que é relativo à câmera, rodava o personagem sem parar)
   updateChase(dt, c, snap = false) {
     const K = CHASE_CFG;
+    this._dt = dt;
+    if (snap) this.chaseFree = 1;
     const p = c.player;
     let want = null;
     let rate = K.yawDamping;
@@ -302,6 +316,13 @@ export class CameraRig {
       }
     }
     if (c.yaw !== undefined) want = c.yaw;
+    if (c.free) {
+      // o jogador manda: nada de girar sozinho
+      const L = c.look || {};
+      want = null;
+      this.yaw -= (L.x || 0) * K.stickYaw * dt + (L.mx || 0) * K.mouseYaw;
+      this.pitch = clamp((this.pitch || 0) + (L.y || 0) * K.stickPitch * dt + (L.my || 0) * K.mousePitch, K.pitchMin, K.pitchMax);
+    }
     if (want !== null) {
       const diff = angleDiff(this.yaw, want);
       this.yaw += snap ? diff : clamp(diff * Math.min(1, dt * rate), -K.maxYawSpeed * dt, K.maxYawSpeed * dt);
@@ -309,13 +330,15 @@ export class CameraRig {
     const k = snap ? 1 : Math.min(1, dt * K.distanceDamping);
     const wantDist = c.focus ? K.fightDistance : K.distance;
     this.distance += (wantDist - this.distance) * k;
-    this.height += (K.height - this.height) * k;
+    const pitch = c.free ? this.pitch || 0 : 0;
+    this.height += (K.height + pitch * 1.6 - this.height) * k;
     const sy = Math.sin(this.yaw);
     const cy = Math.cos(this.yaw);
     // o alvo: o peito do jogador, puxado um pouco para o inimigo (ou para a frente, explorando)
     const want3 = v1.set(p.pos.x, p.pos.y * 0.6 + K.lookHeight, p.pos.z);
     if (c.focus) want3.lerp(new THREE.Vector3(c.focus.x, (c.focus.y || 0) + K.lookHeight, c.focus.z), K.focusBias);
     else want3.addScaledVector(new THREE.Vector3(-sy, 0, -cy), K.ahead);
+    if (c.free) want3.y -= pitch * 1.4;
     this.target.lerp(want3, snap ? 1 : Math.min(1, dt * K.targetDamping));
     // ombro: a câmera fica um pouco à direita (o personagem não tapa o que está na frente)
     this.pos.set(
@@ -323,10 +346,41 @@ export class CameraRig {
       p.pos.y * 0.5 + this.height,
       p.pos.z + cy * this.distance - sy * K.shoulder,
     );
-    this.clampToArena(this.pos);
-    this.avoidSolids(dt);
+    if (this.world.arena && this.world.arena.bounds) this.keepInside(p, K);
+    else { this.clampToArena(this.pos); this.avoidSolids(dt); }
     this.look.copy(this.target);
     this.camera.fov += (K.fov - this.camera.fov) * (snap ? 1 : Math.min(1, dt * 5));
+  }
+
+  // a câmera da 3ª pessoa NUNCA sai da dungeon (pedido do dono): anda do jogador até a posição desejada pelo chão
+  // andável do mapa (bounds.rects, com uma margem das paredes) e para no último ponto de dentro; abaixo do teto.
+  // Entra na hora quando bate na parede e volta para longe devagar (sem trancos).
+  keepInside(p, K) {
+    const rects = this.world.arena.bounds.rects;
+    const m = K.wallMargin;
+    const inside = (x, z) => rects.some((r) => x > r.minX + m && x < r.maxX - m && z > r.minZ + m && z < r.maxZ - m);
+    const ox = p.pos.x;
+    const oz = p.pos.z;
+    const dx = this.pos.x - ox;
+    const dz = this.pos.z - oz;
+    const len = Math.hypot(dx, dz);
+    let free = 1;
+    if (len > 0.01) {
+      const steps = Math.ceil(len / 0.08);
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        if (!inside(ox + dx * t, oz + dz * t)) { free = (i - 1) / steps; break; }
+      }
+    }
+    // entra rápido, sai devagar
+    const prev = this.chaseFree ?? 1;
+    this.chaseFree = free < prev ? free : prev + (free - prev) * Math.min(1, (this._dt || 1 / 60) * 4);
+    const f = Math.max(0.05, this.chaseFree);
+    this.pos.x = ox + dx * f;
+    this.pos.z = oz + dz * f;
+    // encostada na parede: desce para a altura do ombro (de cima, perto, ela só via o chão e o topo da cabeça)
+    if (f < 0.7) { const k = 1 - f / 0.7; this.pos.y += (p.pos.y + 1.75 - this.pos.y) * k; this.target.y += (p.pos.y + 1.35 - this.target.y) * k * 0.6; }
+    this.pos.y = Math.min(K.ceiling, Math.max(0.5, this.pos.y));
   }
 
   // Bloco grande do cenário (cidade/cemitério juntados numa peça só) entre os lutadores e a câmera: em vez de ficar

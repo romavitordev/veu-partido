@@ -599,6 +599,7 @@ function openPause(by = game.pausedBy) {
   const tut = game.tutorial;
   const tr = !tut && game.match && game.match.training ? game.match.trainingOpts : null;
   const dungeon = game.match && game.match.isDungeon;
+  if (document.pointerLockElement) document.exitPointerLock(); // câmera livre: solta o mouse para o menu
   setOverlay('pause', new MenuScreen(screens, {
     audio,
     title: tut ? t('menu.tutorial') : tr ? t('menu.training') : t('pause.title'),

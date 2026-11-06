@@ -274,7 +274,8 @@ cyl('corrB_puddle', (13.6, 0.004, 0.6), 0.45, 0.008, M['water'], seg=16)
 
 # =============================================================== BIBLIOTECA (x 16…30): 2º encontro
 room('biblio', 16, 30, -6.5, 6.5)
-for k, x in enumerate((18.2, 20.6, 23.0, 25.4, 27.8)):
+# sem a estante do meio (x 23): ali fica a porta da esquerda (as portas são do jogo, pve/Dungeon.js)
+for k, x in enumerate((18.2, 20.6, 25.4, 27.8)):
     bookshelf(f'biblio_shelf_back{k}', (x, 0, -6.25), 0.0)
 for k, z in enumerate((-4.2, 3.6)):
     bookshelf(f'biblio_shelf_L{k}', (16.25, 0, z), math.pi / 2, w=2.0)
@@ -349,5 +350,91 @@ wall('corrD_end', 76.1, 76.1, -1.6, 1.6)
 box('corrD_endglow', (75.95, 1.4, 0), (0.04, 2.4, 1.6), M['moon'])  # a luz lá no fim
 for k, x in enumerate((66, 71)):
     sconce(f'corrD_sconce{k}', (x, 1.9, -1.57), 0.0)
+
+
+# =============================================================== AS SALAS SOLTAS (rodada 3, pedido do dono, 2026-11-05)
+# Os caminhos se ramificam (porta à esquerda, à frente, à direita e a escada do hall): cada sala é um MÓDULO e o jogo
+# leva o jogador de uma para a outra (a tela escurece). Estas ficam numa faixa à parte (z 34…46), fechadas por paredes
+# lisas; as portas são do jogo. O 2º andar (Quarto Infantil e Quarto dos Olhos de Gatos) é o destino da escada do hall.
+def closed_room(name, x0, x1, z0, z1, floor='floor'):
+    box(f'FLOOR_{name}', ((x0 + x1) / 2, -0.05, (z0 + z1) / 2), (x1 - x0, 0.1, z1 - z0), M[floor])
+    wall(f'{name}_back', x0 - T / 2, x1 + T / 2, z0 - T / 2, z0 - T / 2)
+    wall(f'{name}_front', x0 - T / 2, x1 + T / 2, z1 + T / 2, z1 + T / 2)
+    wall(f'{name}_L', x0 - T / 2, x0 - T / 2, z0, z1)
+    wall(f'{name}_R', x1 + T / 2, x1 + T / 2, z0, z1)
+
+
+# ---- SALA DE JANTAR (x 0…14, z 34…46) — PROPOSTA: a mesa posta para ninguém
+closed_room('jantar', 0, 14, 34, 46)
+box('jantar_rug', (7, 0.006, 40), (9, 0.012, 4.6), M['rug'])
+box('jantar_table', (7, 0.76, 40), (6.4, 0.08, 1.6), M['wood'])
+for sx in (-1, 1):
+    for sz in (-1, 1):
+        box(f'jantar_tleg{sx}{sz}', (7 + sx * 3.0, 0.37, 40 + sz * 0.65), (0.1, 0.74, 0.1), M['wood'])
+col_box('jantar_table', (7, 0.4, 40), (6.5, 0.8, 1.7))
+for k in range(5):
+    x = 4.6 + k * 1.2
+    chair(f'jantar_chairN{k}', (x, 0, 38.75), 0.0)
+    if k != 2:
+        chair(f'jantar_chairS{k}', (x, 0, 41.25), math.pi)
+box('jantar_fallen_chair', (7.0, 0.25, 42.3), (0.48, 0.5, 0.9), M['wood'], rot_y=1.1, rot_z=math.pi / 2)
+for k in range(6):  # pratos postos, um jantar que esfriou
+    cyl(f'jantar_plate{k}', (4.6 + k * 1.15, 0.805, 39.5 + (k % 2) * 1.0), 0.17, 0.015, M['linen'], seg=14)
+for k, x in enumerate((5.2, 8.8)):
+    cyl(f'jantar_candelabra{k}', (x, 0.8, 40), 0.06, 0.38, M['brass'], seg=8)
+    for j in (-1, 0, 1):
+        candle(f'jantar_cand{k}{j}', (x + j * 0.14, 1.16, 40))
+box('jantar_sideboard', (7, 0.5, 34.4), (3.2, 1.0, 0.6), M['wood'])
+col_box('jantar_sideboard', (7, 0.5, 34.4), (3.2, 1.0, 0.6))
+frame('jantar_portrait', (7, 2.2, 34.12), (1.4, 0.9))
+frame('jantar_portrait2', (13.88, 1.9, 37.5), (0.7, 0.9), -math.pi / 2)
+wardrobe('jantar_wardrobe', (0.45, 0, 44.6), math.pi / 2, w=1.2, d=0.6, ajar=0.3)
+chandelier('FLICKER_jantar_chand1', (4.8, 2.4, 40))
+chandelier('FLICKER_jantar_chand2', (9.2, 2.4, 40))
+sconce('jantar_sconce1', (0.12, 1.9, 37.0), math.pi / 2)
+sconce('jantar_sconce2', (13.88, 1.9, 43.0), -math.pi / 2)
+
+# ---- 2º ANDAR: QUARTO INFANTIL (x 20…32, z 34…44) — o quarto das crianças da casa (wiki: os cômodos de cima)
+closed_room('infantil', 20, 32, 34, 44)
+box('infantil_rug', (26, 0.006, 39), (5, 0.012, 4), M['velvet2'])
+for k, x in enumerate((22.4, 29.6)):  # duas camas pequenas
+    box(f'infantil_bed{k}', (x, 0.28, 35.2), (1.1, 0.36, 1.9), M['wood'])
+    box(f'infantil_mattress{k}', (x, 0.5, 35.25), (1.0, 0.14, 1.8), M['linen'])
+    box(f'infantil_blanket{k}', (x, 0.58, 35.6), (1.08, 0.06, 1.1), M['velvet'])
+    box(f'infantil_pillow{k}', (x, 0.62, 34.55), (0.7, 0.1, 0.3), M['linen'])
+    col_box(f'infantil_bed{k}', (x, 0.4, 35.2), (1.2, 0.8, 2.0))
+# o cavalinho de balanço, o baú de brinquedos, os blocos e a bola
+box('infantil_horse_body', (25.0, 0.62, 41.8), (0.7, 0.28, 0.24), M['woodlt'])
+box('infantil_horse_head', (25.42, 0.86, 41.8), (0.2, 0.36, 0.16), M['woodlt'], rot_z=-0.4)
+cyl('infantil_horse_rocker', (25.0, 0.18, 41.8), 0.5, 0.06, M['wood'], seg=16, rot_x=math.pi / 2)
+col_cyl('infantil_horse', (25.0, 0, 41.8), 0.5, 1.0)
+box('infantil_toychest', (31.4, 0.3, 42.6), (0.6, 0.6, 1.1), M['wood'])
+col_box('infantil_toychest', (31.4, 0.3, 42.6), (0.6, 0.6, 1.1))
+for k in range(7):
+    box(f'infantil_block{k}', (27.2 + random.uniform(-0.8, 0.8), 0.07, 40.6 + random.uniform(-0.6, 0.6)), (0.14, 0.14, 0.14), M['velvet' if k % 3 == 0 else 'velvet2' if k % 3 == 1 else 'woodlt'], rot_y=random.uniform(0, TAU))
+sphere('infantil_ball', (23.6, 0.16, 39.8), (0.16, 0.16, 0.16), M['velvet'], seg=12, rings=8)
+wardrobe('infantil_wardrobe', (20.45, 0, 42.2), math.pi / 2, w=1.1, d=0.55, ajar=0.35)
+box('infantil_window', (26, 1.9, 34.08), (1.3, 1.5, 0.04), M['moon'])
+box('infantil_wframe', (26, 1.9, 34.12), (1.4, 0.07, 0.06), M['wood'])
+frame('infantil_drawing', (31.88, 1.6, 37.0), (0.5, 0.4), -math.pi / 2, mat=M['linen'])
+sconce('infantil_sconce', (31.88, 1.9, 40.0), -math.pi / 2)
+candle('infantil_floorcandle', (24.0, 0.0, 38.0))
+
+# ---- 2º ANDAR: QUARTO DOS OLHOS DE GATOS (x 38…48, z 35…43) — a porta emperrada no fundo, cheia de olhos (a fresta é do
+# jogo: pve/espreitador.js PeekingCrack)
+closed_room('olhos', 38, 48, 35, 43)
+box('olhos_bed', (46.6, 0.3, 41.6), (2.0, 0.4, 1.6), M['wood'])
+box('olhos_mattress', (46.6, 0.55, 41.6), (1.9, 0.12, 1.5), M['linen'])
+col_box('olhos_bed', (46.6, 0.4, 41.6), (2.1, 0.8, 1.7))
+box('olhos_dresser', (39.0, 0.45, 41.8), (0.6, 0.9, 1.4), M['wood'])
+col_box('olhos_dresser', (39.0, 0.45, 41.8), (0.6, 0.9, 1.4))
+candle('olhos_dresser_candle', (39.0, 0.9, 41.6))
+for k in range(9):  # os arranhões nas paredes
+    box(f'olhos_scratch{k}', (39.0 + k * 1.05, 1.0 + random.uniform(0, 1.2), 35.02), (0.03, random.uniform(0.4, 0.9), 0.01), M['black'], rot_z=random.uniform(-0.3, 0.3))
+for k in range(4):  # os retratos de gatos, tortos
+    frame(f'olhos_cat{k}', (39.6 + k * 2.6, 2.3, 42.88), (0.45, 0.55), math.pi)
+for k in range(14):  # olhinhos amarelos no escuro dos cantos
+    sphere(f'olhos_eye{k}', (38.15 if k % 2 else 47.85, 0.3 + random.uniform(0, 2.4), 36 + random.uniform(0, 6)), (0.025, 0.02, 0.025), M['eye'], seg=6, rings=4)
+box('olhos_window', (47.92, 1.9, 38), (0.04, 1.3, 1.1), M['moon'])
 
 finalize(OUT)
