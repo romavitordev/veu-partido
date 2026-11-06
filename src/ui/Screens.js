@@ -308,6 +308,8 @@ export const MODES = {
   get tower() { return { title: t('menu.tower'), slots: ['P1', 'CPU'], single: true, soloPick: true }; },
   get tournament() { return { title: t('menu.tournament'), slots: ['P1', 'CPU'], single: true, soloPick: true }; },
   get pve() { return { title: t('menu.pve'), slots: ['P1', 'CHEFE'], single: true, soloPick: true }; },
+  // OUTRO LADO com 2 jogadores no mesmo PC: os dois escolhem
+  get pvecoop() { return { title: `${t('menu.pve')} · 2 JOGADORES`, slots: ['P1', 'P2'], single: false }; },
 };
 
 // Seleção de personagem no estilo Storm 4: a grade do P1 fica à esquerda e a do P2 à direita;
@@ -1418,7 +1420,9 @@ export function loadUserName() {
 }
 
 export class LanScreen {
-  constructor(root) {
+  // mode: 'versus' (a luta) ou 'pve' (salas do OUTRO LADO)
+  constructor(root, { mode = 'versus' } = {}) {
+    this.mode = mode;
     this.view = 'menu';
     this.index = 0;
     this.name = loadUserName();
@@ -1464,7 +1468,7 @@ export class LanScreen {
     else if (V === 'rooms') body = `<p class="sub">${t(this.rooms.length ? 'lan.open_now' : 'lan.searching')}</p>`;
     else if (V === 'join') body = `<label class="lan-label">${t('lan.room_code')}</label>${field('f-code lan-input', 'ABCDE', 5)}<label class="lan-label">${t('lan.password_if')}</label>${field('f-pass', t('lan.no_password'), 20, 'password')}`;
     else if (V === 'password') body = `<p class="sub">${t('lan.room_of', { name: esc(this.target && this.target.name) })} · ${this.target && this.target.code}</p><label class="lan-label">${t('lan.password')}</label>${field('f-pass', t('lan.password_ph'), 20, 'password')}`;
-    this.el.innerHTML = `<div class="menu lan"><h2>ONLINE / LAN</h2>${body}<p class="lan-status ${this.statusErr ? 'err' : ''}">${esc(this.status || '')}</p>${opts.map(([, l], i) => `<div class="opt ${i === this.index ? 'on' : ''}" data-i="${i}">${l}</div>`).join('')}</div>`;
+    this.el.innerHTML = `<div class="menu lan"><h2>${this.mode === 'pve' ? 'OUTRO LADO · ONLINE' : 'ONLINE / LAN'}</h2>${body}<p class="lan-status ${this.statusErr ? 'err' : ''}">${esc(this.status || '')}</p>${opts.map(([, l], i) => `<div class="opt ${i === this.index ? 'on' : ''}" data-i="${i}">${l}</div>`).join('')}</div>`;
     this.el.querySelectorAll('.opt').forEach((o) => o.addEventListener('click', () => { this.clicked = Number(o.dataset.i); }));
     const bindField = (sel, get, set, upper) => {
       const inp = this.el.querySelector(sel);

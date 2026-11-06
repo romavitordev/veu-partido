@@ -31,6 +31,7 @@ export class InputManager {
   constructor() {
     this.keys = new Set();
     this.players = [new PlayerInput(0), new PlayerInput(1)];
+    this.coopLook = false; // OUTRO LADO 2 jogadores: o P2 também tem câmera própria (analógico direito, R3, B interage)
     this.time = 0;
     this.anyPressed = false;
 
@@ -99,7 +100,7 @@ export class InputManager {
     this.tapped = new Set();
     this.players.forEach((p, i) => {
       const dev = PLAYER_DEVICES[i];
-      const layout = KEYBOARD_LAYOUTS[dev.keyboard];
+      const layout = KEYBOARD_LAYOUTS[dev.keyboard] || {};
       const pad = pads[dev.gamepadSlot];
       const held = {};
       let mx = 0;
@@ -122,6 +123,8 @@ export class InputManager {
         my = v.moveY || 0;
         for (const a of ACTIONS) held[a] = !!(v.held && v.held[a]);
         p.source = 'cpu';
+      } else if (!dev.keyboard) {
+        p.source = 'cpu'; // o 3º lugar é só da CPU: sem ela, fica parado (nenhum aparelho mexe nele)
       } else {
         const d = this.readDevice(i, pads, this.frameTaps, p.source);
         mx = d.mx;
@@ -132,6 +135,18 @@ export class InputManager {
 
       this.applyHeld(p, mx, my, held);
       // a câmera livre é só do jogador 1 neste computador
+      if (i === 1 && p.look) {
+        // o P2 no coop local do Outro Lado: câmera própria pelo analógico direito (sem mouse), R3 trava a mira
+        const L = p.look;
+        L.x = 0; L.y = 0; L.mx = 0; L.my = 0; L.lockBtn = false;
+        if (this.coopLook && this.freeLook && !p.cpu && !p._virtual && pad) {
+          const rx = pad.axes[2] || 0;
+          const ry = pad.axes[3] || 0;
+          L.x = Math.abs(rx) > 0.15 ? rx : 0;
+          L.y = Math.abs(ry) > 0.15 ? ry : 0;
+          L.lockBtn = !!(pad.buttons[11] && pad.buttons[11].pressed);
+        }
+      }
       if (i === 0) {
         const L = p.look;
         L.x = 0; L.y = 0; L.mx = 0; L.my = 0;
@@ -208,6 +223,8 @@ export class InputManager {
       held.switch1 = false;
       held.switch2 = false;
     }
+    // o P2 no teclado (coop local): interage com a própria tecla de defesa (como o E do P1)
+    if (i === 1 && this.coopLook && this.freeLook) held.interact = held.interact || kbHeld(layout.block);
     mx += (kbHeld(layout.right) ? 1 : 0) - (kbHeld(layout.left) ? 1 : 0);
     my += (kbHeld(layout.up) ? 1 : 0) - (kbHeld(layout.down) ? 1 : 0);
 
@@ -228,7 +245,7 @@ export class InputManager {
     if (pad) {
       // gatilhos (LT/RT) são analógicos: considera apertado acima de 35%
       const btn = (ids) => ids.some((id) => pad.buttons[id] && (pad.buttons[id].pressed || pad.buttons[id].value > 0.35));
-      if (i === 0 && this.freeLook && btn([1])) held.interact = true; // B: interagir perto de porta/gaveta/baú (senão é o ○)
+      if ((i === 0 || (i === 1 && this.coopLook)) && this.freeLook && btn([1])) held.interact = true; // B: interagir perto de porta/gaveta/baú (senão é o ○)
       for (const a of ACTIONS) if (GAMEPAD_LAYOUT[a] && btn(GAMEPAD_LAYOUT[a])) held[a] = true;
       // analógico direito ◀/▶: TROCA o personagem em campo pelo da assistência 1/2
       // (as assistências são chamadas por L1/LB e R1/RB)

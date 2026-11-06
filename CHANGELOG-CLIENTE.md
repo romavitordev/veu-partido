@@ -2,6 +2,14 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.29.0 — Outro Lado: rodada 5 — coop local em tela dividida, Local x Online e a câmera nas paredes
+- OUTRO LADO: a entrada agora pergunta LOCAL ou ONLINE. No LOCAL, a nova tentativa pergunta SOLO ou MULTIPLAYER.
+- MULTIPLAYER LOCAL: dois jogadores no mesmo computador, com a tela dividida em cima e embaixo. Cada um tem a própria câmera: o P2 usa o analógico direito do 2º controle (R3 trava a mira, B interage) ou o lado direito do teclado.
+- No coop o inimigo ataca quem estiver mais perto. Quem cair volta com parte da vida quando a sala é limpa; a tentativa só acaba se os dois caírem. O nível, as melhorias e as recompensas são do grupo.
+- ONLINE (1ª etapa): crie uma sala do Outro Lado, entre pelo código ou pela lista. A expedição jogada junto pela internet chega na próxima atualização.
+- A câmera agora desliza pelas paredes e cantos em vez de encostar, chega perto quando há móveis altos e deixa o personagem translúcido quando fica apertada.
+- A barra de sanidade mostra a tecla: segure C para carregar.
+
 ## v4.28.0 — Outro Lado: rodada 4 — mira travada, teclas simples, gavetas, cadeados e a escada
 - OUTRO LADO: na luta a câmera TRAVA num inimigo, e seu personagem mira nele. Um movimento rápido do mouse ou do analógico troca de alvo; F, o botão do meio do mouse ou R3 liga e desliga.
 - A câmera não atravessa mais as paredes.

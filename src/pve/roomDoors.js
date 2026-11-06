@@ -171,6 +171,13 @@ export class RoomDoor {
     return this.open > 0.6 && Math.abs(l.x) < this.half + 0.25 && l.z < 1.05;
   }
 
+  // alguém atravessa a porta aberta? (o coop local testa cada jogador)
+  passes(p) {
+    if (this.locked || this.stairs || this.open <= 0.6) return false;
+    const l = this.local(p);
+    return Math.abs(l.x) < this.half + 0.25 && l.z < 1.05;
+  }
+
   // o ponto para onde a seta aponta (na frente da porta)
   target(v = tmp) {
     const a = this.group.rotation.y;
@@ -267,6 +274,7 @@ export class InteractPrompt {
     this.w = world;
     this.key = '';
     this.sprite = null;
+    this.layer = 0; // coop local: o aviso só aparece na câmera de quem está perto
   }
 
   show(pos, y, text) {
@@ -278,6 +286,7 @@ export class InteractPrompt {
       this.sprite.scale.set(1.1, 0.35, 1);
       this.sprite.material.depthTest = false; // o aviso aparece mesmo atrás do móvel
       this.sprite.renderOrder = 9;
+      if (this.layer) this.sprite.layers.set(this.layer);
       this.w.scene.add(this.sprite);
     }
     this.sprite.position.set(pos.x, y, pos.z);

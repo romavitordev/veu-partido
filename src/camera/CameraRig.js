@@ -284,7 +284,7 @@ export class CameraRig {
     const wantNear = this.chase ? CHASE_CFG.near : 0.7;
     if (cam.near !== wantNear) cam.near = wantNear;
     cam.updateProjectionMatrix();
-    this.updateOcclusion(fighters, dt);
+    if (!this.noOcclusion) this.updateOcclusion(fighters, dt); // a 2ª câmera do coop não mexe nas paredes (a 1ª cuida)
 
     // base para movimentação relativa à câmera. Na LAN vem só do ângulo da câmera (igual nos dois computadores; a
     // posição real muda com o tamanho da janela e com paredes)
@@ -362,36 +362,78 @@ export class CameraRig {
     this.camera.fov += (K.fov - this.camera.fov) * (snap ? 1 : Math.min(1, dt * 5));
   }
 
-  // a câmera da 3ª pessoa NUNCA sai da dungeon (pedido do dono): anda do jogador até a posição desejada pelo chão
-  // andável do mapa (bounds.rects, com uma margem das paredes) e para no último ponto de dentro; abaixo do teto.
-  // Entra na hora quando bate na parede e volta para longe devagar (sem trancos).
+  // a câmera da 3ª pessoa NUNCA sai da dungeon (pedido do dono). Paredes e cantos (pedido do dono, 2026-11-06):
+  //  - ela DESLIZA pela parede (fica presa dentro da sala, mantendo a distância no eixo livre) em vez de mergulhar em
+  //    cima do jogador pelo raio — no canto ela fica no canto, sem saltos;
+  //  - móveis altos (armários, estantes) entre ela e o jogador a trazem para a frente deles;
+  //  - a distância entra na hora (nunca atravessa) e volta devagar (sem trancos);
+  //  - bem perto, o personagem fica translúcido (Fighter.camFade) para não tampar a vista.
   keepInside(p, K) {
-    const rects = this.world.arena.bounds.rects;
+    const arena = this.world.arena;
+    const rects = arena.bounds.rects;
     const m = K.wallMargin;
-    const inside = (x, z) => rects.some((r) => x > r.minX + m && x < r.maxX - m && z > r.minZ + m && z < r.maxZ - m);
     const ox = p.pos.x;
     const oz = p.pos.z;
-    const dx = this.pos.x - ox;
-    const dz = this.pos.z - oz;
-    const len = Math.hypot(dx, dz);
-    let free = 1;
-    if (len > 0.01) {
-      const steps = Math.ceil(len / 0.08);
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        if (!inside(ox + dx * t, oz + dz * t)) { free = (i - 1) / steps; break; }
+    const inRect = (r, x, z, mm) => x > r.minX + mm && x < r.maxX - mm && z > r.minZ + mm && z < r.maxZ - mm;
+    const insideAll = (x, z) => rects.some((r) => inRect(r, x, z, m));
+    // o retângulo de quem joga (ou o mais perto dele)
+    let R = rects.find((r) => inRect(r, ox, oz, 0));
+    if (!R) {
+      let bd = Infinity;
+      for (const r of rects) {
+        const d = Math.hypot(ox - clamp(ox, r.minX, r.maxX), oz - clamp(oz, r.minZ, r.maxZ));
+        if (d < bd) { bd = d; R = r; }
       }
     }
-    // entra rápido, sai devagar
-    const prev = this.chaseFree ?? 1;
-    this.chaseFree = free < prev ? free : prev + (free - prev) * Math.min(1, (this._dt || 1 / 60) * 4);
-    const f = Math.max(0.05, this.chaseFree);
-    this.pos.x = ox + dx * f;
-    this.pos.z = oz + dz * f;
-    // encostada na parede: desce para a altura do ombro (de cima, perto, ela só via o chão e o topo da cabeça)
+    let x = this.pos.x;
+    let z = this.pos.z;
+    // o ponto desejado vale se ele e o caminho até ele estão dentro (salas em L); senão desliza pela parede da sala
+    const segOk = (tx, tz) => {
+      const len = Math.hypot(tx - ox, tz - oz);
+      const steps = Math.max(1, Math.ceil(len / 0.1));
+      for (let i = 1; i <= steps; i++) if (!insideAll(ox + ((tx - ox) * i) / steps, oz + ((tz - oz) * i) / steps)) return false;
+      return true;
+    };
+    if (!segOk(x, z) && R) {
+      x = clamp(x, R.minX + m, R.maxX - m);
+      z = clamp(z, R.minZ + m, R.maxZ - m);
+    }
+    // móveis altos no caminho: a câmera para antes deles
+    const tall = (arena.boxes || []).filter((bx) => (bx.h ?? 3) > 1.6);
+    if (tall.length) {
+      const len = Math.hypot(x - ox, z - oz);
+      const steps = Math.max(1, Math.ceil(len / 0.06));
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        const px = ox + (x - ox) * t;
+        const pz = oz + (z - oz) * t;
+        if (tall.some((bx) => px > bx.minX - 0.15 && px < bx.maxX + 0.15 && pz > bx.minZ - 0.15 && pz < bx.maxZ + 0.15)) {
+          const k = Math.max(0, (i - 1.5) / steps);
+          x = ox + (x - ox) * k;
+          z = oz + (z - oz) * k;
+          break;
+        }
+      }
+    }
+    // a distância: entra na hora, volta devagar; a direção acompanha o deslize (sem salto)
+    let dx = x - ox;
+    let dz = z - oz;
+    const want = Math.hypot(dx, dz);
+    const prev = this.camReach ?? want;
+    this.camReach = want < prev ? want : prev + (want - prev) * Math.min(1, (this._dt || 1 / 60) * 3);
+    const reach = Math.max(0.45, this.camReach);
+    if (want > 1e-3) { dx /= want; dz /= want; } else { dx = Math.sin(this.yaw); dz = Math.cos(this.yaw); }
+    this.pos.x = ox + dx * reach;
+    this.pos.z = oz + dz * reach;
+    const f = reach / Math.max(0.5, this.distance);
+    this.chaseFree = f;
+    // perto da parede: desce um pouco para o ombro (de cima, perto, ela só via o chão e o topo da cabeça)
     if (f < 0.7) { const k = 1 - f / 0.7; this.pos.y += (p.pos.y + 1.75 - this.pos.y) * k; this.target.y += (p.pos.y + 1.35 - this.target.y) * k * 0.6; }
     const gy2 = p.groundY || 0;
     this.pos.y = Math.min(K.ceiling + gy2, Math.max(0.5 + gy2 * 0.8, this.pos.y));
+    // bem perto: o personagem fica translúcido para não tampar a vista
+    const near = Math.hypot(this.pos.x - ox, this.pos.y - (p.pos.y + 1.4), this.pos.z - oz);
+    p.camFade = clamp((near - 0.55) / 0.75, 0.3, 1);
   }
 
   // Bloco grande do cenário (cidade/cemitério juntados numa peça só) entre os lutadores e a câmera: em vez de ficar

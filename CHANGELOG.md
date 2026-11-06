@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.29.0 — Outro Lado: rodada 5 — coop local em tela dividida, Local x Online e a câmera nas paredes
+
+### Adicionado
+- Entrada do Outro Lado (`flow.toEntry`, estado `pveentry`): LOCAL x ONLINE; `toPlayers` (`pveplayers`): SOLO x MULTIPLAYER.
+- Coop local: `Dungeon` aceita `coopDef`/`coopTeam`/`coopProfile` e cria o P2 (lutador índice 2) com `rig2` próprio (`noOcclusion`), `views[]` por jogador (trava, setas, aviso de interagir em camadas 1/2) e render em tela dividida cima/baixo (`setScissor`). Cutscene do chefe, saída e fim em tela cheia.
+- `opponentOf` no coop: o inimigo mira o jogador vivo mais perto (fixa 2,5 s); `revivePlayers` (35% da vida) ao limpar a sala ou trocar de módulo; fim só com os dois caídos.
+- 3º lugar de input (`PLAYER_DEVICES[2]`, só a CPU do inimigo); `InputManager.coopLook` dá câmera, R3 e interagir ao P2.
+- Seleção `pvecoop` (os dois escolhem); `newAttempt({ coop })`; recompensa do chefe para os dois personagens.
+- HUD: `pveHud.setEnemy` (barra do inimigo) e `setSplit` (linha da divisão); classe `pve-coop` com os painéis no pé de cada metade.
+- Online etapa 1: `LanScreen({ mode })`, `openOnline('pve')`, salas anunciadas com `mode: 'pve'` (`Lobby.store`) e filtradas por modo; código de modo errado é recusado; conectado → `flow.onlineRoom` (sala de espera).
+
+### Alterado
+- `CameraRig.keepInside`: a câmera desliza pela parede (fica no retângulo do jogador), móveis altos a puxam para perto, a distância volta devagar, desce ao ombro quando aperta e `camFade` deixa o personagem translúcido.
+- Barra de sanidade com o rótulo "segure C" no teclado; a dica de início cita a tecla.
+
 ## v4.28.0 — Outro Lado: rodada 4 — mira travada, teclas simples, gavetas, cadeados e a escada
 
 ### Adicionado

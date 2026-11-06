@@ -166,7 +166,7 @@ Teste novo de rotas em `tests/pve.test.js`.
   - placa de dano maior no golpe final;
   - tremor da câmera no bote do Espreitador.
 
-### Rodada 4 (pedidos do dono, 2026-11-06) — feita, aguarda lançamento
+### Rodada 4 (pedidos do dono, 2026-11-06) — lançada na v4.28.0
 Câmera e mira:
 - **Trava no inimigo.** Na luta, a câmera trava sozinha num inimigo, e o corpo mira nele.
   - Um movimento rápido do mouse ou do analógico troca de alvo.
@@ -215,3 +215,11 @@ Botão de interagir, gavetas e cadeados:
 - **A escada do hall se sobe andando.** No patamar fica a porta da sala de cima ("E · Entrar"); dá para não entrar e descer de volta.
   - Só se sobe pelo pé da escada; pelos lados os degraus barram. O chão com altura é `World.groundAt` (o `Fighter` pousa nele) e a câmera sobe junto.
   - Sem saída sorteada para cima, a porta do patamar fica trancada.
+
+### Rodada 5 (pedidos do dono, 2026-11-06) — lançada na v4.29.0
+
+- **Sanidade:** a carga continua no **C (segurar)**; a barra de sanidade agora mostra "segure C" no teclado e a dica de início também cita a tecla.
+- **Câmera nas paredes e cantos:** em vez de só encurtar, a câmera **desliza ao longo da parede** (fica dentro da sala, ≥ 0,45 m da parede), móveis altos puxam a câmera para perto, a distância volta devagar, abaixa para a altura do ombro quando aperta e o personagem fica translúcido quando a câmera encosta.
+- **Entrada do Outro Lado:** LOCAL x ONLINE. LOCAL → hub → NOVA TENTATIVA → **SOLO ou MULTIPLAYER**.
+- **Coop local (tela dividida em cima e embaixo):** P1 na metade de cima, P2 na de baixo, cada um com a própria câmera (P2: analógico direito do 2º controle, R3 trava a mira, B ou a tecla de defesa interage). Os dois escolhem personagem (e assistências, no formato em equipe). O inimigo mira o jogador mais perto. Quem cai volta com 35% da vida ao limpar a sala ou mudar de sala; a tentativa só acaba se os dois caírem. Nível, melhorias e recompensas são do grupo (o chefe recompensa os dois personagens). Cutscene do chefe, saída e fim em tela cheia.
+- **Online, etapa 1:** criar sala, entrar por código e lista de salas do Outro Lado (separada das salas de luta; código de sala de luta é recusado). Conectados, os dois veem a "SALA DO OUTRO LADO". **Próxima etapa:** a expedição sincronizada (cada um no próprio monitor, com a câmera de sempre).

@@ -187,7 +187,7 @@ function toSelect() {
   endMatch();
   setOverlay(null, null);
   const locked = game.mode.kind === 'pve' && game.pve ? game.pve.lockedChars() : null;
-  setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind, team: !!game.mode.team, locked }));
+  setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind === 'pve' && game.mode.coop ? 'pvecoop' : game.mode.kind, team: !!game.mode.team, locked }));
 }
 
 function toStage() {
@@ -662,7 +662,7 @@ game.quick = (a, b, cpu = false, arenaId = DEFAULT_ARENA, dialogue = false) => {
 };
 
 // OUTRO LADO (modo PvE): hub, escolha, dungeon e resultado (pve/flow.js)
-const pve = createPveFlow({ game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect });
+const pve = createPveFlow({ game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect, openOnline, leaveOnlinePve: () => { if (game.pveNet) { game.pveNet.leave(); game.pveNet = null; } } });
 game.pve = pve;
 
 window.addEventListener('pointerdown', () => audio.unlock());
@@ -886,11 +886,13 @@ function endNet(reason, byMe = false) {
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && game.net && game.net.role === 'watch') endNet(null, true); });
 
 // tela ONLINE / LAN (antes de conectar: roda fora da sincronia) + lista de salas abertas (Lobby)
-function openOnline() {
-  const scr = new LanScreen(screens);
+// mode 'pve': as salas do OUTRO LADO (pedido do dono, 2026-11-06), separadas das salas de luta
+function openOnline(mode = 'versus') {
+  const scr = new LanScreen(screens, { mode });
+  game.lanMode = mode;
   setScreen('lan', scr);
   if (game.lobby) game.lobby.stop();
-  game.lobby = new Lobby({ onRooms: (list) => { if (game.screen === scr) scr.setRooms(list); } });
+  game.lobby = new Lobby({ onRooms: (list) => { if (game.screen === scr) scr.setRooms((list || []).filter((r) => (r.mode || 'versus') === mode)); } });
   game.lobby.start();
 }
 
@@ -908,14 +910,14 @@ function updateLan() {
   };
   if (c === 'move') audio.play('select');
   else if (c === 'refresh') { audio.play('select'); if (game.lobby) game.lobby.refresh(); }
-  else if (c === 'back') { leaveOnline(); audio.play('select'); toMainMenu(); }
+  else if (c === 'back') { leaveOnline(); audio.play('select'); if (scr.mode === 'pve') pve.toEntry(); else toMainMenu(); }
   else if (c === 'cancel') { cancelPending(); audio.play('select'); }
   else if (c && (c.act === 'host' || c.act === 'join' || c.act === 'watch')) {
     audio.play('confirm');
     cancelPending();
     const ticket = {};
     game.lanTicket = ticket;
-    const settings = { timer: SETTINGS.timer, rounds: SETTINGS.rounds };
+    const settings = scr.mode === 'pve' ? { mode: 'pve' } : { timer: SETTINGS.timer, rounds: SETTINGS.rounds };
     const onSession = (s) => { game.lanPending = s; };
     const p = c.act === 'host'
       ? NetSession.host({
@@ -923,7 +925,7 @@ function updateLan() {
         onCode: (code) => {
           if (game.lanTicket !== ticket || game.screen !== scr) return;
           scr.showCode(code);
-          if (c.isPublic && game.lobby) { game.lanRoom = code; game.lobby.announce({ code, name: scr.name, locked: !!c.password }); }
+          if (c.isPublic && game.lobby) { game.lanRoom = code; game.lobby.announce({ code, name: scr.name, locked: !!c.password, mode: scr.mode }); }
         },
       })
       : c.act === 'watch' ? NetSession.watch(c.code, { name: scr.name, password: c.password, onSession })
@@ -933,6 +935,10 @@ function updateLan() {
       game.lanPending = null;
       game.lanRoom = null;
       leaveOnline();
+      // a sala e o modo precisam bater (o código de uma sala de luta na tela do Outro Lado, ou o contrário)
+      const roomMode = (session.settings && session.settings.mode) || 'versus';
+      if (roomMode !== scr.mode) { session.leave(); scr.fail(scr.mode === 'pve' ? 'Essa sala é de luta, não do Outro Lado.' : 'Essa sala é do Outro Lado: entre por lá.'); return; }
+      if (scr.mode === 'pve') { game.pveNet = session; pve.onlineRoom(session); return; }
       // sala pública: continua na lista como AO VIVO, para quem quiser assistir
       if (session.role === 'host' && c.isPublic) {
         game.liveRoom = { code: session.code, name: scr.name, locked: !!c.password, live: true, players: session.names.slice(), watchers: 0 };
@@ -999,7 +1005,7 @@ function tick(dt) {
         game.mode = { kind: 'tournament', cpu: true, team: false };
         toTourSetup();
       }
-      else if (c === 'pve') { audio.play('confirm'); pve.toHub(); }
+      else if (c === 'pve') { audio.play('confirm'); pve.toEntry(); }
       else if (c === 'tower') {
         audio.play('confirm');
         game.mode = { kind: 'tower', cpu: true, team: false };

@@ -78,8 +78,9 @@ export function refundTree(data, charId) {
   p.tree = {};
 }
 
-export function newAttempt({ charId, team = [], difficulty = 'normal', dungeon }) {
-  return { charId, team, difficulty, depth: 1, level: 1, xp: 0, picks: [], dungeon, cleared: 0, startedAt: Date.now() };
+// coop: o 2º jogador do coop local ({ charId, team }) — a tentativa é dos dois (as melhorias e o nível são do grupo)
+export function newAttempt({ charId, team = [], difficulty = 'normal', dungeon, coop = null }) {
+  return { charId, team, coop, difficulty, depth: 1, level: 1, xp: 0, picks: [], dungeon, cleared: 0, startedAt: Date.now() };
 }
 
 // chefe derrotado: +1 nível permanente e +1 ponto para o personagem (TODO §3.0: "a cada chefe derrotado, o personagem

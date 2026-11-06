@@ -243,6 +243,8 @@ export class HUD {
         }
       }
       const simple = !!f.simpleKeys && source === 'keyboard'; // Outro Lado com teclado + mouse: uma tecla por habilidade
+      // a tecla da sanidade na própria barra (pedido do dono, 2026-11-06: uma tecla no teclado para carregar)
+      if (e.en && e.en.parentNode.dataset.key !== (simple ? 'segure C' : '')) e.en.parentNode.dataset.key = simple ? 'segure C' : '';
       const srcKey = simple ? 'simple' : source;
       let qi = 0;
       e.abil.forEach((a, k) => {

@@ -973,6 +973,7 @@ export class Fighter {
     const hideCam = stealth && !this.ownerSees() && !this.world.netplay;
     if (hideCam) { if (!this.camPos) this.camPos = this.pos.clone(); } else this.camPos = null;
     if (this.state === 'dodge' && this.dodgeCfg.style === 'inexistir') op = Math.min(op, 0.25 + Math.abs(Math.sin(this.stateTime * 60)) * 0.3);
+    if (this.camFade !== undefined && this.camFade < 1) op = Math.min(op, this.camFade); // a câmera colada nele (Outro Lado)
     this.setOpacity(op);
   }
 
@@ -1323,7 +1324,7 @@ export class Fighter {
 
   // Base do analógico: sempre as direções da tela (câmera). O modo "relativo ao inimigo" foi removido.
   moveBasis() {
-    return this.world.cameraBasis;
+    return this.camBasis || this.world.cameraBasis; // coop local do Outro Lado: o P2 anda pela câmera dele
   }
 
   moveInputWorld(out) {

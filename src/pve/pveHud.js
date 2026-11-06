@@ -142,6 +142,28 @@ export class PveHud {
     f.classList.toggle('on', on);
   }
 
+  // COOP LOCAL: a vida do inimigo da vez (os dois painéis da HUD são dos jogadores) e a linha do meio da tela dividida
+  setEnemy(name, frac) {
+    let el = this.q('.pv-enemy');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'pv-enemy';
+      el.innerHTML = '<b></b><div class="pv-ebar"><i></i></div>';
+      this.el.appendChild(el);
+    }
+    el.hidden = name == null;
+    if (name == null) return;
+    const b = el.querySelector('b');
+    if (b.textContent !== name) b.textContent = name;
+    el.querySelector('i').style.width = `${Math.max(0, Math.min(1, frac)) * 100}%`;
+  }
+
+  setSplit(on) {
+    let el = this.q('.pv-split');
+    if (!el && on) { el = document.createElement('div'); el.className = 'pv-split'; this.el.appendChild(el); }
+    if (el) el.hidden = !on;
+  }
+
   dispose() {
     this.root.classList.remove('pve');
     this.el.remove();

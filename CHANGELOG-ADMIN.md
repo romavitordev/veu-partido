@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.29.0 — Outro Lado: rodada 5 — coop local em tela dividida, Local x Online e a câmera nas paredes
+
+- Versão: `VERSION` 4.28.0 → **4.29.0** (`package.json` e `package-lock.json`). Data: 2026-11-06.
+- Origem: pedidos do dono (tecla da sanidade, câmera nas paredes e cantos, coop local em tela dividida — corrigido para cima/baixo —, menu Local x Online com salas e Solo x Multiplayer).
+- Código comum, sem efeito fora do modo: `PLAYER_DEVICES[2]` (lugar só de CPU, fica parado sem CPU), `InputManager.coopLook`, `Fighter.camBasis`/`camFade`, `CameraRig.noOcclusion` e o novo `keepInside`, `LanScreen` com `mode` e `Lobby.store` com `mode`.
+- Online: só a sala (etapa 1); a expedição sincronizada é a próxima etapa.
+- Testes: `npm test` 68/68, `npm run check` ok, `vite build` ok; conferido no navegador numa aba separada.
+
 ## v4.28.0 — Outro Lado: rodada 4 — mira travada, teclas simples, gavetas, cadeados e a escada
 
 - Versão: `VERSION` 4.27.0 → **4.28.0** (`package.json` e `package-lock.json`). Data: 2026-11-06.

@@ -107,6 +107,7 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 .bar.energy { height: 11px; width: 78%; }
 .panel.p2 .bar.energy { margin-left: auto; }
 .bar.energy .fill { background: linear-gradient(180deg, #b5ecff, var(--energy)); }
+.bar.energy[data-key]:not([data-key=''])::after { content: attr(data-key); position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 8px; font-weight: 800; letter-spacing: .08em; color: #0a2030; }
 .bar.energy.locked { background: repeating-linear-gradient(135deg, #3a0a10 0 6px, #1a0408 6px 12px); border-color: #8a1020; }
 .bar.energy.locked::after { content: "SEM SANIDADE"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; letter-spacing: .12em; color: #ff5a5a; }
 .bar.energy.locked.knowledge { background: repeating-linear-gradient(135deg, #3a2e04 0 6px, #1a1402 6px 12px); border-color: #f2c230; box-shadow: 0 0 6px rgba(242,194,48,.4); }
@@ -1275,17 +1276,22 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 /* ================= OUTRO LADO (PvE): a vida do jogador no canto inferior esquerdo, o chefe no centro do alto (TODO §10) */
 #hud.pve #center { display: none; }
 #hud.pve .panel.p1 { top: auto; bottom: 14px; left: 16px; width: min(40vw, 460px); }
-#hud.pve .panel.p2 { left: 50%; right: auto; top: 14px; transform: translateX(-50%); width: min(58vw, 640px); text-align: center; }
-#hud.pve .panel.p2 .name { justify-content: center; font-size: 26px; letter-spacing: .14em; }
-#hud.pve .panel.p2 .name .tag, #hud.pve .panel.p2 .bar.energy, #hud.pve .panel.p2 .bar.guard, #hud.pve .panel.p2 .row,
-#hud.pve .panel.p2 .abilities, #hud.pve .panel.p2 .bar.storm, #hud.pve .panel.p2 .buff, #hud.pve .panel.p2 .el { display: none; }
-#hud.pve .panel.p2 .bar.health { transform: none; height: 16px; border-color: #f2c23088; }
-#hud.pve .panel.p2 .bar.health .fill, #hud.pve .panel.p2 .bar.health .trail { left: 0; right: auto; }
-#hud.pve .panel.p2 .msg { text-align: center; }
+/* COOP LOCAL (tela dividida em cima e embaixo): o P1 no pé da metade de cima, o P2 no pé da metade de baixo */
+#hud.pve.pve-coop .panel.p1 { bottom: calc(50% + 10px); }
+#hud.pve.pve-coop .panel.p2 { top: auto; bottom: 14px; left: auto; right: 16px; width: min(40vw, 460px); }
+#hud.pve.pve-coop .panel { transform: scale(.78); transform-origin: bottom left; }
+#hud.pve.pve-coop .panel.p2 { transform-origin: bottom right; }
+#hud.pve:not(.pve-coop) .panel.p2 { left: 50%; right: auto; top: 14px; transform: translateX(-50%); width: min(58vw, 640px); text-align: center; }
+#hud.pve:not(.pve-coop) .panel.p2 .name { justify-content: center; font-size: 26px; letter-spacing: .14em; }
+#hud.pve:not(.pve-coop) .panel.p2 .name .tag, #hud.pve:not(.pve-coop) .panel.p2 .bar.energy, #hud.pve:not(.pve-coop) .panel.p2 .bar.guard, #hud.pve:not(.pve-coop) .panel.p2 .row,
+#hud.pve:not(.pve-coop) .panel.p2 .abilities, #hud.pve:not(.pve-coop) .panel.p2 .bar.storm, #hud.pve:not(.pve-coop) .panel.p2 .buff, #hud.pve:not(.pve-coop) .panel.p2 .el { display: none; }
+#hud.pve:not(.pve-coop) .panel.p2 .bar.health { transform: none; height: 16px; border-color: #f2c23088; }
+#hud.pve:not(.pve-coop) .panel.p2 .bar.health .fill, #hud.pve:not(.pve-coop) .panel.p2 .bar.health .trail { left: 0; right: auto; }
+#hud.pve:not(.pve-coop) .panel.p2 .msg { text-align: center; }
 #hud.pve.pve-noboss .panel.p2 { display: none; }
-#hud.pve.pve-minor .panel.p2 { width: min(34vw, 380px); }
-#hud.pve.pve-minor .panel.p2 .name { font-size: 20px; }
-#hud.pve.pve-minor .panel.p2 .bar.health { height: 10px; }
+#hud.pve.pve-minor:not(.pve-coop) .panel.p2 { width: min(34vw, 380px); }
+#hud.pve.pve-minor:not(.pve-coop) .panel.p2 .name { font-size: 20px; }
+#hud.pve.pve-minor:not(.pve-coop) .panel.p2 .bar.health { height: 10px; }
 #pvehud { position: absolute; inset: 0; pointer-events: none; font-family: Inter, system-ui, sans-serif; }
 #pvehud .pv-top { position: absolute; left: 16px; top: 12px; display: flex; flex-direction: column; gap: 2px; text-shadow: 1px 1px 0 #000, 0 0 8px #000; max-width: 30vw; }
 #pvehud .pv-place { font-size: 11px; font-weight: 800; letter-spacing: .16em; color: #f2c230; text-transform: uppercase; }
@@ -1340,7 +1346,7 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
   #pvehud .pv-room { font-size: 20px; }
   #pvehud .pv-xp { top: 70px; }
   #pvehud .pv-ups { top: 92px; max-width: 44vw; }
-  #hud.pve .panel.p2 { width: min(52vw, 640px); }
+  #hud.pve:not(.pve-coop) .panel.p2 { width: min(52vw, 640px); }
 }
 
 /* OUTRO LADO — as telas do modo (hub, dificuldade, árvore, resultado) */
@@ -1393,6 +1399,11 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 .pve-unlock .pu-tile.locked em { color: #ffc040; }
 .pve-unlock .pt-info > img { flex: none; width: 64px; height: 64px; object-fit: cover; object-position: 50% 12%; border-radius: 4px; border: 2px solid #8a7440; }
 @media (max-width: 620px) { .pve-unlock .pu-grid { grid-template-columns: repeat(4, 1fr); } }
+#pvehud .pv-enemy { position: absolute; left: 50%; top: 64px; transform: translateX(-50%); width: min(40vw, 420px); text-align: center; font-family: 'Bebas Neue', Impact, sans-serif; color: #ff9a8a; text-shadow: 1px 1px 0 #000; }
+#pvehud .pv-enemy b { font-size: 18px; letter-spacing: .06em; }
+#pvehud .pv-ebar { height: 9px; background: #1a0808; border: 1px solid #000; }
+#pvehud .pv-ebar i { display: block; height: 100%; background: linear-gradient(180deg, #ff6a5a, #a8141a); }
+#pvehud .pv-split { position: absolute; top: 50%; left: 0; right: 0; height: 3px; transform: translateY(-50%); background: #0a0608; box-shadow: 0 0 0 1px #3a2a20; pointer-events: none; }
 #pvehud .pv-coins { position: absolute; right: 16px; top: 48px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 22px; color: #ffc040; text-shadow: 1px 1px 0 #000, 0 0 8px #000; }
 #pvehud .pv-coins b { font-weight: 400; color: #fff; }
 /* OUTRO LADO — cena de entrada do chefe: sem HUD (só o cronômetro some junto) */

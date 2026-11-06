@@ -101,6 +101,8 @@ export const GAMEPAD_DEADZONE = 0.25;
 export const PLAYER_DEVICES = [
   { keyboard: 'left', gamepadSlot: 0 },
   { keyboard: 'right', gamepadSlot: 1 },
+  // 3º lugar: só a CPU usa (o inimigo do Outro Lado no coop local, quando o P2 é gente)
+  { keyboard: null, gamepadSlot: 2 },
 ];
 
 // Nomes exibidos na HUD / tela de controles quando o jogador usa controle.

@@ -560,6 +560,7 @@ export class Lobby {
 
   store(room) {
     const r = { code: String(room.code || '').slice(0, 5), name: cleanName(room.name) || 'Sala', locked: !!room.locked };
+    if (room.mode === 'pve') r.mode = 'pve'; // sala do OUTRO LADO (a lista de cada modo mostra só as dele)
     if (room.live) { r.live = true; r.players = [cleanName(room.players && room.players[0]) || 'P1', cleanName(room.players && room.players[1]) || 'P2']; r.watchers = Math.max(0, Math.min(99, Number(room.watchers) || 0)); }
     if (!/^[A-Z0-9]{5}$/.test(r.code)) return;
     this.rooms.set(r.code, { room: r, until: Date.now() + 12000 });

@@ -30,7 +30,8 @@ export function createPveFlow(ctx) {
     const lines = [];
     if (a) {
       const d = byId(a.charId);
-      lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)}${a.team && a.team.length ? ` + ${a.team.map((id) => esc(byId(id)?.name || id)).join(' e ')} (assistências)` : ''} · profundidade ${a.depth} · nível ${a.level} · ${esc(diffLabel(a))}`);
+      const d2 = a.coop ? byId(a.coop.charId) : null;
+      lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)}${a.team && a.team.length ? ` + ${a.team.map((id) => esc(byId(id)?.name || id)).join(' e ')} (assistências)` : ''}${d2 ? ` · <b>P2:</b> ${esc(d2.name)}` : ''} · profundidade ${a.depth} · nível ${a.level} · ${esc(diffLabel(a))}`);
     } else lines.push('Nenhuma tentativa em andamento.');
     lines.push(`Maior profundidade: ${c.bestDepth} · chefes derrotados: ${c.bossKills} · mortes: ${c.deaths}`);
     const free = ROSTER.length - lockedMap(data, ROSTER).size;
@@ -42,6 +43,26 @@ export function createPveFlow(ctx) {
     endMatch();
     setOverlay(null, null);
     setScreen(state, new MenuScreen(screens, { title, subtitle, options, audio, extra, clear: false }));
+  }
+
+  // ------------------------------------------------ ENTRADA (pedido do dono, 2026-11-06): LOCAL ou ONLINE
+  function toEntry() {
+    data = loadPve();
+    game.mode = { kind: 'pve', cpu: true, team: false };
+    menu('pveentry', 'OUTRO LADO', [
+      { id: 'local', label: 'LOCAL' },
+      { id: 'online', label: 'ONLINE' },
+      { id: 'back', label: 'VOLTAR' },
+    ], { subtitle: 'LOCAL: sozinho ou com mais um jogador neste computador (tela dividida). ONLINE: crie uma sala ou entre na de um amigo.', extra: extraBox(summary()) });
+  }
+
+  // ------------------------------------------------ quantos jogadores (local)
+  function toPlayers() {
+    menu('pveplayers', 'QUANTOS JOGADORES?', [
+      { id: 'solo', label: 'SOLO' },
+      { id: 'multi', label: 'MULTIPLAYER (2 JOGADORES, TELA DIVIDIDA)' },
+      { id: 'back', label: 'VOLTAR' },
+    ], { subtitle: 'No multiplayer cada um tem a própria câmera, metade da tela. O P2 joga no 2º controle (ou no lado direito do teclado). A tentativa, o nível e as melhorias são do grupo.' });
   }
 
   // ------------------------------------------------ HUB
@@ -56,7 +77,7 @@ export function createPveFlow(ctx) {
       { id: 'restart', label: 'REINICIAR CAMPANHA', disabled: !data.attempt && !data.campaign.runs },
       { id: 'wipe', label: 'APAGAR DADOS DO OUTRO LADO' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'Masmorras do Outro Lado: entre, sobreviva, derrote o chefe e vá mais fundo.', extra: extraBox(summary()) });
+    ], { subtitle: 'Masmorras do Outro Lado: entre, sobreviva, derrote o chefe e vá mais fundo. (LOCAL)', extra: extraBox(summary()) });
     if (!data.attempt) game.screen.index = 1;
     game.screen.render();
   }
@@ -77,7 +98,8 @@ export function createPveFlow(ctx) {
   // ------------------------------------------------ escolha do personagem (só o P1) → dificuldade
   function pickCharacter(purpose, team = false) {
     game.pvePurpose = purpose; // 'new' | 'tree'
-    game.mode = { kind: 'pve', cpu: true, team };
+    const coop = purpose === 'new' && !!game.pveCoop;
+    game.mode = { kind: 'pve', cpu: !coop, team, coop };
     game.lastSelect = null;
     toSelect();
   }
@@ -87,9 +109,13 @@ export function createPveFlow(ctx) {
     const def = pick.p1;
     if (game.pvePurpose === 'tree') { toTree(def.id); return; }
     const team = pick.teams ? pick.teams[0].slice(1).map((d) => d.id) : [];
-    if (![def.id, ...team].every((id) => isAllowed('espreitador', id) && isUnlocked(data, id))) { audio.play('denied'); return; }
+    // coop: o P2 e as assistências dele
+    const coop = game.pveCoop && pick.p2 ? { charId: pick.p2.id, team: pick.teams && pick.teams[1] ? pick.teams[1].slice(1).map((d) => d.id) : [] } : null;
+    const ids = [def.id, ...team, ...(coop ? [coop.charId, ...coop.team] : [])];
+    if (!ids.every((id) => isAllowed('espreitador', id) && isUnlocked(data, id))) { audio.play('denied'); return; }
     game.pveChar = def.id;
     game.pveTeam = team;
+    game.pveCoopPick = coop;
     toDifficulty();
   }
 
@@ -140,12 +166,15 @@ export function createPveFlow(ctx) {
     loading.progress(0.8);
     if (game.state !== 'loading' || game.screen !== loading) return;
     const teamDefs = (a.team || []).map(byId).filter(Boolean);
+    const coopDef = a.coop ? byId(a.coop.charId) : null;
     const dungeon = new Dungeon({
       renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: profileOf(data, def.id), dungeonId: D.id,
+      coopDef, coopTeam: coopDef ? (a.coop.team || []).map(byId).filter(Boolean) : [], coopProfile: coopDef ? profileOf(data, coopDef.id) : null,
       onEnd: (r) => onDungeonEnd(dungeon, r),
     });
     dungeon.onReward = () => {
       rewardBoss(data, def.id, `${a.startedAt}:${a.depth}`);
+      if (coopDef && coopDef.id !== def.id) rewardBoss(data, coopDef.id, `${a.startedAt}:${a.depth}`);
       save();
     };
     // moedas dos baús: entram no save na hora (a morte não leva)
@@ -157,6 +186,7 @@ export function createPveFlow(ctx) {
     if (game.state !== 'loading' || game.screen !== loading) { dungeon.dispose(); return; }
     input.players[0].cpu = null;
     input.players[0].setVirtual(null);
+    if (coopDef) { input.players[1].cpu = null; input.players[1].setVirtual(null); }
     game.match = dungeon;
     setScreen('fight', null);
     dungeon.beginIntro();
@@ -207,23 +237,34 @@ export function createPveFlow(ctx) {
     if (!state || !state.startsWith('pve')) return false;
     const c = game.screen && game.screen.update(input);
     if (!c) return true;
-    if (state === 'pvehub') {
+    if (state === 'pveentry') {
+      if (c === 'local') toHub();
+      else if (c === 'online') ctx.openOnline && ctx.openOnline('pve');
+      else toMainMenu();
+    } else if (state === 'pveplayers') {
+      if (c === 'solo') { game.pveCoop = false; toFormat(); }
+      else if (c === 'multi') { game.pveCoop = true; toFormat(); }
+      else toHub();
+    } else if (state === 'pveonline') {
+      ctx.leaveOnlinePve && ctx.leaveOnlinePve();
+      toEntry();
+    } else if (state === 'pvehub') {
       if (c === 'continue') startDungeon();
       else if (c === 'new') {
         if (data.attempt) confirmBox('pveconfirm', 'NOVA TENTATIVA?', 'A tentativa atual será perdida (o nível e os pontos dos personagens ficam).', 'SIM, COMEÇAR OUTRA');
-        else toFormat();
+        else toPlayers();
       } else if (c === 'tree') pickCharacter('tree');
       else if (c === 'unlock') toUnlock();
       else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. O nível, os pontos e a árvore de cada personagem ficam.', 'SIM, REINICIAR');
       else if (c === 'wipe') confirmBox('pvewipe', 'APAGAR DADOS?', 'Apaga TODO o progresso do Outro Lado: níveis, pontos, a campanha e a tentativa. O resto do jogo não muda.', 'SIM, APAGAR');
-      else if (c === 'back') toMainMenu();
+      else if (c === 'back') toEntry();
     } else if (state === 'pveconfirm') {
-      if (c === 'yes') toFormat();
+      if (c === 'yes') toPlayers();
       else toHub();
     } else if (state === 'pveformat') {
       if (c === 'solo') pickCharacter('new');
       else if (c === 'team') pickCharacter('new', true);
-      else toHub();
+      else toPlayers();
     } else if (state === 'pverestart') {
       if (c === 'yes') { data.campaign = emptyData().campaign; data.attempt = null; save(); }
       toHub();
@@ -234,7 +275,7 @@ export function createPveFlow(ctx) {
       if (c === 'back') toFormat();
       else if (c.startsWith('diff:')) {
         const difficulty = c.slice(5);
-        data.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], difficulty, dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
+        data.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoop ? game.pveCoopPick : null, difficulty, dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
         data.campaign.runs++;
         save();
         startDungeon();
@@ -257,11 +298,21 @@ export function createPveFlow(ctx) {
       }
     } else if (state === 'pveresult') {
       if (c === 'next') startDungeon();
-      else if (c === 'new') toFormat();
+      else if (c === 'new') toPlayers();
       else if (c === 'main') toMainMenu();
       else toHub();
     }
     return true;
+  }
+
+  // ONLINE (etapa 1): os dois conectados na sala do Outro Lado. A expedição online (a dungeon sincronizada) é a próxima
+  // etapa; por enquanto a sala mostra quem entrou e volta.
+  function onlineRoom(session) {
+    const names = (session.names || []).map((n) => esc(n || '?'));
+    menu('pveonline', 'SALA DO OUTRO LADO', [{ id: 'leave', label: 'SAIR DA SALA' }], {
+      subtitle: `Sala ${esc(session.code || '')} · ${names.join(' e ') || 'conectados'}`,
+      extra: extraBox('Vocês estão conectados. A expedição online (a mansão sincronizada entre os dois computadores) chega na próxima atualização: cada um vai jogar com a própria câmera, no próprio monitor.'),
+    });
   }
 
   // a pausa da dungeon: abandonar volta ao hub (a tentativa fica salva no começo desta dungeon)
@@ -271,5 +322,5 @@ export function createPveFlow(ctx) {
     else toHub();
   }
 
-  return { toHub, onSelect, update, quit, startDungeon, lockedChars: () => lockedMap(data, ROSTER), get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
+  return { toHub, toEntry, onlineRoom, onSelect, update, quit, startDungeon, lockedChars: () => lockedMap(data, ROSTER), get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
 }
