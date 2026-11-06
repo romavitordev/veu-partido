@@ -5,7 +5,16 @@
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
 import { UPGRADES, SYNERGIES, activeSynergies, countOf, xpForLevel } from './upgrades.js';
 
+// os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
+const pipsHtml = (n, max, was = n) => Array.from({ length: max }, (_, i) => `<b class="${i < was ? 'on' : i < n ? 'new' : ''}"></b>`).join('');
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+export function fmtTime(t) {
+  const cs = Math.floor((t || 0) * 100);
+  const m = Math.floor(cs / 6000);
+  const s = Math.floor(cs / 100) % 60;
+  return `${m}:${String(s).padStart(2, '0')}.${String(cs % 100).padStart(2, '0')}`;
+}
 
 export class PveHud {
   constructor(hud) {
@@ -18,8 +27,10 @@ export class PveHud {
       <div class="pv-top"><small class="pv-place"></small><b class="pv-room"></b><span class="pv-obj"></span></div>
       <div class="pv-xp"><span class="pv-lv">NV 1</span><div class="pv-bar"><i></i></div><span class="pv-depth"></span></div>
       <div class="pv-ups"></div>
+      <div class="pv-time" title="Cronômetro da dungeon (para speedrun)"><b>0:00</b><small>.00</small></div>
+      <div class="pv-coins" title="Moedas: compram os personagens bloqueados">● <b>0</b></div>
       <div class="pv-hint"></div>
-      <div class="pv-choose" hidden><h3>SUBIU DE NÍVEL</h3><p>Escolha uma melhoria para esta tentativa</p><div class="pv-cards"></div><small>◀ ▶ para escolher · A/× confirma</small></div>
+      <div class="pv-choose" hidden><div class="pv-panel"><h3>SUBIU DE NÍVEL!</h3><p>Escolha uma melhoria para esta tentativa</p><div class="pv-cards"></div><div class="pv-build"></div><small>▲ ▼ escolhe · A/× ou Enter confirma</small></div></div>
       <div class="pv-fade"></div>`;
     this.root.appendChild(el);
     this.el = el;
@@ -35,6 +46,17 @@ export class PveHud {
 
   setObjective(text) {
     this.q('.pv-obj').textContent = text || '';
+  }
+
+  // cronômetro de speedrun (mm:ss.cc); pausa com o jogo (cartas, pausa)
+  setTime(t) {
+    const [m, c] = fmtTime(t).split('.');
+    if (m !== this.lastT) { this.lastT = m; this.q('.pv-time b').textContent = m; }
+    this.q('.pv-time small').textContent = `.${c}`;
+  }
+
+  setCoins(n) {
+    this.q('.pv-coins b').textContent = String(n);
   }
 
   hint(text) {
@@ -55,18 +77,28 @@ export class PveHud {
     this.q('.pv-ups').innerHTML = ids.map((id) => {
       const u = UPGRADES.find((x) => x.id === id);
       const n = countOf(run.picks, id);
-      return `<span class="pv-up" title="${esc(u.name)}: ${esc(u.desc)}"><i>${u.icon}</i>${n > 1 ? `<u>${n}</u>` : ''}</span>`;
+      return `<span class="pv-up" title="${esc(u.name)}: ${esc(u.desc)}"><i>${u.icon}</i><s>${pipsHtml(n, u.max)}</s></span>`;
     }).join('') + syn.map((s) => `<span class="pv-syn" title="${esc(s.desc)}">${esc(s.name)}</span>`).join('');
   }
 
-  // cartas de melhoria; onPick(id). Também pode clicar/tocar
-  openChoice(choices, onPick) {
+  // a escolha ao subir de nível, no estilo Vampire Survivors: uma lista de linhas (ícone, nome, NOVO! ou o nível que
+  // vai ganhar, a descrição) e, embaixo, a build atual. onPick(id). Também pode clicar/tocar
+  openChoice(choices, run, onPick) {
     const box = this.q('.pv-choose');
-    this.choice = { choices, index: 1 % choices.length, onPick };
+    const picks = run.picks || [];
+    this.choice = { choices, index: 0, onPick };
     this.q('.pv-cards').innerHTML = choices.map((u, i) => {
+      const n = countOf(picks, u.id);
       const syn = SYNERGIES.filter((s) => s.needs.includes(u.id));
-      return `<div class="pv-card" data-i="${i}"><i>${u.icon}</i><b>${esc(u.name)}</b><p>${esc(u.desc)}</p>${syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}</div>`;
+      const ready = syn.filter((s) => s.needs.every((x) => x === u.id || picks.includes(x)));
+      const tag = n ? `nv ${n + 1}` : 'NOVO!';
+      return `<div class="pv-card" data-i="${i}"><i>${u.icon}</i><div><b>${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}</div></div>`;
     }).join('');
+    const ids = [...new Set(picks)];
+    this.q('.pv-build').innerHTML = `<span>Build (nv ${run.level})</span>` + (ids.length ? ids.map((id) => {
+      const u = UPGRADES.find((x) => x.id === id);
+      return `<span class="pv-up" title="${esc(u.name)}"><i>${u.icon}</i><s>${pipsHtml(countOf(picks, id), u.max)}</s></span>`;
+    }).join('') : '<em>nenhuma melhoria ainda</em>');
     box.hidden = false;
     box.querySelectorAll('.pv-card').forEach((c) => c.addEventListener('click', () => { this.choice.index = Number(c.dataset.i); this.pick(); }));
     this.renderChoice();
@@ -82,7 +114,7 @@ export class PveHud {
     if (!this.choice) return false;
     const p = input.players[0];
     const n = this.choice.choices.length;
-    if (p.menu.left || p.menu.up) { this.choice.index = (this.choice.index + n - 1) % n; audio.play('select'); this.renderChoice(); }
+    if (p.menu.up || p.menu.left) { this.choice.index = (this.choice.index + n - 1) % n; audio.play('select'); this.renderChoice(); }
     if (p.menu.right || p.menu.down) { this.choice.index = (this.choice.index + 1) % n; audio.play('select'); this.renderChoice(); }
     if (p.pressed.jump || input.keyPressedOnce('Enter')) { audio.play('confirm'); this.pick(); }
     return !!this.choice;

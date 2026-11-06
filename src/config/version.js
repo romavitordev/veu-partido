@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.25.0';
+export const VERSION = '4.26.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,22 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.26.0',
+    date: '2026-11-05',
+    title: 'Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito',
+    items: [
+      'OUTRO LADO: câmera em 3ª pessoa atrás do ombro, para explorar a mansão de perto.',
+      'O ESPREITADOR foi refeito do zero: um bicho grande e agachado, com a massa de olhos no alto da cabeça, as mãos enormes de dedos como galhos e olhos no ombro, no braço e na coxa.',
+      'O chefe agora tem cutscene de entrada: as luzes falham, o olho treme na fresta do armário, os dedos saem e ele rasteja para fora tremendo. Dá para pular.',
+      'Olhos amarelos acendem no armário por onde ele vai sair: dá para prever o bote.',
+      'Mais terror: batidas, sussurros, passos, rangidos, luzes falhando, o coração batendo e olhos que abrem nas paredes dos corredores.',
+      'Só Chico, Dara, Guizo e Lírio começam liberados. Os outros são comprados com MOEDAS, que saem dos BAÚS da mansão (um baú pode ter moedas, vida ou experiência) e da recompensa do chefe.',
+      'Cronômetro para speedrun, com o recorde por dificuldade.',
+      'O painel de subida de nível e a loja de melhorias permanentes no estilo Vampire Survivors, com 4 melhorias novas (velocidade, recuperação, crescimento e sorte).',
+      'Os Devorados e as cópias estão mais fortes, e as salas duram mais.',
+    ],
+  },
   {
     v: '4.25.0',
     date: '2026-11-05',

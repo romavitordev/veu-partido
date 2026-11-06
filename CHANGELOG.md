@@ -1,5 +1,44 @@
 # Changelog
 
+## v4.26.0 — Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito
+
+### Adicionado
+- Outro Lado — câmera em 3ª pessoa: `CameraRig.chase` / `updateChase`, atrás do ombro. Na luta mira o inimigo; explorando, segue a direção do movimento. O movimento é relativo à câmera.
+- Cutscene de entrada do Espreitador (`src/pve/espreitadorIntro.js`), feita a partir da wiki. Etapas:
+  - o "2:11" e as luzes falhando;
+  - o olho grande tremendo e chorando na fresta;
+  - os olhinhos acendendo e as pupilas se multiplicando;
+  - os dedos saindo pela fresta;
+  - a porta estourando e ele rastejando para fora tremendo;
+  - o rugido.
+
+  Dá para pular.
+- Aviso do bote: o armário por onde ele vai sair acende os olhos amarelos antes (0,95 s; ×1,3 no Fácil e ×0,75 no Difícil).
+- Vibe de terror (referência: Doors), em `src/pve/ambience.js`:
+  - eventos ao acaso: batidas, sussurros, passos, rangidos e luz falhando;
+  - o coração batendo com a vida baixa ou com o chefe escondido;
+  - olhos nas paredes dos corredores, que abrem e seguem o jogador.
+
+  Sons sintetizados novos: `knock`, `whisper`, `heartbeat`, `buzz`, `steps` e `scare`.
+- Moedas e baús: 4 baús por dungeon (`pickups.js Chest`). Cada baú sorteia moedas (50%), vida (28%) ou experiência (22%). O chefe dá 30 moedas.
+- Personagens bloqueados no Outro Lado (`src/pve/unlocks.js`, PROPOSTA de ordem e preço):
+  - começam liberados Chico, Dara, Guizo e Lírio;
+  - os outros custam de 60 a 700 moedas, na tela DESBLOQUEAR PERSONAGENS (`unlockScreen.js`);
+  - a seleção mostra o cadeado.
+- Cronômetro de speedrun no HUD e o recorde por dificuldade (`campaign.bestTimes`).
+- Telas no estilo da loja do Vampire Survivors: o painel de subida de nível e a loja de melhorias permanentes (`treeScreen.js`), com comprar e devolver.
+- Melhorias permanentes novas: velocidade, recuperação, crescimento (experiência) e sorte (drops).
+
+### Alterado
+- O ESPREITADOR refeito do zero (`tools/blender/char_espreitador.py`), sem o corpo humano base.
+  - Forma: metaballs num esqueleto próprio, já agachado (quadril baixo, joelhos dobrados, corcunda e braços até o chão).
+  - Detalhes: a massa de olhos no alto da cabeça, as mãos grandes com dedos de galho, a barriga caída e olhos no ombro, no braço e na coxa.
+  - Tamanho 1,12 → 1,28.
+- Salas mais longas: Devorado com 820 de vida e 80% do dano; 2 cópias na sala e 3 na biblioteca.
+
+### Corrigido
+- Golpes com `actives`, mas sem `active`, derrubavam a cópia do Dante (`npcs.js`).
+
 ## v4.25.0 — Outro Lado: o Território do Espreitador
 
 ### Adicionado

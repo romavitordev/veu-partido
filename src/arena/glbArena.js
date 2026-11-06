@@ -61,7 +61,7 @@ export function createGLBArena(cfg) {
       if (!pl.spot) continue;
       pl.fade = Math.min(1, (pl.fade ?? 1) + dt * 3);
       const k = pl.spot.flicker ? (Math.sin(time * 23 + pl.seed) * Math.sin(time * 7.3 + pl.seed * 2) > 0.93 ? 0.15 : 0.85 + Math.sin(time * 9 + pl.seed) * 0.1) : 1;
-      pl.light.intensity = pl.spot.intensity * pl.fade * k;
+      pl.light.intensity = pl.spot.intensity * pl.fade * k * (arena.dim ?? 1); // dim: o OUTRO LADO apaga as luzes nas cenas (a entrada do Espreitador)
     }
   }
 

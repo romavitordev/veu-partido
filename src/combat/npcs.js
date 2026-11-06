@@ -141,7 +141,8 @@ export class DanteClone {
       } else if (!S && this.cd <= 0 && dTarget < 2.4 && target.state !== 'downed' && target.state !== 'ko') {
         const strikes = this.o.strikes || this.owner.def.melee.strikes;
         const s = strikes[this.strikeIdx++ % (this.o.strikes ? strikes.length : Math.min(3, strikes.length))];
-        this.attack = { t: 0, dur: s.dur, active: s.active, range: s.range + 0.2, damage: s.damage, hit: false };
+        // golpe de vários acertos (actives: a Sequência nervosa do Chico) vira um acerto só, na 1ª janela
+        this.attack = { t: 0, dur: s.dur, active: s.active || (s.actives && s.actives[0]) || [s.dur * 0.25, s.dur * 0.55], range: s.range + 0.2, damage: s.damage, hit: false };
         this.anim.play(s.anim, { restart: true, duration: s.dur });
         w.audio.play('swing', { volume: 0.4 });
       }

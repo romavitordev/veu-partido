@@ -8,12 +8,14 @@ import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels } from '../models/index.js';
 import { Dungeon } from './Dungeon.js';
 import { DUNGEONS, PVE_DIFFICULTIES, pickNextDungeon, isAllowed } from './dungeons.js';
-import { TREE } from './upgrades.js';
+import { PveTreeScreen } from './treeScreen.js';
+import { lockedMap, isUnlocked, buyChar } from './unlocks.js';
+import { PveUnlockScreen } from './unlockScreen.js';
+import { fmtTime } from './pveHud.js';
 import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath } from './save.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = (id) => ROSTER.find((c) => c.id === id);
-const pips = (n, max) => '▮'.repeat(n) + '▯'.repeat(Math.max(0, max - n));
 
 export function createPveFlow(ctx) {
   const { game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect } = ctx;
@@ -31,6 +33,8 @@ export function createPveFlow(ctx) {
       lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)} · profundidade ${a.depth} · nível ${a.level} · ${esc(PVE_DIFFICULTIES[a.difficulty]?.label || a.difficulty)}`);
     } else lines.push('Nenhuma tentativa em andamento.');
     lines.push(`Maior profundidade: ${c.bestDepth} · chefes derrotados: ${c.bossKills} · mortes: ${c.deaths}`);
+    const free = ROSTER.length - lockedMap(data, ROSTER).size;
+    lines.push(`Moedas: <b>● ${data.coins || 0}</b> · personagens liberados: <b>${free}/${ROSTER.length}</b> (as moedas saem dos baús do mapa)`);
     return lines.join('<br>');
   }
 
@@ -48,6 +52,7 @@ export function createPveFlow(ctx) {
       { id: 'continue', label: 'CONTINUAR', disabled: !data.attempt },
       { id: 'new', label: 'NOVA TENTATIVA' },
       { id: 'tree', label: 'MELHORIAS PERMANENTES' },
+      { id: 'unlock', label: 'DESBLOQUEAR PERSONAGENS' },
       { id: 'restart', label: 'REINICIAR CAMPANHA', disabled: !data.attempt && !data.campaign.runs },
       { id: 'wipe', label: 'APAGAR DADOS DO OUTRO LADO' },
       { id: 'back', label: 'VOLTAR' },
@@ -72,7 +77,7 @@ export function createPveFlow(ctx) {
   function onSelect(pick) {
     const def = pick.p1;
     if (game.pvePurpose === 'tree') { toTree(def.id); return; }
-    if (!isAllowed('espreitador', def.id)) { audio.play('denied'); return; }
+    if (!isAllowed('espreitador', def.id) || !isUnlocked(data, def.id)) { audio.play('denied'); return; }
     game.pveChar = def.id;
     toDifficulty();
   }
@@ -90,13 +95,16 @@ export function createPveFlow(ctx) {
     game.pveTreeChar = charId;
     const p = profileOf(data, charId);
     const d = byId(charId);
-    menu('pvetree', `MELHORIAS PERMANENTES`, [
-      ...TREE.map((n) => ({ id: `buy:${n.id}`, label: () => `${n.icon} ${n.name.toUpperCase()}  ${pips(p.tree[n.id] || 0, n.ranks)}  — ${n.desc}` })),
-      { id: 'refund', label: 'DEVOLVER OS PONTOS', disabled: !p.spent },
-      { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: `${esc(d ? d.name : charId)} · nível do Outro Lado ${p.level} · pontos livres: ${p.points}`, extra: extraBox('Cada chefe derrotado dá +1 nível e +1 ponto ao personagem. Os pontos valem em todas as tentativas dele.') });
-    game.screen.index = index;
-    game.screen.render();
+    endMatch();
+    setOverlay(null, null);
+    setScreen('pvetree', new PveTreeScreen(screens, { audio, charName: d ? d.name : charId, profile: p, index }));
+  }
+
+  // ------------------------------------------------ a loja de personagens (moedas dos baús)
+  function toUnlock() {
+    endMatch();
+    setOverlay(null, null);
+    setScreen('pveunlock', new PveUnlockScreen(screens, { audio, data, roster: ROSTER, portraits }));
   }
 
   // ------------------------------------------------ a dungeon
@@ -128,6 +136,9 @@ export function createPveFlow(ctx) {
       rewardBoss(data, def.id, `${a.startedAt}:${a.depth}`);
       save();
     };
+    // moedas dos baús: entram no save na hora (a morte não leva)
+    dungeon.coinsTotal = () => data.coins || 0;
+    dungeon.onCoins = (n) => { data.coins = (data.coins || 0) + n; save(); };
     renderer.compile(dungeon.world.scene, dungeon.world.camera);
     loading.progress(1);
     await new Promise((r) => setTimeout(r, 350));
@@ -143,8 +154,8 @@ export function createPveFlow(ctx) {
     if (game.match !== dungeon) return;
     const a = data.attempt;
     const s = stats || {};
-    const time = `${Math.floor((s.time || 0) / 60)}:${String(Math.floor((s.time || 0) % 60)).padStart(2, '0')}`;
-    const statLine = `Tempo ${time} · Devorados ${s.kills || 0} · cópias ${s.copias || 0} · dano causado ${Math.round(s.damage || 0)}`;
+    const time = fmtTime(s.time);
+    const statLine = `Tempo ${time} · Devorados ${s.kills || 0} · cópias ${s.copias || 0} · baús ${s.chests || 0} · moedas +${s.coins || 0} · dano causado ${Math.round(s.damage || 0)}`;
     if (result === 'death') {
       const depth = a ? a.depth : 1;
       endAttemptByDeath(data);
@@ -156,15 +167,22 @@ export function createPveFlow(ctx) {
       return;
     }
     if (result === 'clear' && a) {
+      // SPEEDRUN: o melhor tempo de cada dungeon (da entrada até a porta de saída)
+      const times = data.campaign.bestTimes || (data.campaign.bestTimes = {});
+      const prev = times[a.dungeon];
+      const record = !prev || s.time < prev;
+      if (record) times[a.dungeon] = s.time;
+      const recordLine = record ? `<br><b>NOVO RECORDE: ${fmtTime(s.time)}</b>${prev ? ` (antes ${fmtTime(prev)})` : ''}` : `<br>Recorde: ${fmtTime(prev)}`;
       a.cleared++;
       data.campaign.bestDepth = Math.max(data.campaign.bestDepth, a.depth);
       a.depth++;
       a.dungeon = pickNextDungeon({ depth: a.depth, previous: a.dungeon }) || a.dungeon;
       save();
       const p = profileOf(data, a.charId);
+      const unlockLine = `<br>Moedas: +${s.coins || 0} nesta dungeon · ${data.coins} no total`;
       menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER (PROFUNDIDADE ${a.depth})` }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO' }], {
         subtitle: `O Espreitador caiu. Personagem: nível ${p.level} do Outro Lado, ${p.points} ponto(s) para gastar nas melhorias permanentes.`,
-        extra: extraBox(`${statLine}<br>A próxima dungeon é mais forte (+12% de vida e dano dos inimigos por profundidade). As melhorias da tentativa continuam.`),
+        extra: extraBox(`${statLine}${recordLine}${unlockLine}<br>A próxima dungeon é mais forte (+12% de vida e dano dos inimigos por profundidade). As melhorias da tentativa continuam.`),
       });
       return;
     }
@@ -182,6 +200,7 @@ export function createPveFlow(ctx) {
         if (data.attempt) confirmBox('pveconfirm', 'NOVA TENTATIVA?', 'A tentativa atual será perdida (o nível e os pontos dos personagens ficam).', 'SIM, COMEÇAR OUTRA');
         else pickCharacter('new');
       } else if (c === 'tree') pickCharacter('tree');
+      else if (c === 'unlock') toUnlock();
       else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. O nível, os pontos e a árvore de cada personagem ficam.', 'SIM, REINICIAR');
       else if (c === 'wipe') confirmBox('pvewipe', 'APAGAR DADOS?', 'Apaga TODO o progresso do Outro Lado: níveis, pontos, a campanha e a tentativa. O resto do jogo não muda.', 'SIM, APAGAR');
       else if (c === 'back') toMainMenu();
@@ -205,13 +224,19 @@ export function createPveFlow(ctx) {
       }
     } else if (state === 'pvetree') {
       const charId = game.pveTreeChar;
-      const idx = game.screen.index;
       if (c === 'back') toHub();
-      else if (c === 'refund') { refundTree(data, charId); save(); toTree(charId, idx); }
+      else if (c === 'refund') { refundTree(data, charId); save(); audio.play('confirm'); game.screen.render(); }
       else if (c.startsWith('buy:')) {
         if (buyRank(data, charId, c.slice(4))) { save(); audio.play('levelUp', { volume: 0.6 }); }
         else audio.play('denied');
-        toTree(charId, idx);
+        game.screen.render();
+      }
+    } else if (state === 'pveunlock') {
+      if (c === 'back') toHub();
+      else if (c.startsWith('buy:')) {
+        if (buyChar(data, c.slice(4))) { save(); audio.play('levelUp', { volume: 0.7 }); }
+        else audio.play('denied');
+        game.screen.render();
       }
     } else if (state === 'pveresult') {
       if (c === 'next') startDungeon();
@@ -229,5 +254,5 @@ export function createPveFlow(ctx) {
     else toHub();
   }
 
-  return { toHub, onSelect, update, quit, startDungeon, get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
+  return { toHub, onSelect, update, quit, startDungeon, lockedChars: () => lockedMap(data, ROSTER), get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
 }

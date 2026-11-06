@@ -2,6 +2,15 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.26.0 — Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito
+- Outro Lado com câmera em 3ª pessoa, atrás do ombro.
+- O Espreitador foi refeito: um bicho grande e agachado, cheio de olhos, com mãos enormes de dedos como galhos.
+- Ele agora sai do armário numa cutscene: as luzes falham, o olho treme na fresta, os dedos saem e ele rasteja para fora.
+- Olhos amarelos acendem no armário por onde ele vai sair. Use isso para prever o bote.
+- Mais terror: batidas, sussurros, passos, luzes falhando e olhos que abrem nas paredes.
+- Só 4 personagens começam liberados no Outro Lado. Abra os baús da mansão para juntar moedas e comprar os outros.
+- Cronômetro para speedrun e telas de melhorias no estilo Vampire Survivors.
+
 ## v4.25.0 — Outro Lado: o Território do Espreitador
 - OUTRO LADO abriu: o modo PvE no menu principal, com a 1ª dungeon jogável na Mansão Endiabrada.
 - Enfrente os Devorados, cópias cinzentas do seu lutador, e cuidado com a fresta do corredor: não olhe para ela.

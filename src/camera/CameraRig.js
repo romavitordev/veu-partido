@@ -31,6 +31,23 @@ export const CAMERA_CFG = {
   occluderOpacity: 0.28,
 };
 
+// câmera em 3ª pessoa do OUTRO LADO (updateChase)
+export const CHASE_CFG = {
+  fov: 58,
+  distance: 4.4,
+  fightDistance: 5.2,
+  height: 2.3,
+  lookHeight: 1.25,
+  shoulder: 0.55,
+  ahead: 2.2, // explorando: olha este tanto à frente
+  focusBias: 0.3, // lutando: o olhar vai 30% do jogador até o inimigo
+  yawDamping: 4,
+  followDamping: 1.6,
+  maxYawSpeed: 2.6,
+  distanceDamping: 3,
+  targetDamping: 8,
+};
+
 // transições da câmera de cutscenes (segundos): entrar na cinemática, de um plano para o outro, voltar à luta
 export const CUTSCENE = { enter: 0.3, between: 0.16, exit: 0.4, maxSpeed: 30 };
 const smoothstep = (t) => t * t * (3 - 2 * t);
@@ -73,6 +90,7 @@ export class CameraRig {
   }
 
   stopShots() {
+    if (this.shots && this.chase) { this.lookBack = null; this.shots = null; return; } // 3ª pessoa: o updateChase volta sozinho
     if (this.shots) {
       // volta para o enquadramento de luta a partir de onde a cinematic parou: mesma posição (direção, distância e
       // ALTURA tiradas dela) e o olhar desliza do ponto da cena até o meio dos lutadores
@@ -187,6 +205,8 @@ export class CameraRig {
         }
         cam.fov += ((shot.fov || 45) - cam.fov) * Math.min(1, dt * 10);
       }
+    } else if (this.chase) {
+      this.updateChase(dt, this.chase(), snap);
     } else if (fighters.length === 2) {
       const [a, b] = fighters;
       const sep = Math.hypot(a.pos.x - b.pos.x, a.pos.z - b.pos.z);
@@ -256,6 +276,57 @@ export class CameraRig {
     // nunca deixa o controle com direção inválida (o lutador iria para NaN)
     if (!Number.isFinite(this.basis.forward.x) || this.basis.forward.lengthSq() < 0.5) this.basis.forward.set(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
     this.basis.right.set(-this.basis.forward.z, 0, this.basis.forward.x);
+  }
+
+  // OUTRO LADO: câmera FIXA EM 3ª PESSOA, atrás do personagem (feedback do dono, 2026-11-05). Sem analógico livre:
+  //  - com inimigo (`focus`): fica atrás do jogador olhando para o inimigo (frente do controle = na direção dele)
+  //  - sem inimigo: volta devagar para as costas de quem anda; andando PARA a câmera ela não gira (senão o controle,
+  //    que é relativo à câmera, rodava o personagem sem parar)
+  updateChase(dt, c, snap = false) {
+    const K = CHASE_CFG;
+    const p = c.player;
+    let want = null;
+    let rate = K.yawDamping;
+    if (c.focus) {
+      const dx = p.pos.x - c.focus.x;
+      const dz = p.pos.z - c.focus.z;
+      if (dx * dx + dz * dz > 0.6) want = Math.atan2(dx, dz);
+    } else {
+      const sp = Math.hypot(p.vel.x, p.vel.z);
+      if (sp > 0.8) {
+        const vx = p.vel.x / sp;
+        const vz = p.vel.z / sp;
+        // frente da câmera = -(sin yaw, cos yaw); andando para longe dela: alinha nas costas
+        const away = -(vx * Math.sin(this.yaw) + vz * Math.cos(this.yaw));
+        if (away > -0.25) { want = Math.atan2(-vx, -vz); rate = K.followDamping * Math.min(1, sp / 4); }
+      }
+    }
+    if (c.yaw !== undefined) want = c.yaw;
+    if (want !== null) {
+      const diff = angleDiff(this.yaw, want);
+      this.yaw += snap ? diff : clamp(diff * Math.min(1, dt * rate), -K.maxYawSpeed * dt, K.maxYawSpeed * dt);
+    }
+    const k = snap ? 1 : Math.min(1, dt * K.distanceDamping);
+    const wantDist = c.focus ? K.fightDistance : K.distance;
+    this.distance += (wantDist - this.distance) * k;
+    this.height += (K.height - this.height) * k;
+    const sy = Math.sin(this.yaw);
+    const cy = Math.cos(this.yaw);
+    // o alvo: o peito do jogador, puxado um pouco para o inimigo (ou para a frente, explorando)
+    const want3 = v1.set(p.pos.x, p.pos.y * 0.6 + K.lookHeight, p.pos.z);
+    if (c.focus) want3.lerp(new THREE.Vector3(c.focus.x, (c.focus.y || 0) + K.lookHeight, c.focus.z), K.focusBias);
+    else want3.addScaledVector(new THREE.Vector3(-sy, 0, -cy), K.ahead);
+    this.target.lerp(want3, snap ? 1 : Math.min(1, dt * K.targetDamping));
+    // ombro: a câmera fica um pouco à direita (o personagem não tapa o que está na frente)
+    this.pos.set(
+      p.pos.x + sy * this.distance + cy * K.shoulder,
+      p.pos.y * 0.5 + this.height,
+      p.pos.z + cy * this.distance - sy * K.shoulder,
+    );
+    this.clampToArena(this.pos);
+    this.avoidSolids(dt);
+    this.look.copy(this.target);
+    this.camera.fov += (K.fov - this.camera.fov) * (snap ? 1 : Math.min(1, dt * 5));
   }
 
   // Bloco grande do cenário (cidade/cemitério juntados numa peça só) entre os lutadores e a câmera: em vez de ficar

@@ -58,3 +58,25 @@ animações de todos). PROPOSTA: o tronco curvado e a cabeça baixa.
   próxima. O §9 pede a passagem sem carregamento aparente: dá para emendar quando houver uma 2ª dungeon.
 - O quarto ficou escuro em alguns cantos; se atrapalhar a leitura do chefe, sobe a luz do quarto.
 - Exportar/importar backup (§8) ficou para depois, como o cooperativo e o Espreitador jogável.
+
+## Rodada 2 (feedback do dono, 2026-11-05)
+
+Pedidos e o que foi feito:
+
+- **Câmera em 3ª pessoa fixa** (imersão): `CameraRig.chase` / `updateChase`, atrás do ombro; o movimento segue a câmera.
+- **Clones mais fortes** (as salas duram mais): Devorado 820 de vida, mais cópias (sala 2, biblioteca 3). Pela CPU,
+  a sala passou de ~22 s para ~58 s.
+- **Cronômetro de speedrun** no canto e o recorde por dificuldade na tela de resultado.
+- **Olhos amarelos onde ele vai sair**: o armário de saída acende os olhos por ~0,95 s (mais no Fácil, menos no Difícil).
+- **HUD de melhorias no estilo Vampire Survivors**: o painel de subida de nível em lista e a loja de melhorias permanentes em grade.
+- **Personagens bloqueados**: só Chico, Dara, Guizo e Lírio começam liberados. Os outros são comprados com
+  **moedas** (60 a 700) na tela DESBLOQUEAR PERSONAGENS. As moedas saem de **baús** no mapa (moedas, vida ou XP) e
+  da recompensa do chefe. PROPOSTA: a ordem e os preços.
+- **Cutscene de entrada do chefe** (wiki): luzes falhando, a fresta com o olho tremendo e chorando, as pupilas se
+  multiplicando, os dedos longos saindo, a porta estourando e ele rastejando para fora tremendo, e o rugido. Pode ser pulada.
+- **Vibe de terror (referência: Doors)**: batidas, sussurros, passos, rangidos e luzes falhando ao acaso; o coração
+  bate com a vida baixa ou com ele escondido; olhos nas paredes dos corredores abrem e seguem o jogador.
+- **Espreitador refeito do zero, sem corpo humano**: esculpido em metaballs num **esqueleto próprio já agachado**
+  (quadril baixo, joelhos dobrados, corcunda, braços até o chão). Os ossos e nomes são os do lutador, então as
+  animações continuam as mesmas. Ele tem a massa de olhos no alto da cabeça, as mãos grandes com dedos de galho
+  e olhos no ombro, no braço e na coxa. Conferido em 4 vistas no Blender MCP e no jogo, e ficou maior (tamanho 1,28).

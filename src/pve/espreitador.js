@@ -21,7 +21,8 @@ const v2 = new THREE.Vector3();
 export const ESPREITADOR_CFG = {
   duel: [4.5, 7.5], // segundos de luta comum entre uma habilidade e outra
   gaze: { windup: 0.9, time: 3.0, range: 15, arc: 55, drain: 17, burn: 22, turn: 1.1 }, // drain: Sanidade/s; burn: vida/s sem Sanidade
-  fresta: { hide: [1.6, 2.6], lunge: { speed: 13, time: 0.42, damage: 62, reach: 1.9 }, walk: 9.5, maxWalk: 2.4 },
+  // warn: os OLHOS AMARELOS acendem na fresta por onde ele vai sair, este tanto antes do bote (feedback do dono)
+  fresta: { hide: [1.6, 2.6], warn: 0.95, lunge: { speed: 13, time: 0.42, damage: 62, reach: 1.9 }, walk: 9.5, maxWalk: 2.4 },
   copia: { count: 2, max: 3, hp: 110 },
   fortify: { hold: 1.6, breakDamage: 110, reach: 1.4, hpMult: 2, dmgMult: 1.7 },
   terror: { time: 7, taken: 2.0, ranged: 1.6, speed: 2.2 },
@@ -105,6 +106,59 @@ export class Closet {
 
   get open() { return this.state === 'open'; }
 
+  // AVISO do bote: um punhado de olhos grandes amarelos acende na frente da fresta por onde ele vai sair
+  warn(time) {
+    if (!this.warnEyes) {
+      const g = new THREE.Group();
+      const white = new THREE.MeshBasicMaterial({ color: 0xffd84a, toneMapped: false });
+      const black = new THREE.MeshBasicMaterial({ color: 0x050403 });
+      for (let i = 0; i < 11; i++) {
+        const r = 0.06 + Math.random() * 0.07;
+        const e = new THREE.Group();
+        const ball = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 8), white);
+        ball.scale.z = 0.5;
+        const n = Math.random() < 0.3 ? 2 : 1; // alguns com duas pupilas (como os dele)
+        for (let k = 0; k < n; k++) {
+          const pu = new THREE.Mesh(new THREE.SphereGeometry(r * 0.38, 8, 6), black);
+          pu.position.set(n > 1 ? (k - 0.5) * r * 0.8 : 0, 0, r * 0.42);
+          pu.scale.z = 0.4;
+          e.add(pu);
+        }
+        e.add(ball);
+        e.position.set((Math.random() - 0.5) * 0.9, 0.8 + Math.random() * 1.5, 0.5 + Math.random() * 0.1);
+        e.userData.seed = Math.random() * 10;
+        g.add(e);
+      }
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.7, 1.0, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xf2c230, transparent: true, opacity: 0.6, toneMapped: false, depthWrite: false }));
+      ring.position.set(0, 0.04, 1.1);
+      g.add(ring);
+      g.userData.ring = ring;
+      this.group.add(g);
+      this.warnEyes = g;
+    }
+    this.warnT = time;
+    this.warnDur = time;
+  }
+
+  updateWarn(dt) {
+    const g = this.warnEyes;
+    if (!g) return;
+    if (!(this.warnT > 0) || !this.open) { g.visible = false; this.warnT = 0; return; }
+    this.warnT -= dt;
+    g.visible = true;
+    const k = 1 - this.warnT / this.warnDur;
+    g.children.forEach((e, i) => {
+      if (e === g.userData.ring) return;
+      // acendem um a um, bem rápido, e piscam
+      const on = k * 14 > i ? 1 : 0;
+      const blink = Math.sin(this.t * 9 + e.userData.seed * 4) > 0.9 ? 0.15 : 1;
+      e.scale.setScalar(on * blink * (1 + 0.15 * Math.sin(this.t * 20 + i)));
+    });
+    const ring = g.userData.ring;
+    ring.scale.setScalar(0.6 + k * 0.9);
+    ring.material.opacity = 0.75 * (1 - k * 0.5);
+  }
+
   update() { /* a lógica é do cérebro (tick); como NPC não faz nada */ }
 
   hitTest(p, r = 0) {
@@ -158,6 +212,8 @@ export class Closet {
       const blink = Math.sin(this.t * 1.7 + e.userData.seed * 3) > 0.94 ? 0.1 : 1;
       e.scale.setScalar((occupied ? 1.35 : 1) * blink);
     }
+    this.updateWarn(dt);
+    if (this.warnT > 0) for (const d of this.doors) d.pivot.rotation.y = d.s * Math.max(this.openK, 0.9) * 1.2;
     this.bar.visible = !this.open;
     if (this.bar.visible) this.bar.material.emissive.setHex(this.lockT < 3 && Math.sin(this.t * 14) > 0 ? 0x6a3a00 : 0x2a1a00);
   }
@@ -418,6 +474,7 @@ export class EspreitadorBrain {
     b.setVisible(false);
     b.pos.set(c.base.x, 0, c.base.z);
     this.inCloset = c;
+    this.warnTo = null;
     this.setState('hidden');
     this.hideT = F.hide[0] + Math.random() * (F.hide[1] - F.hide[0]);
   }
@@ -432,11 +489,27 @@ export class EspreitadorBrain {
       return;
     }
     if (this.st < this.hideT) return;
+    // o aviso já está aceso: espera e sai por ali (se trancaram a fresta avisada, escolhe outra e avisa de novo)
+    if (this.warnTo) {
+      if (!this.warnTo.open) { this.warnTo = null; return; }
+      this.warnLeft -= dt;
+      if (this.warnLeft > 0) return;
+      const c = this.warnTo;
+      this.warnTo = null;
+      this.emerge(c);
+      return;
+    }
     // sai por outra fresta (de preferência perto do jogador: o bote)
     const others = open.filter((c) => c !== this.inCloset);
     const pool = others.length ? others : open;
     pool.sort((a, c) => distXZ(a.pos, this.player.pos) - distXZ(c.pos, this.player.pos));
-    this.emerge(pool[Math.random() < 0.7 ? 0 : pool.length - 1]);
+    const c = pool[Math.random() < 0.7 ? 0 : pool.length - 1];
+    // OS OLHOS AMARELOS acendem onde ele vai aparecer: dá para prever (e até trancar a fresta antes)
+    const W = ESPREITADOR_CFG.fresta.warn * (this.d.diff?.warnMult ?? 1);
+    this.warnTo = c;
+    this.warnLeft = W;
+    c.warn(W);
+    this.w.audio.play('fearGaze', { volume: 0.8, pitch: 1.5 });
   }
 
   emerge(c, { terror = false } = {}) {

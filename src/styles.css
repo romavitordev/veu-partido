@@ -587,6 +587,9 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 .sel-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 5px; }
 .sel-grid .card { aspect-ratio: auto; min-height: 0; border-width: 2px; cursor: pointer; transition: transform .12s; }
 .sel-grid .card.off { display: none; }
+.sel-grid .card.locked img { filter: grayscale(1) brightness(.35); }
+.sel-grid .card.locked .cn b { color: #777 !important; }
+.sel-grid .card .lk { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(16px, 2vw, 30px); pointer-events: none; text-shadow: 0 0 8px #000; }
 .sel-grid .card .tm { position: absolute; top: 3px; left: 3px; max-width: calc(100% - 6px); display: flex; flex-direction: column; align-items: flex-start; gap: 2px; pointer-events: none; }
 /* uma etiqueta por equipe (quem é de duas equipes mostra as duas — config/teams.js defTeams) */
 .sel-grid .card .tm i { max-width: 100%; padding: 1px 5px; border-radius: 3px; background: rgba(0,0,0,.72); border-left: 3px solid var(--tc); color: var(--tc); font: normal 700 clamp(7px, .62vw, 10px)/1.3 system-ui, sans-serif; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1295,24 +1298,41 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #pvehud .pv-bar { width: 150px; height: 6px; background: rgba(0,0,0,.6); border: 1px solid #f2c23066; border-radius: 3px; overflow: hidden; }
 #pvehud .pv-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #a8801a, #ffd84a); transition: width .3s; }
 #pvehud .pv-depth { font-size: 11px; font-weight: 800; letter-spacing: .1em; color: #c8b8a0; }
-#pvehud .pv-ups { position: absolute; left: 16px; top: 106px; display: flex; flex-wrap: wrap; gap: 4px; max-width: 32vw; }
-#pvehud .pv-up { position: relative; width: 26px; height: 26px; border-radius: 4px; background: rgba(10,8,14,.8); border: 1px solid #f2c23077; display: grid; place-items: center; color: #ffd84a; font-size: 14px; }
-#pvehud .pv-up u { position: absolute; right: -4px; bottom: -4px; font-size: 10px; text-decoration: none; background: #f2c230; color: #000; border-radius: 6px; padding: 0 3px; font-weight: 800; }
+#pvehud .pv-up { position: relative; width: 30px; height: 34px; border-radius: 4px; background: linear-gradient(#2a2440, #14101f); border: 1px solid #c8a24a; box-shadow: inset 0 0 0 1px #000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #ffd84a; }
+#pvehud .pv-up i { font-style: normal; font-size: 15px; line-height: 1; }
+#pvehud s { text-decoration: none; display: flex; gap: 2px; justify-content: center; }
+#pvehud s b { width: 5px; height: 5px; border-radius: 1px; background: #3a3450; border: 1px solid #000; }
+#pvehud s b.on { background: #ffd84a; }
+#pvehud s b.new { background: #7dffb0; box-shadow: 0 0 6px #7dffb0; }
+/* SUBIU DE NÍVEL — no estilo do Vampire Survivors: um painel com linhas (ícone, nome, NOVO!/nível, descrição) */
+#pvehud .pv-choose { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.72); pointer-events: auto; }
+#pvehud .pv-choose[hidden] { display: none; }
+#pvehud .pv-panel { width: min(560px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto; padding: 14px 16px 12px; background: linear-gradient(#1d1934, #110e1f); border: 3px double #d8b45a; border-radius: 6px; box-shadow: 0 0 0 2px #000, 0 12px 40px #000; display: flex; flex-direction: column; gap: 8px; text-align: center; animation: pvPop .25s ease-out; }
+@keyframes pvPop { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+#pvehud .pv-panel h3 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 40px; letter-spacing: .08em; color: #ffd84a; text-shadow: 2px 2px 0 #6a3a00; }
+#pvehud .pv-panel > p { margin: 0; color: #c8c0e0; font-size: 13px; }
+#pvehud .pv-panel > small { color: #8a84a8; font-size: 11px; }
+#pvehud .pv-cards { display: flex; flex-direction: column; gap: 8px; }
+#pvehud .pv-card { display: flex; gap: 12px; align-items: center; padding: 10px 12px; text-align: left; border-radius: 4px; background: linear-gradient(#2c2650, #1a1630); border: 2px solid #4a4270; color: #eee; cursor: pointer; transition: border-color .12s, transform .12s, background .12s; }
+#pvehud .pv-card > i { flex: none; width: 52px; height: 52px; display: grid; place-items: center; font-style: normal; font-size: 30px; color: #ffd84a; background: #0d0b18; border: 2px solid #8a7440; border-radius: 4px; }
+#pvehud .pv-card > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+#pvehud .pv-card > div > b { display: flex; align-items: baseline; gap: 10px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 24px; letter-spacing: .05em; color: #fff; }
+#pvehud .pv-card em { font-style: normal; font-family: Inter, system-ui, sans-serif; font-size: 12px; font-weight: 800; color: #ffd84a; letter-spacing: .04em; }
+#pvehud .pv-card em.new { color: #7dffb0; }
+#pvehud .pv-card p { margin: 0; font-size: 13px; color: #d8d4ec; }
+#pvehud .pv-card s { justify-content: flex-start; }
+#pvehud .pv-card s b { width: 9px; height: 6px; }
+#pvehud .pv-card small { color: #c8a24a; font-size: 11px; }
+#pvehud .pv-card small.ready { color: #7dffb0; font-weight: 800; }
+#pvehud .pv-card.on { border-color: #ffd84a; background: linear-gradient(#3e3470, #241e44); transform: translateX(4px); box-shadow: 0 0 18px #f2c23044; }
+#pvehud .pv-build { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; justify-content: center; padding-top: 6px; border-top: 1px solid #3a3458; color: #8a84a8; font-size: 11px; }
+#pvehud .pv-build > span:first-child { margin-right: 6px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+#pvehud .pv-build em { font-style: italic; }
 #pvehud .pv-syn { height: 26px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: linear-gradient(90deg, #4a3a10, #2a2008); border: 1px solid #ffd84a; color: #ffe8a0; font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+#pvehud .pv-time { position: absolute; right: 16px; top: 12px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 30px; letter-spacing: .04em; color: #fff; text-shadow: 1px 1px 0 #000, 0 0 8px #000; font-variant-numeric: tabular-nums; }
+#pvehud .pv-time small { font-size: 18px; color: #f2c230; }
 #pvehud .pv-hint { position: absolute; left: 50%; bottom: 23vh; transform: translateX(-50%); padding: 8px 16px; border-radius: 6px; background: rgba(8,6,10,.82); border: 1px solid #f2c230aa; color: #ffe8a0; font-weight: 700; font-size: 15px; opacity: 0; transition: opacity .25s; text-align: center; max-width: 80vw; }
 #pvehud .pv-hint.on { opacity: 1; }
-#pvehud .pv-choose { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: radial-gradient(ellipse at center, rgba(20,14,4,.88), rgba(0,0,0,.92)); pointer-events: auto; }
-#pvehud .pv-choose[hidden] { display: none; }
-#pvehud .pv-choose h3 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 44px; letter-spacing: .1em; color: #ffd84a; }
-#pvehud .pv-choose p { margin: 0 0 8px; color: #e8e0cc; }
-#pvehud .pv-choose small { color: #a89a80; }
-#pvehud .pv-cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; padding: 0 16px; }
-#pvehud .pv-card { width: min(28vw, 220px); min-width: 150px; padding: 16px 14px; border-radius: 10px; background: #14100a; border: 2px solid #4a3a20; color: #eee; cursor: pointer; transition: transform .15s, border-color .15s; display: flex; flex-direction: column; gap: 6px; text-align: center; }
-#pvehud .pv-card i { font-style: normal; font-size: 34px; color: #ffd84a; }
-#pvehud .pv-card b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 26px; letter-spacing: .06em; }
-#pvehud .pv-card p { margin: 0; font-size: 13px; color: #d8d0bc; }
-#pvehud .pv-card small { color: #ffd84a; font-size: 11px; }
-#pvehud .pv-card.on { border-color: #ffd84a; transform: translateY(-6px) scale(1.04); box-shadow: 0 0 24px #f2c23055; }
 #pvehud .pv-fade { position: absolute; inset: 0; background: #000; opacity: 0; }
 #pvehud .pv-fade.on { opacity: 1; }
 @media (max-width: 760px) {
@@ -1329,3 +1349,51 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 .screen .menu .opt.disabled { opacity: .38; }
 .pve-loading .side.r img { filter: grayscale(1) brightness(.75) sepia(.35); }
 @media (max-height: 560px) { .pve-box { position: static; transform: none; margin: 10px auto 0; font-size: 13px; } }
+/* OUTRO LADO — MELHORIAS PERMANENTES no estilo da loja de PowerUps do Vampire Survivors (pve/treeScreen.js) */
+.pve-tree { display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at center, #1a0e10ee, #050306f5); }
+.pve-tree .pt-wrap { width: min(640px, calc(100% - 32px)); max-height: calc(100% - 24px); overflow: auto; padding: 14px 16px; background: linear-gradient(#1d1934, #110e1f); border: 3px double #d8b45a; border-radius: 6px; box-shadow: 0 0 0 2px #000, 0 16px 50px #000; display: flex; flex-direction: column; gap: 10px; }
+.pve-tree .pt-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pve-tree h2 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 34px; letter-spacing: .06em; color: #ffd84a; text-shadow: 2px 2px 0 #6a3a00; }
+.pve-tree .pt-coins { padding: 4px 12px; border-radius: 4px; background: #0d0b18; border: 2px solid #8a7440; color: #ffd84a; font-weight: 800; font-size: 16px; white-space: nowrap; }
+.pve-tree .pt-who { color: #c8c0e0; font-size: 13px; }
+.pve-tree .pt-who b { color: #ffd84a; }
+.pve-tree .pt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pve-tree .pt-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px 7px; border-radius: 4px; background: linear-gradient(#2c2650, #1a1630); border: 2px solid #4a4270; cursor: pointer; transition: border-color .12s, transform .12s; min-width: 0; }
+.pve-tree .pt-tile i { font-style: normal; font-size: 28px; line-height: 1.2; color: #ffd84a; width: 46px; height: 42px; display: grid; place-items: center; background: #0d0b18; border: 1px solid #8a7440; border-radius: 3px; }
+.pve-tree .pt-tile > b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 17px; letter-spacing: .04em; color: #fff; text-align: center; line-height: 1; }
+.pve-tree s { text-decoration: none; display: flex; gap: 3px; }
+.pve-tree s b { width: 8px; height: 6px; border-radius: 1px; background: #3a3450; border: 1px solid #000; }
+.pve-tree s b.on { background: #ffd84a; }
+.pve-tree .pt-tile.max { background: linear-gradient(#4a3a14, #2a2008); }
+.pve-tree .pt-tile.on { border-color: #ffd84a; transform: translateY(-3px); box-shadow: 0 0 16px #f2c23055; }
+.pve-tree .pt-info { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 4px; background: #0d0b18; border: 2px solid #4a4270; }
+.pve-tree .pt-info.dim { opacity: .45; }
+.pve-tree .pt-info > i { flex: none; font-style: normal; font-size: 34px; color: #ffd84a; width: 54px; text-align: center; }
+.pve-tree .pt-info > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pve-tree .pt-info > div > b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 24px; color: #fff; letter-spacing: .04em; }
+.pve-tree .pt-info p { margin: 0; color: #d8d4ec; font-size: 14px; }
+.pve-tree .pt-info small { color: #c8a24a; font-size: 12px; font-weight: 700; }
+.pve-tree button { font: inherit; cursor: pointer; border-radius: 4px; }
+.pve-tree .pt-buy { flex: none; padding: 10px 16px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 22px; letter-spacing: .06em; color: #08200f; background: linear-gradient(#7dffb0, #2fb86a); border: 2px solid #0a3a1a; }
+.pve-tree .pt-buy:disabled { background: #2a2a34; color: #6a6a7a; border-color: #000; cursor: default; }
+.pve-tree .pt-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pve-tree .pt-btns button { padding: 8px 16px; font-weight: 800; letter-spacing: .06em; color: #e8e0cc; background: linear-gradient(#3a2a2a, #1e1414); border: 2px solid #5a4040; }
+.pve-tree .pt-btns button.on { border-color: #ffd84a; color: #ffd84a; }
+.pve-tree .pt-btns button:disabled { opacity: .4; cursor: default; }
+.pve-tree .pt-tip { margin: 0; color: #8a84a8; font-size: 12px; text-align: center; }
+@media (max-width: 520px) { .pve-tree .pt-tile > b { font-size: 14px; } .pve-tree .pt-tile i { width: 38px; height: 34px; font-size: 22px; } .pve-tree .pt-info { flex-wrap: wrap; } }
+/* OUTRO LADO — a loja de personagens (pve/unlockScreen.js) e o contador de moedas */
+.pve-unlock .pt-wrap { width: min(820px, calc(100% - 24px)); }
+.pve-unlock .pu-grid { grid-template-columns: repeat(6, 1fr); max-height: 46vh; overflow: auto; padding: 4px; }
+.pve-unlock .pu-tile { position: relative; padding: 4px 4px 5px; gap: 2px; }
+.pve-unlock .pu-tile img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 12%; border-radius: 3px; border: 1px solid var(--c, #8a7440); background: #0d0b18; }
+.pve-unlock .pu-tile > b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.pve-unlock .pu-tile em { font-style: normal; font-size: 11px; font-weight: 800; color: #7dffb0; }
+.pve-unlock .pu-tile.locked img { filter: grayscale(1) brightness(.4); }
+.pve-unlock .pu-tile.locked em { color: #ffc040; }
+.pve-unlock .pt-info > img { flex: none; width: 64px; height: 64px; object-fit: cover; object-position: 50% 12%; border-radius: 4px; border: 2px solid #8a7440; }
+@media (max-width: 620px) { .pve-unlock .pu-grid { grid-template-columns: repeat(4, 1fr); } }
+#pvehud .pv-coins { position: absolute; right: 16px; top: 48px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 22px; color: #ffc040; text-shadow: 1px 1px 0 #000, 0 0 8px #000; }
+#pvehud .pv-coins b { font-weight: 400; color: #fff; }
+/* OUTRO LADO — cena de entrada do chefe: sem HUD (só o cronômetro some junto) */
+#hud.pve-cine .panel, #hud.pve-cine #pvehud > :not(.pv-fade), #hud.pve-cine .combo { visibility: hidden; }

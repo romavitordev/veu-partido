@@ -33,6 +33,10 @@ export const TREE = [
   { id: 'dano', name: 'Dano', icon: '✊', ranks: 5, per: 0.04, desc: '+4% de dano por grau.', apply: (m, r) => { for (const k in m.dealt) m.dealt[k] += 0.04 * r; } },
   { id: 'defesa', name: 'Defesa', icon: '⛨', ranks: 5, per: 0.04, desc: '−4% de dano recebido por grau.', apply: (m, r) => { m.taken *= 1 - 0.04 * r; } },
   { id: 'sanidade', name: 'Sanidade', icon: '✦', ranks: 5, per: 0.05, desc: 'Habilidades 5% mais baratas por grau.', apply: (m, r) => { m.costMult *= 1 - 0.05 * r; } },
+  { id: 'velocidade', name: 'Velocidade', icon: '➶', ranks: 3, per: 0.03, desc: '+3% de velocidade de movimento por grau.', apply: (m, r) => { m.speedMult += 0.03 * r; } },
+  { id: 'recuperacao', name: 'Recuperação', icon: '✚', ranks: 3, per: 0.001, desc: 'Regenera 0,1% da vida por segundo por grau.', apply: (m, r) => { m.regenHp += 0.001 * r; } },
+  { id: 'crescimento', name: 'Crescimento', icon: '▲', ranks: 5, per: 0.06, desc: '+6% de experiência por grau.', apply: (m, r) => { m.xpMult += 0.06 * r; } },
+  { id: 'sorte', name: 'Sorte', icon: '♣', ranks: 3, per: 0.1, desc: '+10% de chance de os inimigos deixarem cura, por grau.', apply: (m, r) => { m.dropMult += 0.1 * r; } },
 ];
 export const treeCost = (rank) => 1; // eslint-disable-line no-unused-vars -- 1 ponto por grau (pode crescer depois)
 
@@ -48,6 +52,8 @@ export function baseMods() {
     speedMult: 1,
     regenHp: 0,
     drainTaken: 1,
+    xpMult: 1,
+    dropMult: 1,
   };
 }
 

@@ -1,5 +1,25 @@
 # Registro administrativo de alterações
 
+## v4.26.0 — Outro Lado: rodada 2 — câmera, moedas e o Espreitador refeito
+
+- Versão: `VERSION` 4.25.0 → **4.26.0** (`package.json` e `package-lock.json`). Data: 2026-11-05.
+- Origem: feedback do dono sobre a v4.25.0 (câmera, Espreitador humanoide, clones, speedrun, olhos de aviso, HUD no estilo VS, desbloqueio por moedas, cutscene, Doors).
+- Arquivos novos em `src/pve/`: `ambience.js`, `espreitadorIntro.js`, `treeScreen.js`, `unlockScreen.js` e `unlocks.js`.
+- Código comum, sem efeito fora do modo:
+  - `CameraRig.chase`;
+  - `arena.dim` no `glbArena`;
+  - `SelectScreen` com a opção `locked`;
+  - sons novos no `AudioManager`;
+  - `npcs.js` aceita golpes só com `actives`.
+- Save do Outro Lado: `coins`, `unlocked` e `campaign.bestTimes`, saneados no `loadPve`.
+- Modelo:
+  - esqueleto próprio agachado, com os mesmos ossos e nomes do lutador;
+  - o `glbRig` aplica as poses no espaço do personagem, então as animações compartilhadas funcionam;
+  - pesos por distância aos ossos;
+  - conferido nas 4 vistas no Blender MCP e no jogo.
+- Balanceamento pela CPU: a sala passou de ~22 s para ~58 s.
+- Testes: `npm test` 68/68, `npm run check` ok, `vite build` ok.
+
 ## v4.25.0 — Outro Lado: o Território do Espreitador
 
 - Versão: `VERSION` 4.24.1 → **4.25.0** (`package.json` e `package-lock.json`). Data: 2026-11-05. Pedido do dono: "leia tudo sobre o modo Outro Lado e comece a produção. Quero que tenha pelo menos uma fase jogável pra lançar".

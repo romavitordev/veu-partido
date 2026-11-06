@@ -33,7 +33,7 @@ export default {
     tagline: 'Feche a fresta.',
   },
   // pernas curtas: anda devagar; aguenta mais que um lutador (chefe)
-  stats: { moveSpeed: 6.4, attackSpeed: 0.95, size: 1.12, maxHealth: 2100 },
+  stats: { moveSpeed: 6.4, attackSpeed: 0.95, size: 1.28, maxHealth: 2100 },
   poise: { hits: 5 }, // chefe: depois de 5 golpes seguidos para de reagir (não fica preso no combo)
   anims: { idle: 'idle_raziel', run: 'run', charge: 'db_charge', victory: 'taunt_roar', block: 'db_block' },
   dodge: { style: 'default', distance: 4.2 },

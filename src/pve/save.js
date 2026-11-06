@@ -18,7 +18,8 @@ function store(s) {
 }
 
 export function emptyData() {
-  return { version: SAVE_VERSION, profiles: {}, campaign: { bestDepth: 0, bossKills: 0, deaths: 0, runs: 0, lastDungeon: null }, attempt: null };
+  // coins/unlocked: as MOEDAS dos baús e os personagens comprados com elas (pve/unlocks.js)
+  return { version: SAVE_VERSION, profiles: {}, coins: 0, unlocked: [], campaign: { bestDepth: 0, bossKills: 0, deaths: 0, runs: 0, lastDungeon: null, bestTimes: {} }, attempt: null };
 }
 
 export function emptyProfile() {
@@ -34,7 +35,7 @@ export function loadPve(s) {
     const d = JSON.parse(raw);
     if (!d || typeof d !== 'object' || d.version !== SAVE_VERSION) return emptyData();
     const base = emptyData();
-    return { ...base, ...d, campaign: { ...base.campaign, ...(d.campaign || {}) }, profiles: d.profiles && typeof d.profiles === 'object' ? d.profiles : {} };
+    return { ...base, ...d, coins: Number.isFinite(d.coins) ? Math.max(0, d.coins) : 0, unlocked: Array.isArray(d.unlocked) ? d.unlocked : [], campaign: { ...base.campaign, ...(d.campaign || {}) }, profiles: d.profiles && typeof d.profiles === 'object' ? d.profiles : {} };
   } catch {
     return emptyData();
   }

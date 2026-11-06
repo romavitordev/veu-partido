@@ -351,8 +351,10 @@ const inputName = (k) => (k === 'carga+jump' ? t('input.carga_jump') : k === 'ra
 
 export class SelectScreen {
   // heading: título no lugar do padrão (TORNEIO: "VEZ DE: JOGADOR 3")
-  constructor(root, { portraits, audio, prev, mode = 'pvp', team = false, heading = null }) {
+  // locked: Map id → texto (OUTRO LADO: os personagens ainda bloqueados e como desbloquear)
+  constructor(root, { portraits, audio, prev, mode = 'pvp', team = false, heading = null, locked = null }) {
     this.audio = audio;
+    this.locked = locked;
     this.mode = mode;
     this.team = team;
     this.picks = [[], []]; // equipe: [líder, assist1, assist2] (ou só líder + 1)
@@ -362,6 +364,8 @@ export class SelectScreen {
     // cursor = o lutador escolhido (a VERSÃO, índice no ROSTER); home = o cartão em que o cursor está na grade. As setas
     // mudam o cartão (e a versão volta para a do cartão); RB/LB trocam só a versão (versionsOf)
     this.cursor = prev ? [...prev.cursor] : [0, 1];
+    // OUTRO LADO: o cursor começa num liberado
+    if (locked && locked.has(ROSTER[this.cursor[0]].id)) { const f = GRID.find((i) => !locked.has(ROSTER[i].id)); if (f !== undefined) this.cursor[0] = f; }
     this.home = this.cursor.map((i) => versionsOf(i)[0]);
     this.portraits = portraits;
     this.ready = [false, false];
@@ -407,6 +411,12 @@ export class SelectScreen {
       pg.querySelector('.pg-next').addEventListener('click', () => this.tapSide(p, 252));
     });
     this.hint = this.el.querySelector('.hint');
+    if (locked) this.cards.forEach((list) => list.forEach((c) => {
+      const id = ROSTER[Number(c.dataset.i)].id;
+      if (!locked.has(id)) return;
+      c.classList.add('locked');
+      c.insertAdjacentHTML('beforeend', `<span class="lk" title="${locked.get(id)}">🔒</span>`);
+    }));
     // toque no lutador: o 1º toque olha, o 2º no mesmo confirma
     this.cards.forEach((list, p) => list.forEach((c) => c.addEventListener('click', () => this.tapSide(p, 1 + Number(c.dataset.i)))));
     this.render();
@@ -430,7 +440,7 @@ export class SelectScreen {
     // no modo contra CPU o lado 2 só é escolhido depois do 1
     const active = this.cpu ? (this.ready[0] ? 1 : 0) : p;
     if (active !== p || this.ready[p]) return;
-    if (this.home[p] === i) { this.lockPick(p); this.audio.play('confirm'); } else { this.home[p] = this.cursor[p] = i; this.audio.play('select'); }
+    if (this.home[p] === i) { if (this.lockPick(p) !== false) this.audio.play('confirm'); } else { this.home[p] = this.cursor[p] = i; this.audio.play('select'); }
     this.render();
   }
 
@@ -528,7 +538,8 @@ export class SelectScreen {
     }
     this.startEl.classList.toggle('on', this.ready[0] && this.ready[1]);
     const keys = { move: moveLabel(0), jump: actionLabel(0, 'jump'), phys: actionLabel(0, 'physical'), jump2: actionLabel(1, 'jump'), phys2: actionLabel(1, 'physical') };
-    this.hint.innerHTML = this.mode === 'pve' ? `<b>P1</b> escolhe quem entra no Outro Lado · <kbd>${keys.jump}</kbd>/<kbd>Enter</kbd> confirma · <kbd>${keys.phys}</kbd>/<kbd>Esc</kbd> volta` : t(this.M.soloPick ? 'tower.sel_hint' : this.cpu ? 'sel.hint_cpu' : 'sel.hint_pvp', keys)
+    const lk = this.locked && this.locked.get(ROSTER[this.cursor[0]].id);
+    this.hint.innerHTML = lk ? `🔒 <b>${ROSTER[this.cursor[0]].name}</b> ainda está bloqueado no Outro Lado · ${lk}` : this.mode === 'pve' ? `<b>P1</b> escolhe quem entra no Outro Lado · <kbd>${keys.jump}</kbd>/<kbd>Enter</kbd> confirma · <kbd>${keys.phys}</kbd>/<kbd>Esc</kbd> volta` : t(this.M.soloPick ? 'tower.sel_hint' : this.cpu ? 'sel.hint_cpu' : 'sel.hint_pvp', keys)
       + t('sel.hint_common', { ok: OK, rand: RAND, back: BACK })
       + (this.home.some((h) => versionsOf(h).length > 1) ? t('sel.hint_version', { l: actionLabel(0, 'pageL'), r: actionLabel(0, 'pageR') }) : '');
   }
@@ -571,7 +582,7 @@ export class SelectScreen {
     }
     if (input.keyPressedOnce('Enter')) {
       const slot = this.ready[0] ? 1 : 0;
-      if (!this.ready[slot] && (slot === 0 || this.cpu)) { this.lockPick(slot); this.audio.play('confirm'); changed = true; }
+      if (!this.ready[slot] && (slot === 0 || this.cpu)) { if (this.lockPick(slot) !== false) this.audio.play('confirm'); changed = true; }
     }
     if (this.cpu) {
       changed = this.handle(p1, this.ready[0] ? 1 : 0) || changed;
@@ -619,9 +630,9 @@ export class SelectScreen {
     if (p.menu.up) target = start + (c - SEL_COLS >= 0 ? c - SEL_COLS : c + SEL_COLS * Math.floor((count - 1 - c) / SEL_COLS));
     if (p.menu.down) target = start + (c + SEL_COLS < count ? c + SEL_COLS : c % SEL_COLS);
     if (target !== null && GRID[target] !== home) { this.home[slot] = this.cursor[slot] = GRID[target]; this.audio.play('select'); changed = true; }
-    if (confirm(p)) { this.lockPick(slot); this.audio.play('confirm'); changed = true; }
+    if (confirm(p)) { if (this.lockPick(slot) !== false) this.audio.play('confirm'); changed = true; }
     else if (random(p)) {
-      this.cursor[slot] = pickRandom(n, this.cursor[slot], (i) => !this.team || !this.picks[slot].includes(i));
+      this.cursor[slot] = pickRandom(n, this.cursor[slot], (i) => (!this.team || !this.picks[slot].includes(i)) && !(this.locked && this.locked.has(ROSTER[i].id)));
       this.home[slot] = versionsOf(this.cursor[slot])[0];
       this.lockPick(slot);
       this.audio.play('confirm');
@@ -666,6 +677,11 @@ export class SelectScreen {
   // confirma a escolha do lado; na equipe fica pronto com 3 personagens diferentes — ou com 2, confirmando de novo o
   // segundo que acabou de escolher (Kaiser → Cris → Cris)
   lockPick(slot) {
+    const lk = this.locked && this.locked.get(ROSTER[this.cursor[slot]].id);
+    if (lk && (slot === 0 || !this.M.soloPick)) {
+      this.audio.play('denied');
+      return false;
+    }
     if (!this.team) { this.ready[slot] = true; return; }
     const c = this.cursor[slot];
     const picks = this.picks[slot];

@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.25.0 (2026-11-05: o OUTRO LADO abre com a 1ª fase jogável, o Território do Espreitador na Mansão Endiabrada: Devorados, a fresta do corredor, o chefe com as frestas nos armários, recompensa, saída, profundidade, melhorias da tentativa e a árvore permanente). Antes: v4.24.1 a Existida sem o especial inventado, a corrente do mangual chicoteando no golpe, a Carina batendo com o mangual e o nunchaku em vez de chutes, o nunchaku na mão no ataque; v4.24.0 a Existida com a barra amarela de Existência, sem Sanidade, lenta e correndo ao apanhar; v4.23.0 (a Carina com o que faltava do cânone: Mercenária, Treinada em Atletismo e a Precognição contra tiros); v4.22.0 a Beatrice com o que faltava do cânone: Merintofobia, a Existida acesa e as foices na bolsa; v4.21.0 o Rubens com o que faltava da ficha: Surto Temporal, Relógio de Arnaldo e Salto Fantasma como reação; v4.20.0 as armas da Carina refeitas no Blender, o mangual e o nunchaku balançando na corrente, a Glock no coldre e a faca no cinto; v4.19.1 Dante e Erin na Força D e o especial da equipe com os seis; v4.19.0 Beatrice Portinari e o Orpheu; v4.18.0 Rubens Naluti fecha a Equipe Abutres; v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
+**Versão de referência atual:** v4.26.0 (2026-11-05: rodada 2 do OUTRO LADO pelo feedback do dono: câmera em 3ª pessoa, o Espreitador refeito do zero sem corpo humano, cutscene de entrada, olhos de aviso, vibe de terror, moedas, baús e personagens bloqueados, cronômetro e as telas no estilo Vampire Survivors). Antes: v4.25.0 o OUTRO LADO abre com a 1ª fase jogável, o Território do Espreitador na Mansão Endiabrada: Devorados, a fresta do corredor, o chefe com as frestas nos armários, recompensa, saída, profundidade, melhorias da tentativa e a árvore permanente). Antes: v4.24.1 a Existida sem o especial inventado, a corrente do mangual chicoteando no golpe, a Carina batendo com o mangual e o nunchaku em vez de chutes, o nunchaku na mão no ataque; v4.24.0 a Existida com a barra amarela de Existência, sem Sanidade, lenta e correndo ao apanhar; v4.23.0 (a Carina com o que faltava do cânone: Mercenária, Treinada em Atletismo e a Precognição contra tiros); v4.22.0 a Beatrice com o que faltava do cânone: Merintofobia, a Existida acesa e as foices na bolsa; v4.21.0 o Rubens com o que faltava da ficha: Surto Temporal, Relógio de Arnaldo e Salto Fantasma como reação; v4.20.0 as armas da Carina refeitas no Blender, o mangual e o nunchaku balançando na corrente, a Glock no coldre e a faca no cinto; v4.19.1 Dante e Erin na Força D e o especial da equipe com os seis; v4.19.0 Beatrice Portinari e o Orpheu; v4.18.0 Rubens Naluti fecha a Equipe Abutres; v4.17.1 o Grimório de Arnaldo abre, brilha e vale de qualquer lugar do mapa; v4.17.0 Carina Leone no elenco e na coreografia dos Abutres; v4.16.0 revisão do kit da Aghata pelo cânone; v4.15.1 o Descarnar arrancando a pele e derretendo a carne; v4.15.0 a Aghata refeita na técnica nova; v4.14.1 plateia de Anfitriões fora do Palco e o contador de dano travado no canto; v4.14.0 contagem de acertos do combo e a revisão dos sistemas de combate; v4.13.1 balanceamento com os 39; v4.13.0 esquiva contra os especiais de investida e os testes dos sistemas universais; v4.12.1 submetralhadoras na coreografia de Os Cinco; v4.12.0 especiais próprios do Carniçal, Morato, Chico e Dara; v4.11.0 submetralhadoras da Dara e do Chico; v4.10.0 Jaqueta de Veríssimo visível e fotos novas da página Sobre; v4.9.1 revisão do trabalho do Copilot; v4.9.0 passiva e Investida Mortal do Carniçal, casas e Torre do Sino em Tipora; v4.8.0 Especiais em Equipe.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1087,6 +1087,19 @@ Detalhes do mapa:
 9. Release.
 
 **Feito na v4.25.0 (2026-11-05):** os 9 passos. A rodada 1 de playtest, com os problemas achados e o que mudou, está em `docs/outro-lado-playtest.md`.
+
+**Feito na v4.26.0 (2026-11-05), rodada 2 pelo feedback do dono:**
+- [x] Câmera em 3ª pessoa fixa.
+- [x] Espreitador não humanoide, refeito do zero.
+- [x] Clones mais fortes.
+- [x] Cronômetro de speedrun.
+- [x] Olhos amarelos onde ele vai sair.
+- [x] HUD de melhorias no estilo Vampire Survivors.
+- [x] Personagens bloqueados, comprados com moedas dos baús.
+- [x] Cutscene de entrada do chefe.
+- [x] Vibe de terror (referência: Doors).
+
+Detalhes em `docs/outro-lado-playtest.md` (rodada 2).
 
 
 ---

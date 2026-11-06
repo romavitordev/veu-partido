@@ -21,13 +21,22 @@ export const DUNGEONS = {
     // termina; spawn: onde o inimigo da vez espera
     rooms: [
       { id: 'hall', kind: 'start', title: 'Hall de entrada', objective: 'Explore a mansão' },
-      { id: 'sala', kind: 'fight', title: 'Sala de estar', gate: 6.2, enemies: { devorado: 1, copias: 1 }, spawn: { x: 2.5, z: 0 }, enter: -6.5, objective: 'Derrote os Devorados' },
+      { id: 'sala', kind: 'fight', title: 'Sala de estar', gate: 6.2, enemies: { devorado: 1, copias: 2 }, spawn: { x: 2.5, z: 0 }, enter: -6.5, objective: 'Derrote os Devorados' },
       { id: 'corredor', kind: 'stalk', title: 'Corredor', enter: 8.5, peek: { x: 12, z: -1.95 }, objective: 'Não olhe para a fresta' },
-      { id: 'biblioteca', kind: 'fight', title: 'Biblioteca', gate: 30.2, enemies: { devorado: 1, copias: 2 }, spawn: { x: 25, z: 0 }, enter: 17.5, objective: 'Derrote os Devorados' },
+      { id: 'biblioteca', kind: 'fight', title: 'Biblioteca', gate: 30.2, enemies: { devorado: 1, copias: 3 }, spawn: { x: 25, z: 0 }, enter: 17.5, objective: 'Derrote os Devorados' },
       { id: 'quarto', kind: 'boss', title: 'Quarto principal', gate: 62.2, spawn: { x: 54, z: 0 }, enter: 39.5, objective: 'Derrote o Espreitador' },
       { id: 'saida', kind: 'exit', title: 'Saída', door: { x: 62.6, z: 0 }, objective: 'Atravesse a porta' },
     ],
     // os 4 armários do quarto (a fresta por onde ele foge): posição da porta e para onde ela abre
+    // os BAÚS: lugares possíveis (a cada dungeon saem `count` deles, sorteados) — moedas, vida ou experiência
+    chests: {
+      count: 4,
+      coinsBoss: 30, // moedas da recompensa do chefe
+      spots: [
+        { x: -16.4, z: 3.6 }, { x: -4.8, z: 4.8 }, { x: 4.8, z: -4.8 }, { x: 14.5, z: 0.9 },
+        { x: 17.2, z: 5.2 }, { x: 28.6, z: -5.2 }, { x: 36, z: -0.9 }, { x: 40, z: 9 }, { x: 59.5, z: -8.6 },
+      ],
+    },
     closets: [
       { x: 44, z: -10.4, face: 0 }, { x: 56, z: -10.4, face: 0 },
       { x: 38.5, z: -6, face: Math.PI / 2 }, { x: 61.5, z: 6, face: -Math.PI / 2 }, // nas paredes laterais (na parede da frente tapariam a câmera)
@@ -39,9 +48,10 @@ export const DUNGEON_ORDER = ['espreitador'];
 
 // DIFICULDADE (TODO §4.5: o chefe desafia mesmo no Fácil): CPU e multiplicadores do inimigo
 export const PVE_DIFFICULTIES = {
-  easy: { label: 'Fácil', cpu: 'normal', minion: 'easy', hp: 0.9, dealt: 0.8, drop: 1.25 },
-  normal: { label: 'Normal', cpu: 'hard', minion: 'normal', hp: 1, dealt: 1, drop: 1 },
-  hard: { label: 'Difícil', cpu: 'veryhard', minion: 'hard', hp: 1.15, dealt: 1.15, drop: 0.8 },
+  // warnMult: quanto tempo os olhos avisam antes do bote do Espreitador
+  easy: { label: 'Fácil', cpu: 'normal', minion: 'easy', hp: 0.9, dealt: 0.8, drop: 1.25, warnMult: 1.3 },
+  normal: { label: 'Normal', cpu: 'hard', minion: 'normal', hp: 1, dealt: 1, drop: 1, warnMult: 1 },
+  hard: { label: 'Difícil', cpu: 'veryhard', minion: 'hard', hp: 1.15, dealt: 1.15, drop: 0.8, warnMult: 0.75 },
 };
 
 // profundidade (a mesma dungeon de novo, mais funda): +12% de vida e dano por nível

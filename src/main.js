@@ -186,7 +186,8 @@ function toOptions(index = 0) {
 function toSelect() {
   endMatch();
   setOverlay(null, null);
-  setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind, team: !!game.mode.team }));
+  const locked = game.mode.kind === 'pve' && game.pve ? game.pve.lockedChars() : null;
+  setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind, team: !!game.mode.team, locked }));
 }
 
 function toStage() {

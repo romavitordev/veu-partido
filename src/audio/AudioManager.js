@@ -217,6 +217,35 @@ const SYNTHS = {
     a.tone(t, 0.7, { vol: 0.1 * v, freq: 210 * p, freqEnd: 330 * p, type: 'sawtooth', attack: 0.15 });
     a.noise(t, 0.7, { vol: 0.12 * v, type: 'bandpass', freq: 700 * p, freqEnd: 1100 * p, q: 9, attack: 0.2 });
   },
+  // a VIBE DE TERROR da Mansão (referência do dono: Doors, do Roblox): batidas, sussurro, coração, lâmpada, passos, susto
+  knock: (a, t, v, o = {}) => {
+    const p = o.pitch ?? 1;
+    for (let i = 0; i < (o.count ?? 3); i++) {
+      a.tone(t + i * 0.32, 0.12, { vol: 0.45 * v, freq: 95 * p, freqEnd: 60 * p, type: 'sine' });
+      a.noise(t + i * 0.32, 0.08, { vol: 0.3 * v, type: 'lowpass', freq: 900 * p });
+    }
+  },
+  whisper: (a, t, v, o = {}) => {
+    const p = o.pitch ?? 1;
+    for (let i = 0; i < 5; i++) a.noise(t + i * 0.22 + Math.random() * 0.08, 0.2 + Math.random() * 0.15, { vol: 0.07 * v, type: 'bandpass', freq: (2400 + Math.random() * 1800) * p, q: 3, attack: 0.05 });
+  },
+  heartbeat: (a, t, v) => {
+    a.tone(t, 0.14, { vol: 0.5 * v, freq: 62, freqEnd: 40, type: 'sine', attack: 0.01 });
+    a.tone(t + 0.22, 0.16, { vol: 0.38 * v, freq: 55, freqEnd: 36, type: 'sine', attack: 0.01 });
+  },
+  buzz: (a, t, v) => {
+    a.tone(t, 0.6, { vol: 0.07 * v, freq: 120, type: 'sawtooth', attack: 0.02 });
+    a.noise(t, 0.6, { vol: 0.05 * v, type: 'bandpass', freq: 3200, q: 4 });
+  },
+  steps: (a, t, v, o = {}) => {
+    const n = o.count ?? 4;
+    for (let i = 0; i < n; i++) a.noise(t + i * 0.42, 0.1, { vol: 0.16 * v * (1 - i / (n + 2)), type: 'lowpass', freq: 500, freqEnd: 200 });
+  },
+  scare: (a, t, v) => {
+    a.tone(t, 0.9, { vol: 0.22 * v, freq: 180, freqEnd: 1900, type: 'sawtooth', attack: 0.02 });
+    a.tone(t, 0.9, { vol: 0.16 * v, freq: 190, freqEnd: 2050, type: 'square', attack: 0.02 });
+    a.noise(t, 0.7, { vol: 0.25 * v, type: 'highpass', freq: 2500 });
+  },
   pickup: (a, t, v) => {
     a.tone(t, 0.12, { vol: 0.18 * v, freq: 660, freqEnd: 990, type: 'triangle' });
     a.tone(t + 0.08, 0.2, { vol: 0.14 * v, freq: 990, freqEnd: 1320, type: 'sine' });

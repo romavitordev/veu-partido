@@ -14,14 +14,20 @@ import { distXZ } from '../core/util.js';
 import { DUNGEONS, PVE_DIFFICULTIES, depthScale, rollHeal } from './dungeons.js';
 import { computeMods, gainXp, rollChoices } from './upgrades.js';
 import { devoradoDef, restyleDevorado, copiaOpts } from './devorado.js';
-import { Pickup } from './pickups.js';
+import { Pickup, Chest } from './pickups.js';
+import { rollChest } from './unlocks.js';
 import { PveHud } from './pveHud.js';
 import { Closet, EspreitadorBrain, PeekingCrack } from './espreitador.js';
+import { EspreitadorIntro } from './espreitadorIntro.js';
+import { MansionAmbience } from './ambience.js';
 import espreitadorDef from '../characters/bosses/espreitador.js';
 
 const BOSSES = { espreitador: espreitadorDef };
-const DEVORADO_HP = 560; // playtest 2026-11-05: com 700 o 1º Devorado tirava 2/3 da vida de uma CPU no Muito Difícil
+// feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
+const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
+const COPIA_HP = 160;
+const COPIA_DMG = 0.45;
 const v1 = new THREE.Vector3();
 
 export class Dungeon {
@@ -42,7 +48,7 @@ export class Dungeon {
     const depth = depthScale(run.depth);
     this.scale = { hp: this.diff.hp * depth, dealt: this.diff.dealt * depth };
     this.playerDef = playerDef;
-    this.stats = { kills: 0, copias: 0, time: 0, damage: 0 };
+    this.stats = { kills: 0, copias: 0, time: 0, damage: 0, coins: 0, chests: 0 };
     this.world = new World({ renderer, audio, input, ui: hud });
     const devDef = devoradoDef(playerDef, { hp: Math.round(DEVORADO_HP * this.scale.hp) });
     this.devDef = devDef;
@@ -77,9 +83,19 @@ export class Dungeon {
     this.exitRoom = this.D.rooms.find((r) => r.kind === 'exit');
     this.exitDoor = this.makeExitDoor(this.exitRoom.door);
     this.lurk(this.nextFightRoom(0));
+    this.spawnChests();
+    this.ambience = new MansionAmbience(this);
     this.player.pos.set(w.arena.spawns[0].x, 0, w.arena.spawns[0].z);
     this.player.yaw = Math.PI / 2;
-    w.cameraRig.snap(this.cameraTargets());
+    // câmera fixa em 3ª pessoa (CameraRig.updateChase), começando nas costas de quem entra (olhando para +x)
+    w.cameraRig.chase = () => this.chaseTarget();
+    w.cameraRig.yaw = -Math.PI / 2;
+    w.cameraRig.distance = 4.4;
+    w.cameraRig.height = 2.3;
+    w.cameraRig.update(0, [this.player], true);
+    // a luz fraca que anda com o jogador: na 3ª pessoa a câmera olha para os cantos que as luzes da casa não pegam
+    this.lamp = new THREE.PointLight(0xffd8a8, 7, 8, 1.6);
+    w.scene.add(this.lamp);
     this.drip = 2;
   }
 
@@ -118,6 +134,7 @@ export class Dungeon {
     this.pveHud.setPlace(this.D.place, this.D.rooms[0].title);
     this.pveHud.setObjective(this.D.rooms[0].objective);
     this.pveHud.setRun(this.run, this.run.depth);
+    this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : 0);
     this.pveHud.fade(true, 0);
     requestAnimationFrame(() => this.pveHud && this.pveHud.fade(false, 1.2));
     this.phase = 'intro';
@@ -209,9 +226,10 @@ export class Dungeon {
     // as cópias menores (Cópia Observada) junto do Devorado
     const n = r.enemies.copias || 0;
     for (let i = 0; i < n; i++) {
-      const o = copiaOpts(this.playerDef, { hp: Math.round(90 * this.scale.hp), damageMult: 0.42, onSlain: (c) => this.onCopiaSlain(c) });
+      const o = copiaOpts(this.playerDef, { hp: Math.round(COPIA_HP * this.scale.hp), damageMult: COPIA_DMG, onSlain: (c) => this.onCopiaSlain(c) });
       const c = new DanteClone(e, this.world, i, Infinity, o);
-      c.pos.set(r.spawn.x + 1.6 * (i % 2 ? 1 : -1), 0, r.spawn.z + (i % 2 ? 2 : -2));
+      const ang = Math.PI / 2 + ((i + 0.5) / n) * Math.PI * 2; // em volta do Devorado
+      c.pos.set(r.spawn.x + Math.sin(ang) * 2.2, 0, r.spawn.z + Math.cos(ang) * 2.2);
       resolveBody(this.world.arena, c.pos, c.radius);
       this.world.addNpc(c);
       this.copias.push(c);
@@ -237,27 +255,63 @@ export class Dungeon {
     e.lurking = false;
     e.maxHealth = Math.round(def.stats.maxHealth * this.scale.hp);
     e.reset();
-    // ele sai do armário mais perto da porta, olhando para quem entrou
+    // ele sai do armário mais perto da porta: primeiro a CENA (pve/espreitadorIntro.js), depois a luta
     const c0 = this.closets.slice().sort((a, b) => distXZ(a.pos, this.player.pos) - distXZ(b.pos, this.player.pos))[0];
-    e.pos.set(c0.pos.x, 0, c0.pos.z);
+    this.hud.root.classList.add('pve-noboss');
+    this.pveHud.hint(null);
+    this.bossIntro = new EspreitadorIntro(this, c0);
+  }
+
+  // fim da cena de entrada: a luta começa
+  beginBossFight() {
+    const w = this.world;
+    const e = this.enemy;
+    this.bossIntro = null;
     resolveBody(w.arena, e.pos, e.radius);
-    e.yaw = Math.atan2(this.player.pos.x - e.pos.x, this.player.pos.z - e.pos.z);
+    e.setState('idle');
+    this.player.setState('idle');
     this.attachEnemyCpu(this.diff.cpu);
     e.cpuEdge = { dealt: this.scale.dealt, taken: 1 };
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
     this.brain = new EspreitadorBrain(this, { closets: this.closets, playerDef: this.playerDef });
     this.hud.root.classList.remove('pve-noboss', 'pve-minor');
     this.hud.bind(w.fighters);
-    w.showBanner(def.name, def.color);
-    this.audio.play('closetSlam', { volume: 1, pitch: 0.7 });
-    this.audio.play('fearGaze', { volume: 1 });
-    w.cameraRig.shake(0.25, 0.4);
-    this.pveHud.hint('Os ARMÁRIOS são as frestas dele: bata neles para TRANCAR');
-    this.hintT = 6;
+    this.pveHud.hint('Os ARMÁRIOS são as frestas dele: bata neles para TRANCAR · OLHOS AMARELOS acesos = ele vai sair por ali');
+    this.hintT = 7;
   }
 
   onClosetLocked(c, openLeft) {
     this.popup(0, openLeft ? `FRESTA TRANCADA (${openLeft} aberta${openLeft > 1 ? 's' : ''})` : 'TODAS AS FRESTAS TRANCADAS!', '#f2c230');
+  }
+
+  // ------------------------------------------------ baús
+  spawnChests() {
+    const C = this.D.chests;
+    if (!C) return;
+    const spots = C.spots.slice();
+    for (let i = 0; i < C.count && spots.length; i++) {
+      const s = spots.splice(Math.floor(Math.random() * spots.length), 1)[0];
+      const pos = new THREE.Vector3(s.x, 0, s.z);
+      resolveBody(this.world.arena, pos, 0.6);
+      this.pickups.push(new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, onOpen: (p, c) => this.openChest(c) }));
+    }
+  }
+
+  openChest(c) {
+    this.stats.chests++;
+    const r = rollChest(Math.random, this.run.depth);
+    if (r.kind === 'coins') this.giveCoins(r.amount);
+    else if (r.kind === 'heal') this.pickups.push(new Pickup(this.world, { kind: 'heal', pos: { x: c.pos.x + 0.9, z: c.pos.z }, amount: r.amount }));
+    else this.giveXp(r.amount);
+  }
+
+  // as moedas entram no save NA HORA (a morte não leva): o flow.js grava (onCoins)
+  giveCoins(n) {
+    this.stats.coins += n;
+    this.audio.play('pickup', { volume: 1, pitch: 1.4 });
+    this.popup(0, `+${n} MOEDAS`, '#ffc040');
+    this.onCoins && this.onCoins(n);
+    this.pveHud && this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : this.stats.coins);
   }
 
   // ------------------------------------------------ mortes, drops, experiência
@@ -304,12 +358,13 @@ export class Dungeon {
   }
 
   tryHeal(pos, mult) {
-    const amount = rollHeal(this.D.id, Math.random, mult * this.diff.drop);
+    const amount = rollHeal(this.D.id, Math.random, mult * this.diff.drop * (this.mods.dropMult || 1));
     if (!amount) return;
     this.pickups.push(new Pickup(this.world, { kind: 'heal', pos: { x: pos.x, z: pos.z }, amount }));
   }
 
   giveXp(n) {
+    n = Math.round(n * (this.mods.xpMult || 1));
     const ups = gainXp(this.run, n);
     this.popup(0, `+${n} XP`, '#ffd84a');
     this.pendingUps = (this.pendingUps || 0) + ups;
@@ -331,7 +386,7 @@ export class Dungeon {
     if (!choices.length) return;
     this.audio.play('levelUp', { volume: 1 });
     this.choosing = true;
-    this.pveHud.openChoice(choices, (id) => {
+    this.pveHud.openChoice(choices, this.run, (id) => {
       this.run.picks.push(id);
       this.applyPlayerMods(false);
       this.pveHud.setRun(this.run, this.run.depth);
@@ -357,6 +412,22 @@ export class Dungeon {
     // no quarto, com ele escondido numa fresta: enquadra o jogador e o meio do quarto (não entrega onde ele está)
     if (this.encounter && this.encounter.boss && !this.encounter.done) return [p, this.focusAt((p.pos.x + 50) / 2, p.pos.z * 0.5)];
     return [p, this.focusAt(p.pos.x + 4.5, p.pos.z * 0.6)]; // um ponto à frente: a câmera abre e mostra para onde ir
+  }
+
+  // 3ª pessoa: com inimigo por perto, a câmera fica atrás do jogador olhando para ele
+  chaseTarget() {
+    const p = this.player;
+    const e = this.enemy;
+    const out = { player: p, focus: null };
+    if (e.visible && !e.lurking && e.state !== 'intro' && distXZ(p.pos, e.pos) < 16) { out.focus = e.pos; return out; }
+    let near = null; let nd = 9;
+    for (const n of this.world.npcs) {
+      if (!n.alive || n.isCloset || n.owner === p) continue;
+      const d = distXZ(n.pos, p.pos);
+      if (d < nd) { nd = d; near = n; }
+    }
+    if (near) out.focus = near.pos;
+    return out;
   }
 
   focusAt(x, z) {
@@ -408,6 +479,15 @@ export class Dungeon {
   update(dt) {
     this.lastDt = dt;
     if (this.phase === 'loading' || this.phase === 'over' || this.disposed) return;
+    // a cena de entrada do Espreitador: o mundo anda (animações, câmera), mas ninguém luta
+    if (this.bossIntro) {
+      this.phaseTime += dt;
+      this.world.update(dt);
+      for (const c of this.closets) if (c !== this.bossIntro.c) c.tick(dt);
+      if (this.bossIntro.update(dt, this.input)) this.beginBossFight();
+      this.hud.update(this);
+      return;
+    }
     // escolhendo melhoria: o mundo para
     if (this.choosing) {
       this.pveHud.updateChoice(this.input, this.audio);
@@ -425,6 +505,8 @@ export class Dungeon {
     w.update(dt);
     this.applyGates(dt);
     this.updateExitDoor(dt);
+    this.lamp.position.set(p.pos.x, p.pos.y + 2.4, p.pos.z);
+    this.ambience.update(dt);
     for (const c of this.closets) if (!this.brain) c.tick(dt);
     for (const k of this.pickups) k.update(dt, [p]);
     this.pickups = this.pickups.filter((k) => k.alive);
@@ -482,6 +564,7 @@ export class Dungeon {
       const draining = this.crack.update(dt, p, inside && this.phase === 'explore');
       this.hud.vignette.classList.toggle('on', draining);
     }
+    this.pveHud.setTime(this.stats.time);
     this.hud.update(this);
   }
 
@@ -518,6 +601,7 @@ export class Dungeon {
 
   takeReward() {
     this.giveXp(this.D.xp.boss);
+    if (this.D.chests && this.D.chests.coinsBoss) this.giveCoins(Math.round(this.D.chests.coinsBoss * (1 + 0.25 * (this.run.depth - 1))));
     this.rewardTaken = true;
     this.onReward && this.onReward(this); // o main.js grava o nível e o ponto permanente (uma vez por dungeon)
     this.hud.callout('+1 NÍVEL DO PERSONAGEM', '#ffd84a');
@@ -574,6 +658,8 @@ export class Dungeon {
 
   dispose() {
     this.disposed = true;
+    this.bossIntro && this.bossIntro.dispose();
+    this.ambience && this.ambience.dispose();
     this.brain && this.brain.dispose();
     for (const k of this.pickups) k.dispose();
     for (const c of this.closets) c.dispose();
