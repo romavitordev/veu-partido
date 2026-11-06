@@ -317,6 +317,17 @@ export const MANSAO = {
     { type: 'point', color: 0x6a80c0, intensity: 10, distance: 9, pos: [58.8, 2, -9.5] },
     { type: 'point', color: 0xffb060, intensity: 6, distance: 6, pos: [42, 1.0, 8.6] },
     { type: 'point', color: 0x8090c0, intensity: 8, distance: 8, pos: [75, 1.5, 0] }, // fim do corredor de saída
+    // as salas soltas (rodada 3): sala de jantar, quarto infantil e quarto dos olhos de gatos
+    { type: 'point', color: 0xffb060, intensity: 18, distance: 10, pos: [4.8, 2.4, 40], flicker: true }, // jantar
+    { type: 'point', color: 0xffb060, intensity: 18, distance: 10, pos: [9.2, 2.4, 40], flicker: true },
+    { type: 'point', color: 0xffa050, intensity: 7, distance: 6, pos: [7, 1.3, 34.6] },
+    { type: 'point', color: 0x6a80c0, intensity: 9, distance: 8, pos: [26, 2, 34.8] }, // infantil: a lua na janela
+    { type: 'point', color: 0xffb060, intensity: 9, distance: 7, pos: [24, 0.6, 38], flicker: true }, // a vela no chão
+    { type: 'point', color: 0xffa050, intensity: 8, distance: 7, pos: [31.4, 2.0, 40] },
+    { type: 'point', color: 0xf2c230, intensity: 6, distance: 5, pos: [30.8, 1.8, 40.6] }, // o móbile
+    { type: 'point', color: 0xffb060, intensity: 8, distance: 6, pos: [39.2, 1.2, 41.6], flicker: true }, // olhos: a vela
+    { type: 'point', color: 0x6a80c0, intensity: 8, distance: 7, pos: [47.4, 2, 38] }, // a lua
+    { type: 'point', color: 0xc8a020, intensity: 7, distance: 5, pos: [45.2, 1.2, 35.6], flicker: true }, // a porta emperrada
   ],
   particles: { color: 0xc8b8a0, count: 140, area: 30, height: 3, rise: 0.04, drift: 0.2, size: 0.03, opacity: 0.45, center: [20, 0, 0] }, // poeira
   camera: { rect: { minX: -26, maxX: 82, minZ: -22, maxZ: 22 }, maxY: 11 },

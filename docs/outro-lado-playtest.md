@@ -165,3 +165,53 @@ Teste novo de rotas em `tests/pve.test.js`.
   - parada de impacto (hit-stop) escalonada por importância do golpe;
   - placa de dano maior no golpe final;
   - tremor da câmera no bote do Espreitador.
+
+### Rodada 4 (pedidos do dono, 2026-11-06) — feita, aguarda lançamento
+Câmera e mira:
+- **Trava no inimigo.** Na luta, a câmera trava sozinha num inimigo, e o corpo mira nele.
+  - Um movimento rápido do mouse ou do analógico troca de alvo.
+  - F, o botão do meio do mouse ou R3 liga e desliga a trava.
+  - Um losango vermelho no chão marca o alvo.
+- **Câmera atravessando paredes:** a causa era o corte de perto da câmera (near) em 0,7 m, que cortava a parede do lado.
+  - Na 3ª pessoa, o corte agora é de 0,12 m e a folga da parede é de 0,35 m.
+  - Testado em 7 salas, 280 posições cada: a câmera ficou sempre a pelo menos 0,48 m das paredes.
+
+Inimigos e salas:
+- **Cópias misturadas.** Os monstros de cada sala saem embaralhados do time (`pickClones`), e o chefe tira as cópias de um saco embaralhado (`nextClone`).
+- **Salas sem nome:** nem as portas nem o HUD mostram o nome da sala ou quantos monstros ela tem.
+- **Salas reformadas:**
+  - Sala de jantar: papel vinho, cristaleira, lareira apagada, vinho derramado, espelho rachado.
+  - Quarto infantil: papel verde com patinhos, piso de tábua, berço, estante de bonecas, mesinha de chá, móbile, desenhos (um deles cheio de olhos).
+  - Quarto dos Olhos de Gatos: papel roxo com olhos de gato e arranhões, gatos pretos de olhos acesos, cadeira de balanço virada para a porta emperrada.
+  - As três ganharam luzes próprias.
+
+Controles e setas:
+- **Teclas simples no teclado + mouse:**
+  - 1 a 5: as habilidades;
+  - Z: especial; G: agarrão; C: também carrega;
+  - Q e R: assistências.
+
+  A HUD mostra essas teclas.
+- **Setas** 3D flutuando na altura do peito, sempre visíveis.
+- **Baús** mais frequentes.
+
+Ritmo (skill `level-design`):
+- depois de uma sala de 4 monstros, sempre há uma porta mais leve;
+- a sala antes do chefe sempre tem baú;
+- as portas abertas brilham.
+
+Luz que atordoa:
+- Farol da Van, Foto com Flash, Lanterna UV e Clarão dos LEDs (`photoFlash`) cegam e ATORDOAM em área, no modo de luta e no Outro Lado.
+- O adversário fica atordoado por até 1,2 s (60% do tempo de cegueira).
+- Os inimigos menores no cone ficam parados por 1,4× esse tempo (`stunNpc`; o `World` pula o update deles).
+
+Botão de interagir, gavetas e cadeados:
+- **Interagir: E no teclado, B no controle.** Portas, baús e gavetas só abrem pelo botão. Um aviso flutua em cima ("E · Abrir", "Entrar", "Destrancar", "Trancada").
+  - Só fora da luta. Na luta o E continua sendo a defesa e o B o golpe físico; perto de algo, o aperto é consumido e não vira defesa.
+- **Gavetas** nos móveis (console do hall, armário baixo da sala, mesinha do corredor, armário da biblioteca, aparador e cristaleira do jantar, baú de brinquedos e armário do infantil, cômoda dos Olhos, criados-mudos e cômoda do quarto). Têm a chave, moedas (35%) ou nada.
+- **Portas com cadeado** (40% das salas com 2+ saídas e com gaveta; nunca a única saída, a escada ou a do chefe). A chave está numa gaveta da mesma sala, sem aviso de qual. Uma chave por porta; a que sobra fica no bolso (HUD: 🗝 ao lado das moedas).
+- **Atrás do cadeado:** sala de baús (todos os pontos de baú, sorte +60%) ou sala de monstros que, limpa, solta um baú de sorte sem aviso. Atrás de corredor de espreita é sempre sala de baús.
+- Ajustes em `DUNGEONS.espreitador.locks` (`chance`, `vault`, `luck`, `drawerCoins`, `coins`).
+- **A escada do hall se sobe andando.** No patamar fica a porta da sala de cima ("E · Entrar"); dá para não entrar e descer de volta.
+  - Só se sobe pelo pé da escada; pelos lados os degraus barram. O chão com altura é `World.groundAt` (o `Fighter` pousa nele) e a câmera sobe junto.
+  - Sem saída sorteada para cima, a porta do patamar fica trancada.

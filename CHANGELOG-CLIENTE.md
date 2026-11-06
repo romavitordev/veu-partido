@@ -2,6 +2,21 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.28.0 — Outro Lado: rodada 4 — mira travada, teclas simples, gavetas, cadeados e a escada
+- OUTRO LADO: na luta a câmera TRAVA num inimigo, e seu personagem mira nele. Um movimento rápido do mouse ou do analógico troca de alvo; F, o botão do meio do mouse ou R3 liga e desliga.
+- A câmera não atravessa mais as paredes.
+- Teclado e mouse simplificados: clique esquerdo golpe, clique direito tiro, 1 a 5 as habilidades, Z o especial, G o agarrão, Q e R as assistências.
+- Os monstros de cada sala saem misturados: cópias do jogador e das assistências, sem repetir o mesmo três vezes.
+- As salas não mostram mais o nome nem quantos monstros há atrás da porta.
+- Setas flutuantes em 3D: azul para o baú, amarelas para as portas. As portas destrancadas brilham.
+- Botão de INTERAGIR: E no teclado, B no controle. Portas, baús e gavetas só abrem por ele.
+- Gavetas nos móveis da mansão: podem ter moedas, a chave de uma porta ou nada.
+- Portas com CADEADO: a chave está numa gaveta da mesma sala, sem aviso de qual. Uma chave por porta, e a que sobra fica guardada para a próxima. Atrás do cadeado: uma sala de baús ou uma sala de monstros com uma surpresa no fim.
+- A escada do hall agora se sobe andando. Lá em cima, a porta do 2º andar: entre ou desça de volta.
+- Mais baús, um sempre antes do chefe, e depois de uma sala de 4 monstros sempre há uma porta mais leve.
+- Salas reformadas: papel de parede, móveis e luzes novos no jantar, no quarto infantil e no Quarto dos Olhos.
+- Luz na cara atordoa em área: Farol da Van, Foto com Flash, Lanterna UV e Clarão dos LEDs cegam e ATORDOAM todos os inimigos no cone, no modo de luta e no Outro Lado.
+
 ## v4.27.0 — Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência
 - Agora você escolhe o caminho: ao limpar a sala, as portas da esquerda, da frente e da direita se abrem, e cada uma mostra a sala e quantos monstros tem (2, 3 ou 4).
 - O número de salas até o Espreitador muda a cada tentativa. Ele é sempre a última.

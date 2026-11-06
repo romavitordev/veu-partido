@@ -2669,13 +2669,19 @@ Object.assign(ABILITY_TYPES, {
   // KAISER — FOTO COM FLASH (pedido de 2026-10-27): ergue a câmera fotográfica, recua um passo e dispara o flash. Quem
   // está à frente dele e OLHANDO para ele fica CEGO (como a granada de luz da Erin: a guarda cai e fica desprevenido).
   // De costas, ou esquivando na hora, escapa. Não dá dano.
+  // LUZ NA CARA (Farol da Van, flashes, Lanterna UV, Clarão dos LEDs). Pedido do dono (2026-11-06): a luz CEGA e
+  // ATORDOA EM ÁREA — todo inimigo no cone (o adversário e os bichos/cópias dele), no modo de luta e no Outro Lado.
   photoFlash: {
     start(f, a, world) {
-      const opp = f.opponent;
-      if (!opp) return null;
+      const opp0 = f.opponent;
+      const oppOk = (o) => o && !o.lurking && o.state !== 'ko' && (o.visible ?? true);
+      const hostileNpcs = () => world.npcs.filter((n) => n.alive && n.pos && !n.isCloset && n.owner !== f && !(f.assists || []).some((s) => s === n.owner));
+      if (!oppOk(opp0) && !hostileNpcs().length) { f.notify('NINGUÉM PARA OFUSCAR'); return null; }
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
-      f.yaw = yawTo(f.pos, opp.pos);
+      // mira: a câmera do Outro Lado (aimYaw), senão o adversário, senão o bicho mais perto
+      const near = hostileNpcs().sort((x, y) => distXZ(x.pos, f.pos) - distXZ(y.pos, f.pos))[0];
+      f.yaw = f.aimYaw != null ? f.aimYaw : oppOk(opp0) ? yawTo(f.pos, opp0.pos) : yawTo(f.pos, near.pos);
       const cam = f.rig.props.photoCamera;
       const swap = (on) => {
         if (cam) cam.visible = on;
@@ -2698,12 +2704,28 @@ Object.assign(ABILITY_TYPES, {
         world.fx.burst(at, { count: 22, color: 0xfff8e0, speed: 6, life: 0.25, size: 0.1 });
         world.audio.play('blink', { volume: 0.9, pitch: 1.8 });
         if (world.screenFlash) world.screenFlash('#ffffff', 0.05);
-        const inFront = distXZ(f.pos, opp.pos) <= a.range && Math.abs(angleDiff(f.yaw, yawTo(f.pos, opp.pos))) <= (a.arc * DEG) / 2;
-        const looking = Math.abs(angleDiff(opp.yaw, yawTo(opp.pos, f.pos))) <= ((a.lookArc ?? 110) * DEG) / 2;
-        if (!inFront || opp.state === 'ko') { f.notify('FORA DA FOTO'); return; }
-        if (opp.isInvulnerable() || !looking) { opp.notify(looking ? 'DESVIOU DO FLASH' : 'DE COSTAS PARA O FLASH', true); return; }
-        blindFighter(world, opp, a.blind);
-        world.fx.flash(opp.headPos ? opp.headPos() : opp.chestPos(), { color: 0xffffff, size: 2.4, life: 0.25 });
+        const inCone = (pos) => distXZ(f.pos, pos) <= a.range && Math.abs(angleDiff(f.yaw, yawTo(f.pos, pos))) <= (a.arc * DEG) / 2;
+        const stunT = a.flashStun ?? Math.min(1.2, (a.blind || 1.2) * 0.6); // o atordoamento da luz
+        let hits = 0;
+        const opp = f.opponent;
+        if (oppOk(opp) && inCone(opp.pos)) {
+          const looking = Math.abs(angleDiff(opp.yaw, yawTo(opp.pos, f.pos))) <= ((a.lookArc ?? 110) * DEG) / 2;
+          if (opp.isInvulnerable() || !looking) opp.notify(looking ? 'DESVIOU DO FLASH' : 'DE COSTAS PARA O FLASH', true);
+          else {
+            blindFighter(world, opp, a.blind);
+            opp.stun(stunT, 'stagger');
+            opp.notify('OFUSCADO!', true);
+            world.fx.flash(opp.headPos ? opp.headPos() : opp.chestPos(), { color: 0xffffff, size: 2.4, life: 0.25 });
+            hits++;
+          }
+        }
+        // os bichos e cópias do outro lado no cone também ficam parados, ofuscados
+        for (const n of hostileNpcs()) {
+          if (!inCone(n.pos)) continue;
+          stunNpc(world, n, stunT * 1.4);
+          hits++;
+        }
+        if (!hits) f.notify('FORA DA LUZ');
       });
       tl.add(a.windup + 0.35, () => swap(false));
       tl.end(a.windup + 0.35);
@@ -4282,6 +4304,15 @@ export function createMistZone(world, owner, o) {
 // ------------------------------------------------------------------ JAE (X)
 // CEGO (Punhal X, Zona das Sombras): por um instante o alvo não consegue se defender nem se virar (fica desprevenido —
 // o bônus de assassina da Jae vale). Precognição evita o "desprevenido", não a cegueira.
+// um bicho/cópia ofuscado: fica parado (o World pula o update dele) e solta faíscas de atordoamento
+export function stunNpc(world, n, time) {
+  if (!n || !n.alive) return;
+  n.stunT = Math.max(n.stunT || 0, time);
+  const at = new THREE.Vector3(n.pos.x, (n.pos.y || 0) + 1.6, n.pos.z);
+  world.fx.flash(at, { color: 0xffffff, size: 1.8, life: 0.22 });
+  world.fx.burst(at, { count: 10, color: 0xfff2b0, speed: 2, life: 0.5, size: 0.08 });
+}
+
 export function blindFighter(world, victim, time) {
   if (!victim || victim.state === 'ko' || time <= 0) return;
   const cur = victim.findBuff('blind');

@@ -242,9 +242,13 @@ export class HUD {
           }
         }
       }
+      const simple = !!f.simpleKeys && source === 'keyboard'; // Outro Lado com teclado + mouse: uma tecla por habilidade
+      const srcKey = simple ? 'simple' : source;
+      let qi = 0;
       e.abil.forEach((a, k) => {
         const el = e.abEls[k];
-        if (e.lastSource !== source) el.querySelector('.k').textContent = a.none ? '' : this.keyText(i, a.action, source);
+        const quick = simple ? (a.key === 'ranged' ? 'Clique dir.' : a.key === 'special' ? 'Z' : a.key === 'dodge' ? 'Shift' : String(++qi)) : null;
+        if (e.lastSource !== srcKey) el.querySelector('.k').textContent = a.none ? '' : quick || this.keyText(i, a.action, source);
         if (a.none) return;
         if (a.key === 'special' && f.specialUsedUp()) {
           el.classList.add('none');
@@ -260,7 +264,7 @@ export class HUD {
         el.classList.toggle('nocost', noCost && cd <= 0);
         el.classList.toggle('ready', cd <= 0 && !noCost);
       });
-      e.lastSource = source;
+      e.lastSource = srcKey;
 
       e.buff.textContent = f.buffs.filter((x) => x.name).map((b) => {
         const extra = b.shots !== undefined ? `${b.shots} tiro(s) amaldiçoado(s)`

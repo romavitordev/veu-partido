@@ -651,7 +651,7 @@ export class EspreitadorBrain {
     const p = this.player;
     const C = ESPREITADOR_CFG.copia;
     const ang = p.yaw + Math.PI + (i - 0.5) * 1.6;
-    const o = copiaOpts(this.cloneDefs[(i + this.copias.length) % this.cloneDefs.length], { hp: Math.round(C.hp * this.d.scale.hp), damageMult: 0.42 * this.d.scale.dealt, onSlain: (n) => this.d.onCopiaSlain(n) });
+    const o = copiaOpts(this.d.nextClone ? this.d.nextClone() : this.cloneDefs[(i + this.copias.length) % this.cloneDefs.length], { hp: Math.round(C.hp * this.d.scale.hp), damageMult: 0.42 * this.d.scale.dealt, onSlain: (n) => this.d.onCopiaSlain(n) });
     const npc = new DanteClone(this.boss, this.w, i + this.copias.length, Infinity, o);
     npc.pos.set(p.pos.x + Math.sin(ang) * 3, 0, p.pos.z + Math.cos(ang) * 3);
     resolveBody(this.w.arena, npc.pos, npc.radius);

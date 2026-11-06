@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.28.0 — Outro Lado: rodada 4 — mira travada, teclas simples, gavetas, cadeados e a escada
+
+- Versão: `VERSION` 4.27.0 → **4.28.0** (`package.json` e `package-lock.json`). Data: 2026-11-06.
+- Origem: pedidos do dono sobre a v4.27.0 (trava de câmera, clones misturados, salas sem nome, teclas simples, setas flutuantes, câmera atravessando parede, luz que atordoa, interagir, gavetas, cadeados, escada).
+- Código comum, sem efeito fora do modo: `World.groundAt`/`Fighter.groundY`, a altura da câmera por `groundY`, `stunNpc`, `photoFlash` em área (vale também no modo de luta), ações novas no `InputManager`.
+- Mapa: `arena_mansao.py` e `mansao.glb` reconstruídos; texturas novas em `arenaTextures.js`; luzes em `configs.js`.
+- Testes: `npm test` 68/68, `npm run check` ok, `vite build` ok; conferido no navegador numa aba separada.
+
 ## v4.27.0 — Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência
 
 - Versão: `VERSION` 4.26.0 → **4.27.0** (`package.json` e `package-lock.json`). Data: 2026-11-05.

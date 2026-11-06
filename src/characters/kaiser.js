@@ -86,7 +86,7 @@ export default {
       name: 'Foto com Flash',
       input: 'ranged+back', // ← + □
       type: 'photoFlash',
-      description: 'Ergue a câmera fotográfica, recua um passo e dispara o flash: quem estiver à frente e olhando para ele fica CEGO por 2 s (a guarda cai). De costas ou esquivando na hora, escapa.',
+      description: 'Ergue a câmera fotográfica, recua um passo e dispara o flash: quem estiver à frente e olhando para ele fica CEGO por 2 s (a guarda cai) e ATORDOADO por 1,2 s, e todo inimigo menor no clarão fica parado. De costas ou esquivando na hora, escapa.',
       energyCost: 15,
       cooldown: 12,
       windup: 0.32,

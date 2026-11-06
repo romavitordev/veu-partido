@@ -150,7 +150,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Foto com Flash** — ranged+back · custo 15 · cooldown 12 s · alcance 9 m
-  Ergue a câmera fotográfica, recua um passo e dispara o flash: quem estiver à frente e olhando para ele fica CEGO por 2 s (a guarda cai). De costas ou esquivando na hora, escapa.
+  Ergue a câmera fotográfica, recua um passo e dispara o flash: quem estiver à frente e olhando para ele fica CEGO por 2 s (a guarda cai) e ATORDOADO por 1,2 s, e todo inimigo menor no clarão fica parado. De costas ou esquivando na hora, escapa.
 - **Sentir Através "Dendrobium"** — R2 + △ / RT + Y · custo 25 · cooldown 14 s · dano 45 · alcance 16 m
   Marca o alvo com o Símbolo da Emissão: raízes roxas e a flor de muitos olhos brotam sob ele — Kaiser o enxerga de perto e as raízes o prendem por um instante.
 - **Balas Amaldiçoadas** — R2 + × / RT + A · custo 25 · cooldown 11 s
@@ -496,7 +496,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Vício em Adrenalina** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Joga a moeda. CARA: por 6 s bate 25% mais forte e anda mais rápido. COROA: bate 35% mais forte, mas recebe 20% a mais de dano.
 - **Clarão dos LEDs** — R2 + △ / RT + Y · custo 18 · cooldown 13 s · alcance 9 m
-  Acende os LEDs da balestra na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,5 s.
+  Acende os LEDs da balestra na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,5 s e ATORDOADO por 0,9 s, e todo inimigo menor no clarão fica parado.
 - **Passiva — Merintofobia:** o medo de ser amarrada: cordas, raízes e veias a prendem 40% mais tempo
 
 ### Especial: Menina do Pássaro
@@ -925,7 +925,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Lanterna UV** — △ + □ / Y + X · custo 10 · cooldown 7 s · alcance 8 m
-  Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai). De costas ou esquivando na hora, escapa.
+  Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai) e ATORDOADO por 0,8 s, e todo inimigo menor no facho fica parado. De costas ou esquivando na hora, escapa.
 - **Paramédico** — △ + ○ / Y + B · custo 25 · cooldown 20 s
   Abre a bolsa e se remenda no meio da luta: recupera vida por 2 s. Apanhar no meio não cancela.
 - **Olho de Investigadora** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 14 m
@@ -974,7 +974,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Pulso do Scanner** — R2 + × / RT + A · custo 10 · cooldown 6 s
   Aumenta o ganho do Scanner de Energia até a antena estourar: uma onda de Energia corre pelo chão e empurra quem pegar.
 - **Farol da Van** — △ + ○ / Y + B · custo 18 · cooldown 12 s · alcance 10 m
-  Liga o farol da van na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,8 s.
+  Liga o farol da van na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,8 s e ATORDOADO por 1 s, e todo inimigo menor no facho fica parado.
 - **Scanner de Energia** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 14 m
   Passa o scanner no adversário e acha o ponto fraco: por 7 s ele recebe 35% a mais de dano de tudo do Chico.
 - **Remendão** — R2 + △ / RT + Y · custo 22 · cooldown 20 s

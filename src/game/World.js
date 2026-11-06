@@ -355,7 +355,15 @@ export class World {
       for (let i = this.zones.length - 1; i >= 0; i--) if (!this.zones[i].alive) this.zones.splice(i, 1);
       for (const f of this.fighters) f.update(dt);
       for (const f of this.fighters) if (f.assists) for (const a of f.assists) a.update(dt); for (const f of this.fighters) if (f.teamGuests) for (const a of f.teamGuests) a.update(dt); // convidados do Especial em Equipe (teamSpecials.js)
-      for (const n of this.npcs) n.update(dt);
+      for (const n of this.npcs) {
+        // OFUSCADO (luz na cara: abilities.js stunNpc): parado, sem agir, até passar
+        if (n.stunT > 0) {
+          n.stunT -= dt;
+          if (n.alive && Math.random() < dt * 6) this.fx.burst(new THREE.Vector3(n.pos.x + (Math.random() - 0.5) * 0.5, (n.pos.y || 0) + 1.9, n.pos.z + (Math.random() - 0.5) * 0.5), { count: 1, color: 0xfff2b0, speed: 0.6, life: 0.4, size: 0.07 });
+          continue;
+        }
+        n.update(dt);
+      }
       for (let i = this.npcs.length - 1; i >= 0; i--) if (!this.npcs[i].alive) this.npcs.splice(i, 1);
       this.separate();
       this.projectiles.update(dt);

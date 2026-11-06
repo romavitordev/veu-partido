@@ -44,9 +44,11 @@ export function lockedMap(data, roster) {
 
 // o que sai de um baú (rng: () => [0,1)): moedas, vida ou experiência
 export const CHEST_ODDS = { coins: 0.5, heal: 0.28, xp: 0.22 };
-export function rollChest(rng = Math.random, depth = 1) {
+// luck: o baú com mais sorte (a sala atrás do cadeado) — rende mais
+export function rollChest(rng = Math.random, depth = 1, luck = 0) {
   const r = rng();
-  if (r < CHEST_ODDS.coins) return { kind: 'coins', amount: Math.round((10 + rng() * 14) * (1 + 0.25 * Math.max(0, depth - 1))) };
-  if (r < CHEST_ODDS.coins + CHEST_ODDS.heal) return { kind: 'heal', amount: 0.25 };
-  return { kind: 'xp', amount: 30 };
+  const m = 1 + luck;
+  if (r < CHEST_ODDS.coins) return { kind: 'coins', amount: Math.round((10 + rng() * 14) * (1 + 0.25 * Math.max(0, depth - 1)) * m) };
+  if (r < CHEST_ODDS.coins + CHEST_ODDS.heal) return { kind: 'heal', amount: Math.min(0.6, 0.25 * (1 + luck * 0.6)) };
+  return { kind: 'xp', amount: Math.round(30 * m) };
 }

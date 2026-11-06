@@ -607,6 +607,65 @@ export const ARENA_TEXTURES = {
     }
     noise(g, s, ['#000', '#7a6a5a'], 2500, [1, 3], 0.25);
   }),
+  // rodada 3 (salas soltas): a sala de jantar em adamascado vinho, o quarto infantil em listras verdes desbotadas com
+  // patinhos, o quarto dos olhos em roxo escuro com olhinhos de gato estampados e arranhado
+  wallpaper_jantar: () => tex(512, 1.6, (g, s) => {
+    g.fillStyle = '#4a1a1a'; g.fillRect(0, 0, s, s);
+    g.fillStyle = 'rgba(170,110,60,0.2)';
+    for (let y = 0; y < s; y += 80) for (let x = 0; x < s; x += 80) {
+      const ox = x + ((y / 80) % 2 ? 40 : 0) + 20;
+      g.beginPath(); g.ellipse(ox, y + 40, 12, 26, 0, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.ellipse(ox, y + 40, 24, 8, 0, 0, Math.PI * 2); g.fill();
+    }
+    for (let i = 0; i < 4; i++) {
+      const x = rnd(0, s); const h = rnd(100, 280);
+      const grd = g.createLinearGradient(0, 0, 0, h);
+      grd.addColorStop(0, 'rgba(20,8,6,0.55)'); grd.addColorStop(1, 'rgba(20,8,6,0)');
+      g.fillStyle = grd; g.fillRect(x, 0, rnd(20, 50), h);
+    }
+    noise(g, s, ['#000', '#7a3a2a'], 2500, [1, 3], 0.25);
+  }),
+  wallpaper_infantil: () => tex(512, 1.6, (g, s) => {
+    g.fillStyle = '#5a6a58'; g.fillRect(0, 0, s, s);
+    for (let x = 0; x < s; x += 64) { g.fillStyle = 'rgba(200,210,170,0.18)'; g.fillRect(x, 0, 28, s); }
+    g.fillStyle = 'rgba(230,200,90,0.35)';
+    for (let y = 30; y < s; y += 96) for (let x = 46; x < s; x += 128) {
+      const ox = x + ((y / 96) % 2 ? 64 : 0);
+      g.beginPath(); g.ellipse(ox, y, 11, 8, 0, 0, Math.PI * 2); g.fill(); // o patinho
+      g.beginPath(); g.arc(ox + 9, y - 8, 5, 0, Math.PI * 2); g.fill();
+    }
+    for (let i = 0; i < 6; i++) { // mofo e descascado
+      g.fillStyle = 'rgba(30,34,24,0.35)';
+      g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(20, 60), rnd(10, 40), rnd(0, 3), 0, Math.PI * 2); g.fill();
+    }
+    noise(g, s, ['#000', '#9aa888'], 2500, [1, 3], 0.2);
+  }),
+  wallpaper_olhos: () => tex(512, 1.6, (g, s) => {
+    g.fillStyle = '#2a2030'; g.fillRect(0, 0, s, s);
+    for (let y = 24; y < s; y += 64) for (let x = 24; x < s; x += 64) {
+      const ox = x + ((y / 64) % 2 ? 32 : 0);
+      g.fillStyle = 'rgba(200,170,60,0.22)';
+      g.beginPath(); g.ellipse(ox, y, 9, 5, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(10,6,12,0.6)';
+      g.fillRect(ox - 1, y - 4, 2, 8); // a pupila fina de gato
+    }
+    g.strokeStyle = 'rgba(8,4,8,0.6)'; g.lineWidth = 2;
+    for (let i = 0; i < 14; i++) { // arranhões em trios
+      const x = rnd(0, s); const y = rnd(0, s); const l = rnd(30, 90); const a = rnd(-0.4, 0.4);
+      for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(x + k * 6, y); g.lineTo(x + k * 6 + Math.sin(a) * l, y + Math.cos(a) * l); g.stroke(); }
+    }
+    noise(g, s, ['#000', '#5a4a6a'], 2500, [1, 3], 0.25);
+  }),
+  boards_infantil: () => tex(512, 2, (g, s) => {
+    g.fillStyle = '#5a4030'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += 32) {
+      const c = 80 + Math.floor(rnd(-12, 12));
+      g.fillStyle = `rgb(${c + 10},${c - 10},${c - 30})`; g.fillRect(0, y, s, 30);
+      g.fillStyle = 'rgba(10,5,2,0.6)'; g.fillRect(0, y + 30, s, 2);
+      g.fillRect(rnd(0, s), y, 2, 30);
+    }
+    noise(g, s, ['#000', '#8a6a4a'], 3000, [1, 3], 0.3);
+  }),
   // taco de madeira em espinha de peixe, gasto
   parquet_mansao: () => tex(512, 2, (g, s) => {
     g.fillStyle = '#3e2a1c'; g.fillRect(0, 0, s, s);

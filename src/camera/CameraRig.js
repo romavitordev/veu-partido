@@ -53,8 +53,11 @@ export const CHASE_CFG = {
   mousePitch: 0.0024,
   pitchMin: -0.45, // olhando para cima (a câmera desce)
   pitchMax: 0.7, // olhando para baixo (a câmera sobe)
-  wallMargin: 0.28, // a câmera nunca chega mais perto que isto de uma parede (nunca atravessa)
+  wallMargin: 0.35, // a câmera nunca chega mais perto que isto de uma parede (nunca atravessa)
+  near: 0.12, // corte de perto na 3ª pessoa: menor que a folga da parede, senão ela some
   ceiling: 2.95, // abaixo do teto da casa
+  lockRate: 7, // TRAVA NO INIMIGO: quão rápido a câmera vira para o alvo
+  lockYawSpeed: 6, // rad/s no máximo
 };
 
 // transições da câmera de cutscenes (segundos): entrar na cinemática, de um plano para o outro, voltar à luta
@@ -276,6 +279,10 @@ export class CameraRig {
       if (this.shakeTime <= 0) this.shakeAmt = 0;
     }
     cam.lookAt(this.look);
+    // o corte de perto (near): na 3ª pessoa a câmera anda colada nas paredes; com o corte em 0,7 m a parede do lado era
+    // cortada e dava para ver através dela (pedido do dono, 2026-11-06). Fora dela, 0,7 (os móveis colados não tapam a luta)
+    const wantNear = this.chase ? CHASE_CFG.near : 0.7;
+    if (cam.near !== wantNear) cam.near = wantNear;
     cam.updateProjectionMatrix();
     this.updateOcclusion(fighters, dt);
 
@@ -315,7 +322,7 @@ export class CameraRig {
         if (away > -0.25) { want = Math.atan2(-vx, -vz); rate = K.followDamping * Math.min(1, sp / 4); }
       }
     }
-    if (c.yaw !== undefined) want = c.yaw;
+    if (c.yaw !== undefined) { want = c.yaw; if (c.lockRate) rate = c.lockRate; }
     if (c.free) {
       // o jogador manda: nada de girar sozinho
       const L = c.look || {};
@@ -325,7 +332,9 @@ export class CameraRig {
     }
     if (want !== null) {
       const diff = angleDiff(this.yaw, want);
-      this.yaw += snap ? diff : clamp(diff * Math.min(1, dt * rate), -K.maxYawSpeed * dt, K.maxYawSpeed * dt);
+      const maxSpd = c.lockRate ? K.lockYawSpeed : K.maxYawSpeed;
+      this.yaw += snap ? diff : clamp(diff * Math.min(1, dt * rate), -maxSpd * dt, maxSpd * dt);
+      if (c.lockRate) this.pitch = (this.pitch || 0) * Math.max(0, 1 - dt * 3); // travado: a inclinação volta ao normal
     }
     const k = snap ? 1 : Math.min(1, dt * K.distanceDamping);
     const wantDist = c.focus ? K.fightDistance : K.distance;
@@ -335,7 +344,8 @@ export class CameraRig {
     const sy = Math.sin(this.yaw);
     const cy = Math.cos(this.yaw);
     // o alvo: o peito do jogador, puxado um pouco para o inimigo (ou para a frente, explorando)
-    const want3 = v1.set(p.pos.x, p.pos.y * 0.6 + K.lookHeight, p.pos.z);
+    const gy = p.groundY || 0; // em cima da escada a câmera sobe junto (o pulo continua amortecido)
+    const want3 = v1.set(p.pos.x, gy + (p.pos.y - gy) * 0.6 + K.lookHeight, p.pos.z);
     if (c.focus) want3.lerp(new THREE.Vector3(c.focus.x, (c.focus.y || 0) + K.lookHeight, c.focus.z), K.focusBias);
     else want3.addScaledVector(new THREE.Vector3(-sy, 0, -cy), K.ahead);
     if (c.free) want3.y -= pitch * 1.4;
@@ -343,7 +353,7 @@ export class CameraRig {
     // ombro: a câmera fica um pouco à direita (o personagem não tapa o que está na frente)
     this.pos.set(
       p.pos.x + sy * this.distance + cy * K.shoulder,
-      p.pos.y * 0.5 + this.height,
+      gy + (p.pos.y - gy) * 0.5 + this.height,
       p.pos.z + cy * this.distance - sy * K.shoulder,
     );
     if (this.world.arena && this.world.arena.bounds) this.keepInside(p, K);
@@ -380,7 +390,8 @@ export class CameraRig {
     this.pos.z = oz + dz * f;
     // encostada na parede: desce para a altura do ombro (de cima, perto, ela só via o chão e o topo da cabeça)
     if (f < 0.7) { const k = 1 - f / 0.7; this.pos.y += (p.pos.y + 1.75 - this.pos.y) * k; this.target.y += (p.pos.y + 1.35 - this.target.y) * k * 0.6; }
-    this.pos.y = Math.min(K.ceiling, Math.max(0.5, this.pos.y));
+    const gy2 = p.groundY || 0;
+    this.pos.y = Math.min(K.ceiling + gy2, Math.max(0.5 + gy2 * 0.8, this.pos.y));
   }
 
   // Bloco grande do cenário (cidade/cemitério juntados numa peça só) entre os lutadores e a câmera: em vez de ficar

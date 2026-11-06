@@ -142,7 +142,7 @@ export default {
       name: 'Clarão dos LEDs',
       input: 'block+carga',
       type: 'photoFlash',
-      description: 'Acende os LEDs da balestra na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,5 s.',
+      description: 'Acende os LEDs da balestra na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,5 s e ATORDOADO por 0,9 s, e todo inimigo menor no clarão fica parado.',
       energyCost: 18,
       cooldown: 13,
       windup: 0.25,

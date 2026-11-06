@@ -87,9 +87,11 @@ export class Pickup {
 // BAÚ (pedido do dono, 2026-11-05): espalhados pelo mapa; abre ao encostar e solta MOEDAS, VIDA ou EXPERIÊNCIA (a
 // chance de cada um está em pve/unlocks.js rollChest). As moedas compram os personagens bloqueados.
 export class Chest {
-  constructor(world, { pos, yaw = 0, onOpen }) {
+  constructor(world, { pos, yaw = 0, onOpen, manual = false, luck = 0 }) {
     this.world = world;
     this.onOpen = onOpen;
+    this.manual = manual; // abre pelo botão de interagir (Outro Lado), não ao encostar
+    this.luck = luck; // baú com mais sorte (a sala trancada)
     this.radius = 0.75;
     this.t = Math.random() * 5;
     this.alive = true;
@@ -137,6 +139,7 @@ export class Chest {
       return;
     }
     this.glow.material.opacity = 0.1 + Math.sin(this.t * 3) * 0.05;
+    if (this.manual) return;
     for (const p of players) {
       if (!p || p.state === 'ko') continue;
       if (Math.hypot(p.pos.x - this.pos.x, p.pos.z - this.pos.z) <= this.radius + p.radius + 0.2) { this.open(p); return; }

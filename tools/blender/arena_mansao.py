@@ -44,6 +44,16 @@ M = {
     'eye': material('eye_yellow_mansao', '#f2c230', 0.3, emission='#f2c230', strength=4),
     'clock': material('clock_211', '#d8ccb0', 0.6),
     'portrait': material('portrait_mansao', '#3a2a1a', 0.8),
+    # rodada 3: cada sala solta com a sua cara (as texturas são do jogo: arena/arenaTextures.js, pelo nome)
+    'wall_jantar': material('wallpaper_jantar', '#4a1a1a', 0.9),
+    'wall_inf': material('wallpaper_infantil', '#5a6a5a', 0.9),
+    'wall_olhos': material('wallpaper_olhos', '#2a2030', 0.9),
+    'boards': material('boards_infantil', '#5a4030', 0.8),
+    'porcelain': material('porcelain_mansao', '#d8d0c0', 0.3),
+    'doll': material('doll_face_mansao', '#e0c8b0', 0.6),
+    'cloth': material('cloth_faded_mansao', '#7a8aa0', 1.0),
+    'cat': material('cat_black_mansao', '#141214', 0.7),
+    'wine': material('wine_mansao', '#3a0a14', 0.15),
 }
 
 HH = 3.2   # altura das paredes
@@ -356,16 +366,16 @@ for k, x in enumerate((66, 71)):
 # Os caminhos se ramificam (porta à esquerda, à frente, à direita e a escada do hall): cada sala é um MÓDULO e o jogo
 # leva o jogador de uma para a outra (a tela escurece). Estas ficam numa faixa à parte (z 34…46), fechadas por paredes
 # lisas; as portas são do jogo. O 2º andar (Quarto Infantil e Quarto dos Olhos de Gatos) é o destino da escada do hall.
-def closed_room(name, x0, x1, z0, z1, floor='floor'):
+def closed_room(name, x0, x1, z0, z1, floor='floor', wmat=None):
     box(f'FLOOR_{name}', ((x0 + x1) / 2, -0.05, (z0 + z1) / 2), (x1 - x0, 0.1, z1 - z0), M[floor])
-    wall(f'{name}_back', x0 - T / 2, x1 + T / 2, z0 - T / 2, z0 - T / 2)
-    wall(f'{name}_front', x0 - T / 2, x1 + T / 2, z1 + T / 2, z1 + T / 2)
-    wall(f'{name}_L', x0 - T / 2, x0 - T / 2, z0, z1)
-    wall(f'{name}_R', x1 + T / 2, x1 + T / 2, z0, z1)
+    wall(f'{name}_back', x0 - T / 2, x1 + T / 2, z0 - T / 2, z0 - T / 2, wmat)
+    wall(f'{name}_front', x0 - T / 2, x1 + T / 2, z1 + T / 2, z1 + T / 2, wmat)
+    wall(f'{name}_L', x0 - T / 2, x0 - T / 2, z0, z1, wmat)
+    wall(f'{name}_R', x1 + T / 2, x1 + T / 2, z0, z1, wmat)
 
 
 # ---- SALA DE JANTAR (x 0…14, z 34…46) — PROPOSTA: a mesa posta para ninguém
-closed_room('jantar', 0, 14, 34, 46)
+closed_room('jantar', 0, 14, 34, 46, wmat=M['wall_jantar'])
 box('jantar_rug', (7, 0.006, 40), (9, 0.012, 4.6), M['rug'])
 box('jantar_table', (7, 0.76, 40), (6.4, 0.08, 1.6), M['wood'])
 for sx in (-1, 1):
@@ -393,9 +403,31 @@ chandelier('FLICKER_jantar_chand1', (4.8, 2.4, 40))
 chandelier('FLICKER_jantar_chand2', (9.2, 2.4, 40))
 sconce('jantar_sconce1', (0.12, 1.9, 37.0), math.pi / 2)
 sconce('jantar_sconce2', (13.88, 1.9, 43.0), -math.pi / 2)
+# a cristaleira com a louça (parede da frente)
+box('jantar_china', (4.0, 1.1, 45.62), (2.0, 2.2, 0.55), M['wood'])
+box('jantar_china_glass', (4.0, 1.35, 45.33), (1.8, 1.4, 0.02), M['glass'])
+for r in range(3):
+    for k in range(5):
+        cyl(f'jantar_dish{r}{k}', (3.3 + k * 0.35, 0.82 + r * 0.45, 45.5), 0.13, 0.02, M['porcelain'], seg=12, rot_x=math.pi / 2)
+col_box('jantar_china', (4.0, 1.1, 45.62), (2.0, 2.2, 0.6))
+# a lareira apagada, fria, com cinza (parede lateral)
+box('jantar_fireplace', (13.6, 0.7, 37.0), (0.7, 1.4, 2.0), M['stone'])
+box('jantar_fireplace_hole', (13.24, 0.45, 37.0), (0.02, 0.8, 1.1), M['black'])
+box('jantar_fireplace_mantel', (13.5, 1.45, 37.0), (0.9, 0.1, 2.3), M['wood'])
+col_box('jantar_fireplace', (13.6, 0.75, 37.0), (0.8, 1.5, 2.2))
+candle('jantar_mantel_c', (13.5, 1.5, 36.3))
+# a taça caída e o vinho no chão, perto da cadeira derrubada
+cyl('jantar_spill', (7.6, 0.004, 42.9), 0.5, 0.008, M['wine'], seg=16)
+cyl('jantar_glass_fallen', (7.3, 0.05, 42.6), 0.04, 0.16, M['glass'], seg=8, rot_z=math.pi / 2)
+# o espelho rachado sobre o aparador
+box('jantar_mirror', (3.0, 1.9, 34.13), (0.9, 1.1, 0.03), M['glass'])
+box('jantar_mirror_crack', (2.95, 1.95, 34.16), (0.02, 0.9, 0.01), M['black'], rot_z=0.5)
+box('jantar_mirror_crack2', (3.1, 1.8, 34.16), (0.02, 0.6, 0.01), M['black'], rot_z=-0.7)
+for k in range(3):
+    candle(f'jantar_side_c{k}', (6.2 + k * 0.8, 1.0, 34.4))
 
 # ---- 2º ANDAR: QUARTO INFANTIL (x 20…32, z 34…44) — o quarto das crianças da casa (wiki: os cômodos de cima)
-closed_room('infantil', 20, 32, 34, 44)
+closed_room('infantil', 20, 32, 34, 44, floor='boards', wmat=M['wall_inf'])
 box('infantil_rug', (26, 0.006, 39), (5, 0.012, 4), M['velvet2'])
 for k, x in enumerate((22.4, 29.6)):  # duas camas pequenas
     box(f'infantil_bed{k}', (x, 0.28, 35.2), (1.1, 0.36, 1.9), M['wood'])
@@ -419,10 +451,46 @@ box('infantil_wframe', (26, 1.9, 34.12), (1.4, 0.07, 0.06), M['wood'])
 frame('infantil_drawing', (31.88, 1.6, 37.0), (0.5, 0.4), -math.pi / 2, mat=M['linen'])
 sconce('infantil_sconce', (31.88, 1.9, 40.0), -math.pi / 2)
 candle('infantil_floorcandle', (24.0, 0.0, 38.0))
+box('infantil_rug2', (29.6, 0.007, 38.2), (2.2, 0.012, 1.6), M['cloth'])
+# o berço vazio (a grade de varetas)
+box('infantil_crib_base', (30.8, 0.45, 40.6), (0.9, 0.08, 1.4), M['woodlt'])
+for k in range(8):
+    for sx in (-1, 1):
+        cyl(f'infantil_crib_bar{k}{sx}', (30.8 + sx * 0.43, 0.45, 40.0 + k * 0.17), 0.015, 0.5, M['woodlt'], seg=6)
+box('infantil_crib_rail', (30.8, 0.97, 40.6), (0.92, 0.04, 1.42), M['woodlt'])
+col_box('infantil_crib', (30.8, 0.5, 40.6), (1.0, 1.0, 1.5))
+# a estante com as bonecas olhando para a porta
+box('infantil_shelf', (20.35, 1.2, 37.0), (0.4, 2.0, 1.5), M['wood'])
+col_box('infantil_shelf', (20.35, 1.0, 37.0), (0.45, 2.0, 1.5))
+for r in range(3):
+    box(f'infantil_shelf_board{r}', (20.5, 0.55 + r * 0.6, 37.0), (0.36, 0.03, 1.45), M['woodlt'])
+    for k in range(3):
+        z = 36.5 + k * 0.5
+        y = 0.57 + r * 0.6
+        box(f'infantil_doll_body{r}{k}', (20.55, y + 0.12, z), (0.12, 0.2, 0.14), M['velvet' if (r + k) % 2 else 'cloth'])
+        sphere(f'infantil_doll_head{r}{k}', (20.55, y + 0.3, z), (0.08, 0.08, 0.08), M['doll'], seg=10, rings=8)
+        sphere(f'infantil_doll_eye{r}{k}a', (20.62, y + 0.31, z - 0.025), (0.012, 0.012, 0.012), M['black'], seg=6, rings=4)
+        sphere(f'infantil_doll_eye{r}{k}b', (20.62, y + 0.31, z + 0.025), (0.012, 0.012, 0.012), M['black'], seg=6, rings=4)
+# a mesinha de chá posta para as bonecas
+table('infantil_teatable', (27.4, 0, 37.6), (0.8, 0.8), round_=True, h=0.45)
+for k in range(4):
+    a = k / 4 * TAU
+    cyl(f'infantil_cup{k}', (27.4 + math.cos(a) * 0.25, 0.46, 37.6 + math.sin(a) * 0.25), 0.04, 0.05, M['porcelain'], seg=10)
+    box(f'infantil_stool{k}', (27.4 + math.cos(a) * 0.75, 0.15, 37.6 + math.sin(a) * 0.75), (0.25, 0.3, 0.25), M['woodlt'])
+# o móbile pendurado sobre o berço
+cyl('infantil_mobile_string', (30.8, 2.0, 40.6), 0.005, 1.2, M['iron'], seg=4)
+for k in range(5):
+    a = k / 5 * TAU
+    sphere(f'infantil_mobile{k}', (30.8 + math.cos(a) * 0.3, 1.95, 40.6 + math.sin(a) * 0.3), (0.06, 0.06, 0.06), M['velvet2' if k % 2 else 'eye'], seg=8, rings=6)
+# os desenhos de criança presos na parede (um deles: muitos olhos)
+for k, z in enumerate((41.2, 42.2, 43.0)):
+    frame(f'infantil_drawing{k + 2}', (31.88, 1.4 + (k % 2) * 0.25, z), (0.4, 0.32), -math.pi / 2, mat=M['linen'])
+for k in range(6):
+    sphere(f'infantil_drawn_eye{k}', (31.85, 1.36 + (k % 3) * 0.08, 41.05 + (k // 3) * 0.12 + (k % 3) * 0.06), (0.012, 0.012, 0.012), M['eye'], seg=6, rings=4)
 
 # ---- 2º ANDAR: QUARTO DOS OLHOS DE GATOS (x 38…48, z 35…43) — a porta emperrada no fundo, cheia de olhos (a fresta é do
 # jogo: pve/espreitador.js PeekingCrack)
-closed_room('olhos', 38, 48, 35, 43)
+closed_room('olhos', 38, 48, 35, 43, wmat=M['wall_olhos'])
 box('olhos_bed', (46.6, 0.3, 41.6), (2.0, 0.4, 1.6), M['wood'])
 box('olhos_mattress', (46.6, 0.55, 41.6), (1.9, 0.12, 1.5), M['linen'])
 col_box('olhos_bed', (46.6, 0.4, 41.6), (2.1, 0.8, 1.7))
@@ -436,5 +504,29 @@ for k in range(4):  # os retratos de gatos, tortos
 for k in range(14):  # olhinhos amarelos no escuro dos cantos
     sphere(f'olhos_eye{k}', (38.15 if k % 2 else 47.85, 0.3 + random.uniform(0, 2.4), 36 + random.uniform(0, 6)), (0.025, 0.02, 0.025), M['eye'], seg=6, rings=4)
 box('olhos_window', (47.92, 1.9, 38), (0.04, 1.3, 1.1), M['moon'])
+box('olhos_rug', (43, 0.006, 39), (4.5, 0.012, 3.2), M['velvet'])
+# os gatos pretos (estatuetas) com os olhos acesos, em cima dos móveis e no chão
+for k, (x, y, z, ry) in enumerate(((39.0, 0.9, 42.2, 0.6), (46.0, 0.62, 42.0, -1.0), (42.0, 0.0, 41.6, 2.4), (47.2, 0.0, 42.2, -2.2), (38.8, 0.0, 36.0, 0.8))):
+    sphere(f'olhos_cat_body{k}', (x, y + 0.14, z), (0.14, 0.13, 0.2), M['cat'], seg=10, rings=8)
+    sphere(f'olhos_cat_head{k}', (x + math.sin(ry) * 0.17, y + 0.3, z + math.cos(ry) * 0.17), (0.09, 0.08, 0.09), M['cat'], seg=10, rings=8)
+    for s_ in (-1, 1):
+        ex = x + math.sin(ry) * 0.24 + math.cos(ry) * s_ * 0.035
+        ez = z + math.cos(ry) * 0.24 - math.sin(ry) * s_ * 0.035
+        sphere(f'olhos_cat_eye{k}{s_}', (ex, y + 0.32, ez), (0.016, 0.016, 0.016), M['eye'], seg=6, rings=4)
+        box(f'olhos_cat_ear{k}{s_}', (x + math.sin(ry) * 0.15 + math.cos(ry) * s_ * 0.05, y + 0.39, z + math.cos(ry) * 0.15 - math.sin(ry) * s_ * 0.05), (0.04, 0.07, 0.04), M['cat'], rot_y=ry)
+# a cadeira de balanço virada para a porta emperrada
+box('olhos_rocker_seat', (43.2, 0.42, 38.0), (0.55, 0.06, 0.55), M['wood'], rot_y=0.3)
+box('olhos_rocker_back', (43.3, 0.85, 38.27), (0.55, 0.8, 0.05), M['wood'], rot_y=0.3)
+for s_ in (-1, 1):
+    cyl(f'olhos_rocker_runner{s_}', (43.2 + s_ * 0.25, 0.12, 38.0), 0.35, 0.03, M['wood'], seg=12, rot_x=math.pi / 2)
+col_cyl('olhos_rocker', (43.2, 0, 38.0), 0.4, 1.0)
+# as almofadas e os novelos
+for k in range(4):
+    box(f'olhos_cushion{k}', (40.4 + k * 0.5, 0.08, 39.9 + (k % 2) * 0.3), (0.45, 0.14, 0.45), M['velvet2' if k % 2 else 'velvet'], rot_y=random.uniform(0, 1))
+for k in range(3):
+    sphere(f'olhos_yarn{k}', (44.5 + k * 0.4, 0.07, 40.6), (0.07, 0.07, 0.07), M['linen'], seg=8, rings=6)
+# mais arranhões em volta da porta emperrada (a fresta é do jogo, em x 45.2)
+for k in range(10):
+    box(f'olhos_scratch_door{k}', (44.2 + k * 0.22, 0.6 + random.uniform(0, 1.6), 35.025), (0.025, random.uniform(0.3, 0.7), 0.01), M['black'], rot_z=random.uniform(-0.4, 0.4))
 
 finalize(OUT)

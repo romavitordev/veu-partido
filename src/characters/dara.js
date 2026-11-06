@@ -78,7 +78,7 @@ export default {
       name: 'Lanterna UV',
       input: 'carga+ranged',
       type: 'photoFlash',
-      description: 'Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai). De costas ou esquivando na hora, escapa.',
+      description: 'Acende a lanterna UV na cara do adversário: quem estiver à frente e olhando para ela fica CEGO por 1,4 s (a guarda cai) e ATORDOADO por 0,8 s, e todo inimigo menor no facho fica parado. De costas ou esquivando na hora, escapa.',
       energyCost: 10,
       cooldown: 7,
       windup: 0.26,

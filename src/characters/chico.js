@@ -96,7 +96,7 @@ export default {
       name: 'Farol da Van',
       input: 'carga+physical',
       type: 'photoFlash',
-      description: 'Liga o farol da van na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,8 s.',
+      description: 'Liga o farol da van na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,8 s e ATORDOADO por 1 s, e todo inimigo menor no facho fica parado.',
       energyCost: 18,
       cooldown: 12,
       windup: 0.3,

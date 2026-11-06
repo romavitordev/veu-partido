@@ -1,5 +1,25 @@
 # Changelog
 
+## v4.28.0 — Outro Lado: rodada 4 — mira travada, teclas simples, gavetas, cadeados e a escada
+
+### Adicionado
+- Trava no inimigo no Outro Lado (`Dungeon.updateLock`, `pickLock`, `lockCandidates`): a câmera fica atrás do jogador olhando o alvo (`chaseTarget` devolve `yaw`/`lockRate`), o corpo mira nele, troca com um movimento rápido (flick) e liga/desliga com F, o botão do meio ou R3 (`look.lockBtn`). Marcador vermelho no chão.
+- Teclas simples no teclado + mouse (`InputManager.freeLook`, jogador 1): `quick1`–`quick5`, `quickSp`, `grab`; `Fighter.tryQuick`; a HUD mostra as teclas (`f.simpleKeys`).
+- Botão de interagir (`interact`: E no teclado, B no controle), só fora da luta; o aperto é consumido e não vira defesa nem golpe (`Dungeon.updateInteract`). Aviso flutuante (`InteractPrompt`).
+- Gavetas (`Drawer` em `roomDoors.js`, `drawers` nos módulos): chave, moedas (`locks.drawerCoins`) ou nada.
+- Portas com cadeado (`rollLock`, `RoomDoor` com `padlock`/`unpad`): a chave numa gaveta da mesma sala; as chaves ficam no bolso (`pveHud.setKeys`). Atrás: sala de baús (`vault`, todos os baús com sorte) ou de monstros que solta um baú de sorte ao limpar. Ajustes em `locks`.
+- `rollChest(rng, depth, luck)`; baús com `manual` e `luck`.
+- Escada do hall subida andando: `World.groundAt` (o `Fighter.integrate` pousa nele e grava `groundY`), `Dungeon.setupStairs`/`updateStairs` (só sobe pelo pé), patamar com a porta do 2º andar (`landing`). A câmera acompanha `groundY`.
+- `stunNpc` (`abilities.js`): inimigos menores ofuscados ficam parados (`World` pula o `update` com `stunT`).
+- Setas flutuantes 3D (`makeArrow`/`aimArrow`) e brilho nas portas destrancadas.
+
+### Alterado
+- `photoFlash` atordoa em área: o adversário (`stun`, até 1,2 s) e os inimigos no cone (1,4×), nos dois modos.
+- Monstros misturados do time (`pickClones`, `nextClone`).
+- Salas sem nome nem contagem; ritmo: depois de uma sala de 4 há uma porta mais leve; baú garantido antes do chefe; baús mais frequentes.
+- Câmera: `near` 0,12 em 3ª pessoa e margem de parede 0,35 (não atravessa as paredes).
+- `mansao.glb`: papel de parede, móveis e luzes no jantar, infantil e Olhos.
+
 ## v4.27.0 — Outro Lado: rodada 3 — caminhos com escolha, portas, câmera livre e o time como assistência
 
 ### Adicionado

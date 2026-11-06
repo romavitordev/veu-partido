@@ -59,6 +59,14 @@ export class PveHud {
     this.q('.pv-coins b').textContent = String(n);
   }
 
+  // as chaves guardadas (portas com cadeado): só aparece com pelo menos uma
+  setKeys(n) {
+    const el = this.q('.pv-coins');
+    let k = el.querySelector('.pv-keys');
+    if (!k) { k = document.createElement('span'); k.className = 'pv-keys'; el.appendChild(k); }
+    k.textContent = n > 0 ? `  · 🗝 ${n}` : '';
+  }
+
   hint(text) {
     const h = this.q('.pv-hint');
     h.textContent = text || '';

@@ -1219,8 +1219,27 @@ export class Fighter {
     return !!this.input.pressed.dodge && this.cooldowns.dodge <= 0 && this.onGround;
   }
 
+  // TECLAS SIMPLES (Outro Lado com teclado + mouse): 1 a 5 = as habilidades na ordem da HUD, Z = especial, G = agarrão
+  tryQuick() {
+    const inp = this.input;
+    const pr = inp.pressed || {};
+    const abs = this.def.abilities || [];
+    for (let k = 0; k < 5; k++) {
+      if (!pr['quick' + (k + 1)]) continue;
+      if (abs[k]) this.useAbility(abs[k]);
+      return true;
+    }
+    if (pr.quickSp) {
+      if (this.teamReady()) this.tryTeamSpecial(); else this.trySpecial();
+      return true;
+    }
+    if (pr.grab && this.onGround) { this.tryGrab(); return true; }
+    return false;
+  }
+
   handleCommands() {
     const inp = this.input;
+    if (this.tryQuick()) return true;
     if (this.tryChord()) return true;
     if (this.tryComboAbility()) return true;
     if (this.wantsDodge()) {
@@ -3301,14 +3320,17 @@ export class Fighter {
     this.pos.x += this.vel.x * dt;
     this.pos.y += this.vel.y * dt;
     this.pos.z += this.vel.z * dt;
-    if (this.pos.y <= 0) {
+    // o chão pode ter altura (a ESCADA do hall no Outro Lado: World.groundAt); no resto é o piso, y = 0
+    const gy = this.world.groundAt ? this.world.groundAt(this) : 0;
+    this.groundY = gy;
+    if (this.pos.y <= gy) {
       if (!this.onGround) {
         this.world.audio.play('land', { volume: 0.6 });
         if (this.state === 'idle') this.anim.play('idle', { blend: 0.1 });
         // o corpo absorve a queda (mais forte quanto mais rápido caiu); golpes e estados de dano têm pose própria
         if (['idle', 'dashing', 'block', 'charging'].includes(this.state)) this.anim.kick(LOCO_KICKS.land, 0.26, clamp(-this.vel.y / 9, 0.35, 1.2) * ((this.anim.style && this.anim.style.land) || 1));
       }
-      this.pos.y = 0;
+      this.pos.y = gy;
       this.vel.y = 0;
       this.onGround = true;
       this.airCombo = null;

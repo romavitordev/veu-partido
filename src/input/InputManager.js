@@ -1,6 +1,6 @@
 import { KEYBOARD_LAYOUTS, GAMEPAD_LAYOUT, GAMEPAD_DEADZONE, PLAYER_DEVICES } from '../config/controls.js';
 
-const ACTIONS = ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'start', 'select', 'assist1', 'assist2', 'switch1', 'switch2', 'pageL', 'pageR'];
+const ACTIONS = ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'start', 'select', 'assist1', 'assist2', 'switch1', 'switch2', 'pageL', 'pageR', 'quick1', 'quick2', 'quick3', 'quick4', 'quick5', 'quickSp', 'grab', 'interact'];
 const DIRS = ['up', 'down', 'left', 'right'];
 
 // Estado de entrada de UM jogador, já normalizado (teclado + controle somados).
@@ -18,7 +18,7 @@ export class PlayerInput {
     this._prevDir = {};
     this.source = 'keyboard';
     this.cpu = null; // controlador de IA opcional
-    this.look = { x: 0, y: 0, mx: 0, my: 0 }; // CÂMERA LIVRE (Outro Lado): analógico direito (-1..1) e mouse (pixels no quadro)
+    this.look = { x: 0, y: 0, mx: 0, my: 0, lockBtn: false }; // CÂMERA LIVRE (Outro Lado): analógico direito (-1..1) e mouse (pixels no quadro)
   }
 
   // Usado pela IA e por testes: injeta um estado completo.
@@ -144,7 +144,9 @@ export class InputManager {
           }
           L.mx = this.mouseDX;
           L.my = this.mouseDY;
-        }
+          // TRAVA NO INIMIGO (Outro Lado, pedido do dono 2026-11-06): F, botão do meio do mouse ou R3 liga/desliga
+          L.lockBtn = this.keys.has('KeyF') || this.mouseHeld.has(1) || !!(pad && pad.buttons[11] && pad.buttons[11].pressed);
+        } else L.lockBtn = false;
         this.mouseDX = 0;
         this.mouseDY = 0;
       }
@@ -193,6 +195,19 @@ export class InputManager {
       if (this.mouseHeld.has(0) || taps.has('Mouse0')) held.physical = true;
       if (this.mouseHeld.has(2) || taps.has('Mouse2')) held.ranged = true;
     }
+    // TECLADO + MOUSE SIMPLES (Outro Lado, pedido do dono 2026-11-06): cada habilidade numa tecla só — 1 a 5 as
+    // habilidades, Z o especial, G o agarrão, C também carrega a sanidade; as assistências ficam só no Q e no R
+    if (i === 0 && this.freeLook) {
+      for (let k = 1; k <= 5; k++) held['quick' + k] = kbHeld(['Digit' + k]);
+      held.quickSp = kbHeld(['KeyZ']);
+      held.grab = kbHeld(['KeyG']);
+      held.interact = kbHeld(['KeyE']); // INTERAGIR (portas, gavetas, baús): a Dungeon decide se vira defesa
+      held.carga = held.carga || kbHeld(['KeyC']);
+      held.assist1 = kbHeld(['KeyQ']);
+      held.assist2 = kbHeld(['KeyR']);
+      held.switch1 = false;
+      held.switch2 = false;
+    }
     mx += (kbHeld(layout.right) ? 1 : 0) - (kbHeld(layout.left) ? 1 : 0);
     my += (kbHeld(layout.up) ? 1 : 0) - (kbHeld(layout.down) ? 1 : 0);
 
@@ -213,6 +228,7 @@ export class InputManager {
     if (pad) {
       // gatilhos (LT/RT) são analógicos: considera apertado acima de 35%
       const btn = (ids) => ids.some((id) => pad.buttons[id] && (pad.buttons[id].pressed || pad.buttons[id].value > 0.35));
+      if (i === 0 && this.freeLook && btn([1])) held.interact = true; // B: interagir perto de porta/gaveta/baú (senão é o ○)
       for (const a of ACTIONS) if (GAMEPAD_LAYOUT[a] && btn(GAMEPAD_LAYOUT[a])) held[a] = true;
       // analógico direito ◀/▶: TROCA o personagem em campo pelo da assistência 1/2
       // (as assistências são chamadas por L1/LB e R1/RB)
