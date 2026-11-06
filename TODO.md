@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.31.0 (2026-11-06: a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup). Antes: v4.30.0 (expedição online e retorno com moedas); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 

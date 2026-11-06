@@ -80,6 +80,24 @@ export function disposeSkeletons(root) {
   });
 }
 
+export function disposeRigResources(root) {
+  const geometries = new Set();
+  const materials = new Set();
+  const textures = new Set();
+  root.traverse((o) => {
+    if (o.geometry && !o.userData.sharedGeometry) geometries.add(o.geometry);
+    if (!o.material) return;
+    for (const material of Array.isArray(o.material) ? o.material : [o.material]) {
+      materials.add(material);
+      if (material.map && !material.userData.sharedMap) textures.add(material.map);
+    }
+  });
+  disposeSkeletons(root);
+  for (const geometry of geometries) geometry.dispose();
+  for (const texture of textures) texture.dispose();
+  for (const material of materials) material.dispose();
+}
+
 export function rigFromGLB(gltf, { scale = 1, outline = 0.012 } = {}) {
   const body = SkeletonUtils.clone(gltf.scene);
   const root = new THREE.Group();

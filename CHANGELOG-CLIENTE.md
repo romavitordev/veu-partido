@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.31.1 — Outro Lado: retratos dos chefes e tela de carregamento
+- A tela de carregamento do Outro Lado mostra você contra o chefe da masmorra.
+- No multiplayer local, P1 e P2 aparecem juntos contra o chefe.
+- A página Sobre agora tem os retratos e informações do Espreitador e da Degolificada.
+- Correções para evitar acúmulo de recursos gráficos durante as partidas.
+
 ## v4.31.0 — Outro Lado: a Escola Nostradamus e a Degolificada
 - NOVA DUNGEON: o Território da Degolificada, na Escola Nostradamus (a partir da profundidade 2). Corredores, salas de aula, laboratório e a biblioteca com a passagem secreta para o bunker.
 - A DEGOLIFICADA DE GABRIEL: ela flutua e luta só com os cabelos — investida de cabelo, agarra e joga na parede, cabelo rastejando pelo chão, cabelo caindo do teto, defesa de cabelo e o Grito Rasgado.

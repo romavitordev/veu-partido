@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v4.31.1 — Outro Lado: retratos dos chefes e tela de carregamento
+
+- Versão: `VERSION` 4.31.0 → **4.31.1** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.
+- Tela de carregamento PVE (`src/ui/Screens.js`, `src/pve/flow.js`): P1 e P2 no coop local contra o chefe da dungeon; retrato do adversário preenchido depois que o modelo carrega, com fallback para o jogador e falha de retrato isolada do início da dungeon.
+- Página Sobre (`sobre.html`, `src/sobre.js`, `src/sobre.css`): seção para o Espreitador e a Degolificada, com retratos gerados ao aproximar a seção da tela.
+- Recursos gráficos (`src/models/glbRig.js`, `src/pve/Dungeon.js`, `src/ui/portraits.js`): descarte de recursos próprios de rigs substituídos, restauração do estado do renderer e limpeza mesmo se a geração de um retrato falhar.
+- Testes: `npm test` 71/71; `npm run build` OK; `git diff --check` OK.
+
 ## v4.31.0 — Outro Lado: a Escola Nostradamus e a Degolificada
 
 - Versão: `VERSION` 4.30.0 → **4.31.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.

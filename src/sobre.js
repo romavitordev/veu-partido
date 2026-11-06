@@ -42,6 +42,42 @@ async function fillElements() {
 const rosterEl = document.getElementById('roster');
 let rosterDone = false;
 const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+
+const bossRosterEl = document.getElementById('boss-roster');
+let bossPortraitsDone = false;
+async function buildBossPortraits() {
+  if (bossPortraitsDone) return;
+  bossPortraitsDone = true;
+  const status = document.getElementById('boss-portrait-status');
+  let renderer;
+  try {
+    const [THREE, { renderPortraits }, { ensureModels }, espreitador, degolificada] = await Promise.all([
+      import('three'),
+      import('./ui/portraits.js'),
+      import('./models/index.js'),
+      import('./characters/bosses/espreitador.js'),
+      import('./characters/bosses/degolificada.js'),
+    ]);
+    const bosses = [espreitador.default, degolificada.default];
+    await ensureModels(bosses.map((boss) => boss.model));
+    renderer = new THREE.WebGLRenderer({ canvas: document.createElement('canvas'), antialias: true, alpha: true });
+    const portraits = {
+      ...renderPortraits([espreitador.default], renderer),
+      ...renderPortraits([degolificada.default], renderer, { turn: 0.35 }),
+    };
+    for (const img of bossRosterEl.querySelectorAll('.boss-portrait')) {
+      const src = portraits[img.dataset.boss];
+      if (src) img.src = src;
+    }
+    status.textContent = 'Retratos dos chefes carregados.';
+  } catch (error) {
+    console.error('Sobre: não foi possível gerar os retratos dos chefes.', error);
+    status.textContent = 'Não foi possível carregar os retratos dos chefes. Tente recarregar a página.';
+  } finally {
+    renderer?.dispose();
+  }
+}
+
 async function buildRoster() {
   if (rosterDone) return;
   rosterDone = true;
@@ -116,3 +152,4 @@ const whenNear = (el, fn) => {
 };
 whenNear(document.getElementById('elements'), fillElements);
 whenNear(rosterEl, buildRoster);
+whenNear(bossRosterEl, buildBossPortraits);

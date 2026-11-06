@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.31.0';
+export const VERSION = '4.31.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.31.1',
+    date: '2026-11-06',
+    title: 'Outro Lado: retratos dos chefes e tela de carregamento',
+    items: [
+      'A tela de carregamento do modo Outro Lado mostra os jogadores contra o chefe da masmorra; no coop local, aparecem P1 e P2.',
+      'Retratos dos chefes disponíveis na página Sobre, renderizados a partir dos modelos 3D.',
+      'Correção na liberação de recursos dos inimigos e dos retratos para evitar acúmulo de recursos gráficos.',
+      'A geração do retrato do chefe não impede a dungeon de iniciar se ocorrer uma falha.',
+    ],
+  },
   {
     v: '4.31.0',
     date: '2026-11-06',

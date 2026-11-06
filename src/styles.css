@@ -407,9 +407,18 @@ body.touch-capable #stage .stage-confirm { display: block; }
 #loading .vs { display: flex; align-items: center; gap: 28px; }
 #loading .side { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 #loading .side img { width: min(26vw, 200px); aspect-ratio: 3 / 4; object-fit: cover; border: 3px solid var(--c); border-radius: 6px; box-shadow: 0 0 30px var(--c); }
+#loading .side img.portrait-placeholder { background: radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--c) 38%, #17101e), #09070d 72%); }
 #loading .side b { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .06em; color: var(--c); text-shadow: 2px 2px 0 #000; }
 #loading .side small { font-weight: 800; color: var(--muted); letter-spacing: .1em; }
 #loading .vstext { font-family: 'Bebas Neue', sans-serif; font-size: 70px; text-shadow: 4px 4px 0 #000, 0 0 30px #a46bff; }
+#loading .pve-coop-vs { gap: clamp(8px, 2vw, 28px); }
+#loading .pve-team-side { flex-direction: row; gap: 10px; }
+#loading .pve-team-side .pve-player { display: flex; flex-direction: column; align-items: center; gap: 6px; width: min(14vw, 110px); }
+#loading .pve-team-side .pve-player img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border: 3px solid var(--c); border-radius: 6px; box-shadow: 0 0 24px var(--c); }
+#loading .pve-team-side .pve-player b { font-family: 'Bebas Neue', sans-serif; font-size: clamp(12px, 2vw, 20px); letter-spacing: .04em; color: var(--c); text-align: center; text-shadow: 2px 2px 0 #000; }
+#loading .pve-team-side .pve-player small { font-size: 11px; }
+#loading .pve-coop-vs .vstext { font-size: clamp(40px, 8vw, 70px); }
+.boss-portrait:not([src]) { background: radial-gradient(ellipse at 50% 35%, #44334d, #100c14 72%); }
 #loading .arena-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .12em; color: #d8c8ff; }
 #loading .bar { width: min(80vw, 420px); height: 8px; transform: none; }
 #loading .bar .fill { background: linear-gradient(90deg, #6a3aa8, #c89aff); transition: width .2s; }

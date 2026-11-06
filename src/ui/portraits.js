@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildModel } from '../models/index.js';
-import { disposeSkeletons } from '../models/glbRig.js';
+import { disposeRigResources } from '../models/glbRig.js';
 import { Animator } from '../anim/Animator.js';
 
 // Gera retratos dos personagens renderizando o modelo 3D uma vez (dataURL).
@@ -35,77 +35,89 @@ export function renderPortraits(roster, renderer, { w = 300, h = 400, anim: anim
   const out = {};
   const prevTarget = renderer.getRenderTarget();
   const prevClear = renderer.getClearAlpha();
+  const prevClearColor = renderer.getClearColor(new THREE.Color());
   renderer.setClearColor(0x000000, 0);
 
-  for (const def of roster) {
-    // formas grandes (Deus da Morte = 2): a câmera afasta e sobe na mesma proporção
-    const k = (def.stats && def.stats.size) || 1;
-    if (full) { cam.position.set(0.9 * k, 1.3 * k, 6.2 * k); cam.lookAt(0, 1.0 * k, 0); }
-    else { cam.position.set(0.9 * k, 1.5 * k, 3.6 * k); cam.lookAt(0, 1.15 * k, 0); }
-    cam.far = 20 * k;
-    cam.updateProjectionMatrix();
-    const rig = buildModel(def.model);
-    const anim = new Animator(rig, def.anims);
-    anim.play(animName, { blend: 0 });
-    anim.update(animTime);
-    rig.root.rotation.y = turn;
-    scene.add(rig.root);
-    // ENQUADRAMENTO pela altura real da cabeça (antes a câmera era fixa para todos e cortava a cabeça dos mais altos,
-    // como o Kian): o busto vai de um pouco acima da cabeça (cabelo, chifres) até a cintura
-    rig.root.updateMatrixWorld(true);
-    const hd = rig.joints && rig.joints.hd;
-    if (hd && !full) {
-      const headY = hd.getWorldPosition(new THREE.Vector3()).y;
-      const view = 2 * 3.6 * k * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)); // altura visível na distância da câmera
-      const yc = headY + 0.42 * k - view / 2; // o alto do quadro fica ~0,42 m acima do centro da cabeça (cabeças grandes, cabelo alto)
-      cam.position.set(0.9 * k, yc + 0.35 * k, 3.6 * k);
-      cam.lookAt(0, yc, 0);
+  try {
+    for (const def of roster) {
+      // formas grandes (Deus da Morte = 2): a câmera afasta e sobe na mesma proporção
+      const k = (def.stats && def.stats.size) || 1;
+      if (full) { cam.position.set(0.9 * k, 1.3 * k, 6.2 * k); cam.lookAt(0, 1.0 * k, 0); }
+      else { cam.position.set(0.9 * k, 1.5 * k, 3.6 * k); cam.lookAt(0, 1.15 * k, 0); }
+      cam.far = 20 * k;
+      cam.updateProjectionMatrix();
+      const rig = buildModel(def.model);
+      try {
+        const anim = new Animator(rig, def.anims);
+        anim.play(animName, { blend: 0 });
+        anim.update(animTime);
+        rig.root.rotation.y = turn;
+        scene.add(rig.root);
+        // ENQUADRAMENTO pela altura real da cabeça (antes a câmera era fixa para todos e cortava a cabeça dos mais altos,
+        // como o Kian): o busto vai de um pouco acima da cabeça (cabelo, chifres) até a cintura
+        rig.root.updateMatrixWorld(true);
+        const hd = rig.joints && rig.joints.hd;
+        if (hd && !full) {
+          const headY = hd.getWorldPosition(new THREE.Vector3()).y;
+          const view = 2 * 3.6 * k * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)); // altura visível na distância da câmera
+          const yc = headY + 0.42 * k - view / 2; // o alto do quadro fica ~0,42 m acima do centro da cabeça (cabeças grandes, cabelo alto)
+          cam.position.set(0.9 * k, yc + 0.35 * k, 3.6 * k);
+          cam.lookAt(0, yc, 0);
+        }
+        renderer.setRenderTarget(target);
+        renderer.clear();
+        renderer.render(scene, cam);
+        renderer.readRenderTargetPixels(target, 0, 0, w, h, pixels);
+        const img = ctx.createImageData(w, h);
+        // WebGL lê de baixo para cima
+        for (let y = 0; y < h; y++) {
+          img.data.set(pixels.subarray((h - 1 - y) * w * 4, (h - y) * w * 4), y * w * 4);
+        }
+        // o canvas é reaproveitado entre personagens: limpar antes, senão o fundo (semitransparente embaixo) deixava o
+        // retrato anterior aparecer como um "fantasma" atrás do personagem
+        ctx.clearRect(0, 0, w, h);
+        if (background) {
+          // fundo ÚNICO para todos (v4.2.0, identidade VÉU PARTIDO — antes era a cor da equipe e a grade ficava colorida
+          // demais): preto arroxeado, o brilho roxo do Outro Lado atrás do personagem e uma linha carmesim no chão. A
+          // equipe continua no selo do cartão.
+          const grd = ctx.createLinearGradient(0, 0, 0, h);
+          grd.addColorStop(0, '#24133a');
+          grd.addColorStop(0.6, '#150c22');
+          grd.addColorStop(1, '#0a0610');
+          ctx.fillStyle = grd;
+          ctx.fillRect(0, 0, w, h);
+          const rad = ctx.createRadialGradient(w / 2, h * 0.34, 0, w / 2, h * 0.34, Math.max(w, h) * 0.55);
+          rad.addColorStop(0, '#8a4ce07a');
+          rad.addColorStop(1, '#8a4ce000');
+          ctx.fillStyle = rad;
+          ctx.fillRect(0, 0, w, h);
+          const floor = ctx.createRadialGradient(w / 2, h, 0, w / 2, h, w * 0.6);
+          floor.addColorStop(0, '#c8183a40');
+          floor.addColorStop(1, '#c8183a00');
+          ctx.fillStyle = floor;
+          ctx.fillRect(0, 0, w, h);
+        }
+        const tmp = document.createElement('canvas');
+        tmp.width = w;
+        tmp.height = h;
+        tmp.getContext('2d').putImageData(img, 0, 0);
+        ctx.drawImage(tmp, 0, 0);
+        out[def.id] = canvas.toDataURL('image/png');
+      } finally {
+        scene.remove(rig.root);
+        disposeRigResources(rig.root);
+      }
     }
-    renderer.setRenderTarget(target);
-    renderer.clear();
-    renderer.render(scene, cam);
-    renderer.readRenderTargetPixels(target, 0, 0, w, h, pixels);
-    const img = ctx.createImageData(w, h);
-    // WebGL lê de baixo para cima
-    for (let y = 0; y < h; y++) {
-      img.data.set(pixels.subarray((h - 1 - y) * w * 4, (h - y) * w * 4), y * w * 4);
+    return out;
+  } finally {
+    try {
+      renderer.setRenderTarget(prevTarget);
+    } finally {
+      try {
+        renderer.setClearColor(prevClearColor, prevClear);
+      } finally {
+        target.dispose();
+      }
     }
-    // o canvas é reaproveitado entre personagens: limpar antes, senão o fundo (semitransparente embaixo) deixava o
-    // retrato anterior aparecer como um "fantasma" atrás do personagem
-    ctx.clearRect(0, 0, w, h);
-    if (background) {
-      // fundo ÚNICO para todos (v4.2.0, identidade VÉU PARTIDO — antes era a cor da equipe e a grade ficava colorida
-      // demais): preto arroxeado, o brilho roxo do Outro Lado atrás do personagem e uma linha carmesim no chão. A
-      // equipe continua no selo do cartão.
-      const grd = ctx.createLinearGradient(0, 0, 0, h);
-      grd.addColorStop(0, '#24133a');
-      grd.addColorStop(0.6, '#150c22');
-      grd.addColorStop(1, '#0a0610');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, w, h);
-      const rad = ctx.createRadialGradient(w / 2, h * 0.34, 0, w / 2, h * 0.34, Math.max(w, h) * 0.55);
-      rad.addColorStop(0, '#8a4ce07a');
-      rad.addColorStop(1, '#8a4ce000');
-      ctx.fillStyle = rad;
-      ctx.fillRect(0, 0, w, h);
-      const floor = ctx.createRadialGradient(w / 2, h, 0, w / 2, h, w * 0.6);
-      floor.addColorStop(0, '#c8183a40');
-      floor.addColorStop(1, '#c8183a00');
-      ctx.fillStyle = floor;
-      ctx.fillRect(0, 0, w, h);
-    }
-    const tmp = document.createElement('canvas');
-    tmp.width = w;
-    tmp.height = h;
-    tmp.getContext('2d').putImageData(img, 0, 0);
-    ctx.drawImage(tmp, 0, 0);
-    out[def.id] = canvas.toDataURL('image/png');
-    scene.remove(rig.root);
-    rig.root.traverse((o) => { if (o.geometry && !o.userData.sharedGeometry) o.geometry.dispose(); });
-    disposeSkeletons(rig.root);
   }
-  renderer.setRenderTarget(prevTarget);
-  renderer.setClearColor(0x000000, prevClear);
-  target.dispose();
-  return out;
 }

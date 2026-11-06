@@ -10,6 +10,7 @@ import { Fighter } from '../combat/Fighter.js';
 import { CameraRig } from '../camera/CameraRig.js';
 import { PlayerInput } from '../input/InputManager.js';
 import { buildModel, isModelLoaded } from '../models/index.js';
+import { disposeRigResources } from '../models/glbRig.js';
 import { CpuController } from '../ai/CpuController.js';
 import { DanteClone, BloodZombie } from '../combat/npcs.js';
 import { Assist } from '../combat/assists.js';
@@ -84,8 +85,10 @@ export class Dungeon {
     const w = this.world;
     // o inimigo da vez: o modelo do jogador pintado de Devorado
     const enemy = this.enemy;
-    w.scene.remove(enemy.rig.root);
+    const initialEnemyRig = enemy.rig;
+    w.scene.remove(initialEnemyRig.root);
     enemy.applyDef(devDef, restyleDevorado(buildModel(playerDef.model)));
+    disposeRigResources(initialEnemyRig.root);
     enemy.maxHealth = devDef.stats.maxHealth;
     enemy.health = enemy.maxHealth;
     if (this.coop) {
@@ -618,9 +621,11 @@ export class Dungeon {
     const mix = this.pickClones(count);
     const src = mix[0]; // o Devorado
     if (e.def.copyOf !== src.id) {
-      this.world.scene.remove(e.rig.root);
+      const previousRig = e.rig;
+      this.world.scene.remove(previousRig.root);
       this.devDef = devoradoDef(src, { hp: Math.round(DEVORADO_HP * this.scale.hp) });
       e.applyDef(this.devDef, restyleDevorado(buildModel(src.model)));
+      disposeRigResources(previousRig.root);
     }
     e.maxHealth = Math.round(DEVORADO_HP * this.scale.hp);
     e.reset();
@@ -678,9 +683,11 @@ export class Dungeon {
     const e = this.enemy;
     const def = BOSSES[this.D.boss];
     this.encounter = { room: r, boss: true, done: false };
-    w.scene.remove(e.rig.root);
+    const previousRig = e.rig;
+    w.scene.remove(previousRig.root);
     // sem o modelo próprio (falhou o download): o corpo do Carniçal, para a luta não travar
     e.applyDef(def, buildModel(isModelLoaded(def.model) ? def.model : 'carnical'));
+    disposeRigResources(previousRig.root);
     e.lurking = false;
     e.maxHealth = Math.round(def.stats.maxHealth * this.scale.hp);
     e.reset();

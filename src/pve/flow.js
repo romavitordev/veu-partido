@@ -5,8 +5,11 @@
 import { MenuScreen, LoadingScreen } from '../ui/Screens.js';
 import { seededRandom } from '../net/NetSession.js';
 import { ROSTER } from '../characters/index.js';
+import espreitadorDef from '../characters/bosses/espreitador.js';
+import degolificadaDef from '../characters/bosses/degolificada.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
-import { ensureModels } from '../models/index.js';
+import { ensureModels, isModelLoaded } from '../models/index.js';
+import { renderPortraits } from '../ui/portraits.js';
 import { Dungeon } from './Dungeon.js';
 import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, pickNextDungeon, isAllowed, advanceAfterClear, diffLabel } from './dungeons.js';
 
@@ -20,6 +23,7 @@ import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, 
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = (id) => ROSTER.find((c) => c.id === id);
+const BOSS_DEFS = { espreitador: espreitadorDef, degolificada: degolificadaDef };
 
 export function createPveFlow(ctx) {
   const { game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect } = ctx;
@@ -171,20 +175,38 @@ export function createPveFlow(ctx) {
     const D = DUNGEONS[a.dungeon] || DUNGEONS.espreitador;
     a.dungeon = D.id;
     if (!net0) { data.campaign.lastDungeon = D.id; save(); }
+    const coopDef = a.coop ? byId(a.coop.charId) : null;
     endMatch();
     setOverlay(null, null);
-    const loading = new LoadingScreen(screens, { p1: def, p2: { id: def.id, name: D.bossName || 'O ESPREITADOR', color: D.color }, arena: { name: `${D.name} — profundidade ${a.depth}` }, cpu: true, mode: 'pve', portraits });
+    const loading = new LoadingScreen(screens, {
+      p1: def,
+      p2: { id: D.boss, name: D.bossName || 'O ESPREITADOR', color: D.color },
+      pvePlayers: coopDef ? [{ def, slot: 'P1' }, { def: coopDef, slot: 'P2' }] : null,
+      arena: { name: `${D.name} — profundidade ${a.depth}` },
+      cpu: true, mode: 'pve', portraits,
+    });
     loading.el.classList.add('pve-loading');
     setScreen('loading', loading);
     loading.progress(0.1);
     try { await preloadPveArena(D.arena); } catch (e) { console.warn('Outro Lado: cenário', e); }
     loading.progress(0.5);
     try { await ensureModels([D.boss]); } catch (e) { console.warn('Outro Lado: modelo do chefe', e); }
+    if (!portraits[D.boss]) {
+      try {
+        const bossDef = BOSS_DEFS[D.boss];
+        if (bossDef) {
+          const portraitDef = isModelLoaded(bossDef.model) ? bossDef : { ...bossDef, model: 'carnical' };
+          Object.assign(portraits, renderPortraits([portraitDef], renderer, { turn: 0.35 }));
+        }
+      } catch (e) {
+        console.warn('Outro Lado: retrato do chefe', e);
+      }
+    }
+    loading.setOpponentPortrait(portraits[D.boss]);
     loading.progress(0.8);
     if (game.state !== 'loading' || game.screen !== loading) return;
     if (net0 && !online()) return; // a conexão caiu durante o carregamento
     const teamDefs = (a.team || []).map(byId).filter(Boolean);
-    const coopDef = a.coop ? byId(a.coop.charId) : null;
     // online: a árvore de cada um vem dos dados que ele mandou; a montagem da dungeon (rotas, gavetas, baús) usa um
     // sorteio com semente, igual nos dois computadores
     const d1 = net0 ? net.data[0] : data;

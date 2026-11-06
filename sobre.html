@@ -75,6 +75,7 @@
         <a href="#universo">Universo</a>
         <a href="#elementos">Elementos</a>
         <a href="#modos">Modos</a>
+        <a href="#chefes">Chefes</a>
         <a href="#elenco">Elenco</a>
         <a href="#controles">Controles</a>
         <a href="#perguntas">Perguntas</a>
@@ -368,7 +369,7 @@
         <li><b>Tutorial e Treino</b><span>Aprenda os golpes passo a passo e pratique combos num alvo parado.</span></li>
       </ol>
       <article class="soon" aria-labelledby="t-outro-lado">
-        <p class="card-k">Já jogável · em evolução (v4.31.0)</p>
+        <p class="card-k">Já jogável · em evolução (v4.31.1)</p>
         <h3 id="t-outro-lado">Outro Lado</h3>
         <p>O modo contra o Outro Lado em vez de outro lutador. Você escolhe um personagem do elenco e atravessa
           <b>masmorras temáticas</b>, sala por sala, com inimigos menores, portas, chaves, gavetas e baús, até o
@@ -382,9 +383,36 @@
           <li>Em cada tentativa você sobe de nível e escolhe melhorias temporárias; os baús sobem de 1 a 3 delas. Ao morrer,
             perde essas melhorias e guarda o nível e a árvore permanente do personagem, que também se compra com moedas.</li>
           <li>Sozinho, em dupla no mesmo aparelho (tela dividida) ou online, com volta à vida paga com moedas.</li>
-          <li>Campanha salva, com backup para exportar e importar. Masmorras e chefes novos chegam nas próximas atualizações.</li>
+          <li>Campanha salva, com backup para exportar e importar. Novas masmorras e chefes podem ampliar o modo em futuras atualizações.</li>
         </ul>
       </article>
+    </section>
+
+    <!-- CHEFES DO OUTRO LADO -->
+    <section class="wrap block" id="chefes" aria-labelledby="t-chefes">
+      <h2 id="t-chefes">Chefes do Outro Lado</h2>
+      <p class="sub">Conheça os chefes das masmorras atuais. Os retratos são renderizados a partir dos modelos 3D do jogo.</p>
+      <div class="roster boss-roster" id="boss-roster">
+        <article class="fcard">
+          <div class="fpic"><img class="boss-portrait" data-boss="espreitador" width="240" height="320" loading="lazy" decoding="async" alt="O Espreitador, chefe da Mansão Endiabrada"></div>
+          <div class="fbody">
+            <p class="fk">Mansão Endiabrada · Chefe</p>
+            <h3>O Espreitador</h3>
+            <p class="ftag">“Feche a fresta.”</p>
+            <dl><div><dt>Ameaça</dt><dd>Observa pelas frestas, drena a sanidade de quem encara seus olhos e cria cópias.</dd></div></dl>
+          </div>
+        </article>
+        <article class="fcard">
+          <div class="fpic"><img class="boss-portrait" data-boss="degolificada" width="240" height="320" loading="lazy" decoding="async" alt="A Degolificada, chefe da Escola Nostradamus"></div>
+          <div class="fbody">
+            <p class="fk">Escola Nostradamus · Chefe</p>
+            <h3>A Degolificada</h3>
+            <p class="ftag">“Se vir cabelos pretos flutuando em sua direção… corra.”</p>
+            <dl><div><dt>Ameaça</dt><dd>Flutua e ataca com os cabelos; descubra quem está no corpo para atravessar seu escudo.</dd></div></dl>
+          </div>
+        </article>
+      </div>
+      <p class="note" id="boss-portrait-status" role="status" aria-live="polite"></p>
     </section>
 
     <!-- ELENCO (montado pelos dados do jogo quando a seção chega na tela) -->

@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.31.1 — Outro Lado: retratos dos chefes e tela de carregamento
+
+### Adicionado
+- A página Sobre agora apresenta O Espreitador e A Degolificada com retratos renderizados a partir dos modelos 3D.
+- A tela de carregamento mostra P1 e P2 contra o chefe da masmorra no coop local.
+
+### Corrigido
+- Retratos ausentes no carregamento usam uma imagem alternativa para os jogadores; a falha ao renderizar o retrato do chefe não bloqueia o início da dungeon.
+- Liberação de recursos gráficos ao substituir rigs e depois de gerar retratos, reduzindo acúmulo de recursos.
+
 ## v4.31.0 — Outro Lado: a Escola Nostradamus e a Degolificada
 
 ### Adicionado
