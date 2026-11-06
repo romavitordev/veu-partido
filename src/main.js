@@ -29,6 +29,7 @@ import { OptionsScreen } from './ui/OptionsScreen.js';
 import { TouchControls, isTouchDevice } from './ui/touchControls.js';
 import { createPveFlow } from './pve/flow.js';
 import { registerPWA, InstallHint } from './ui/installHint.js';
+import { pinPrograms } from './core/programPin.js';
 
 const touchDevice = isTouchDevice();
 document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
@@ -709,13 +710,27 @@ function frame(now) {
   if (cap && now && now - lastFrame < 1000 / cap - 2) { requestAnimationFrame(frame); return; }
   lastFrame = now || performance.now();
   const dt = clock.getDelta();
-  if (game.net) netPump(dt);
-  else tick(Math.min(1 / 30, dt));
-  // tela de vitória: a câmera se mexe (World.updateVictoryCam), os nomes acompanham
-  if (game.match && game.match.world && game.match.world.victoryCam) placeVictoryLabels();
-  render();
+  // um erro num quadro não pode parar o laço: antes, uma exceção no tick() pulava o requestAnimationFrame e o jogo
+  // CONGELAVA de vez (P0 travamentos, 2026-11-06). O erro continua no console (uma vez por mensagem), não é escondido.
+  try {
+    if (game.net) netPump(dt);
+    else tick(Math.min(1 / 30, dt));
+    // tela de vitória: a câmera se mexe (World.updateVictoryCam), os nomes acompanham
+    if (game.match && game.match.world && game.match.world.victoryCam) placeVictoryLabels();
+    render();
+  } catch (e) {
+    reportFrameError(e);
+  }
   if (perf) perf.update(dt);
   requestAnimationFrame(frame);
+}
+
+const frameErrors = new Set();
+function reportFrameError(e) {
+  const key = String(e && e.message || e);
+  if (frameErrors.has(key)) return;
+  frameErrors.add(key);
+  console.error('Erro no quadro do jogo (o laço continua):', e);
 }
 
 // ---------------------------------------------------------------- PARTIDA LAN (ver net/NetSession.js)
@@ -1246,5 +1261,6 @@ function render() {
     if (booted) titleStage.ready();
     titleStage.render(renderer);
   }
+  pinPrograms(renderer); // shader compilado não é apagado: efeito de golpe não recompila (core/programPin.js)
 }
 requestAnimationFrame(frame);

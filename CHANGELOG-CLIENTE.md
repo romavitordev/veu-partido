@@ -2,6 +2,12 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.31.2 — Outro Lado sem travamentos
+- Corrigido o travamento ao lutar no Outro Lado: um tiro ou explosão perto de um barril ou caixa congelava o jogo.
+- Menos engasgos nas lutas: os efeitos de golpe não recompilam mais os gráficos a cada uso (vale para todos os modos).
+- Se acontecer um erro num quadro, o jogo continua rodando em vez de congelar.
+- A equipe Outro Lado (Estrangeiro, Amigo Imaginário e Carniçal) não entra mais no modo Outro Lado.
+
 ## v4.31.1 — Outro Lado: retratos dos chefes e tela de carregamento
 - A tela de carregamento do Outro Lado mostra você contra o chefe da masmorra.
 - No multiplayer local, P1 e P2 aparecem juntos contra o chefe.

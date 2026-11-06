@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1185,6 +1185,39 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
 - [ ] Polimento da Degolificada: os corpos de alunos presos nela e o tamanho maior (cânone da luta final), a fita em X
       que cede e revela a boca (Devoradora), texturas da escola, armários como contêineres de loot.
 - [ ] Pupilas em 8 do Espreitador.
+- [x] **Travamento ao lutar no Outro Lado** (relato do dono, 2026-11-06: "quando começo a lutar contra os personagens,
+      parece que sobrecarrega e trava"). Duas causas medidas: (1) o barril/caixa (`pve/breakables.js`) não tinha
+      `hitTest`; o 1º projétil numa sala com barril lançava erro no `World.update`, e como o erro saía do `tick()` o
+      `requestAnimationFrame` seguinte não era pedido e o jogo CONGELAVA de vez (Arthur, Kaiser, Erin, Agatha, Balu,
+      Carina, Rubens, Veríssimo…); (2) os efeitos de golpe criam e descartam o próprio material, e o three.js apagava o
+      shader junto: cada golpe recompilava (picos de 60–420 ms no render). Correções: `hitTest` no Breakable, laço do
+      jogo que registra o erro e continua (`main.js`), shaders fixos (`core/programPin.js`). Testes de regressão em
+      `tests/pve.test.js` e `tests/program-pin.test.js`.
+- [ ] **Personagens no Outro Lado — conferir e equilibrar TODOS** (pedido do dono, 2026-11-06): bateria automática
+      (cada lutador sozinho, CPU Difícil no lugar do jogador, 2 salas de 3 monstros + o chefe) para achar quem quebra,
+      quem não consegue limpar sala ou não acerta o chefe, e ajustar o kit no modo (sem mexer no balanceamento da luta).
+      **1ª rodada (2026-11-06, 1 amostra cada, ruído alto):** os 39 permitidos FUNCIONAM — nenhum erro depois da
+      correção do `hitTest`. Salas de 3 monstros limpas em 21–60 s; o chefe cai em 66–121 s. Mais fracos no modo:
+      **Deus da Morte** (sala não limpa em 60 s; chefe ficou com 45%), **Anfitrião** (chefe 36%), **Morato** (não limpou
+      nenhuma das duas salas), **Amália** (idem), Dalmo/Magistrada/Arnaldo/Rubens (chefe 16–24%), Kaiser/Gaius/Chico
+      (chefe a 2–11%). Muito dano recebido: Celestine (115% numa sala), Balu, Dante, Kemi, Xande (~80%). Próximo: 3
+      amostras dos que ficaram para trás antes de mexer (só no modo: multiplicador por personagem no Outro Lado).
+- [x] **A equipe Outro Lado não entra no modo Outro Lado** (pedido do dono, 2026-11-06): Estrangeiro, Amigo Imaginário,
+      Carniçal (e quem tiver a equipe 'Outro Lado') aparecem bloqueados na escolha ("é da equipe Outro Lado: não entra
+      neste modo") e saíram da loja de desbloqueio (`pveBanned` em `pve/unlocks.js`).
+
+## OS CHEFES E OS CENÁRIOS DO OUTRO LADO NO MODO DE LUTA (pedido do dono, 2026-11-06)
+
+- [ ] **A Degolificada (e os outros chefes do Outro Lado) como personagens jogáveis no modo de luta.** Preparar como
+      lutador de verdade: ficha no `characters/`, os 4 golpes + especial + transformação a partir da IA de chefe
+      (`pve/degolificada.js`: cabelos — investida, agarrar e arremessar, rastejante, por cima, defesa; Grito Rasgado;
+      Devoradora como transformação), vida/dano no padrão do elenco, falas, retrato, entrada na seleção e no check
+      (`npm run check`), sem o Escudo de Medo/provas (mecânica só da dungeon). Mesmo processo para o Espreitador.
+      Balancear por telemetria (`runBalance({ focus: 'id' })`).
+- [ ] **Mansão Endiabrada como arena única de luta:** recortar do mapa da dungeon uma sala-arena (hall ou salão) com
+      limites, câmera e spawns do modo de luta; entra em `ARENAS`/`ARENA_ORDER` e na seleção de cenário.
+- [ ] **Escola Nostradamus como arena única de luta:** idem (pátio, biblioteca ou o bunker), sem as portas e salas da
+      dungeon.
 
 Detalhes em `docs/outro-lado-playtest.md` (rodada 8).
 

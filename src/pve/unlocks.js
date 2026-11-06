@@ -11,8 +11,15 @@ export const UNLOCK_TIERS = [
   { price: 250, ids: ['joui', 'kaiser', 'kian', 'gal_sal', 'dalmo', 'aguiar', 'cristino'] },
   { price: 350, ids: ['jae', 'kemi', 'labirinto', 'juan', 'raziel', 'arnaldo', 'ferreiro', 'celestine'] },
   { price: 500, ids: ['gaius', 'amalia', 'juan_odio', 'magistrada'] },
-  { price: 700, ids: ['o_diabo', 'deus_morte', 'anfitriao', 'estrangeiro', 'amigo', 'carnical'] },
+  { price: 700, ids: ['o_diabo', 'deus_morte', 'anfitriao'] },
 ];
+// A EQUIPE OUTRO LADO não entra no modo (pedido do dono, 2026-11-06): o Estrangeiro, o Amigo Imaginário, o Carniçal e
+// quem mais tiver a equipe 'Outro Lado' são as criaturas do outro lado — não exploram as dungeons com os agentes.
+export const PVE_BANNED_TEAM = 'Outro Lado';
+export function pveBanned(def) {
+  return !!def && [def.origin, ...(def.teams || [])].includes(PVE_BANNED_TEAM);
+}
+
 // quem não está na lista (personagem novo) custa o preço do último degrau
 const LAST = UNLOCK_TIERS[UNLOCK_TIERS.length - 1].price;
 
@@ -38,7 +45,8 @@ export function buyChar(data, id) {
 // Map id → texto de como desbloquear, só dos bloqueados
 export function lockedMap(data, roster) {
   const out = new Map();
-  for (const c of roster) if (!isUnlocked(data, c.id)) out.set(c.id, `custa ${priceOf(c.id)} moedas (você tem ${data.coins || 0}) · compre em DESBLOQUEAR PERSONAGENS`);
+  for (const c of roster) if (pveBanned(c)) out.set(c.id, 'é da equipe Outro Lado: não entra neste modo');
+  for (const c of roster) if (!pveBanned(c) && !isUnlocked(data, c.id)) out.set(c.id, `custa ${priceOf(c.id)} moedas (você tem ${data.coins || 0}) · compre em DESBLOQUEAR PERSONAGENS`);
   return out;
 }
 

@@ -1,7 +1,7 @@
 // OUTRO LADO — a loja de PERSONAGENS (pedido do dono, 2026-11-05): os bloqueados são comprados com as moedas dos baús.
 // Mesma cara da tela de melhorias permanentes (a loja do Vampire Survivors): grade de retratos, as moedas no alto e o
 // painel de baixo com o preço e o botão COMPRAR. Devolve para o flow.js 'buy:<id>' ou 'back'.
-import { isUnlocked, priceOf } from './unlocks.js';
+import { isUnlocked, priceOf, pveBanned } from './unlocks.js';
 
 const COLS = 6;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -11,7 +11,7 @@ export class PveUnlockScreen {
     this.audio = audio;
     this.data = data;
     // os mais baratos primeiro (a ordem de força)
-    this.list = roster.slice().sort((a, b) => priceOf(a.id) - priceOf(b.id));
+    this.list = roster.filter((c) => !pveBanned(c)).sort((a, b) => priceOf(a.id) - priceOf(b.id));
     const firstLocked = this.list.findIndex((c) => !isUnlocked(data, c.id));
     this.index = Math.max(0, firstLocked);
     const el = document.createElement('div');

@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.31.2 — Outro Lado sem travamentos
+
+- Versão: `VERSION` 4.31.1 → **4.31.2** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.
+- `src/pve/breakables.js`: `hitTest(p, r)` no Breakable (projéteis em `combat/projectiles.js` e `combat/cristinoAbilities.js` chamam em todo NPC do mundo).
+- `src/core/programPin.js` + `main.js` render(): cada programa WebGL ganha um uso extra (`usedTimes`) e não é destruído quando o último material do efeito é descartado (teto de 600).
+- `main.js` frame(): try/catch em tick/render com `console.error` uma vez por mensagem; o `requestAnimationFrame` é sempre pedido.
+- `src/pve/unlocks.js` `pveBanned(def)` (equipe 'Outro Lado'): `lockedMap`, `allowedEverywhere` (`flow.js`) e a loja (`unlockScreen.js`). Estrangeiro, Amigo e Carniçal saíram do último degrau de preço.
+- Medição: sala com 4 monstros, 900 quadros — antes 24–66 quadros > 40 ms (pico 420 ms, todos com shader novo); depois 3 (pico 98 ms), 0 shaders novos. Bateria dos 39 personagens permitidos (CPU Difícil, 2 salas + chefe): nenhum erro; resultados no TODO.
+- Testes: `npm test` 77/77 (`tests/program-pin.test.js`, `tests/pve.test.js`).
+
 ## v4.31.1 — Outro Lado: retratos dos chefes e tela de carregamento
 
 - Versão: `VERSION` 4.31.0 → **4.31.1** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.

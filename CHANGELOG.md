@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.31.2 — Outro Lado sem travamentos
+
+### Corrigido
+- Travamento ao lutar no Outro Lado: barris e caixas não tinham `hitTest`, e o primeiro projétil numa sala com eles lançava erro no `World.update`, que congelava o jogo.
+- Engasgos de 60 a 420 ms nas lutas: os shaders dos efeitos de golpe eram apagados e recompilados a cada uso; agora ficam fixos.
+- O laço do jogo registra o erro de um quadro e continua, em vez de parar.
+
+### Alterado
+- A equipe Outro Lado (Estrangeiro, Amigo Imaginário, Carniçal) fica bloqueada no modo Outro Lado e saiu da loja de desbloqueio.
+
 ## v4.31.1 — Outro Lado: retratos dos chefes e tela de carregamento
 
 ### Adicionado

@@ -188,3 +188,26 @@ test('os olhos do Espreitador somem das frestas depois da derrota', () => {
   closet.dispose();
   crack.dispose();
 });
+
+// P0 travamentos (2026-11-06): todo NPC posto no mundo precisa do hitTest dos projéteis — o barril sem ele fazia o 1º
+// tiro numa sala lançar erro no World.update (a luta parava)
+test('barris e caixas respondem ao hitTest dos projéteis', async () => {
+  const { Breakable } = await import('../src/pve/breakables.js');
+  const world = { arena: { boxes: [] }, scene: { add() {}, remove() {} }, audio: { play() {} }, fx: { burst() {} } };
+  const b = new Breakable(world, null, { x: 2, z: 0, kind: 'barrel', yaw: 0 });
+  assert.equal(typeof b.hitTest, 'function');
+  assert.equal(b.hitTest(new THREE.Vector3(2.3, 0.5, 0), 0.1), true);
+  assert.equal(b.hitTest(new THREE.Vector3(5, 0.5, 0), 0.1), false);
+  assert.equal(b.hitTest(new THREE.Vector3(2, 3, 0), 0.1), false, 'por cima do barril não acerta');
+});
+
+// pedido do dono (2026-11-06): a equipe Outro Lado (Estrangeiro, Amigo Imaginário, Carniçal…) não entra no modo
+test('a equipe Outro Lado fica de fora do modo Outro Lado', async () => {
+  const { pveBanned, lockedMap } = await import('../src/pve/unlocks.js');
+  const { ROSTER } = await import('../src/characters/index.js');
+  const banned = ROSTER.filter(pveBanned).map((c) => c.id).sort();
+  for (const id of ['amigo', 'carnical', 'estrangeiro']) assert.ok(banned.includes(id), id);
+  assert.ok(!banned.includes('dante'));
+  const locked = lockedMap(emptyData(), ROSTER);
+  for (const id of banned) assert.match(locked.get(id), /Outro Lado/);
+});

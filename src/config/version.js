@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.31.1';
+export const VERSION = '4.31.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.31.2',
+    date: '2026-11-06',
+    title: 'Outro Lado sem travamentos',
+    items: [
+      'Corrigido o travamento ao lutar no Outro Lado: um tiro ou explosão perto de um barril ou caixa congelava o jogo.',
+      'Menos engasgos nas lutas: os efeitos de golpe não recompilam mais os gráficos a cada uso (vale para todos os modos).',
+      'Se acontecer um erro num quadro, o jogo continua rodando em vez de congelar.',
+      'A equipe Outro Lado (Estrangeiro, Amigo Imaginário e Carniçal) não entra mais no modo Outro Lado.',
+    ],
+  },
   {
     v: '4.31.1',
     date: '2026-11-06',

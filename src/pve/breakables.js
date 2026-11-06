@@ -78,6 +78,15 @@ export class Breakable {
     this.group = g;
   }
 
+  // tiro/explosão (projectiles.js, cristinoAbilities.js): todo NPC do mundo precisa responder — sem isto o 1º projétil
+  // numa sala com barril lançava erro no World.update e a luta parava (P0 travamentos, 2026-11-06)
+  hitTest(p, r = 0) {
+    if (!this.alive || this.broken) return false;
+    const dy = p.y - this.y;
+    if (dy < -0.2 - r || dy > this.height + r) return false;
+    return Math.hypot(p.x - this.pos.x, p.z - this.pos.z) <= this.radius + r;
+  }
+
   // golpe do jogador (NPC do inimigo): as caixas do bunker não quebram com ele
   hitBy(attacker, dmg) {
     if (this.broken || this.kind === 'bossBox') {

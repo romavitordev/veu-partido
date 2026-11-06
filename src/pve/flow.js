@@ -14,9 +14,9 @@ import { Dungeon } from './Dungeon.js';
 import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, pickNextDungeon, isAllowed, advanceAfterClear, diffLabel } from './dungeons.js';
 
 // o personagem pode entrar em TODAS as dungeons (nenhum chefe contra ele mesmo)
-const allowedEverywhere = (id) => DUNGEON_ORDER.every((d) => isAllowed(d, id));
+const allowedEverywhere = (id) => !pveBanned(byId(id)) && DUNGEON_ORDER.every((d) => isAllowed(d, id));
 import { PveTreeScreen } from './treeScreen.js';
-import { lockedMap, isUnlocked, buyChar } from './unlocks.js';
+import { lockedMap, isUnlocked, buyChar, pveBanned } from './unlocks.js';
 import { PveUnlockScreen } from './unlockScreen.js';
 import { fmtTime } from './pveHud.js';
 import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath, exportPve, parseBackup, describePve } from './save.js';
