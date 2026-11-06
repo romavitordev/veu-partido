@@ -808,6 +808,7 @@ export class Dungeon {
       this.brain && this.brain.onDeath && this.brain.onDeath();
       this.brain && this.brain.dispose();
       this.brain = null;
+      this.clearEspreitadorEyes();
       this.bossDeadAt = at;
       this.phase = 'bossDown';
       this.phaseTime = 0;
@@ -823,6 +824,12 @@ export class Dungeon {
     this.giveXp(this.D.xp.devorado);
     this.tryHeal(at, 1);
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal);
+  }
+
+  clearEspreitadorEyes() {
+    for (const c of this.closets) c.hideEyes();
+    for (const id in this.cracks) this.cracks[id].hideEyes();
+    this.activeCrack = null;
   }
 
   onCopiaSlain(n) {

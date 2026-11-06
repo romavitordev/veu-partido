@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import * as THREE from 'three';
 import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades } from '../src/pve/upgrades.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, rollRouteLength, rollExits, chestChance, pickNextDungeon, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
+import { Closet, PeekingCrack } from '../src/pve/espreitador.js';
 
 const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k), m }; };
 
@@ -160,4 +162,23 @@ test('baú: 1 item é o comum, 3 é raro; sobe só melhorias que você já tem',
   assert.ok(lucky[3] > n[3]);
   const ups = chestUpgrades(['furia', 'vigor', 'vigor', 'vigor'], rng, 3);
   assert.deepEqual(ups, ['furia']); // o Vigor já está no máximo; nada que você não tenha
+});
+
+test('os olhos do Espreitador somem das frestas depois da derrota', () => {
+  const world = { scene: new THREE.Scene(), arena: { boxes: [] }, audio: { play() {} }, addNpc() {} };
+  const closet = new Closet(world, {}, { x: 0, z: 0, face: 0 }, 0);
+  const crack = new PeekingCrack(world, { x: 1, z: 0 });
+  closet.warn(1);
+  crack.eyes.visible = true;
+
+  closet.hideEyes();
+  crack.hideEyes();
+
+  assert.equal(closet.eyes.visible, false);
+  assert.equal(closet.warnEyes.visible, false);
+  assert.equal(crack.update(1, {}, true), false);
+  assert.equal(crack.eyes.visible, false);
+  assert.equal(crack.t, 0, 'a fresta para de atualizar depois de desativada');
+  closet.dispose();
+  crack.dispose();
 });

@@ -205,6 +205,12 @@ export class Closet {
     this.world.audio.play('creak', { volume: 0.8 });
   }
 
+  hideEyes() {
+    this.eyes.visible = false;
+    if (this.warnEyes) this.warnEyes.visible = false;
+    this.warnT = 0;
+  }
+
   tick(dt, { occupied = false } = {}) {
     this.t += dt;
     if (this.state === 'locked') {
@@ -807,10 +813,18 @@ export class PeekingCrack {
     world.scene.add(g);
     this.group = g;
     this.active = false;
+    this.disabled = false;
+  }
+
+  hideEyes() {
+    this.disabled = true;
+    this.eyes.visible = false;
+    this.door.rotation.y = -0.12;
   }
 
   // devolve true enquanto o jogador está sendo drenado
   update(dt, p, inside) {
+    if (this.disabled) return false;
     this.t += dt;
     let draining = false;
     if (inside) {
