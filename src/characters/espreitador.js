@@ -7,18 +7,18 @@
 //   Pancada .............. ○ o combo: os braços longos se debatendo — golpes fracos, mas de alcance grande
 //   Dedos longos ......... □ os dedos se esticam, pegam e puxam (PROPOSTA a partir dos braços e dedos longos)
 //   Drenar Energia ....... △ + ○ o olhar: drena a Sanidade (a energia) de quem está à frente E olhando para ele
-//   Correr pelas Frestas . △ + × some e sai pelas costas do adversário (no cânone: entra num armário e sai de outro)
+//   Abrir Fresta ......... △ + □ um ARMÁRIO entreaberto brota do chão (até 3); o adversário tranca com um golpe
+//   Correr pelas Frestas . △ + × entra numa fresta e sai pela mais perto do alvo num BOTE (o do chefe); sem fresta
+//                          aberta fica APAVORADO (a fraqueza do cânone: "bloquear ou fechar sua fresta")
 //   Cópia Observada ...... R2 + × cria DEVORADOS — cópias cinzentas de quem ele observa (o adversário)
-//   Fortalecer ........... △ + L2 (no cânone, fortalece um Devorado segurando a cabeça dele; aqui, PROPOSTA: a si mesmo
-//                          e às cópias em campo)
-//   O Olho da Boca ....... o ESPECIAL (PROPOSTA): agarra com os braços longos e o olho de dentro da boca encara
+//   Fortalecer ........... △ + L2 (cânone) segura a cabeça de um Devorado e o fortalece; sem Devorado, a si mesmo
+//   O Olho da Boca ....... o ESPECIAL (PROPOSTA): frestas em volta do alvo, três botes e o olho de dentro da boca
+// Os golpes são os do chefe (pedido do dono, 2026-11-06): combat/outroLadoAbilities.js.
 //   Pupilas que se Multiplicam ... a TRANSFORMAÇÃO (PROPOSTA a partir do cânone: as pupilas se multiplicam)
 import raziel from './raziel.js';
-import joui from './joui.js';
 
 const FEAR = 0xf2c230; // o amarelo dos olhos
 const GREY = 0x8a8478;
-const abil = (def, id) => def.abilities.find((a) => a.id === id);
 
 // a Pancada (wiki: ataques desesperados, descoordenados e trêmulos): as garras do Raziel com mais alcance (os braços
 // longos) e dano mais baixo. k = quanto do dano fica (a chefe bate ainda mais fraco: bosses/espreitador.js).
@@ -91,6 +91,7 @@ export default {
     hitSound: 'chainPull',
   },
 
+  // Os golpes do kit são os da IA do chefe do Outro Lado (pve/espreitador.js), em combat/outroLadoAbilities.js
   abilities: [
     {
       // △ + ○ DRENAR ENERGIA (cânone): só pega quem está no campo de visão dele E olhando para ele
@@ -114,12 +115,33 @@ export default {
       color: FEAR,
     },
     {
-      // △ + × CORRER PELAS FRESTAS (cânone: some num armário e sai de outro) — o teleporte do Joui, sem sombra vermelha
-      ...abil(joui, 'teleport'),
+      // △ + □ ABRIR FRESTA: um ARMÁRIO entreaberto brota do chão (as frestas por onde ele anda)
+      id: 'abrirFresta',
+      name: 'Abrir Fresta',
+      input: 'carga+ranged',
+      type: 'openFresta',
+      description: 'Um armário entreaberto (uma FRESTA, com olhos lá dentro) brota do chão ao lado dele. Até 3 no mapa; o mais velho some. Um golpe ou tiro do adversário FECHA e TRANCA a fresta por 20 s.',
+      max: 3,
+      energyCost: 10,
+      cooldown: 4,
+      color: FEAR,
+    },
+    {
+      // △ + × CORRER PELAS FRESTAS (cânone): entra numa fresta e sai pela mais perto do alvo num bote
       id: 'correrFrestas',
       name: 'Correr pelas Frestas',
       input: 'carga+jump',
-      description: 'Some por uma fresta e sai pelas costas do adversário, já podendo atacar. Não causa dano.',
+      type: 'frestaTravel',
+      description: 'Entra na fresta mais perto, os OLHOS AMARELOS acendem na fresta mais perto do adversário e ele sai por ela num BOTE. Com todas as frestas trancadas, fica APAVORADO (apanha mais por 3 s).',
+      hide: 0.55,
+      lungeTime: 0.4,
+      lungeSpeed: 13,
+      reach: 1.9,
+      damage: 52,
+      terror: { time: 3, taken: 1.4 },
+      element: 'conhecimento',
+      energyCost: 16,
+      cooldown: 7,
       color: FEAR,
     },
     {
@@ -141,50 +163,37 @@ export default {
       color: FEAR,
     },
     {
-      // △ + L2 FORTALECER (cânone: segura a cabeça de um Devorado e o deixa mais forte) — PROPOSTA: ele mesmo
+      // △ + L2 FORTALECER (cânone): segura a cabeça de um Devorado e o deixa maior e mais forte; sem Devorado, ele mesmo
       id: 'fortalecer',
       name: 'Fortalecer',
       input: 'carga+dodge',
-      type: 'selfBuff',
-      buffType: 'fortalecerEspreitador',
+      type: 'fortifyDevorado',
       label: 'FORTALECER',
-      anim: 'gaze',
-      description: 'As pupilas se multiplicam: por 7 s bate 20% mais forte, anda 10% mais rápido e aguenta 2 golpes sem recuar.',
+      description: 'Segura a cabeça de um DEVORADO em campo: ele fica maior, com o dobro da vida e 70% mais forte. Sem Devorado, as pupilas se multiplicam nele: por 7 s bate 20% mais forte, anda 10% mais rápido e aguenta 2 golpes sem recuar.',
       energyCost: 22,
       cooldown: 18,
-      duration: 7,
-      damageMult: 1.2,
-      speedMult: 1.1,
-      armor: 2,
-      affects: ['melee', 'ranged'],
+      reach: 7,
+      hold: 0.9,
+      hpMult: 2,
+      dmgMult: 1.7,
+      extend: 4,
+      self: { id: 'fortalecer', name: 'Fortalecer', type: 'selfBuff', buffType: 'fortalecerEspreitador', label: 'FORTALECER', anim: 'gaze', duration: 7, damageMult: 1.2, speedMult: 1.1, armor: 2, affects: ['melee', 'ranged'], color: FEAR },
       color: FEAR,
     },
   ],
 
-  // ESPECIAL O OLHO DA BOCA (PROPOSTA a partir do cânone: o olho grande dentro da boca): os braços longos agarram e
-  // batem, ele puxa a vítima para perto e a boca se abre — o olho encara, a mente racha
+  // ESPECIAL O OLHO DA BOCA (PROPOSTA a partir do cânone: as frestas e o olho grande dentro da boca): quatro armários
+  // brotam em volta do alvo, ele sai de três frestas em sequência e no fim abre a boca — o OLHO encara e drena a Sanidade
   special: {
     name: 'O Olho da Boca',
     banner: 'Feche a fresta.',
-    type: 'cinematicCombo',
+    type: 'frestaAmbush',
     energyCost: 50,
     cooldown: 14,
+    shares: [0.18, 0.46],
+    drain: 40,
     color: FEAR,
     sound: 'specialStart',
-    prepare: { anim: 'gaze', time: 0.45 },
-    dash: { speed: 9, maxTime: 0.9, contact: 3.0 },
-    standOff: 2.2,
-    hits: [
-      { t: 0.1, anim: 'db_claw_r', dur: 0.4, share: 0.14, fx: { kind: 'punch', color: GREY }, sound: 'punch' },
-      { t: 0.5, anim: 'db_claw_l', dur: 0.4, share: 0.14, fx: { kind: 'punch', color: GREY }, sound: 'punch' },
-      { t: 0.9, anim: 'db_cross', dur: 0.45, share: 0.16, fx: { kind: 'claw', color: GREY }, sound: 'clawHit', call: 'PANCADA' },
-      { t: 1.45, anim: 'gaze', dur: 0.85, share: 0.22, victimAnim: 'stagger', fx: { kind: 'punch', color: FEAR }, sound: 'fearGaze', call: 'O OLHO' },
-      { t: 2.4, anim: 'db_rend', dur: 0.45, share: 0.34, closeIn: true, fx: { kind: 'claw', big: true, color: FEAR, color2: GREY }, sound: 'slashFinal', final: true, call: 'A MENTE RACHA' },
-    ],
-    shots: 'control',
-    bannerAt: 0.2,
-    length: 3.2,
-    endReaction: { knockback: 3, lowLaunch: true },
   },
 
   // PUPILAS QUE SE MULTIPLICAM (PROPOSTA): os olhos se abrem por todo o corpo — mais rápido, mais forte e as habilidades

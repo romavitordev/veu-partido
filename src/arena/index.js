@@ -114,7 +114,7 @@ ARENAS.mansao_luta = {
   description: 'O quarto principal da mansão do Espreitador: armários entreabertos, a lua nas janelas e o relógio parado nas 2:11.',
   colors: ['#020203', '#3e2a1c', '#f2c230'],
   available: true,
-  thumbCamera: { pos: [50, 5, 14], look: [50, 1, -6] },
+  thumbCamera: { pos: [50, 4.2, 9.2], look: [50, 1, -6] },
   create: () => createGLBArena(MANSAO_LUTA),
 };
 ARENAS.escola_luta = {
@@ -122,7 +122,7 @@ ARENAS.escola_luta = {
   description: 'O bunker escondido sob a biblioteca da escola: o círculo do ritual, as velas e as lâmpadas nuas.',
   colors: ['#020304', '#4e4e4a', '#c8d0c0'],
   available: true,
-  thumbCamera: { pos: [81, 5, 13], look: [81, 1, -5] },
+  thumbCamera: { pos: [81, 4.2, 8], look: [81, 0.6, -4] },
   create: () => createGLBArena(ESCOLA_LUTA),
 };
 export async function preloadPveArena(id) {

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.32.0';
+export const VERSION = '4.33.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,19 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.33.0',
+    date: '2026-11-06',
+    title: 'Kits do cânone e frestas',
+    items: [
+      'Degolificada refeita: luta só com o cabelo — chicote, agarrar e estrangular, cabelo rastejante, cabelo por cima, casulo de defesa, Grito Rasgado e arremesso de caixote.',
+      'Novo especial da Degolificada: Estrangulamento Capilar — ergue o adversário, estrangula, bate no chão e joga na parede.',
+      'Espreitador refeito: abre frestas (armários) pelo mapa e se teleporta entre elas para dar o bote. Bater num armário o tranca; sem fresta aberta, ele fica apavorado.',
+      'Novo especial do Espreitador: Emboscada das Frestas — armários cercam o adversário, três botes e o Olho da Boca drenando.',
+      'Mansão Endiabrada e Escola Nostradamus bem mais claras no modo de luta.',
+      'Tela de escolha de cenário reorganizada: cartões à esquerda, preview grande e descrição à direita.',
+    ],
+  },
   {
     v: '4.32.0',
     date: '2026-11-06',

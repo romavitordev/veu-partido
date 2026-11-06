@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v4.33.0 — Kits do cânone e frestas
+
+- Versão: `VERSION` 4.32.0 → **4.33.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.
+- Novo `src/combat/outroLadoAbilities.js` (importado em `Fighter.js`): tipos `hairLash`, `hairGrab`, `hairCrawl`, `hairRain`, `hairGuard`, `hairScream`, `hairToss`, `openFresta`, `frestaTravel`, `fortifyDevorado`; specials `hairStrangle` e `frestaAmbush`. Reusa `Closet` de `pve/espreitador.js`.
+- Fichas `characters/degolificada.js` e `characters/espreitador.js` reescritas (sem import do Joui; Degolificada só importa o Amigo para o modelo/base). PROPOSTA: botões, números e cenas.
+- `arena/configs.js`: `brighten()` e luz de preenchimento em `fightRoom`; névoa 0.012. `arena/index.js`: thumbCamera de `mansao_luta`/`escola_luta`.
+- `styles.css`: `#stage` em grid de duas colunas para ≥ 900×521.
+- Balanceamento: coeficientes 1.36/0.79 e 1.17/0.89 mantidos; medir de novo com o kit novo.
+- Testes: `npm test` 80/80; `npm run check` e `vite build` ok.
+
 ## v4.32.0 — Degolificada e Espreitador jogáveis
 
 - Versão: `VERSION` 4.31.2 → **4.32.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.

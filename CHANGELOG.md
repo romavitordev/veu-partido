@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.33.0 — Kits do cânone e frestas
+
+### Adicionado
+- Especiais novos: Estrangulamento Capilar (Degolificada) e Emboscada das Frestas (Espreitador).
+- Frestas do Espreitador no modo de luta: abre até 3 armários pelo mapa e viaja entre eles; armário atingido fica trancado; sem fresta, fica apavorado.
+
+### Alterado
+- Kit da Degolificada refeito só com cabelo (chicote, agarrão, rastejante, chuva, casulo, grito, arremesso) e do Espreitador com frestas e Fortalecer os Devorados; sem golpes herdados do Amigo/Joui.
+- Mansão Endiabrada e Escola Nostradamus (arenas de luta) mais iluminadas; miniaturas reenquadradas.
+- Tela de seleção de cenário em duas colunas (cartões e preview) em telas largas.
+
 ## v4.32.0 — Degolificada e Espreitador jogáveis
 
 ### Adicionado

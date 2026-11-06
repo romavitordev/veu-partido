@@ -18,6 +18,7 @@ import './cristopherAbilities.js'; // e a do Cristopher (o carro de dublê)
 import './razielAbilities.js'; // e a do Raziel (Mordida e Maldição Sanguínea)
 import './danteAbilities.js'; // e as do Dante de Olhos Abertos (Paradoxo, Eco Espiral)
 import { SPECIALS } from './specials/index.js';
+import './outroLadoAbilities.js'; // e as da Degolificada e do Espreitador (cabelos, frestas e os especiais)
 import { resolveTeamActionSlots } from './teamInput.js';
 import { telegraphFor, startTelegraph, updateTelegraph, stopTelegraph, telegraphMissed, TELEGRAPH } from './specials/telegraph.js';
 import { hasPassive } from './passives.js';

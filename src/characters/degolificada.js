@@ -6,23 +6,22 @@
 // kit: a IA dela está em pve/degolificada.js, com o Escudo de Medo e as provas — que NÃO existem aqui no modo de luta).
 // Kit (Habilidades da wiki; os botões e números são PROPOSTA de jogo):
 //   Pancada ................. ○ o combo: os braços pendentes e o cabelo que sai do chão (os clipes do Amigo, ai_*)
-//   Investida de cabelo ..... □ os fios disparam em linha reta e puxam (PROPOSTA a partir do golpe da chefe)
-//   Agarrar e Estrangular ... △ + ○ o cabelo agarra, estrangula e JOGA NA PAREDE
-//   Cabelo rastejante ....... △ + □ os fios brotam do chão debaixo do alvo e prendem (PROPOSTA a partir da chefe)
-//   Cabelo por cima ......... △ + × os fios caem do alto sobre o alvo (PROPOSTA a partir da chefe)
-//   Defesa de cabelo ........ △ + L2 os fios fecham na frente: apanha menos e não recua (PROPOSTA a partir da chefe)
-//   Grito Rasgado ........... R2 + △ (cânone) rompe a vedação da boca: ondas que atordoam quem estiver perto
-//   Desfiguramento Capilar .. o ESPECIAL (cânone: o nome da habilidade; a cena é PROPOSTA)
+//   Investida de cabelo ..... □ a linha marca o chão; os fios disparam em linha reta e empurram (o golpe da chefe)
+//   Agarrar e Estrangular ... △ + ○ (cânone) o cabelo agarra, estrangula e JOGA NA PAREDE
+//   Cabelo rastejante ....... △ + □ um fio corre pelo chão atrás do alvo e brota debaixo dele (o da chefe)
+//   Cabelo por cima ......... △ + × círculos no chão; os fios caem do alto (o da chefe)
+//   Defesa de cabelo ........ △ + L2 os fios fecham na frente (quase não apanha) e empurram (o da chefe)
+//   Grito Rasgado ........... R2 + △ (cânone) rompe a vedação da boca: atordoa e ENSURDECE quem estiver perto
+//   Arremessar .............. R2 + × o cabelo arranca um caixote do chão e joga no alvo (a chefe joga as caixas)
+//   Desfiguramento Capilar .. o ESPECIAL (cânone: o nome; a cena é PROPOSTA): ergue, estrangula, esmaga e joga na parede
+// Os golpes são os da chefe (pedido do dono, 2026-11-06: "a versão de boss tava boa"): combat/outroLadoAbilities.js.
 //   Devoradora .............. a TRANSFORMAÇÃO (cânone de Iniciação: a metamorfose de Sangue — maior, mais rápida, mais forte)
 import amigo from './amigo.js';
-import nubi from './nubi.js';
-import kaiser from './kaiser.js';
 
 const HAIR = 0x0a0909;
 const PALE = 0xc8d0c0;
 const FEAR = 0x8aa4c8; // o azul-acinzentado do Medo
 const BLOOD = 0xa02a18;
-const abil = (def, id) => def.abilities.find((a) => a.id === id);
 const hair = (s, name) => ({ ...s, name, element: 'medo', impactFx: undefined, trail: s.trail ? { ...s.trail, color: HAIR } : undefined });
 
 // a Pancada (wiki: "usando seus cabelos flutuantes ou, até mesmo, seus braços pendentes"): os golpes do Amigo Imaginário
@@ -61,115 +60,154 @@ export default {
 
   melee: DEGOLIFICADA_MELEE,
 
-  // □ INVESTIDA DE CABELO: um feixe de fios dispara em linha reta e PUXA quem pega (o tentáculo do Amigo, em cabelo)
+  // □ INVESTIDA DE CABELO (o golpe da chefe): a linha marca o chão, a mira trava e os fios disparam em linha reta e
+  // EMPURRAM (combat/outroLadoAbilities.js hairLash)
   ranged: {
-    ...amigo.ranged,
     name: 'Investida de cabelo',
-    description: 'Os fios disparam em linha reta: quem pega é puxado para perto dela.',
-    ropeColor: HAIR,
-    color: HAIR,
+    type: 'hairLash',
+    description: 'Uma linha marca o chão à frente dela; os fios disparam em linha reta e empurram longe quem estiver nela.',
+    windup: 0.5,
+    recovery: 0.3,
+    range: 10,
+    aiRange: 9,
+    width: 0.75,
+    damage: 32,
+    knockback: 7,
+    cooldown: 3.5,
+    energyCost: 10,
     element: 'medo',
-    damage: 24,
+    color: HAIR,
   },
 
+  // Os golpes do kit são os MESMOS da chefe do Outro Lado (pve/degolificada.js), em combat/outroLadoAbilities.js
   abilities: [
     {
-      // △ + ○ AGARRAR E ESTRANGULAR (cânone) — o cabelo agarra, estrangula e JOGA NA PAREDE (o golpe da chefe)
-      ...abil(amigo, 'tentaculosPrendem'),
+      // △ + ○ AGARRAR E ESTRANGULAR (cânone): agarra, estrangula e JOGA NA PAREDE mais perto
       id: 'agarrarEstrangular',
       name: 'Agarrar e Estrangular',
       input: 'carga+physical',
-      description: 'Os fios se enrolam no pescoço de quem está à frente, puxam até ela, estrangulam e o ARREMESSAM longe.',
-      alwaysThrow: true,
+      type: 'hairGrab',
+      description: 'Os fios agarram quem está à frente (até 8 m), puxam até ela, estrangulam e o ARREMESSAM na parede mais perto (bater na parede machuca mais).',
+      windup: 0.45,
+      range: 8,
+      arc: 50,
+      hold: 1.0,
+      ticks: 2,
+      tickDamage: 8,
+      wallDamage: 46,
+      landDamage: 22,
+      throwDistance: 10,
       caughtLabel: 'ESTRANGULADO PELO CABELO',
-      tentColor: HAIR,
       element: 'medo',
-      damage: 22,
-      throwDamage: 42,
       energyCost: 30,
       cooldown: 14,
+      ai: { max: 8 },
       color: HAIR,
     },
     {
-      // △ + □ CABELO RASTEJANTE — um fio corre pelo chão e brota debaixo do alvo (os tentáculos de Lodo da Nubi, em cabelo)
-      ...abil(nubi, 'lodoPrende'),
+      // △ + □ CABELO RASTEJANTE — um fio corre pelo chão atrás do alvo e brota debaixo dele
       id: 'cabeloRastejante',
       name: 'Cabelo rastejante',
       input: 'carga+ranged',
-      description: 'Os fios correm pelo chão e brotam debaixo do adversário, prendem e apertam.',
-      damage: 48,
-      stun: 1.0,
+      type: 'hairCrawl',
+      description: 'Um fio corre pelo chão perseguindo o adversário (vira devagar: dá para fugir de lado) e brota debaixo dele, jogando-o para o alto.',
+      windup: 0.35,
+      speed: 8.5,
+      turn: 2.0,
+      life: 2.8,
+      hitRadius: 0.85,
+      damage: 46,
       caughtLabel: 'PRESO NOS CABELOS',
-      cooldown: 13,
+      element: 'medo',
+      energyCost: 20,
+      cooldown: 11,
       color: HAIR,
     },
     {
-      // △ + × CABELO POR CIMA — os fios caem do alto sobre o alvo (a chuva da Acácia do Kaiser, em fios pretos)
-      ...abil(kaiser, 'acacia'),
+      // △ + × CABELO POR CIMA — círculos no chão; os fios caem do alto
       id: 'cabeloPorCima',
       name: 'Cabelo por cima',
       input: 'carga+jump',
-      description: 'Um círculo marca o chão: os fios caem do alto sobre quem estiver dentro, várias vezes.',
-      vsElement: undefined,
-      damage: 64,
+      type: 'hairRain',
+      description: 'Quatro círculos marcam o chão (um no adversário); os fios caem do alto em cada um, um depois do outro.',
+      count: 4,
+      spread: 2.6,
+      radius: 1.25,
+      windup: 0.9,
+      damage: 34,
+      element: 'medo',
+      energyCost: 22,
       cooldown: 12,
       color: HAIR,
     },
     {
-      // △ + L2 DEFESA DE CABELO — os fios fecham na frente dela
+      // △ + L2 DEFESA DE CABELO — os fios fecham na frente e empurram
       id: 'defesaCabelo',
       name: 'Defesa de cabelo',
       input: 'carga+dodge',
-      type: 'heavyProtection',
+      type: 'hairGuard',
       label: 'DEFESA DE CABELO',
-      description: 'Os fios fecham na frente dela: por 5 s recebe 35% menos dano e aguenta 3 golpes sem recuar.',
-      energyCost: 22,
-      cooldown: 17,
-      duration: 5,
-      takenMult: 0.65,
-      armor: 3,
+      description: 'Os fios fecham na frente dela por 1,2 s: recebe só 20% do dano e não recua. No fim, os fios EMPURRAM longe quem estiver perto.',
+      time: 1.2,
+      takenMult: 0.2,
+      push: 3.4,
+      damage: 22,
+      knockback: 9,
+      element: 'medo',
+      energyCost: 18,
+      cooldown: 12,
       color: HAIR,
     },
     {
-      // R2 + △ GRITO RASGADO (cânone) — o Sino do Amigo virado grito: três ondas, a última atordoa e ensurdece
-      ...abil(amigo, 'oSino'),
+      // R2 + △ GRITO RASGADO (cânone)
       id: 'gritoRasgado',
       name: 'Grito Rasgado',
       input: 'block+carga',
-      description: 'Rompe a vedação da boca e GRITA: três ondas em volta dela; quem ainda estiver perto na última fica atordoado e ENSURDECIDO (apanha mais) por alguns segundos.',
-      scream: true,
-      anim: 'taunt_roar',
+      type: 'hairScream',
+      description: 'Rompe a vedação da boca e GRITA: quem estiver a até 6 m é atordoado e fica ENSURDECIDO por alguns segundos.',
+      windup: 0.9,
+      radius: 6.2,
+      damage: 34,
+      stun: 1.2,
+      deaf: 4,
       element: 'medo',
-      frenzyBite: undefined,
+      energyCost: 30,
+      cooldown: 16,
+      ai: { max: 6 },
       color: PALE,
+    },
+    {
+      // R2 + × ARREMESSAR (a chefe joga as caixas do bunker; aqui o cabelo arranca um caixote do chão — PROPOSTA)
+      id: 'arremessar',
+      name: 'Arremessar',
+      input: 'block+jump',
+      type: 'hairToss',
+      description: 'O cabelo arranca um caixote do chão, ergue sobre a cabeça e o arremessa onde o adversário está (a marca no chão segue o alvo e trava antes).',
+      lift: 0.5,
+      aim: 0.55,
+      flight: 0.7,
+      radius: 1.7,
+      damage: 40,
+      element: 'medo',
+      energyCost: 20,
+      cooldown: 10,
+      ai: { min: 3 },
+      color: HAIR,
     },
   ],
 
-  // ESPECIAL DESFIGURAMENTO CAPILAR (cânone: o nome da habilidade; a cena é PROPOSTA): os fios pegam a vítima de longe,
-  // erguem, apertam, cortam e a jogam no chão
+  // ESPECIAL DESFIGURAMENTO CAPILAR (cânone: o nome; a cena é PROPOSTA a partir do Agarrar e Estrangular da chefe): os
+  // fios agarram de longe, ERGUEM pelo pescoço e estrangulam, ESMAGAM no chão e jogam na PAREDE
   special: {
     name: 'Desfiguramento Capilar',
     banner: 'Corra.',
-    type: 'cinematicCombo',
+    type: 'hairStrangle',
     energyCost: 50,
     cooldown: 14,
+    range: 11,
+    shares: [0.08, 0.3, 0.46],
     color: FEAR,
     sound: 'specialStart',
-    prepare: { anim: 'ai_bell', time: 0.45 },
-    dash: { speed: 10, maxTime: 0.9, contact: 3.4 },
-    chain: { rope: true, color: HAIR },
-    standOff: 2.6,
-    hits: [
-      { t: 0.1, anim: 'ai_lash', dur: 0.45, share: 0.14, fx: { kind: 'claw', color: HAIR }, sound: 'whip', call: 'OS FIOS' },
-      { t: 0.6, anim: 'ai_up', dur: 0.5, share: 0.16, victimAnim: 'stagger', fx: { kind: 'claw', color: HAIR }, sound: 'whip' },
-      { t: 1.15, anim: 'ai_lash_l', dur: 0.45, share: 0.18, fx: { kind: 'claw', flip: true, color: HAIR }, sound: 'clawHit', call: 'ESTRANGULA' },
-      { t: 1.65, anim: 'ai_rake', dur: 0.5, share: 0.2, fx: { kind: 'claw', color: FEAR }, sound: 'clawHit' },
-      { t: 2.3, anim: 'ai_down', dur: 0.5, share: 0.32, fx: { kind: 'claw', big: true, color: HAIR, color2: FEAR }, sound: 'slashFinal', quake: true, final: true, call: 'DESFIGURAMENTO CAPILAR' },
-    ],
-    shots: 'control',
-    bannerAt: 0.2,
-    length: 3.1,
-    endReaction: { knockback: 3, lowLaunch: true },
   },
 
   // DEVORADORA (cânone de Iniciação: a metamorfose de Sangue) — maior, mais rápida e mais forte

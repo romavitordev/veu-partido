@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.32.0 (2026-11-06: a Degolificada e o Espreitador jogáveis, a Mansão e a Escola como arenas de luta, o Carniçal remodelado, habilidades do baú com limite por partida e moedas ou vida no Outro Lado). Antes: v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.33.0 (2026-11-06: kits do cânone e especiais novos da Degolificada e do Espreitador, frestas teleportáveis, Mansão e Escola mais claras e a tela de cenários reorganizada). Antes: v4.32.0 (2026-11-06: a Degolificada e o Espreitador jogáveis, a Mansão e a Escola como arenas de luta, o Carniçal remodelado, habilidades do baú com limite por partida e moedas ou vida no Outro Lado). Antes: v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1264,6 +1264,28 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       PROPOSTA: a escolha da sala, a névoa e os nascimentos.
 - [x] **Escola Nostradamus como arena única de luta** (idem): `ESCOLA_LUTA` — o BUNKER escondido (o círculo do ritual
       e as velas), id `escola_luta`.
+- [x] **Kits do cânone refeitos para a Degolificada e o Espreitador** (pedido do dono, 2026-11-06, ainda não lançado:
+      "se perdeu ao fazer o personagem… a versão de boss tava bom… espalhar armários/frestas no mapa e se teleportar
+      por elas… precisam de especiais"). Tipos novos em `src/combat/outroLadoAbilities.js`, todos com cabelo ou frestas,
+      sem herdar golpes do Amigo ou do Joui. PROPOSTA: botões, números e as cenas dos especiais.
+      - Degolificada: □ Chicote de cabelo (`hairLash`), △ + ○ Agarrar e Estrangular (`hairGrab`), △ + □ Cabelo
+        rastejante (`hairCrawl`), △ + × Cabelo por cima (`hairRain`, 4 pontos), △ + L2 Defesa de cabelo (`hairGuard`,
+        casulo que corta o dano e empurra), R2 + △ Grito Rasgado (`hairScream`, atordoa e ensurdece), R2 + × Arremessar
+        (`hairToss`, ergue um caixote com o cabelo e joga). Especial **Estrangulamento Capilar** (`hairStrangle`):
+        agarra, ergue, estrangula 3 vezes, bate no chão e joga na parede.
+      - Espreitador: △ + ○ Drenar Energia, △ + □ **Abrir Fresta** (`openFresta`: um armário sobe do chão; até 3 no mapa;
+        bater num armário o tranca por 20 s, como no chefe), △ + × **Correr pelas Frestas** (`frestaTravel`: entra na
+        fresta mais próxima e sai pela mais perto do alvo com um bote; sem fresta aberta fica APAVORADO, como no chefe),
+        R2 + × Cópia Observada, △ + L2 Fortalecer (`fortifyDevorado`: os Devorados ganham vida e dano). Especial
+        **Emboscada das Frestas** (`frestaAmbush`): 4 armários em volta do alvo, 3 botes e o Olho da Boca drenando.
+      - Conferido no navegador: cada golpe acerta (31 a 64 de dano), os especiais dão ~280, os armários somem no fim.
+      - Falta: medir o balanceamento de novo (os números de 1.36/0.79 e 1.17/0.89 eram do kit antigo).
+- [x] **Mansão e Escola mais claras** (pedido do dono, 2026-11-06): `brighten()` em `arena/configs.js` multiplica as
+      luzes do mapa do PvE só nas arenas de luta (hemisférica ×2.6, ambiente ×2.4, direcional ×3.2 com sombra, pontuais
+      ×1.6) + uma luz de preenchimento quente no centro; névoa 0.012. Câmeras das miniaturas reposicionadas.
+- [x] **Tela de seleção de cenários melhorada** (idem): em telas ≥ 900 px os cartões ficam numa grade de 4 colunas à
+      esquerda e o preview grande + descrição à direita (`#stage` em grid, `styles.css`); o preview não cobre mais a 4ª
+      fileira de cartões.
 
 Detalhes em `docs/outro-lado-playtest.md` (rodada 8).
 

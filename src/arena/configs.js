@@ -397,20 +397,34 @@ export const ESCOLA = {
 // mesmo .glb; a luta fica presa na sala (bounds), a câmera não sai dela e só as luzes de dentro acendem (sem lightPool).
 // PROPOSTA: a escolha da sala (o quarto principal da Mansão e o bunker da Escola), a névoa mais leve e os nascimentos.
 const inRect = (r, m) => (L) => L.type !== 'point' || (L.pos[0] > r.minX - m && L.pos[0] < r.maxX + m && L.pos[2] > r.minZ - m && L.pos[2] < r.maxZ + m);
-function fightRoom(base, id, r, { spawns, fog, center }) {
+// LUZ (pedido do dono, 2026-11-06: "estão muito escuros"): o mapa do PvE é no breu de propósito; na arena de luta o
+// ambiente sobe bastante, as lâmpadas da sala ficam mais fortes e entra uma luz de preenchimento quente no meio da sala
+const brighten = (r, extra) => (L) => {
+  if (L.type === 'hemi') return { ...L, intensity: L.intensity * 2.6 };
+  if (L.type === 'ambient') return { ...L, intensity: L.intensity * 2.4 };
+  if (L.type === 'dir') return { ...L, intensity: L.intensity * 3.2, shadow: true, area: Math.max(r.maxX - r.minX, r.maxZ - r.minZ) };
+  if (L.type === 'point') return { ...L, intensity: L.intensity * 1.6, distance: (L.distance || 8) * 1.3 };
+  return L;
+};
+function fightRoom(base, id, r, { spawns, fog, center, fill }) {
+  const cx = (r.minX + r.maxX) / 2;
+  const cz = (r.minZ + r.maxZ) / 2;
   return {
     ...base,
     id,
     bounds: { rects: [r] },
     spawns,
     lightPool: undefined,
-    lights: base.lights.filter(inRect(r, 1.5)),
+    lights: [
+      ...base.lights.filter(inRect(r, 1.5)).map(brighten(r)),
+      { type: 'point', color: fill, intensity: 30, distance: 22, decay: 1.4, pos: [cx, 5, cz] },
+    ],
     fog: { color: base.fog.color, density: fog },
     particles: { ...base.particles, area: 22, center },
     camera: { rect: { minX: r.minX - 6, maxX: r.maxX + 6, minZ: r.minZ - 10, maxZ: r.maxZ + 10 }, maxY: 11 },
   };
 }
 // o quarto principal (os armários e a lua nas janelas)
-export const MANSAO_LUTA = fightRoom(MANSAO, 'mansao_luta', MANSAO.bounds.rects[6], { spawns: [{ x: 45, z: 0 }, { x: 55, z: 0 }], fog: 0.022, center: [50, 0, 0] });
+export const MANSAO_LUTA = fightRoom(MANSAO, 'mansao_luta', MANSAO.bounds.rects[6], { spawns: [{ x: 45, z: 0 }, { x: 55, z: 0 }], fog: 0.012, center: [50, 0, 0], fill: 0xffc890 });
 // o bunker (o círculo do ritual e as velas)
-export const ESCOLA_LUTA = fightRoom(ESCOLA, 'escola_luta', ESCOLA.bounds.rects[ESCOLA.bounds.rects.length - 2], { spawns: [{ x: 76, z: 0 }, { x: 86, z: 0 }], fog: 0.024, center: [81, 0, 0] });
+export const ESCOLA_LUTA = fightRoom(ESCOLA, 'escola_luta', ESCOLA.bounds.rects[ESCOLA.bounds.rects.length - 2], { spawns: [{ x: 76, z: 0 }, { x: 86, z: 0 }], fog: 0.012, center: [81, 0, 0], fill: 0xffd8a8 });
