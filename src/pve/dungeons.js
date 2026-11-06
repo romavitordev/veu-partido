@@ -5,9 +5,11 @@
 //   rooms      a sequência do mapa: o que acontece em cada sala, na ordem (ver pve/Dungeon.js)
 //   drops      chance e quantidade de cura dos inimigos menores (TODO §4.3: configurável, sem mexer no inimigo)
 //   minDepth   a partir de que profundidade ela pode ser sorteada
+//   storyOrder ordem cronológica da história, seguindo o lançamento da série; novas fases recebem a posição correta
 export const DUNGEONS = {
   espreitador: {
     id: 'espreitador',
+    storyOrder: 2,
     name: 'Território do Espreitador',
     place: 'Mansão Endiabrada',
     color: '#f2c230',
@@ -15,7 +17,7 @@ export const DUNGEONS = {
     boss: 'espreitador',
     bossName: 'O ESPREITADOR',
     restricted: ['espreitador'],
-    minDepth: 1,
+    minDepth: 2,
     drops: { heal: { chance: 0.55, amount: 0.2 } }, // mais drops (pedido do dono, 2026-11-06)
     xp: { devorado: 35, copia: 15, boss: 120 },
     // ROTAS (pedido do dono, 2026-11-05): cada sala é um MÓDULO; ao limpar a sala, as portas da esquerda, da frente e da
@@ -157,6 +159,7 @@ export const DUNGEONS = {
   // zumbis e onde ficam as pistas. Coordenadas iguais às de tools/blender/arena_escola.py.
   degolificada: {
     id: 'degolificada',
+    storyOrder: 1,
     name: 'Território da Degolificada',
     place: 'Escola Nostradamus',
     color: '#c8d0c0',
@@ -164,7 +167,7 @@ export const DUNGEONS = {
     boss: 'degolificada',
     bossName: 'A DEGOLIFICADA',
     restricted: ['degolificada'],
-    minDepth: 2, // a 2ª: vem depois da Mansão
+    minDepth: 1,
     minions: 'zumbi', // as salas de luta: Zumbis de Sangue (pve/Dungeon.js startZombieEncounter)
     drops: { heal: { chance: 0.5, amount: 0.2 } },
     xp: { zumbi: 18, zumbiForte: 42, boss: 140 },
@@ -383,7 +386,9 @@ export function chestChance(D, kind, count = 0) {
   return c[kind] ?? 0;
 }
 
-export const DUNGEON_ORDER = ['espreitador', 'degolificada'];
+export const DUNGEON_ORDER = Object.values(DUNGEONS)
+  .sort((a, b) => a.storyOrder - b.storyOrder)
+  .map((dungeon) => dungeon.id);
 
 // DIFICULDADE (TODO §4.5: o chefe desafia mesmo no Fácil): CPU e multiplicadores do inimigo
 export const PVE_DIFFICULTIES = {

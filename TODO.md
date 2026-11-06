@@ -1264,6 +1264,7 @@ A ideia é aumentar a variedade entre tentativas, fazendo com que o jogador não
 O sistema deverá ser planejado para permitir:
 
 - Adicionar novas dungeons sem reconstruir a lógica de progressão.
+- Manter as fases em ordem cronológica da história, de acordo com o lançamento da série; definir essa posição ao cadastrar cada fase.
 - Registrar quais dungeons estão disponíveis para seleção.
 - Definir requisitos, restrições e chefes de cada dungeon.
 - Selecionar aleatoriamente uma dungeon válida para a próxima etapa.
@@ -1893,11 +1894,23 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 
 ## 🔴 P0 — Estabilidade
 
-1. Limpeza
-2. Build
-3. Regressão
-4. Correção de problemas atuais
-5. Revisão dos personagens recentes
+1. **Travamentos e congelamentos do jogo — prioridade máxima:** reproduzir e corrigir antes de novas funcionalidades,
+   conteúdo ou polimento. Não tratar lentidão como balanceamento nem assumir a causa sem medir.
+   - Registrar cenário, modo, personagens/formas, quantidade de entidades, ações anteriores e dispositivo em que ocorre;
+     verificar se trava sempre no mesmo ponto, após algum tempo ou apenas sob carga.
+   - Usar o contador `?perf`/F8 e o console para observar FPS, memória e erros; comparar uma partida simples com o caso
+     que trava e isolar cenário, personagem, transformação e efeitos até localizar a condição.
+   - Investigar como hipóteses: carregamento ou decodificação síncrona de modelos/texturas; trabalho excessivo por quadro
+     (IA, colisões, animações ou efeitos); loops/tarefas que não terminam; crescimento de partículas, entidades ou
+     objetos sem descarte; listeners/timers duplicados; espera de rede ou sincronização que não se resolve. Confirmar
+     cada hipótese com evidência antes de mudar código.
+   - Corrigir a causa raiz, preservar o comportamento esperado e adicionar um teste de regressão reproduzível sempre que
+     possível. Revalidar o modo afetado e os modos relacionados; não esconder erros com fallback silencioso.
+2. Limpeza
+3. Build
+4. Regressão
+5. Correção de problemas atuais
+6. Revisão dos personagens recentes
 
 ## 🔴 P1 — Gameplay
 
@@ -1927,6 +1940,11 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 17. Câmera
 18. HUD
 19. Menus
+   - **Tela inicial estática, mais bonita e imediata:** a abertura atual depende dos modelos 3D do elenco; a cena só
+     monta os lutadores depois do preload, deixando a tela incompleta enquanto os arquivos carregam. Redesenhar a
+     composição com arte estática leve e responsiva, sem modelos 3D na tela de título, para mostrar a abertura completa
+     imediatamente. Separar essa exibição do preload necessário às partidas e indicar o carregamento sem permitir iniciar
+     uma partida antes de os modelos necessários estarem prontos; medir o tempo até a tela e o menu ficarem utilizáveis.
 20. Áudio
 21. Efeitos
 22. Cenários

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades } from '../src/pve/upgrades.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
-import { DUNGEONS, rollRouteLength, rollExits, chestChance, pickNextDungeon, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
+import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
 import { Closet, PeekingCrack } from '../src/pve/espreitador.js';
 
@@ -108,9 +108,15 @@ test('salvamento: dado quebrado ou de outra versão não derruba', () => {
 });
 
 test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a profundidade escala', () => {
+  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador']);
+  assert.deepEqual(DUNGEON_ORDER, Object.values(DUNGEONS).sort((a, b) => a.storyOrder - b.storyOrder).map((d) => d.id));
+  assert.equal(new Set(Object.values(DUNGEONS).map((d) => d.storyOrder)).size, Object.keys(DUNGEONS).length, 'cada fase futura precisa de uma posição cronológica própria');
+  assert.deepEqual(validDungeons(1), ['degolificada']);
+  const run = { depth: 2, difficulty: 'easy', heat: 0, played: [] };
+  assert.deepEqual(advanceAfterClear(run, 'degolificada'), { dungeon: 'espreitador', looped: false });
   assert.ok(!isAllowed('espreitador', 'espreitador'));
   assert.ok(isAllowed('espreitador', 'kaiser'));
-  assert.equal(pickNextDungeon({ depth: 1, previous: 'espreitador' }), 'espreitador', 'com uma só, repete');
+  assert.equal(pickNextDungeon({ depth: 1, previous: 'espreitador' }), 'degolificada', 'na profundidade 1 só há a fase cronologicamente inicial');
   assert.equal(depthScale(1), 1);
   assert.ok(depthScale(3) > depthScale(2));
   assert.equal(rollHeal('espreitador', () => 0.1), DUNGEONS.espreitador.drops.heal.amount);
