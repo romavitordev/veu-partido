@@ -234,6 +234,8 @@ export function applyHit(world, attacker, victim, o) {
     victim.notify('AGUENTOU!', true);
   }
 
+  // victim.noFlinch: não reage a golpe nenhum (a Degolificada: a IA dela controla o corpo; ela se defende com o cabelo)
+  if (reaction && victim.noFlinch) reaction = false;
   // firmeza de chefe (def.poise): depois de N golpes seguidos no mesmo combo, para de reagir (não fica preso em combo)
   if (reaction && victim.def.poise && victim.comboHits > victim.def.poise.hits && !o.grab && o.kind !== 'special') {
     reaction = false;

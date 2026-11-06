@@ -14,26 +14,70 @@ export function labelSprite(title, sub, color) {
   c.width = 512;
   c.height = 160;
   const g = c.getContext('2d');
-  g.fillStyle = 'rgba(8,5,6,0.78)';
-  g.beginPath();
-  g.roundRect(6, 6, 500, 148, 22);
-  g.fill();
-  g.strokeStyle = color;
-  g.lineWidth = 4;
-  g.stroke();
-  g.textAlign = 'center';
+  // minimalista (pedido do dono, 2026-11-06): um véu escuro sem moldura, um traço fino da cor e o texto limpo
+  const grd = g.createLinearGradient(0, 0, 512, 0);
+  grd.addColorStop(0, 'rgba(6,6,8,0)');
+  grd.addColorStop(0.15, 'rgba(6,6,8,0.6)');
+  grd.addColorStop(0.85, 'rgba(6,6,8,0.6)');
+  grd.addColorStop(1, 'rgba(6,6,8,0)');
+  g.fillStyle = grd;
+  g.fillRect(0, 14, 512, 132);
   g.fillStyle = color;
-  g.font = 'bold 50px Georgia, serif';
-  g.fillText(title, 256, 70, 470);
+  g.fillRect(226, 22, 60, 3);
+  g.textAlign = 'center';
+  g.shadowColor = 'rgba(0,0,0,0.8)';
+  g.shadowBlur = 8;
+  g.fillStyle = color;
+  g.font = '700 46px Inter, system-ui, sans-serif';
+  g.fillText(title, 256, sub ? 74 : 96, 470);
   if (sub) {
-    g.fillStyle = '#e8dcc8';
-    g.font = '38px Georgia, serif';
-    g.fillText(sub, 256, 124, 470);
+    g.fillStyle = 'rgba(232,228,220,0.85)';
+    g.font = '500 32px Inter, system-ui, sans-serif';
+    g.fillText(sub, 256, 122, 470);
   }
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false, fog: false }));
   s.scale.set(1.9, 0.6, 1);
+  return s;
+}
+
+// o AVISO de interagir, minimalista (pedido do dono, 2026-11-06): a tecla num contorno fino + o verbo, sem caixa
+export function promptSprite(btn, verb) {
+  const H = 96;
+  const c = document.createElement('canvas');
+  const g = c.getContext('2d');
+  const vFont = '600 40px Inter, system-ui, sans-serif';
+  g.font = vFont;
+  const vw = Math.ceil(g.measureText(verb || '').width);
+  const kw = Math.max(56, btn.length * 24 + 26);
+  c.width = kw + 16 + vw + 16;
+  c.height = H;
+  g.shadowColor = 'rgba(0,0,0,0.85)';
+  g.shadowBlur = 10;
+  // a tecla
+  g.fillStyle = 'rgba(10,10,12,0.55)';
+  g.strokeStyle = 'rgba(255,255,255,0.92)';
+  g.lineWidth = 3;
+  g.beginPath();
+  g.roundRect(4, 18, kw - 8, 60, 12);
+  g.fill();
+  g.stroke();
+  g.fillStyle = '#fff';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `700 ${btn.length > 1 ? 26 : 34}px Inter, system-ui, sans-serif`;
+  g.fillText(btn, kw / 2, 49);
+  // o verbo
+  g.textAlign = 'left';
+  g.font = vFont;
+  g.fillStyle = 'rgba(255,255,255,0.95)';
+  g.fillText(verb || '', kw + 12, 50);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false, fog: false }));
+  const h = 0.26;
+  s.scale.set((h * c.width) / H, h, 1);
   return s;
 }
 
@@ -282,8 +326,7 @@ export class InteractPrompt {
       this.hide();
       this.key = text;
       const [btn, verb] = text.split('|');
-      this.sprite = labelSprite(btn, verb, '#f2c230');
-      this.sprite.scale.set(1.1, 0.35, 1);
+      this.sprite = promptSprite(btn, verb);
       this.sprite.material.depthTest = false; // o aviso aparece mesmo atrás do móvel
       this.sprite.renderOrder = 9;
       if (this.layer) this.sprite.layers.set(this.layer);

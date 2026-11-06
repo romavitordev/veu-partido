@@ -2,6 +2,16 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.31.0 — Outro Lado: a Escola Nostradamus e a Degolificada
+- NOVA DUNGEON: o Território da Degolificada, na Escola Nostradamus (a partir da profundidade 2). Corredores, salas de aula, laboratório e a biblioteca com a passagem secreta para o bunker.
+- A DEGOLIFICADA DE GABRIEL: ela flutua e luta só com os cabelos — investida de cabelo, agarra e joga na parede, cabelo rastejando pelo chão, cabelo caindo do teto, defesa de cabelo e o Grito Rasgado.
+- ESCUDO DE MEDO: uma segunda vida azul por cima da vida dela, que golpe nenhum quebra. Ela arremessa as caixas do bunker; desvie, e de uma caixa quebrada pode sair uma PROVA de que quem está no corpo é o Gabriel. Três provas tiram o escudo.
+- BAÚS: abrem com luz e um facho, e dão de 1 a 3 itens (3 é raro) que sobem as melhorias que você já escolheu na partida.
+- Moedas, experiência e cura agora saem de gavetas, barris, caixas e monstros, com mais frequência. As melhorias permanentes também podem ser compradas com moedas.
+- HUD do Outro Lado mais limpo e minimalista; o nome dos golpes das criaturas aparece pequeno no canto.
+- Backup do Outro Lado (exportar e importar) e cópia automática do save.
+- Os tentáculos do Lodo (Dante e Nubi) agora são iguais aos do Amigo Imaginário.
+
 ## v4.30.0 — Outro Lado: coop online e volta à vida com moedas
 - OUTRO LADO ONLINE: jogue a expedição em dois computadores. Cada pessoa joga na própria tela, com a própria câmera.
 - Na sala online cada um escolhe o próprio personagem, com os personagens liberados e as melhorias permanentes dele. O nome de cada um aparece no painel e em cima do personagem do parceiro.

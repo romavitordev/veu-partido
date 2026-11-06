@@ -1,5 +1,5 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
 const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA };
@@ -91,7 +91,7 @@ export const ARENAS = {
 };
 
 // mapas do OUTRO LADO (PvE): fora da seleção (não entram em ARENA_ORDER) e carregados só ao entrar no modo
-export const PVE_ARENAS = { mansao: MANSAO };
+export const PVE_ARENAS = { mansao: MANSAO, escola: ESCOLA };
 ARENAS.mansao = {
   name: 'Mansão Endiabrada',
   description: 'O território do Espreitador: corredores, armários entreabertos e o relógio parado nas 2:11.',
@@ -99,6 +99,14 @@ ARENAS.mansao = {
   available: true,
   pve: true,
   create: () => createGLBArena(MANSAO),
+};
+ARENAS.escola = {
+  name: 'Escola Nostradamus',
+  description: 'O território da Degolificada: o corredor queimado, as salas de aula, a biblioteca e o bunker escondido.',
+  colors: ['#020304', '#4e4e4a', '#c8d0c0'],
+  available: true,
+  pve: true,
+  create: () => createGLBArena(ESCOLA),
 };
 export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);

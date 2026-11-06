@@ -8,12 +8,15 @@ import { ROSTER } from '../characters/index.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels } from '../models/index.js';
 import { Dungeon } from './Dungeon.js';
-import { DUNGEONS, PVE_DIFFICULTIES, pickNextDungeon, isAllowed, advanceAfterClear, diffLabel } from './dungeons.js';
+import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, pickNextDungeon, isAllowed, advanceAfterClear, diffLabel } from './dungeons.js';
+
+// o personagem pode entrar em TODAS as dungeons (nenhum chefe contra ele mesmo)
+const allowedEverywhere = (id) => DUNGEON_ORDER.every((d) => isAllowed(d, id));
 import { PveTreeScreen } from './treeScreen.js';
 import { lockedMap, isUnlocked, buyChar } from './unlocks.js';
 import { PveUnlockScreen } from './unlockScreen.js';
 import { fmtTime } from './pveHud.js';
-import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath } from './save.js';
+import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath, exportPve, parseBackup, describePve } from './save.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = (id) => ROSTER.find((c) => c.id === id);
@@ -43,6 +46,8 @@ export function createPveFlow(ctx) {
     lines.push(`Maior profundidade: ${c.bestDepth} · chefes derrotados: ${c.bossKills} · mortes: ${c.deaths}`);
     const free = ROSTER.length - lockedMap(data, ROSTER).size;
     lines.push(`Moedas: <b>● ${data.coins || 0}</b> · personagens liberados: <b>${free}/${ROSTER.length}</b> (as moedas saem dos baús do mapa)`);
+    if (data.loadedFrom === 'prev') lines.push('<b>⚠ O save do Outro Lado estava corrompido: o jogo voltou para a cópia automática (o save de antes da última gravação). O arquivo quebrado ficou guardado.</b>');
+    else if (data.loadedFrom === 'broken') lines.push('<b>⚠ O save do Outro Lado estava corrompido (ou é de outra versão) e não havia cópia automática: o jogo começou do zero. O arquivo antigo ficou guardado à parte; se tiver um BACKUP, importe-o.</b>');
     return lines.join('<br>');
   }
 
@@ -82,6 +87,7 @@ export function createPveFlow(ctx) {
       { id: 'tree', label: 'MELHORIAS PERMANENTES' },
       { id: 'unlock', label: 'DESBLOQUEAR PERSONAGENS' },
       { id: 'restart', label: 'REINICIAR CAMPANHA', disabled: !data.attempt && !data.campaign.runs },
+      { id: 'backup', label: 'BACKUP (EXPORTAR / IMPORTAR)' },
       { id: 'wipe', label: 'APAGAR DADOS DO OUTRO LADO' },
       { id: 'back', label: 'VOLTAR' },
     ], { subtitle: 'Masmorras do Outro Lado: entre, sobreviva, derrote o chefe e vá mais fundo. (LOCAL)', extra: extraBox(summary()) });
@@ -121,8 +127,8 @@ export function createPveFlow(ctx) {
     const ids = [def.id, ...team, ...(coop ? [coop.charId, ...coop.team] : [])];
     // online: o lado do P1 confere os dados do anfitrião, o do P2 os do convidado
     const ok = online()
-      ? [def.id, ...team].every((id) => isAllowed('espreitador', id) && isUnlocked(net.data[0], id)) && (!coop || [coop.charId, ...coop.team].every((id) => isAllowed('espreitador', id) && isUnlocked(net.data[1], id)))
-      : ids.every((id) => isAllowed('espreitador', id) && isUnlocked(data, id));
+      ? [def.id, ...team].every((id) => allowedEverywhere(id) && isUnlocked(net.data[0], id)) && (!coop || [coop.charId, ...coop.team].every((id) => allowedEverywhere(id) && isUnlocked(net.data[1], id)))
+      : ids.every((id) => allowedEverywhere(id) && isUnlocked(data, id));
     if (!ok) { audio.play('denied'); return; }
     game.pveChar = def.id;
     game.pveTeam = team;
@@ -145,7 +151,7 @@ export function createPveFlow(ctx) {
     const d = byId(charId);
     endMatch();
     setOverlay(null, null);
-    setScreen('pvetree', new PveTreeScreen(screens, { audio, charName: d ? d.name : charId, profile: p, index }));
+    setScreen('pvetree', new PveTreeScreen(screens, { audio, charName: d ? d.name : charId, profile: p, index, data }));
   }
 
   // ------------------------------------------------ a loja de personagens (moedas dos baús)
@@ -167,7 +173,7 @@ export function createPveFlow(ctx) {
     if (!net0) { data.campaign.lastDungeon = D.id; save(); }
     endMatch();
     setOverlay(null, null);
-    const loading = new LoadingScreen(screens, { p1: def, p2: { id: def.id, name: 'O ESPREITADOR', color: D.color }, arena: { name: `${D.name} — profundidade ${a.depth}` }, cpu: true, mode: 'pve', portraits });
+    const loading = new LoadingScreen(screens, { p1: def, p2: { id: def.id, name: D.bossName || 'O ESPREITADOR', color: D.color }, arena: { name: `${D.name} — profundidade ${a.depth}` }, cpu: true, mode: 'pve', portraits });
     loading.el.classList.add('pve-loading');
     setScreen('loading', loading);
     loading.progress(0.1);
@@ -186,6 +192,7 @@ export function createPveFlow(ctx) {
     const nativeRandom = Math.random;
     if (net0) Math.random = seededRandom((game.net.seed ^ (a.depth * 7919) ^ (net.runs * 104729)) >>> 0);
     let dungeon;
+    let failed = null;
     try {
       dungeon = new Dungeon({
         renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: profileOf(d1, def.id), dungeonId: D.id,
@@ -193,7 +200,17 @@ export function createPveFlow(ctx) {
         net: net0 ? { slot: game.net.slot } : null,
         onEnd: (r) => onDungeonEnd(dungeon, r),
       });
-    } finally { Math.random = nativeRandom; }
+    } catch (e) { failed = e; } finally { Math.random = nativeRandom; }
+    // TODO §9: se o carregamento falhar, volta ao menu do modo com a tentativa salva (online: sai da sala)
+    if (failed) {
+      console.error('Outro Lado: a dungeon não montou', failed);
+      audio.play('denied');
+      menu('pveloadfail', 'NÃO FOI POSSÍVEL CARREGAR', [{ id: 'back', label: online() ? 'SAIR DA SALA' : 'VOLTAR AO OUTRO LADO' }], {
+        subtitle: online() ? 'A dungeon não montou neste computador. A expedição online vai fechar para os dois.' : 'A dungeon não montou. A tentativa continua salva no começo desta dungeon: tente CONTINUAR de novo.',
+        extra: extraBox(esc(String(failed && failed.message || failed)).slice(0, 300)),
+      });
+      return;
+    }
     dungeon.onReward = () => {
       // online: cada computador guarda a recompensa do PRÓPRIO personagem
       if (net0) { const mine = game.net && game.net.slot === 1 ? coopDef : def; if (mine) rewardBoss(data, mine.id, `${a.startedAt}:${a.depth}`); }
@@ -238,13 +255,15 @@ export function createPveFlow(ctx) {
     const a = attempt();
     const s = stats || {};
     const time = fmtTime(s.time);
-    const statLine = `Tempo ${time} · Devorados ${s.kills || 0} · cópias ${s.copias || 0} · baús ${s.chests || 0} · moedas +${s.coins || 0} · dano causado ${Math.round(s.damage || 0)}`;
-    if (online()) { onlineEnd(result, a, statLine); return; }
+    const D = DUNGEONS[a?.dungeon] || DUNGEONS.espreitador;
+    const titles = D.endTitle || ['VOCÊ FOI DEVORADO', 'VOCÊS FORAM DEVORADOS'];
+    const statLine = `Tempo ${time} · ${D.killsLabel || 'Devorados'} ${s.kills || 0}${D.killsLabel ? '' : ` · cópias ${s.copias || 0}`} · baús ${s.chests || 0} · moedas +${s.coins || 0} · dano causado ${Math.round(s.damage || 0)}`;
+    if (online()) { onlineEnd(result, a, statLine, titles[1]); return; }
     if (result === 'death') {
       const depth = a ? a.depth : 1;
       endAttemptByDeath(data);
       save();
-      menu('pveresult', 'VOCÊ FOI DEVORADO', [{ id: 'new', label: 'NOVA TENTATIVA' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO' }, { id: 'main', label: 'MENU PRINCIPAL' }], {
+      menu('pveresult', titles[0], [{ id: 'new', label: 'NOVA TENTATIVA' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO' }, { id: 'main', label: 'MENU PRINCIPAL' }], {
         subtitle: `A tentativa acabou na profundidade ${depth}. As melhorias da tentativa se perderam; o nível e os pontos do personagem ficam.`,
         extra: extraBox(statLine),
       });
@@ -300,6 +319,7 @@ export function createPveFlow(ctx) {
         else toPlayers();
       } else if (c === 'tree') pickCharacter('tree');
       else if (c === 'unlock') toUnlock();
+      else if (c === 'backup') toBackup();
       else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. O nível, os pontos e a árvore de cada personagem ficam.', 'SIM, REINICIAR');
       else if (c === 'wipe') confirmBox('pvewipe', 'APAGAR DADOS?', 'Apaga TODO o progresso do Outro Lado: níveis, pontos, a campanha e a tentativa. O resto do jogo não muda.', 'SIM, APAGAR');
       else if (c === 'back') toEntry();
@@ -314,6 +334,22 @@ export function createPveFlow(ctx) {
     } else if (state === 'pverestart') {
       if (c === 'yes') { data.campaign = emptyData().campaign; data.attempt = null; save(); }
       toHub();
+    } else if (state === 'pvebackup') {
+      if (c === 'export') exportBackup();
+      else if (c === 'import') pickBackupFile();
+      else toHub();
+    } else if (state === 'pveimport') {
+      if (c === 'yes' && pendingImport) {
+        data = pendingImport.data;
+        pendingImport = null;
+        save();
+        data = loadPve();
+        audio.play('levelUp', { volume: 0.7 });
+        toBackup('Backup importado. O progresso de antes ficou como cópia automática.');
+      } else { pendingImport = null; toBackup('Importação cancelada.'); }
+    } else if (state === 'pveloadfail') {
+      if (online()) toMainMenu();
+      else toHub();
     } else if (state === 'pvewipe') {
       if (c === 'yes') { clearPve(); data = loadPve(); audio.play('ko', { volume: 0.5 }); }
       toHub();
@@ -359,6 +395,64 @@ export function createPveFlow(ctx) {
       else toHub();
     }
     return true;
+  }
+
+  // ------------------------------------------------ BACKUP (TODO §8): exportar e importar o save do Outro Lado
+  let pendingImport = null;
+  function toBackup(msg = '') {
+    const d = describePve(data);
+    menu('pvebackup', 'BACKUP DO OUTRO LADO', [
+      { id: 'export', label: 'EXPORTAR (BAIXAR UM ARQUIVO)' },
+      { id: 'import', label: 'IMPORTAR DE UM ARQUIVO' },
+      { id: 'back', label: 'VOLTAR' },
+    ], {
+      subtitle: 'Guarde o seu progresso do Outro Lado num arquivo (moedas, personagens comprados, níveis, árvore e a tentativa) e traga de volta neste ou em outro computador.',
+      extra: extraBox(`${msg ? `<b>${esc(msg)}</b><br>` : ''}Agora: ● ${d.coins} moedas · ${d.unlocked} personagens comprados · ${d.levels} nível(is) ganhos · maior profundidade ${d.bestDepth} · ${d.attempt ? 'com tentativa salva' : 'sem tentativa'}<br><label class="pve-file">Ou escolha o arquivo aqui: <input type="file" accept=".json,application/json"></label>`),
+    });
+    const inp = game.screen && game.screen.el && game.screen.el.querySelector('.pve-file input');
+    if (inp) inp.addEventListener('change', () => readBackupFile(inp.files && inp.files[0]));
+  }
+
+  function exportBackup() {
+    try {
+      const blob = new Blob([exportPve(data)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `veu-partido-outro-lado-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      audio.play('confirm');
+      toBackup(`Arquivo ${a.download} baixado. Guarde-o: é ele que traz o progresso de volta.`);
+    } catch (e) {
+      audio.play('denied');
+      toBackup('Não foi possível gerar o arquivo neste navegador.');
+    }
+  }
+
+  // o seletor de arquivo do navegador (com o controle pode não abrir: aí vale o campo na própria tela)
+  function pickBackupFile() {
+    const inp = game.screen && game.screen.el && game.screen.el.querySelector('.pve-file input');
+    try { if (inp) inp.click(); } catch { /* o navegador pediu um clique de verdade */ }
+  }
+
+  async function readBackupFile(file) {
+    if (!file) return;
+    if (game.state !== 'pvebackup') return;
+    if (file.size > 2 * 1024 * 1024) { audio.play('denied'); toBackup('Esse arquivo é grande demais para ser um backup do Outro Lado.'); return; }
+    try {
+      const text = await file.text();
+      pendingImport = parseBackup(text);
+    } catch (e) {
+      audio.play('denied');
+      toBackup(e.message || 'Não foi possível ler o arquivo.');
+      return;
+    }
+    if (game.state !== 'pvebackup') { pendingImport = null; return; }
+    const n = describePve(pendingImport.data);
+    const when = pendingImport.exportedAt ? new Date(pendingImport.exportedAt).toLocaleString() : 'data desconhecida';
+    confirmBox('pveimport', 'IMPORTAR ESTE BACKUP?', `Backup de ${esc(when)}: ● ${n.coins} moedas · ${n.unlocked} personagens comprados · ${n.levels} nível(is) · maior profundidade ${n.bestDepth} · ${n.attempt ? 'com tentativa' : 'sem tentativa'}.<br>Ele SUBSTITUI todo o progresso do Outro Lado deste computador. O progresso atual fica como cópia automática.`, 'SIM, IMPORTAR');
   }
 
   // ------------------------------------------------ ONLINE: a sala de espera e a EXPEDIÇÃO ONLINE
@@ -411,11 +505,11 @@ export function createPveFlow(ctx) {
   }
 
   // fim de uma dungeon da expedição online (as telas são iguais nos dois computadores)
-  function onlineEnd(result, a, statLine) {
+  function onlineEnd(result, a, statLine, title = 'VOCÊS FORAM DEVORADOS') {
     if (result === 'death') {
       const depth = a ? a.depth : 1;
       net.attempt = null;
-      menu('pveresult', 'VOCÊS FORAM DEVORADOS', [{ id: 'new', label: 'NOVA EXPEDIÇÃO' }, { id: 'main', label: 'SAIR DA SALA' }], {
+      menu('pveresult', title, [{ id: 'new', label: 'NOVA EXPEDIÇÃO' }, { id: 'main', label: 'SAIR DA SALA' }], {
         subtitle: `A expedição acabou na profundidade ${depth}. O nível e os pontos de cada personagem ficam.`,
         extra: extraBox(statLine),
       });
@@ -447,5 +541,5 @@ export function createPveFlow(ctx) {
   // online: os bloqueados de cada lado (P1 pelos dados do anfitrião, P2 pelos do convidado)
   const lockedChars = () => (online() ? [lockedMap(net.data[0], ROSTER), lockedMap(net.data[1], ROSTER)] : lockedMap(data, ROSTER));
 
-  return { toHub, toEntry, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS.mansao?.name };
+  return { toHub, toEntry, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS[(DUNGEONS[attempt()?.dungeon] || DUNGEONS.espreitador).arena]?.name };
 }

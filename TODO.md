@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.30.0 (2026-11-06: expedição online sincronizada do Outro Lado e retorno do coop com moedas). Antes: v4.29.0 (coop local, entrada LOCAL x ONLINE e salas online); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.31.0 (2026-11-06: a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup). Antes: v4.30.0 (expedição online e retorno com moedas); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -821,6 +821,17 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Confirmar visual da máscara, fios, capa e proporções.
   - Fornecer contrajogo ao controle mental (telegraph, duração, escape).
   - Testar abdução em bordas, câmera, interrupção e fim de round.
+  - [ ] **Ninho de Interflorados (pedido do dono, 2026-11-06; arte de referência do Interflorado enviada):** o
+    Estrangeiro cria um PONTO DE SPAWN no chão. Por 40 s, sempre que o inimigo chega perto do ponto, nascem
+    Interflorados dele. Eles são fracos e têm pouca vida, mas atrapalham no meio da luta. Visual pela arte: corpo de homem
+    comum (camiseta clara, camisa xadrez marrom aberta, calça jeans), braços com veias verdes e mãos em raízes de dedos
+    compridos; a cabeça é um emaranhado de galhos/raízes cheio de olhos verdes, com galhos compridos saindo para todos
+    os lados e o limo verde escorrendo pelo pescoço e pela roupa.
+    - Definir na implementação: o raio de "perto", quantos nascem por vez e o máximo em campo, o intervalo entre
+      nascimentos, a recarga do ninho e se o ponto pode ser destruído.
+    - Conferir na wiki o vínculo canônico Estrangeiro ↔ Interflorado antes de fechar; marcar PROPOSTA o que não tiver
+      fonte.
+    - Modelo: npc_* próprio, como os Zumbis de Sangue (`tools/blender/npc_*.py`).
 
 - [x] **3.26 Amigo Imaginário (`src/characters/amigo.js`):** feito (2026-10-31) — ver "O AMIGO IMAGINÁRIO: melhorar
   os PODERES e o CÂNONE": Agarrão (puxa; no Frenesi arremessa), Dissolver (absorve e cura o dano causado), o Sino no
@@ -1049,7 +1060,7 @@ Detalhes do mapa:
   - NOVA TENTATIVA, que pede confirmação se apagar uma;
   - MELHORIAS PERMANENTES;
   - APAGAR DADOS DO OUTRO LADO, com confirmação, sem tocar nas opções nem nos recordes da Torre.
-- Exportar e importar backup fica para depois.
+- Exportar e importar backup: FEITO (hub → BACKUP), com a cópia automática e o save quebrado guardado à parte.
 
 #### Transição (§9)
 
@@ -1068,7 +1079,7 @@ Detalhes do mapa:
 #### Fora desta versão (próximas etapas)
 
 - Cooperativo local e online (Etapas 6–7).
-- Exportar e importar backup.
+- ~~Exportar e importar backup.~~ (feito: hub → BACKUP)
 - O Espreitador jogável.
 - Mais dungeons, que liberam o sorteio de verdade.
 - Dificuldade por opção no menu do modo: começa com Fácil, Normal e Difícil, que mudam a CPU e os multiplicadores do
@@ -1146,6 +1157,36 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 5).
 - [x] Desistir ou não ter moedas suficientes encerra a tentativa normalmente.
 
 Detalhes em `docs/outro-lado-playtest.md` (rodada 6).
+
+**Feito na v4.31.0 (2026-11-06), rodada 7 — salvamento e falhas:**
+- [x] Backup do Outro Lado: exportar (baixa um .json) e importar (escolher o arquivo; mostra o resumo e pede confirmação).
+- [x] Cópia automática: o save de antes da última gravação; se o principal quebrar, o jogo volta para ela e avisa. O save quebrado fica guardado à parte.
+- [x] Se a dungeon não montar, volta ao menu do modo com a tentativa salva (online: fecha a sala para os dois).
+- [x] Online: a dungeon já montada esperando o outro é desmontada se a conexão cair.
+
+Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
+
+**Feito na v4.31.0 (2026-11-06), rodada 8 — a 2ª dungeon (Escola Nostradamus) e a economia:**
+- [x] **Território da Degolificada** (profundidade 2+): a Escola Nostradamus (corredor, salas de aula, laboratório,
+      arquivos, biblioteca com a PASSAGEM SECRETA para o BUNKER). Salas de luta com Zumbis de Sangue.
+- [x] **A Degolificada de Gabriel** (Iniciação; NÃO a de Desconjuração): flutua a meia distância e luta só com os
+      CABELOS — investida de cabelo (linha no chão), agarrar e arremessar na parede (até dois), cabelo rastejante,
+      cabelo por cima, defesa de cabelo, Grito Rasgado e a metamorfose Devoradora. Sem corpo a corpo.
+- [x] **Escudo de Medo = segunda vida** (barra azul em terços por cima da vida amarela). Ela arremessa as CAIXAS do
+      bunker com o cabelo; ao quebrar, de uma delas pode sair uma das 3 PROVAS (cartão SD, ficha do Gabriel, foto com a
+      Lina — nas caixas: PROPOSTA). Cada prova tira um terço; sem escudo ela apanha. Fogo azul ao cair.
+- [x] Barris e caixas quebráveis nas salas; moedas, experiência e cura vêm de gavetas, barris, caixas e monstros.
+- [x] Baús no estilo Vampire Survivors: animação (treme, luz pela fresta, estouro de luz, facho), 1 a 3 itens (1 comum,
+      3 raro) que sobem melhorias que você já escolheu; sem nenhuma para subir, moedas.
+- [x] Melhorias permanentes compráveis com moedas (45 + 30 por grau: PROPOSTA).
+- [x] HUD do modo minimalista (Inter, vidro escuro, avisos de interagir sem caixa); nome dos golpes das criaturas
+      pequeno no canto.
+- [x] Tentáculos do Lodo (Dante/Nubi) com o tentáculo do Amigo Imaginário.
+- [ ] Polimento da Degolificada: os corpos de alunos presos nela e o tamanho maior (cânone da luta final), a fita em X
+      que cede e revela a boca (Devoradora), texturas da escola, armários como contêineres de loot.
+- [ ] Pupilas em 8 do Espreitador.
+
+Detalhes em `docs/outro-lado-playtest.md` (rodada 8).
 
 
 ---
@@ -1610,8 +1651,8 @@ A atualização deverá ser considerada funcional quando os seguintes pontos apl
 ### Cooperativo
 
 - [x] As regras de progressão, cura e recompensas estão definidas.
-- [ ] A sincronização funciona no formato cooperativo efetivamente implementado.
-- [ ] O jogo trata falhas de conexão e transições de maneira previsível.
+- [x] A sincronização funciona no formato cooperativo efetivamente implementado (lockstep, v4.30.0; testado em duas abas, ~12 mil quadros sem divergência).
+- [x] O jogo trata falhas de conexão e transições de maneira previsível (quem cai volta ao menu do Outro Lado com aviso; a dungeon montada esperando o outro é desmontada; se a dungeon não montar, volta ao menu com a tentativa salva).
 
 ### Escopo futuro
 

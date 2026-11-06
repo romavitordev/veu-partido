@@ -11,23 +11,27 @@ import { CameraRig } from '../camera/CameraRig.js';
 import { PlayerInput } from '../input/InputManager.js';
 import { buildModel, isModelLoaded } from '../models/index.js';
 import { CpuController } from '../ai/CpuController.js';
-import { DanteClone } from '../combat/npcs.js';
+import { DanteClone, BloodZombie } from '../combat/npcs.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
 import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance } from './dungeons.js';
 import { RoomDoor, Drawer, InteractPrompt, makeArrow, aimArrow } from './roomDoors.js';
-import { computeMods, gainXp, rollChoices } from './upgrades.js';
+import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade } from './upgrades.js';
 import { devoradoDef, restyleDevorado, copiaOpts } from './devorado.js';
 import { Pickup, Chest } from './pickups.js';
-import { rollChest } from './unlocks.js';
+import { rollLoot } from './unlocks.js';
+import { Breakable } from './breakables.js';
 import { PveHud } from './pveHud.js';
 import { Closet, EspreitadorBrain, PeekingCrack } from './espreitador.js';
 import { EspreitadorIntro } from './espreitadorIntro.js';
 import { MansionAmbience } from './ambience.js';
+import { DegolificadaBrain, DegolificadaIntro } from './degolificada.js';
 import espreitadorDef from '../characters/bosses/espreitador.js';
+import degolificadaDef from '../characters/bosses/degolificada.js';
 
-const BOSSES = { espreitador: espreitadorDef };
+const BOSSES = { espreitador: espreitadorDef, degolificada: degolificadaDef };
+const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (o bombeiro Jorge e os outros)
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
@@ -120,14 +124,20 @@ export class Dungeon {
     this.phase = 'loading';
     this.phaseTime = 0;
     // o território: os armários do quarto (a sala do chefe) e a porta de saída
-    this.closets = this.D.closets.map((s, i) => new Closet(w, enemy, s, i));
+    this.closets = (this.D.closets || []).map((s, i) => new Closet(w, enemy, s, i));
     this.exitDoor = this.makeExitDoor(this.D.exit.door);
+    // o ENIGMA DE MEDO (a Escola Nostradamus): as PROVAS que tiram o escudo da Degolificada (saem das caixas do bunker)
+    this.clues = 0;
+    this.cluesNeeded = this.D.enigma ? this.D.enigma.clues.length : 0;
+    this.cluesFound = [];
+    this.bossBoxes = [];
+    this.props = []; // os barris e caixas quebráveis da sala
     // a ROTA desta tentativa: quantas salas até o chefe (varia), e as salas por onde já passou
     this.routeLen = rollRouteLength(this.D, run.depth);
     this.step = 0;
     this.visited = [];
     this.lurk(null);
-    this.ambience = new MansionAmbience(this);
+    this.ambience = this.D.arena === 'mansao' ? new MansionAmbience(this) : null; // as espiadas e a goteira são da Mansão
     w.cameraRig.distance = 4.4;
     w.cameraRig.height = 2.3;
     // as VISTAS: a câmera de cada jogador (no coop, a 2ª câmera é da metade direita da tela)
@@ -153,6 +163,9 @@ export class Dungeon {
     // a luz fraca que anda com o jogador: na 3ª pessoa a câmera olha para os cantos que as luzes da casa não pegam
     this.lamp = new THREE.PointLight(0xffd8a8, 7, 8, 1.6);
     w.scene.add(this.lamp);
+    // a luz dos BAÚS: criada já aqui (apagada) — acender uma luz nova no meio do jogo recompilaria os materiais
+    this.chestLight = new THREE.PointLight(0xffd84a, 0, 7, 1.8);
+    w.scene.add(this.chestLight);
     this.drip = 2;
     this.player.simpleKeys = true; // teclas simples no teclado + mouse (InputManager / Fighter.tryQuick)
     if (net && this.player2) this.player2.simpleKeys = true; // online o P2 também joga com o teclado do P1 do computador dele
@@ -212,6 +225,7 @@ export class Dungeon {
     this.pveHud.setRun(this.run, this.run.depth);
     this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : 0);
     this.pveHud.setKeys(this.keys);
+    this.pveHud.setClues(this.clues, this.cluesNeeded);
     this.pveHud.fade(true, 0);
     requestAnimationFrame(() => this.pveHud && this.pveHud.fade(false, 1.2));
     this.phase = 'intro';
@@ -297,10 +311,7 @@ export class Dungeon {
       M.drawers.forEach((s, i) => {
         let c = null;
         if (i === keyAt) c = { kind: 'key' };
-        else if (Math.random() < (L.drawerCoins ?? 0.35)) {
-          const [a, b] = L.coins || [4, 9];
-          c = { kind: 'coins', amount: Math.round((a + Math.random() * (b - a)) * (1 + 0.25 * Math.max(0, this.run.depth - 1))) };
-        }
+        else c = rollLoot('drawer', Math.random, this.run.depth, this.mods?.dropMult || 1); // moedas, experiência, cura ou nada
         this.drawers.push(new Drawer(w, s, c));
       });
     }
@@ -316,7 +327,77 @@ export class Dungeon {
     }
     // a fresta das salas de espreita
     if (M.peek && !this.cracks[id]) this.cracks[id] = new PeekingCrack(w, M.peek);
+    this.spawnProps(M);
     this.lurk(M);
+  }
+
+  // ------------------------------------------------ BARRIS e CAIXAS (pedido do dono, 2026-11-06): quebram com golpes e
+  // soltam moedas, experiência ou cura. 1 a 3 por sala, longe da entrada e das portas.
+  spawnProps(M) {
+    for (const x of this.props) x.dispose();
+    this.props = [];
+    for (const x of this.bossBoxes) x.dispose();
+    this.bossBoxes = [];
+    const R = M.rects[M.kind === 'boss' ? 1 : 0] || M.rects[0];
+    if (!R) return;
+    const avoid = [M.entry, ...Object.values(M.exits || {}), ...(M.chests || []), ...(M.drawers || [])];
+    const n = 1 + Math.floor(Math.random() * 3);
+    for (let k = 0, tries = 0; k < n && tries < 30; tries++) {
+      const pos = new THREE.Vector3(R.minX + 1 + Math.random() * Math.max(0.1, R.maxX - R.minX - 2), 0, R.minZ + 0.9 + Math.random() * Math.max(0.1, R.maxZ - R.minZ - 1.8));
+      if (avoid.some((s) => s && Math.hypot(s.x - pos.x, s.z - pos.z) < 2.2) || this.props.some((x) => distXZ(x.pos, pos) < 1.4)) continue;
+      resolveBody(this.world.arena, pos, 0.55);
+      const x = new Breakable(this.world, this.enemy, { x: pos.x, z: pos.z, kind: Math.random() < 0.5 ? 'barrel' : 'crate', onBreak: (o) => this.dropLoot(o.pos, 'barrel', 1) });
+      this.world.addNpc(x);
+      this.props.push(x);
+      k++;
+    }
+  }
+
+  // um drop no chão (moedas, experiência ou cura) — das gavetas, dos barris e dos monstros
+  dropLoot(pos, source, mult = 1) {
+    const r = rollLoot(source, Math.random, this.run.depth, mult * (this.mods?.dropMult || 1));
+    if (!r) return null;
+    const at = { x: pos.x + (Math.random() - 0.5) * 0.6, z: pos.z + (Math.random() - 0.5) * 0.6 };
+    const k = new Pickup(this.world, { kind: r.kind, pos: at, amount: r.amount, onTake: r.kind === 'heal' ? null : () => (r.kind === 'coins' ? this.giveCoins(r.amount) : this.giveXp(r.amount)) });
+    this.pickups.push(k);
+    return k;
+  }
+
+  // ------------------------------------------------ AS CAIXAS DO BUNKER e as PROVAS (a luta contra a Degolificada)
+  spawnBossBoxes() {
+    const En = this.D.enigma;
+    if (!En || !En.boxes) return;
+    for (const x of this.bossBoxes) x.dispose();
+    this.bossBoxes = En.boxes.map((s) => new Breakable(this.world, this.enemy, { x: s.x, z: s.z, kind: 'bossBox', yaw: s.yaw ?? 0, onBreak: (o) => this.onBossBoxBroken(o) }));
+  }
+
+  // uma caixa que ela arremessou quebrou: às vezes sai uma prova (as últimas caixas sempre têm a que falta: nunca trava)
+  onBossBoxBroken(o) {
+    const En = this.D.enigma;
+    const dropped = this.pickups.filter((k) => k.kind === 'proof' && k.alive).map((k) => k.proof);
+    const left = En.clues.map((_, i) => i).filter((i) => !this.cluesFound.includes(i) && !dropped.includes(i));
+    const intact = this.bossBoxes.filter((x) => !x.broken).length;
+    if (left.length && (left.length > intact || Math.random() < (En.proofChance ?? 0.5))) {
+      const i = left[Math.floor(Math.random() * left.length)];
+      const k = new Pickup(this.world, { kind: 'proof', pos: { x: o.pos.x, z: o.pos.z }, radius: 1.0, onTake: () => this.findProof(i) });
+      k.proof = i;
+      this.pickups.push(k);
+      this.popup(0, 'Uma prova caiu da caixa', '#c8d8f0');
+      return;
+    }
+    if (Math.random() < 0.35) this.dropLoot(o.pos, 'barrel', 1);
+  }
+
+  // uma PROVA (corpo da Agatha, mente do Gabriel): um terço do escudo cai
+  findProof(i) {
+    const En = this.D.enigma;
+    if (this.cluesFound.includes(i)) return;
+    this.cluesFound.push(i);
+    this.clues = this.cluesFound.length;
+    this.pveHud.setClues(this.clues, this.cluesNeeded);
+    this.popup(0, `PROVA ${this.clues}/${this.cluesNeeded}: ${En.clues[i]}`, '#c8d8f0');
+    if (this.clues < this.cluesNeeded) { this.hint(En.clueHints?.[i] || null); this.hintT = 5; }
+    this.brain && this.brain.addProof && this.brain.addProof();
   }
 
   // coop: quem caiu volta de pé, com um terço da vida
@@ -414,10 +495,15 @@ export class Dungeon {
       this.encounter = null;
       this.unlockExits(null);
     } else if (M.kind === 'fight') this.startEncounter(M, this.via ? this.via.count : 2);
-    else if (M.kind === 'boss') this.startBoss(M);
+    else if (M.kind === 'boss' && M.bossTrigger) {
+      // a sala do chefe começa calma (a biblioteca): a luta só quando alguém passa do gatilho (o bunker)
+      this.encounter = null;
+      this.pendingBoss = M;
+      if (this.pveHud) { this.pveHud.hint(M.hint || null); this.hintT = 8; }
+    } else if (M.kind === 'boss') this.startBoss(M);
     else {
       this.encounter = null;
-      this.unlockExits(M.kind === 'stalk' ? 'Uma fresta… NÃO OLHE para ela (defenda para desviar o olhar) · escolha uma porta' : null);
+      this.unlockExits(M.kind === 'stalk' ? (M.hint || 'Uma fresta… NÃO OLHE para ela (defenda para desviar o olhar) · escolha uma porta') : null);
     }
   }
 
@@ -495,7 +581,36 @@ export class Dungeon {
     }
   }
 
+  // a luta da sala na ESCOLA: os ZUMBIS DE SANGUE (cânone: o bombeiro Jorge virou um; PROPOSTA: os outros e quantos).
+  // O inimigo da vez fica escondido (é o "dono" dos zumbis); a sala termina quando não sobra zumbi.
+  startZombieEncounter(r, count = 2) {
+    const e = this.enemy;
+    this.encounter = { room: r, done: false, koAt: this.world.time, zombies: true };
+    e.pos.set(r.spawn.x, 0, r.spawn.z);
+    for (let i = 0; i < count; i++) {
+      const strong = count >= 3 && i === 0;
+      const ang = Math.PI / 2 + ((i + 0.5) / count) * Math.PI * 2;
+      const pos = new THREE.Vector3(r.spawn.x + Math.sin(ang) * (count > 1 ? 2.2 : 0), 0, r.spawn.z + Math.cos(ang) * (count > 1 ? 2.2 : 0));
+      resolveBody(this.world.arena, pos, 0.8);
+      const z = new BloodZombie(e, this.world, pos, { strong, duration: Infinity, hp: Math.round(ZOMBIE_HP[strong ? 'strong' : 'weak'] * this.scale.hp) });
+      z.onDestroyed = () => this.onZombieSlain(z);
+      this.world.addNpc(z);
+      this.copias.push(z);
+    }
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+    this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
+    this.pveHud.hint(null);
+  }
+
+  onZombieSlain(z) {
+    this.stats.kills++;
+    this.giveXp(z.strong ? this.D.xp.zumbiForte : this.D.xp.zumbi);
+    this.tryHeal(z.pos, z.strong ? 1 : 0.6);
+    if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
+  }
+
   startEncounter(r, count = 2) {
+    if (this.D.minions === 'zumbi') { this.startZombieEncounter(r, count); return; }
     const e = this.enemy;
     this.encounter = { room: r, done: false, koAt: null };
     e.lurking = false;
@@ -569,10 +684,15 @@ export class Dungeon {
     e.lurking = false;
     e.maxHealth = Math.round(def.stats.maxHealth * this.scale.hp);
     e.reset();
-    // ele sai do armário mais perto da porta: primeiro a CENA (pve/espreitadorIntro.js), depois a luta
-    const c0 = this.closets.slice().sort((a, b) => distXZ(a.pos, this.player.pos) - distXZ(b.pos, this.player.pos))[0];
     this.hudAdd('pve-noboss');
     this.pveHud.hint(null);
+    if (this.D.boss === 'degolificada') {
+      // ela se forma no meio do bunker (pve/degolificada.js), depois a luta
+      this.bossIntro = new DegolificadaIntro(this, r.spawn);
+      return;
+    }
+    // ele sai do armário mais perto da porta: primeiro a CENA (pve/espreitadorIntro.js), depois a luta
+    const c0 = this.closets.slice().sort((a, b) => distXZ(a.pos, this.player.pos) - distXZ(b.pos, this.player.pos))[0];
     this.bossIntro = new EspreitadorIntro(this, c0);
   }
 
@@ -586,9 +706,17 @@ export class Dungeon {
     this.player.setState('idle');
     this.attachEnemyCpu(this.diff.cpu);
     e.cpuEdge = { dealt: this.scale.dealt, taken: 1 };
+    this.hudRemove('pve-noboss', 'pve-minor');
+    if (this.D.boss === 'degolificada') {
+      this.spawnBossBoxes();
+      this.brain = new DegolificadaBrain(this);
+      this.bindHud();
+      this.pveHud.hint('A barra azul é o ESCUDO DE MEDO: não quebra com golpes. Desvie das CAIXAS que ela arremessa: de uma delas sai uma PROVA');
+      this.hintT = 9;
+      return;
+    }
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
     this.brain = new EspreitadorBrain(this, { closets: this.closets, playerDef: this.playerDef, cloneDefs: this.cloneDefs });
-    this.hudRemove('pve-noboss', 'pve-minor');
     this.bindHud();
     this.pveHud.hint('Os ARMÁRIOS são as frestas dele: bata neles para TRANCAR · OLHOS AMARELOS acesos = ele vai sair por ali');
     this.hintT = 7;
@@ -602,17 +730,40 @@ export class Dungeon {
   spawnChest(s, luck = 0) {
     const pos = new THREE.Vector3(s.x, 0, s.z);
     resolveBody(this.world.arena, pos, 0.6);
-    const c = new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, manual: true, luck, onOpen: (pp, ch) => this.openChest(ch) });
+    const c = new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, manual: true, luck, light: this.chestLight, onOpen: (pp, ch) => this.openChest(ch) });
     this.pickups.push(c);
     return c;
   }
 
+  // o BAÚ (pedido do dono, 2026-11-06, como no Vampire Survivors): sobe de grau 1 a 3 melhorias TEMPORÁRIAS que você já
+  // escolheu nesta tentativa (1 é o comum; 3 é raro — upgrades.js chestCount). O que não tiver melhoria para subir vira
+  // moedas. Devolve os ícones que saem do baú (a animação em pickups.js Chest)
   openChest(c) {
     this.stats.chests++;
-    const r = rollChest(Math.random, this.run.depth, c.luck || 0);
-    if (r.kind === 'coins') this.giveCoins(r.amount);
-    else if (r.kind === 'heal') this.pickups.push(new Pickup(this.world, { kind: 'heal', pos: { x: c.pos.x + 0.9, z: c.pos.z }, amount: r.amount }));
-    else this.giveXp(r.amount);
+    const n = chestCount(Math.random, c.luck || 0);
+    const ups = chestUpgrades(this.run.picks, Math.random, n);
+    const items = [];
+    const rows = [];
+    for (const id of ups) {
+      this.run.picks.push(id);
+      const u = getUpgrade(id);
+      items.push({ icon: u.icon, colorCss: '#ffd84a' });
+      rows.push({ icon: u.icon, name: u.name, tag: `nv ${countOf(this.run.picks, id)}` });
+    }
+    if (ups.length) {
+      this.applyPlayerMods(false);
+      this.pveHud.setRun(this.run, this.run.depth);
+    }
+    // o que sobrou (nenhuma melhoria para subir): moedas
+    const missing = n - ups.length;
+    if (missing > 0) {
+      const coins = Math.round(missing * (12 + Math.random() * 12) * (1 + 0.25 * Math.max(0, this.run.depth - 1)) * (1 + (c.luck || 0)));
+      this.giveCoins(coins);
+      items.push({ icon: '●', colorCss: '#ffc040' });
+      rows.push({ icon: '●', name: 'Moedas', tag: `+${coins}` });
+    }
+    this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
+    return items;
   }
 
   // as moedas entram no save NA HORA (a morte não leva): o flow.js grava (onCoins)
@@ -638,7 +789,7 @@ export class Dungeon {
       this.deadFrom = this.phase === 'bossDown' ? 'bossDown' : this.encounter && !this.encounter.done ? 'fight' : 'explore';
       this.phase = 'dead';
       this.phaseTime = 0;
-      this.hud.callout('DEVORADO', '#ff4a3a');
+      this.hud.callout(this.D.deathText || 'DEVORADO', '#ff4a3a');
       this.audio.play('ko', { volume: 1.2 });
       this.pveHud.hint(null);
       return;
@@ -647,12 +798,13 @@ export class Dungeon {
     const at = f.pos.clone();
     if (this.encounter.boss) {
       this.encounter.done = true;
+      this.brain && this.brain.onDeath && this.brain.onDeath();
       this.brain && this.brain.dispose();
       this.brain = null;
       this.bossDeadAt = at;
       this.phase = 'bossDown';
       this.phaseTime = 0;
-      this.hud.callout('O ESPREITADOR CAIU', '#ffd84a');
+      this.hud.callout(this.D.bossDownText || 'O ESPREITADOR CAIU', '#ffd84a');
       this.pveHud.hint(null);
       for (const c of this.copias) if (c.alive) c.kill();
       // as frestas morrem com ele: os armários fecham e o quarto se abre
@@ -673,10 +825,11 @@ export class Dungeon {
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
   }
 
+  // o que cai de um monstro: a cura (chance da dungeon) e, à parte, moedas ou experiência (pve/unlocks.js LOOT_ODDS)
   tryHeal(pos, mult) {
     const amount = rollHeal(this.D.id, Math.random, mult * this.diff.drop * (this.mods.dropMult || 1));
-    if (!amount) return;
-    this.pickups.push(new Pickup(this.world, { kind: 'heal', pos: { x: pos.x, z: pos.z }, amount }));
+    if (amount) this.pickups.push(new Pickup(this.world, { kind: 'heal', pos: { x: pos.x, z: pos.z }, amount }));
+    this.dropLoot({ x: pos.x + 0.7, z: pos.z }, 'monster', mult * this.diff.drop);
   }
 
   giveXp(n) {
@@ -728,7 +881,7 @@ export class Dungeon {
     }
     if (near) { this.npcPt.pos.copy(near.pos); return [p, this.npcPt]; }
     // no quarto, com ele escondido numa fresta: enquadra o jogador e o meio do quarto (não entrega onde ele está)
-    if (this.encounter && this.encounter.boss && !this.encounter.done) return [p, this.focusAt((p.pos.x + 50) / 2, p.pos.z * 0.5)];
+    if (this.encounter && this.encounter.boss && !this.encounter.done) return [p, this.focusAt((p.pos.x + (this.D.bossCenter ?? 50)) / 2, p.pos.z * 0.5)];
     return [p, this.focusAt(p.pos.x + 4.5, p.pos.z * 0.6)]; // um ponto à frente: a câmera abre e mostra para onde ir
   }
 
@@ -1046,6 +1199,11 @@ export class Dungeon {
       } else if (c.kind === 'coins') {
         this.world.fx.burst(new THREE.Vector3(o.spot.x, (o.spot.y ?? 0.6) + 0.2, o.spot.z), { count: 14, color: 0xffd84a, speed: 2, life: 0.5, size: 0.1, up: 1.4 });
         this.giveCoins(c.amount);
+      } else if (c.kind === 'xp') {
+        this.world.fx.burst(new THREE.Vector3(o.spot.x, (o.spot.y ?? 0.6) + 0.2, o.spot.z), { count: 12, color: 0x6ad1ff, speed: 2, life: 0.5, size: 0.1, up: 1.4 });
+        this.giveXp(c.amount);
+      } else if (c.kind === 'heal') {
+        this.pickups.push(new Pickup(this.world, { kind: 'heal', pos: { x: p.pos.x, z: p.pos.z }, amount: c.amount }));
       }
     }
   }
@@ -1150,7 +1308,7 @@ export class Dungeon {
     this.applyGates(dt);
     this.updateExitDoor(dt);
     this.lamp.position.set(p.pos.x, p.pos.y + 2.4, p.pos.z);
-    this.ambience.update(dt);
+    this.ambience && this.ambience.update(dt);
     for (const V of this.views) { this.updateLock(dt, V); this.updateArrows(dt, V); }
     if (this.transit) this.updateTransit(dt);
     for (const d of this.doors) {
@@ -1162,12 +1320,14 @@ export class Dungeon {
     for (const c of this.closets) if (!this.brain) c.tick(dt);
     for (const k of this.pickups) k.update(dt, this.players.filter((q) => q.state !== 'ko'));
     for (const d of this.drawers) d.update(dt);
+    for (const x of this.bossBoxes) x.update(dt);
+    this.bossBoxes = this.bossBoxes.filter((x) => x.alive);
     this.pickups = this.pickups.filter((k) => k.alive);
     this.copias = this.copias.filter((c) => c.alive);
     if (this.hintT > 0) { this.hintT -= dt; if (this.hintT <= 0) this.pveHud.hint(null); }
     // a goteira (o som da Mansão)
     this.drip -= dt;
-    if (this.drip <= 0) { this.drip = 1.6 + Math.random() * 2.6; this.audio.play('drip', { volume: 0.35 + Math.random() * 0.25, pitch: 0.9 + Math.random() * 0.25 }); }
+    if (this.drip <= 0 && this.ambience) { this.drip = 1.6 + Math.random() * 2.6; this.audio.play('drip', { volume: 0.35 + Math.random() * 0.25, pitch: 0.9 + Math.random() * 0.25 }); }
     // as melhorias de regeneração (Carne Dura)
     for (const q of this.players) if (q.pveMods && q.pveMods.regenHp > 0 && q.state !== 'ko' && !['hitstun', 'downed', 'stun', 'grabbed'].includes(q.state)) q.health = Math.min(q.maxHealth, q.health + q.maxHealth * q.pveMods.regenHp * dt);
 
@@ -1177,7 +1337,7 @@ export class Dungeon {
           for (const q of this.players) q.setState('idle');
           this.phase = 'explore';
           this.hud.banner(this.D.name.toUpperCase(), this.D.color);
-          this.pveHud.hint(this.player.input?.source === 'gamepad' ? 'Explore a mansão →' : 'Clique esq. golpe · clique dir. tiro · 1–5 habilidades · Z especial · G agarrão · E defesa · Shift esquiva · C (segure) sanidade · Q/R assistências · F trava a mira');
+          this.pveHud.hint(this.player.input?.source === 'gamepad' ? (this.D.exploreHint || 'Explore a mansão →') : 'Clique esq. golpe · clique dir. tiro · 1–5 habilidades · Z especial · G agarrão · E defesa · Shift esquiva · C (segure) sanidade · Q/R assistências · F trava a mira');
           this.hintT = 8;
         }
         break;
@@ -1255,6 +1415,12 @@ export class Dungeon {
       }
     }
     if (this.brain && enc && enc.boss && !enc.done) this.brain.update(this.lastDt);
+    // a sala do chefe com gatilho (o bunker da escola): a luta começa quando alguém passa dele
+    const B = this.pendingBoss;
+    if (B && this.mod === B && !this.transit && this.players.some((q) => q.state !== 'ko' && q.pos.x > B.bossTrigger.x)) {
+      this.pendingBoss = null;
+      this.startBoss(B);
+    }
     // atravessou a porta de saída
     if (this.exitDoor.unlocked && p.pos.x > this.D.exit.door.x + 0.4 && this.phase !== 'exit') this.startExit();
   }
@@ -1395,6 +1561,7 @@ export class Dungeon {
     if (this.coop) { this.input.players[1].cpu = null; this.input.players.length = 2; }
     for (const d of this.doors) d.dispose();
     for (const d of this.drawers) d.dispose();
+    for (const x of this.bossBoxes || []) x.dispose();
     this.world.groundAt = null;
     if (this.stairBlock) this.world.scene.remove(this.stairBlock);
     if (this.stairBox) { this.world.arena.boxes.push(this.stairBox); this.stairBox = null; }

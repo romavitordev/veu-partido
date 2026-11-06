@@ -80,7 +80,7 @@ import { inscribe } from './kianPowers.js';
 import { teamScene } from './teamSpecials.js';
 import { AMIGO_TYPES } from './amigoPowers.js';
 import { ExistidoMorte, InkBeast } from './beasts.js';
-import { inkSplash } from '../fx/inkFx.js';
+import { inkSplash, inkTentacle } from '../fx/inkFx.js';
 
 // Paga um custo em vida (rituais de Sangue) sem nunca se matar
 function payHealth(f, n) {
@@ -1667,56 +1667,29 @@ Object.assign(ABILITY_TYPES, {
       world.fx.ring(new THREE.Vector3(center.x, 0.06, center.z), { color: 0x2a2632, radius: a.radius, life: a.castTime + 0.1 });
       world.fx.burst(new THREE.Vector3(center.x, 0.1, center.z), { count: 20, color: 0x0c0a0e, kind: 'smoke', speed: 1.5, up: 0.5, life: a.castTime, size: 0.6 });
       tl.add(a.castTime, () => {
-        // geometria dos tentáculos (cilindros curvos que sobem e depois recolhem)
-        const mat = new THREE.MeshStandardMaterial({ color: a.color, roughness: 0.25, metalness: 0.1 });
-        const group = new THREE.Group();
-        group.position.copy(center);
-        const tentacles = [];
-        for (let i = 0; i < 7; i++) {
-          const ang = (i / 7) * Math.PI * 2 + Math.random() * 0.4;
-          const r = a.radius * (0.35 + Math.random() * 0.55);
-          const h = 1.4 + Math.random() * 1.0;
-          const curve = new THREE.CatmullRomCurve3([
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(-Math.sin(ang) * 0.25, h * 0.4, -Math.cos(ang) * 0.25),
-            new THREE.Vector3(-Math.sin(ang) * r * 0.6, h * 0.8, -Math.cos(ang) * r * 0.6),
-            new THREE.Vector3(-Math.sin(ang) * r * 0.9, h, -Math.cos(ang) * r * 0.9),
-          ]);
-          const geo = new THREE.TubeGeometry(curve, 12, 0.11, 6, false);
-          const m = new THREE.Mesh(geo, mat);
-          m.position.set(Math.sin(ang) * r, 0, Math.cos(ang) * r);
-          m.scale.set(1, 0.01, 1);
-          group.add(m);
-          tentacles.push(m);
+        // os TENTÁCULOS (pedido do dono, 2026-11-06: iguais aos do Amigo Imaginário — fx/inkFx.js inkTentacle): brotam do
+        // chão em volta do alvo, arqueiam e, se pegam, ENROLAM nele; na cor do Lodo Preto
+        const caught = opp.state !== 'ko' && !opp.isInvulnerable() && distXZ(opp.pos, center) <= a.radius + opp.radius;
+        const n = 6;
+        for (let i = 0; i < n; i++) {
+          const ang = (i / n) * Math.PI * 2 + Math.random() * 0.4;
+          const r = a.radius * (0.55 + Math.random() * 0.4);
+          const from = new THREE.Vector3(center.x + Math.sin(ang) * r, 0.02, center.z + Math.cos(ang) * r);
+          const k = i % 3;
+          const end = caught
+            ? () => new THREE.Vector3(opp.pos.x, opp.pos.y + 0.5 + k * 0.45, opp.pos.z)
+            : new THREE.Vector3(center.x + Math.sin(ang) * r * 0.3, 1.2 + k * 0.4, center.z + Math.cos(ang) * r * 0.3);
+          inkTentacle(world, from, end, { grow: 0.16, hold: Math.max(0.2, a.hold - 0.16), retract: 0.3, coil: caught, radius: 0.1, arc: 0.6, color: a.color ?? 0x0e0c10, emissive: 0x0a0812 });
         }
-        world.scene.add(group);
         world.audio.play('chainPull', { pitch: 0.6 });
         world.fx.burst(new THREE.Vector3(center.x, 0.3, center.z), { count: 30, color: 0x0c0a0e, kind: 'smoke', speed: 3, up: 1, life: 0.7, size: 0.7 });
-        let t = 0;
-        let hit = false;
-        world.addTicker({
-          update(dt) {
-            t += dt;
-            const up = Math.min(1, t / 0.18);
-            const down = t > a.hold ? Math.max(0, 1 - (t - a.hold) / 0.3) : 1;
-            for (const m of tentacles) m.scale.y = Math.max(0.01, up * down);
-            if (!hit && t >= 0.12) {
-              hit = true;
-              if (opp.state !== 'ko' && !opp.isInvulnerable() && distXZ(opp.pos, center) <= a.radius + opp.radius) {
-                const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', knockback: 0, hitstun: 0.3, sound: 'clawHit', color: 0x6a6478, scale: 1.4, reaction: false });
-                if (typeof res === 'number' && opp.state !== 'ko') {
-                  opp.stun(a.stun, 'stagger');
-                  opp.notify('PRESO NO LODO', true);
-                }
-              }
-            }
-            return t > a.hold + 0.3;
-          },
-          dispose() {
-            world.scene.remove(group);
-            for (const m of tentacles) m.geometry.dispose();
-            mat.dispose();
-          },
+        tl.add(a.castTime + 0.12, () => {
+          if (!caught || opp.state === 'ko' || opp.isInvulnerable()) return;
+          const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', knockback: 0, hitstun: 0.3, sound: 'clawHit', color: 0x6a6478, scale: 1.4, reaction: false });
+          if (typeof res === 'number' && opp.state !== 'ko') {
+            opp.stun(a.stun, 'stagger');
+            opp.notify('PRESO NO LODO', true);
+          }
         });
       });
       // eco do Trinitá: um clone (o mais perto do alvo) repete com metade do dano e área menor

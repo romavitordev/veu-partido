@@ -871,6 +871,8 @@ function endNet(reason, byMe = false) {
   const net = game.net;
   const wasPve = game.mode && game.mode.kind === 'pve';
   game.net = null;
+  // a conexão caiu com a partida já montada e esperando o outro: desmonta (senão fica na memória)
+  if (game.netLoaded && game.netLoaded.dispose) { try { game.netLoaded.dispose(); } catch (e) { console.warn(e); } }
   game.netLoaded = null;
   input.netFrame = null;
   input.netSlot = undefined;

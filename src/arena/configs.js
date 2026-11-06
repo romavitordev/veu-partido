@@ -332,3 +332,63 @@ export const MANSAO = {
   particles: { color: 0xc8b8a0, count: 140, area: 30, height: 3, rise: 0.04, drift: 0.2, size: 0.03, opacity: 0.45, center: [20, 0, 0] }, // poeira
   camera: { rect: { minX: -26, maxX: 82, minZ: -22, maxZ: 22 }, maxY: 11 },
 };
+
+// ESCOLA NOSTRADAMUS (OUTRO LADO: o território da Degolificada, a 2ª dungeon) — salas soltas, sem teto, à noite. Só no
+// modo PvE. Cada sala é um módulo (src/pve/dungeons.js DUNGEONS.degolificada); o bunker fica depois da passagem secreta da
+// biblioteca. As caixas do bunker, as portas, as gavetas e a porta de saída são do jogo (src/pve/Dungeon.js).
+const room = (x0, z0, w = 12, d = 10) => ({ minX: x0 + 0.3, maxX: x0 + w - 0.3, minZ: z0 + 0.3, maxZ: z0 + d - 0.3 });
+const tube = (x, z, i = 12, flicker = false) => ({ type: 'point', color: 0xd8e8ff, intensity: i, distance: 8, pos: [x, 2.8, z], flicker });
+export const ESCOLA = {
+  id: 'escola',
+  name: 'Escola Nostradamus',
+  glb: 'arenas/escola.glb',
+  bounds: {
+    rects: [
+      { minX: -21.6, maxX: -0.3, minZ: -1.95, maxZ: 1.95 }, // corredor
+      room(0, 30), room(20, 30), room(40, 30), // as salas de aula
+      room(0, 50), // laboratório
+      { minX: 20.3, maxX: 29.7, minZ: 50.9, maxZ: 57.2 }, // arquivos
+      { minX: 40.3, maxX: 55.7, minZ: 52.6, maxZ: 55.4 }, // corredor dos fundos
+      { minX: 38.3, maxX: 61.7, minZ: -9.8, maxZ: 9.8 }, // biblioteca
+      { minX: 60.2, maxX: 71.8, minZ: -1.2, maxZ: 1.2 }, // passagem secreta
+      { minX: 70.3, maxX: 91.7, minZ: -8.7, maxZ: 8.7 }, // bunker
+      { minX: 90.2, maxX: 103.6, minZ: -1.1, maxZ: 1.1 }, // saída do bunker
+    ],
+  },
+  spawns: [{ x: -20.6, z: 0 }, { x: -19, z: 0 }],
+  sky: 0x020304,
+  fog: { color: 0x05070a, density: 0.05 },
+  lightPool: 7,
+  lights: [
+    { type: 'hemi', sky: 0x34405a, ground: 0x12100c, intensity: 0.5 },
+    { type: 'ambient', color: 0x22262e, intensity: 0.4 },
+    { type: 'dir', color: 0x6a80c0, intensity: 0.3, pos: [20, 30, -18], shadow: false },
+    // o corredor: as fluorescentes e a fuligem do incêndio
+    tube(-19, 0), tube(-12.5, 0, 9, true), tube(-5, 0),
+    { type: 'point', color: 0x30ff70, intensity: 4, distance: 4, pos: [-21.4, 2.8, 0] }, // a placa de saída
+    // as salas de aula
+    tube(4, 35, 10, true), tube(8.5, 35), tube(24, 35, 10, true), tube(28.5, 35), tube(44, 35, 10, true), tube(48.5, 35),
+    { type: 'point', color: 0x6a80c0, intensity: 7, distance: 7, pos: [6, 2, 30.6] }, // a lua nas janelas
+    { type: 'point', color: 0x6a80c0, intensity: 7, distance: 7, pos: [26, 2, 30.6] },
+    { type: 'point', color: 0x6a80c0, intensity: 7, distance: 7, pos: [46, 2, 30.6] },
+    // o laboratório: o fogo que ainda queima e as brasas
+    tube(5, 55, 7, true),
+    { type: 'point', color: 0xff6a20, intensity: 18, distance: 9, pos: [11, 0.8, 52.8], flicker: true },
+    { type: 'point', color: 0xff4010, intensity: 8, distance: 6, pos: [7.5, 0.4, 55] },
+    // arquivos e o corredor dos fundos
+    tube(25, 54, 10, true), tube(43, 54, 8, true), tube(51, 54),
+    // a biblioteca
+    tube(44, -4, 10, true), tube(50, 4), tube(56, -4, 10, true), tube(44, 4), tube(56, 4),
+    { type: 'point', color: 0x6a80c0, intensity: 8, distance: 8, pos: [61, 2.2, -6.5] }, // o vitral
+    { type: 'point', color: 0x6a80c0, intensity: 8, distance: 8, pos: [61, 2.2, 6.5] },
+    // a passagem e o bunker: lâmpadas nuas e as velas do círculo
+    { type: 'point', color: 0xffc880, intensity: 8, distance: 6, pos: [66, 2.5, 0], flicker: true },
+    { type: 'point', color: 0xffc880, intensity: 14, distance: 9, pos: [75, 2.5, 0], flicker: true },
+    { type: 'point', color: 0xffc880, intensity: 12, distance: 9, pos: [87, 2.5, -4] },
+    { type: 'point', color: 0xffc880, intensity: 12, distance: 9, pos: [87, 2.5, 4], flicker: true },
+    { type: 'point', color: 0xff9a40, intensity: 12, distance: 8, pos: [81, 0.6, 0], flicker: true }, // as velas do ritual
+    { type: 'point', color: 0x8090c0, intensity: 8, distance: 8, pos: [103, 1.5, 0] }, // o fim da saída
+  ],
+  particles: { color: 0xa8a8a0, count: 140, area: 30, height: 3, rise: 0.05, drift: 0.2, size: 0.03, opacity: 0.4, center: [40, 0, 20] }, // a cinza
+  camera: { rect: { minX: -30, maxX: 110, minZ: -20, maxZ: 68 }, maxY: 11 },
+};

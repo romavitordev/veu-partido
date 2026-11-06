@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v4.31.0 — Outro Lado: a Escola Nostradamus e a Degolificada
+
+- Versão: `VERSION` 4.30.0 → **4.31.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.
+- Dungeon `degolificada` (`src/pve/dungeons.js`, arena `escola` em `src/arena/configs.js`, `public/arenas/escola.glb` de `tools/blender/arena_escola.py`); chefe `src/characters/bosses/degolificada.js` (modelo `public/models/degolificada.glb`, `tools/blender/char_degolificada.py`).
+- IA da chefe (`src/pve/degolificada.js`): sem CPU de luta, `noFlinch` (novo em `damage.js`), escudo = `cpuEdge.taken` 0 + `lethalHook` até as 3 provas; caixas/barris em `src/pve/breakables.js` (`lift`/`moveTo` para o arremesso).
+- Baús (`src/pve/pickups.js` Chest): animação com uma PointLight criada apagada no início da dungeon (não recompila materiais); `chestCount` em `src/pve/upgrades.js` (1: 69%, 2: 24%, 3: 7% — PROPOSTA).
+- Loot por fonte (`LOOT_ODDS` em `src/pve/unlocks.js`); árvore com moedas (`treeCoinCost` = 45 + 30×grau, PROPOSTA).
+- HUD (`src/styles.css`, `src/pve/pveHud.js` setShield/moveName/loot, `src/pve/roomDoors.js` promptSprite).
+- Backup/cópia automática do save do Outro Lado (`src/pve/save.js`, `src/pve/flow.js`).
+- Site: `sobre.html` — o Outro Lado sai de "em desenvolvimento" para "já jogável", com as duas masmorras e o estado atual.
+- Testes: `npm test` 70/70; `npm run check` OK (emendas da passagem do bunker alargadas para 1,5 m).
+
 ## v4.30.0 — Outro Lado: coop online e volta à vida com moedas
 
 - Versão: `VERSION` 4.29.0 → **4.30.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.

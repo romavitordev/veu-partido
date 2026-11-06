@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE } from '../src/pve/upgrades.js';
-import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY } from '../src/pve/save.js';
+import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades } from '../src/pve/upgrades.js';
+import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, rollRouteLength, rollExits, chestChance, pickNextDungeon, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
 
@@ -64,6 +64,39 @@ test('salvamento: chave própria, perfil por personagem, a morte só apaga a ten
   assert.equal(s.m.size, 0);
 });
 
+test('salvamento: a cópia automática salva o save quebrado e o backup vai e volta', () => {
+  const s = mem();
+  const d = emptyData();
+  d.coins = 40;
+  savePve(d, s);
+  d.coins = 90;
+  savePve(d, s);
+  assert.equal(JSON.parse(s.getItem(PVE_PREV_KEY)).coins, 40, 'a cópia é o save de antes');
+  s.setItem(PVE_KEY, '{quebrado');
+  const back = loadPve(s);
+  assert.equal(back.coins, 40, 'volta para a cópia');
+  assert.equal(back.loadedFrom, 'prev');
+  assert.equal(s.getItem(PVE_BROKEN_KEY), '{quebrado', 'o quebrado fica guardado');
+  assert.ok(!JSON.stringify(back).includes('loadedFrom'), 'a origem não vai para o save');
+  // backup
+  d.unlocked = ['kaiser'];
+  rewardBoss(d, 'kaiser', 't');
+  const file = exportPve(d);
+  const imp = parseBackup(file);
+  assert.equal(imp.data.coins, 90);
+  assert.deepEqual(imp.data.unlocked, ['kaiser']);
+  assert.equal(describePve(imp.data).levels, 1);
+  assert.throws(() => parseBackup('{x'), /não é JSON/);
+  assert.throws(() => parseBackup(JSON.stringify({ kind: 'outro' })), /não é um backup/);
+  const odd = parseBackup(JSON.stringify({ kind: 'veu-partido/outro-lado', version: 1, data: { version: 1, profiles: [], campaign: 3, coins: -5 } })).data;
+  assert.deepEqual(odd.profiles, {}, 'perfis estranhos viram vazio');
+  assert.equal(odd.coins, 0);
+  assert.equal(odd.campaign.bestDepth, 0);
+  assert.throws(() => parseBackup(JSON.stringify({ kind: 'veu-partido/outro-lado', version: 1, data: { version: 2 } })), /incompleto/);
+  clearPve(s);
+  assert.equal(s.m.size, 0, 'apagar leva as cópias junto');
+});
+
 test('salvamento: dado quebrado ou de outra versão não derruba', () => {
   const s = mem();
   s.setItem(PVE_KEY, '{quebrado');
@@ -112,4 +145,19 @@ test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a prof
   assert.ok(lens.size > 1, 'o número de salas varia');
   assert.ok(chestChance(D, 'fight', 4) > chestChance(D, 'fight', 2));
   assert.ok(TREE.every((n) => n.ranks > 0));
+});
+
+test('baú: 1 item é o comum, 3 é raro; sobe só melhorias que você já tem', () => {
+  let s = 1;
+  const rng = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+  const n = { 1: 0, 2: 0, 3: 0 };
+  for (let i = 0; i < 5000; i++) n[chestCount(rng)]++;
+  assert.ok(n[1] > n[2] && n[2] > n[3] && n[3] > 0);
+  assert.ok(n[3] / 5000 < 0.12);
+  // a sorte (sala trancada) puxa para cima
+  const lucky = { 1: 0, 2: 0, 3: 0 };
+  for (let i = 0; i < 5000; i++) lucky[chestCount(rng, 1)]++;
+  assert.ok(lucky[3] > n[3]);
+  const ups = chestUpgrades(['furia', 'vigor', 'vigor', 'vigor'], rng, 3);
+  assert.deepEqual(ups, ['furia']); // o Vigor já está no máximo; nada que você não tenha
 });

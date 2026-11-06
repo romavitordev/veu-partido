@@ -85,6 +85,24 @@ export function rollChoices(picks, rng = Math.random, n = 3) {
   return out;
 }
 
+// o BAÚ (como no Vampire Survivors): sobe de grau melhorias que o jogador JÁ tem (ids sem repetir, só as abaixo do máximo)
+export function chestUpgrades(picks, rng = Math.random, n = 1) {
+  const pool = UPGRADES.filter((u) => countOf(picks, u.id) > 0 && countOf(picks, u.id) < u.max).map((u) => u.id);
+  const out = [];
+  while (out.length < n && pool.length) out.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
+  return out;
+}
+
+// quantos itens o baú dá (pedido do dono, 2026-11-06): 1 é o comum, 2 de vez em quando, 3 é meio raro.
+// luck (o baú da sala trancada, 0..1) puxa para cima. Odds: PROPOSTA
+export const CHEST_ODDS = { two: 0.24, three: 0.07 };
+export function chestCount(rng = Math.random, luck = 0) {
+  const r = rng();
+  const three = CHEST_ODDS.three * (1 + 2 * luck);
+  const two = CHEST_ODDS.two * (1 + luck);
+  return r < three ? 3 : r < three + two ? 2 : 1;
+}
+
 // experiência para passar do nível `lv` (1 → 2 custa 60, depois cresce)
 export function xpForLevel(lv) {
   return Math.round(60 + (lv - 1) * 45);

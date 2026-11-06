@@ -13,9 +13,10 @@ export const DUNGEONS = {
     color: '#f2c230',
     arena: 'mansao',
     boss: 'espreitador',
+    bossName: 'O ESPREITADOR',
     restricted: ['espreitador'],
     minDepth: 1,
-    drops: { heal: { chance: 0.45, amount: 0.2 } },
+    drops: { heal: { chance: 0.55, amount: 0.2 } }, // mais drops (pedido do dono, 2026-11-06)
     xp: { devorado: 35, copia: 15, boss: 120 },
     // ROTAS (pedido do dono, 2026-11-05): cada sala é um MÓDULO; ao limpar a sala, as portas da esquerda, da frente e da
     // direita (e a escada do hall) se abrem, e cada uma leva a uma sala sorteada — com 2, 3 ou 4 monstros (o número
@@ -147,7 +148,153 @@ export const DUNGEONS = {
       { x: 38.5, z: -6, face: Math.PI / 2 }, { x: 61.5, z: 6, face: -Math.PI / 2 }, // nas paredes laterais (na parede da frente tapariam a câmera)
     ],
   },
+
+  // A 2ª DUNGEON (pedido do dono, 2026-11-06): a ESCOLA NOSTRADAMUS, com corredor e salas de aula — o território da
+  // DEGOLIFICADA DE GABRIEL (Iniciação, A Ordem Paranormal). Cânone (wikis "Escola Nostradamus de Ensino Médio",
+  // "Gabriel Opspor" e "Degolificada"): o corredor queimado do incêndio, as salas de História, Matemática e Geografia, o
+  // laboratório da bomba, a sala de arquivos (a ficha do Gabriel), a biblioteca com a passagem secreta e o BUNKER, onde
+  // ela é enfrentada; o bombeiro Jorge virou um Zumbi de Sangue. PROPOSTA: a disposição, o corredor dos fundos, os outros
+  // zumbis e onde ficam as pistas. Coordenadas iguais às de tools/blender/arena_escola.py.
+  degolificada: {
+    id: 'degolificada',
+    name: 'Território da Degolificada',
+    place: 'Escola Nostradamus',
+    color: '#c8d0c0',
+    arena: 'escola',
+    boss: 'degolificada',
+    bossName: 'A DEGOLIFICADA',
+    restricted: ['degolificada'],
+    minDepth: 2, // a 2ª: vem depois da Mansão
+    minions: 'zumbi', // as salas de luta: Zumbis de Sangue (pve/Dungeon.js startZombieEncounter)
+    drops: { heal: { chance: 0.5, amount: 0.2 } },
+    xp: { zumbi: 18, zumbiForte: 42, boss: 140 },
+    exploreHint: 'Explore a escola →',
+    deathText: 'VOCÊ CAIU',
+    endTitle: ['VOCÊ CAIU NA ESCOLA', 'VOCÊS CAÍRAM NA ESCOLA'], // a tela do fim (sozinho, em dupla)
+    killsLabel: 'Zumbis',
+    bossDownText: 'A DEGOLIFICADA SE DISSIPOU',
+    bossCenter: 81,
+    route: { rooms: [3, 5], monsters: [2, 4], stalkWeight: 0.35 },
+    start: 'corredor',
+    bossModule: 'biblioteca',
+    modules: {
+      corredor: {
+        kind: 'start', floor: 0, title: 'Corredor principal', objective: 'Escolha um caminho',
+        rects: [{ minX: -21.6, maxX: -0.3, minZ: -1.95, maxZ: 1.95 }],
+        entry: { x: -20.6, z: 0, yaw: Math.PI / 2 },
+        exits: {
+          left: { x: -8, z: -2.48, face: 0, w: 1.4 },
+          front: { x: -0.02, z: 0, face: -Math.PI / 2, w: 2.4 },
+          right: { x: -14, z: 2.48, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: -18.6, z: -1.3 }, { x: -1.2, z: 1.3 }],
+        drawers: [{ x: -11, y: 0.66, z: -2.15, face: 0 }, { x: -6, y: 0.66, z: 2.15, face: Math.PI }], // os escaninhos
+      },
+      historia: classroom(0, 30, 'Sala de História'),
+      matematica: classroom(20, 30, 'Sala de Matemática'),
+      geografia: classroom(40, 30, 'Sala de Geografia'),
+      laboratorio: {
+        kind: 'fight', floor: 0, title: 'Laboratório',
+        rects: [{ minX: 0.3, maxX: 11.7, minZ: 50.3, maxZ: 59.7 }],
+        entry: { x: 1.0, z: 53.5, yaw: Math.PI / 2, door: { x: 0.02, z: 53.5, face: Math.PI / 2, w: 1.4 } },
+        spawn: { x: 8, z: 55 },
+        exits: {
+          left: { x: 10.6, z: 50.02, face: 0, w: 1.4 },
+          front: { x: 11.98, z: 56, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 2.0, z: 59.98, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 1.2, z: 51.0 }, { x: 10.8, z: 59.0 }],
+        drawers: [{ x: 11.36, y: 0.5, z: 53.2, face: -Math.PI / 2 }],
+      },
+      arquivos: {
+        kind: 'stalk', floor: 0, title: 'Sala de arquivos', objective: 'Escolha uma porta',
+        hint: 'A sala de arquivos: as fichas dos alunos nos arquivos de aço (as gavetas abrem) · escolha uma porta',
+        rects: [{ minX: 20.3, maxX: 29.7, minZ: 50.9, maxZ: 57.2 }],
+        entry: { x: 20.9, z: 52.6, yaw: Math.PI / 2, door: { x: 20.02, z: 52.6, face: Math.PI / 2, w: 1.4 } },
+        exits: {
+          left: { x: 25.5, z: 50.02, face: 0, w: 1.4 },
+          front: { x: 29.98, z: 54, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 23.6, z: 57.98, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 28.8, z: 51.4 }, { x: 29.0, z: 56.8 }],
+        drawers: [{ x: 21.75, y: 0.54, z: 50.82, face: 0 }, { x: 23.25, y: 0.88, z: 50.82, face: 0 }, { x: 26.25, y: 0.54, z: 50.82, face: 0 }],
+      },
+      fundos: { // PROPOSTA (não é um lugar citado na wiki): o corredor dos fundos, com o rastro arrastado
+        kind: 'stalk', floor: 0, title: 'Corredor dos fundos', objective: 'Siga em frente',
+        hint: 'Um rastro de sangue arrastado… escolha uma porta',
+        rects: [{ minX: 40.3, maxX: 55.7, minZ: 52.6, maxZ: 55.4 }],
+        entry: { x: 41.0, z: 54, yaw: Math.PI / 2, door: { x: 40.02, z: 54, face: Math.PI / 2, w: 1.4 } },
+        exits: {
+          left: { x: 48, z: 52.02, face: 0, w: 1.4 },
+          front: { x: 55.98, z: 54, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 44, z: 55.98, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 55.1, z: 53.2 }],
+        drawers: [{ x: 51, y: 0.66, z: 55.5, face: Math.PI }],
+      },
+      // a sala do chefe: a BIBLIOTECA (calma, com o fichário) → a PASSAGEM SECRETA → o BUNKER (a luta começa ao entrar)
+      biblioteca: {
+        kind: 'boss', floor: 0, title: 'Biblioteca', objective: 'Desça ao bunker',
+        hint: 'Uma estante foi arrastada: a PASSAGEM SECRETA leva ao BUNKER · a Degolificada está lá embaixo',
+        rects: [
+          { minX: 70.3, maxX: 91.7, minZ: -8.7, maxZ: 8.7 }, // o bunker (o 1º: é onde ela volta quando se dissipa)
+          { minX: 38.3, maxX: 61.7, minZ: -9.8, maxZ: 9.8 }, // a biblioteca
+          { minX: 60.2, maxX: 71.8, minZ: -1.2, maxZ: 1.2 }, // a passagem secreta
+          { minX: 90.2, maxX: 103.6, minZ: -1.1, maxZ: 1.1 }, // a saída do bunker
+        ],
+        entry: { x: 39.3, z: 0, yaw: Math.PI / 2, door: { x: 38.02, z: 0, face: Math.PI / 2, w: 2.5 } },
+        spawn: { x: 82, z: 0 },
+        bossTrigger: { x: 71.5 },
+        exits: {},
+        chests: [{ x: 40.2, z: 8.8 }, { x: 90.6, z: -7.4 }],
+        // o FICHÁRIO da biblioteca
+        drawers: [{ x: 49.4, y: 0.62, z: -9.25, face: 0 }, { x: 49.8, y: 0.3, z: -9.25, face: 0 }, { x: 50.2, y: 0.94, z: -9.25, face: 0 }, { x: 50.6, y: 0.62, z: -9.25, face: 0 }],
+      },
+    },
+    exit: { door: { x: 92.6, z: 0 } },
+    locks: { chance: 0.4, vault: 0.5, luck: 0.6, drawerCoins: 0.35, coins: [4, 9] },
+    chests: {
+      chance: { start: 0.7, stalk: 0.9, boss: 1, fight: [0, 0, 0.45, 0.65, 0.9] },
+      coinsBoss: 34,
+    },
+    // o ENIGMA DE MEDO (pedido do dono, 2026-11-06): ela luta com o ESCUDO DE MEDO; as CAIXAS do bunker só quebram com
+    // a investida dela, e de dentro saem as 3 PROVAS (cada uma tira um terço do escudo). As provas são objetos do cânone;
+    // estarem nas caixas é PROPOSTA. As últimas caixas sempre têm as que faltam (nunca trava).
+    enigma: {
+      name: 'GABRIEL',
+      clues: ['O CARTÃO SD DA CÂMERA', 'A FICHA DO GABRIEL', 'A FOTO DO GABRIEL COM A LINA'],
+      clueHints: [
+        'A gravação daquela noite: o "Gabriel" mata a Agatha no bunker… e o corpo dela se levanta',
+        'A ficha do Gabriel Opspor: ele investigava os sumiços das alunas e tinha certeza de que era a Agatha',
+        'Gabriel e a namorada, Lina. Quem está no corpo da Agatha procura por ela',
+      ],
+      proofChance: 0.5,
+      // as caixas de mantimentos no bunker (longe do círculo do ritual, onde ela nasce)
+      boxes: [
+        { x: 75, z: -5.4 }, { x: 75, z: 5.4 }, { x: 80, z: -6.9 }, { x: 80, z: 6.9 },
+        { x: 86.4, z: -6.2 }, { x: 86.4, z: 6.2 }, { x: 88.6, z: 1.2, yaw: 0.4 }, { x: 73.4, z: -2.8, yaw: 0.2 },
+      ],
+    },
+  },
 };
+
+// uma sala de aula da Escola Nostradamus (12 × 10, a partir de x0, z0): a porta de entrada no oeste, o quadro e a mesa do
+// professor no oeste, as carteiras em dois blocos e o meio livre para a luta (tools/blender/arena_escola.py classroom)
+function classroom(x0, z0, title) {
+  return {
+    kind: 'fight', floor: 0, title,
+    rects: [{ minX: x0 + 0.3, maxX: x0 + 11.7, minZ: z0 + 0.3, maxZ: z0 + 9.7 }],
+    entry: { x: x0 + 1.0, z: z0 + 2.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 2.5, face: Math.PI / 2, w: 1.4 } },
+    spawn: { x: x0 + 9, z: z0 + 5 },
+    exits: {
+      left: { x: x0 + 6.6, z: z0 + 0.02, face: 0, w: 1.4 },
+      front: { x: x0 + 11.98, z: z0 + 5, face: -Math.PI / 2, w: 1.4 },
+      right: { x: x0 + 5.4, z: z0 + 9.98, face: Math.PI, w: 1.4 },
+    },
+    chests: [{ x: x0 + 1.1, z: z0 + 1.0 }, { x: x0 + 11.2, z: z0 + 3.6 }],
+    drawers: [{ x: x0 + 2.12, y: 0.5, z: z0 + 6.5, face: Math.PI / 2 }, { x: x0 + 2.12, y: 0.5, z: z0 + 7.1, face: Math.PI / 2 }], // a mesa do professor
+  };
+}
 
 // ------------------------------------------------ ROTAS: quantas salas até o chefe e o que há atrás de cada porta
 const randInt = (rng, a, b) => a + Math.floor(rng() * (b - a + 1));
@@ -236,7 +383,7 @@ export function chestChance(D, kind, count = 0) {
   return c[kind] ?? 0;
 }
 
-export const DUNGEON_ORDER = ['espreitador'];
+export const DUNGEON_ORDER = ['espreitador', 'degolificada'];
 
 // DIFICULDADE (TODO §4.5: o chefe desafia mesmo no Fácil): CPU e multiplicadores do inimigo
 export const PVE_DIFFICULTIES = {

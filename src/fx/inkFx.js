@@ -11,10 +11,10 @@ const _p = new THREE.Vector3();
 // TENTÁCULO: sai do chão em `from` (Vector3), arqueia e chega em `to()` (função: o alvo pode andar). Cresce em
 // `grow` s, fica `hold` s e recolhe em `retract` s. o.coil: enrola em volta do alvo no fim (prender).
 export function inkTentacle(world, from, to, o = {}) {
-  const { grow = 0.18, hold = 0.3, retract = 0.2, radius = 0.09, color = TENT, arc = 0.9, coil = false, wiggle = 0.12 } = o;
+  const { grow = 0.18, hold = 0.3, retract = 0.2, radius = 0.09, color = TENT, arc = 0.9, coil = false, wiggle = 0.12, emissive = 0x1a0804 } = o;
   const TUB = 26;
   const RAD = 6;
-  const mat = new THREE.MeshToonMaterial({ color, emissive: 0x1a0804, emissiveIntensity: 0.4 });
+  const mat = new THREE.MeshToonMaterial({ color, emissive, emissiveIntensity: 0.4 });
   const mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat);
   mesh.frustumCulled = false;
   const life = grow + hold + retract;
@@ -58,7 +58,7 @@ export function inkTentacle(world, from, to, o = {}) {
     mesh.geometry = g;
   };
   build(0);
-  world.fx.burst(base.clone().setY(base.y + 0.05), { count: 10, color: INK, speed: 2, up: 2, life: 0.4, size: 0.14, gravity: 8 });
+  if (o.splash !== false) world.fx.burst(base.clone().setY(base.y + 0.05), { count: 10, color: o.splash ?? INK, speed: 2, up: 2, life: 0.4, size: 0.14, gravity: 8 });
   const h = { mesh, alive: true };
   world.fx._addMesh(mesh, life, (k, dt) => {
     t += dt;

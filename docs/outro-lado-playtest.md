@@ -230,3 +230,18 @@ Botão de interagir, gavetas e cadeados:
 - **Voltar à vida (sozinho ou coop):** quando a tentativa acabaria, aparece a oferta; quem tiver moedas aperta A/× e paga (no coop, qualquer um dos dois). Todos voltam com metade da vida. Preço (PROPOSTA): 40 moedas na profundidade 1 (+50% por profundidade), e cada resgate na mesma dungeon soma o preço base outra vez (40, 80, 120…).
 - **Online:** cada um escolhe o próprio personagem com os próprios liberados e a própria árvore; o nome do parceiro flutua em cima dele; a escolha da melhoria alterna entre P1 e P2. Testado em duas abas: ~12 mil quadros (menus, seleção, sala com luta e o fim) sem nenhuma divergência.
 - **Desistência/sem moedas:** desistir encerra a tentativa normalmente; sem saldo elegível, a oferta não impede o fim da tentativa.
+
+### Rodada 7 (2026-11-06) — salvamento e falhas (v4.31.0)
+
+- **Backup:** hub → BACKUP (EXPORTAR / IMPORTAR). Exportar baixa `veu-partido-outro-lado-AAAA-MM-DD.json` com o save inteiro (moedas, comprados, níveis, árvore, campanha e tentativa). Importar: o seletor de arquivo (ou o campo na própria tela, que funciona quando o controle não abre o seletor), mostra o resumo do backup e pede confirmação; o progresso atual fica como cópia automática.
+- **Cópia automática:** cada gravação guarda a anterior (`veu_pve_v1_prev`). Save quebrado: o original fica em `veu_pve_v1_quebrado`, o jogo volta para a cópia (ou começa do zero, se não houver) e o hub avisa. APAGAR DADOS leva as cópias junto.
+- **Falhas:** a dungeon que não monta volta ao menu com a tentativa salva (online fecha a sala); a conexão que cai com a dungeon montada esperando o outro a desmonta.
+- Testado: importação por arquivo na tela (resumo + confirmação), save corrompido com e sem cópia; testes automáticos novos de cópia/backup (69/69).
+
+### Rodada 8 (2026-11-06) — Escola Nostradamus, a Degolificada e a economia (v4.31.0)
+
+- **Mapa:** `public/arenas/escola.glb` (`tools/blender/arena_escola.py`): corredor, salas de aula (História, Matemática, Geografia), laboratório, arquivos, fundos e a biblioteca; a estante arrastada abre a passagem secreta para o BUNKER (círculo do ritual, velas, o livro do Ritual de Passagem aberto, a pira com os restos). Saída pelo corredor do bunker.
+- **Chefe:** a Degolificada de Iniciação (corpo da Agatha, mente do Gabriel). Começa ao passar de x 71,5 no bunker. A IA (`src/pve/degolificada.js`) mantém 4,6–8,2 m de distância e não usa a CPU de luta: investida de cabelo (linha marcada, trava 0,25 s antes), agarrar e arremessar na parede mais perto (até dois; quem morre agarrado vira Devoradora), cabelo rastejante (segue o alvo pelo chão e brota), cabelo por cima (círculos no chão), defesa de cabelo (quem fica colado 0,35 s: fecha os fios, toma 20% do dano e empurra), Grito Rasgado; Devoradora aos 120 s (maior, +20% de dano, recargas 25% menores, mais fios).
+- **Escudo de Medo:** a barra azul em terços por cima da vida. Com escudo ela não toma dano nem reage. Ela arremessa as 8 caixas do bunker (e barris/caixas da sala); cada caixa que quebra tem 50% de soltar uma prova, e as últimas sempre têm as que faltam (nunca trava).
+- **Baús:** 1 item 69%, 2 itens 24%, 3 itens 7% (o baú da sala trancada puxa para cima). Cada item sobe uma melhoria que você já tem; o que não tiver o que subir vira moedas.
+- **Testado no navegador:** luta inteira com as 8 caixas arremessadas, as 3 provas coletadas, o escudo zerando e a morte com a recompensa; baú raro com 3 melhorias; HUD novo. Testes automáticos: 70/70.

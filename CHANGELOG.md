@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.31.0 — Outro Lado: a Escola Nostradamus e a Degolificada
+
+### Adicionado
+- 2ª dungeon do Outro Lado: o Território da Degolificada (Escola Nostradamus, profundidade 2+), com salas de Zumbis de Sangue e o bunker secreto da biblioteca.
+- Chefe: a Degolificada de Gabriel (Iniciação). Luta só com os cabelos (investida de cabelo, agarrar e arremessar na parede, cabelo rastejante, cabelo por cima, defesa de cabelo), Grito Rasgado e a metamorfose Devoradora.
+- Escudo de Medo: segunda vida em terços por cima da vida; ela arremessa as caixas do bunker e de uma caixa quebrada pode sair uma das 3 provas, cada uma tira um terço do escudo.
+- Barris e caixas quebráveis; drops de moedas, experiência e cura em gavetas, barris, caixas e monstros.
+- Baús animados (luz, facho, ícones) com 1 a 3 itens que sobem melhorias já escolhidas na partida.
+- Melhorias permanentes compráveis com moedas.
+- Backup do Outro Lado (exportar/importar) e cópia automática do save.
+
+### Alterado
+- HUD do Outro Lado minimalista; nomes de golpes das criaturas pequenos no canto; avisos de interagir sem caixa.
+- Tentáculos do Lodo (Dante/Nubi) com o modelo do Amigo Imaginário.
+- A tela de fim usa o texto da dungeon (na escola: "Você caiu na escola").
+
 ## v4.30.0 — Outro Lado: coop online e volta à vida com moedas
 
 ### Adicionado

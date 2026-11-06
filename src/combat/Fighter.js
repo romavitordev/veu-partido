@@ -2328,7 +2328,9 @@ export class Fighter {
     const opp = this.opponent;
     const reach = opp && opp.state !== 'ko' && distXZ(this.pos, opp.pos) <= s.range + 0.4;
     const end = reach ? () => opp.chestPos() : new THREE.Vector3(this.pos.x + F.x * s.range, 1.0, this.pos.z + F.z * s.range);
-    inkTentacle(this.world, base, end, { grow: 0.07, hold: 0.08, retract: 0.16, radius: 0.075, arc: 0.4, wiggle: 0.2 });
+    // def.tentacle: a cor própria (a Degolificada: o CABELO preto em vez da tinta do Amigo)
+    const T = this.def.tentacle || {};
+    inkTentacle(this.world, base, end, { grow: 0.07, hold: 0.08, retract: 0.16, radius: T.radius ?? 0.075, arc: 0.4, wiggle: 0.2, color: T.color, emissive: T.emissive });
   }
 
   // Contra-ataque (postura de contra do Joui): acionado por damage.js

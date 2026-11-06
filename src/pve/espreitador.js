@@ -275,7 +275,8 @@ export class EspreitadorBrain {
 
   openClosets() { return this.closets.filter((c) => c.open); }
 
-  say(text, color = '#f2c230') { this.d.hud.callout(text, color); }
+  // o nome do golpe: pequeno, no canto (pedido do dono, 2026-11-06)
+  say(text) { this.d.pveHud && this.d.pveHud.moveName(text.charAt(0) + text.slice(1).toLowerCase()); }
 
   update(dt) {
     const b = this.boss;

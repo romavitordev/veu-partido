@@ -53,6 +53,7 @@ export class PveHud {
     const [m, c] = fmtTime(t).split('.');
     if (m !== this.lastT) { this.lastT = m; this.q('.pv-time b').textContent = m; }
     this.q('.pv-time small').textContent = `.${c}`;
+    if (this.shield) this.ensureShield();
   }
 
   setCoins(n) {
@@ -65,6 +66,61 @@ export class PveHud {
     let k = el.querySelector('.pv-keys');
     if (!k) { k = document.createElement('span'); k.className = 'pv-keys'; el.appendChild(k); }
     k.textContent = n > 0 ? `  · 🗝 ${n}` : '';
+  }
+
+  // as PROVAS do Enigma de Medo (a Escola Nostradamus): "PROVAS n/3"; null = some
+  setClues(n, total) {
+    const el = this.q('.pv-coins');
+    let k = el.querySelector('.pv-clues');
+    if (!k) { k = document.createElement('span'); k.className = 'pv-clues'; el.appendChild(k); }
+    k.textContent = total ? `  · PROVAS ${n}/${total}` : '';
+  }
+
+  // o ESCUDO DE MEDO da Degolificada: uma segunda vida (azul-acinzentada, em terços) por cima da vida amarela do chefe.
+  // n = terços que faltam tirar; total 0 = some. O painel do chefe é refeito às vezes (bindHud): ensureShield recoloca.
+  setShield(n, total) {
+    this.shield = total ? { n, total } : null;
+    this.ensureShield(true);
+  }
+
+  ensureShield(force = false) {
+    const bar = this.hud.panels?.[1]?.querySelector('.bar.health');
+    if (!bar) return;
+    let el = bar.querySelector('.pv-shieldbar');
+    if (!this.shield) { if (el) el.remove(); return; }
+    if (el && !force) return;
+    if (!el) { el = document.createElement('div'); el.className = 'pv-shieldbar'; bar.appendChild(el); }
+    const { n, total } = this.shield;
+    el.innerHTML = Array.from({ length: total }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('');
+  }
+
+  flashShield() {
+    const el = this.hud.panels?.[1]?.querySelector('.pv-shieldbar');
+    if (!el) return;
+    el.classList.remove('hit');
+    void el.offsetWidth;
+    el.classList.add('hit');
+  }
+
+  // o que saiu do BAÚ: um cartão discreto (título + linhas ícone · nome · nível), some sozinho
+  loot(title, rows, tier = 1) {
+    let el = this.q('.pv-loot');
+    if (!el) { el = document.createElement('div'); el.className = 'pv-loot'; this.el.appendChild(el); }
+    el.dataset.tier = String(Math.min(3, tier));
+    el.innerHTML = `<small>${esc(title)}</small>` + rows.map((r) => `<div><i>${esc(r.icon)}</i><b>${esc(r.name)}</b><em>${esc(r.tag)}</em></div>`).join('');
+    el.classList.remove('on');
+    void el.offsetWidth;
+    el.classList.add('on');
+  }
+
+  // o nome do golpe de uma criatura: pequeno, no canto (pedido do dono, 2026-11-06)
+  moveName(text) {
+    let el = this.q('.pv-move');
+    if (!el) { el = document.createElement('div'); el.className = 'pv-move'; this.el.appendChild(el); }
+    el.textContent = text;
+    el.classList.remove('on');
+    void el.offsetWidth;
+    el.classList.add('on');
   }
 
   hint(text) {
