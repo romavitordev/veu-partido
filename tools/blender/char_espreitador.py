@@ -3,32 +3,31 @@ O ESPREITADOR (chefe da 1ª dungeon do Outro Lado) — public/models/espreitador
 Cânone (wiki "O Espreitador"): criatura de Medo de PELE CINZA ENRUGADA; MUITOS OLHOS AMARELOS cujas pupilas se
 multiplicam; LÁGRIMAS; um OLHO GRANDE DENTRO DA BOCA (onde o Kaiser o matou); DENTES TORTOS; PERNAS CURTAS; BRAÇOS E
 DEDOS LONGOS.
-Pelas artes de referência do dono (2026-11-05): NADA de corpo humano. É um bicho grande e AGACHADO: corcunda alta, a
-cabeça afundada na frente da corcunda com uma MASSA DE OLHOS no alto, barriga grande e caída, coxas grossas e pernas
-curtas dobradas, braços que chegam no chão e MÃOS GRANDES de dedos compridos como galhos (com nós). Olhos também no
-ombro, no braço e na coxa.
+Versão 3 (2026-11-06), pela REFERÊNCIA DO DONO (o modelo da Tripo AI, 6 vistas): um saco de carne em forma de PERA,
+agachado sobre pernas curtíssimas, a pele em DOBRAS GRANDES e saltadas (preto nas dobras, cinza-claro no alto), a
+cabeça na frente do alto com um FOCINHO e a BOCA REDONDA de lábio grosso, dentes em anel e o OLHO dentro dela; o alto da
+cabeça é um CACHO DE OLHOS, cada um numa ÓRBITA (um montinho de pele com o olho afundado). Olhos grandes de órbita nos
+OMBROS e nas COXAS, olhos pequenos nas costas. Mãos enormes de DEDOS MUITO LONGOS e grossos, de ponta clara.
+Os olhos: brancos como na referência, com a ÍRIS AMARELA do cânone (PROPOSTA de meio-termo).
 
-TÉCNICA: tudo esculpido do zero com metaballs (sculpt_lib) num ESQUELETO PRÓPRIO — os mesmos ossos e nomes do lutador
-(as animações são as de todos), mas com o repouso já agachado: quadril baixo, joelhos para a frente, o peito e a
-cabeça projetados e as mãos no chão. As rotações das poses são aplicadas no espaço do personagem (glbRig A·q·B),
-então o corpo dobrado continua animando certo.
-Pesos: por distância aos ossos (sem o corpo base), e cada olho preso inteiro ao osso do lugar onde está.
+TÉCNICA: metaballs (sculpt_lib) num ESQUELETO PRÓPRIO agachado (os mesmos ossos do lutador: as animações são as de
+todos). Duas passadas: a 1ª malha (grossa) só serve para achar a superfície onde vão as órbitas; a 2ª já leva os
+montinhos e as covas. A cor da pele é uma OCLUSÃO por raios (as dobras escuras) + o relevo.
   node tools/blender/build.mjs espreitador   → public/models/espreitador.glb (+ fonte/espreitador.blend)
 """
 import sys, os, math, random
 sys.path.insert(0, os.path.dirname(__file__))
 from lib import *
 from lib import BONES, build_armature
-from sculpt_lib import Sculpt, ridge, n3, rod, vcol_material, paint
+from sculpt_lib import Sculpt, ridge, n3, rod, vcol_material
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'espreitador.glb'
 random.seed(211)  # 2:11, a hora do relógio da Mansão
 
-b = Builder(thick=(1, 1, 1, 1))  # sem o "engrossar" do lutador: as formas abaixo já são as finais
+b = Builder(thick=(1, 1, 1, 1))
 sk = b.sk
-H = sk.h  # 1.0
 
 
 def V(x, y, z):
@@ -38,10 +37,10 @@ def V(x, y, z):
 # ================================================================ O ESQUELETO AGACHADO (frente = -y)
 J = {
     'root': V(0, 0, 0), 'rootTip': V(0, 0, 0.1),
-    'hips': V(0, 0.06, 0.6), 'sp': V(0, 0.04, 0.76), 'chest': V(0, -0.1, 1.06),
-    'neck': V(0, -0.36, 1.18), 'hd': V(0, -0.5, 1.14), 'top': V(0, -0.62, 1.44),
-    'lL': V(0.2, 0.05, 0.56), 'kL': V(0.28, -0.14, 0.32), 'footL': V(0.26, 0.0, 0.08), 'toeL': V(0.27, -0.2, 0.03),
-    'sL': V(0.44, -0.22, 1.12), 'eL': V(0.68, -0.34, 0.74), 'handL': V(0.74, -0.5, 0.32), 'handTipL': V(0.78, -0.62, 0.08),
+    'hips': V(0, 0.06, 0.58), 'sp': V(0, 0.04, 0.76), 'chest': V(0, -0.08, 1.06),
+    'neck': V(0, -0.34, 1.2), 'hd': V(0, -0.48, 1.18), 'top': V(0, -0.56, 1.46),
+    'lL': V(0.22, 0.02, 0.5), 'kL': V(0.32, -0.16, 0.28), 'footL': V(0.28, -0.04, 0.07), 'toeL': V(0.29, -0.22, 0.03),
+    'sL': V(0.46, -0.2, 1.08), 'eL': V(0.66, -0.36, 0.76), 'handL': V(0.7, -0.56, 0.36), 'handTipL': V(0.72, -0.74, 0.12),
 }
 for k in list(J):
     if k.endswith('L') and k[:-1] + 'R' not in J:
@@ -66,7 +65,7 @@ def bone_w(p, allow, k=3):
     sc = []
     for n in allow:
         d = seg_dist(p, *SEG[n])
-        if n[0] in 'lkf' and n not in ('chest',) and p.z > 0.5 and abs(p.x) < 0.16:
+        if n[0] in 'lkf' and p.z > 0.46 and abs(p.x) < 0.2:
             d *= 1.8  # a barriga não segue as coxas
         sc.append((1.0 / (d ** 4 + 1e-7), n))
     sc.sort(reverse=True)
@@ -78,240 +77,308 @@ def bone_w(p, allow, k=3):
 BODY_B = ['hips', 'sp', 'chest', 'neck', 'hd', 'lL', 'kL', 'footL', 'lR', 'kR', 'footR', 'sL', 'sR']
 ARM_B = {s: ['chest', 's' + s, 'e' + s, 'hand' + s] for s in 'LR'}
 
-# ---------------------------------------------------------------- materiais e pele
-skin = vcol_material('pele_espreitador', rough=0.8)
-eye_y = material('glow_olho_espreitador', '#ffd23a', 0.35, emission='#f2c230', strength=2.2)
-pupil = material('pupila_espreitador', '#0a0806', 0.3)
+# ---------------------------------------------------------------- materiais
+skin = vcol_material('pele_espreitador', rough=0.72)
+sclera = material('olho_espreitador', '#e9e4d2', 0.25, emission='#f4ecd0', strength=0.45)
+iris = material('glow_iris_espreitador', '#e2ad22', 0.3, emission='#f2c230', strength=1.6)
+pupil = material('pupila_espreitador', '#050404', 0.2)
 tear = material('lagrima_espreitador', '#a9bcc8', 0.15)
-mouth_in = material('boca_espreitador', '#24090a', 0.7)
-tooth = material('dente_espreitador', '#cbbf98', 0.55)
-gum = material('gengiva_espreitador', '#5a2a28', 0.65)
-nail = material('unha_espreitador', '#1c1814', 0.5)
-C = {k: Vector(hex_rgb(v)) for k, v in {'pele': '#86817a', 'dobra': '#47433e', 'alto': '#a8a399', 'barriga': '#958f84'}.items()}
-AMP = 0.006
+mouth_in = material('boca_espreitador', '#120707', 0.8)
+tooth = material('dente_espreitador', '#d2cbb4', 0.5)
+nail = material('unha_espreitador', '#141210', 0.45)
+COL = {k: Vector(hex_rgb(v)) for k, v in {'fundo': '#151413', 'pele': '#363431', 'alto': '#8f8b83', 'ponta': '#d6d2c8'}.items()}
 MB = 1 / 0.575  # o metaball sozinho aparece em 0,575 × o raio: os raios abaixo são os da superfície
+
+
+def r3(x, y=None, z=None):
+    return (x * MB, (y if y is not None else x) * MB, (z if z is not None else x) * MB)
 
 
 def lim(t):
     return max(0.0, min(1.0, t))
 
 
-def wrinkle(p, dense=1.0):
-    """as rugas: dobras tortas de pele velha caída"""
-    w = n3(p, 2.2) * 6.0 + n3(p, 7.0) * 2.0
-    fade = 0.35 + 0.65 * max(0.0, n3(p + V(3.1, 0.7, 1.9), 4.0) + 0.25)
-    return AMP * fade * (ridge(p.z * 60 * dense + w, 4) - 0.25)
+def fine(p):
+    """o enrugado fino por cima das dobras grandes"""
+    return 0.0035 * (ridge(p.z * 55 + n3(p, 2.4) * 7 + n3(p, 8) * 2, 3) - 0.3)
 
 
-def skin_col(p):
-    k = lim(wrinkle(p) / AMP + 0.25)
-    c = C['pele'].lerp(C['dobra'], (1 - k) * 0.4)
-    c = c.lerp(C['alto'], lim(n3(p, 3.0) * 0.5 + 0.2) * 0.3)
-    if p.y < -0.1 and p.z < 0.85:  # a barriga um pouco mais clara
-        c = c.lerp(C['barriga'], 0.4)
-    return c
+# ================================================================ O CORPO (a pera de carne)
+HC = V(0, -0.47, 1.22)  # o centro da cabeça
+FWD = V(0, -1, -0.32).normalized()  # para onde o focinho aponta
+SNOUT = HC + FWD * 0.17
+MOUTH = HC + FWD * 0.3  # o centro da boca redonda
+MUP = V(0, 0.32, 1).normalized()  # o "cima" da boca (perpendicular ao focinho)
+MSIDE = V(1, 0, 0)
 
 
-def r3(x, y, z):
-    return (x * MB, y * MB, z * MB)
+def body_sculpt():
+    S = Sculpt()
+    S.ell(V(0, -0.08, 0.6), r3(0.4, 0.36, 0.38))  # a barriga enorme
+    S.ell(V(0, -0.18, 0.44), r3(0.3, 0.22, 0.2))  # caída na frente
+    S.ell(V(0, 0.14, 0.56), r3(0.36, 0.28, 0.3))  # o traseiro largo
+    S.chain([V(0, 0.1, 0.74), V(0, 0.1, 1.0), V(0, -0.04, 1.2), V(0, -0.24, 1.3)], [0.3 * MB, 0.29 * MB, 0.25 * MB, 0.2 * MB])  # a corcunda
+    for s in (1, -1):
+        side = 'L' if s > 0 else 'R'
+        S.chain([V(0.14 * s, -0.08, 1.16), V(0.44 * s, -0.2, 1.08)], [0.17 * MB, 0.15 * MB])  # os ombros
+        S.chain([V(0.2 * s, 0.0, 0.52), sk['k' + side]], [0.2 * MB, 0.15 * MB])  # as coxas
+        kk, ff = sk['k' + side], sk['foot' + side]
+        S.chain([kk, ff + V(0, 0, 0.02)], [0.1 * MB, 0.07 * MB])  # canela curtíssima
+        S.ell(ff + V(0, -0.07, -0.03), r3(0.09, 0.13, 0.045))  # o pé
+    # AS DOBRAS GRANDES: fileiras de bolsas de carne em volta do corpo (a barriga em faixas, as costas em placas)
+    for row, z in enumerate((0.34, 0.47, 0.6, 0.73, 0.86, 0.99)):
+        rx = 0.4 - abs(z - 0.62) * 0.35
+        ry = 0.36 - abs(z - 0.62) * 0.3
+        n = 9
+        for i in range(n):
+            a = -math.pi + (i + 0.5 + (row % 2) * 0.5) * 2 * math.pi / n + random.uniform(-0.12, 0.12)
+            cy = -0.04 + (0.06 if math.cos(a) < 0 else -0.02)
+            c = V(math.sin(a) * rx * 0.86, -math.cos(a) * ry * 0.86 + cy, z + random.uniform(-0.02, 0.02))
+            front = math.cos(a) > 0.3
+            S.ell(c, r3(0.11 if front else 0.12, 0.08, 0.06 if front else 0.075))
+    # placas na corcunda
+    for i in range(7):
+        t = i / 6
+        c = V(0, 0.27, 0.78).lerp(V(0, 0.1, 1.22), t) + V(0, 0.04 * math.sin(t * 3), 0)
+        for s in (-1, 1):
+            S.ell(c + V(s * 0.1, 0, 0), r3(0.1, 0.06, 0.06))
+    # A CABEÇA: o crânio, o focinho para a frente e a boca redonda (o buraco + o lábio grosso em anel)
+    S.ell(HC, r3(0.19, 0.19, 0.2))
+    S.chain([V(0, -0.2, 1.18), HC], [0.17 * MB, 0.18 * MB])
+    S.ell(SNOUT, r3(0.15, 0.15, 0.15))
+    for i in range(16):
+        a = i / 16 * math.pi * 2
+        q = MOUTH + MSIDE * math.sin(a) * 0.1 + MUP * math.cos(a) * 0.12 - FWD * 0.02
+        S.ell(q, r3(0.045))
+    S.ell(MOUTH + FWD * 0.03, r3(0.07, 0.07, 0.085), neg=True)
+    S.ell(MOUTH - FWD * 0.05, r3(0.05, 0.05, 0.06), neg=True)
+    return S
 
 
-# ================================================================ O CORPO: corcunda, barriga, coxas e a cabeça
-S = Sculpt()
-S.ell(V(0, -0.1, 0.66), r3(0.33, 0.3, 0.29))  # a barriga grande
-S.ell(V(0, -0.2, 0.5), r3(0.24, 0.18, 0.16))  # caída na frente
-S.ell(V(0, 0.08, 0.62), r3(0.3, 0.24, 0.24))  # o traseiro
-S.chain([V(0, 0.12, 0.74), V(0, 0.12, 1.0), V(0, 0.0, 1.24), V(0, -0.2, 1.32)], [0.28 * MB, 0.27 * MB, 0.24 * MB, 0.19 * MB])  # a corcunda
+# 1ª passada: a casca grossa, só para achar onde ficam as órbitas
+S0 = body_sculpt()
+m0 = S0.mesh(res=0.02, smooth=2)
+T0 = BVHTree.FromPolygons([Vector(v) for v in m0[0]], m0[1])
+
+
+def surf(tree, origin, d):
+    d = d.normalized()
+    hit = tree.ray_cast(origin + d * 1.2, -d)
+    return (hit[0], hit[1].normalized()) if hit[0] is not None else (None, None)
+
+
+# AS ÓRBITAS: (origem, direção, raio do olho, ossos, lágrima)
+SPOTS = []
+# o CACHO de olhos no alto da cabeça (de muitos tamanhos)
+placed = []
+for _ in range(4000):
+    if len(placed) >= 34:
+        break
+    th = random.uniform(-2.0, 2.0)
+    ph = random.uniform(0.2, 1.5)
+    d = V(math.sin(th) * math.cos(ph), -math.cos(th) * math.cos(ph), math.sin(ph))
+    if d.dot(FWD) > 0.55:
+        continue  # a frente-baixo é o focinho
+    R = random.uniform(0.022, 0.04) * (1.25 if ph < 0.7 else 1.0)
+    p, n = surf(T0, HC, d)
+    if p is None or any((p - q).length < (R + r) * 1.5 for q, r in placed):
+        continue
+    placed.append((p, R))
+    SPOTS.append((HC, d, R, ['hd'], 0.25 if ph < 0.6 else 0.0))
 for s in (1, -1):
-    S.chain([V(0.12 * s, -0.06, 1.2), V(0.42 * s, -0.21, 1.13)], [0.16 * MB, 0.13 * MB])  # os ombros caídos
-    S.chain([V(0.2 * s, 0.04, 0.62), sk['k' + ('L' if s > 0 else 'R')]], [0.19 * MB, 0.13 * MB])  # as coxas grossas
-    kk = sk['k' + ('L' if s > 0 else 'R')]
-    ff = sk['foot' + ('L' if s > 0 else 'R')]
-    S.chain([kk, ff + V(0, 0, 0.02)], [0.11 * MB, 0.08 * MB])  # canela curta
-    S.ell(ff + V(0, -0.08, -0.03), r3(0.1, 0.15, 0.05))  # o pé largo
-# as VÉRTEBRAS saltando na corcunda (a pele esticada por cima)
-for i in range(9):
-    t = i / 8
-    q = V(0, 0.12, 0.7).lerp(V(0, 0.12, 1.02), min(1, t * 1.6)) if t < 0.62 else V(0, 0.12, 1.02).lerp(V(0, -0.16, 1.36), (t - 0.62) / 0.38)
-    q = q + V(0, 0.27, 0) if t < 0.62 else q + V(0, 0.2 * (1 - (t - 0.62) / 0.38) + 0.12, 0.12)
-    S.ell(q, r3(0.05, 0.035, 0.035))
-# a cabeça afundada na frente da corcunda (sem pescoço), a mandíbula larga e a boca cavada
-HC = V(0, -0.54, 1.18)
-S.ell(HC, r3(0.21, 0.2, 0.18))
-S.chain([V(0, -0.2, 1.16), HC], [0.16 * MB, 0.17 * MB])  # o 'pescoço' é só a corcunda descendo para a cabeça
-S.ell(V(0, -0.6, 1.05), r3(0.19, 0.15, 0.1))
-S.ell(V(0, -0.77, 1.05), r3(0.22, 0.1, 0.085), neg=True)  # a boca aberta (dentes e o olho à mostra)
-MOUTH = V(0, -0.7, 1.05)
-body_mesh = S.mesh(res=0.012, smooth=3, disp=lambda p: wrinkle(p, 1.2), target=9000)
+    side = 'L' if s > 0 else 'R'
+    SPOTS.append((V(0.4 * s, -0.16, 1.08), V(0.85 * s, -0.4, 0.3), 0.07, BODY_B, 1))  # o OLHÃO do ombro
+    SPOTS.append((sk['k' + side] + V(0, 0.05, 0.05), V(0.45 * s, -1, 0.05), 0.06, BODY_B, 1))  # o da coxa/joelho
+    SPOTS.append((V(0.2 * s, -0.1, 0.95), V(0.5 * s, -0.8, 0.2), 0.035, BODY_B, 0.5))
+    SPOTS.append((V(0.3 * s, 0.0, 0.7), V(0.95 * s, -0.25, 0.1), 0.03, BODY_B, 0))
+for i in range(5):  # os olhinhos das costas, ao longo da corcunda
+    z = 0.62 + i * 0.12
+    SPOTS.append((V(random.uniform(-0.12, 0.12), 0.05, z), V(random.uniform(-0.25, 0.25), 1, 0.15), random.uniform(0.022, 0.03), BODY_B, 0))
+
+EYES = []  # (centro do olho, normal, R, ossos, lágrima)
+for o, d, R, bones, drip in SPOTS:
+    p, n = surf(T0, o, d)
+    if p is None:
+        continue
+    EYES.append((p, n, R, bones, drip))
+
+# 2ª passada: o corpo com as órbitas (o montinho de pele + a cova onde o olho afunda)
+S = body_sculpt()
+for p, n, R, _, _ in EYES:
+    S.ell(p - n * R * 0.3, r3(R * 1.5))
+    S.ell(p + n * R * 0.9, r3(R * 0.9), neg=True)
+body_mesh = S.mesh(res=0.0085, smooth=3, disp=fine, target=22000)
 bo = b.add('body', body_mesh, skin, region='torso', weight_fn=lambda p: bone_w(p, BODY_B), subdiv=0)
 for pl in bo.data.polygons:
     pl.use_smooth = True
-paint(bo, skin_col)
-BVH = {'body': BVHTree.FromPolygons([Vector(v) for v in body_mesh[0]], body_mesh[1])}
+TB = BVHTree.FromPolygons([Vector(v) for v in body_mesh[0]], body_mesh[1])
 
-# ================================================================ OS BRAÇOS LONGOS (finos, com o cotovelo nodoso)
+
+# ---------------------------------------------------------------- a cor: OCLUSÃO por raios (dobras pretas, alto claro)
+DIRS = []
+for i in range(14):  # direções espalhadas na esfera (espiral de Fibonacci)
+    y = 1 - 2 * (i + 0.5) / 14
+    r = math.sqrt(1 - y * y)
+    a = i * 2.39996
+    DIRS.append(V(math.cos(a) * r, math.sin(a) * r, y))
+
+
+def paint_ao(obj, trees, reach=0.14, tip=None):
+    me = obj.data
+    ca = me.color_attributes.get('Col') or me.color_attributes.new('Col', 'FLOAT_COLOR', 'POINT')
+    mw = obj.matrix_world
+    nm = mw.to_3x3()
+    for v in me.vertices:
+        p = mw @ v.co
+        n = (nm @ v.normal).normalized()
+        occ, tot = 0.0, 0
+        for d in DIRS:
+            k = d.dot(n)
+            if k <= 0.05:
+                continue
+            tot += k
+            o = p + n * 0.004
+            for t in trees:
+                hit = t.ray_cast(o, d, reach)
+                if hit[0] is not None:
+                    occ += k * (1 - hit[3] / reach)
+                    break
+        a = lim(occ / max(tot, 1e-6) * 1.9)
+        hi = lim(1 - a * 1.6) * (0.55 + 0.45 * lim(n3(p, 3.2) * 0.8 + 0.5))
+        c = COL['pele'].lerp(COL['alto'], hi * 0.85).lerp(COL['fundo'], a)
+        if p.z < 0.3 and abs(p.x) < 0.25:
+            c = c.lerp(COL['fundo'], 0.35)  # por baixo, na sombra
+        if tip:
+            c = c.lerp(COL['ponta'], tip(p))
+        ca.data[v.index].color = (c[0], c[1], c[2], 1)
+
+
+# ================================================================ OS BRAÇOS grossos e as MÃOS de dedos muito longos
+ARMS = {}
 for s in 'LR':
     A = Sculpt()
-    A.chain([sk['s' + s] + V(0, 0, 0.02), sk['e' + s]], [0.11 * MB, 0.08 * MB])
-    A.ell(sk['e' + s], r3(0.09, 0.085, 0.085))  # o cotovelo nodoso
-    A.chain([sk['e' + s], sk['hand' + s] + V(0, 0, 0.04)], [0.08 * MB, 0.065 * MB])
-    # a palma grande, um pouco achatada
-    pc = sk['hand' + s] + V(0, -0.04, -0.05)
-    A.ell(pc, r3(0.13, 0.08, 0.12))  # a MÃO GRANDE
-    am = A.mesh(res=0.01, smooth=3, disp=lambda p: wrinkle(p, 1.6) * 0.6, target=4000)
+    A.chain([sk['s' + s] + V(0, 0, 0.03), sk['e' + s]], [0.12 * MB, 0.095 * MB])
+    A.ell(sk['e' + s], r3(0.1, 0.095, 0.095))
+    A.chain([sk['e' + s], sk['hand' + s] + V(0, 0, 0.05)], [0.095 * MB, 0.075 * MB])
+    for k in range(3):  # dobras no braço
+        q = sk['s' + s].lerp(sk['e' + s], 0.25 + k * 0.25)
+        A.ell(q + V(0, -0.02, 0), r3(0.11, 0.1, 0.05))
+    pc = sk['hand' + s] + V(0, -0.05, -0.06)
+    A.ell(pc, r3(0.15, 0.1, 0.12))  # a palma grande
+    am = A.mesh(res=0.0095, smooth=3, disp=fine, target=6000)
     ao = b.add('arm' + s, am, skin, region='torso', weight_fn=lambda p, s=s: bone_w(p, ARM_B[s], 2), subdiv=0)
     for pl in ao.data.polygons:
         pl.use_smooth = True
-    paint(ao, skin_col)
-    BVH['arm' + s] = BVHTree.FromPolygons([Vector(v) for v in am[0]], am[1])
-    # OS DEDOS COMPRIDOS como galhos: 4 + o polegar, três falanges com nós, as pontas tocando o chão à frente
+    ARMS[s] = (ao, BVHTree.FromPolygons([Vector(v) for v in am[0]], am[1]), pc)
+
+paint_ao(bo, [TB] + [ARMS[s][1] for s in 'LR'])
+for s in 'LR':
+    paint_ao(ARMS[s][0], [ARMS[s][1], TB])
+
+# OS DEDOS (6 por mão, como a referência): longos, grossos na base, com nós, as pontas claras se curvando para baixo
+for s in 'LR':
     sx = 1 if s == 'L' else -1
+    pc = ARMS[s][2]
     fingers, nails_ = [], []
-    for i in range(5):
-        thumb = i == 4
-        t = (i - 1.5) / 1.5 if not thumb else 0
-        base = pc + V(sx * (t * 0.1 if not thumb else -0.11), -0.05 - (0.02 if thumb else 0), -0.08 + (0.05 if thumb else 0))
-        spread = V(sx * t * 0.55 + (sx * -0.8 if thumb else 0), -0.35, -1).normalized()
-        L = (0.2, 0.18, 0.16) if not thumb else (0.14, 0.12, 0.1)
-        L = tuple(x * (1 - abs(t) * 0.12) for x in L)
+    for i in range(6):
+        thumb = i == 5
+        t = (i - 2) / 2 if not thumb else 0
+        base = pc + V(sx * (t * 0.11 if not thumb else -0.12), -0.07, -0.05 + (0.06 if thumb else 0))
+        d = V(sx * t * 0.45 + (sx * -0.9 if thumb else 0), -1, -0.35).normalized()
+        L = [0.2, 0.17, 0.14, 0.1] if not thumb else [0.13, 0.11, 0.08]
+        L = [x * (1 - abs(t) * 0.1) * random.uniform(0.92, 1.08) for x in L]
         pts = [base]
-        d = spread
         for k, l in enumerate(L):
-            # cada falange dobra mais para a frente (as pontas viram para o chão à frente, como garras de galho)
-            d = (d + V(sx * random.uniform(-0.12, 0.12), -0.35 - 0.15 * k, 0.12 * k)).normalized()
+            d = (d + V(sx * random.uniform(-0.15, 0.15), -0.05, -0.28 - 0.1 * k)).normalized()
             pts.append(pts[-1] + d * l)
-        if pts[-1].z < 0.02:  # nada abaixo do chão
-            dz = 0.02 - pts[-1].z
-            pts = [q + V(0, 0, dz * (j / 3)) for j, q in enumerate(pts)]
-        rad = [0.036, 0.032, 0.026, 0.015]
+        for j, q in enumerate(pts):  # nada abaixo do chão: a ponta encosta e se arrasta para a frente
+            if q.z < 0.03:
+                pts[j] = V(q.x, q.y - (0.03 - q.z) * 0.6, 0.03)
+        rad = [0.045, 0.04, 0.034, 0.026, 0.016][:len(pts)]
         fpts, frad = [], []
-        for j in range(3):  # os nós: o raio incha em cada junta
+        for j in range(len(pts) - 1):
             a, c = pts[j], pts[j + 1]
             fpts += [a, a.lerp(c, 0.5)]
-            frad += [rad[j] * 1.15, rad[j] * 0.8]
-        fpts.append(pts[3])
-        frad.append(rad[3])
-        fingers.append(rod(fpts, frad, 7))
-        tip = pts[3]
-        nails_.append(cone(tuple(tip), tuple(tip + d * 0.08 + V(0, 0, -0.015)), 0.014, 6))
+            frad += [rad[j] * 1.18, rad[j] * 0.86]
+        fpts.append(pts[-1])
+        frad.append(rad[len(pts) - 1])
+        fingers.append(rod(fpts, frad, 8))
+        tip_ = pts[-1]
+        nails_.append(cone(tuple(tip_), tuple(tip_ + (pts[-1] - pts[-2]).normalized() * 0.05 + V(0, 0, -0.01)), 0.014, 6))
     fo = b.add('fingers' + s, merge(*fingers), skin, region='torso', weight_fn=lambda p, s=s: {'hand' + s: 1.0}, subdiv=0)
-    paint(fo, skin_col)
+    FT = BVHTree.FromObject(fo, bpy.context.evaluated_depsgraph_get())
+    paint_ao(fo, [FT], reach=0.06, tip=lambda p, pc=pc: lim(((p - pc).length - 0.3) / 0.3) * 0.8)
     b.add('nails' + s, merge(*nails_), nail, region='torso', weight_fn=lambda p, s=s: {'hand' + s: 1.0}, subdiv=0)
 
-# ================================================================ A BOCA: dentes tortos e o OLHO GRANDE dentro dela
-b.add('mouthIn', ellipsoid(tuple(MOUTH + V(0, 0.03, 0)), (0.17, 0.05, 0.07), 16, 10), mouth_in, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-teeth, gums = [], []
-for row, zs, dz in ((0, 0.05, -1), (1, -0.052, 1)):
-    n = 17 if row == 0 else 15
-    arc = []
-    for i in range(n):
-        t = (i + 0.5) / n
-        a = (t - 0.5) * 2.4
-        base = MOUTH + V(math.sin(a) * 0.15, -math.cos(a) * 0.05 - 0.01, zs)
-        arc.append(base)
-        L = 0.04 + random.random() * 0.045  # wiki: dentes tortos e COMPRIDOS
-        tip = base + V(random.uniform(-0.02, 0.02), random.uniform(-0.02, 0.006), dz * L)
-        teeth.append(cone(tuple(base), tuple(tip), 0.007 + random.random() * 0.005, 6))
-    gums.append(rod(arc, [0.01] * len(arc), 5))
-b.add('teeth', merge(*teeth), tooth, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-b.add('gums', merge(*gums), gum, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-me_c = MOUTH + V(0, -0.02, 0)
-b.add('mouthEye', ellipsoid(tuple(me_c), (0.045, 0.036, 0.042), 16, 12), eye_y, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-b.add('mouthPupil', ellipsoid(tuple(me_c + V(0, -0.032, 0)), (0.011, 0.005, 0.02), 10, 8), pupil, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-
-
-# a SALIVA escorrendo da boca (wiki: "sai saliva que pode ser confundida com as lágrimas")
-drool = []
-for i in range(5):
-    x = random.uniform(-0.08, 0.08)
-    top = MOUTH + V(x, -0.03, -0.04)
-    L = random.uniform(0.08, 0.2)
-    pts = [top + V(random.uniform(-0.005, 0.005), -0.004 * k, -L * k / 3) for k in range(4)]
-    drool.append(rod(pts, [0.006, 0.004, 0.003, 0.007], 5))
-b.add('drool', merge(*drool), tear, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-# o PÉ DEFORMADO (wiki): dedos tortos e desiguais, com unhas escuras
+# o PÉ: dedinhos tortos com unhas escuras
 for s_ in 'LR':
     ff = sk['foot' + s_]
     toes, tnails = [], []
     for i in range(4):
-        a = (i - 1.5) * 0.38 + random.uniform(-0.15, 0.15)
-        L = random.uniform(0.06, 0.12)
-        base = ff + V(math.sin(a) * 0.07, -0.16, -0.04)
-        tip = base + V(math.sin(a) * L * 0.6, -L, -0.02)
-        toes.append(rod([base, base.lerp(tip, 0.5) + V(0, 0, 0.015), tip], [0.026, 0.022, 0.014], 6))
-        tnails.append(cone(tuple(tip), tuple(tip + V(0, -0.03, -0.01)), 0.012, 6))
+        a = (i - 1.5) * 0.4 + random.uniform(-0.12, 0.12)
+        L = random.uniform(0.06, 0.1)
+        base = ff + V(math.sin(a) * 0.06, -0.15, -0.04)
+        tip_ = base + V(math.sin(a) * L * 0.6, -L, -0.02)
+        toes.append(rod([base, base.lerp(tip_, 0.5) + V(0, 0, 0.012), tip_], [0.022, 0.018, 0.012], 6))
+        tnails.append(cone(tuple(tip_), tuple(tip_ + V(0, -0.03, -0.01)), 0.011, 6))
     fo = b.add('toes' + s_, merge(*toes), skin, region='torso', weight_fn=lambda p, s_=s_: {'foot' + s_: 1.0}, subdiv=0)
-    paint(fo, skin_col)
+    paint_ao(fo, [TB], reach=0.05)
     b.add('toenails' + s_, merge(*tnails), nail, region='torso', weight_fn=lambda p, s_=s_: {'foot' + s_: 1.0}, subdiv=0)
 
-# ================================================================ OS OLHOS: a massa no alto da cabeça + ombro, braço, coxa
-def on_surf(tree, origin, d):
-    hit = tree.ray_cast(origin + d * 1.0, -d)  # de fora para dentro: a casca de fora
-    if hit[0] is None:
-        return None, None
-    return hit[0], hit[1]
+# ================================================================ A BOCA: o fundo escuro, os dentes em anel e o OLHO dentro
+b.add('mouthIn', ellipsoid(tuple(MOUTH - FWD * 0.1), (0.09, 0.09, 0.1), 16, 12), mouth_in, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+teeth = []
+for ring, (rad, n) in enumerate(((0.072, 18), (0.058, 14))):
+    for i in range(n):
+        a = (i + 0.5 * ring) / n * math.pi * 2 + random.uniform(-0.08, 0.08)
+        out = MSIDE * math.sin(a) + MUP * math.cos(a)
+        base = MOUTH + out * rad * (1.12 if ring == 0 else 1.0) - FWD * (0.0 + 0.03 * ring)
+        L = random.uniform(0.03, 0.055)
+        tip_ = base - out * L * 0.9 - FWD * random.uniform(0.0, 0.02) + V(random.uniform(-0.008, 0.008), 0, random.uniform(-0.008, 0.008))
+        teeth.append(cone(tuple(base), tuple(tip_), 0.008 + random.random() * 0.005, 6))
+b.add('teeth', merge(*teeth), tooth, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+me_c = MOUTH - FWD * 0.05
+b.add('mouthEye', ellipsoid(tuple(me_c), (0.05, 0.048, 0.05), 18, 14), sclera, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+b.add('mouthIris', ellipsoid(tuple(me_c + FWD * 0.05), (0.03, 0.012, 0.03), 14, 8), iris, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+b.add('mouthPupil', ellipsoid(tuple(me_c + FWD * 0.058), (0.013, 0.006, 0.02), 10, 8), pupil, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+# a SALIVA escorrendo (wiki: confundida com as lágrimas)
+drool = []
+for i in range(4):
+    a = math.pi + random.uniform(-0.6, 0.6)
+    top = MOUTH + MSIDE * math.sin(a) * 0.09 + MUP * math.cos(a) * 0.11 + FWD * 0.03
+    L = random.uniform(0.08, 0.18)
+    drool.append(rod([top + V(random.uniform(-0.004, 0.004), -0.003 * k, -L * k / 3) for k in range(4)], [0.006, 0.004, 0.003, 0.007], 5))
+b.add('drool', merge(*drool), tear, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 
-
-eyes, pups, tears = [], [], []
-
-
-def eye_at(tree, origin, d, R, bones, drip=0.5):
-    surf, nrm = on_surf(tree, origin, d.normalized())
-    if surf is None:
-        return
-    n = nrm.normalized()
-    c = surf + n * R * 0.5  # saltado da pele (os olhos se amontoam como bolhas)
+# ================================================================ OS OLHOS nas órbitas (brancos, íris amarela, pupilas que se multiplicam)
+eyes, irises, pups, tears = [], [], [], []
+for p0, n0, R, bones, drip in EYES:
+    p, n = surf(TB, p0, n0)  # o fundo da órbita na malha final
+    if p is None or (p - p0).length > R * 3:
+        p, n = p0, n0
+    n = n0
+    c = p + n * R * 0.6  # o olho saltado de dentro da órbita
     w = bone_w(c, bones, 1)
-    eyes.append((ellipsoid(tuple(c), (R, R, R * 0.9), 14, 10), w))
-    n_p = 1 + (random.random() < 0.45) + (random.random() < 0.2)  # as pupilas que se multiplicam
+    eyes.append((ellipsoid(tuple(c), (R * 1.05, R * 1.05, R * 1.05), 14, 10), w))
     side = n.cross(V(0, 0, 1))
-    if side.length < 1e-3:
-        side = V(1, 0, 0)
-    side.normalize()
+    side = side.normalized() if side.length > 1e-3 else V(1, 0, 0)
     up = side.cross(n).normalized()
+    look = (n + V(random.uniform(-0.25, 0.25), random.uniform(-0.25, 0.25), random.uniform(-0.2, 0.2))).normalized()
+    irises.append((ellipsoid(tuple(c + look * R * 0.98), (R * 0.5, R * 0.5, R * 0.5), 10, 8), w))
+    n_p = 1 + (random.random() < 0.35) + (random.random() < 0.12)  # as pupilas que se multiplicam
     for k in range(n_p):
-        off = (side * random.uniform(-0.42, 0.42) + up * random.uniform(-0.3, 0.3)) * R if n_p > 1 else Vector()
-        pups.append((ellipsoid(tuple(c + n * R * 0.86 + off), (R * 0.27, R * 0.27, R * 0.27), 8, 6), w))
+        off = (side * random.uniform(-0.2, 0.2) + up * random.uniform(-0.2, 0.2)) * R if n_p > 1 else Vector()
+        pups.append((ellipsoid(tuple(c + look * R * 1.2 + off), (R * 0.24, R * 0.24, R * 0.24), 8, 6), w))
     if random.random() < drip:  # as LÁGRIMAS escorrendo pela pele
-        L = random.uniform(0.04, 0.09)
+        L = random.uniform(0.05, 0.11)
         pts = []
         for i in range(5):
-            q = c + V(random.uniform(-0.003, 0.003), 0, -R * 0.9 - L * i / 4)
-            loc, n_, _, _ = tree.find_nearest(q)
-            pts.append(loc + n_.normalized() * 0.004 if loc is not None else q)
+            q = c + up * -R * 0.2 + V(random.uniform(-0.003, 0.003), 0, -R * 0.9 - L * i / 4)
+            loc, nn, _, _ = TB.find_nearest(q)
+            pts.append(loc + nn.normalized() * 0.004 if loc is not None else q)
         tears.append((rod(pts, [R * 0.09, R * 0.075, R * 0.07, R * 0.06, R * 0.1], 5), w))
 
-
-# a MASSA DE OLHOS: amontoados no alto e na frente da cabeça, grandes e pequenos
-placed = []
-for _ in range(3000):
-    if len(placed) >= 70:
-        break
-    th = random.uniform(-1.7, 1.7)  # em volta (0 = de frente)
-    ph = random.uniform(0.0, 1.45)  # da testa até o topo (a massa fica em cima)
-    if ph < 0.35 and abs(th) < 0.6:
-        continue  # a cara de baixo é da boca
-    d = V(math.sin(th) * math.cos(ph), -math.cos(th) * math.cos(ph), math.sin(ph))
-    R = random.uniform(0.022, 0.055) * (1.0 if ph > 0.45 else 0.75)  # wiki: no topo, a maior concentração de olhos MENORES
-    if random.random() < 0.08:
-        R *= 1.8  # alguns maiores no meio (tamanhos diferentes)
-    q = HC + d * 0.22
-    if any((q - p).length < (R + r) * 0.72 for p, r in placed):
-        continue
-    placed.append((q, R))
-    eye_at(BVH['body'], HC, d, R, ['hd'], drip=0.3 if ph < 0.6 else 0.05)
-# e pelo corpo, como nas artes: o ombro, o braço e a coxa (e um na corcunda)
-eye_at(BVH['body'], V(0.38, -0.19, 1.15), V(0.3, -0.2, 1), 0.055, BODY_B, drip=1)
-eye_at(BVH['body'], V(0.36, -0.18, 1.12), V(0.4, -0.6, 0.5), 0.04, BODY_B)
-eye_at(BVH['body'], V(-0.34, -0.16, 1.15), V(-0.2, -0.4, 1), 0.045, BODY_B)
-eye_at(BVH['armR'], sk['eR'].lerp(sk['sR'], 0.45), V(-0.6, -0.8, 0.1), 0.04, ARM_B['R'])
-eye_at(BVH['armL'], sk['eL'].lerp(sk['handL'], 0.4), V(0.5, -0.8, 0), 0.032, ARM_B['L'])
-eye_at(BVH['body'], V(0.24, -0.05, 0.48), V(0.6, -0.8, 0.1), 0.055, BODY_B, drip=1)
-eye_at(BVH['body'], V(-0.26, -0.08, 0.42), V(-0.5, -0.85, -0.1), 0.035, BODY_B)
-eye_at(BVH['body'], V(0, 0.1, 1.05), V(0.15, 0.6, 0.8), 0.045, BODY_B, drip=0)
-eye_at(BVH['body'], V(0, -0.15, 0.62), V(-0.2, -1, -0.1), 0.03, BODY_B)
-
-for nm, lst, mat in (('eyes', eyes, eye_y), ('pupils', pups, pupil), ('tears', tears, tear)):
+for nm, lst, mat in (('eyes', eyes, sclera), ('irises', irises, iris), ('pupils', pups, pupil), ('tears', tears, tear)):
     for i, (part, w) in enumerate(lst):
         b.add(f'{nm}{i}', part, mat, region='torso', weight_fn=lambda p, w=w: w, subdiv=0)
 
