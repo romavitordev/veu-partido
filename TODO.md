@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.32.0 (2026-11-06: a Degolificada e o Espreitador jogáveis, a Mansão e a Escola como arenas de luta, o Carniçal remodelado, habilidades do baú com limite por partida e moedas ou vida no Outro Lado). Antes: v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -1175,9 +1175,29 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
 - [x] **Escudo de Medo = segunda vida** (barra azul em terços por cima da vida amarela). Ela arremessa as CAIXAS do
       bunker com o cabelo; ao quebrar, de uma delas pode sair uma das 3 PROVAS (cartão SD, ficha do Gabriel, foto com a
       Lina — nas caixas: PROPOSTA). Cada prova tira um terço; sem escudo ela apanha. Fogo azul ao cair.
+- [x] **Barra azul do Escudo de Medo aparecia no jogador** (relato do dono, 2026-11-06) — no COOP os dois painéis da HUD
+      são dos jogadores e o escudo era desenhado no painel 2 (a vida do P2). Agora `pveHud.setShield` recebe a chefe e
+      desenha o escudo na barra dela: no solo, a barra de chefe do alto; no coop, a barra do inimigo (`.pv-enemy`).
+      Conferido no navegador (solo e coop). A luta começa com as 3 partes azuis; cada prova tira uma; sem escudo ela cai.
 - [x] Barris e caixas quebráveis nas salas; moedas, experiência e cura vêm de gavetas, barris, caixas e monstros.
 - [x] Baús no estilo Vampire Survivors: animação (treme, luz pela fresta, estouro de luz, facho), 1 a 3 itens (1 comum,
       3 raro) que sobem melhorias que você já escolheu; sem nenhuma para subir, moedas.
+- [x] **Habilidades do baú, limite por tentativa e moedas OU vida** (pedido do dono, 2026-11-06, ainda não lançado):
+      - 4 HABILIDADES NOVAS que só saem do BAÚ (nunca nas cartas de nível; marcadas "NOVA DO BAÚ!"): Pulso de Medo (onda
+        a cada 4,5 s que machuca quem está a 3 m), Pele de Espinhos (devolve 15/25/35% do dano corpo a corpo),
+        Golpe Certeiro (10/16/22% de chance de dano dobrado) e Segundo Fôlego (uma vez por tentativa, o golpe que ia
+        derrubar deixa com 30%). `chest: true` em `pve/upgrades.js`; efeitos em `Dungeon.modsFor`, no laço e em
+        `combat/damage.js` (`pveMods.crit` e o gancho novo `pveMods.onTaken`).
+      - LIMITE de 6 habilidades diferentes por tentativa (`MAX_KINDS`; a HUD mostra "habilidades n/6"): cheio, as cartas
+        e os baús só sobem as que você já tem, até o máximo.
+      - Tudo no máximo: o baú (e a carta de nível) abre a escolha MOEDAS ou VIDA — o jogador escolhe (no coop, a vez
+        alterna como nas cartas; a vida vai para os dois).
+      - PROPOSTA: as 4 habilidades, os números e o limite 6. Testes em `tests/pve.test.js`.
+- [x] **Moedas: compartilhadas no coop local, separadas no online** (pedido do dono, 2026-11-06) — já era assim: no coop
+      local as moedas vão para a mesma carteira do save (os dois compram os personagens com ela); no online cada jogador
+      tem a sua (`net.coins[slot]`) e só a dele é gravada no save dele. Conferido no código (`pve/flow.js`).
+- [x] **Barra de vida do chefe nas DUAS metades da tela dividida** (pedido do dono, 2026-11-06): no coop local a barra
+      do inimigo (`.pv-enemy`) aparece em cima e na metade de baixo (`.pv-enemy.low`); o Escudo de Medo vai nas duas.
 - [x] Melhorias permanentes compráveis com moedas (45 + 30 por grau: PROPOSTA).
 - [x] HUD do modo minimalista (Inter, vidro escuro, avisos de interagir sem caixa); nome dos golpes das criaturas
       pequeno no canto.
@@ -1202,22 +1222,48 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       nenhuma das duas salas), **Amália** (idem), Dalmo/Magistrada/Arnaldo/Rubens (chefe 16–24%), Kaiser/Gaius/Chico
       (chefe a 2–11%). Muito dano recebido: Celestine (115% numa sala), Balu, Dante, Kemi, Xande (~80%). Próximo: 3
       amostras dos que ficaram para trás antes de mexer (só no modo: multiplicador por personagem no Outro Lado).
+      **Feito (2026-11-06):** 9 amostras sem ajuste dos atrasados → `PVE_CHAR_TUNE` em `pve/dungeons.js` (só no modo;
+      aplicado em `Dungeon.modsFor`): Anfitrião dano ×1,5; Morato ×1,5 e recebe ×0,85; Amália ×1,45 / ×0,75; Kaiser ×1,3;
+      Kemi e Magistrada ×1,2 / ×0,85; Deus da Morte ×1,2; Rubens ×1,15 / ×0,8; Celestine recebe ×0,85; Chico ×0,9
+      (PROPOSTA). Depois: todos limpam 3/3 salas (40–60 s) e derrubam o chefe (78–123 s). A bateria virou ferramenta
+      de dev: `src/dev/pveBattery.js` (instruções no topo). Falta: o Anfitrião ainda deixou o chefe vivo 1 de 3 vezes
+      em 180 s — conferir jogando.
+- [x] **Chamas de Energia saindo da barra de vida do Anfitrião** (pedido do dono, 2026-11-06): `.hb-energy .fill::before/
+      ::after` em `styles.css` — roxo, rosa e ciano, só sobre a vida que resta.
 - [x] **A equipe Outro Lado não entra no modo Outro Lado** (pedido do dono, 2026-11-06): Estrangeiro, Amigo Imaginário,
       Carniçal (e quem tiver a equipe 'Outro Lado') aparecem bloqueados na escolha ("é da equipe Outro Lado: não entra
       neste modo") e saíram da loja de desbloqueio (`pveBanned` em `pve/unlocks.js`).
 
 ## OS CHEFES E OS CENÁRIOS DO OUTRO LADO NO MODO DE LUTA (pedido do dono, 2026-11-06)
 
-- [ ] **A Degolificada (e os outros chefes do Outro Lado) como personagens jogáveis no modo de luta.** Preparar como
-      lutador de verdade: ficha no `characters/`, os 4 golpes + especial + transformação a partir da IA de chefe
-      (`pve/degolificada.js`: cabelos — investida, agarrar e arremessar, rastejante, por cima, defesa; Grito Rasgado;
-      Devoradora como transformação), vida/dano no padrão do elenco, falas, retrato, entrada na seleção e no check
-      (`npm run check`), sem o Escudo de Medo/provas (mecânica só da dungeon). Mesmo processo para o Espreitador.
-      Balancear por telemetria (`runBalance({ focus: 'id' })`).
-- [ ] **Mansão Endiabrada como arena única de luta:** recortar do mapa da dungeon uma sala-arena (hall ou salão) com
-      limites, câmera e spawns do modo de luta; entra em `ARENAS`/`ARENA_ORDER` e na seleção de cenário.
-- [ ] **Escola Nostradamus como arena única de luta:** idem (pátio, biblioteca ou o bunker), sem as portas e salas da
-      dungeon.
+- [x] **A Degolificada e o Espreitador como personagens jogáveis no modo de luta** — feito em 2026-11-06 (ainda não
+      lançado). Fichas novas `src/characters/degolificada.js` e `src/characters/espreitador.js` (equipe Outro Lado, fora
+      do modo Outro Lado pelo `pveBanned`); os chefes da dungeon (`characters/bosses/*.js`) agora DERIVAM delas, sem o kit,
+      com a vida e os números de antes (o Escudo de Medo e as provas continuam só na dungeon).
+      - Degolificada (Medo): □ Investida de cabelo (puxa), △ + ○ Agarrar e Estrangular (puxa e joga longe), △ + □ Cabelo
+        rastejante, △ + × Cabelo por cima, △ + L2 Defesa de cabelo, R2 + △ Grito Rasgado; especial Desfiguramento
+        Capilar; transformação Devoradora. PROPOSTA: os botões, os números e a cena do especial.
+      - Espreitador (Conhecimento): □ Dedos longos (puxa), △ + ○ Drenar Energia (só pega quem está OLHANDO para ele;
+        rouba Sanidade), △ + × Correr pelas Frestas, R2 + × Cópia Observada (2 Devorados: cópias cinzentas do
+        adversário), △ + L2 Fortalecer; especial O Olho da Boca e transformação Pupilas que se Multiplicam (PROPOSTA).
+      - Extensões reaproveitáveis: `inkTentacles` (alwaysThrow, tentColor, element, caughtLabel), `bellToll` (scream),
+        `fearGaze` (lookArc, drain, damage), `shadowClones` (copyOpponent), `lodoTentacles` (caughtLabel).
+      - Falas de introdução e de vitória contra todo o elenco, agarrão próprio, retratos (`public/sobre/elenco`),
+        modelos sem `lazy`; teste novo em `tests/pve.test.js`.
+      - Balanceamento (rodada focada, 86 lutas cada, Ruínas): a Degolificada sem ajuste ganhava 8% (herda os golpes do
+        Amigo sem os 1800 de vida nem o roubo de vida); com 1.3/0.82 → 33%; o Espreitador com 1.1/0.93 → 34%. Subidos
+        para 1.36/0.79 e 1.17/0.89 (`config/balance.js`) — falta medir de novo.
+- [x] **Remodelação completa do Carniçal** (pedido do dono, 2026-11-06; feita numa sessão separada, ainda não lançada):
+      `tools/blender/char_carnical.py` → `public/models/carnical.glb` — membros secos, costelas e barriga funda, pés com
+      garras, Lodo escorrendo e fios de Lodo no lugar do bloco da boca. Conferido em 4 vistas e numa luta Carniçal × Dante
+      em Tipora, sem erros. Retrato da página Sobre (`public/sobre/elenco/carnical.webp`) refeito com o modelo novo.
+- [x] **Mansão Endiabrada como arena única de luta** (2026-11-06, ainda não lançada): `MANSAO_LUTA` em
+      `arena/configs.js` — o QUARTO PRINCIPAL do mapa da dungeon (mesmo `.glb`), a luta presa na sala, a câmera não sai
+      dela, só as luzes de dentro (sem o pool) e névoa mais leve. Id `mansao_luta` em `ARENAS`/`ARENA_ORDER`. O cache do
+      `.glb` passou a ser por arquivo (`glbArena.js`), então a arena e o mapa do PvE dividem o mesmo download.
+      PROPOSTA: a escolha da sala, a névoa e os nascimentos.
+- [x] **Escola Nostradamus como arena única de luta** (idem): `ESCOLA_LUTA` — o BUNKER escondido (o círculo do ritual
+      e as velas), id `escola_luta`.
 
 Detalhes em `docs/outro-lado-playtest.md` (rodada 8).
 

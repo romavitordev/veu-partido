@@ -28,8 +28,8 @@ const BLENDER_MODELS = {
   carina: { url: 'models/carina.glb', props: addCarinaProps }, // Equipe Abutres: a artista marcial (o Mangual do pai na mão, Glock no □)
   rubens: { url: 'models/rubens.glb', props: addRubensProps }, // Equipe Abutres: o paramédico (o Martelo nas duas mãos, Glock Silenciada no □)
   beatrice: { url: 'models/beatrice.glb', props: addBeatriceProps },
-  degolificada: { url: 'models/degolificada.glb', props: null, lazy: true }, // OUTRO LADO: a chefe da Escola Nostradamus (só carrega no modo)
-  espreitador: { url: 'models/espreitador.glb', props: null, lazy: true }, // OUTRO LADO: o chefe da Mansão (só carrega no modo) // Força D: a florista (o canivete na mão, a balestra no □, o Orpheu no ombro)
+  degolificada: { url: 'models/degolificada.glb', props: null }, // OUTRO LADO: a chefe da Escola Nostradamus (jogável no modo de luta desde 2026-11-06)
+  espreitador: { url: 'models/espreitador.glb', props: null }, // OUTRO LADO: o chefe da Mansão (jogável no modo de luta desde 2026-11-06) // Força D: a florista (o canivete na mão, a balestra no □, o Orpheu no ombro)
   dara: { url: 'models/dara.glb', props: addDaraProps }, // Os Cinco: a médica de campo (lanterna, bolsa e walkie-talkie no modelo)
   carnical: { url: 'models/carnical.glb', props: null }, // o Carniçal jogável (garras no modelo); o NPC é public/npcs/carnical.glb
   juan: { url: 'models/juan.glb', props: addJuanProps },

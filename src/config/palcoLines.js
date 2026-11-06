@@ -67,6 +67,8 @@ export const PALCO_LINES = {
     amphitruo: ['Eu de toga! Que elegância a minha. Plateia, aplaudam a mim.'],
     carnical: ['Uma criatura de Lodo no meu palco! Alguém limpa o chão depois.'],
     amigo: ['O desenho da criança! Plateia, não olhem muito, mancha.'],
+    degolificada: ['Uma moça de cabelo comprido no meu palco! Alguém traz uma escova. E uma tesoura.'],
+    espreitador: ['Um espectador saiu do armário! Plateia, ele vai olhar vocês de volta.'],
   },
   // os EVENTOS do mapa: anúncio antes, efeito igual para os dois (palcoHost.js)
   event: {

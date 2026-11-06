@@ -96,6 +96,30 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 .bar.health.hb-energy .fill { background: linear-gradient(90deg, #b04aff, #ff4ad8, #4ad8ff, #b04aff); background-size: 300% 100%; animation: hbChaos 2.5s linear infinite; }
 .bar.health.hb-energy .trail { background: #f0d8ff; }
 .bar.health.hb-energy .fx { background: linear-gradient(90deg, transparent 0 40%, rgba(255,255,255,.5) 40% 42%, transparent 42% 71%, rgba(0,0,0,.4) 71% 74%, transparent 74%); animation: hbGlitch 1.3s steps(2) infinite; }
+/* CHAMAS DE ENERGIA saindo da barra do Anfitrião (pedido do dono, 2026-11-06): línguas roxas, rosa e ciano que sobem
+   da parte da vida que ainda resta (.fill) — a barra deixa o que passa da borda aparecer */
+.bar.health.hb-energy { overflow: visible; }
+.bar.health.hb-energy .fill::before, .bar.health.hb-energy .fill::after { content: ''; position: absolute; left: 0; right: 0; bottom: 35%; height: 30px; pointer-events: none; -webkit-mask: linear-gradient(0deg, #000 45%, transparent); mask: linear-gradient(0deg, #000 45%, transparent); }
+.bar.health.hb-energy .fill::before {
+  background:
+    radial-gradient(ellipse 7px 22px at 20% 100%, #ff6ae0 35%, rgba(255,74,216,0) 75%),
+    radial-gradient(ellipse 6px 28px at 55% 100%, #c070ff 35%, rgba(176,74,255,0) 75%),
+    radial-gradient(ellipse 8px 18px at 85% 100%, #6ae4ff 35%, rgba(74,216,255,0) 75%);
+  background-size: 34px 100%; background-repeat: repeat-x; filter: blur(.5px) drop-shadow(0 0 4px #b04aff);
+  transform-origin: 50% 100%; animation: hbFlameA .55s ease-in-out infinite alternate, hbFlameDrift 1.8s linear infinite;
+}
+.bar.health.hb-energy .fill::after {
+  background:
+    radial-gradient(ellipse 4px 16px at 35% 100%, #ffffff 25%, rgba(240,216,255,0) 72%),
+    radial-gradient(ellipse 6px 24px at 70% 100%, #ff4ad8 30%, rgba(255,74,216,0) 74%),
+    radial-gradient(ellipse 5px 15px at 5% 100%, #4ad8ff 30%, rgba(74,216,255,0) 74%);
+  background-size: 27px 100%; background-repeat: repeat-x; filter: blur(.4px); opacity: .9;
+  transform-origin: 50% 100%; animation: hbFlameB .4s ease-in-out infinite alternate, hbFlameDrift 1.2s linear infinite reverse;
+}
+.bar.health.hb-energy.low .fill::before { animation-duration: .3s, 1s; }
+@keyframes hbFlameA { from { transform: scaleY(.75) skewX(4deg); } to { transform: scaleY(1.2) skewX(-5deg); } }
+@keyframes hbFlameB { from { transform: scaleY(1.1) skewX(-3deg); } to { transform: scaleY(.7) skewX(6deg); } }
+@keyframes hbFlameDrift { from { background-position-x: 0; } to { background-position-x: 34px; } }
 @keyframes hbFlow { from { background-position: 0 0; } to { background-position: 88px 0; } }
 @keyframes hbScan { from { background-position: 0 0, 0 0; } to { background-position: 0 3px, 64px 0; } }
 @keyframes hbSweep { from { background-position: 130% 0; } to { background-position: -130% 0; } }
@@ -1395,6 +1419,11 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 .bar.health .pv-shieldbar i:not(.on) { opacity: 0; transform: scaleY(.2); }
 .bar.health .pv-shieldbar.hit i.on { animation: pvShieldHit .25s ease-out; }
 @keyframes pvShieldHit { 0% { filter: brightness(2.2); } 100% { filter: none; } }
+/* COOP: o escudo vai na barra do inimigo do alto (os dois painéis são dos jogadores) */
+#pvehud .pv-ebar { position: relative; }
+#pvehud .pv-ebar .pv-shieldbar { position: absolute; inset: 0; display: flex; gap: 2px; pointer-events: none; }
+#pvehud .pv-ebar .pv-shieldbar i { flex: 1; background: linear-gradient(180deg, #c8d8f0, #6a84a8); transition: opacity .35s, transform .35s; }
+#pvehud .pv-ebar .pv-shieldbar i:not(.on) { opacity: 0; transform: scaleY(.2); }
 /* OUTRO LADO: os avisos grandes do jogo de luta ficam menores e mais limpos neste modo */
 #hud.pve #callout { top: 30%; font-family: Inter, system-ui, sans-serif; font-weight: 700; font-size: clamp(18px, 2.4vw, 30px); letter-spacing: .28em; text-shadow: 0 2px 14px rgba(0,0,0,.85); }
 #hud.pve .popup { font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 12px; letter-spacing: .04em; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
@@ -1459,6 +1488,7 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #pvehud .pv-enemy { position: absolute; left: 50%; top: 58px; transform: translateX(-50%); width: min(40vw, 420px); text-align: center; color: #ffb4a8; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
 #pvehud .pv-enemy b { display: block; margin-bottom: 4px; font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
 #pvehud .pv-ebar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
+#pvehud .pv-enemy.low { top: calc(50% + 14px); } /* a metade de baixo da tela dividida */
 #pvehud .pv-ebar i { display: block; height: 100%; background: #ff6a5a; }
 #pvehud .pv-split { position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); background: #050506; pointer-events: none; }
 /* OUTRO LADO — cena de entrada do chefe: sem HUD (só o cronômetro some junto) */

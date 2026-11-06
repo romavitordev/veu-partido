@@ -16,9 +16,10 @@ import { DanteClone, BloodZombie } from '../combat/npcs.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
-import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance } from './dungeons.js';
+import { applyHit } from '../combat/damage.js';
+import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune } from './dungeons.js';
 import { RoomDoor, Drawer, InteractPrompt, makeArrow, aimArrow } from './roomDoors.js';
-import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade } from './upgrades.js';
+import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices } from './upgrades.js';
 import { devoradoDef, restyleDevorado, copiaOpts } from './devorado.js';
 import { Pickup, Chest } from './pickups.js';
 import { rollLoot } from './unlocks.js';
@@ -198,6 +199,11 @@ export class Dungeon {
 
   modsFor(p, profile, fill, keepRatio) {
     const m = computeMods(this.run.picks, profile.tree);
+    const tune = charTune(p.def.id); // o ajuste do personagem no modo (PVE_CHAR_TUNE)
+    if (tune) {
+      for (const k in m.dealt) m.dealt[k] *= tune.dealt ?? 1;
+      m.taken *= tune.taken ?? 1;
+    }
     const ratio = p.health / p.maxHealth;
     const baseHp = p.def.stats?.maxHealth ?? COMBAT.maxHealth;
     const before = p.maxHealth;
@@ -206,10 +212,28 @@ export class Dungeon {
     else if (keepRatio) p.health = Math.max(1, Math.round(p.maxHealth * ratio));
     else p.health = Math.min(p.maxHealth, p.health + Math.max(0, p.maxHealth - before)); // ganhou vida máxima: cura o que ganhou
     p.moveSpeed = (p.def.stats?.moveSpeed ?? COMBAT.moveSpeed) * m.speedMult;
-    m.onDealt = (dealt, kind) => {
+    m.onDealt = (dealt, kind, victim, o) => {
       if (m.lifesteal > 0 && kind === 'melee') p.health = Math.min(p.maxHealth, p.health + dealt * m.lifesteal);
       this.stats.damage += dealt;
+      if (o && o.crit) this.world.fx.burst(victim.chestPos ? victim.chestPos(v1).clone() : p.chestPos(v1).clone(), { count: 10, color: 0xffe08a, speed: 3.2, life: 0.3, size: 0.12 });
     };
+    // PELE DE ESPINHOS (baú): devolve parte do dano corpo a corpo a quem bateu
+    m.onTaken = m.thorns > 0 ? (dealt, kind, attacker, o) => {
+      if (kind !== 'melee' || o.thorns || !attacker || attacker === p || !attacker.takeDamage || attacker.state === 'ko') return;
+      applyHit(this.world, p, attacker, { damage: Math.max(1, Math.round(dealt * m.thorns)), kind: 'ability', thorns: true, unblockable: true, reaction: false, knockback: 0, hitstun: 0, sound: 'clawHit', color: 0xc8a0ff, scale: 0.6 });
+    } : null;
+    // SEGUNDO FÔLEGO (baú): uma vez por tentativa, o golpe que ia derrubar deixa com 30%
+    if (m.secondWind && !(this.run.secondWindUsed || []).includes(p === this.player ? 0 : 1)) {
+      p.lethalHook = () => {
+        this.run.secondWindUsed = [...(this.run.secondWindUsed || []), p === this.player ? 0 : 1];
+        p.health = Math.round(p.maxHealth * 0.3);
+        p.invuln = Math.max(p.invuln || 0, 1.2);
+        this.world.fx.burst(p.chestPos(v1).clone(), { count: 40, color: 0xfff0c0, speed: 4, life: 0.7, size: 0.18 });
+        this.hud.callout('SEGUNDO FÔLEGO', '#fff0c0');
+        this.audio.play('levelUp', { volume: 0.9, pitch: 1.2 });
+        return true;
+      };
+    } else if (!m.secondWind) p.lethalHook = null;
     p.pveMods = m;
     return m;
   }
@@ -761,14 +785,17 @@ export class Dungeon {
       this.applyPlayerMods(false);
       this.pveHud.setRun(this.run, this.run.depth);
     }
-    // o que sobrou (nenhuma melhoria para subir): moedas
+    // o que sobrou (nada para subir: tudo no máximo, ou o limite de habilidades cheio e as que tem no máximo): o jogador
+    // ESCOLHE moedas ou vida (pedido do dono, 2026-11-06)
     const missing = n - ups.length;
     if (missing > 0) {
       const coins = Math.round(missing * (12 + Math.random() * 12) * (1 + 0.25 * Math.max(0, this.run.depth - 1)) * (1 + (c.luck || 0)));
-      this.giveCoins(coins);
-      items.push({ icon: '●', colorCss: '#ffc040' });
-      rows.push({ icon: '●', name: 'Moedas', tag: `+${coins}` });
+      const heal = Math.min(0.75, 0.3 * missing);
+      items.push({ icon: '?', colorCss: '#ffc040' });
+      rows.push({ icon: '?', name: 'Moedas ou vida', tag: 'escolha' });
+      this.pendingRewards = [...(this.pendingRewards || []), { coins, heal }];
     }
+    for (const id of ups) if (getUpgrade(id).chest && countOf(this.run.picks, id) === 1) this.hud.callout(getUpgrade(id).name.toUpperCase(), '#7ec8ff');
     this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
     return items;
   }
@@ -862,11 +889,30 @@ export class Dungeon {
     this.pveHud && this.pveHud.hint(text);
   }
 
+  // MOEDAS ou VIDA (o baú sem nada para subir, ou a carta de nível quando tudo chegou ao máximo): o jogador escolhe;
+  // a vida vai para os dois no coop
+  openReward(r) {
+    this.audio.play('levelUp', { volume: 0.8, pitch: 1.1 });
+    this.choosing = true;
+    const who = this.coop ? this.chooser : 0;
+    if (this.coop) this.chooser = 1 - this.chooser;
+    const choices = rewardChoices(r.coins, r.heal);
+    this.pveHud.openChoice(choices, this.run, (id) => {
+      this.choosing = false;
+      if (id === 'reward:coins') this.giveCoins(r.coins);
+      else {
+        for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * r.heal);
+        this.audio.play('heal', { volume: 0.8 });
+        this.hud.callout('VIDA', '#7cff9a');
+      }
+    }, { who, coop: this.coop, noClick: !!this.net || (this.coop && who === 1), mine: this.local === null || this.local === who, title: 'NADA MAIS PARA SUBIR', sub: 'Escolha a recompensa', what: 'a recompensa' });
+  }
+
   // abre as cartas de melhoria (o jogo para enquanto escolhe)
   openLevelUp() {
     this.pendingUps--;
     const choices = rollChoices(this.run.picks);
-    if (!choices.length) return;
+    if (!choices.length) { this.openReward({ coins: Math.round(15 * (1 + 0.25 * Math.max(0, this.run.depth - 1))), heal: 0.3 }); return; }
     this.audio.play('levelUp', { volume: 1 });
     this.choosing = true;
     const who = this.coop ? this.chooser : 0;
@@ -1296,7 +1342,8 @@ export class Dungeon {
       this.hud.update(this);
       return;
     }
-    if (this.pendingUps > 0 && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) {
+    if (!this.choosing && this.pendingRewards && this.pendingRewards.length && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) this.openReward(this.pendingRewards.shift());
+    else if (this.pendingUps > 0 && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) {
       this.openLevelUp();
       return;
     }
@@ -1343,6 +1390,19 @@ export class Dungeon {
     this.drip -= dt;
     if (this.drip <= 0 && this.ambience) { this.drip = 1.6 + Math.random() * 2.6; this.audio.play('drip', { volume: 0.35 + Math.random() * 0.25, pitch: 0.9 + Math.random() * 0.25 }); }
     // as melhorias de regeneração (Carne Dura)
+    // PULSO DE MEDO (baú): a cada 4,5 s, uma onda em volta de quem tem (dano 30/45/60, escala com o dano das habilidades)
+    for (const q of this.players) {
+      const pm = q.pveMods;
+      if (!pm || !pm.pulse || q.state === 'ko' || this.phase !== 'explore' || this.world.cinematic) continue;
+      q.pulseT = (q.pulseT ?? 4.5) - dt;
+      if (q.pulseT > 0) continue;
+      q.pulseT = 4.5;
+      const dmg = Math.round((15 + 15 * pm.pulse) * (pm.dealt.ability || 1));
+      this.world.fx.ring(new THREE.Vector3(q.pos.x, 0.1, q.pos.z), { color: 0x8aa4c8, radius: 3, life: 0.4 });
+      const e = this.enemy;
+      if (e && e.visible && !e.lurking && e.state !== 'ko' && e.state !== 'intro' && distXZ(e.pos, q.pos) <= 3 + e.radius) applyHit(this.world, q, e, { damage: dmg, kind: 'ability', unblockable: true, reaction: false, knockback: 0, hitstun: 0, sound: 'impact', color: 0x8aa4c8, scale: 0.7 });
+      for (const n of this.world.hostileNpcs(q)) if (!n.isCloset && n.pos && n.hitBy && !this.players.includes(n.owner) && distXZ(n.pos, q.pos) <= 3 + (n.radius || 0.5)) n.hitBy(q, dmg, { kind: 'ability' });
+    }
     for (const q of this.players) if (q.pveMods && q.pveMods.regenHp > 0 && q.state !== 'ko' && !['hitstun', 'downed', 'stun', 'grabbed'].includes(q.state)) q.health = Math.min(q.maxHealth, q.health + q.maxHealth * q.pveMods.regenHp * dt);
 
     switch (this.phase) {

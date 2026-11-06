@@ -1,8 +1,8 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -108,9 +108,26 @@ ARENAS.escola = {
   pve: true,
   create: () => createGLBArena(ESCOLA),
 };
+// as salas do Outro Lado como ARENAS DE LUTA (entram na seleção; o mapa inteiro continua só no PvE)
+ARENAS.mansao_luta = {
+  name: 'Mansão Endiabrada',
+  description: 'O quarto principal da mansão do Espreitador: armários entreabertos, a lua nas janelas e o relógio parado nas 2:11.',
+  colors: ['#020203', '#3e2a1c', '#f2c230'],
+  available: true,
+  thumbCamera: { pos: [50, 5, 14], look: [50, 1, -6] },
+  create: () => createGLBArena(MANSAO_LUTA),
+};
+ARENAS.escola_luta = {
+  name: 'Escola Nostradamus',
+  description: 'O bunker escondido sob a biblioteca da escola: o círculo do ritual, as velas e as lâmpadas nuas.',
+  colors: ['#020304', '#4e4e4a', '#c8d0c0'],
+  available: true,
+  thumbCamera: { pos: [81, 5, 13], look: [81, 1, -5] },
+  create: () => createGLBArena(ESCOLA_LUTA),
+};
 export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora'];
+export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ruinas';

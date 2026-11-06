@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.31.2';
+export const VERSION = '4.32.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,20 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.32.0',
+    date: '2026-11-06',
+    title: 'Degolificada e Espreitador jogáveis',
+    items: [
+      'NOVOS PERSONAGENS: a Degolificada e o Espreitador agora são jogáveis no modo de luta, com kit completo, especial e transformação. Os dois são da equipe Outro Lado (não entram no modo Outro Lado).',
+      'NOVOS CENÁRIOS: Mansão Endiabrada (o quarto principal) e Escola Nostradamus (o bunker) como arenas de luta.',
+      'Carniçal remodelado: membros secos, costelas saltadas, pés com garras e lodo escorrendo.',
+      'Outro Lado: 4 habilidades novas que só saem do baú — Pulso de Medo, Pele de Espinhos, Golpe Certeiro e Segundo Fôlego.',
+      'Outro Lado: cada partida aceita até 6 habilidades diferentes; depois, cartas e baús só sobem as que você já tem. Com tudo no máximo, você escolhe entre moedas e vida.',
+      'Outro Lado: no multiplayer local, a barra de vida do chefe aparece nas duas metades da tela.',
+      'Corrigido: a barra azul do Escudo de Medo aparecia no jogador em vez de na Degolificada.',
+    ],
+  },
   {
     v: '4.31.2',
     date: '2026-11-06',

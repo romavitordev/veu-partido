@@ -25,7 +25,7 @@ sk = b.sk
 H = sk.h
 hz = sk['hips'].z
 
-lodo = vcol_material('lodo_carnical')
+lodo = vcol_material('lodo_carnical', rough=0.38)  # piche molhado: o brilho mostra as estrias (remodelagem 2026-11-06)
 bone = material('face_skull_carnical', '#ffffff', 0.6)  # a caveira rachada com o Símbolo Espiral (textura)
 tendon = material('tendon_carnical', '#b8ab94', 0.7)  # os tendões pálidos soltos
 claw = material('claw_carnical', '#0c0a0e', 0.35)
@@ -111,6 +111,39 @@ d = WR - co[m, 2]
 co[m, 2] = WR - d * (1 + 0.75 * d / D)
 cx = np.sign(co[m, 0]) * sk['sL'].x
 co[m, 0] = cx + (co[m, 0] - cx) * (1 - 0.15 * np.clip(d / D, 0, 1))
+# REMODELAGEM 2026-11-06 (pedido do dono: "remodel completo"): os membros SECOS, de tendão — cada vértice é puxado
+# para o eixo do seu osso pelos pesos (as juntas misturam sem degrau); a coxa e o braço perdem o volume de homem comum
+SLIM = {'s': 0.8, 'e': 0.78, 'hand': 0.92, 'l': 0.84, 'k': 0.8, 'foot': 1.0}
+CHILD = {'s': 'e', 'e': 'hand', 'hand': 'handTip', 'l': 'k', 'k': 'foot', 'foot': 'toe'}
+
+
+def seg_pt(p, a, c):
+    ab = c - a
+    t = max(0.0, min(1.0, (p - a).dot(ab) / max(1e-9, ab.length_squared)))
+    return a + ab * t
+
+
+for i, wv in enumerate(heat):
+    p = Vector(co[i])
+    acc, tot = Vector((0, 0, 0)), 0.0
+    for n, a in wv.items():
+        base = n[:-1]
+        if base not in SLIM or n[-1] not in 'LR' or a < 1e-3:
+            continue
+        q = seg_pt(p, sk[n], sk[CHILD[base] + n[-1]])
+        acc += (q + (p - q) * SLIM[base]) * a
+        tot += a
+    if tot > 0.05:
+        rest = 1 - min(1.0, tot)
+        co[i] = tuple(acc / max(tot, 1e-6) * min(1.0, tot) + p * rest)
+# os PÉS de criatura: compridos para a frente (os dedos viram garras, abaixo)
+for i, wv in enumerate(heat):
+    a = sum(x for n, x in wv.items() if n.startswith('foot'))
+    if a > 0.3:
+        side = 'L' if co[i][0] > 0 else 'R'
+        fy = sk['foot' + side].y
+        if co[i][1] < fy:
+            co[i][1] = fy + (co[i][1] - fy) * (1 + 0.45 * a)
 me.vertices.foreach_set('co', co.ravel())
 me.update()
 # fora a cabeça humana: a caveira entra no lugar
@@ -149,6 +182,12 @@ def torso_fn(p):
         return -AMP * 0.8
     else:  # flancos e costas: diagonais subindo aos ombros (as costelas aparecem)
         v = ridge((p.z + ax * (0.8 if p.y < 0 else -0.6)) / H * 90 + w)
+    # as COSTELAS saltadas nos flancos (corpo de fome, remodelagem 2026-11-06) e a barriga FUNDA embaixo delas
+    if 1.18 * H < p.z < 1.46 * H and 0.06 * H < ax < 0.2 * H:
+        rib = ridge((p.z - ax * 0.35) / H * 52 + w * 0.4, 3)
+        v = max(v, 0.35 + 1.6 * (rib - 0.35))
+    if p.y < 0 and 1.02 * H < p.z < 1.2 * H and ax < 0.11 * H:
+        return AMP * (v - 0.35) - AMP * 1.4 * lim(1 - abs(p.z / H - 1.11) / 0.09)
     return AMP * (v - 0.35)
 
 
@@ -235,11 +274,13 @@ def finger_tips(side):
     return tips
 
 
-def arm_r(side, z):
-    """raio do braço na altura z (para os tendões enrolarem rente)"""
-    ax = sk['s' + side]
-    rs = sorted(math.hypot(v[0] - ax.x, v[1] - ax.y) for v, d_ in zip(verts, dom) if d_ in ('s' + side, 'e' + side) and abs(v[2] - z) < 0.02 and abs(v[0] - ax.x) < 0.1)
-    return rs[int(len(rs) * 0.7)] if rs else 0.05
+ARMV = {s_: [Vector(v) for v, d_ in zip(verts, dom) if d_ in ('s' + s_, 'e' + s_)] for s_ in 'LR'}
+
+
+def arm_r(side, c):
+    """raio do braço em volta do ponto c do eixo (para os tendões enrolarem rente à pele)"""
+    rs = sorted((v - c).length for v in ARMV[side] if abs(v.z - c.z) < 0.02 and (v - c).length < 0.12)
+    return rs[int(len(rs) * 0.55)] if rs else 0.04
 
 
 for side in ('L', 'R'):
@@ -247,6 +288,17 @@ for side in ('L', 'R'):
     sh, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     cl = [rod([t, t + V(0, -0.02, -0.04), t + V(0, 0.0, -0.075)], [0.009 * H, 0.0055 * H, 0.001 * H], 5) for t in finger_tips(side)]
     b.add('claws' + side, merge(*cl), claw, region='hand' + side, subdiv=0)
+    # as GARRAS DOS PÉS (remodelagem 2026-11-06): na ponta de cada dedo do pé comprido, curvas para baixo
+    fv = sorted((Vector(v) for v, d_ in zip(verts, dom) if d_ == 'foot' + side and v[2] < 0.06), key=lambda q: q.y)
+    ft = []
+    for q in fv:
+        if all(abs(q.x - t.x) > 0.022 for t in ft):
+            ft.append(q)
+        if len(ft) == 4:
+            break
+    tc = [rod([t + V(0, 0.01, 0.012), t + V(0, -0.035, 0.0), t + V(0, -0.06, -0.022)], [0.008 * H, 0.005 * H, 0.001 * H], 5) for t in ft]
+    if tc:
+        b.add('toeClaws' + side, merge(*tc), claw, region='foot' + side, subdiv=0)
     td = []
     for (p0, p1, a0, turn, n) in ((sh + V(0, 0, -0.05), e, 0.4, 2.2, 3), (e, h + V(0, 0, 0.04), 1.2, -2.0, 2)):
         for k in range(n):
@@ -255,7 +307,7 @@ for side in ('L', 'R'):
                 t = i / 8
                 c = p0.lerp(p1, t)
                 ang = a0 + k * 2.1 + turn * t
-                rad = arm_r(side, c.z) * (0.9 + 0.12 * math.sin(t * math.pi))  # solto no meio
+                rad = arm_r(side, c) * (1.0 + 0.08 * math.sin(t * math.pi))  # rente, um pouco solto no meio
                 pts.append(c + Vector((s * math.cos(ang) * rad, math.sin(ang) * rad, 0)))
                 rr.append((0.003 + 0.0025 * math.sin(t * math.pi)) * H)
             td.append(rod(pts, rr, 5))
@@ -328,28 +380,65 @@ b.add('spiral', rod(sp, [0.0022 * HS] * len(sp), 4), brain, region='head', subdi
 hc = Vector((0, cy - 0.01 * HS, top - 0.102 * HS))  # o Lodo e o cérebro abaixo se apoiam no crânio novo
 # o PESCOÇO LONGO de tendões, do tronco até a base do crânio (atrás da mandíbula)
 Nk = Sculpt()
-Nk.chain([V(0, 0.01, 1.53), V(0, 0.012, 1.62), Vector((0, cy + 0.02 * HS, bottom + 0.03 * HS))], [0.052 * H, 0.04 * H, 0.034 * H], step=0.45)
+Nk.chain([V(0, 0.01, 1.53), V(0, 0.012, 1.62), Vector((0, cy + 0.02 * HS, bottom + 0.03 * HS))], [0.04 * H, 0.03 * H, 0.026 * H], step=0.45)
 for s in (1, -1):  # os tendões soltos dos lados (esternocleidomastoide)
     Nk.chain([V(s * 0.05, -0.04, 1.54), Vector((s * 0.035 * HS, cy - 0.01 * HS, bottom + 0.035 * HS))], [0.016 * H, 0.012 * H], step=0.45)
 neck_fn = lambda p: AMP * (ridge(math.atan2(p.x, p.y - cy) * 9 + n3(p, 2.4) * 0.8) - 0.35)
 add_sculpt('neckTendons', Nk, neck_fn, 1400, 'neck', res=0.009)
-# a MANDÍBULA DE LODO: fios grossos saindo de baixo da arcada e das maçãs, descendo em V até o pescoço
+# a MANDÍBULA DE LODO (remodelagem 2026-11-06): no lugar do bloco, FIOS de piche pendurados dos dentes de cima e das
+# maçãs, de comprimentos diferentes, finos no meio e com a GOTA na ponta — a boca aberta do Lodo, sem osso
 Jw = Sculpt()
+JS = []  # os fios soltos (tubos separados: em metaball eles se fundiam num bloco)
 jaw_lo = bottom - 0.11 * HS
-Jw.chain([Vector((0, front + 0.02 * HS, teeth_z + 0.004 * HS)), Vector((0, front + 0.035 * HS, teeth_z - 0.06 * HS)), Vector((0, cy - 0.03 * HS, jaw_lo))], [0.022 * HS, 0.02 * HS, 0.026 * HS], step=0.45)
-for s in (1, -1):
-    for xo, yo, r in ((0.17, 0.03, 0.012), (0.33, 0.07, 0.014), (0.45, 0.12, 0.013)):
-        Jw.chain([Vector((s * xo * SW, front + yo * HS, teeth_z + (0.006 + xo * 0.05) * HS)),
-                  Vector((s * xo * SW * 0.75, front + (yo + 0.02) * HS, teeth_z - 0.065 * HS)),
-                  Vector((s * 0.04 * HS, cy - 0.025 * HS, jaw_lo + 0.01 * HS))], [r * HS, r * 0.9 * HS, r * 1.1 * HS], step=0.45)
-jaw_fn = lambda p: AMP * 0.9 * (ridge(math.atan2(p.x, p.y - cy) * 14 + n3(p, 5) * 1.2) - 0.35)
-add_sculpt('lodoJaw', Jw, jaw_fn, 1600, 'neck', res=0.006)
+for k_ in range(9):
+    u = (k_ - 4) / 4
+    x0 = u * 0.42 * SW
+    y0 = front + (0.012 + 0.05 * u * u) * HS
+    z0 = teeth_z + (0.004 + 0.02 * u * u) * HS
+    L = (0.07 + 0.05 * random.random() + 0.04 * (1 - abs(u))) * HS
+    sway = random.uniform(-0.01, 0.01) * HS
+    pts = [Vector((x0, y0, z0)), Vector((x0 * 0.92 + sway * 0.5, y0 + 0.006 * HS, z0 - L * 0.5)), Vector((x0 * 0.85 + sway, y0 + 0.012 * HS, z0 - L))]
+    JS.append(rod([pts[0], pts[0].lerp(pts[1], 0.5), pts[1], pts[1].lerp(pts[2], 0.6), pts[2]], [0.007 * HS, 0.0045 * HS, 0.0032 * HS, 0.0035 * HS, 0.0065 * HS], 6))
+for s in (1, -1):  # os fios grossos das maçãs até o pescoço (seguram a caveira)
+    Jw.chain([Vector((s * 0.4 * SW, front + 0.1 * HS, teeth_z + 0.03 * HS)), Vector((s * 0.3 * SW, front + 0.12 * HS, teeth_z - 0.05 * HS)),
+              Vector((s * 0.03 * HS, cy - 0.02 * HS, jaw_lo + 0.02 * HS))], [0.012 * HS, 0.01 * HS, 0.013 * HS], step=0.45)
+jaw_fn = lambda p: AMP * 0.7 * (ridge(math.atan2(p.x, p.y - cy) * 14 + n3(p, 5) * 1.2) - 0.35)
+add_sculpt('lodoJaw', Jw, jaw_fn, 1400, 'neck', res=0.006)
+jo = b.add('lodoJawStrands', merge(*JS), lodo, region='body', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+paint(jo, lambda p: C['lodo'].lerp(C['crest'], 0.18))
 # o Lodo agarrado atrás do crânio, escorrendo pelo trapézio
 Hd = Sculpt()
-Hd.ell(hc + VS(0, 0.065, 0.01), (0.055 * HS, 0.045 * HS, 0.065 * HS))
+Hd.ell(hc + VS(0, 0.065, 0.01), (0.07 * HS, 0.055 * HS, 0.08 * HS))
+for s in (1, -1):  # o Lodo agarrado nos lados do crânio, atrás das órbitas (a caveira TOMADA pelo Lodo)
+    Hd.ell(hc + VS(s * 0.055, 0.035, 0.0), (0.03 * HS, 0.04 * HS, 0.06 * HS))
+    Hd.chain([hc + VS(s * 0.06, 0.03, -0.02), hc + VS(s * 0.075, 0.04, -0.12), hc + VS(s * 0.09, 0.05, -0.2)], [0.022 * HS, 0.016 * HS, 0.012 * HS], step=0.5)
 Hd.chain([hc + VS(0, 0.07, -0.03), hc + VS(0, 0.06, -0.1), hc + VS(0, 0.04, -0.17)], [0.04 * HS, 0.034 * HS, 0.028 * HS], step=0.5)
 hood_fn = lambda p: AMP * 0.8 * (ridge(math.atan2(p.x - hc.x, p.z - hc.z) * 16 + n3(p, 4)) - 0.35)
-add_sculpt('lodoHead', Hd, hood_fn, 1200, 'head', res=0.011)
+add_sculpt('lodoHead', Hd, hood_fn, 1800, 'head', res=0.009)
+# o LODO ESCORRENDO (remodelagem 2026-11-06): fios de piche pingando dos ombros, dos cotovelos e das costas, cada um
+# com a gota na ponta — o corpo é Lodo, não pele
+Dr = []
+for side, sg in (('L', 1), ('R', -1)):
+    for (src, n_, L0) in ((sk['s' + side] + V(0, 0.0, -0.03), 3, 0.16), (sk['e' + side] + V(0, 0.0, -0.01), 2, 0.12)):
+        for k_ in range(n_):
+            ang = random.uniform(-0.6, 1.4)  # por fora e por trás do braço, rente à pele
+            out = Vector((sg * math.cos(ang), math.sin(ang), 0))
+            a0 = src + out * arm_r(side, src) * 0.95 + V(0, 0, random.uniform(-0.02, 0.02))
+            L = L0 * random.uniform(0.7, 1.2) * H
+            pts = [a0 + Vector((0, 0, -L * t + 0.004 * math.sin(t * 9))) for t in (0, 0.35, 0.7, 1.0)]
+            Dr.append(rod(pts, [0.008 * H, 0.0045 * H, 0.004 * H, 0.0075 * H], 6))
+    b.add('drips' + side, merge(*Dr), lodo, region='body', weight_fn=weights('arm' + side), subdiv=0)
+    paint(bpy.data.objects[b.parts[-1].name], lambda p: C['lodo'].lerp(C['crest'], 0.15))
+    Dr = []
+Bk = []
+for k_ in range(5):  # pelas costas, do Lodo da nuca
+    x0 = (k_ - 2) * 0.035 * H
+    a0 = V(0, 0.07, 1.6) + Vector((x0, 0, 0))
+    L = random.uniform(0.18, 0.32) * H
+    pts = [a0 + Vector((x0 * 0.2 * t, 0.012 * H * math.sin(t * 3), -L * t)) for t in (0, 0.3, 0.65, 1.0)]
+    Bk.append(rod(pts, [0.012 * H, 0.008 * H, 0.006 * H, 0.009 * H], 6))
+b.add('dripsBack', merge(*Bk), lodo, region='body', weight_fn=weights('torso'), subdiv=0)
+paint(bpy.data.objects[b.parts[-1].name], lambda p: C['lodo'].lerp(C['crest'], 0.15))
 Br = Sculpt()  # o topo rompido: o cérebro vermelho aparecendo
 Br.ell(hc + VS(0, -0.005, 0.078), (0.044 * HS, 0.055 * HS, 0.024 * HS))  # rente ao crânio (a calota rachada, não um chapéu)
 for i in range(4):

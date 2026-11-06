@@ -392,3 +392,25 @@ export const ESCOLA = {
   particles: { color: 0xa8a8a0, count: 140, area: 30, height: 3, rise: 0.05, drift: 0.2, size: 0.03, opacity: 0.4, center: [40, 0, 20] }, // a cinza
   camera: { rect: { minX: -30, maxX: 110, minZ: -20, maxZ: 68 }, maxY: 11 },
 };
+
+// ARENAS DE LUTA do Outro Lado (pedido do dono, 2026-11-06): uma sala só de cada mapa do PvE, no modo de luta. Usam o
+// mesmo .glb; a luta fica presa na sala (bounds), a câmera não sai dela e só as luzes de dentro acendem (sem lightPool).
+// PROPOSTA: a escolha da sala (o quarto principal da Mansão e o bunker da Escola), a névoa mais leve e os nascimentos.
+const inRect = (r, m) => (L) => L.type !== 'point' || (L.pos[0] > r.minX - m && L.pos[0] < r.maxX + m && L.pos[2] > r.minZ - m && L.pos[2] < r.maxZ + m);
+function fightRoom(base, id, r, { spawns, fog, center }) {
+  return {
+    ...base,
+    id,
+    bounds: { rects: [r] },
+    spawns,
+    lightPool: undefined,
+    lights: base.lights.filter(inRect(r, 1.5)),
+    fog: { color: base.fog.color, density: fog },
+    particles: { ...base.particles, area: 22, center },
+    camera: { rect: { minX: r.minX - 6, maxX: r.maxX + 6, minZ: r.minZ - 10, maxZ: r.maxZ + 10 }, maxY: 11 },
+  };
+}
+// o quarto principal (os armários e a lua nas janelas)
+export const MANSAO_LUTA = fightRoom(MANSAO, 'mansao_luta', MANSAO.bounds.rects[6], { spawns: [{ x: 45, z: 0 }, { x: 55, z: 0 }], fog: 0.022, center: [50, 0, 0] });
+// o bunker (o círculo do ritual e as velas)
+export const ESCOLA_LUTA = fightRoom(ESCOLA, 'escola_luta', ESCOLA.bounds.rects[ESCOLA.bounds.rects.length - 2], { spawns: [{ x: 76, z: 0 }, { x: 86, z: 0 }], fog: 0.024, center: [81, 0, 0] });

@@ -391,6 +391,28 @@ export const DUNGEON_ORDER = Object.values(DUNGEONS)
   .map((dungeon) => dungeon.id);
 
 // DIFICULDADE (TODO §4.5: o chefe desafia mesmo no Fácil): CPU e multiplicadores do inimigo
+// AJUSTE POR PERSONAGEM SÓ NO OUTRO LADO (pedido do dono, 2026-11-06: "os personagens precisam ser ajustados pra esse
+// modo"): o kit de luta 1×1 foi equilibrado contra UM adversário; na dungeon o jogador enfrenta salas de 2–4 monstros e
+// um chefe. Quem fica para trás aqui ganha dano (dealt) e/ou resistência (taken < 1) — não muda nada no modo de luta.
+// Valores medidos pela bateria (CPU Difícil no lugar do jogador, 3 amostras: sala de 3 monstros + chefe). PROPOSTA.
+// Referência (Joui, Agatha, Veríssimo, Kian, Nubi, Guizo): sala em ~40 s com ~33% da vida perdida; chefe em ~107 s.
+export const PVE_CHAR_TUNE = {
+  anfitriao: { dealt: 1.5 }, // sala 56 s, chefe 151 s (caiu 3 de 9); com 1,4: chefe 132 s
+  morato: { dealt: 1.5, taken: 0.85 }, // o Devorado atira de longe e o kit é de perto: limpou 1 de 9 salas em 75 s
+  amalia: { dealt: 1.45, taken: 0.75 }, // salas: 73 s e 74% da vida (o chefe ela derruba normal)
+  kaiser: { dealt: 1.3 }, // sala 64 s; com 1,2: 62 s
+  kemi: { dealt: 1.2, taken: 0.85 }, // sala 58 s, 60% da vida
+  magistrada: { dealt: 1.2, taken: 0.85 }, // sala 56 s, 50% da vida
+  deus_morte: { dealt: 1.2 }, // sala 56 s, chefe 112 s
+  rubens: { dealt: 1.15, taken: 0.8 }, // sala 56 s, chefe 124 s com 65% da vida perdida
+  celestine: { taken: 0.85 }, // rápida, mas perde 53% da vida por sala
+  chico: { taken: 0.9 }, // 44% da vida por sala
+};
+
+export function charTune(id) {
+  return PVE_CHAR_TUNE[id] || null;
+}
+
 export const PVE_DIFFICULTIES = {
   // warnMult: quanto tempo os olhos avisam antes do bote do Espreitador
   easy: { label: 'Fácil', cpu: 'normal', minion: 'easy', hp: 0.9, dealt: 0.8, drop: 1.25, warnMult: 1.3 },

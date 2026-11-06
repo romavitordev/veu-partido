@@ -37,6 +37,8 @@ import rubens from './rubens.js';
 import beatrice from './beatrice.js';
 import chico from './chico.js';
 import morato from './morato.js';
+import degolificada from './degolificada.js';
+import espreitador from './espreitador.js';
 import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectableForms.js';
 
 // Elenco jogável, na ordem da tela de seleção — AGRUPADO POR EQUIPE/TEMPORADA (a grade tem 3 colunas × 5 linhas por
@@ -65,7 +67,7 @@ export const ROSTER = [
   gaius, // Ordo Calamitas (Calamidade, 67 d.C.) — o Gaius; no RB/LB, o AMPHITRUO (a versão transformada)
   amalia, // Ordo Calamitas — A Flecha, a arqueira (Calamidade). Faustus, Marius, Remus, Cascadia, Cornelius... depois
   oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (Sangue, Morte, Conhecimento, Energia)
-  estrangeiro, amigo, carnical, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte)
+  estrangeiro, amigo, carnical, degolificada, espreitador, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
 ];
 
 // VERSÕES do mesmo personagem (seleção: RB/LB trocam a versão sem sair do cartão, como no Naruto Storm). A ordem é a do

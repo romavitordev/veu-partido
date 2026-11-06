@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.32.0 — Degolificada e Espreitador jogáveis
+
+### Adicionado
+- A Degolificada e o Espreitador jogáveis no modo de luta (equipe Outro Lado). Os chefes da dungeon derivam das fichas novas, sem o kit e com a vida e os números de antes.
+- Arenas de luta Mansão Endiabrada (quarto principal) e Escola Nostradamus (bunker), recortadas dos mapas do PvE.
+- Outro Lado: habilidades só de baú (Pulso de Medo, Pele de Espinhos, Golpe Certeiro, Segundo Fôlego), limite de 6 habilidades diferentes por tentativa e escolha entre moedas e vida quando não há mais o que subir.
+- Barra do inimigo nas duas metades da tela dividida (coop local).
+
+### Alterado
+- Carniçal remodelado (modelo e retrato da página Sobre).
+- Balanceamento inicial da Degolificada e do Espreitador.
+
+### Corrigido
+- O Escudo de Medo era desenhado na barra do P2 no coop, em vez de na barra da Degolificada.
+
 ## v4.31.2 — Outro Lado sem travamentos
 
 ### Corrigido

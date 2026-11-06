@@ -240,4 +240,8 @@ GRAB_SCENES.estrangeiro = GRAB_SCENES.diabo;
 GRAB_SCENES.amigo = scene({ ...S('ai_claw_r', 0.34), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('ai_claw_l', 0.34), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'ai_tear', fx: 'ink', sound: 'drain', slow: { mult: 0.8, time: 2 } });
 GRAB_SCENES.juan_odio = GRAB_SCENES.juan; // o Ódio do Diabo agarra como o Juan (as garras no lugar da faca)
 // CARNIÇAL: as duas garras e, com a vítima presa, encara de perto — a espiral da testa entra na mente — e rasga
+// DEGOLIFICADA: os braços pendentes batem, o cabelo enrola no pescoço e esmaga a cabeça
+GRAB_SCENES.degolificada = scene({ ...S('ai_claw_r', 0.34), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('ai_lash', 0.34), fx: { kind: 'claw', flip: true }, sound: 'whip' }, { anim: 'ai_down', fx: 'crush', sound: 'heavyPunch' });
+// ESPREITADOR: duas pancadas dos braços longos e, colado na vítima, o olho de dentro da boca encara — a mente racha
+GRAB_SCENES.espreitador = scene({ ...S('db_claw_r'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('db_claw_l'), fx: { kind: 'punch', flip: true }, sound: 'punch' }, { anim: 'db_rend', fx: 'mind', sound: 'fearGaze' });
 GRAB_SCENES.carnical = scene({ ...S('db_claw_r'), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('db_claw_l'), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'db_rend', fx: 'mind', sound: 'clawHit' });

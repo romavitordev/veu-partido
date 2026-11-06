@@ -17,6 +17,12 @@ export const UPGRADES = [
   { id: 'sanguessuga', name: 'Sanguessuga', icon: '⚕', max: 2, desc: 'Cura 4% do dano físico que causar.', apply: (m) => { m.lifesteal += 0.04; } },
   { id: 'cacador', name: 'Caçador', icon: '✚', max: 2, desc: 'Derrotar um inimigo cura 6% da vida.', apply: (m) => { m.killHeal += 0.06; } },
   { id: 'agilidade', name: 'Agilidade', icon: '➶', max: 2, desc: '+8% de velocidade de movimento.', apply: (m) => { m.speedMult += 0.08; } },
+  // HABILIDADES DO BAÚ (pedido do dono, 2026-11-06): só saem de BAÚ (nunca nas cartas de nível). PROPOSTA: os efeitos e
+  // os números. pulse/thorns/crit/secondWind são lidos em Dungeon.js (modsFor e o laço) e em combat/damage.js
+  { id: 'pulsoMedo', chest: true, name: 'Pulso de Medo', icon: '◉', max: 3, desc: 'A cada 4,5 s uma onda de Medo sai de você e machuca quem estiver a 3 m (+ dano por nível).', apply: (m) => { m.pulse += 1; } },
+  { id: 'espinhos', chest: true, name: 'Pele de Espinhos', icon: '✷', max: 3, desc: 'Devolve 15% do dano corpo a corpo que você recebe a quem bateu (+10% por nível).', apply: (m) => { m.thorns += m.thorns ? 0.1 : 0.15; } },
+  { id: 'certeiro', chest: true, name: 'Golpe Certeiro', icon: '✧', max: 3, desc: '10% de chance de o golpe causar o dobro do dano (+6% por nível).', apply: (m) => { m.crit += m.crit ? 0.06 : 0.1; } },
+  { id: 'folego', chest: true, name: 'Segundo Fôlego', icon: '✝', max: 1, desc: 'Uma vez por tentativa: o golpe que ia te derrubar te deixa com 30% da vida.', apply: (m) => { m.secondWind = true; } },
 ];
 
 // duas melhorias juntas: o efeito extra (needs: ids que precisam estar na build)
@@ -54,6 +60,10 @@ export function baseMods() {
     drainTaken: 1,
     xpMult: 1,
     dropMult: 1,
+    pulse: 0,
+    thorns: 0,
+    crit: 0,
+    secondWind: false,
   };
 }
 
@@ -77,20 +87,43 @@ export function countOf(picks, id) {
   return picks.filter((x) => x === id).length;
 }
 
-// 3 opções sorteadas entre as que ainda não chegaram ao máximo (rng: () => [0,1))
+// LIMITE de habilidades diferentes por tentativa (pedido do dono, 2026-11-06): depois de 6, as cartas e os baús só
+// sobem de nível as que você já tem; com todas no máximo, o baú dá MOEDAS ou VIDA (você escolhe). PROPOSTA: o número 6.
+export const MAX_KINDS = 6;
+export const kindsOf = (picks) => new Set(picks).size;
+const canAdd = (picks, u) => countOf(picks, u.id) > 0 || kindsOf(picks) < MAX_KINDS;
+
+// 3 opções sorteadas entre as que ainda não chegaram ao máximo (rng: () => [0,1)); as do baú não entram nas cartas
 export function rollChoices(picks, rng = Math.random, n = 3) {
-  const pool = UPGRADES.filter((u) => countOf(picks, u.id) < u.max);
+  const pool = UPGRADES.filter((u) => !u.chest && countOf(picks, u.id) < u.max && canAdd(picks, u));
   const out = [];
   while (out.length < n && pool.length) out.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
   return out;
 }
 
-// o BAÚ (como no Vampire Survivors): sobe de grau melhorias que o jogador JÁ tem (ids sem repetir, só as abaixo do máximo)
+// o BAÚ (como no Vampire Survivors): sobe de grau melhorias que o jogador JÁ tem e, enquanto houver vaga no limite
+// (MAX_KINDS), pode trazer uma HABILIDADE NOVA do baú (u.chest). Ids sem repetir, só abaixo do máximo. Devolve [] quando
+// não há mais nada: aí o baú oferece moedas ou vida (Dungeon.openChest)
 export function chestUpgrades(picks, rng = Math.random, n = 1) {
-  const pool = UPGRADES.filter((u) => countOf(picks, u.id) > 0 && countOf(picks, u.id) < u.max).map((u) => u.id);
+  const have = [...picks];
   const out = [];
-  while (out.length < n && pool.length) out.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
+  while (out.length < n) {
+    const pool = UPGRADES.filter((u) => !out.includes(u.id) && countOf(have, u.id) < u.max
+      && (countOf(have, u.id) > 0 || (u.chest && kindsOf(have) < MAX_KINDS))).map((u) => u.id);
+    if (!pool.length) break;
+    const id = pool[Math.floor(rng() * pool.length)];
+    out.push(id);
+    have.push(id);
+  }
   return out;
+}
+
+// as duas recompensas quando não há mais o que subir (o jogador escolhe uma)
+export function rewardChoices(coins, healFrac) {
+  return [
+    { id: 'reward:coins', reward: true, name: 'Moedas', icon: '●', desc: `+${coins} moedas (compram personagens).`, amount: coins },
+    { id: 'reward:heal', reward: true, name: 'Vida', icon: '♥', desc: `Recupera ${Math.round(healFrac * 100)}% da vida.`, amount: healFrac },
+  ];
 }
 
 // quantos itens o baú dá (pedido do dono, 2026-11-06): 1 é o comum, 2 de vez em quando, 3 é meio raro.

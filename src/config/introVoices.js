@@ -399,6 +399,32 @@ export const VOICES = {
       any: [(o) => `Interessante, ${o.name}. Repita.`, (o) => `Você ouviu o sinal, ${o.name}. Agora não para mais.`],
     },
   },
+  // A DEGOLIFICADA: a boca vedada; o que escapa é o Gabriel, preso no corpo da Agatha, pedindo para parar
+  degolificada: {
+    open: {
+      ally: (o) => `(os fios se abrem devagar em volta de ${o.name}) ...você... também... é daqui...`,
+      rival: (o) => `(o cabelo flutua na direção de ${o.name}) ...${o.group}... CORRAM...`,
+      any: [(o) => `(a boca vedada se estica num grito mudo) ...${o.name}...`, (o) => `...não... sou... ela... (os fios descem do teto até ${o.name})`],
+    },
+    reply: {
+      ally: (o) => `(os fios recuam) ...${o.name}... sim...`,
+      rival: (o) => `(o cabelo se enrola no ar) ...${o.group}... me... tirem... daqui...`,
+      any: [(o) => `(os braços pendem; o cabelo responde por ela) ...${o.name}...`, (o) => `...Ga... briel... (o grito fica preso na boca)`],
+    },
+  },
+  // O ESPREITADOR: não fala — observa. Os olhos amarelos, as lágrimas e o olho de dentro da boca
+  espreitador: {
+    open: {
+      ally: (o) => `(as pupilas se multiplicam e acompanham ${o.name}, sem pressa)`,
+      rival: (o) => `(sai de uma fresta atrás de ${o.name}; os olhos amarelos piscam todos juntos)`,
+      any: [(o) => `(a porta do armário range; mil pupilas encaram ${o.name})`, (o) => `(lágrimas escorrem; o olho da boca se abre para ${o.name})`],
+    },
+    reply: {
+      ally: (o) => `(os olhos se fecham, um por um, para ${o.name})`,
+      rival: (o) => `(as pupilas viram para ${o.group} e choram)`,
+      any: [(o) => `(os dedos longos batem na madeira; os olhos não saem de ${o.name})`, (o) => `(o olho da boca pisca, devagar)`],
+    },
+  },
   // CARNIÇAL: quase não fala. A espiral pulsa, ele rosna, e o Comando sai em ordens curtas em maiúsculas
   carnical: {
     open: {

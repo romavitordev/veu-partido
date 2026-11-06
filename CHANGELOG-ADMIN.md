@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.32.0 — Degolificada e Espreitador jogáveis
+
+- Versão: `VERSION` 4.31.2 → **4.32.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.
+- Fichas novas `src/characters/degolificada.js` e `src/characters/espreitador.js`; `characters/bosses/*.js` derivam delas (sem special/awakening/ranged/abilities/passives). ROSTER, `GRAB_SCENES`, falas (`dialogues.js`, `introVoices.js`, `palcoLines.js`), `check-roster.mjs`, modelos sem `lazy`.
+- Extensões: `inkTentacles` (alwaysThrow, tentColor, element, caughtLabel), `bellToll` (scream), `fearGaze` (lookArc, drain, damage), `shadowClones` (copyOpponent), `lodoTentacles` (caughtLabel).
+- `config/balance.js`: degolificada 1.36/0.79, espreitador 1.17/0.89 (rodada focada de 86 lutas: 33% e 34% com 1.3/0.82 e 1.1/0.93; sem ajuste a Degolificada tinha 8%). Falta medir de novo.
+- Arenas `MANSAO_LUTA`/`ESCOLA_LUTA` (`arena/configs.js`, ids `mansao_luta`/`escola_luta`); o cache de `.glb` em `glbArena.js` passou a ser por arquivo.
+- `pve/upgrades.js`: upgrades `chest: true`, `MAX_KINDS` = 6, `kindsOf`, `rewardChoices`; `combat/damage.js`: `pveMods.crit` e o gancho `pveMods.onTaken`; `pve/Dungeon.js`: pulso, espinhos, segundo fôlego (`lethalHook`, uma vez por tentativa e jogador), `openReward`/`pendingRewards`.
+- `pve/pveHud.js`: `.pv-enemy.low` na tela dividida; `setShield(n, total, boss)` + `shieldBar()`.
+- Carniçal: `tools/blender/char_carnical.py` → `public/models/carnical.glb`; `public/sobre/elenco/carnical.webp` refeito; retratos novos degolificada/espreitador.
+- Moedas: conferido que o coop local divide a carteira do save e o online separa por jogador (`net.coins[slot]`).
+- Testes: `npm test` 80/80.
+
 ## v4.31.2 — Outro Lado sem travamentos
 
 - Versão: `VERSION` 4.31.1 → **4.31.2** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.

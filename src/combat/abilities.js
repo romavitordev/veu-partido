@@ -406,6 +406,14 @@ export const ABILITY_TYPES = {
         }
         world.fx.flash(head(), { color: a.color, size: 1.2, life: 0.2 });
         if (inCone(f, opp, a.range, a.arc) && !opp.isInvulnerable()) {
+          // a.lookArc (o Drenar Energia do Espreitador: só pega quem está OLHANDO para ele)
+          if (a.lookArc && Math.abs(angleDiff(opp.yaw, yawTo(opp.pos, f.pos))) > (a.lookArc * DEG) / 2) { opp.notify('NÃO OLHOU PARA ELE', true); return; }
+          // a.drain: o olhar suga a Sanidade (a barra de energia) — o que sai da vítima vai para quem olha; a.damage: dano
+          if (a.drain && opp.drainEnergy) {
+            const got = opp.drainEnergy(a.drain);
+            if (got > 0) { f.addEnergy(got * (a.drainGain ?? 1)); opp.notify(`SANIDADE DRENADA −${Math.round(got)}`, true); }
+          }
+          if (a.damage) applyHit(world, f, opp, { damage: a.damage, kind: 'ability', ability: a.id, element: a.element, unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: a.color, sound: 'drain', scale: 0.8 });
           // a.resist (cânone: "caso o alvo consiga resistir, ele fica esmorecido"): quem está DEFENDENDO resiste — não
           // fica paralisado, só esmorecido
           if (a.resist && a.wither && opp.isGuarding()) {
@@ -1638,12 +1646,18 @@ Object.assign(ABILITY_TYPES, {
         if (opp) f.yaw = yawTo(f.pos, opp.pos);
         smoke(f.pos);
         for (let k = 0; k < a.clones; k++) {
-          const cl = new DanteClone(f, world, k, a.duration);
+          // a.copyOpponent (a Cópia Observada do Espreitador): as cópias são CINZENTAS de quem ele observa — o modelo, os
+          // golpes e as animações do adversário, sem cor (os Devorados)
+          const copy = a.copyOpponent && opp ? {
+            model: opp.def.model, anims: opp.def.anims, strikes: opp.def.melee?.strikes, hp: a.hp,
+            restyle: (m) => { m.material.transparent = true; m.material.opacity = m.userData.isOutline ? 0.5 : 0.85; if (m.material.color && !m.userData.isOutline) m.material.color.setHex(a.copyColor ?? 0x8a8478); if (m.material.map) m.material.map = null; if (m.material.emissive) m.material.emissive.setHex(0); m.castShadow = false; },
+          } : {};
+          const cl = new DanteClone(f, world, k, a.duration, copy);
           cl.pos.copy(k === 0 ? origin : f.pos).add(new THREE.Vector3((Math.random() - 0.5) * 1.2, 0, (Math.random() - 0.5) * 1.2));
           world.addNpc(cl);
           smoke(cl.pos);
         }
-        f.notify('TRINITÁ', true);
+        f.notify(a.label || 'TRINITÁ', true);
       });
       tl.add(0.25, () => f.anim.play('idle', { restart: true, blend: 0.05 }));
       tl.end(0.3);
@@ -1688,7 +1702,7 @@ Object.assign(ABILITY_TYPES, {
           const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', knockback: 0, hitstun: 0.3, sound: 'clawHit', color: 0x6a6478, scale: 1.4, reaction: false });
           if (typeof res === 'number' && opp.state !== 'ko') {
             opp.stun(a.stun, 'stagger');
-            opp.notify('PRESO NO LODO', true);
+            opp.notify(a.caughtLabel || 'PRESO NO LODO', true);
           }
         });
       });

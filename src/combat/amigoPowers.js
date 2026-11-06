@@ -123,24 +123,26 @@ export const AMIGO_TYPES = {
       const first = a.windup ?? 0.3;
       const total = first + gap * (tolls - 1) + (a.recovery ?? 0.35);
       f.vel.set(0, 0, 0);
-      f.anim.play('ai_bell', { restart: true, duration: total });
-      const bell = ghostBell(world, () => headOf(f).add(v.set(0, 0.95, 0)), { life: total + 0.2 });
+      f.anim.play(a.anim || 'ai_bell', { restart: true, duration: total });
+      // a.scream (o Grito Rasgado da Degolificada): sem o sino fantasma — as ondas saem do grito
+      const bell = a.scream ? { toll() {} } : ghostBell(world, () => headOf(f).add(v.set(0, 0.95, 0)), { life: total + 0.2 });
       for (let i = 0; i < tolls; i++) {
         tl.add(first + i * gap, () => {
           const last = i === tolls - 1;
           bell.toll();
-          world.audio.play('bellToll', { volume: last ? 1.1 : 0.8, pitch: (f.findBuff('awakened') ? 0.7 : 1) - i * 0.06 }); // no Frenesi, distorcido
+          if (a.scream) world.audio.play(last ? 'scare' : 'fearGaze', { volume: last ? 1.1 : 0.7, pitch: last ? 1.4 : 0.4 + i * 0.1 });
+          else world.audio.play('bellToll', { volume: last ? 1.1 : 0.8, pitch: (f.findBuff('awakened') ? 0.7 : 1) - i * 0.06 }); // no Frenesi, distorcido
           bellWave(world, f.pos.clone().setY(1.0), a.range * (0.75 + 0.125 * i), a.color ?? 0xb07a3a);
           world.cameraRig.shake && world.cameraRig.shake(last ? 0.22 : 0.1, 0.2);
           const opp = f.opponent;
           if (!opp || opp.state === 'ko' || opp.isInvulnerable() || distXZ(f.pos, opp.pos) > a.range) return;
-          applyHit(world, f, opp, { damage: last ? a.damage : a.tollDamage, kind: 'ability', ability: a.id, element: 'tinta', unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: 0xb07a3a, sound: 'impact', scale: 0.6 });
-          if (!last || opp.state === 'ko') { opp.notify('O SINO...', true); return; }
+          applyHit(world, f, opp, { damage: last ? a.damage : a.tollDamage, kind: 'ability', ability: a.id, element: a.element || 'tinta', unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: a.color ?? 0xb07a3a, sound: 'impact', scale: 0.6 });
+          if (!last || opp.state === 'ko') { opp.notify(a.scream ? 'O GRITO...' : 'O SINO...', true); return; }
           opp.stun(a.stun, 'fear');
           const old = opp.findBuff('bellDazed');
           if (old) old.time = a.vulnTime;
-          else opp.addBuff({ type: 'bellDazed', name: 'A MENTE FALHA', time: a.vulnTime, duration: a.vulnTime, takenMult: a.takenMult });
-          opp.notify('O SINO TOCOU — A MENTE FALHA', true);
+          else opp.addBuff({ type: 'bellDazed', name: a.scream ? 'ENSURDECIDO' : 'A MENTE FALHA', time: a.vulnTime, duration: a.vulnTime, takenMult: a.takenMult });
+          opp.notify(a.scream ? 'GRITO RASGADO — ENSURDECIDO' : 'O SINO TOCOU — A MENTE FALHA', true);
           // FRENESI DE SANGUE (wiki): o sino muda de frequência, distorcido — quem ouve sente a ânsia de violência e,
           // sem outro ser vivo por perto, MORDE A SI MESMO (dano e sangramento)
           if (f.findBuff('awakened') && a.frenzyBite) {
@@ -257,23 +259,24 @@ export const AMIGO_TYPES = {
         for (let i = 0; i < n; i++) {
           const o = origin(i);
           const end = caught ? () => opp.pos.clone().setY(opp.pos.y + 0.6 + (i % 2) * 0.5) : o.clone().addScaledVector(F, a.range * 0.8).setY(1.0 + (i % 2) * 0.3);
-          inkTentacle(world, o, end, { grow: 0.12, hold: caught ? pull + 0.15 : 0.15, retract: 0.2, coil: caught, radius: 0.08, arc: 0.4 });
+          inkTentacle(world, o, end, { grow: 0.12, hold: caught ? pull + 0.15 : 0.15, retract: 0.2, coil: caught, radius: 0.08, arc: 0.4, ...(a.tentColor != null ? { color: a.tentColor, emissive: 0x000000 } : {}) });
         }
         world.audio.play('whip', { volume: 0.8, pitch: 0.7 });
         if (!caught) { f.notify('TENTÁCULOS (ERROU)', true); return; }
-        const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', ability: a.id, element: 'tinta', knockback: 0, hitstun: 0.3, reaction: false, sound: 'clawHit', color: INK, scale: 1 });
+        const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', ability: a.id, element: a.element || 'tinta', knockback: 0, hitstun: 0.3, reaction: false, sound: 'clawHit', color: a.color ?? INK, scale: 1 });
         if (typeof res !== 'number' || res <= 0 || opp.state === 'ko') return;
         opp.cancelAction && opp.cancelAction();
         opp.stun(pull + (frenzy ? 0.1 : a.hold ?? 0.6), 'stagger');
         pulling = true;
-        opp.notify('PUXADO PELOS TENTÁCULOS', true);
+        opp.notify(a.caughtLabel || 'PUXADO PELOS TENTÁCULOS', true);
         world.audio.play('chainPull', { volume: 0.8, pitch: 0.7 });
         tl.add(a.windup + pull, () => {
           pulling = false;
           opp.vel.set(0, 0, 0);
-          if (!frenzy || opp.state === 'ko') return;
+          // a.alwaysThrow (a Degolificada: o cabelo agarra e JOGA NA PAREDE): arremessa mesmo sem o Frenesi
+          if ((!frenzy && !a.alwaysThrow) || opp.state === 'ko') return;
           // irritada: ARREMESSA com força descomunal
-          applyHit(world, f, opp, { damage: a.throwDamage ?? 40, kind: 'ability', ability: a.id, element: 'tinta', launch: true, knockback: 15, hitstun: 0.9, unblockable: true, ignoreInvuln: true, color: 0xa02a18, sound: 'heavyPunch', scale: 1.5, dir: forwardFromYaw(f.yaw) });
+          applyHit(world, f, opp, { damage: a.throwDamage ?? 40, kind: 'ability', ability: a.id, element: a.element || 'tinta', launch: true, knockback: 15, hitstun: 0.9, unblockable: true, ignoreInvuln: true, color: 0xa02a18, sound: 'heavyPunch', scale: 1.5, dir: forwardFromYaw(f.yaw) });
           world.cameraRig.shake && world.cameraRig.shake(0.25, 0.25);
           opp.notify('ARREMESSADO', true);
         });

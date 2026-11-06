@@ -52,6 +52,10 @@ export const BALANCE = {
   xande: { dealt: 1.05, taken: 0.97 }, // 37 → 32% → 41% → 42%
   dara: { dealt: 0.95 }, // 64 → 59 → 70% → 51%
   jae: { dealt: 1.04 }, // 43 → 37 → 34% → 45%
+  // v4.32 — as criaturas do Outro Lado jogáveis (focadas): a Degolificada herda os golpes do Amigo sem os 1800 de vida
+  // nem o roubo de vida dele
+  degolificada: { dealt: 1.36, taken: 0.79 }, // 8% (sem ajuste) → 33% (1.3/0.82, 86 lutas)
+  espreitador: { dealt: 1.17, taken: 0.89 }, // 34% (1.1/0.93, 86 lutas)
 };
 
 // o coeficiente de um lutador (transformado: o do personagem de origem). As formas selecionáveis (o Portador, o Anfitrião

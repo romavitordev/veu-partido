@@ -170,7 +170,7 @@ export class DegolificadaBrain {
     const on = this.layers > 0;
     b.cpuEdge = { ...(b.cpuEdge || {}), taken: on ? 0 : this.state === 'guard' ? DEGOLIFICADA_CFG.guard.taken : 1 };
     b.lethalHook = on ? () => { b.health = Math.max(1, b.health); return true; } : null;
-    this.d.pveHud && this.d.pveHud.setShield(this.layers, this.d.cluesNeeded || 3);
+    this.d.pveHud && this.d.pveHud.setShield(this.layers, this.d.cluesNeeded || 3, b);
   }
 
   onBossHit(a, o) {

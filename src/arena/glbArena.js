@@ -18,8 +18,8 @@ import { blocksPointGeneric } from '../combat/positioning.js';
 const cache = {};
 
 export async function preloadArena(cfg) {
-  if (!cache[cfg.id]) cache[cfg.id] = await loadGLB(import.meta.env.BASE_URL + cfg.glb);
-  return cache[cfg.id];
+  if (!cache[cfg.glb]) cache[cfg.glb] = await loadGLB(import.meta.env.BASE_URL + cfg.glb);
+  return cache[cfg.glb];
 }
 
 export function createGLBArena(cfg) {
@@ -79,7 +79,7 @@ export function createGLBArena(cfg) {
     fireZones: cfg.fireZones || [], // fogo pisável que queima (arena/fireZones.js)
 
     build(scene) {
-      const gltf = cache[cfg.id];
+      const gltf = cache[cfg.glb];
       if (!gltf) throw new Error(`Cenário não carregado: ${cfg.id}`);
       const group = gltf.scene.clone(true);
       scene.add(group);

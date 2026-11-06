@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades } from '../src/pve/upgrades.js';
+import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KINDS, kindsOf, rewardChoices } from '../src/pve/upgrades.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
@@ -167,7 +167,35 @@ test('baú: 1 item é o comum, 3 é raro; sobe só melhorias que você já tem',
   for (let i = 0; i < 5000; i++) lucky[chestCount(rng, 1)]++;
   assert.ok(lucky[3] > n[3]);
   const ups = chestUpgrades(['furia', 'vigor', 'vigor', 'vigor'], rng, 3);
-  assert.deepEqual(ups, ['furia']); // o Vigor já está no máximo; nada que você não tenha
+  // o Vigor já está no máximo; das que você não tem, só as HABILIDADES DO BAÚ (há vaga no limite)
+  assert.ok(ups.includes('furia') && !ups.includes('vigor'));
+  assert.ok(ups.every((id) => id === 'furia' || UPGRADES.find((u) => u.id === id).chest));
+});
+
+test('baú: habilidades novas só do baú, limite de habilidades e depois só moedas ou vida', () => {
+  const chestOnly = UPGRADES.filter((u) => u.chest).map((u) => u.id);
+  assert.ok(chestOnly.length >= 4);
+  // as cartas de nível nunca oferecem as do baú
+  for (let i = 0; i < 50; i++) assert.ok(!rollChoices([], Math.random).some((u) => u.chest));
+  // limite cheio (MAX_KINDS diferentes): cartas e baú só sobem as que já tem
+  const base = UPGRADES.filter((u) => !u.chest).slice(0, MAX_KINDS).map((u) => u.id);
+  assert.equal(kindsOf(base), MAX_KINDS);
+  for (let i = 0; i < 30; i++) {
+    assert.ok(rollChoices(base, Math.random).every((u) => base.includes(u.id)));
+    assert.ok(chestUpgrades(base, Math.random, 3).every((id) => base.includes(id)));
+  }
+  // tudo no máximo: o baú não tem o que dar -> recompensa (moedas ou vida)
+  const maxed = base.flatMap((id) => Array(UPGRADES.find((u) => u.id === id).max).fill(id));
+  assert.deepEqual(chestUpgrades(maxed, Math.random, 3), []);
+  assert.equal(rollChoices(maxed).length, 0);
+  const r = rewardChoices(30, 0.3);
+  assert.deepEqual(r.map((x) => x.id), ['reward:coins', 'reward:heal']);
+  // os efeitos
+  const m = computeMods(['pulsoMedo', 'espinhos', 'espinhos', 'certeiro', 'folego']);
+  assert.equal(m.pulse, 1);
+  assert.ok(Math.abs(m.thorns - 0.25) < 1e-9);
+  assert.ok(Math.abs(m.crit - 0.1) < 1e-9);
+  assert.equal(m.secondWind, true);
 });
 
 test('os olhos do Espreitador somem das frestas depois da derrota', () => {
@@ -210,4 +238,42 @@ test('a equipe Outro Lado fica de fora do modo Outro Lado', async () => {
   assert.ok(!banned.includes('dante'));
   const locked = lockedMap(emptyData(), ROSTER);
   for (const id of banned) assert.match(locked.get(id), /Outro Lado/);
+});
+
+// ajuste por personagem só no Outro Lado (pedido do dono, 2026-11-06): ids reais, só reforço (dano ≥ 1, recebido ≤ 1),
+// sem extremos, e nenhum da equipe Outro Lado (que não entra no modo)
+test('PVE_CHAR_TUNE só reforça personagens permitidos no modo', async () => {
+  const { PVE_CHAR_TUNE, charTune } = await import('../src/pve/dungeons.js');
+  const { pveBanned } = await import('../src/pve/unlocks.js');
+  const { ROSTER } = await import('../src/characters/index.js');
+  for (const [id, t] of Object.entries(PVE_CHAR_TUNE)) {
+    const def = ROSTER.find((c) => c.id === id);
+    assert.ok(def, `${id} existe`);
+    assert.ok(!pveBanned(def), `${id} não é da equipe Outro Lado`);
+    assert.ok((t.dealt ?? 1) >= 1 && (t.dealt ?? 1) <= 1.6, `${id} dano`);
+    assert.ok((t.taken ?? 1) <= 1 && (t.taken ?? 1) >= 0.7, `${id} recebido`);
+  }
+  assert.equal(charTune('joui'), null);
+});
+
+// pedido do dono (2026-11-06): a Degolificada e o Espreitador viram lutadores do modo de luta. A chefe do Outro Lado é a
+// mesma criatura, mas SEM o kit (a IA da dungeon cuida de tudo) e com a vida de chefe; os jogáveis ficam fora do modo.
+test('Degolificada e Espreitador: jogáveis no modo de luta, chefes iguais no Outro Lado', async () => {
+  const { ROSTER } = await import('../src/characters/index.js');
+  const { pveBanned } = await import('../src/pve/unlocks.js');
+  const bossDeg = (await import('../src/characters/bosses/degolificada.js')).default;
+  const bossEsp = (await import('../src/characters/bosses/espreitador.js')).default;
+  for (const [id, boss, hp] of [['degolificada', bossDeg, 1900], ['espreitador', bossEsp, 2100]]) {
+    const def = ROSTER.find((c) => c.id === id);
+    assert.ok(def && !def.boss && def.special && def.awakening && def.ranged, `${id} jogável com especial, transformação e □`);
+    assert.ok(def.abilities.length >= 4, `${id} com o kit de habilidades`);
+    assert.ok(pveBanned(def), `${id} (equipe Outro Lado) fica fora do modo Outro Lado`);
+    assert.equal(boss.boss, true);
+    assert.equal(boss.abilities.length, 0, `a chefe ${id} não usa o kit (a IA da dungeon controla)`);
+    assert.ok(!boss.special && !boss.awakening && !boss.ranged, `a chefe ${id} sem especial, transformação ou □`);
+    assert.equal(boss.stats.maxHealth, hp);
+    assert.equal(boss.model, def.model);
+  }
+  // a Pancada da chefe continua mais fraca que a do jogável
+  assert.ok(bossEsp.melee.strikes[0].damage < ROSTER.find((c) => c.id === 'espreitador').melee.strikes[0].damage);
 });

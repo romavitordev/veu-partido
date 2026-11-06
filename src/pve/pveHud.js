@@ -3,7 +3,7 @@
 //    (classe .pve no #hud; ver styles.css);
 //  · nível e barra de experiência, as melhorias da tentativa (e as sinergias), o objetivo da sala, a dica do momento;
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
-import { UPGRADES, SYNERGIES, activeSynergies, countOf, xpForLevel } from './upgrades.js';
+import { UPGRADES, SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KINDS, kindsOf } from './upgrades.js';
 
 // os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
 const pipsHtml = (n, max, was = n) => Array.from({ length: max }, (_, i) => `<b class="${i < was ? 'on' : i < n ? 'new' : ''}"></b>`).join('');
@@ -76,26 +76,49 @@ export class PveHud {
     k.textContent = total ? `  · PROVAS ${n}/${total}` : '';
   }
 
-  // o ESCUDO DE MEDO da Degolificada: uma segunda vida (azul-acinzentada, em terços) por cima da vida amarela do chefe.
-  // n = terços que faltam tirar; total 0 = some. O painel do chefe é refeito às vezes (bindHud): ensureShield recoloca.
-  setShield(n, total) {
-    this.shield = total ? { n, total } : null;
+  // o ESCUDO DE MEDO da Degolificada: uma segunda vida (azul-acinzentada, em terços) por cima da vida amarela DELA.
+  // n = terços que faltam tirar; total 0 = some. Vai na barra do painel ligado à chefe (no solo, a barra de chefe do
+  // alto); no COOP os dois painéis são dos jogadores, então vai na barra do inimigo do alto (.pv-enemy) — antes o
+  // escudo caía no painel 2, que no coop é a vida do P2. O painel é refeito às vezes (bindHud): ensureShield recoloca.
+  setShield(n, total, boss = null) {
+    this.shield = total ? { n, total, boss: boss || this.shield?.boss || null } : null;
     this.ensureShield(true);
   }
 
+  shieldBar() {
+    const boss = this.shield?.boss;
+    const i = boss && this.hud.fighters ? this.hud.fighters.indexOf(boss) : -1;
+    if (i >= 0 || !boss) return this.hud.panels?.[i >= 0 ? i : 1]?.querySelector('.bar.health');
+    // coop: a barra do inimigo da vez (setEnemy), no alto (a de cima; a de baixo copia em ensureShield)
+    return this.q('.pv-enemy:not(.low):not([hidden]) .pv-ebar');
+  }
+
   ensureShield(force = false) {
-    const bar = this.hud.panels?.[1]?.querySelector('.bar.health');
+    if (!this.shield) {
+      this.el.querySelectorAll('.pv-ebar .pv-shieldbar').forEach((o) => o.remove());
+      for (const p of this.hud.panels || []) p.querySelector('.pv-shieldbar')?.remove();
+      return;
+    }
+    const bar = this.shieldBar();
     if (!bar) return;
     let el = bar.querySelector('.pv-shieldbar');
-    if (!this.shield) { if (el) el.remove(); return; }
     if (el && !force) return;
+    // a barra mudou de lugar (o painel foi refeito): tira o escudo de onde ele não é dela
+    for (const o of [...(this.hud.panels || []).map((p) => p.querySelector('.pv-shieldbar')), this.q('.pv-enemy:not(.low) .pv-ebar .pv-shieldbar')]) if (o && o !== el) o.remove();
     if (!el) { el = document.createElement('div'); el.className = 'pv-shieldbar'; bar.appendChild(el); }
     const { n, total } = this.shield;
     el.innerHTML = Array.from({ length: total }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('');
+    // a metade de baixo da tela dividida: a mesma barra azul
+    const low = this.q('.pv-enemy.low:not([hidden]) .pv-ebar');
+    if (low && bar.closest('.pv-enemy')) {
+      let e2 = low.querySelector('.pv-shieldbar');
+      if (!e2) { e2 = document.createElement('div'); e2.className = 'pv-shieldbar'; low.appendChild(e2); }
+      e2.innerHTML = el.innerHTML;
+    }
   }
 
   flashShield() {
-    const el = this.hud.panels?.[1]?.querySelector('.pv-shieldbar');
+    const el = this.shieldBar()?.querySelector('.pv-shieldbar');
     if (!el) return;
     el.classList.remove('hit');
     void el.offsetWidth;
@@ -149,23 +172,26 @@ export class PveHud {
   // vai ganhar, a descrição) e, embaixo, a build atual. onPick(id). Também pode clicar/tocar
   // who: quem escolhe (coop: P1 e P2 alternam); noClick: online o clique não vale (só o controle/teclado, que viaja
   // na rede); mine: esta tela é de quem escolhe
-  openChoice(choices, run, onPick, { who = 0, coop = false, noClick = false, mine = true } = {}) {
+  openChoice(choices, run, onPick, { who = 0, coop = false, noClick = false, mine = true, title = 'SUBIU DE NÍVEL!', sub = 'Escolha uma melhoria para esta tentativa', what = 'a melhoria' } = {}) {
     const box = this.q('.pv-choose');
     const picks = run.picks || [];
     this.choice = { choices, index: 0, onPick, who };
     const panel = box.querySelector('.pv-panel') || box;
     const head = panel.querySelector('.pv-who') || panel.insertBefore(Object.assign(document.createElement('div'), { className: 'pv-who' }), panel.firstChild);
     head.hidden = !coop;
-    head.textContent = coop ? (mine ? `P${who + 1}: sua vez de escolher a melhoria do grupo` : `O P${who + 1} está escolhendo a melhoria do grupo…`) : '';
+    head.textContent = coop ? (mine ? `P${who + 1}: sua vez de escolher ${what} do grupo` : `O P${who + 1} está escolhendo ${what} do grupo…`) : '';
+    panel.querySelector('h3').textContent = title;
+    panel.querySelector('h3 + p').textContent = sub;
     this.q('.pv-cards').innerHTML = choices.map((u, i) => {
+      if (u.reward) return `<div class="pv-card" data-i="${i}"><i>${u.icon}</i><div><b>${esc(u.name)}</b><p>${esc(u.desc)}</p></div></div>`;
       const n = countOf(picks, u.id);
       const syn = SYNERGIES.filter((s) => s.needs.includes(u.id));
       const ready = syn.filter((s) => s.needs.every((x) => x === u.id || picks.includes(x)));
-      const tag = n ? `nv ${n + 1}` : 'NOVO!';
+      const tag = n ? `nv ${n + 1}` : u.chest ? 'NOVA DO BAÚ!' : 'NOVO!';
       return `<div class="pv-card" data-i="${i}"><i>${u.icon}</i><div><b>${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}</div></div>`;
     }).join('');
     const ids = [...new Set(picks)];
-    this.q('.pv-build').innerHTML = `<span>Build (nv ${run.level})</span>` + (ids.length ? ids.map((id) => {
+    this.q('.pv-build').innerHTML = `<span>Build (nv ${run.level}) · habilidades ${kindsOf(picks)}/${MAX_KINDS}</span>` + (ids.length ? ids.map((id) => {
       const u = UPGRADES.find((x) => x.id === id);
       return `<span class="pv-up" title="${esc(u.name)}"><i>${u.icon}</i><s>${pipsHtml(countOf(picks, id), u.max)}</s></span>`;
     }).join('') : '<em>nenhuma melhoria ainda</em>');
@@ -205,19 +231,30 @@ export class PveHud {
   }
 
   // COOP LOCAL: a vida do inimigo da vez (os dois painéis da HUD são dos jogadores) e a linha do meio da tela dividida
+  // Na tela dividida (coop local) a barra aparece nas DUAS metades (pedido do dono, 2026-11-06): .pv-enemy em cima e
+  // .pv-enemy.low na de baixo; o escudo da Degolificada vai nas duas (ensureShield)
   setEnemy(name, frac) {
-    let el = this.q('.pv-enemy');
-    if (!el) {
+    const els = [this.enemyBar('pv-enemy', true)];
+    if (this.split) els.push(this.enemyBar('pv-enemy low', true));
+    else this.q('.pv-enemy.low')?.remove();
+    for (const el of els) {
+      el.hidden = name == null;
+      if (name == null) continue;
+      const b = el.querySelector('b');
+      if (b.textContent !== name) b.textContent = name;
+      el.querySelector('i').style.width = `${Math.max(0, Math.min(1, frac)) * 100}%`;
+    }
+  }
+
+  enemyBar(cls, make) {
+    let el = this.q('.' + cls.split(' ').join('.') + (cls.includes('low') ? '' : ':not(.low)'));
+    if (!el && make) {
       el = document.createElement('div');
-      el.className = 'pv-enemy';
+      el.className = cls;
       el.innerHTML = '<b></b><div class="pv-ebar"><i></i></div>';
       this.el.appendChild(el);
     }
-    el.hidden = name == null;
-    if (name == null) return;
-    const b = el.querySelector('b');
-    if (b.textContent !== name) b.textContent = name;
-    el.querySelector('i').style.width = `${Math.max(0, Math.min(1, frac)) * 100}%`;
+    return el;
   }
 
   // EXPEDIÇÃO ONLINE: o nome do parceiro em cima do personagem dele (x, y em pixels da tela; null esconde)
@@ -243,6 +280,7 @@ export class PveHud {
   }
 
   setSplit(on) {
+    this.split = !!on;
     let el = this.q('.pv-split');
     if (!el && on) { el = document.createElement('div'); el.className = 'pv-split'; this.el.appendChild(el); }
     if (el) el.hidden = !on;

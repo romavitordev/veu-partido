@@ -2,6 +2,15 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.32.0 — Degolificada e Espreitador jogáveis
+- NOVOS PERSONAGENS: a Degolificada e o Espreitador agora são jogáveis no modo de luta, com kit completo, especial e transformação. Os dois são da equipe Outro Lado (não entram no modo Outro Lado).
+- NOVOS CENÁRIOS: Mansão Endiabrada (o quarto principal) e Escola Nostradamus (o bunker) como arenas de luta.
+- Carniçal remodelado: membros secos, costelas saltadas, pés com garras e lodo escorrendo.
+- Outro Lado: 4 habilidades novas que só saem do baú — Pulso de Medo, Pele de Espinhos, Golpe Certeiro e Segundo Fôlego.
+- Outro Lado: cada partida aceita até 6 habilidades diferentes; depois, cartas e baús só sobem as que você já tem. Com tudo no máximo, você escolhe entre moedas e vida.
+- Outro Lado: no multiplayer local, a barra de vida do chefe aparece nas duas metades da tela.
+- Corrigido: a barra azul do Escudo de Medo aparecia no jogador em vez de na Degolificada.
+
 ## v4.31.2 — Outro Lado sem travamentos
 - Corrigido o travamento ao lutar no Outro Lado: um tiro ou explosão perto de um barril ou caixa congelava o jogo.
 - Menos engasgos nas lutas: os efeitos de golpe não recompilam mais os gráficos a cada uso (vale para todos os modos).
