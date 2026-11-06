@@ -1142,7 +1142,7 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 5).
 
 **Feito na v4.30.0 (2026-11-06), rodada 6:**
 - [x] Expedição online sincronizada: P1 e P2 jogam em computadores diferentes.
-- [x] Oferta de retorno por moedas no coop: um jogador paga, ambos voltam com metade da vida; custo aumenta com a profundidade e dobra a cada resgate.
+- [x] Voltar à vida com moedas (sozinho ou coop): quem paga traz todos de volta com metade da vida; o custo sobe com a profundidade e a cada resgate na mesma dungeon.
 - [x] Desistir ou não ter moedas suficientes encerra a tentativa normalmente.
 
 Detalhes em `docs/outro-lado-playtest.md` (rodada 6).

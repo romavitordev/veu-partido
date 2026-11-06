@@ -227,5 +227,6 @@ Botão de interagir, gavetas e cadeados:
 ### Rodada 6 (pedidos do dono, 2026-11-06) — v4.30.0
 
 - **Expedição online:** agora os dois jogadores iniciam a expedição em computadores diferentes, cada um com sua tela e câmera.
-- **Voltar à vida no coop:** quando aparece a oferta, o P2 pode pagar com as próprias moedas. Pagando, os dois voltam com metade da vida. O preço inicial é 40 moedas e dobra no resgate seguinte (80); a profundidade também aumenta o custo.
+- **Voltar à vida (sozinho ou coop):** quando a tentativa acabaria, aparece a oferta; quem tiver moedas aperta A/× e paga (no coop, qualquer um dos dois). Todos voltam com metade da vida. Preço (PROPOSTA): 40 moedas na profundidade 1 (+50% por profundidade), e cada resgate na mesma dungeon soma o preço base outra vez (40, 80, 120…).
+- **Online:** cada um escolhe o próprio personagem com os próprios liberados e a própria árvore; o nome do parceiro flutua em cima dele; a escolha da melhoria alterna entre P1 e P2. Testado em duas abas: ~12 mil quadros (menus, seleção, sala com luta e o fim) sem nenhuma divergência.
 - **Desistência/sem moedas:** desistir encerra a tentativa normalmente; sem saldo elegível, a oferta não impede o fim da tentativa.

@@ -4,7 +4,10 @@
 
 ### Adicionado
 - Expedição online sincronizada: dois jogadores, cada um no próprio computador e com sua própria câmera, entram na mesma dungeon.
-- Retorno por moedas no coop quando os jogadores caem: qualquer jogador pode pagar; ambos voltam com 50% da vida. O preço sobe com a profundidade e dobra a cada resgate naquela dungeon.
+- Lockstep do Outro Lado: `NET_ACTIONS` com as teclas simples e o interagir; `packInput` leva a câmera livre (analógico, mouse, trava); o 3º lugar (CPU do inimigo) roda igual nos dois; a montagem da dungeon usa sorteio com semente; o começo espera os dois carregarem (`netLoaded.pveStart`); o fim acontece no quadro seguinte (`Dungeon.flushEnd`, sem `setTimeout`). Mensagens `pd` (dados de cada um) e `pgo` (o anfitrião começa); sala do Outro Lado sem espectadores.
+- Seleção com bloqueados por lado (`SelectScreen.lockedFor`); nome do parceiro em cima dele (`Dungeon.placeMate`, `pveHud.setMate`).
+- Voltar à vida (`Dungeon.openRevive`/`updateRevive`, `pveHud.showRevive`, `wallet` do flow): sozinho ou com os dois caídos no coop; 50% da vida e 2,5 s invulnerável. Preço (PROPOSTA): 40 moedas na profundidade 1 (+50% por profundidade), e cada resgate na mesma dungeon soma o preço base outra vez (40, 80, 120…).
+- Coop: a escolha da melhoria alterna entre P1 e P2 (`chooser`); online o clique nas cartas não vale (só controle/teclado).
 - Se ninguém puder pagar ou o grupo desistir, a tentativa termina normalmente.
 
 ## v4.29.0 — Outro Lado: rodada 5 — coop local em tela dividida, Local x Online e a câmera nas paredes

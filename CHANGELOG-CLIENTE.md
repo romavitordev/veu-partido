@@ -4,8 +4,10 @@ Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
 ## v4.30.0 — Outro Lado: coop online e volta à vida com moedas
 - OUTRO LADO ONLINE: jogue a expedição em dois computadores. Cada pessoa joga na própria tela, com a própria câmera.
-- No coop, quando os dois caem, qualquer um que tenha moedas pode pagar para voltar. Os dois retornam com metade da vida; o preço aumenta com a profundidade e dobra a cada resgate.
+- Na sala online cada um escolhe o próprio personagem, com os personagens liberados e as melhorias permanentes dele. O nome de cada um aparece no painel e em cima do personagem do parceiro.
+- VOLTAR À VIDA: quando a tentativa acabaria (sozinho, ou com os dois caídos no coop), dá para pagar moedas e voltar com metade da vida. No coop qualquer um com moedas pode pagar. O preço sobe com a profundidade e a cada vez que você volta na mesma dungeon.
 - Sem moedas suficientes ou se desistirem, a tentativa termina normalmente.
+- No coop, a escolha da melhoria ao subir de nível alterna entre o P1 e o P2.
 
 ## v4.29.0 — Outro Lado: rodada 5 — coop local em tela dividida, Local x Online e a câmera nas paredes
 - OUTRO LADO: a entrada agora pergunta LOCAL ou ONLINE. No LOCAL, a nova tentativa pergunta SOLO ou MULTIPLAYER.

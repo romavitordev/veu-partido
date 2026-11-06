@@ -4,7 +4,8 @@
 
 - Versão: `VERSION` 4.29.0 → **4.30.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.
 - Expedição online sincronizada: P1 e P2 jogam em computadores diferentes, cada um com seus dados de personagem/progresso permanente; a tentativa online não altera o save local da tentativa.
-- Coop: ao cair, o grupo pode pagar para voltar. O jogador que apertar pagar e tiver moedas cobre o custo; ambos retornam com 50% da vida e invulnerabilidade temporária. Preço base de 40 moedas, aumenta com a profundidade e dobra a cada resgate na dungeon. Sem pagador elegível ou ao desistir, segue o encerramento normal.
+- Voltar à vida (sozinho ou coop): quem apertar pagar e tiver moedas cobre o custo; todos retornam com 50% da vida e 2,5 s de invulnerabilidade. Preço (PROPOSTA): 40 moedas na profundidade 1 (+50% por profundidade), e cada resgate na mesma dungeon soma o preço base outra vez (40, 80, 120…). Online as moedas de cada um são contadas igual nos dois computadores e só o save de quem pagou desconta. Sem pagador elegível ou ao desistir, segue o encerramento normal.
+- Correção da documentação (depois da tag): o texto original dizia que o preço "dobra" e que valia só no coop.
 - Testes: `npm test` 68/68; `npm run check` OK.
 - Build: o Vite passou; `npm run dist:pc` parou ao extrair links simbólicos do `winCodeSign` sem privilégio no Windows. O instalador foi gerado com `npx electron-builder --win --publish never --config.win.signAndEditExecutable=false`; a tag também aciona a build normal do PC e do Android no GitHub Actions.
 

@@ -17,8 +17,10 @@ export const CHANGELOG = [
     title: 'Outro Lado: coop online e volta à vida com moedas',
     items: [
       'OUTRO LADO ONLINE: agora a expedição é jogada em dois computadores, com cada pessoa usando sua própria tela e câmera.',
-      'Ao cair no coop, aparece uma oferta para voltar: qualquer jogador com moedas suficientes pode pagar. Os dois voltam com metade da vida; o preço aumenta a cada resgate e com a profundidade.',
+      'Na sala online cada um escolhe o próprio personagem, com os personagens liberados e as melhorias permanentes dele. O nome de cada um aparece no painel e em cima do personagem do parceiro.',
+      'VOLTAR À VIDA: quando a tentativa acabaria (sozinho, ou com os dois caídos no coop), dá para pagar moedas e voltar com metade da vida. No coop qualquer um com moedas pode pagar. O preço sobe com a profundidade e a cada vez que você volta na mesma dungeon.',
       'Sem moedas suficientes ou ao desistir, a tentativa termina normalmente.',
+      'No coop, a escolha da melhoria ao subir de nível alterna entre o P1 e o P2.',
     ],
   },
   {
