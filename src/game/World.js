@@ -14,6 +14,26 @@ import { updateRiddle, cancelRiddle } from '../combat/riddle.js';
 
 const RAY = new THREE.Raycaster();
 
+// erros isolados no quadro (ver World.update): aparecem no console uma vez por mensagem, com onde aconteceram
+const worldErrors = new Set();
+function reportWorldError(where, e) {
+  const key = `${where}: ${(e && e.message) || e}`;
+  if (worldErrors.has(key)) return;
+  worldErrors.add(key);
+  console.error(`Erro isolado (${where}) — a peça saiu do jogo para a partida não travar:`, e);
+}
+
+// o lutador cujo update quebrou: larga o golpe em andamento e volta ao normal (sem isso, o mesmo golpe quebrado
+// rodaria de novo no quadro seguinte)
+function recoverFighter(f) {
+  try { f.cancelAction(); } catch { f.seq = null; }
+  const w = f.world;
+  if (w && w.cinematic && (w.cinematic.actor === f || w.cinematic.target === f)) {
+    try { w.endCinematic(); } catch { w.cinematic = null; }
+  }
+  try { if (f.state !== 'ko') f.setState('idle'); } catch { /* estado fica como está */ }
+}
+
 // Tudo que existe dentro de uma luta: cena, arena, lutadores, projéteis,
 // efeitos, câmera, cinematics e congelamento de impacto (hitstop).
 export class World {
@@ -348,12 +368,19 @@ export class World {
         this.fx.update(dt);
         return;
       }
+      // ISOLAMENTO DE ERROS (P0 travamentos, 2026-11-07): um efeito, NPC ou golpe que quebra sai do jogo em vez de
+      // derrubar o quadro inteiro — antes a mesma exceção se repetia a cada quadro, o resto do mundo nunca andava e a
+      // imagem ficava parada no meio da partida (o laço continuava, mas sem desenhar)
       for (let i = this.tickers.length - 1; i >= 0; i--) {
         const tk = this.tickers[i];
-        if (tk.update(dt)) { tk.dispose && tk.dispose(); this.tickers.splice(i, 1); }
+        let done;
+        try { done = tk.update(dt); } catch (e) { reportWorldError('efeito', e); done = true; }
+        if (done) { try { tk.dispose && tk.dispose(); } catch (e) { reportWorldError('efeito (descarte)', e); } this.tickers.splice(i, 1); }
       }
       for (let i = this.zones.length - 1; i >= 0; i--) if (!this.zones[i].alive) this.zones.splice(i, 1);
-      for (const f of this.fighters) f.update(dt);
+      for (const f of this.fighters) {
+        try { f.update(dt); } catch (e) { reportWorldError('lutador', e); recoverFighter(f); }
+      }
       for (const f of this.fighters) if (f.assists) for (const a of f.assists) a.update(dt); for (const f of this.fighters) if (f.teamGuests) for (const a of f.teamGuests) a.update(dt); // convidados do Especial em Equipe (teamSpecials.js)
       for (const n of this.npcs) {
         // OFUSCADO (luz na cara: abilities.js stunNpc): parado, sem agir, até passar
@@ -362,11 +389,15 @@ export class World {
           if (n.alive && Math.random() < dt * 6) this.fx.burst(new THREE.Vector3(n.pos.x + (Math.random() - 0.5) * 0.5, (n.pos.y || 0) + 1.9, n.pos.z + (Math.random() - 0.5) * 0.5), { count: 1, color: 0xfff2b0, speed: 0.6, life: 0.4, size: 0.07 });
           continue;
         }
-        n.update(dt);
+        try { n.update(dt); } catch (e) {
+          reportWorldError('NPC', e);
+          n.alive = false;
+          try { n.dispose && n.dispose(); } catch { /* já saiu do jogo */ }
+        }
       }
       for (let i = this.npcs.length - 1; i >= 0; i--) if (!this.npcs[i].alive) this.npcs.splice(i, 1);
       this.separate();
-      this.projectiles.update(dt);
+      try { this.projectiles.update(dt); } catch (e) { reportWorldError('projétil', e); try { this.projectiles.clear(); } catch { /* idem */ } }
     } else {
       for (const f of this.fighters) f.updatePresentation(dt);
     }

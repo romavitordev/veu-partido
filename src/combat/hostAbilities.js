@@ -4,7 +4,7 @@ import { applyHit } from './damage.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { chooseButtonWinner } from './hostButtonRace.js';
 import { buildModel } from '../models/index.js';
-import { disposeSkeletons } from '../models/glbRig.js';
+import { disposeClonedRig } from '../models/glbRig.js';
 import { Animator } from '../anim/Animator.js';
 import { ABILITY_TYPES } from './abilities.js';
 import {
@@ -60,8 +60,7 @@ function spawnAudience(world, f, { count = 8, life = 4.2 } = {}) {
   const fade = (c, k) => { for (const m of c.mats) m.opacity = (m.userData.baseOpacity ?? 1) * k; };
   const free = (c) => {
     world.scene.remove(c.root);
-    disposeSkeletons(c.root);
-    for (const m of c.mats) m.dispose();
+    disposeClonedRig(c.root);
   };
   const ticker = world.addTicker({
     update(dt) {

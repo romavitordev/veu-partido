@@ -1360,7 +1360,8 @@ export class Dungeon {
       q.aimYaw = this.phase === 'exit' || this.phase === 'dead' || q.input?.cpu ? null : V.rig.yaw + Math.PI;
       // travado: o corpo mira direto no alvo (não espera a câmera terminar de virar)
       if (q.aimYaw !== null && V.lockT && V.lockT.pos) q.aimYaw = Math.atan2(V.lockT.pos.x - q.pos.x, V.lockT.pos.z - q.pos.z);
-      this.updateInteract(V);
+      // um erro na interação (porta, gaveta, baú) não pode impedir o mundo de andar logo abaixo (travamentos, 2026-11-07)
+      try { this.updateInteract(V); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
     }
     const prev = this.players.map((q) => [q.pos.x, q.pos.z]);
     w.update(dt);

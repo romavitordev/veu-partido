@@ -80,6 +80,19 @@ export function disposeSkeletons(root) {
   });
 }
 
+// libera um modelo de CÓPIA (Devorados menores, Embaralhar, hologramas, plateia): os materiais foram clonados para
+// ela (todos são descartados) e as peças procedurais (arma, acessórios) nascem a cada buildModel — só a geometria do
+// .glb (sharedGeometry) fica. Antes as cópias só soltavam os materiais e cada uma deixava ~20 geometrias na placa de
+// vídeo; no Outro Lado a memória crescia sala após sala até o jogo travar no meio da partida (2026-11-07)
+export function disposeClonedRig(root) {
+  disposeSkeletons(root);
+  root.traverse((o) => {
+    if (o.geometry && !o.userData.sharedGeometry) o.geometry.dispose();
+    if (!o.material) return;
+    for (const m of Array.isArray(o.material) ? o.material : [o.material]) m.dispose();
+  });
+}
+
 export function disposeRigResources(root) {
   const geometries = new Set();
   const materials = new Set();

@@ -1213,6 +1213,20 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       shader junto: cada golpe recompilava (picos de 60–420 ms no render). Correções: `hitTest` no Breakable, laço do
       jogo que registra o erro e continua (`main.js`), shaders fixos (`core/programPin.js`). Testes de regressão em
       `tests/pve.test.js` e `tests/program-pin.test.js`.
+- [x] **Travou no meio da partida — de novo** (relato do dono, 2026-11-07: Guizo na Mansão, quarto infantil, contra
+      Devorados; "isso é recorrente"). Medido no navegador:
+      (1) **vazamento de memória de vídeo**: as cópias (Devorados menores, Cópia Observada, Embaralhar, hologramas,
+      plateia do Anfitrião) só liberavam os materiais; as peças procedurais de cada `buildModel` (arma, acessórios,
+      ~20–26 geometrias por cópia) ficavam na placa — com o Guizo, +200 geometrias por sala, sem parar. Agora
+      `disposeClonedRig` (`models/glbRig.js`) em `npcs.js`, `holo.js` e `hostAbilities.js`: a contagem fica estável
+      sala após sala (2480 ± 50 em 8 salas; antes 2328 → 3400);
+      (2) **erro repetido a cada quadro congelava a imagem**: desde a v4.31.2 o laço continuava, mas o mesmo erro
+      interrompia o quadro antes do desenho. Agora o `World.update` isola cada efeito, NPC, lutador e projétil (o que
+      quebra sai do jogo / o golpe é cancelado, com o erro no console uma vez), o desenho roda fora do `try` da lógica
+      (`main.js`) e a interação do Outro Lado também é isolada. Conferido injetando erros de propósito: o mundo
+      continua. A exceção exata do relato NÃO foi reproduzida (bateria, varredura das salas e fuzz de habilidades do
+      Guizo sem erro) — se voltar a travar, o console agora mostra "Erro isolado (…)" com o ponto. Teste novo em
+      `tests/glb-rig.test.js`.
 - [ ] **Personagens no Outro Lado — conferir e equilibrar TODOS** (pedido do dono, 2026-11-06): bateria automática
       (cada lutador sozinho, CPU Difícil no lugar do jogador, 2 salas de 3 monstros + o chefe) para achar quem quebra,
       quem não consegue limpar sala ou não acerta o chefe, e ajustar o kit no modo (sem mexer no balanceamento da luta).

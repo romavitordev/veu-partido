@@ -715,6 +715,11 @@ function frame(now) {
   try {
     if (game.net) netPump(dt);
     else tick(Math.min(1 / 30, dt));
+  } catch (e) {
+    reportFrameError(e);
+  }
+  // o desenho fica fora do try da lógica: um erro na lógica não pode deixar a imagem parada (2026-11-07)
+  try {
     // tela de vitória: a câmera se mexe (World.updateVictoryCam), os nomes acompanham
     if (game.match && game.match.world && game.match.world.victoryCam) placeVictoryLabels();
     render();
