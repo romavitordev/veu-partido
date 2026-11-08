@@ -259,4 +259,8 @@ b.add('belt_rope', merge(rod(belt, [0.015 * H] * 29, 6), ellipsoid(tuple(bk), (0
                          rod([bk, bk + Vector((0.005 * H, -0.008 * H, -0.14 * H)), bk + Vector((0.0, -0.012 * H, -0.3 * H))], [0.013 * H, 0.012 * H, 0.01 * H], 6)), rope,
       region='torso', weight_fn=robe_weights, subdiv=0)
 
+# ACABAMENTO (sculpt_lib, 2026-11-08): PREGAS verticais que se abrem para baixo no pano comprido e os amassados leves
+import sculpt_lib
+sculpt_lib.pleat_pass(b.parts, ['robe_seita', 'robe_seita_in', 'black_seita'], H, top=0.62)
+sculpt_lib.cloth_pass(b.parts, ['robe_seita', 'robe_seita_in', 'black_seita', 'pants_seita'], H)
 b.export(OUT)

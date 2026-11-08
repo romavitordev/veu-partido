@@ -338,3 +338,25 @@ def hair_pass(parts, mats, H, center, amp=0.0025, min_verts=400):
             continue
         _dense(o, min_verts)
         relief(o, lambda p: amp * H * (ridge(math.atan2(p.x - c.x, p.y - c.y) * 26 + n3(p, 20) * 1.5, 2) - 0.4))
+
+
+# PREGAS DE SAIA/TÚNICA/CAPA (2026-11-08): dobras VERTICAIS que nascem rasas em `top` (altura, em fração de H) e se
+# abrem para baixo, em volta do eixo do corpo (cx, cy) — o pano comprido deixa de ser um cone liso. `n`: quantas pregas
+# na volta; a peça é subdividida até ter vértices para desenhá-las (o UV acompanha).
+def pleat_pass(parts, mats, H, top=0.6, amp=0.016, n=14, cx=0.0, cy=0.0, min_verts=1200):
+    for o in parts:
+        if o.type != 'MESH' or not _match(o, mats):
+            continue
+        for _ in range(3):
+            if len(o.data.vertices) >= min_verts:
+                break
+            _dense(o, len(o.data.vertices) + 1)
+        def fn(p):
+            k = (top * H - p.z) / (top * H)
+            if k <= 0:
+                return 0
+            k = min(1.0, k) ** 1.3
+            a = math.atan2(p.y - cy, p.x - cx)
+            wob = n3(p, 5) * 0.8
+            return amp * H * k * (math.sin(a * n + wob) * 0.8 + math.sin(a * n * 2.3 + 1.1 + wob) * 0.2)
+        relief(o, fn)

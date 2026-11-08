@@ -104,7 +104,7 @@ export const COMBAT = {
   // mas não são cortados no meio
   comboBreak: { time: 3.0, hits: 12, iframes: 0.5 },
   // ---- Pausa no impacto por peso do golpe ----
-  hitstopBy: { light: 0.04, medium: 0.055, heavy: 0.075, launch: 0.11 },
+  hitstopBy: { light: 0.04, medium: 0.055, heavy: 0.075, launch: 0.11, finisher: 0.14 }, // finisher: último golpe do combo (estalo maior, ver docs/REFERENCIAS-ANIMACAO.md §1)
   // ---- Elementos: ciclo Sangue > Conhecimento > Energia > Morte > Sangue (Medo neutro) ----
   elements: { advantage: 1.15, disadvantage: 0.85 },
   // ---- Substituição: L2 enquanto apanha, gasta 1 carga de esquiva e desvia com um passo curto para o lado ----

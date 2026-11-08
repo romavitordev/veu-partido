@@ -783,7 +783,7 @@ const CHOREO = {
   // machadada; o Rubens chega correndo do lado, corrige o nome e os DOIS batem juntos, um golpe atrás do outro, até a
   // pancada dupla. Golpes: os do próprio kit (machado do Balu, martelo do Rubens) — PROPOSTA até o dono escolher.
   balu_rubens({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 4.6;
+    const END = S + 4.8;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const balu = tools.get('balu'), rubens = tools.get('rubens');
     const hits = splitDamage(crewTotal, 7);
@@ -816,16 +816,50 @@ const CHOREO = {
     };
     const AXE = { sound: 'axeHit', color: 0xd8d8de, slash: true };
     const HAMMER = { sound: 'heavyPunch', color: 0xe8b23a };
+    // troca de peças na mão (o machado que voa, a Glock do Queima-Roupa), desfeita no fim da cena
+    const undo = [];
+    const prop = (actor, name, on) => {
+      const rig = actor && actor.rig;
+      if (!rig || !rig.props || !rig.props[name]) return;
+      undo.push([rig, name, rig.props[name].visible]);
+      rig.showProp(name, on);
+    };
 
-    // 1. o Balu avança correndo e gritando
+    // 1. o Balu avança gritando e abre com o MACHADO EM GIRO (□ do kit): o machado sai girando, acerta e volta
     if (balu) {
-      run(balu, S, S + 1.0, 0.25, 7, 0.25, 1.5);
+      run(balu, S, S + 0.9, 0.25, 7, 0.25, 4.6);
       tl.add(S, () => {
         if (!live()) return;
         say(balu, 'RUBINHOO! VAMOS DAR UMA COÇA NELE!');
-        world.cameraRig.playShots([{ ...overShoulder(balu, opp, { dur: 1.05, back: 2.2, side: 0.8, height: 1.8, fov: 46 }), cut: true }]);
+        world.cameraRig.playShots([{ ...overShoulder(balu, opp, { dur: 1.5, back: 2.2, side: 0.8, height: 1.8, fov: 46 }), cut: true }]);
       });
-      blow(balu, S + 1.0, 'hammer_v', 0.5, 0, AXE);
+      let axe = null;
+      const hand = () => (balu.rig?.sockets?.handR ? balu.rig.sockets.handR.getWorldPosition(new THREE.Vector3()) : balu.chest());
+      tl.add(S + 0.9, () => {
+        if (!live()) return;
+        balu.face(opp);
+        balu.play('throw_r', 0.5);
+        world.audio.play('knifeThrow', { volume: 0.8 });
+      });
+      tl.add(S + 1.02, () => {
+        if (!live()) return;
+        const src = balu.rig?.props?.axe;
+        if (src) { axe = src.clone(true); axe.visible = true; world.scene.add(axe); prop(balu, 'axe', false); }
+      });
+      // ida até o peito do alvo e volta para a mão, girando
+      tl.each((time) => {
+        if (!axe) return;
+        const k = (time - (S + 1.02)) / 0.6;
+        if (k < 0 || !live()) return;
+        if (k >= 1) { world.scene.remove(axe); axe = null; prop(balu, 'axe', true); return; }
+        const out = k < 0.5 ? smooth(k * 2) : smooth((1 - k) * 2);
+        axe.position.lerpVectors(hand(), opp.chestPos(), out);
+        axe.rotation.set(0, balu.yaw + Math.PI / 2, -time * 22);
+      });
+      tl.add(S + 1.32, () => tools.impact(balu, hits[0], AXE));
+      tl.add(END, () => { if (axe) { world.scene.remove(axe); axe = null; } });
+      // e fecha a distância correndo para a Pancada do Urso
+      run(balu, S + 1.62, S + 2.0, 0.25, 4.6, 0.35, 1.5);
     }
     // 2. o Rubens chega correndo do lado, corrigindo o nome
     if (rubens) {
@@ -836,29 +870,37 @@ const CHOREO = {
         world.cameraRig.playShots([{ ...twoShot(rubens, opp, { dur: 0.75, dist: 3, height: 1.5, side: -1, fov: 42 }), cut: true }]);
       });
     }
-    // 3. os dois batendo juntos, um golpe atrás do outro
-    tl.add(S + 1.95, () => {
+    // 3. a coça: o MARTELO do Rubens (lateral, cruzada, por cima) intercalado com a PANCADA DO URSO do Balu
+    //    (a ombrada derruba e a machadada vai no chão, como no especial dele)
+    tl.add(S + 2.0, () => {
       if (!live()) return;
-      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.6, radius: 3.6, height: 1.7, a0: -0.5, a1: 0.5 }), cut: true }]);
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.5, radius: 3.6, height: 1.7, a0: -0.5, a1: 0.6 }), cut: true }]);
     });
-    blow(rubens, S + 1.95, 'hammer_h', 0.36, 1, HAMMER);
-    blow(balu, S + 2.2, 'hammer_diag', 0.45, 2, AXE);
+    blow(rubens, S + 2.0, 'hammer_h', 0.36, 1, HAMMER);
+    blow(balu, S + 2.2, 'shoulder_bash', 0.42, 2, { sound: 'heavyPunch', color: 0xc01828 });
     blow(rubens, S + 2.5, 'hammer_diag', 0.42, 3, HAMMER);
-    blow(balu, S + 2.8, 'hammer_v', 0.45, 4, AXE);
-    blow(rubens, S + 3.05, 'hammer_v', 0.45, 5, HAMMER);
-    // 4. a pancada dupla: a Pancada do Urso e a martelada no mesmo instante
-    tl.add(S + 3.5, () => {
+    blow(balu, S + 2.8, 'hammer_ground', 0.55, 4, { ...AXE, color: 0xc01828 });
+    blow(rubens, S + 3.15, 'hammer_v', 0.45, 5, HAMMER);
+    // 4. o fecho: a machadada final do Balu e, colado no alvo, o QUEIMA-ROUPA da Glock do Rubens
+    tl.add(S + 3.6, () => {
       if (!live()) return;
       if (balu) { balu.face(opp); balu.play('hammer_finisher', 0.75); }
-      if (rubens) { rubens.face(opp); rubens.play('hammer_finisher', 0.7); }
-      world.cameraRig.playShots([{ ...lowAngle(balu || rubens, { dur: 0.9, dist: 3, fov: 46 }), cut: true }]);
+      if (rubens) { rubens.face(opp); prop(rubens, 'hammer', false); prop(rubens, 'glock', true); rubens.play('point', 0.6); }
+      world.cameraRig.playShots([{ ...lowAngle(rubens || balu, { dur: 1.0, dist: 2.8, fov: 46 }), cut: true }]);
     });
-    tl.add(S + 3.85, () => {
+    tl.add(S + 3.95, () => {
       if (!live()) return;
+      if (rubens) {
+        const from = rubens.rig?.muzzle ? rubens.rig.muzzle.getWorldPosition(new THREE.Vector3()) : rubens.chest();
+        world.fx.flash(from, { color: 0xffe08a, size: 0.9, life: 0.08 });
+        world.fx.tracer(from, opp.chestPos(), { color: 0xffe08a, life: 0.1, width: 0.05 });
+        world.audio.play('sniper', { volume: 0.7 }); // o mesmo estalo do Queima-Roupa do kit
+      }
       world.fx.ring(opp.pos.clone().setY(0.08), { color: 0xe8b23a, radius: 2.4, life: 0.5 });
-      tools.impact(balu || rubens, hits[6], { sound: 'axeHit', color: 0xe8b23a });
+      tools.impact(rubens || balu, hits[6], { sound: 'axeHit', color: 0xffe08a });
       world.cameraRig.shake(0.45, 0.3);
     });
+    tl.add(END, () => { for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v); undo.length = 0; });
     tl.add(END, () => world.ui && world.ui.subtitle && world.ui.subtitle(null));
     return END;
   },

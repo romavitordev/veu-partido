@@ -4,7 +4,7 @@ import { COMBAT } from '../../config/combat.js';
 import { applyHit } from '../damage.js';
 import { splitDamage, specialHitFx, trySpecialBlock } from './common.js';
 import { TELEGRAPH } from './telegraph.js';
-import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose } from '../../camera/shots.js';
+import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose, orbit } from '../../camera/shots.js';
 import { HoloCopy } from '../holo.js';
 import { groundMark, blindFighter } from '../abilities.js';
 import { buildOrpheu } from '../../models/orpheu.js';
@@ -223,6 +223,15 @@ function buildShots(kind, f, opp, sp) {
     shots.push(faceClose(f, { dur: firstHit, from: 2.0, to: 1.25, side: 0.45 }));
   }
   const mid = finalHit - firstHit;
+  // ENXAME (rajadas longas, o pássaro; docs/REFERENCIAS-ANIMACAO.md §3): a câmera gira em volta do alvo enquanto os
+  // tiros/bichos chegam, no lugar do plano lateral e do ombro. `sp.swarmCam` liga ou desliga à mão.
+  const swarm = sp.swarmCam ?? sp.hits.some((h) => (h.burst && h.burst.count >= 6) || h.bird);
+  if (swarm) {
+    shots.push(orbit(opp, { dur: mid * 0.7, radius: 3.4, height: 1.5, a0: -1.3, a1: 1.3, lookH: 1.1, fov: 46 }));
+    shots.push(lowAngle(f, { dur: mid * 0.3, dist: 3.2, side: 2.0 }));
+    shots.push(pullBack(f, opp, { dur: sp.length - finalHit + 0.1, from: 2.6, to: 6.5, height: 1.8, side: -1 }));
+    return shots;
+  }
   shots.push(twoShot(f, opp, { dur: mid * 0.4, dist: 4.2, push: 0.8, side: 1 }));
   shots.push(overShoulder(opp, f, { dur: mid * 0.3, back: 1.8, side: 0.9, height: 1.8 }));
   shots.push(lowAngle(f, { dur: mid * 0.3, dist: 3.2, side: 2.0 }));
@@ -473,6 +482,9 @@ export const cinematicCombo = {
             strike: sp.applyMeleePassives ? { damage: parts[i], heal: Math.floor(parts[i] * 0.3) } : undefined,
           });
           specialHitFx(world, f, opp, h.fx, sp.color);
+          // pose de impacto segurada: 3 quadros nos golpes, 5 no último (o h.hold do golpe manda, 0 desliga)
+          const hold = h.hold ?? sp.poseHold ?? (h.final ? 0.085 : 0.05);
+          if (hold > 0) { f.poseHold = hold; if (opp.state !== 'ko') opp.poseHold = hold; }
           // h.drain (o Banquete de Sangue do Raziel): a mordida cura uma fração do que tirou
           if (h.drain && typeof dealt === 'number' && dealt > 0) {
             f.health = Math.min(f.maxHealth, f.health + Math.round(dealt * h.drain));

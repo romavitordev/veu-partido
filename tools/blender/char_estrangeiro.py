@@ -347,4 +347,8 @@ for side in ('L', 'R'):
         toes.append(cone(tuple(mid), tuple(mid + Vector((k * 0.008 * H, -0.05 * H, -0.012 * H))), 0.008 * H, 5))
     b.add('foot' + side, merge(*toes), skin, region='foot' + side, subdiv=0)
 
+# ACABAMENTO (sculpt_lib, 2026-11-08): PREGAS verticais que se abrem para baixo no pano comprido e os amassados leves
+import sculpt_lib
+sculpt_lib.pleat_pass(b.parts, ['cape_estrangeiro', 'cape_estrangeiro_in', 'robe_estrangeiro'], H, top=0.66)
+sculpt_lib.cloth_pass(b.parts, ['cape_estrangeiro', 'cape_estrangeiro_in', 'robe_estrangeiro', 'sash_estrangeiro'], H)
 b.export(OUT)

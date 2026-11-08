@@ -142,7 +142,7 @@ export const DUNGEONS = {
     // os BAÚS são OPCIONAIS (pedido do dono): cada sala pode ter um, mais provável nas salas com mais monstros
     chests: {
       chance: { start: 0.7, stalk: 0.9, boss: 1, fight: [0, 0, 0.45, 0.65, 0.9] }, // fight: pelo número de monstros
-      coinsBoss: 30, // moedas da recompensa do chefe
+      coinsBoss: 12, // moedas da recompensa do chefe
     },
     // os 4 armários do quarto (a fresta por onde ele foge): posição da porta e para onde ela abre
     closets: [
@@ -190,15 +190,15 @@ export const DUNGEONS = {
     modules: {
       corredor: {
         kind: 'start', floor: 0, title: 'Corredor principal', objective: 'Escolha um caminho',
-        rects: [{ minX: -21.6, maxX: -0.3, minZ: -1.95, maxZ: 1.95 }],
+        rects: [{ minX: -21.6, maxX: -0.3, minZ: -3.95, maxZ: 3.95 }], // largo (2026-11-08): 9 m de parede a parede
         entry: { x: -20.6, z: 0, yaw: Math.PI / 2 },
         exits: {
-          left: { x: -8, z: -2.48, face: 0, w: 1.4 },
+          left: { x: -8, z: -4.48, face: 0, w: 1.4 },
           front: { x: -0.02, z: 0, face: -Math.PI / 2, w: 2.4 },
-          right: { x: -14, z: 2.48, face: Math.PI, w: 1.4 },
+          right: { x: -14, z: 4.48, face: Math.PI, w: 1.4 },
         },
-        chests: [{ x: -18.6, z: -1.3 }, { x: -1.2, z: 1.3 }],
-        drawers: [{ x: -11, y: 0.66, z: -2.15, face: 0, locker: true }, { x: -6, y: 0.66, z: 2.15, face: Math.PI, locker: true }], // os escaninhos (armários que abrem)
+        chests: [{ x: -18.6, z: -3.3 }, { x: -1.2, z: 3.3 }],
+        drawers: [{ x: -11, y: 0.66, z: -4.15, face: 0, locker: true }, { x: -6, y: 0.66, z: 4.15, face: Math.PI, locker: true }], // os escaninhos (armários que abrem)
       },
       historia: classroom(0, 30, 'Sala de História'),
       matematica: classroom(20, 30, 'Sala de Matemática'),
@@ -232,15 +232,15 @@ export const DUNGEONS = {
       fundos: { // PROPOSTA (não é um lugar citado na wiki): o corredor dos fundos, com o rastro arrastado
         kind: 'stalk', floor: 0, title: 'Corredor dos fundos', objective: 'Siga em frente',
         hint: 'Um rastro de sangue arrastado… escolha uma porta',
-        rects: [{ minX: 40.3, maxX: 55.7, minZ: 52.6, maxZ: 55.4 }],
+        rects: [{ minX: 40.3, maxX: 55.7, minZ: 51.1, maxZ: 56.9 }], // largo (2026-11-08): 7 m
         entry: { x: 41.0, z: 54, yaw: Math.PI / 2, door: { x: 40.02, z: 54, face: Math.PI / 2, w: 1.4 } },
         exits: {
-          left: { x: 48, z: 52.02, face: 0, w: 1.4 },
+          left: { x: 48, z: 50.52, face: 0, w: 1.4 },
           front: { x: 55.98, z: 54, face: -Math.PI / 2, w: 1.4 },
-          right: { x: 44, z: 55.98, face: Math.PI, w: 1.4 },
+          right: { x: 44, z: 57.48, face: Math.PI, w: 1.4 },
         },
-        chests: [{ x: 55.1, z: 53.2 }],
-        drawers: [{ x: 51, y: 0.66, z: 55.61, face: Math.PI, locker: true }], // o escaninho no vão da fileira
+        chests: [{ x: 55.1, z: 51.7 }],
+        drawers: [{ x: 51, y: 0.66, z: 57.11, face: Math.PI, locker: true }], // o escaninho no vão da fileira
       },
       // a sala do chefe: a BIBLIOTECA (calma, com o fichário) → a PASSAGEM SECRETA → o BUNKER (a luta começa ao entrar)
       biblioteca: {
@@ -265,7 +265,7 @@ export const DUNGEONS = {
     locks: { chance: 0.4, vault: 0.5, luck: 0.6, drawerCoins: 0.35, coins: [4, 9] },
     chests: {
       chance: { start: 0.7, stalk: 0.9, boss: 1, fight: [0, 0, 0.45, 0.65, 0.9] },
-      coinsBoss: 34,
+      coinsBoss: 14,
     },
     // o ENIGMA DE MEDO (pedido do dono, 2026-11-06): ela luta com o ESCUDO DE MEDO; as CAIXAS do bunker só quebram com
     // a investida dela, e de dentro saem as 3 PROVAS (cada uma tira um terço do escudo). As provas são objetos do cânone;

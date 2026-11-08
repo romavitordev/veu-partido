@@ -622,9 +622,11 @@ export class Dungeon {
     }
   }
 
-  // a porta trancada: o jogador (e o que for dele) não passa
+  // a porta trancada: ninguém passa — os DOIS jogadores (antes só o 1º: em dupla o 2º atravessava a saída fechada e a
+  // chefe ia atrás e ficava presa no corredor final, relato do dono 2026-11-08) e o inimigo (a chefe)
   applyGates(dt) {
-    const p = this.player;
+    const bodies = [...this.players];
+    if (this.enemy && !this.enemy.lurking && !bodies.includes(this.enemy)) bodies.push(this.enemy);
     for (const g of this.gates) {
       if (g.mesh) {
         g.k += ((g.open ? 0 : 0.86) - g.k) * Math.min(1, dt * 4);
@@ -633,8 +635,11 @@ export class Dungeon {
         if (!g.open && Math.random() < dt * 10) this.world.fx.burst(v1.set(g.x, 0.4 + Math.random() * 2.2, (Math.random() - 0.5) * 2.4).clone(), { count: 1, color: Math.random() < 0.3 ? 0xf2c230 : 0x1a1418, kind: Math.random() < 0.3 ? undefined : 'smoke', speed: 0.4, life: 0.8, size: 0.25 });
       }
       if (g.open) continue;
-      if (g.side === 'max' && p.pos.x > g.x - 0.55) p.pos.x = g.x - 0.55;
-      if (g.side === 'min' && p.pos.x < g.x + 0.55) p.pos.x = g.x + 0.55;
+      for (const p of bodies) {
+        if (!p || !p.pos) continue;
+        if (g.side === 'max' && p.pos.x > g.x - 0.55) p.pos.x = g.x - 0.55;
+        if (g.side === 'min' && p.pos.x < g.x + 0.55) p.pos.x = g.x + 0.55;
+      }
     }
   }
 
@@ -748,6 +753,14 @@ export class Dungeon {
     this.hudAdd('pve-noboss');
     this.pveHud.hint(null);
     if (this.D.boss === 'degolificada') {
+      // a PASSAGEM SECRETA se fecha atrás de quem entrou (pedido do dono, 2026-11-08: dava para voltar para a biblioteca):
+      // quem ficou para trás (o 2º jogador em dupla) vem junto para dentro do bunker; abre de novo quando ela cai
+      if (r.bossTrigger && !this.bossGate) {
+        const gx = r.rects[0].minX - 0.2;
+        this.bossGate = this.addGate(gx, 'min');
+        this.audio.play('closetSlam', { volume: 0.8, pitch: 0.7 });
+        for (const q of this.players) if (q.pos.x < gx + 0.6) { q.pos.set(gx + 1.6, q.pos.y, 0); resolveBody(w.arena, q.pos, q.radius || 0.5); }
+      }
       // ela se forma no meio do bunker (pve/degolificada.js), depois a luta
       this.bossIntro = new DegolificadaIntro(this, r.spawn);
       return;
@@ -819,7 +832,7 @@ export class Dungeon {
     // ESCOLHE moedas ou vida (pedido do dono, 2026-11-06)
     const missing = n - ups.length;
     if (missing > 0) {
-      const coins = Math.round(missing * (12 + Math.random() * 12) * (1 + 0.25 * Math.max(0, this.run.depth - 1)) * (1 + (c.luck || 0)));
+      const coins = Math.round(missing * (3 + Math.random() * 3) * (1 + 0.25 * Math.max(0, this.run.depth - 1)) * (1 + (c.luck || 0))); // antes 12–24 cada (moedas menores, 2026-11-08)
       const heal = Math.min(0.75, 0.3 * missing);
       items.push({ icon: '?', colorCss: '#ffc040' });
       rows.push({ icon: '?', name: 'Moedas ou vida', tag: 'escolha' });
@@ -869,6 +882,7 @@ export class Dungeon {
       this.bossDeadAt = at;
       this.phase = 'bossDown';
       this.phaseTime = 0;
+      if (this.bossGate) this.openGate(this.bossGate);
       this.hud.callout(this.D.bossDownText || 'O ESPREITADOR CAIU', '#ffd84a');
       this.pveHud.hint(null);
       for (const c of this.copias) if (c.alive) c.kill();
@@ -942,7 +956,7 @@ export class Dungeon {
   openLevelUp() {
     this.pendingUps--;
     const choices = rollChoices(this.run.picks);
-    if (!choices.length) { this.openReward({ coins: Math.round(15 * (1 + 0.25 * Math.max(0, this.run.depth - 1))), heal: 0.3 }); return; }
+    if (!choices.length) { this.openReward({ coins: Math.round(4 * (1 + 0.25 * Math.max(0, this.run.depth - 1))), heal: 0.3 }); return; }
     this.audio.play('levelUp', { volume: 1 });
     this.choosing = true;
     const who = this.coop ? this.chooser : 0;

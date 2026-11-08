@@ -44,9 +44,11 @@
 - [x] **Beatrice — o que faltava do cânone** (v4.22.0): MERINTOFOBIA (cordas, raízes e veias a prendem 40% mais
       tempo), a Existida ACESA (atacada, os olhos e a boca brilham em amarelo e ela bate 20% mais forte por 3 s) e as
       FOICES DE JARDINAGEM saindo da bolsa. Números PROPOSTA.
-- [ ] **Beatrice — sobras do cânone, para decidir com o dono**: o canivete guardado embaixo da asa do Orpheu (hoje
+- [x] **Beatrice — sobras do cânone, para decidir com o dono**: o canivete guardado embaixo da asa do Orpheu (hoje
       fica sempre na mão) e o Vício em Adrenalina do cânone, em que a moeda decide se ela ataca o aliado ou o inimigo
       (no jogo a moeda dá dois buffs; a mania foi superada no cânone, então ficou assim).
+      **Decisão do dono (2026-11-08): deixar como está** — o canivete continua na mão (lê melhor na luta) e a moeda segue
+      dando os dois buffs.
 - [x] **Carina — o que faltava do cânone** (v4.23.0): MERCENÁRIA (a 1ª habilidade do round abre 2,5 s em que a
       próxima não recarrega), TREINADA EM ATLETISMO (metade do tempo no chão) e a AFINIDADE COM PRECOGNIÇÃO contra tiros
       (−12% de dano de projéteis). O Saque Rápido já estava no □. Números PROPOSTA.
@@ -63,7 +65,7 @@
       Foto nova de perto (Carniçal de garras estendidas, Joui curvado em transe em Tipora) e o Carniçal citado no texto.
 - [x] `char_carnical.py`: os comentários "PROPOSTA visual" viraram o porquê do ajuste (contraste não é cânone, é
       leitura no jogo); o .glb não muda.
-- [ ] Tag `v4.7.1` não existe (a release saiu junto da v4.8.0); criar só se o dono quiser os apps dela separados.
+- [x] Tag `v4.7.1` não existe (a release saiu junto da v4.8.0). Decisão do dono (2026-11-08): não criar; a v4.8.0 já contém tudo.
 - [x] Fotos da página Sobre (v4.10.0): luta refeita de perto e sem HUD (Arthur × Kaiser em Tipora); a da Hipnose refeita
       fora do clarão de dano (no primeiro close o Joui saiu branco). A da seleção é a tela do jogo e ficou.
 
@@ -91,7 +93,7 @@
   nomes dos arquivos baixados.
   - [x] Repositório/URL → `veu-partido` (pedido do dono, 2026-11-01, v4.7.0): código e links trocados, `gh repo rename`
     feito e o Pages publicado em https://romavitordev.github.io/veu-partido/. Os arquivos `Arena-Paranormal-*.exe/.apk` continuam com o nome antigo (decidir à parte).
-  - [ ] `public/ordo-realitas.ico` ficou sem uso (mantido); apagar quando quiser.
+  - [x] `public/ordo-realitas.ico` ficou sem uso; apagado em 2026-11-08 (pedido do dono).
 - [x] **Menu no celular deitado não cabia** (pedido do dono, v4.2.0): duas colunas em tela baixa.
 - [x] **Fundo único dos personagens na seleção** (pedido do dono, v4.2.0): `portraits.js`, no lugar da cor da equipe.
 - [x] **v4.2.0 — ESPECIAL EM EQUIPE (notas do dono, 2026-11-01, jogando com Os Mascarados):** feito em
@@ -1236,7 +1238,7 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       método e a troca de sala quebrava no meio. `kill()` novo em `combat/npcs.js`.
 - [x] **Bateria do Outro Lado em qualquer dungeon** (2026-11-08): `run(ids, n, 'degolificada')` e
       `summary('degolificada')` (cada dungeon guarda à parte); no chefe-enigma as provas contam como achadas.
-- [ ] **Escola: a Degolificada está dura demais depois do escudo** (bateria de 2026-11-08, 18 personagens × 2, CPU
+- [x] **Escola: a Degolificada está dura demais depois do escudo** (bateria de 2026-11-08, 18 personagens × 2, CPU
       Difícil, sem melhorias): ela cai só em 20 de 36 lutas em 180 s (Espreitador: todos em 78–123 s) e quase todos
       levam 90–160% da vida. Gaius e Dalmo não a derrubaram nenhuma vez. Na sala da Escola, Morato, Kaiser, Kemi e
       Arthur não limparam nenhuma das 2 (91 s, 80–130% de dano). Antes de mexer: a Devoradora chega aos 120 s
@@ -1255,6 +1257,22 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       o dano dela também baixam.
       **2ª amostra (2026-11-08):** Chico, Arnaldo e Kemi com 3 amostras cada: limpam a sala (20–23 s) mas a chefe cai
       só em 1 de 3 (169–178 s, 55–59% da vida perdida) → `PVE_CHAR_TUNE` dano ×1,1 para os três.
+      **3ª amostra, depois do ajuste (2026-11-08):** a chefe caiu em 8 de 9 (Chico 2 de 3 — a 3ª ficou com 7% em 181 s —,
+      Arnaldo 3 de 3, Kemi 3 de 3), em 62–159 s, com 18–61% da vida perdida; salas em 17–31 s. Dentro do alvo (parecido
+      com o chefe do Espreitador): fechado sem mexer na vida ou no dano dela.
+- [x] **Feedback do dono sobre o Outro Lado (2026-11-08)**:
+      - **Moedas demais** ("1021 moedas em 3 fases"): continuam saindo com a mesma frequência, mas POUCAS — drop de gaveta,
+        barril e monstro 4–10 → 1–3 (×profundidade); baú sem melhoria para subir 12–24 → 3–6 por item; nível sem carta 15
+        → 4; recompensa do chefe 30/34 → 12/14 (`pve/unlocks.js`, `pve/Dungeon.js`, `pve/dungeons.js`). Teste novo em
+        `tests/pve.test.js`. PROPOSTA: medir numa partida de verdade e ajustar.
+      - **Corredores da escola apertados**: o corredor principal passou de 5 para 9 m de parede a parede (duas fileiras de
+        luminárias) e o dos fundos de 4 para 7 m (`tools/blender/arena_escola.py` → `public/arenas/escola.glb`; portas,
+        gavetas, baús e área em `pve/dungeons.js`). Conferido no jogo.
+      - **Dava para sair da sala da chefe voltando para a biblioteca**: a passagem secreta FECHA quando a luta começa (a
+        barreira escura, `Dungeon.bossGate`), puxa para dentro do bunker quem ficou para trás e abre de novo quando ela cai.
+      - **Chefe e jogador presos no corredor da saída** (o print em dupla): as barreiras só seguravam o 1º jogador, então
+        o 2º atravessava a porta de saída ainda fechada e a chefe ia atrás. Agora seguram os dois jogadores e a chefe
+        (`Dungeon.applyGates`). Conferido: jogador e chefe param em x 91,75 com a saída fechada; a passagem segura em 70,65.
 - [x] **NEBLINA CRESCENTE NA ESCOLA** (pedido do dono, 2026-11-08: "bem fraca nas primeiras salas e ir aumentando a
       cada sala até o boss"): `mist` em `pve/dungeons.js` + `Dungeon.updateMist`. O fog da cena vai de escuro e ralo
       (0,045 no corredor) a cinza e denso (0,085 na última sala antes do chefe, 0,09 na biblioteca), mudando devagar
@@ -1803,7 +1821,10 @@ A atualização deverá ser considerada funcional quando os seguintes pontos apl
 
 ### Jogo de luta
 
-- [ ] As melhorias de animações, modelos, especiais em equipe e câmera foram implementadas sem quebrar as batalhas existentes.
+- [x] As melhorias de animações, modelos, especiais em equipe e câmera foram implementadas sem quebrar as batalhas existentes.
+      (Conferido em 2026-11-08: 3 lutas completas CPU × CPU — Beatrice/Morato/Balu × Rubens/Chico/Arnaldo em equipe, Kian ×
+      Raziel, Jae × Gaius — sem erro, 11 especiais rodando, com o hitstop dos finalizadores, a pose segurada e a câmera de
+      enxame ligados.)
 - [x] A interface foi ajustada sem prejudicar o modo de luta tradicional.
 
 ### Dungeons e chefes
@@ -2234,6 +2255,10 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       [x] 2026-11-08: a MAGISTRADA com acabamento `sculpt_lib`: a CAPA cai em pregas fundas que se abrem para baixo
       (antes um cone liso), e a camisa, a calça e o tecido do pescoço ganharam dobras de pano e as tranças os fios.
       As máscaras (`seita.glb`) ficaram como estavam.
+      [x] 2026-11-08 (pedido do dono, "veja quais não foram"): os únicos `char_*.py` ainda sem `sculpt_lib` eram as
+      MÁSCARAS (`char_seita.py`) e o ESTRANGEIRO (o Arnaldo e o Anfitrião usam o `arnaldo_common.py`, que já tem). Os dois
+      ganharam o `sculpt_lib.pleat_pass` novo (PREGAS verticais que nascem rasas na cintura e se abrem para baixo, em vez
+      do cone liso) + o `cloth_pass`. `seita.glb` 1,2 → 3,2 MB, `estrangeiro.glb` 1,5 → 2,1 MB. Conferido nas prévias.
 - [x] **O ESTRANGEIRO: os "SOLDADOS"** (feito em 2026-10-30) — no cânone são os DOPPELGANGERS (wiki "Doppelganger", apelido
       "Homens de Terno"; Sinais do Outro Lado ep. 3: chegam na van preta de terno e chapéu): o rosto rachado ao meio, olhos
       pequenos pretos de pupila verde, dedos longos e pontudos, e os FUZIS ALHEIOS (pistolas de plasma verde, sem munição).
@@ -2276,7 +2301,7 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         [x] 2026-11-01: JANELA PARA CONVERTER — com o perseguidor caído ou atordoado e a distância já segura, o atirador
         ATIRA em vez de só fugir. CPU × CPU (normal): **Arthur × Raziel 3×1** (antes 0×3).
       - CPU no BOTÃO DO ANFITRIÃO: larga tudo, corre até o botão e aperta primeiro (testado no Fácil e no Difícil).
-- [ ] **PLANEJAMENTO — DISTRIBUIÇÃO PELO CÂNONE (pesquisa de 2026-10-27, wiki "Relíquias da Calamidade" e "A
+- [x] **PLANEJAMENTO — DISTRIBUIÇÃO PELO CÂNONE (pesquisa de 2026-10-27, wiki "Relíquias da Calamidade" e "A
       Magistrada").** Cada Relíquia é um OBJETO, e quem a porta recebe um TÍTULO:
       | Elemento | Relíquia (objeto) | Título do portador | Portadores no cânone |
       |---|---|---|---|
@@ -2366,6 +2391,8 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         0,24 → 0,16 s, recarga 1,8 → 1,0 s, voo 38 → 46 m/s, dano 28 → 25; Flechas Caóticas com preparo 0,16 s e 0,1 s
         entre as flechas.
       - [ ] **ORDO CALAMITAS**: Faustus, Marius, Remus (Marcados) e Cascadia (Cornelius, Karise e Marcellus ficam de fora — decisão do dono, 2026-10-31)
+        (2026-11-08: os itens 1–6 do planejamento estão feitos; só faltam estes 4 personagens novos. O dono pediu para
+        pular por enquanto.)
       - [x] **O MODELO DAS MÁSCARAS** (feito em 2026-10-27: modelo próprio `tools/blender/char_seita.py` → `public/models/seita.glb` — túnica branca longa com as regiões pretas, capuz, pelerine, forca no pescoço, corda na cintura e os Símbolos tatuados nos antebraços, como na wiki; as máscaras em 3D, uma por membro: Nathaniel, riscada de vermelho, preta e a do sorriso — `weapons.js seitaMask`) que a Magistrada chama (os membros da Seita das Máscaras) — refazer na técnica atual
         (pedido de 2026-10-27).
 - [x] **SKIN do ANFITRIÃO do ARNALDO ≠ ANFITRIÃO base** — entregue na v3.52.0: o Anfitrião selecionável das Relíquias tem o
@@ -2632,8 +2659,11 @@ Confirmadas pelo pedido:
       **Feito (2026-11-08):** ligação `balu_rubens` (`config/teamLinks.js`, coreografia `balu_rubens` em
       `combat/teamSpecials.js`): o Balu vem CORRENDO de longe e a fala sai na legenda de diálogo com o nome dele; abre
       com a machadada. O Rubens chega correndo do lado com "É RUBENS!" e os dois batem JUNTOS, um golpe atrás do
-      outro (machado e martelo), até a pancada dupla. **PROPOSTA:** os golpes são os do kit de cada um, para o dono
-      trocar pelos que escolher.
+      outro (machado e martelo), até a pancada dupla.
+      **Golpes escolhidos pelo dono (2026-11-08):** o Balu abre com o **Machado em Giro** (o machado sai girando da mão,
+      acerta e volta) e faz a **Pancada do Urso** (ombrada + machadada no chão, como no especial dele); o Rubens bate com
+      o **Martelo** (lateral, cruzada, por cima) e fecha com o **Queima-Roupa** (troca o martelo pela Glock colada no
+      alvo). Conferido rodando a cena no jogo: ~460 de dano, sem erro, peças devolvidas no fim.
 - [x] **OS CINCO — especial de grupo** (2026-11-02): Morato comanda e dispara a metralhadora; Chico combina pulso do
   scanner e clarão do farol; Xande avança de skate com o taco; Lírio prende com as Magras e golpeia com a Leonora; Guizo
   registra com a câmera e corta; Dara usa a lanterna UV e finaliza no corpo a corpo. Mantidos os itens e habilidades

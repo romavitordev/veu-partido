@@ -1,6 +1,12 @@
 # Registro administrativo de alterações
 
 ## Não lançado
+- Outro Lado (feedback do dono): moedas menores (`rollLoot` 1–3 ×prof., `rollChest` 3–7, `openChest` sobra 3–6/item, `openLevelUp` 4, `coinsBoss` 12/14); Escola com corredores largos (`arena_escola.py`: corredor −4,5…4,5, fundos 50,5…57,5; `dungeons.js` rects/portas/gavetas/baús); `applyGates` segura todos os jogadores e o inimigo (não `lurking`); `bossGate` fecha a passagem do bunker em `startBoss` (Degolificada) e abre no `bossDown`. Teste de moedas em `tests/pve.test.js`.
+- Escola: 3ª amostra da bateria (Chico, Arnaldo, Kemi × 3): a chefe caiu em 8 de 9; item fechado.
+- Modelos: `sculpt_lib.pleat_pass` (pregas verticais que se abrem para baixo) + `cloth_pass` em `char_seita.py` e `char_estrangeiro.py`.
+- Animação (docs/REFERENCIAS-ANIMACAO.md, as 3 propostas aprovadas): `COMBAT.hitstopBy.finisher` 0,14 s no último golpe com `finisher` (`Fighter.js`); `Fighter.poseHold` (pose segurada) aplicado em cada impacto do `cinematicCombo` (0,05 s / 0,085 s no final; `h.hold`, `sp.poseHold`); câmera `orbit` em volta do alvo nos `cinematicCombo` de enxame (`burst.count` ≥ 6 ou `bird`; `sp.swarmCam`).
+- `balu_rubens`: Machado em Giro (cópia do prop `axe` voando e voltando), Pancada do Urso (`shoulder_bash` + `hammer_ground`), Martelo do Rubens e Queima-Roupa (troca `hammer` → `glock`, desfeito no fim); END = S + 4,8.
+- Apagado `public/ordo-realitas.ico` (sem uso). Tag v4.7.1: decidido não criar.
 
 - `combat/npcs.js`: `Marionette.kill()` (some na hora); o `Dungeon` chamava `kill()` nos Zumbis de Sangue que sobram na troca de sala e na queda do chefe e quebrava.
 - `config/balance.js`: espreitador 1.17/0.89 → 1.32/0.8 (20% → 48% em 172 lutas); degolificada mantida (43%).

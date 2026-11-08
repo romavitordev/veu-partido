@@ -238,29 +238,31 @@ def classroom(name, x0, z0, subject):
 
 
 # =============================================================== O CORREDOR (x −22…0): onde a tentativa começa
-closed_room('corredor', -22, 0, -2.5, 2.5)
+# LARGO como corredor de escola (pedido do dono, 2026-11-08: "muito apertados"): 9 m de parede a parede (antes 5)
+closed_room('corredor', -22, 0, -4.5, 4.5)
 # a porta principal (a entrada do antigo mosteiro), fechada atrás de quem entrou
-box('corredor_main_door', (-21.9, 1.3, 0), (0.1, 2.6, 2.0), M['wood'])
-box('corredor_main_arch', (-21.92, 2.75, 0), (0.12, 0.3, 2.3), M['stone'])
+box('corredor_main_door', (-21.9, 1.3, 0), (0.1, 2.6, 3.2), M['wood'])
+box('corredor_main_arch', (-21.92, 2.75, 0), (0.12, 0.3, 3.5), M['stone'])
 # os armários de aço dos dois lados (os vãos: as portas do jogo em x −8 no norte e −14 no sul, e as gavetas)
-locker_row('corredor_lockN', -21.5, -0.5, -2.27, 0.0, skip=((-9.0, -7.0), (-11.4, -10.6)))
-locker_row('corredor_lockS', -21.5, -0.5, 2.27, math.pi, skip=((-15.0, -13.0), (-6.4, -5.6)))
+locker_row('corredor_lockN', -21.5, -0.5, -4.27, 0.0, skip=((-9.0, -7.0), (-11.4, -10.6)))
+locker_row('corredor_lockS', -21.5, -0.5, 4.27, math.pi, skip=((-15.0, -13.0), (-6.4, -5.6)))
 for i, x in enumerate((-19, -12.5, -5)):
-    lamp(f'corredor_lamp{i}', x, 0, flicker=(i == 1))
+    lamp(f'corredor_lamp{i}', x, -1.6, flicker=(i == 1))
+    lamp(f'corredor_lampS{i}', x, 1.6)
 # o quadro de avisos, o extintor e a placa de SAÍDA (verde)
-plane('DECAL_corredor_avisos', (-17.0, 2.35, -2.02), (1.4, 0.5), M['paper'])
-cyl('corredor_extintor', (-3.2, 0.35, 2.0), 0.08, 0.5, M['red'], seg=10)
+plane('DECAL_corredor_avisos', (-17.0, 2.35, -4.02), (1.4, 0.5), M['paper'])
+cyl('corredor_extintor', (-3.2, 0.35, 4.0), 0.08, 0.5, M['red'], seg=10)
 box('corredor_exitsign', (-21.8, 2.95, 0), (0.06, 0.18, 0.5), M['exit'])
 # o INCÊNDIO passou por aqui: a fuligem nas paredes e no chão, e o sangue onde o bombeiro (Jorge) caiu
 for k in range(6):
-    box(f'corredor_soot{k}', (-3.5 + random.uniform(-2.5, 1.5), 1.4 + random.uniform(0, 1.2), -2.03 if k % 2 else 2.03), (random.uniform(0.8, 1.8), random.uniform(0.6, 1.4), 0.01), M['soot'])
+    box(f'corredor_soot{k}', (-3.5 + random.uniform(-2.5, 1.5), 1.4 + random.uniform(0, 1.2), -4.03 if k % 2 else 4.03), (random.uniform(0.8, 1.8), random.uniform(0.6, 1.4), 0.01), M['soot'])
 cyl('corredor_scorch', (-2.4, 0.004, 0.4), 1.4, 0.008, M['soot'], seg=18)
 cyl('corredor_blood', (-10.6, 0.005, 0.6), 0.7, 0.008, M['blood'], seg=16)
 cyl('corredor_blood2', (-10.0, 0.005, 1.1), 0.35, 0.008, M['blood'], seg=12)
 box('corredor_tape', (-10.3, 0.006, 0.8), (2.2, 0.004, 1.8), M['chalk'])  # a marcação da perícia
 box('corredor_tape_in', (-10.3, 0.0065, 0.8), (2.1, 0.004, 1.7), M['floor'])
-box('corredor_bench', (-16.5, 0.22, 1.9), (1.6, 0.44, 0.36), M['wood'])
-col_box('corredor_bench', (-16.5, 0.22, 1.9), (1.6, 0.44, 0.4))
+box('corredor_bench', (-16.5, 0.22, 3.9), (1.6, 0.44, 0.36), M['wood'])
+col_box('corredor_bench', (-16.5, 0.22, 3.9), (1.6, 0.44, 0.4))
 
 # =============================================================== AS SALAS DE AULA
 classroom('historia', 0, 30, 'historia')
@@ -324,11 +326,12 @@ for k in range(5):  # caixas de papel caídas
     box(f'arq_floorbox{k}', (27.5 + random.uniform(-1, 1), 0.15, 54 + random.uniform(-2, 2)), (0.5, 0.3, 0.38), M['paper'], rot_y=random.uniform(0, 1.5))
 lamp('arq_lamp', 25, 54, flicker=True, w=1.0)
 
-# =============================================================== O CORREDOR DOS FUNDOS (x 40…56, z 52…56) — PROPOSTA
-closed_room('fundos', 40, 56, 52, 56)
-locker_row('fundos_lockN', 40.5, 55.5, 52.27, 0.0, skip=((47.0, 49.0),))
-locker_row('fundos_lockS', 40.5, 55.5, 55.73, math.pi, skip=((43.0, 45.0), (50.6, 51.4)))
-box('fundos_fountain', (53.0, 0.5, 55.6), (0.5, 1.0, 0.35), M['steel'])
+# =============================================================== O CORREDOR DOS FUNDOS (x 40…56, z 50,5…57,5) — PROPOSTA
+# largo (2026-11-08): 7 m (antes 4)
+closed_room('fundos', 40, 56, 50.5, 57.5)
+locker_row('fundos_lockN', 40.5, 55.5, 50.77, 0.0, skip=((47.0, 49.0),))
+locker_row('fundos_lockS', 40.5, 55.5, 57.23, math.pi, skip=((43.0, 45.0), (50.6, 51.4)))
+box('fundos_fountain', (53.0, 0.5, 57.1), (0.5, 1.0, 0.35), M['steel'])
 box('fundos_exitsign', (55.8, 2.9, 54), (0.06, 0.18, 0.5), M['exit'])
 for i, x in enumerate((43, 51)):
     lamp(f'fundos_lamp{i}', x, 54, flicker=(i == 0))

@@ -65,7 +65,8 @@ export function rollLoot(source, rng = Math.random, depth = 1, mult = 1) {
   if (!o) return null;
   const d = 1 + 0.25 * Math.max(0, depth - 1);
   let r = rng() / Math.max(0.2, mult);
-  if ((r -= o.coins || 0) < 0) return { kind: 'coins', amount: Math.round((4 + rng() * 6) * d) };
+  // MOEDAS: sempre aparecem, mas POUCAS (pedido do dono, 2026-11-08: "1021 moedas em 3 fases"; antes 4–10 por drop)
+  if ((r -= o.coins || 0) < 0) return { kind: 'coins', amount: Math.max(1, Math.round((1 + rng() * 2) * d)) };
   if ((r -= o.xp || 0) < 0) return { kind: 'xp', amount: Math.round((10 + rng() * 10) * d) };
   if ((r -= o.heal || 0) < 0) return { kind: 'heal', amount: 0.15 };
   return null;
@@ -74,7 +75,7 @@ export function rollLoot(source, rng = Math.random, depth = 1, mult = 1) {
 export function rollChest(rng = Math.random, depth = 1, luck = 0) {
   const r = rng();
   const m = 1 + luck;
-  if (r < CHEST_ODDS.coins) return { kind: 'coins', amount: Math.round((10 + rng() * 14) * (1 + 0.25 * Math.max(0, depth - 1)) * m) };
+  if (r < CHEST_ODDS.coins) return { kind: 'coins', amount: Math.round((3 + rng() * 4) * (1 + 0.25 * Math.max(0, depth - 1)) * m) };
   if (r < CHEST_ODDS.coins + CHEST_ODDS.heal) return { kind: 'heal', amount: Math.min(0.6, 0.25 * (1 + luck * 0.6)) };
   return { kind: 'xp', amount: Math.round(30 * m) };
 }

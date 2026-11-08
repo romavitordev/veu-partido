@@ -936,7 +936,10 @@ export class Fighter {
     this.rig.root.rotation.y = this.yaw;
     // pés presos ao chão só com o lutador apoiado (no ar, sendo lançado ou caído, a pose manda)
     this.rig.groundLock = this.onGround && !['launched', 'ko', 'downed', 'grabbed', 'pulled', 'special'].includes(this.state);
-    this.anim.update(dt);
+    // POSE SEGURADA (especiais cinemáticos, docs/REFERENCIAS-ANIMACAO.md §2): a pose do impacto fica parada alguns
+    // quadros, como na animação limitada; o tempo segurado não se perde, a animação só atrasa
+    if (this.poseHold > 0) this.poseHold -= dt;
+    else this.anim.update(dt);
     // peças com movimento próprio (a corrente do mangual e do nunchaku da Carina: models/weapons.js → ropeChain)
     if (this.rig.tickers) for (const t of this.rig.tickers) t(dt, this);
     if (this.def.inkStream) this.updateInkStream();
@@ -2189,7 +2192,7 @@ export class Fighter {
       dir, strike: s, sound: s.hitSound,
       color: s.impactFx === 'sigil' ? 0xffffff : s.impactFx === 'shock' ? 0xfff4e0 : undefined,
       scale: s.impactScale,
-      hitstop: s.hitstop,
+      hitstop: s.hitstop ?? (fin ? COMBAT.hitstopBy.finisher : undefined),
     });
     if (res === 'blocked') {
       this.combo.blocked = true;

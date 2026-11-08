@@ -28,7 +28,7 @@ Fontes: as tabelas de frame data da comunidade ([SuperCombo / srk.shib.live, Gam
   - O Soco de arena (`active [0.2, …]`) sai em 12.
 - O nosso hitstop é **menor**: vai de 0,06 a 0,12 s (4–7 quadros) nos golpes de combo e chega a 0,14 s nas habilidades.
   - É de propósito, porque o jogo é 3D, tem combos longos e o ritmo é de arena, não de jogo de luta 2D.
-  - **PROPOSTA:** subir só os **finalizadores** (`finisher: 'launch'`) para 0,13–0,15 s e deixar os golpes do meio do combo como estão. O "estalo" do último golpe fica maior sem deixar o combo arrastado.
+  - **FEITO (2026-11-08, aprovado pelo dono):** o último golpe com `finisher` usa `COMBAT.hitstopBy.finisher` = 0,14 s (`Fighter.js`); os golpes do meio do combo ficam como estavam e quem tem `hitstop` próprio no golpe mantém o seu.
 
 ## 2. Guilty Gear (Xrd e Strive), Arc System Works: animação limitada e poses-chave seguradas
 
@@ -43,8 +43,7 @@ Fontes:
 
 **Como estamos**
 - `anim/strikePolish.js` (1ª leva) já faz antecipação, passagem (overshoot) e peso na volta, mas **interpola tudo de forma suave**.
-- **PROPOSTA:** um modo `stepped` opcional no `Animator` que segure a pose por 2–3 quadros nos especiais `cinematicCombo` (a pose do golpe e a do impacto). Só nos especiais, para não perder a fluidez do combate normal.
-  - Bons primeiros testes: Arnaldo, Joui e a Menina do Pássaro da Beatrice.
+- **FEITO (2026-11-08, aprovado pelo dono):** `Fighter.poseHold` congela a animação do lutador por alguns quadros; nos especiais `cinematicCombo` cada impacto segura a pose do atacante e do alvo por 3 quadros (0,05 s) e o último por 5 (0,085 s). Um golpe pode mudar com `hold` (0 desliga) e o especial inteiro com `poseHold`. O combate normal não muda.
 
 ## 3. Naruto Ultimate Ninja Storm (CyberConnect2): câmera de especial
 
@@ -55,7 +54,7 @@ Fontes:
 **O que copiar**
 - Na luta, a câmera **sempre mostra os dois lados** e eles se movem pela arena inteira, sem ficar cara a cara num plano só. É o que a nossa câmera de arena já faz.
 - Nos jutsus finais, a câmera **gira e torce** em volta dos projéteis (o "Itano Circus", homenagem aos mísseis de Macross).
-  - **PROPOSTA:** aplicar esse giro nos especiais de enxame, como os insetos do Morato, as cópias do Dante e as penas e corvos.
+  - **FEITO (2026-11-08, aprovado pelo dono):** nos `cinematicCombo` com rajada longa (`burst.count` ≥ 6: Morato, Chico) ou com o pássaro (Beatrice), o meio da cena vira um `orbit` em volta do alvo (−1,3 → +1,3 rad); `swarmCam` liga ou desliga à mão.
 - As cenas seguem o anime da série, foram feitas com ajuda dos estúdios da série e dão o peso narrativo do especial.
   - Para nós, isso confirma a regra do projeto de seguir a cena do cânone (o "Ordem Paranormal" como fonte do especial).
 
@@ -64,8 +63,8 @@ Fontes:
 1. **Antecipação proporcional ao peso.** Golpe leve: quase nenhuma. Golpe pesado: o corpo carrega para trás e o quadril desce. *(Já feito na 1ª leva.)*
 2. **Impacto = congelar + tremer + partículas + som**, tudo no mesmo quadro. *(Feito; ver `world.hitstop`, `impactFx` e a skill de game feel.)*
 3. **Passagem e peso na volta:** o golpe passa do ponto e volta devagar. *(Feito.)*
-4. **Pose de impacto segurada** nos especiais. *(PROPOSTA, item 2.)*
-5. **Hitstop maior no último golpe do combo.** *(PROPOSTA, item 1.)*
-6. **Câmera girando em volta de projéteis em enxame.** *(PROPOSTA, item 3.)*
+4. **Pose de impacto segurada** nos especiais. *(Feito, item 2.)*
+5. **Hitstop maior no último golpe do combo.** *(Feito, item 1.)*
+6. **Câmera girando em volta de projéteis em enxame.** *(Feito, item 3.)*
 
-As propostas 4–6 ficam para decidir com o dono antes de mexer, porque mudam a sensação de todos os personagens.
+As três foram aprovadas pelo dono em 2026-11-08 e aplicadas.
