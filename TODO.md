@@ -189,7 +189,8 @@
 - [~] 2.5 Auditoria de fidelidade ao cânone de todos os personagens (Capítulo Complementar v3.44.0/v3.45.0): **Raziel
   CONCLUÍDO (RZ-01 a RZ-09, 2026-10-26)** — Turno Extra, Sede Incontrolável, Banquete Bestial próprio, Vulto Retalhador
   no lugar do projétil, Maldição revista, crosta visível, kit próprio da forma (Língua, Predador), Afinidade com Sangue e
-  validação. **Arthur (§3.1) auditado na v3.46.0.** Falta a revisão dos outros personagens do elenco (§3.2 a §3.30).
+  validação. **Arthur (§3.1) auditado na v3.46.0.** §3.2–§3.29 auditados em 2026-11-01 e os que entraram depois
+  (§3.31–§3.40) em 2026-11-08. Falta: a decisão do dono sobre o Decepar do Joui (§3.2) e a revisão visual dos modelos (§3.30).
 - [x] **FEITO (v3.45.0/v3.46.0) — CENÁRIO NOVO + EQUIPE VAMPIROS.** Um cenário novo — pode ser o **interior da
   Igreja dos Vampiros de Hexatombe** (a Igreja de Sangue, ep. 9) — que entra junto com um **personagem novo de uma
   equipe nova, os VAMPIROS: Raziel**. Antes de começar: levantar o Raziel e a igreja na wiki/HQ (`lore/`, arte
@@ -508,6 +509,8 @@ Antes de propor alterações:
  (2026-11-01: wikitext pela API para todos de 3.2 a 3.28)
 - [~] Verificar as cenas relevantes nos episódios oficiais. Registrar episódio, cena e timestamp quando possível; não inventar timestamp se não foi conferido.
  — só os timestamps que a wiki cita; episódios não assistidos nesta passada.
+ 2026-11-08: na auditoria dos novos também só a wiki (nenhum episódio assistido). Conferir episódio, cena e minuto
+ exige assistir: fica com o dono ou para quando houver transcrição/legenda oficial disponível.
 - [~] Para poderes que vêm do RPG, consultar a descrição mecânica no livro/suplemento. Se o texto integral não estiver disponível legalmente, não reconstruir regras detalhadas de memória: usar a descrição pública e marcar a incerteza.
  — usada a descrição mecânica da wiki; o livro não foi consultado.
 - [x] Criar uma tabela: **habilidade atual → comportamento real no código → referência canônica → divergência → proposta → impacto técnico → teste de aceite**.
@@ -883,7 +886,31 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Seguir o plano RZ-01 a RZ-09: Turno Extra, Sede Incontrolável, Banquete Bestial diferenciado, investida de garras no lugar de projétil ou licença documentada, Endurecer Sangue com crosta visual, e kit bestial exclusivo.
   - Testes com CPU, jogador, alvos críticos, esquiva e finalizadores.
 
+- [x] **3.31–3.40 Personagens que entraram depois da 1ª auditoria** (auditados em 2026-11-08 contra o wikitext da wiki,
+  pela API, seções de Habilidades/Rituais/Itens; nenhum episódio assistido nesta passada). Categorias: C = CONFIRMADO
+  no código, A = ADAPTAÇÃO, F = de fora (com motivo).
+  | Personagem | Wiki | No jogo | Fora / observação |
+  |---|---|---|---|
+  | 3.31 Amalia | Altruísmo, Longa-Distância, Caótica | C: Altruísmo, Longa-Distância (`longShot`), passiva Caótica | Flecha Flamejante, Chuva e Flechas Caóticas = A (arco do cânone) |
+  | 3.32 Beatrice | ritual Descarnar; item Pingente da Lua Dourada | C: Pingente na forma Existida (resiste a Conhecimento); elemento Conhecimento | F: Descarnar (a wiki diz que ela nunca usou em vida). Canivete na mão e moeda com 2 buffs: decisão do dono (2026-11-08) |
+  | 3.33 Carina | Afinidade (Conhecimento), Resistência Paranormal (Energia), Saque Rápido, Furtividade/Ataque Furtivo, Atletismo, Mercenária, Bater e Reposicionar, Precognição, Pergaminho da Pertinácia | C: todos esses | F: Artista Marcial Atleta, Gatuno, Eclético (testes de perícia de mesa, sem tradução para luta) |
+  | 3.34 Carniçal | Garra da Morte, Físico Paranormal, Instinto Mortal, Corpo Fechado, Pancada Poderosa, Comando, Hipnose Espiral, Reanimar Corpos | C: todos menos um | F: Reanimar Corpos (invocar mortos: o Deus da Morte e o Diabo já têm) |
+  | 3.35 Celestine | Nada Pessoal, Código | C: os dois | Aliança Falsa, Sala da Morte, Endorfina = A pelas cenas de Calamidade |
+  | 3.36 Chico | Remendão, Engenhosidade, Nerd, Perito, Eclético, Inventário Otimizado; Scanner, Joias de Escudo Mental, Teclado de Conexão Neural | C: Remendão, Engenhosidade (transformação), Scanner, Joias (resistência) | F: Perito, Eclético, Inventário (mesa). Teclado só citado no código: PROPOSTA de habilidade futura |
+  | 3.37 Dara | Paramédico, Dedicação, Eclético, Perito | C: Paramédico, Dedicação | F: Eclético, Perito (mesa) |
+  | 3.38 Gaius | a wiki não lista habilidades; a biografia cita a que ANULA o que vem contra ele | C: Anular; transformação Amphitruo (Calamidade ep. 5) | o resto do kit = A (veterano da maça) |
+  | 3.39 Morato | "Tamo com Ele", Larva da Fúria "Calabresa" | C: os dois | Linha de Frente e o especial = A |
+  | 3.40 Rubens | Salto Fantasma, Afinidade (Energia), Saque Rápido, Mira de Elite, Paramédico, Tratar Ferimentos, Surto Temporal, Queima-Roupa; Amuleto (Sangue), Relógio de Arnaldo, Coração Pulsante | C: todos | Paramédico = A dentro de Tratar Ferimentos |
+  Resultado: nenhuma divergência que peça mudança de código. As duas `elementalAffinity` do Rubens são de propósito
+  (Energia = afinidade; Sangue = o Amuleto).
 - [~] **3.30 Revisão final cruzada — Formas, elementos e documentação:** 2026-11-01: registro de formas conferido por script — as 20 formas estão em `FORMS`, nenhuma `awakening.form` sem registro e nenhum arquivo de forma solto. Falta a classificação de cada forma e a revisão de elementos.
+  **2026-11-08 — classificação das 22 formas:** TRANSFORMAÇÃO TEMPORÁRIA (a barra, até o fim do round): diabo, fantasma,
+  labirinto_elmo, aguiar_mutilador, erin_caos, jae_x, colosso, guizo_et, kian_calamidade, cristino_desertor,
+  dante_aberto, joui_shinokage, raziel_verdadeiro, celestine_magistrada, amphitruo, carina_leone, beatrice_existida.
+  ENTIDADE SELECIONÁVEL (também é transformação de outro): deus_morte (Ferreiro), anfitriao (Arnaldo), juan_odio (Juan).
+  ESTADO NARRATIVO sem barra: guizo_bombado e guizo_velho (resultados do jogo do Anfitrião). Nenhuma é chefe nem só
+  skin. Elementos conferidos contra a origem de cada poder (Relíquias: Sangue/Energia/Morte/Conhecimento; Existida e
+  Magistrada: Conhecimento). Falta só a revisão visual dos modelos.
   - Comparar `src/characters/forms/index.js` com `src/characters/index.js`; garantir registro de todas as formas sem aliases confusos.
   - Classificar cada forma: transformação temporária, estado narrativo, chefe, entidade separada ou skin.
   - Conferir `element` e `energyColor` contra fontes canônicas (cor não comprova elemento).

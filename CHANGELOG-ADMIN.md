@@ -1,6 +1,7 @@
 # Registro administrativo de alterações
 
 ## Não lançado
+- Auditoria de cânone (TODO §3.31–§3.40): Amalia, Beatrice, Carina, Carniçal, Celestine, Chico, Dara, Gaius, Morato e Rubens contra o wikitext da wiki; nenhuma mudança de código. §3.30: as 22 formas classificadas (temporária / entidade selecionável / estado narrativo).
 - Outro Lado (feedback do dono): moedas menores (`rollLoot` 1–3 ×prof., `rollChest` 3–7, `openChest` sobra 3–6/item, `openLevelUp` 4, `coinsBoss` 12/14); Escola com corredores largos (`arena_escola.py`: corredor −4,5…4,5, fundos 50,5…57,5; `dungeons.js` rects/portas/gavetas/baús); `applyGates` segura todos os jogadores e o inimigo (não `lurking`); `bossGate` fecha a passagem do bunker em `startBoss` (Degolificada) e abre no `bossDown`. Teste de moedas em `tests/pve.test.js`.
 - Escola: 3ª amostra da bateria (Chico, Arnaldo, Kemi × 3): a chefe caiu em 8 de 9; item fechado.
 - Modelos: `sculpt_lib.pleat_pass` (pregas verticais que se abrem para baixo) + `cloth_pass` em `char_seita.py` e `char_estrangeiro.py`.
