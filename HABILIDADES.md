@@ -509,6 +509,96 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## FERNANDO CARVALHO
+
+*O cantor que divide o corpo com o marido, o Luciano* · arma: O canivete e a Glock 17; quando o Luciano assume, a M4
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte nervoso | 20 | 1.5 m |  |
+| ○ 2 | Corte de volta | 20 | 1.5 m |  |
+| ○ 3 | Empurrão | 22 | 1.8 m |  |
+| ○ 4 | Fica longe! | 46 | 1.8 m | finalizador: lança |
+| Frente + ○ | Avanço com medo | 28 | 1.8 m |  |
+| Trás + ○ | Recua e corta | 32 | 1.7 m | invulnerável no começo |
+| Lado + ○ | Corte de lado | 22 | 1.6 m |  |
+| No ar + ○ | Corte aéreo | 28 | 1.7 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte para cima | 30 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 34 | 1.8 m | finalizador: derruba |
+
+### Principal (□ / X): Glock 17
+
+- Dano 15 × 2 · alcance 28 m · cooldown 2 s · custo 0
+
+### Habilidades
+
+- **Luciano** — △ + L2 / Y + LT · custo 0 · cooldown 8 s
+  O Fernando se apavora, os olhos ficam AMARELOS e o Luciano assume o corpo: o kit vira o do Luciano na hora (a vida é a mesma). No Luciano, a habilidade "Fernando" troca de volta.
+- **Calmantes** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
+  Toma os calmantes e respira fundo: recupera vida por 3 s (mais se ficar parado). Apanhar no meio não cancela.
+- **Lanterna** — △ + □ / Y + X · custo 16 · cooldown 12 s · alcance 8 m
+  Acende a lanterna na cara do adversário: quem estiver de frente e olhando fica CEGO por 1,2 s e ATORDOADO por 0,7 s.
+- **Canção do Pote de Vidro** — △ + ○ / Y + B · custo 20 · cooldown 18 s
+  Cantarola a música do primeiro álbum para não entrar em pânico: por 5 s recebe 30% menos dano e não recua com golpes leves.
+
+### Especial: LuciFer
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Motivo Pra Lutar
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano (físico, distância, habilidades), −12% de dano recebido, +6% de velocidade, recargas 30% mais rápidas, regenera 3 de vida/s, cura 10% na hora.
+
+---
+
+## LUCIANO CARVALHO
+
+*O marido ex-militar que assume o corpo quando o Fernando se apavora* · arma: A M4 com lanterna, o canivete e os anéis dos rituais
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte seco | 24 | 1.6 m |  |
+| ○ 2 | Cotovelada | 26 | 1.6 m |  |
+| ○ 3 | Corte de volta | 24 | 1.6 m |  |
+| ○ 4 | Estocada de militar | 54 | 1.9 m | finalizador: lança |
+| Frente + ○ | Avanço de assalto | 34 | 1.9 m |  |
+| Trás + ○ | Recua e corta | 34 | 1.8 m | invulnerável no começo |
+| Lado + ○ | Chute lateral | 30 | 1.9 m |  |
+| No ar + ○ | Corte aéreo | 32 | 1.8 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho | 36 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 38 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): M4
+
+- Dano 15 × 4 · alcance 36 m · cooldown 2.6 s · custo 0
+- Frente + □: **ANEL ESPIRAL** — 7.5 × 8
+
+### Habilidades
+
+- **Fernando** — △ + L2 / Y + LT · custo 0 · cooldown 8 s
+  O Luciano relaxa e devolve o corpo: os olhos voltam ao ROSA e o kit vira o do Fernando (a vida é a mesma).
+- **Reação** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
+  Ritual de Energia: por 4 s, metade de todo dano recebido VOLTA para quem bateu como Energia caótica, e a outra metade vai para a mente (gasta sanidade em vez de vida).
+- **Descarnar Discente** — △ + ○ / Y + B · custo 30 · cooldown 14 s · dano 76 · alcance 9 m
+  Ritual de Sangue: passa o sangue no anel, encara o alvo e a carne dele se despedaça em cortes, um atrás do outro (dano alto e sangramento).
+- **Mente Inabalável** — R2 + × / RT + A · custo 18 · cooldown 20 s
+  Fecha a cara de militar: por 5 s aguenta 3 golpes sem recuar e recebe 15% menos dano.
+- **Passiva — Afinidade com Energia:** rituais de Energia +10%
+
+### Especial: Varredura
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Concentração Inquebrável
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (distância, habilidades), −10% de dano recebido, +5% de velocidade, recargas 35% mais rápidas, regenera 2 de vida/s, cura 8% na hora.
+
+---
+
 ## SENHOR VERÍSSIMO
 
 *Líder da Ordo Realitas: Inteligência Estratégica e o Segredo de Veríssimo* · arma: A espada do Arnaldo e uma escopeta curta

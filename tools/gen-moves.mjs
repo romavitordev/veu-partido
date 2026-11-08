@@ -2,6 +2,7 @@
 //   npm run moves
 import { writeFileSync } from 'node:fs';
 import { ROSTER } from '../src/characters/index.js';
+import { getForm } from '../src/characters/forms/index.js';
 import { COMBAT } from '../src/config/combat.js';
 import { ELEMENTS } from '../src/config/elements.js';
 import { specialSummary } from '../src/ui/moves.js';
@@ -51,7 +52,10 @@ especial = Carga → Carga → ○ (custa ${COMBAT.specialEnergyCost}, ofensivos
 **Câmera:** sempre travada no adversário.
 `;
 
-for (const c of ROSTER) {
+// a outra ficha de quem troca de corpo no meio da luta (Fernando ↔ Luciano) sai logo depois da base
+const SHEETS = ROSTER.flatMap((c) => [c, ...(c.abilities || []).filter((a) => a.type === 'partnerSwap' && a.to).map((a) => getForm(a.to)).filter(Boolean)]);
+
+for (const c of SHEETS) {
   const r = c.ranged;
   const sp = c.special;
   md += `\n---\n\n## ${c.name}\n\n*${c.info.identity}* · arma: ${c.info.weapon}\n\n`;

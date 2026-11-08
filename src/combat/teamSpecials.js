@@ -451,8 +451,8 @@ const CHOREO = {
   forca_d({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 6.4 });
     const kaiser = tools.get('kaiser'), joui = tools.get('joui'), dante = tools.get('dante'), arthur = tools.get('arthur');
-    const erin = tools.get('erin'), beatrice = tools.get('beatrice');
-    const actors = [kaiser, joui, dante, arthur, erin, beatrice].filter(Boolean);
+    const erin = tools.get('erin'), beatrice = tools.get('beatrice'), fernando = tools.get('fernando');
+    const actors = [kaiser, joui, dante, arthur, erin, beatrice, fernando].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
@@ -595,6 +595,27 @@ const CHOREO = {
         world.fx.flash(beatrice.chest(), { color: 0xf4f0d8, size: 0.8, life: 0.12 });
         tools.impact(beatrice, damageOf(beatrice), { sound: 'bladeHit', color: 0xf2c230 });
       });
+    }
+
+    // FERNANDO: por último, do lado; os olhos ficam amarelos (o Luciano assume) e três tiros da Glock 17
+    if (fernando) {
+      tl.add(S + 5.45, () => {
+        if (!live()) return;
+        const at = tools.around(fernando, 1.1, 3.4);
+        fernando.show(END - (S + 5.45), at);
+        fernando.pos.set(at.x, 0, at.z);
+        fernando.face(opp);
+        fernando.play('point', 0.5);
+        world.fx.flash(head(fernando), { color: 0xe8b818, size: 0.8, life: 0.2 });
+      });
+      for (let i = 0; i < 3; i++) {
+        tl.add(S + 5.62 + i * 0.08, () => {
+          if (!live()) return;
+          world.fx.tracer(fernando.chest(), opp.chestPos(), { color: 0xffe08a, life: 0.1, width: 0.03 });
+          world.audio.play('m4', { volume: 0.5 });
+          if (i === 2) tools.impact(fernando, damageOf(fernando), { sound: 'impact', color: 0xe8b818 });
+        });
+      }
     }
 
     const F = S + 6.4;

@@ -19,6 +19,7 @@ test('team links identify Força D trio', () => {
   assert.equal(link.banner, 'Força D!');
   assert.equal(getTeamLink(['erin', 'kaiser', 'dante']).id, 'forca_d');
   assert.equal(getTeamLink(['erin', 'beatrice', 'joui']).id, 'forca_d');
+  assert.equal(getTeamLink(['fernando', 'erin', 'beatrice']).id, 'forca_d'); // o casal Carvalho entra na Força D
 });
 
 test('team links identify Os Cinco and the available Abutres group', () => {

@@ -278,6 +278,20 @@ export const VOICES = {
       any: [(o) => `Anotado. Fio, cobre, solto.`, (o) => `Fala menos, ${o.name}. Eu entendo pouco.`],
     },
   },
+  // FERNANDO CARVALHO (e o Luciano no mesmo corpo): o Fernando abre gentil e nervoso; quando é rival, quem responde
+  // por ele às vezes é o Luciano (olhos amarelos)
+  fernando: {
+    open: {
+      ally: (o) => `${o.name}! Treino, né? Pega leve comigo, por favor.`,
+      rival: (o) => `${o.name}... ${o.one}. Eu tô com medo, mas eu não saio daqui.`,
+      any: [(o) => `Oi, ${o.name}. Se eu me assustar muito, o Luciano aparece. Só avisando.`, (o) => `${o.name}, eu tenho um motivo pra lutar. Isso já basta.`],
+    },
+    reply: {
+      ally: (o) => `Combinado, ${o.name}. Depois a gente toca alguma coisa.`,
+      rival: (o) => `(olhos amarelos) Chega, ${o.name}. Agora é comigo.`,
+      any: [(o) => `Tá bom, ${o.name}. Respira, Fernando. Respira.`, (o) => `(olhos amarelos) Fala com o Fê de novo e eu atiro, ${o.name}.`],
+    },
+  },
   // BEATRICE PORTINARI: gentil, curiosa e altruísta, mas firme com os Escriptas — "Saber tudo é perder tudo."
   beatrice: {
     open: {

@@ -137,6 +137,7 @@ export function abilityUsePrior(a, f, opp, { distance, lowHp, opening, threat, l
   const selfTarget = SELF_TYPES.includes(a.type);
   if (!selfTarget && (opp.state === 'downed' || opp.isInvulnerable?.())) return 0;
   if (a.hpCost && f.health - a.hpCost < f.maxHealth * 0.2) return 0;
+  if (a.ai?.when === 'never') return 0; // a CPU não usa (ex.: o Luciano devolvendo o corpo ao Fernando)
   if (a.ai?.when === 'opening' && !opening) return 0;
   if (a.ritual && f.buffs?.some((b) => b.noRituals)) return 0; // Templo do Ódio: não conjura rituais
   if (a.ai?.when === 'far' && distance < (a.ai.min || 4)) return 0;
@@ -256,7 +257,7 @@ function sacrificeOk(f, opp) {
 // habilidades por comando (△ + ○/□/L2, R2 + △/× e □ + direção do Anfitrião); △ + × fica com a aproximação
 const isModAbility = (a) => a.input.startsWith('block+') || a.input.startsWith('ranged+') || (a.input.startsWith('carga+') && a.input !== 'carga+jump');
 // tipos que não precisam do adversário perto (buffs, invocações, regras do jogo...)
-const SELF_TYPES = ['weaponState', 'blink', 'mistCloud', 'healOverTime', 'hatredTemple', 'shadowClones', 'heavyProtection', 'noiseScreen', 'selfBuff', 'gameRule',
+const SELF_TYPES = ['partnerSwap', 'weaponState', 'blink', 'mistCloud', 'healOverTime', 'hatredTemple', 'shadowClones', 'heavyProtection', 'noiseScreen', 'selfBuff', 'gameRule',
   'chaosRule', 'hostTime', 'hostAudience', 'hostButton', 'orphanGame', 'hostClones', 'whisperZone', 'shadowVeil', 'shuffle', 'deadlySpeedTrail', 'agingHeal', 'calmEvade', 'falseAlliance'];
 
 export class CpuController {

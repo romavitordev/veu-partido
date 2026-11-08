@@ -2929,3 +2929,25 @@ export function balestra() {
   g.userData.muzzle = muzzle;
   return g;
 }
+
+// GLOCK 17 DO CASAL CARVALHO (wiki "Fernando Carvalho" / "Luciano Carvalho", Arsenal: "pistola semiautomática com
+// capacidade do carregador de 17 cartuchos 9mm"): a Glock preta comum, sem silenciador. Cano para -Y, como as outras
+export function glock17() {
+  const g = new THREE.Group();
+  const black = toon(0x1a1a1e);
+  const slide = part(new THREE.BoxGeometry(0.03, 0.19, 0.036), 0, { mat: black });
+  slide.position.set(0, -0.06, 0.03);
+  g.add(slide);
+  const frame = part(new THREE.BoxGeometry(0.028, 0.15, 0.022), 0x2a2a2e);
+  frame.position.set(0, -0.05, 0.004);
+  g.add(frame);
+  const grip = part(new THREE.BoxGeometry(0.028, 0.048, 0.1), 0, { mat: black });
+  grip.position.set(0, 0.004, -0.04);
+  grip.rotation.x = -0.22;
+  g.add(grip);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.16, 0.03);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}

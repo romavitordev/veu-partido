@@ -81,6 +81,7 @@ import { teamScene } from './teamSpecials.js';
 import { AMIGO_TYPES } from './amigoPowers.js';
 import { ExistidoMorte, InkBeast } from './beasts.js';
 import { inkSplash, inkTentacle } from '../fx/inkFx.js';
+import { transform, revertForm } from './forms.js';
 
 // Paga um custo em vida (rituais de Sangue) sem nunca se matar
 function payHealth(f, n) {
@@ -4044,6 +4045,33 @@ Object.assign(ABILITY_TYPES, {
     },
   },
 
+  // FERNANDO ↔ LUCIANO (pedido do dono, 2026-11-02; cânone de Desconjuração): o casal divide o MESMO corpo (o do Luciano).
+  // Quem está no controle aparece nos olhos — rosa no Fernando, amarelo no Luciano — e a troca é na hora: os olhos
+  // acendem, o corpo muda de postura e de kit. Não gasta a barra de transformação; a vida é a mesma (mesmo corpo).
+  // a.to: a forma para onde vai; sem a.to (ou já nela), volta para a forma base.
+  partnerSwap: {
+    start(f, a, world) {
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      f.anim.play(a.anim || 'concentrate', { restart: true, duration: a.time ?? 0.4 });
+      const head = () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.08, 0.1));
+      world.fx.flash(head(), { color: a.color, size: 0.9, life: 0.25 });
+      world.audio.play('ready', { volume: 0.5, pitch: a.pitch ?? 1 });
+      tl.add(a.swapAt ?? 0.22, () => {
+        const hp = f.health;
+        if (a.to && !(f.form && f.form.id === a.to)) transform(f, a.to, { health: hp });
+        else { revertForm(f); f.health = Math.min(f.maxHealth, hp); }
+        world.fx.burst(head(), { count: 14, color: a.color, speed: 1.6, life: 0.35, size: 0.1 });
+        if (a.shout) f.notify(a.shout, true);
+        if (a.grace) f.invuln = Math.max(f.invuln || 0, a.grace);
+        // a habilidade de voltar (com o nome do outro) começa em recarga: sem trocar duas vezes no mesmo segundo
+        if (a.pairWith) f.cooldowns[a.pairWith] = f.cooldownMax[a.pairWith] ?? a.cooldown;
+      });
+      tl.end(a.time ?? 0.4);
+      return seqFrom(tl);
+    },
+  },
+
   selfBuff: {
     start(f, a, world) {
       if (f.findBuff(a.buffType)) { f.notify('JÁ ATIVO'); return null; }
@@ -4198,7 +4226,7 @@ function applySelfBuff(f, a, world) {
     world.screenFlash && world.screenFlash('#3a0606', 0.12);
     world.audio.play('maskOn', { volume: 0.6, pitch: 0.9 });
   }
-  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, onEnd() { trail && trail.stop(); aura && aura.stop(); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
+  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
   f.notify(a.label || a.name.toUpperCase(), true);
 }
 

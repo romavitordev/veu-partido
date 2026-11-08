@@ -345,6 +345,18 @@ export function applyHit(world, attacker, victim, o) {
       world.fx.burst(link.target.chestPos(), { count: 8, color: 0x9a0010, speed: 2, life: 0.4, size: 0.14, gravity: 6 });
     }
   }
+  // REAÇÃO (Luciano, cânone de Desconjuração): segurando o aparelho eletrônico e concentrado no símbolo, metade do dano
+  // volta para quem bateu como Energia caótica; a outra metade vai para a mente (o corpo leva a metade — takenMult no
+  // buff — e a sanidade, que é a barra de energia, paga o resto)
+  const react = victim.findBuff && victim.findBuff('reacao');
+  if (react && dealt > 0 && attacker && attacker !== victim && attacker.state !== 'ko' && !o.reflected) {
+    const back = Math.round(dealt * (react.reflect ?? 1));
+    if (back > 0) {
+      applyHit(world, victim, attacker, { kind: 'ability', damage: back, element: 'energia', knockback: 0.6, hitstun: 0.2, reflected: true, color: react.color, impactScale: 0.9 });
+      world.fx.tracer(victim.chestPos(), attacker.chestPos(), { color: react.color ?? 0xa865ff, life: 0.18, width: 0.05 });
+    }
+    if (react.mindCost && victim.energy != null) victim.energy = Math.max(0, victim.energy - Math.round(dealt * react.mindCost));
+  }
   // passivas de quem apanha (ex.: Amuleto Elétrico)
   for (const p of victim.def.passives || []) {
     const P = PASSIVES[p.type];

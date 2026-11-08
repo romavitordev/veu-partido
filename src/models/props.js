@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17 } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1614,4 +1614,50 @@ export function addDegolificadaProps(rig) {
 
 export function addEspreitadorProps(rig) {
   if (rig.props.morePupils) rig.showProp('morePupils', false);
+}
+
+// O CASAL CARVALHO (Fernando e Luciano, um corpo só). Arsenal do cânone dos dois: M4 com lanterna, Glock 17 e canivete.
+// FERNANDO: o canivete na mão (ele evita o perigo e luta pouco) e a Glock 17 só no □
+export function addFernandoProps(rig) {
+  const { sockets, props } = rig;
+  const k = knife();
+  inFist(k);
+  k.scale.setScalar(0.85);
+  sockets.handR.add(k);
+  props.knife = k;
+  const gun = glock17();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.glock = gun;
+  rig.muzzle = gun.userData.muzzle;
+}
+
+// LUCIANO: o ex-militar com a M4 (pendurada nas costas pela bandoleira; na mão no □ e nas rajadas), o canivete na mão
+// para o corpo a corpo e a Glock 17 do mesmo arsenal
+export function addLucianoProps(rig) {
+  const { sockets, props } = rig;
+  const k = knife();
+  inFist(k);
+  sockets.handR.add(k);
+  props.knife = k;
+  const back = m4();
+  back.rotation.set(0, 0, 2.5);
+  back.position.set(0, 0, -0.08);
+  sockets.back.add(back);
+  props.m4Back = back;
+  const hand = m4();
+  hand.rotation.x = -0.1;
+  hand.position.y = -0.03;
+  hand.visible = false;
+  sockets.handR.add(hand);
+  props.m4Hand = hand;
+  rig.muzzle = hand.userData.muzzle;
+  const gun = glock17();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.glock = gun;
 }

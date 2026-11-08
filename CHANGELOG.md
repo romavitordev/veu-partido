@@ -1,5 +1,22 @@
 # Changelog
 
+## v4.34.0 — Fernando e Luciano
+
+### Adicionado
+- Fernando Carvalho jogável (Força D), com a segunda ficha Luciano Carvalho: habilidades "Luciano"/"Fernando" trocam modelo e kit no meio da luta; o Luciano assume sozinho na 1ª vez abaixo de 30% de vida; Reação (reflete o dano, custa sanidade).
+- Especial de dupla Balu + Rubens (A Coça dos Abutres).
+- Tela de título com arte estática do elenco.
+- Fontes das cenas por habilidade (`docs/FONTES-CENAS.md`).
+
+### Alterado
+- Animação: hitstop maior nos finalizadores, pose segurada nos especiais cinematográficos, câmera em órbita nos especiais de enxame.
+- Outro Lado: menos moedas, corredores da Escola mais largos, névoa crescente, portões e passagem do chefe; texturas da Escola; Degolificada (fita, boca, alunos) e Espreitador (pupilas em 8); Espreitador rebalanceado.
+- Joui Shi no Kage: Decepar → Corte Ceifador.
+
+### Corrigido
+- Travamentos no meio das partidas do Outro Lado (clones liberam a geometria; erros isolados por quadro).
+- Erro ao limpar os Zumbis de Sangue na troca de sala.
+
 ## v4.33.0 — Kits do cânone e frestas
 
 ### Adicionado

@@ -287,6 +287,24 @@ function face(paintExtras, o) {
   }, { wrap: true });
 }
 
+// O rosto do casal Carvalho (um corpo só): pele negra, barba rala, a cicatriz abaixo do olho direito (x < CX) e os
+// olhos de quem está no controle (iris/irisLight); smile > 0 = boca gentil (Fernando), < 0 = fechada (Luciano)
+function carvalhoFace(iris, irisLight, browO, smile) {
+  return face((g) => {
+    stubble(g, 'rgba(20,12,8,0.42)', 1500, { y0: 140, y1: 222, w: 80 });
+    // a cicatriz comprida abaixo do olho direito
+    g.strokeStyle = 'rgba(40,22,16,0.85)'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(CX - 52, EYE_Y + 12); g.lineTo(CX - 26, EYE_Y + 30); g.stroke();
+    g.strokeStyle = 'rgba(140,96,80,0.5)'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(CX - 51, EYE_Y + 11); g.lineTo(CX - 27, EYE_Y + 28); g.stroke();
+  }, {
+    skin: '#5a3a28',
+    eye: { iris, irisLight, w: 14, h: 7, tilt: 0.04, lid: 3 },
+    brow: browO,
+    mouth: { mouthW: 12, smile, lip: 'rgba(60,30,24,0.5)' },
+  });
+}
+
 // JAE (Park Jae-Yoon): pele clara, maquiagem preta esfumada forte em volta dos olhos escuros, batom vermelho e a pinta
 // falsa no queixo (lado esquerdo dela, x > 256) — referências "jae serio" e "jae rosto"; grin = sorriso com dentes
 function jaeFace(grin) {
@@ -2290,6 +2308,33 @@ export const MATERIAL_TEXTURES = {
     }
     g.strokeStyle = 'rgba(90,80,80,0.35)'; g.lineWidth = 1;
     for (let i = 0; i < 20; i++) { g.beginPath(); g.moveTo(rnd() * 256, rnd() * 256); g.lineTo(rnd() * 256, rnd() * 256); g.stroke(); }
+  }, { wrap: true, repeat: [2, 2] }),
+  // O CASAL CARVALHO (wiki "Fernando Carvalho" / "Luciano Carvalho"): o MESMO rosto (o corpo é o do Luciano), negro,
+  // barba rala e a cicatriz abaixo do olho direito (o tiro do Devorado, ep. 14). Só os OLHOS mudam: ROSA quando o
+  // Fernando está no controle (sobrancelha aflita, gentil), AMARELOS quando é o Luciano (sobrancelha fechada, sério)
+  face_fernando: carvalhoFace('#ff6ab8', '#ffb0dc', { angry: -0.6, thick: 3.4, color: '#1c1410' }, 2),
+  face_luciano: carvalhoFace('#e8b818', '#fff07a', { angry: 1.6, thick: 3.8, color: '#1c1410' }, -1),
+  // a camisa social branca do casal com as MANGAS de FLORES vinho (as artes da HQ e da campanha): flores de cinco pétalas
+  // com o miolo claro, espalhadas, e folhinhas escuras
+  sleeve_carvalho: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#ece8e2';
+    g.fillRect(0, 0, 256, 256);
+    const rnd = seeded(178);
+    for (let i = 0; i < 26; i++) {
+      const x = rnd() * 256, y = rnd() * 256, r = 9 + rnd() * 9, rot = rnd() * 6.28;
+      g.fillStyle = '#3a1418';
+      for (let k = 0; k < 2; k++) { // folhinhas
+        const a = rot + k * 2.6;
+        g.beginPath(); g.ellipse(x + Math.cos(a) * r * 1.3, y + Math.sin(a) * r * 1.3, r * 0.5, r * 0.22, a, 0, Math.PI * 2); g.fill();
+      }
+      g.fillStyle = '#6a1a26';
+      for (let p = 0; p < 5; p++) {
+        const a = rot + p * 1.2566;
+        g.beginPath(); g.ellipse(x + Math.cos(a) * r * 0.55, y + Math.sin(a) * r * 0.55, r * 0.5, r * 0.36, a, 0, Math.PI * 2); g.fill();
+      }
+      g.fillStyle = '#e8d0d0';
+      g.beginPath(); g.arc(x, y, r * 0.18, 0, Math.PI * 2); g.fill();
+    }
   }, { wrap: true, repeat: [2, 2] }),
   // RUBENS NALUTI: pardo, olhos CASTANHOS (wiki), o rosto sério e fechado de quem fala por palavras-chave
   face_rubens: face(() => {}, {

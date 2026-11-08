@@ -117,6 +117,7 @@ export class Fighter {
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
     this.surgeUsed = false; // Surto Temporal (Rubens) / Mercenária (Carina): uma vez por round
     this.watchUsed = false; // Relógio de Arnaldo (Rubens): uma vez por round
+    this.panicSwapped = false; // Fernando: o Luciano assume sozinho uma vez por round (passiva panicSwap)
     for (const k in this.cooldowns) this.cooldowns[k] = 0;
     this.cooldownMax.ranged = this.def.ranged?.cooldown || 1;
     this.carga = { stage: 0, timer: 0 };

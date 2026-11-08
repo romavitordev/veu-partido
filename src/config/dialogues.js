@@ -43,11 +43,12 @@ export const CHARACTER_NAMES = {
   carina: 'Carina',
   rubens: 'Rubens',
   beatrice: 'Beatrice',
+  fernando: 'Fernando',
   chico: 'Chico',
   morato: 'Morato',
 };
 
-export const BASE_CHARACTER = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', anfitriao: 'arnaldo', aguiar_mutilador: 'aguiar', erin_caos: 'erin', labirinto_elmo: 'labirinto', jae_x: 'jae', colosso: 'dalmo', guizo_et: 'guizo', kian_calamidade: 'kian', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina' };
+export const BASE_CHARACTER = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', anfitriao: 'arnaldo', aguiar_mutilador: 'aguiar', erin_caos: 'erin', labirinto_elmo: 'labirinto', jae_x: 'jae', colosso: 'dalmo', guizo_et: 'guizo', kian_calamidade: 'kian', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina', luciano: 'fernando' };
 
 export const INTRO_IDS = Object.keys(CHARACTER_NAMES);
 // as equipes de cada lutador (a principal e as outras), pela ficha; o Anfitrião é o das Relíquias
@@ -3523,6 +3524,101 @@ export function victoryLine(winner, loser, loserName = CHARACTER_NAMES[loser] ||
   const lines = victoryLines(winner, loser, loserName);
   return lines.length ? lines[Math.floor(Math.random() * lines.length)] : '';
 }
+
+// FERNANDO CARVALHO (Ordo Realitas, Equipe Brasa e Força D) — e o LUCIANO, que divide o corpo com ele. A 1ª fala é do
+// Fernando (gentil, ansioso, preocupado com todo mundo); a 2ª é do Luciano quando os olhos ficam amarelos (seco, militar,
+// protetor do marido). Relações pela wiki: melhor amigo da Erin e do Tristan; amigo do Arthur (tocaram violão juntos), do
+// Joui (o Luciano o chama de "capitão") e da Beatrice; trauma com o Dante, depois confiança; a Agatha o achou covarde e
+// depois os dois se entenderam (troca de corpo); preso com o Rubens e o Johnny pela Produção do Anfitrião; o Luciano foi
+// da equipe de Varredura com o Arnaldo; o Kian matou o Fernando e tomou o corpo do Luciano; a cicatriz no rosto veio de
+// um Devorado do Espreitador; a Seita da Magistrada invadiu a base
+const VICTORY_FERNANDO = {
+  fernando: {
+    arthur: ['Arthur! Tá tudo bem? Depois a gente toca aquela no violão, prometo.', '(olhos amarelos) Levanta, Cervero. O Fê ficou preocupado.'],
+    joui: ['Joui, desculpa! Eu não queria bater tão forte.', '(olhos amarelos) De pé, capitão. Bate continência pro Fê.'],
+    kaiser: ['Kaiser, você tá bem? Respira, respira.', '(olhos amarelos) Abaixa a arma da próxima vez que apontar pra mim.'],
+    dante: ['Dante... eu confio em você agora. Mas hoje fui eu.', '(olhos amarelos) Ainda não esqueci o ritual, Dante. Fica no chão.'],
+    erin: ['Erin! Minha melhor amiga no chão... me perdoa, irmã!', '(olhos amarelos) Treino é treino, Erin. Levanta que eu te ajudo.'],
+    aghata: ['Viu, Agatha? Nem tão covarde assim.', '(olhos amarelos) Troca de corpo a gente entende. Não se mete com a minha.'],
+    balu: ['Nossa, que homem grande! Tá tudo bem aí embaixo?', '(olhos amarelos) Tamanho não é treino, grandão.'],
+    carina: ['Desculpa, Carina! Foi o reflexo, juro.', '(olhos amarelos) Previu o ataque. Não previu a troca.'],
+    rubens: ['Rubens! A gente sobreviveu ao Anfitrião junto, lembra? Levanta, amigo.', '(olhos amarelos) Palavras-chave: chão. Fim.'],
+    beatrice: ['Bia, você me acolheu na van. Desculpa, de verdade.', '(olhos amarelos) Boa mira, florista. A minha é melhor.'],
+    verissimo: ['Senhor Veríssimo! Missão cumprida, eu acho?', '(olhos amarelos) Agente Carvalho se apresentando. Senhor.'],
+    cristopher: ['Desculpa, Cristopher! Eu sei que dublê aguenta, mas mesmo assim.', '(olhos amarelos) Cena encerrada. Sem dublê pra mim.'],
+    kian: ['Você não vai me beijar de novo, Kian.', '(olhos amarelos) Esse corpo é meu. E ele é do Fê.'],
+    gal_sal: ['Você usou o meu rosto... sai daqui com essas correntes.', '(olhos amarelos) Escripta no chão. Do jeito que tem que ser.'],
+    nubi: ['Me desculpa, mas eu vi o que vocês fazem com as pessoas.', '(olhos amarelos) Sem ritual nenhum. Só eu e a M4.'],
+    xande: ['Tá tudo bem, menino? Que skate bonito.', '(olhos amarelos) Volta pra pista, garoto.'],
+    guizo: ['Para de filmar, por favor! Eu fico nervoso!', '(olhos amarelos) Desliga essa câmera. Agora.'],
+    lirio: ['Desculpa, Lírio! Você bate forte demais pra eu ficar parado.', '(olhos amarelos) Martelo pesado, guarda aberta.'],
+    dara: ['Ai, Dara, precisa de curativo? Eu chamo alguém.', '(olhos amarelos) Paramédica no chão. Ironia.'],
+    chico: ['Desculpa quebrar a sua engenhoca, Chico!', '(olhos amarelos) Gambiarra não segura bala.'],
+    morato: ['Você protege os seus. Eu entendo. Eu também.', '(olhos amarelos) Linha de frente rompida, Morato.'],
+    dalmo: ['Que susto! Você é enorme!', '(olhos amarelos) Escafandro tem fresta. Achei.'],
+    aguiar: ['Não me caça, por favor! Eu sou só um cantor!', '(olhos amarelos) Caçador virou caça.'],
+    jae: ['Eu não gosto de escuro... mas acabou.', '(olhos amarelos) Sussurro não assusta militar.'],
+    kemi: ['Sniper me deixa nervoso. Muito nervoso.', '(olhos amarelos) Nada pessoal. Só mira melhor.'],
+    labirinto: ['Eu achei a saída! Não acredito!', '(olhos amarelos) Labirinto? Treinei em coisa pior.'],
+    juan: ['Por que você gosta tanto de apanhar? Me assusta!', '(olhos amarelos) Descarnar também é comigo, Henri.'],
+    cristino: ['Abaixa esse lampião, moço, pelo amor de Deus.', '(olhos amarelos) Cangaço não passa por mim.'],
+    raziel: ['Vampiro?! Eu não vou deixar você morder ninguém!', '(olhos amarelos) Sangue? Eu também sei usar.'],
+    arnaldo: ['Chega de jogo, Anfitrião. Eu e a Erin saímos da sua sala.', '(olhos amarelos) Fritz. Varredura de novo, só que contra você.'],
+    ferreiro: ['A Morte não leva mais ninguém hoje.', '(olhos amarelos) Santo nenhum. Só disciplina.'],
+    celestine: ['Não confio em quem muda de lado tão fácil.', '(olhos amarelos) Machadinha guardada. Fim.'],
+    gaius: ['Um gladiador! Eu nem sabia que isso ainda existia!', '(olhos amarelos) Arena antiga, tática nova.'],
+    amalia: ['Desculpa a flecha. Quer dizer, desculpa a minha.', '(olhos amarelos) Arqueira no chão. Linha limpa.'],
+    o_diabo: ['Eu sei o que é sangue no caminho. Volta pra Relíquia!', '(olhos amarelos) Pacto? Já fiz um. Nunca mais.'],
+    magistrada: ['Você entrou na nossa base. Não entra mais.', '(olhos amarelos) Sem máscara, sem espaço escuro. Só eu.'],
+    estrangeiro: ['Eu vou lembrar disso. Eu vou lembrar de tudo!', '(olhos amarelos) Sinal cortado. Missão concluída.'],
+    amigo: ['Ninguém precisa morrer, amigo. Ninguém.', '(olhos amarelos) Desenho rasgado. Próximo.'],
+    carnical: ['Não olha pra mim assim! Para!', '(olhos amarelos) Espiral nenhuma me controla.'],
+    degolificada: ['Você ainda tem alguém aí dentro... eu sinto muito.', '(olhos amarelos) Fios cortados. Sai do corpo dela.'],
+    espreitador: ['Você me deixou essa cicatriz. Mas eu tô aqui.', '(olhos amarelos) Seus Devorados erraram o olho. Eu não erro.'],
+  },
+  arthur: { fernando: ['Desculpa, Fernando! Depois eu toco a sua no violão, fechado?', 'Calma, Luciano! Foi treino, foi treino!'] },
+  joui: { fernando: ['Fernando, você está bem? Eu não queria assustá-lo.', 'Luciano. Volte a dormir. Deixe o Fernando falar.'] },
+  kaiser: { fernando: ['Desculpa, Fernando. Eu cuido de você.', 'Luciano. Abaixei a arma, viu?'] },
+  dante: { fernando: ['Fernando... eu sinto muito. Pelo ritual. Por tudo.', 'Eu sei que você ainda me odeia, Luciano. Eu entendo.'] },
+  erin: { fernando: ['FÊ! Desculpa, desculpa! Respira comigo, tá?', 'Luciano! Volta o Fê pra mim agora, KABOOM ou não!'] },
+  aghata: { fernando: ['Viu? A gente troca de corpo e ainda assim cai.', 'Você podia transcender também, Fernando. Pensa nisso.'] },
+  balu: { fernando: ['Desculpa, rapaz! Tá vendo? Nem doeu!', 'Ô militar, calma! O outro moço era mais simpático!'] },
+  carina: { fernando: ['Vi os seus olhos mudarem. Não deu tempo.', 'Desculpa, Fernando. Levanta.'] },
+  rubens: { fernando: ['Fernando. Chão. Desculpa.', 'Luciano. Calma. Treino.'] },
+  beatrice: { fernando: ['Fê, desculpa! Vem, deixa eu ver isso.', 'Luciano, devolve o Fernando, por favor?'] },
+  verissimo: { fernando: ['Agente Carvalho: os dois precisam treinar juntos.', 'Disciplina, Luciano. O seu marido também conta.'] },
+  cristopher: { fernando: ['Corta! Você foi ótimo, Fernando!', 'Dublê militar? Caiu igual.'] },
+  kian: { fernando: ['Um último beijo, Fernando? Não precisa de ritual dessa vez.', 'Seu corpo é ótimo, Luciano. Vou cuidar bem dele.'] },
+  gal_sal: { fernando: ['Seu rosto fica bonito em mim, sabia?', 'Correntes não ligam pra olho amarelo.'] },
+  nubi: { fernando: ['Dois numa casca só. Fácil de prender.', 'O Outro Lado te rejeitou, cantor. Eu não.'] },
+  xande: { fernando: ['Foi mal, tio! Quer ajuda pra levantar?', 'Olho amarelo! Tô fora, tô fora!'] },
+  guizo: { fernando: ['O olho mudou de cor! Gravei! Gravei!', 'Faz de novo pra câmera?'] },
+  lirio: { fernando: ['Bah, guri, desculpa a Leonora.', 'Militar ou cantor, cai do mesmo jeito.'] },
+  dara: { fernando: ['Deixa eu ver essa cicatriz. Bem fechada.', 'Calma, eu sou médica. Senta aí.'] },
+  chico: { fernando: ['Meu scanner pegou DUAS assinaturas em você!', 'Desculpa, cara! Remendo depois!'] },
+  morato: { fernando: ['Você protege o seu. Eu protejo os meus.', 'Levanta. Ninguém fica pra trás.'] },
+  dalmo: { fernando: ['Volta pro canto, cantor.', 'Militar? Eu era da arena.'] },
+  aguiar: { fernando: ['Caça medrosa corre mais.', 'O outro é mais duro de pegar.'] },
+  jae: { fernando: ['Shh... não precisa chamar o marido.', 'Silêncio, os dois.'] },
+  kemi: { fernando: ['Nada pessoal, Carvalho. Nenhum dos dois.', 'Mira contra mira. A minha venceu.'] },
+  labirinto: { fernando: ['Dois perdidos no mesmo labirinto.', 'Saída nenhuma, Carvalho.'] },
+  juan: { fernando: ['Assusta mais! Eu gosto!', 'Descarnar? Eu adoro. Faz de novo!'] },
+  cristino: { fernando: ['Cabra assustado, mas valente.', 'O lampião achou os dois.'] },
+  raziel: { fernando: ['Dois corações, um sangue só.', 'Sangue de militar. Saboroso.'] },
+  arnaldo: { fernando: ['Fernando Carvalho! O cantor! E o marido no camarim!', 'Luciano, velho colega de Varredura! Que reencontro!'] },
+  ferreiro: { fernando: ['A Morte já te tocou uma vez, cantor.', 'Ninguém foge do Santo Berço.'] },
+  celestine: { fernando: ['Fofo, mas fácil, gato.', 'O marido é mais interessante.'] },
+  gaius: { fernando: ['Um músico na arena. Corajoso.', 'O soldado era melhor. Ainda assim, caiu.'] },
+  amalia: { fernando: ['Desculpa a flecha, Fernando.', 'Olhos amarelos. Alvo claro.'] },
+  o_diabo: { fernando: ['O sangue do seu marido me chama, cantor.', 'Descarnar com o MEU sangue? Que graça.'] },
+  magistrada: { fernando: ['O espaço escuro te espera de novo, Fernando.', 'Previsto. Os dois.'] },
+  estrangeiro: { fernando: ['Ninguém vai lembrar do cantor.', 'Dois sinais. Ambos perdidos.'] },
+  amigo: { fernando: ['...dois... numa pessoa só... todo mundo vai morrer...', '...olhos amarelos... desenho bonito...'] },
+  carnical: { fernando: ['(cheira o medo) ...FICA...', '...SOLDADO... DURMA...'] },
+  degolificada: { fernando: ['(os fios largam o canivete) ...dois... dentro... igual... a mim...', '(a boca vedada se rasga) ...SAI... DO... CORPO...'] },
+  espreitador: { fernando: ['(o olho da boca encara a cicatriz) ...', '(as lágrimas escorrem) ...'] },
+};
+for (const [w, m] of Object.entries(VICTORY_FERNANDO)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
 
 export function introLines(idA, idB) {
   // O ANFITRIÃO (o das Relíquias e o Amphitruo: a mesma consciência) tem a própria voz — as cenas com ele são montadas na hora

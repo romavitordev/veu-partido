@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.33.0 (2026-11-06: kits do cânone e especiais novos da Degolificada e do Espreitador, frestas teleportáveis, Mansão e Escola mais claras e a tela de cenários reorganizada). Antes: v4.32.0 (2026-11-06: a Degolificada e o Espreitador jogáveis, a Mansão e a Escola como arenas de luta, o Carniçal remodelado, habilidades do baú com limite por partida e moedas ou vida no Outro Lado). Antes: v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.34.0 (2026-11-08: Fernando Carvalho com a segunda ficha Luciano, o especial de dupla Balu + Rubens, a tela de título nova, golpes mais pesados e os ajustes do Outro Lado). Antes: v4.33.0 (2026-11-06: kits do cânone e especiais novos da Degolificada e do Espreitador, frestas teleportáveis, Mansão e Escola mais claras e a tela de cenários reorganizada). Antes: v4.32.0 (2026-11-06: a Degolificada e o Espreitador jogáveis, a Mansão e a Escola como arenas de luta, o Carniçal remodelado, habilidades do baú com limite por partida e moedas ou vida no Outro Lado). Antes: v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -52,11 +52,27 @@
 - [x] **Carina — o que faltava do cânone** (v4.23.0): MERCENÁRIA (a 1ª habilidade do round abre 2,5 s em que a
       próxima não recarrega), TREINADA EM ATLETISMO (metade do tempo no chão) e a AFINIDADE COM PRECOGNIÇÃO contra tiros
       (−12% de dano de projéteis). O Saque Rápido já estava no □. Números PROPOSTA.
-- [ ] **Fernando + Luciano = UM personagem com duas fichas** (pedido do dono, 2026-11-02): os irmãos Carvalho (Equipe
+- [x] **Fernando + Luciano = UM personagem com duas fichas** (pedido do dono, 2026-11-02): o casal Carvalho, marido e marido (Equipe
       Brasa) são o MESMO lutador no elenco, cada um com habilidades, mecânicas e rituais diferentes. Durante a luta dá
       para TROCAR entre os dois usando uma habilidade com o NOME DO OUTRO (na ficha do Fernando, a habilidade "Luciano";
       na do Luciano, "Fernando"); a troca muda o modelo e o kit na hora. Base técnica: as formas (`characters/forms`,
       `baseId`), como a Carina ↔ Todos os Leone, só que de ida e volta e sem gastar a barra de transformação.
+      **Feito (2026-11-08, não lançado):** Fernando entra no elenco (Força D, preço 170 no Outro Lado) e o Luciano é a
+      outra ficha (`forms/luciano.js`, `baseId: 'fernando'`). △+L2 "Luciano" / "Fernando" (tipo `partnerSwap`) troca
+      modelo e kit mantendo a vida; a volta entra em recarga. Cânone: quando o Fernando se apavora o Luciano assume
+      (passiva `panicSwap`: 1ª vez no round abaixo de 30%) e a REAÇÃO do Luciano (metade do dano volta como Energia, a
+      outra metade sai da sanidade). Fernando: canivete, Glock 17, Calmantes, Lanterna, Canção do Pote de Vidro,
+      especial LuciFer. Luciano: combate militar, M4 com Anel Espiral, Reação, Descarnar Discente, Mente Inabalável,
+      especial Varredura. PROPOSTA (marcadas no código): sequências de golpes, Lanterna, Pote de Vidro, os dois
+      especiais e os dois despertares. Modelos `char_fernando.py`/`char_luciano.py` (corpo comum em
+      `carvalho_common.py`; olhos rosa × amarelos, cicatriz, camisa florida), falas de vitória com as 41 lutas, voz de
+      apresentação, agarrões e o Fernando no especial da Força D (os olhos ficam amarelos e o Luciano atira).
+      Conferido no jogo: troca de ida e volta, pânico, Reação, os dois especiais e o da Força D, sem erros.
+      Retrato `public/sobre/elenco/fernando.webp` (renderPortraits). Falta: balanceamento numa bateria.
+- [ ] **Reformular o modelo do Kian** (pedido do dono, 2026-11-08): o corpo do Kian é o corpo do Luciano, só que bem
+      mais musculoso. Refazer o `char_kian.py` partindo do corpo do casal (`tools/blender/carvalho_common.py`: mesmas
+      proporções de rosto e cabeça, pele, cabelo raspado e a cicatriz) e aumentar a massa muscular (ombros, peito,
+      braços e pescoço); conferir em 4 vistas contra as referências do Kian e manter a roupa e os acessórios dele.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no

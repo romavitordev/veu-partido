@@ -22,6 +22,7 @@ import celestineMagistrada from './celestine_magistrada.js';
 import amphitruo from './amphitruo.js';
 import carinaLeone from './carina_leone.js';
 import beatriceExistida from './beatrice_existida.js';
+import luciano from './luciano.js';
 
 export const FORMS = {};
 
@@ -34,4 +35,4 @@ export function getForm(id) {
   return FORMS[id];
 }
 
-[deusMorte, diabo, fantasma, labirintoElmo, aguiarMutilador, erinCaos, anfitriao, jaeX, colosso, guizoEt, kianCalamidade, juanOdio, guizoBombado, guizoVelho, cristinoDesertor, danteAberto, jouiShinokage, razielVerdadeiro, celestineMagistrada, amphitruo, carinaLeone, beatriceExistida].forEach(registerForm);
+[deusMorte, diabo, fantasma, labirintoElmo, aguiarMutilador, erinCaos, anfitriao, jaeX, colosso, guizoEt, kianCalamidade, juanOdio, guizoBombado, guizoVelho, cristinoDesertor, danteAberto, jouiShinokage, razielVerdadeiro, celestineMagistrada, amphitruo, carinaLeone, beatriceExistida, luciano].forEach(registerForm);

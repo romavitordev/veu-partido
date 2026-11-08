@@ -2,6 +2,7 @@
 // Funções puras sempre que possível (testáveis sem navegador).
 
 import { startSelfHarmTrance } from './selfHarm.js';
+import { transform } from './forms.js';
 
 /**
  * Regra do Injustiça (determinística, sem aleatoriedade):
@@ -275,6 +276,25 @@ export const PASSIVES = {
   arnaldoWatch: {},
   // Rubens — Salto Fantasma como reação: sem carga de esquiva, a Substituição vira o ritual (Fighter.trySubstitution)
   phantomReaction: {},
+  // Fernando — quando ele se apavora, o LUCIANO ASSUME (cânone de Desconjuração): a primeira vez no round que a vida cai
+  // abaixo de passive.below, os olhos ficam amarelos e o corpo troca para a forma passive.to (um instante depois do golpe,
+  // fora do cálculo do dano). Já no Luciano, nada acontece.
+  panicSwap: {
+    onHitTaken({ victim, dealt, passive, world }) {
+      if (!(dealt > 0) || victim.panicSwapped || victim.form || victim.health <= 0) return;
+      if (victim.health > victim.maxHealth * (passive.below ?? 0.3)) return;
+      victim.panicSwapped = true;
+      world.after(0.3, () => {
+        if (victim.state === 'ko' || victim.form || world.cinematic) return;
+        const hp = victim.health;
+        transform(victim, passive.to, { health: hp });
+        const head = victim.chestPos().add({ x: 0, y: 0.55, z: 0 });
+        world.fx.flash(head, { color: passive.color ?? 0xe8b818, size: 1.2, life: 0.3 });
+        world.cameraRig && world.cameraRig.shake(0.15, 0.2);
+        victim.notify('O LUCIANO ASSUMIU', true);
+      });
+    },
+  },
   // Beatrice — Merintofobia: amarras (stun com bind) duram passive.mult vezes mais (Fighter.stun)
   merintofobia: {},
   // Carina — Mercenária: igual ao Surto Temporal (a 1ª habilidade do round abre o Turno Extra; Fighter.useAbility)

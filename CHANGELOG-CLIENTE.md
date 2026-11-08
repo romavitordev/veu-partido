@@ -2,6 +2,17 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.34.0 — Fernando e Luciano
+- NOVO PERSONAGEM: Fernando Carvalho (Força D), com canivete, Glock 17, Calmantes, Lanterna, Canção do Pote de Vidro e o especial LuciFer.
+- Duas fichas num lutador só: a habilidade "Luciano" (△ + L2) troca o corpo para o Luciano Carvalho, com outro modelo e outro kit (M4, Reação, Descarnar Discente, Mente Inabalável e o especial Varredura); a habilidade "Fernando" troca de volta.
+- Quando o Fernando se apavora (vida abaixo de 30%), o Luciano assume sozinho, uma vez por round. A Reação do Luciano devolve o dano a quem bate e cobra metade da sanidade.
+- O Fernando entra no especial da Força D: os olhos ficam amarelos e o Luciano atira.
+- Especial de dupla Balu + Rubens (A Coça dos Abutres) com machado em giro, martelo e queima-roupa.
+- Golpes mais pesados: pausa maior no último golpe dos combos, pose segurada nos impactos dos especiais e câmera girando nos especiais de enxame (o Orpheu da Beatrice voa de novo no especial).
+- Tela de título nova com a arte do elenco.
+- Outro Lado: menos moedas por drop, corredores largos e névoa crescente na Escola, portões que seguram os dois jogadores e o chefe, Degolificada e Espreitador com detalhes novos e correção dos travamentos no meio da partida.
+- Joui Shi no Kage: a habilidade Decepar agora se chama Corte Ceifador.
+
 ## v4.33.0 — Kits do cânone e frestas
 - Degolificada refeita: luta só com o cabelo — chicote, agarrar e estrangular, cabelo rastejante, cabelo por cima, casulo de defesa, Grito Rasgado e arremesso de caixote.
 - Novo especial da Degolificada: Estrangulamento Capilar — ergue o adversário, estrangula, bate no chão e joga na parede.
