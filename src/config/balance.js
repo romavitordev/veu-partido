@@ -54,8 +54,8 @@ export const BALANCE = {
   jae: { dealt: 1.04 }, // 43 → 37 → 34% → 45%
   // v4.32 — as criaturas do Outro Lado jogáveis (focadas): a Degolificada herda os golpes do Amigo sem os 1800 de vida
   // nem o roubo de vida dele
-  degolificada: { dealt: 1.36, taken: 0.79 }, // 8% (sem ajuste) → 33% (1.3/0.82, 86 lutas)
-  espreitador: { dealt: 1.17, taken: 0.89 }, // 34% (1.1/0.93, 86 lutas)
+  degolificada: { dealt: 1.36, taken: 0.79 }, // 8% (sem ajuste) → 33% (1.3/0.82, 86 lutas); kit novo (v4.33): 43% (172 lutas)
+  espreitador: { dealt: 1.32, taken: 0.8 }, // kit novo (v4.33): 20% com 1.17/0.89 (132 lutas) → 48% (172 lutas)
 };
 
 // o coeficiente de um lutador (transformado: o do personagem de origem). As formas selecionáveis (o Portador, o Anfitrião

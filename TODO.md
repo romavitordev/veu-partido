@@ -1209,8 +1209,25 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       Grito rasga a fita por um instante. No chefe da Escola, `becomeDevourer` faz o mesmo (escala 1.15).
       Armários: os ESCANINHOS do corredor e do laboratório viraram armários de aço de verdade, cuja porta gira na
       dobradiça e mostra o achado (chave, moedas, cura) — `Drawer` com `spot.locker`.
-- [ ] Texturas da Escola (o que sobrou do polimento da Degolificada): paredes, piso e armários com textura em vez de
-      cor lisa (`arena_escola.py`).
+- [x] **Texturas da Escola** (2026-11-08): `arena/arenaTextures.js` pinta pelo nome do material — parede verde
+      descascando com escorridos (`wall_escola`), parede queimada com fuligem e rachaduras (`wall_escola_queimada`),
+      piso de granilite (`floor_escola`), veio de madeira das carteiras (`wood_escola`, `wood_light_escola`), aço riscado
+      dos armários (`locker_escola`), aço escovado, blocos de concreto e ferrugem do bunker. PROPOSTA (a wiki não
+      descreve as superfícies).
+- [x] **Reequilíbrio dos kits novos da Degolificada e do Espreitador** (2026-11-08; rodada focada, 2 lutas por par
+      contra o elenco todo, 172 lutas cada): Degolificada 43% com 1.36/0.79 (fica); Espreitador 20% com 1.17/0.89 →
+      **1.32/0.8** → 48%.
+- [x] **Bug: Zumbis de Sangue sem `kill()`** (2026-11-08, achado pela bateria na Escola): o `Dungeon` chama `c.kill()`
+      nos monstros que sobram ao trocar de sala e quando o chefe cai; a `Marionette` (base do `BloodZombie`) não tinha o
+      método e a troca de sala quebrava no meio. `kill()` novo em `combat/npcs.js`.
+- [x] **Bateria do Outro Lado em qualquer dungeon** (2026-11-08): `run(ids, n, 'degolificada')` e
+      `summary('degolificada')` (cada dungeon guarda à parte); no chefe-enigma as provas contam como achadas.
+- [ ] **Escola: a Degolificada está dura demais depois do escudo** (bateria de 2026-11-08, 18 personagens × 2, CPU
+      Difícil, sem melhorias): ela cai só em 20 de 36 lutas em 180 s (Espreitador: todos em 78–123 s) e quase todos
+      levam 90–160% da vida. Gaius e Dalmo não a derrubaram nenhuma vez. Na sala da Escola, Morato, Kaiser, Kemi e
+      Arthur não limparam nenhuma das 2 (91 s, 80–130% de dano). Antes de mexer: a Devoradora chega aos 120 s
+      contados do início da luta, então o tempo procurando provas já gasta esse relógio. Opções: contar os 120 s só
+      depois do escudo cair, baixar a vida ou o dano dela, ou incluir a Escola no `PVE_CHAR_TUNE`.
 - [x] **Pupilas em 8 do Espreitador** (2026-11-07; wiki: "pupilas que se multiplicam com o passar do tempo" e "o olho
       de duas pupilas" na fresta): `char_espreitador.py` — as pupilas duplas nascem COLADAS uma em cima da outra (um 8;
       um terço dos olhos já tem, alguns viram um 3 em fila) e o olho da boca tem as duas. As que faltam formam a peça

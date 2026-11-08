@@ -741,6 +741,13 @@ export class Marionette {
 
   onDestroyed(attacker) { attacker && attacker.notify && attacker.notify('MARIONETE DESTRUÍDA!', true); }
 
+  // some na hora (sem a animação de ir embora): o Outro Lado limpa assim os Zumbis de Sangue que sobram ao trocar de sala
+  // e quando o chefe cai — sem isto o Dungeon.enterModule quebrava no meio da troca de sala
+  kill() {
+    if (!this.alive) return;
+    this.dispose();
+  }
+
   dispose() {
     if (!this.alive && !this.model.root.parent) return;
     this.release(false);

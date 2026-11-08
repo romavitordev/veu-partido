@@ -735,6 +735,69 @@ export const ARENA_TEXTURES = {
     for (const x of [-14, 14]) { g.beginPath(); g.arc(s / 2 + x, s * 0.38, 4, 0, Math.PI * 2); g.fill(); }
     g.strokeStyle = '#7a5a2a'; g.lineWidth = 16; g.strokeRect(8, 8, s - 16, s - 16);
   }),
+  // ---------------- Escola Nostradamus (2ª dungeon do Outro Lado). PROPOSTA: a wiki não descreve as superfícies;
+  // pintura de escola pública/particular brasileira dos anos 2000: parede de tinta verde-acinzentada descascando,
+  // piso de granilite, carteiras de madeira, armários de aço riscados e o bunker de blocos de concreto
+  wall_escola: () => tex(512, 2.4, (g, s) => {
+    g.fillStyle = '#7c8a70'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#6a7860', '#8e9c82', '#5a6450'], 9000, [1, 4], 0.35);
+    // tinta descascando: lascas mais claras (o reboco) com borda escura
+    for (let i = 0; i < 14; i++) {
+      const x = rnd(0, s); const y = rnd(0, s); const r = rnd(4, 14);
+      g.fillStyle = 'rgba(40,44,34,0.45)'; g.beginPath(); g.ellipse(x, y, r + 2, r * 0.7 + 2, rnd(0, 3), 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(190,184,164,0.8)'; g.beginPath(); g.ellipse(x, y, r, r * 0.7, rnd(0, 3), 0, Math.PI * 2); g.fill();
+    }
+    // escorridos de umidade e marcas de mão/mochila
+    for (let i = 0; i < 9; i++) { const x = rnd(0, s); const h = rnd(60, 260); const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, 'rgba(40,40,26,0.35)'); grd.addColorStop(1, 'rgba(40,40,26,0)'); g.fillStyle = grd; g.fillRect(x, rnd(0, s - h), rnd(3, 10), h); }
+    for (let i = 0; i < 4; i++) { g.fillStyle = 'rgba(30,30,24,0.05)'; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(20, 50), rnd(8, 18), 0, 0, Math.PI * 2); g.fill(); }
+  }, { roughness: 0.9 }),
+  wall_escola_queimada: () => tex(512, 2.4, (g, s) => {
+    g.fillStyle = '#3a3632'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#1a1816', '#4e4840', '#5a3a26'], 9000, [1, 5], 0.45);
+    // fuligem subindo em línguas (o incêndio do laboratório)
+    for (let i = 0; i < 12; i++) { const x = rnd(0, s); const w = rnd(30, 90); const grd = g.createLinearGradient(0, s, 0, 0); grd.addColorStop(0, 'rgba(8,6,6,0.7)'); grd.addColorStop(1, 'rgba(8,6,6,0)'); g.fillStyle = grd; g.beginPath(); g.moveTo(x - w / 2, s); g.quadraticCurveTo(x + rnd(-30, 30), s / 2, x + rnd(-20, 20), rnd(0, s / 3)); g.quadraticCurveTo(x + rnd(-30, 30), s / 2, x + w / 2, s); g.fill(); }
+    // rachaduras
+    g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 1.5;
+    for (let i = 0; i < 8; i++) { let x = rnd(0, s); let y = rnd(0, s); g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 6; k++) { x += rnd(-18, 18); y += rnd(6, 22); g.lineTo(x, y); } g.stroke(); }
+  }, { roughness: 1 }),
+  // granilite: placas de 40 cm com junta e pedrinhas
+  floor_escola: () => tex(512, 1.6, (g, s) => {
+    g.fillStyle = '#3a3630'; g.fillRect(0, 0, s, s);
+    const n = 4; const w = s / n;
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const k = rnd(0.92, 1.06);
+      g.fillStyle = `rgb(${106 * k | 0},${100 * k | 0},${90 * k | 0})`;
+      g.fillRect(x * w + 2, y * w + 2, w - 4, w - 4);
+    }
+    noise(g, s, ['#d8d0c0', '#2a2620', '#8a5a3a', '#e8e4dc', '#4a4a50'], 14000, [1, 3], 0.6);
+    // gasto no meio (onde os alunos passam) e encardido
+    for (let i = 0; i < 10; i++) { g.fillStyle = 'rgba(20,16,10,0.18)'; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(20, 60), rnd(10, 30), rnd(0, 3), 0, Math.PI * 2); g.fill(); }
+  }, { roughness: 0.55 }),
+  wood_escola: () => tex(256, 1.2, (g, s) => woodGrain(g, s, [106, 74, 48])),
+  wood_light_escola: () => tex(256, 1.2, (g, s) => woodGrain(g, s, [154, 122, 82])),
+  // aço pintado dos armários: riscos, amassados e ferrugem nas bordas
+  locker_escola: () => tex(256, 1, (g, s) => {
+    g.fillStyle = '#3e5a6a'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#34505e', '#4a6878'], 3000, [1, 3], 0.4);
+    g.strokeStyle = 'rgba(200,210,214,0.35)'; g.lineWidth = 1;
+    for (let i = 0; i < 26; i++) { const x = rnd(0, s); const y = rnd(0, s); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-30, 30), y + rnd(-8, 8)); g.stroke(); }
+    for (let i = 0; i < 6; i++) { g.fillStyle = 'rgba(110,60,30,0.35)'; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(3, 9), rnd(2, 6), 0, 0, Math.PI * 2); g.fill(); }
+    const grd = g.createLinearGradient(0, s, 0, s * 0.7); grd.addColorStop(0, 'rgba(20,16,10,0.35)'); grd.addColorStop(1, 'rgba(20,16,10,0)'); g.fillStyle = grd; g.fillRect(0, 0, s, s);
+  }, { roughness: 0.5 }),
+  steel_escola: () => tex(256, 1, (g, s) => {
+    g.fillStyle = '#6a6e72'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += 2) { g.fillStyle = `rgba(${Math.random() < 0.5 ? '255,255,255' : '0,0,0'},${rnd(0.02, 0.07)})`; g.fillRect(0, y, s, 1); }
+    noise(g, s, ['#3a3a3a', '#8a8e92'], 1200, [1, 3], 0.3);
+  }, { roughness: 0.4 }),
+  // o bunker: blocos de concreto com junta e infiltração
+  wall_bunker: () => tex(256, 1.6, (g, s) => {
+    bricks(g, s, { base: [78, 78, 74], mortar: '#2e2e2a', rows: 8, cols: 4, vary: 10, dirt: 0.35 });
+    noise(g, s, ['#5a5a54', '#3a3a36'], 4000, [1, 4], 0.35);
+  }, { roughness: 1 }),
+  rust_bunker: () => tex(128, 1, (g, s) => {
+    g.fillStyle = '#5a3a26'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#8a4a20', '#2a1a10', '#6a5a4a'], 3000, [1, 4], 0.55);
+  }, { roughness: 0.8 }),
 };
 
 function crate(color) {
@@ -766,4 +829,18 @@ function cardboard(lines, ink, shaky = false) {
       g.restore();
     });
   });
+}
+
+// veio de madeira (carteiras e mesas da Escola): tábuas no sentido do comprimento
+function woodGrain(g, s, [R, G, B]) {
+  g.fillStyle = `rgb(${R},${G},${B})`; g.fillRect(0, 0, s, s);
+  for (let y = 0; y < s; y += 3) {
+    const k = 0.85 + Math.random() * 0.25;
+    g.fillStyle = `rgba(${R * k | 0},${G * k | 0},${B * k | 0},0.6)`;
+    g.beginPath(); g.moveTo(0, y);
+    for (let x = 0; x <= s; x += 32) g.lineTo(x, y + Math.sin(x / 40 + y) * 1.5);
+    g.lineTo(s, y + 2); g.lineTo(0, y + 2); g.fill();
+  }
+  for (let i = 0; i < 4; i++) { g.fillStyle = 'rgba(40,24,12,0.4)'; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(4, 9), rnd(2, 4), 0, 0, Math.PI * 2); g.fill(); } // nós
+  noise(g, s, ['#000', '#fff'], 800, [1, 2], 0.1);
 }

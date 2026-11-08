@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## Não lançado
+
+- `combat/npcs.js`: `Marionette.kill()` (some na hora); o `Dungeon` chamava `kill()` nos Zumbis de Sangue que sobram na troca de sala e na queda do chefe e quebrava.
+- `config/balance.js`: espreitador 1.17/0.89 → 1.32/0.8 (20% → 48% em 172 lutas); degolificada mantida (43%).
+- `arena/arenaTextures.js`: texturas da Escola (`wall_escola`, `wall_escola_queimada`, `floor_escola`, `wood_escola`, `wood_light_escola`, `locker_escola`, `steel_escola`, `wall_bunker`, `rust_bunker`) e a função `woodGrain`.
+- `pve/roomDoors.js`: `Drawer` com `spot.locker` (armário de aço com porta na dobradiça); `pve/dungeons.js` usa nos escaninhos da Escola.
+- Degolificada: fita em X, boca devoradora e alunos presos (`char_degolificada.py`, `models/props.js`); `awakenMode` com `sp.grow`; Grito abre a boca (`outroLadoAbilities.js`, `pve/degolificada.js`).
+- Espreitador: pupilas em 8 (`char_espreitador.py`, prop `morePupils`).
+- Correção dos travamentos: `disposeClonedRig` (`models/glbRig.js`) e erros isolados por quadro (`World.js`, `main.js`, `Dungeon.updateInteract`).
+- `dev/pveBattery.js`: parâmetro de dungeon; provas contam como achadas no chefe-enigma.
+- Testes: `npm test` 81/81; `npm run check` e `vite build` ok.
+
 ## v4.33.0 — Kits do cânone e frestas
 
 - Versão: `VERSION` 4.32.0 → **4.33.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-06.

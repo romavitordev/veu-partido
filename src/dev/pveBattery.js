@@ -2,23 +2,24 @@
 // monstros e o chefe do Espreitador, sozinho, dificuldade Normal. Serve para achar quem quebra, quem não limpa sala e
 // para calibrar PVE_CHAR_TUNE (pve/dungeons.js). Não faz parte do jogo: carregue no console do `npm run dev`:
 //   const B = await import('/src/dev/pveBattery.js'); await B.run(['morato', 'joui'], 3); B.summary()
+// Outra dungeon: B.run(ids, 1, 'degolificada'); B.summary('degolificada') (cada dungeon guarda à parte)
 // A ABA PRECISA ESTAR NA FRENTE (aba em segundo plano fica lenta). Os resultados vão para o localStorage (`pve_battery`),
 // então sobrevivem a uma recarga da página (o HMR recarrega quando um módulo muda): chamar run() de novo continua de
 // onde parou. Vida do jogador: volta cheia abaixo de 25% (mede o dano recebido, não a morte). Melhorias: a 1ª opção.
 import { newAttempt } from '../pve/save.js';
 import { CpuController } from '../ai/CpuController.js';
 
-const KEY = 'pve_battery';
-const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+const keyOf = (dg) => (dg === 'espreitador' ? 'pve_battery' : `pve_battery_${dg}`);
+const load = (dg = 'espreitador') => { try { return JSON.parse(localStorage.getItem(keyOf(dg)) || '{}'); } catch { return {}; } };
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
 const game = () => window.__game;
 
-async function start(id) {
+async function start(id, dungeon) {
   const g = game();
-  g.pve.data.attempt = newAttempt({ charId: id, team: [], difficulty: 'normal', dungeon: 'espreitador' });
+  g.pve.data.attempt = newAttempt({ charId: id, team: [], difficulty: 'normal', dungeon });
   g.pve.startDungeon();
   for (let w = 0; w < 300; w++) {
-    if (g.state === 'fight' && g.match && g.match.world && g.match.phase === 'intro') break;
+    if (g.state === 'fight' && g.match && g.match.world && g.match.player) break;
     await pause(100);
   }
   const m = g.match;
@@ -52,13 +53,13 @@ async function fight(m, maxS, boss) {
   return { s: Math.round(m.world.time - t0), tk: Math.round((taken / p.maxHealth) * 100), done, hp: boss ? Math.round((m.enemy.health / m.enemy.maxHealth) * 100) : 0 };
 }
 
-export async function run(ids, samples = 3) {
+export async function run(ids, samples = 3, dungeon = 'espreitador') {
   for (const id of ids) {
     for (let k = 0; k < samples; k++) {
-      if ((load()[id] || []).length > k) continue;
+      if ((load(dungeon)[id] || []).length > k) continue;
       const rec = {};
       try {
-        const m = await start(id);
+        const m = await start(id, dungeon);
         drive(m);
         const rooms = Object.keys(m.D.modules).filter((x) => m.D.modules[x].kind === 'fight');
         const to = rooms[k % rooms.length];
@@ -71,24 +72,33 @@ export async function run(ids, samples = 3) {
         const bossId = Object.keys(m.D.modules).find((x) => m.D.modules[x].kind === 'boss');
         m.enterModule(bossId, { slot: 'front', to: bossId, count: 0 });
         m.player.health = m.player.maxHealth;
+        // chefe-enigma (a Degolificada: escudo até as PROVAS): a CPU não procura provas, então elas contam como achadas
+        // e a bateria mede só a luta sem o escudo
+        if (m.cluesNeeded) m.clues = m.cluesNeeded;
         if (!m.encounter || !m.encounter.boss) m.startBoss(m.mod);
+        if (m.pendingBoss || m.mod.bossTrigger) {
+          // chefe com gatilho (a Degolificada no bunker): o jogador já começa perto dela
+          m.pendingBoss = null;
+          const e = m.enemy.pos;
+          m.player.pos.set(e.x - 3, m.player.pos.y, e.z);
+        }
         if (m.bossIntro && m.bossIntro.finish) m.bossIntro.finish();
         drive(m);
         rec.boss = await fight(m, 180, true);
       } catch (e) {
         rec.err = String((e && e.stack) || e).slice(0, 300);
       }
-      const all = load();
+      const all = load(dungeon);
       (all[id] = all[id] || []).push(rec);
-      localStorage.setItem(KEY, JSON.stringify(all));
+      localStorage.setItem(keyOf(dungeon), JSON.stringify(all));
     }
   }
-  return summary();
+  return summary(dungeon);
 }
 
-export function summary() {
+export function summary(dungeon = 'espreitador') {
   const avg = (a) => Math.round(a.reduce((x, y) => x + y, 0) / Math.max(1, a.length));
-  return Object.entries(load()).map(([id, rs]) => {
+  return Object.entries(load(dungeon)).map(([id, rs]) => {
     const ok = rs.filter((r) => r.room && r.boss);
     const errs = rs.length - ok.length;
     return `${id}: sala ${avg(ok.map((r) => r.room.s))}s ${avg(ok.map((r) => r.room.tk))}% limpa ${ok.filter((r) => r.room.done).length}/${ok.length}`
@@ -96,6 +106,6 @@ export function summary() {
   }).join('\n');
 }
 
-export function clear() {
-  localStorage.removeItem(KEY);
+export function clear(dungeon = 'espreitador') {
+  localStorage.removeItem(keyOf(dungeon));
 }
