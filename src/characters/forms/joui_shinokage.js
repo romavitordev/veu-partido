@@ -133,17 +133,18 @@ export default {
       color: GOLD,
     },
     {
-      // △ + L2 DECEPAR — DIVERGÊNCIA EM ABERTO (auditoria 3.2): na wiki o Decepar é poder da MÁSCARA, e esta forma é a
-      // fase sem ela; fica por ser pedido explícito do dono, à espera da decisão dele (manter como licença ou trocar).
-      // (pedido do Vitor: "um golpe como o do Cristino de decepar membro"; cânone do Joui: "quando deixa um
-      // alvo morrendo pode decepar um membro; se o dano for suficiente para matar, pode decapitar"): ergue a Shi no Kage e
-      // desce num corte que arranca — o alvo SANGRA e fica com a FERIDA ABERTA (sem cura); em quem está atordoado ou
-      // preso entra mais fundo, e em quem já está morrendo (vida baixa) o corte vai no pescoço
+      // △ + L2 CORTE CEIFADOR (PROPOSTA; decidido na auditoria de fontes de 2026-11-08). O golpe veio de pedido explícito do
+      // dono ("um golpe como o do Cristino de decepar membro"), mas na wiki o DECEPAR é poder da MÁSCARA ("Joui perdeu essa
+      // habilidade ao entregar a Máscara para a Magistrada") e esta forma é a fase sem ela. Saída fiel ao cânone: o golpe
+      // fica (é a esgrima da Shi no Kage, não um poder da máscara) e perde o nome "Decepar"; o Decepar canônico continua só
+      // no Joui mascarado (passiva). Ergue a Shi no Kage e desce num corte pesado — o alvo SANGRA e fica com a FERIDA
+      // ABERTA (sem cura); em quem está atordoado ou preso entra mais fundo, e em quem está com a vida baixa o corte vai no
+      // pescoço (o id 'decepar' fica para não quebrar quem lê o kit)
       id: 'decepar',
-      name: 'Decepar',
+      name: 'Corte Ceifador',
       input: 'carga+dodge',
       type: 'heavyBlow',
-      description: 'Ergue a Shi no Kage e desce num corte que arranca um membro: o alvo SANGRA e fica com a FERIDA ABERTA (não se cura por 12 s). Em quem está atordoado ou preso entra mais fundo; em quem está com a vida baixa, DECAPITA (dano muito maior). Aguenta um golpe na preparação.',
+      description: 'Ergue a Shi no Kage e desce num corte ceifador: o alvo SANGRA e fica com a FERIDA ABERTA (não se cura por 12 s). Em quem está atordoado ou preso entra mais fundo; em quem está com a vida baixa, DECAPITA (dano muito maior). Aguenta um golpe na preparação.',
       energyCost: 30,
       cooldown: 13,
       anim: 'slash_finisher',
@@ -160,7 +161,7 @@ export default {
       bleed: { dps: 7, duration: 4 },
       noHeal: 12,
       downBonus: 1.5,
-      downLabel: 'DECEPOU!',
+      downLabel: 'CEIFOU!',
       lowBonus: { below: 0.25, mult: 2.0, label: 'DECAPITOU!' },
       whiffRecovery: 0.35,
       element: 'conhecimento',
@@ -176,7 +177,7 @@ export default {
   // (a "Execução das Sombras", que só some na sombra e golpeia pelas costas). O nome e as armas são canônicos; a cena é
   // proposta: ele SACA A RELÍQUIA DE ENERGIA na mão esquerda (a lâmina de luz roxa) e luta com AS DUAS — a Shi no Kage
   // de Conhecimento na direita. O Conhecimento marca o alvo (o sigilo dourado sobre a cabeça) e cada corte é visto um
-  // instante antes (o lampejo dourado); no meio da sequência o DECEPAR abre a carne (sangra) e o alvo ajoelha; fecha
+  // instante antes (o lampejo dourado); no meio da sequência o CORTE CEIFADOR abre a carne (sangra) e o alvo ajoelha; fecha
   // com o corte em X dourado e roxo que leva o nome da katana. Dano base 430: são 7 cortes e a escala de combo come uma
   // parte deles — medido no jogo contra o Balu, sai ~250 contra ~180 da Execução das Sombras (um golpe só, sem escala).
   special: {
@@ -195,7 +196,7 @@ export default {
       { t: 1.02, anim: 'slash_h_back', dur: 0.24, share: 0.08, fx: { kind: 'slash', tilt: -0.2, flip: true, color: RELIC }, sound: 'blade', foresee: true },
       { t: 1.24, anim: 'slash_d', dur: 0.24, share: 0.08, fx: { kind: 'slash', roll: 0.9 }, sound: 'blade', foresee: true },
       { t: 1.46, anim: 'slash_rapid', dur: 0.22, share: 0.08, fx: { kind: 'slash', tilt: -0.15, color: RELIC }, sound: 'blade', foresee: true },
-      // DECEPAR: o corte que arranca — sangra e o alvo cai de joelhos
+      // CORTE CEIFADOR: o corte pesado — sangra e o alvo cai de joelhos
       { t: 1.78, anim: 'slash_finisher', dur: 0.4, share: 0.16, fx: { kind: 'slash', roll: 1.5, big: true }, sound: 'slashFinal', victimAnim: 'forced_kneel', bleed: { dps: 8, duration: 5 }, push: 0.05 },
       { t: 2.3, anim: 'slash_up', dur: 0.3, share: 0.1, fx: { kind: 'slash', tilt: -1.2, color: RELIC }, sound: 'blade', foresee: true },
       // o X final: as duas lâminas cruzando

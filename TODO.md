@@ -190,7 +190,7 @@
   CONCLUÍDO (RZ-01 a RZ-09, 2026-10-26)** — Turno Extra, Sede Incontrolável, Banquete Bestial próprio, Vulto Retalhador
   no lugar do projétil, Maldição revista, crosta visível, kit próprio da forma (Língua, Predador), Afinidade com Sangue e
   validação. **Arthur (§3.1) auditado na v3.46.0.** §3.2–§3.29 auditados em 2026-11-01 e os que entraram depois
-  (§3.31–§3.40) em 2026-11-08. Falta: a decisão do dono sobre o Decepar do Joui (§3.2) e a revisão visual dos modelos (§3.30).
+  (§3.31–§3.40) em 2026-11-08. Decepar do Joui (§3.2) decidido em 2026-11-08: na forma ele virou Corte Ceifador. Revisão visual dos modelos (§3.30): folha de contato feita em 2026-11-08.
 - [x] **FEITO (v3.45.0/v3.46.0) — CENÁRIO NOVO + EQUIPE VAMPIROS.** Um cenário novo — pode ser o **interior da
   Igreja dos Vampiros de Hexatombe** (a Igreja de Sangue, ep. 9) — que entra junto com um **personagem novo de uma
   equipe nova, os VAMPIROS: Raziel**. Antes de começar: levantar o Raziel e a igreja na wiki/HQ (`lore/`, arte
@@ -508,6 +508,7 @@ Antes de propor alterações:
 - [x] Consultar a página da wiki do personagem, as páginas das habilidades/elementos/trilhas relacionadas e as referências indicadas nelas.
  (2026-11-01: wikitext pela API para todos de 3.2 a 3.28)
 - [~] Verificar as cenas relevantes nos episódios oficiais. Registrar episódio, cena e timestamp quando possível; não inventar timestamp se não foi conferido.
+  **2026-11-08:** `docs/FONTES-CENAS.md` tem a tabela habilidade → campanha, episódio e minuto de todo o elenco, tirada das citações da wiki. 118 de 295 habilidades têm cena citada; as outras são de ficha ou PROPOSTA. A ligação foi automática, então cada linha é uma pista para conferir. A HQ Assimilação → Desconjuração (de Iniciação até Desconjuração parte 2; link do dono no Scribd, 764 páginas só de imagem) fica para conferências pontuais. Falta: conferir as pistas nos episódios ou na HQ.
  — só os timestamps que a wiki cita; episódios não assistidos nesta passada.
  2026-11-08: na auditoria dos novos também só a wiki (nenhum episódio assistido). Conferir episódio, cena e minuto
  exige assistir: fica com o dono ou para quando houver transcrição/legenda oficial disponível.
@@ -643,12 +644,12 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   | Teleporte das Sombras, Portal das Sombras, Tomado pelo Ódio | mascarado | máscara (Calamidade) | — | ok, só no mascarado |
   | Olhar do Desespero | estava na forma Shi no Kage | máscara | forma é a fase SEM máscara | trocado por **Ataque Volátil** (canônico do Joui, Calamidade ep. 11, sem máscara) |
   | Passivas Decepar e Um por Um | estavam na forma | máscara | idem | saem da forma (ficam no mascarado) |
-  | Decepar (△+L2 da forma) | heavyBlow | máscara | idem | **em aberto**: pedido do dono — decidir manter como licença ou trocar |
+  | Decepar (△+L2 da forma) | heavyBlow | máscara | idem | **decidido (2026-11-08):** o golpe fica (pedido do dono; é esgrima da katana) com o nome **Corte Ceifador** (PROPOSTA); o Decepar canônico fica só no mascarado |
   | Envelhecimento Localizado "Mateo" | healOverTime | Desconjuração | faltava a cicatriz em espiral | descrição corrigida |
   | Coincidência Forçada "Rodolfo", Pavor Anormal | contra-ataque / armadilha | Desconjuração | — | ok nas duas fases |
   | Resistência Paranormal, Precognição, Desarmar | passivas | Calamidade | Resistência vem de Celestine, não da Seita | ok nas duas fases |
   | Sombra Rasteira, Corte de Conhecimento, Saque da Relíquia | projétil / avanço | proposta | — | marcados como proposta |
-  Falta: decisão sobre o Decepar e o teste em jogo da troca de forma/teleporte.
+  Falta: o teste em jogo da troca de forma/teleporte.
   - Conferir a fase exata de cada poder de sombra, máscara e katana.
   - A transformação Shi no Kage deve usar a katana da Magistrada apenas se a referência temporal e narrativa confirmar a associação desejada; não misturar o kit da máscara com a fase da nova katana.
   - Confirmar o efeito e o nome de cada ritual, especialmente Envelhecimento Localizado e Portal das Sombras.
@@ -903,14 +904,15 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   | 3.40 Rubens | Salto Fantasma, Afinidade (Energia), Saque Rápido, Mira de Elite, Paramédico, Tratar Ferimentos, Surto Temporal, Queima-Roupa; Amuleto (Sangue), Relógio de Arnaldo, Coração Pulsante | C: todos | Paramédico = A dentro de Tratar Ferimentos |
   Resultado: nenhuma divergência que peça mudança de código. As duas `elementalAffinity` do Rubens são de propósito
   (Energia = afinidade; Sangue = o Amuleto).
-- [~] **3.30 Revisão final cruzada — Formas, elementos e documentação:** 2026-11-01: registro de formas conferido por script — as 20 formas estão em `FORMS`, nenhuma `awakening.form` sem registro e nenhum arquivo de forma solto. Falta a classificação de cada forma e a revisão de elementos.
+- [x] **3.30 Revisão final cruzada — Formas, elementos e documentação:** 2026-11-01: registro de formas conferido por script — as 20 formas estão em `FORMS`, nenhuma `awakening.form` sem registro e nenhum arquivo de forma solto. Falta a classificação de cada forma e a revisão de elementos.
   **2026-11-08 — classificação das 22 formas:** TRANSFORMAÇÃO TEMPORÁRIA (a barra, até o fim do round): diabo, fantasma,
   labirinto_elmo, aguiar_mutilador, erin_caos, jae_x, colosso, guizo_et, kian_calamidade, cristino_desertor,
   dante_aberto, joui_shinokage, raziel_verdadeiro, celestine_magistrada, amphitruo, carina_leone, beatrice_existida.
   ENTIDADE SELECIONÁVEL (também é transformação de outro): deus_morte (Ferreiro), anfitriao (Arnaldo), juan_odio (Juan).
   ESTADO NARRATIVO sem barra: guizo_bombado e guizo_velho (resultados do jogo do Anfitrião). Nenhuma é chefe nem só
   skin. Elementos conferidos contra a origem de cada poder (Relíquias: Sangue/Energia/Morte/Conhecimento; Existida e
-  Magistrada: Conhecimento). Falta só a revisão visual dos modelos.
+  Magistrada: Conhecimento).
+  **2026-11-08 — revisão visual (folha de contato):** os 49 `.glb` de `public/models` renderizados de frente e a 3/4 no Blender (Workbench). Todos abrem, estão na mesma pose base e com escala coerente. As silhuetas são distintas, exceto um grupo parecido de camisa clara e calça escura: Arnaldo, Anfitrião, Balu, Cristopher, Kian e Veríssimo. Esses se separam pelo casaco, pela máscara e pelas armas. As armas não estão nos `.glb` (entram por `models/props.js`) e as cores de pele vêm do jogo, então essas duas coisas se conferem em jogo (a arte do título usa os modelos em jogo). Nenhum defeito que peça modelo novo.
   - Comparar `src/characters/forms/index.js` com `src/characters/index.js`; garantir registro de todas as formas sem aliases confusos.
   - Classificar cada forma: transformação temporária, estado narrativo, chefe, entidade separada ou skin.
   - Conferir `element` e `energyColor` contra fontes canônicas (cor não comprova elemento).
