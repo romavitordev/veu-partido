@@ -1602,3 +1602,9 @@ export function addBeatriceExistidaProps(rig) {
   rig.sockets.head.add(lit);
   rig.props.litGlow = lit;
 }
+
+// ESPREITADOR: as pupilas que se multiplicam (peça `morePupils` do .glb) ficam escondidas até a transformação ou o
+// Fortalecer sem Devorado — no cânone elas se multiplicam com o passar do tempo
+export function addEspreitadorProps(rig) {
+  if (rig.props.morePupils) rig.showProp('morePupils', false);
+}

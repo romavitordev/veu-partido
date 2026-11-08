@@ -177,7 +177,7 @@ export default {
       hpMult: 2,
       dmgMult: 1.7,
       extend: 4,
-      self: { id: 'fortalecer', name: 'Fortalecer', type: 'selfBuff', buffType: 'fortalecerEspreitador', label: 'FORTALECER', anim: 'gaze', duration: 7, damageMult: 1.2, speedMult: 1.1, armor: 2, affects: ['melee', 'ranged'], color: FEAR },
+      self: { id: 'fortalecer', name: 'Fortalecer', type: 'selfBuff', buffType: 'fortalecerEspreitador', label: 'FORTALECER', anim: 'gaze', duration: 7, showProp: 'morePupils', damageMult: 1.2, speedMult: 1.1, armor: 2, affects: ['melee', 'ranged'], color: FEAR },
       color: FEAR,
     },
   ],
@@ -203,6 +203,7 @@ export default {
     banner: 'Pupilas que se Multiplicam',
     type: 'awakenMode',
     mult: 1.18, speedMult: 1.12, cdRate: 1.5, aura: 'smoke', color: FEAR, heal: 0.08,
+    props: [['morePupils', true]], // as pupilas em 8 se multiplicam (cânone) e ficam até o fim do round
   },
 
   passives: [],

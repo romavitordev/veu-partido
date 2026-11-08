@@ -81,7 +81,7 @@ ARM_B = {s: ['chest', 's' + s, 'e' + s, 'hand' + s] for s in 'LR'}
 skin = vcol_material('pele_espreitador', rough=0.72)
 sclera = material('olho_espreitador', '#e9e4d2', 0.25, emission='#f4ecd0', strength=0.45)
 iris = material('glow_iris_espreitador', '#e2ad22', 0.3, emission='#f2c230', strength=1.6)
-pupil = material('pupila_espreitador', '#050404', 0.2)
+pupil = material('fine_pupila_espreitador', '#050404', 0.2)
 tear = material('lagrima_espreitador', '#a9bcc8', 0.15)
 mouth_in = material('boca_espreitador', '#120707', 0.8)
 tooth = material('dente_espreitador', '#d2cbb4', 0.5)
@@ -340,7 +340,9 @@ b.add('teeth', merge(*teeth), tooth, region='torso', weight_fn=lambda p: {'hd': 
 me_c = MOUTH - FWD * 0.05
 b.add('mouthEye', ellipsoid(tuple(me_c), (0.05, 0.048, 0.05), 18, 14), sclera, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 b.add('mouthIris', ellipsoid(tuple(me_c + FWD * 0.05), (0.03, 0.012, 0.03), 14, 8), iris, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-b.add('mouthPupil', ellipsoid(tuple(me_c + FWD * 0.058), (0.013, 0.006, 0.02), 10, 8), pupil, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+# o olho da boca: as duas pupilas em 8 (wiki: "o olho de duas pupilas" na fresta do armário)
+for k in (1, -1):
+    b.add(f'mouthPupil{k}', ellipsoid(tuple(me_c + FWD * 0.058 + MUP * 0.0125 * k), (0.012, 0.006, 0.0125), 10, 8), pupil, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 # a SALIVA escorrendo (wiki: confundida com as lágrimas)
 drool = []
 for i in range(4):
@@ -351,7 +353,7 @@ for i in range(4):
 b.add('drool', merge(*drool), tear, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 
 # ================================================================ OS OLHOS nas órbitas (brancos, íris amarela, pupilas que se multiplicam)
-eyes, irises, pups, tears = [], [], [], []
+eyes, irises, pups, more, tears = [], [], [], [], []
 for p0, n0, R, bones, drip in EYES:
     p, n = surf(TB, p0, n0)  # o fundo da órbita na malha final
     if p is None or (p - p0).length > R * 3:
@@ -365,10 +367,23 @@ for p0, n0, R, bones, drip in EYES:
     up = side.cross(n).normalized()
     look = (n + V(random.uniform(-0.25, 0.25), random.uniform(-0.25, 0.25), random.uniform(-0.2, 0.2))).normalized()
     irises.append((ellipsoid(tuple(c + look * R * 0.98), (R * 0.5, R * 0.5, R * 0.5), 10, 8), w))
-    n_p = 1 + (random.random() < 0.35) + (random.random() < 0.12)  # as pupilas que se multiplicam
-    for k in range(n_p):
-        off = (side * random.uniform(-0.2, 0.2) + up * random.uniform(-0.2, 0.2)) * R if n_p > 1 else Vector()
-        pups.append((ellipsoid(tuple(c + look * R * 1.2 + off), (R * 0.24, R * 0.24, R * 0.24), 8, 6), w))
+    # PUPILAS EM 8 (wiki: "o olho de duas pupilas"; "pupilas que se multiplicam com o passar do tempo"): as duplas
+    # nascem COLADAS uma em cima da outra, como um 8, e não espalhadas. Um terço dos olhos já tem o 8; os outros ganham
+    # a 2ª pupila (e alguns a 3ª, emendada no 8) na peça `morePupils`, que só aparece quando elas se multiplicam
+    # (transformação e Fortalecer sem Devorado). PROPOSTA: a proporção e o tamanho.
+    tilt = random.uniform(-0.35, 0.35)
+    axis = (up * math.cos(tilt) + side * math.sin(tilt)).normalized()
+    pr = R * 0.25
+    front = c + look * R * 1.36  # para fora da íris (antes a pupila ficava enterrada nela e não aparecia)
+    eight = random.random() < 0.35
+    chain = [front + axis * pr * 0.82, front - axis * pr * 0.82] if eight else [front]
+    for q in chain:
+        pups.append((ellipsoid(tuple(q), (pr, pr, pr), 8, 6), w))
+    if eight:
+        if random.random() < 0.4:  # o 8 vira um 3 em fila
+            more.append((ellipsoid(tuple(front - axis * pr * 2.4 - look * R * 0.06), (pr * 0.85, pr * 0.85, pr * 0.85), 8, 6), w))
+    else:
+        more.append((ellipsoid(tuple(front - axis * pr * 1.64), (pr, pr, pr), 8, 6), w))
     if random.random() < drip:  # as LÁGRIMAS escorrendo pela pele
         L = random.uniform(0.05, 0.11)
         pts = []
@@ -381,6 +396,10 @@ for p0, n0, R, bones, drip in EYES:
 for nm, lst, mat in (('eyes', eyes, sclera), ('irises', irises, iris), ('pupils', pups, pupil), ('tears', tears, tear)):
     for i, (part, w) in enumerate(lst):
         b.add(f'{nm}{i}', part, mat, region='torso', weight_fn=lambda p, w=w: w, subdiv=0)
+# as pupilas que se multiplicam: uma peça só (prop), escondida no jogo até a transformação (models/props.js)
+for i, (part, w) in enumerate(more):
+    b.add(f'morePupils{i}', part, pupil, region='torso', weight_fn=lambda p, w=w: w, subdiv=0)
+b.group('morePupils', 'prop_morePupils')
 
 b.export(OUT)
 

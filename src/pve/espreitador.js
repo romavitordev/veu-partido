@@ -124,10 +124,10 @@ export class Closet {
         const e = new THREE.Group();
         const ball = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 8), white);
         ball.scale.z = 0.5;
-        const n = Math.random() < 0.3 ? 2 : 1; // alguns com duas pupilas (como os dele)
+        const n = Math.random() < 0.4 ? 2 : 1; // alguns com as duas pupilas EM 8, coladas uma em cima da outra (wiki)
         for (let k = 0; k < n; k++) {
-          const pu = new THREE.Mesh(new THREE.SphereGeometry(r * 0.38, 8, 6), black);
-          pu.position.set(n > 1 ? (k - 0.5) * r * 0.8 : 0, 0, r * 0.42);
+          const pu = new THREE.Mesh(new THREE.SphereGeometry(r * (n > 1 ? 0.3 : 0.38), 8, 6), black);
+          pu.position.set(0, n > 1 ? (k - 0.5) * r * 0.5 : 0, r * 0.42);
           pu.scale.z = 0.4;
           e.add(pu);
         }

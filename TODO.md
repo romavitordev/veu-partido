@@ -1204,7 +1204,13 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
 - [x] Tentáculos do Lodo (Dante/Nubi) com o tentáculo do Amigo Imaginário.
 - [ ] Polimento da Degolificada: os corpos de alunos presos nela e o tamanho maior (cânone da luta final), a fita em X
       que cede e revela a boca (Devoradora), texturas da escola, armários como contêineres de loot.
-- [ ] Pupilas em 8 do Espreitador.
+- [x] **Pupilas em 8 do Espreitador** (2026-11-07; wiki: "pupilas que se multiplicam com o passar do tempo" e "o olho
+      de duas pupilas" na fresta): `char_espreitador.py` — as pupilas duplas nascem COLADAS uma em cima da outra (um 8;
+      um terço dos olhos já tem, alguns viram um 3 em fila) e o olho da boca tem as duas. As que faltam formam a peça
+      `prop_morePupils`, escondida (`addEspreitadorProps`) até se multiplicarem: na transformação Pupilas que se
+      Multiplicam (até o fim do round) e no Fortalecer sem Devorado. Corrigido junto: as pupilas ficavam ENTERRADAS na
+      íris e não apareciam; agora saem dela, sem contorno (`fine_`). Os olhos de aviso da fresta (`pve/espreitador.js`)
+      também têm o 8. PROPOSTA: proporção e tamanho. Falas do Espreitador sem o "caído" errado ("a guitarra caído").
 - [x] **Travamento ao lutar no Outro Lado** (relato do dono, 2026-11-06: "quando começo a lutar contra os personagens,
       parece que sobrecarrega e trava"). Duas causas medidas: (1) o barril/caixa (`pve/breakables.js`) não tinha
       `hitTest`; o 1º projétil numa sala com barril lançava erro no `World.update`, e como o erro saía do `tick()` o
