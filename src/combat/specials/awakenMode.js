@@ -118,6 +118,9 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
   const drip = sp.eyeDrip !== undefined ? world.fx.emitter({ rate: 14, follow: () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()), particle: { color: sp.eyeDrip, kind: 'smoke', speed: 0.15, up: -1.2, spread: 0.08, life: 0.6, size: 0.12, gravity: 3 } }) : null;
   if (sp.heal) f.health = Math.min(f.maxHealth, f.health + f.maxHealth * sp.heal);
   const aura = auraEmitter(f, world, sp.aura || 'flame', col);
+  // grow: a forma CRESCE (a Degolificada Devoradora é bem maior) — só o modelo e o corpo; volta no fim do round
+  const grow = sp.grow && f.rig.root ? sp.grow : 1;
+  if (grow !== 1) { f.rig.root.scale.multiplyScalar(grow); f.radius *= grow; }
   const tint = { color: col, base: 0.16 };
   f.buffTint = tint;
   // a Passagem: o □ do adversário (a forma em que ele está agora), com a recarga e o custo dele
@@ -162,7 +165,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
         if (armorClock >= sp.armorEvery && (f.armorHits || 0) < (sp.armorMax ?? 1)) { armorClock = 0; f.armorHits = (f.armorHits || 0) + 1; }
       }
     },
-    onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); if (f.buffTint === tint) f.buffTint = null; },
+    onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); if (f.buffTint === tint) f.buffTint = null; if (grow !== 1 && f.rig.root) { f.rig.root.scale.divideScalar(grow); f.radius /= grow; } },
   });
   if (ranged) f.cooldownMax.ranged = ranged.cooldown || 1;
   if (src) { f.cooldowns.ranged = 0; f.notify(`□: ${(src.name || 'ATAQUE').toUpperCase()} (${f.opponent.def.name})`, true); }

@@ -38,6 +38,14 @@ const HAIR_E = 0x050505;
 const WARN = 0xc8d0c0;
 const FEAR = 0xf2c230;
 
+// a fita em X da Degolificada cede (true) ou volta (false): a boca enorme de dentes (peças do .glb, models/props.js)
+function tearMouth(f, open) {
+  const P = f.rig && f.rig.props;
+  if (!P || !P.mouthTape) return;
+  f.rig.showProp('mouthTape', !open);
+  for (const p of ['bigMouth', 'bigMouthGums', 'bigMouthTeeth']) f.rig.showProp(p, open);
+}
+
 function groundMesh(world, geo, color, opacity = 0) {
   const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, toneMapped: false }));
   m.rotation.x = -Math.PI / 2;
@@ -409,7 +417,8 @@ Object.assign(ABILITY_TYPES, {
     },
   },
 
-  // R2 + △ GRITO RASGADO (cânone): rompe a vedação da boca — atordoa e ENSURDECE quem está perto
+  // R2 + △ GRITO RASGADO (cânone): rompe a vedação da boca — atordoa e ENSURDECE quem está perto. A fita em X se abre e
+  // a boca de dentes aparece no grito (wiki: "rasgar o tecido preso em sua boca"); na Devoradora ela já fica aberta
   hairScream: {
     start(f, a, world) {
       const tl = new Timeline();
@@ -420,6 +429,8 @@ Object.assign(ABILITY_TYPES, {
       world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: WARN, radius: a.radius, life: a.windup });
       tl.each((time) => { if (f.rig.body) f.rig.body.position.x = time < a.windup ? Math.sin(time * 70) * 0.02 : 0; });
       tl.add(a.windup, () => {
+        tearMouth(f, true);
+        world.after(0.75, () => { if (!f.findBuff('awakened')) tearMouth(f, false); });
         world.audio.play('scare', { volume: 1.2, pitch: 1.4 });
         world.cameraRig.shake(0.4, 0.5);
         for (let i = 0; i < 3; i++) world.after(i * 0.08, () => world.fx.ring(f.chestPos(new THREE.Vector3()).setY(1.6), { color: 0xe0e8e0, radius: a.radius * (0.5 + i * 0.25), life: 0.45 }));

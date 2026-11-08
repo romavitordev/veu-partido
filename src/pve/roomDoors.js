@@ -258,6 +258,7 @@ export class Drawer {
     const g = new THREE.Group();
     g.position.set(spot.x, spot.y ?? 0.6, spot.z);
     g.rotation.y = spot.face || 0;
+    if (spot.locker) { this.buildLocker(g, content); return; }
     const wood = new THREE.MeshToonMaterial({ color: 0x6a4428, emissive: 0x24140a });
     const slide = new THREE.Group();
     const front = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.17, 0.03), wood);
@@ -285,6 +286,64 @@ export class Drawer {
     this.slide = slide;
   }
 
+  // o ESCANINHO (Escola): dois armários de aço no vão da fileira; o da esquerda guarda o achado e a porta gira na
+  // dobradiça. Origem do grupo no chão, na frente da fileira (a frente dos armários fica a +0.105 do ponto)
+  buildLocker(g, content) {
+    g.position.y = 0;
+    const steel = new THREE.MeshToonMaterial({ color: 0x2f4754, emissive: 0x060a0c });
+    const dark = new THREE.MeshBasicMaterial({ color: 0x07090b });
+    const vent = new THREE.MeshBasicMaterial({ color: 0x101418 });
+    const F = 0.105;
+    for (const ox of [-0.2, 0.2]) {
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.9, 0.45), steel);
+      body.position.set(ox, 0.95, F - 0.225 - 0.004);
+      g.add(body);
+    }
+    // o vão por dentro (escuro) e a prateleira, que aparecem quando a porta abre
+    const inside = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 1.78), dark);
+    inside.position.set(-0.2, 0.95, F - 0.002);
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.02, 0.2), steel);
+    shelf.position.set(-0.2, 1.42, F - 0.1);
+    g.add(inside, shelf);
+    // as portas: a da direita fixa, a da esquerda numa dobradiça na borda de fora
+    const door = (parent, x) => {
+      const d = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.8, 0.02), steel);
+      d.position.set(x, 0.95, 0);
+      parent.add(d);
+      for (let k = 0; k < 3; k++) {
+        const v = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.015, 0.01), vent);
+        v.position.set(x, 1.6 + k * 0.05, 0.012);
+        parent.add(v);
+      }
+      const h = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.1, 0.02), new THREE.MeshStandardMaterial({ color: 0x9aa4aa, metalness: 0.7, roughness: 0.35 }));
+      h.position.set(x + 0.15, 1.0, 0.02);
+      parent.add(h);
+    };
+    const fixed = new THREE.Group();
+    fixed.position.z = F + 0.01;
+    door(fixed, 0.2);
+    const hinge = new THREE.Group();
+    hinge.position.set(-0.39, 0, F + 0.01);
+    door(hinge, 0.19);
+    g.add(fixed, hinge);
+    this.hinge = hinge;
+    this.slide = null;
+    if (content && content.kind === 'key') {
+      const key = new THREE.Group();
+      const km = new THREE.MeshBasicMaterial({ color: 0xe8c050, toneMapped: false });
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.008, 6, 12), km);
+      const stem = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.1, 0.012), km);
+      stem.position.y = -0.06;
+      key.add(ring, stem);
+      key.position.set(-0.2, 1.25, F - 0.06); // pendurada embaixo da prateleira
+      g.add(key);
+      this.keyMesh = key;
+    }
+
+    this.w.scene.add(g);
+    this.group = g;
+  }
+
   reach(p) {
     const d = Math.hypot(p.x - this.spot.x, p.z - this.spot.z);
     return !this.opened && d < 1.25 ? d : Infinity;
@@ -297,12 +356,14 @@ export class Drawer {
 
   update(dt) {
     this.k += ((this.opened ? 1 : 0) - this.k) * Math.min(1, dt * 7);
-    this.slide.position.z = this.k * 0.26;
+    if (this.hinge) this.hinge.rotation.y = -this.k * 1.9; // a porta do escaninho gira para fora
+    else this.slide.position.z = this.k * 0.26;
     if (this.keyMesh && this.opened) {
       // a chave sobe brilhando e some (foi para o bolso)
+      if (!this.keyY0) this.keyY0 = this.keyMesh.position.y;
       this.keyMesh.position.y += dt * 0.6;
       this.keyMesh.rotation.y += dt * 6;
-      if (this.keyMesh.position.y > 0.6) { this.slide.remove(this.keyMesh); this.keyMesh = null; }
+      if (this.keyMesh.position.y > this.keyY0 + 0.6) { this.keyMesh.parent.remove(this.keyMesh); this.keyMesh = null; }
     }
   }
 

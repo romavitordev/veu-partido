@@ -1605,6 +1605,13 @@ export function addBeatriceExistidaProps(rig) {
 
 // ESPREITADOR: as pupilas que se multiplicam (peça `morePupils` do .glb) ficam escondidas até a transformação ou o
 // Fortalecer sem Devorado — no cânone elas se multiplicam com o passar do tempo
+// DEGOLIFICADA: a fita em X fica; a boca enorme e os alunos presos no cabelo só aparecem quando ela vira Devoradora
+// (a fita cede) — na luta pela transformação, no Outro Lado pela metamorfose do chefe (pve/degolificada.js)
+export const DEGOLIFICADA_DEVOUR_PROPS = ['bigMouth', 'bigMouthGums', 'bigMouthTeeth', 'trappedSleeves', 'trappedArms', 'trappedHands', 'trappedHead', 'trappedHair', 'trappedBlood'];
+export function addDegolificadaProps(rig) {
+  for (const p of DEGOLIFICADA_DEVOUR_PROPS) if (rig.props[p]) rig.showProp(p, false);
+}
+
 export function addEspreitadorProps(rig) {
   if (rig.props.morePupils) rig.showProp('morePupils', false);
 }

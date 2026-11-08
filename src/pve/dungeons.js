@@ -191,7 +191,7 @@ export const DUNGEONS = {
           right: { x: -14, z: 2.48, face: Math.PI, w: 1.4 },
         },
         chests: [{ x: -18.6, z: -1.3 }, { x: -1.2, z: 1.3 }],
-        drawers: [{ x: -11, y: 0.66, z: -2.15, face: 0 }, { x: -6, y: 0.66, z: 2.15, face: Math.PI }], // os escaninhos
+        drawers: [{ x: -11, y: 0.66, z: -2.15, face: 0, locker: true }, { x: -6, y: 0.66, z: 2.15, face: Math.PI, locker: true }], // os escaninhos (armários que abrem)
       },
       historia: classroom(0, 30, 'Sala de História'),
       matematica: classroom(20, 30, 'Sala de Matemática'),
@@ -233,7 +233,7 @@ export const DUNGEONS = {
           right: { x: 44, z: 55.98, face: Math.PI, w: 1.4 },
         },
         chests: [{ x: 55.1, z: 53.2 }],
-        drawers: [{ x: 51, y: 0.66, z: 55.5, face: Math.PI }],
+        drawers: [{ x: 51, y: 0.66, z: 55.61, face: Math.PI, locker: true }], // o escaninho no vão da fileira
       },
       // a sala do chefe: a BIBLIOTECA (calma, com o fichário) → a PASSAGEM SECRETA → o BUNKER (a luta começa ao entrar)
       biblioteca: {

@@ -1202,8 +1202,15 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
 - [x] HUD do modo minimalista (Inter, vidro escuro, avisos de interagir sem caixa); nome dos golpes das criaturas
       pequeno no canto.
 - [x] Tentáculos do Lodo (Dante/Nubi) com o tentáculo do Amigo Imaginário.
-- [ ] Polimento da Degolificada: os corpos de alunos presos nela e o tamanho maior (cânone da luta final), a fita em X
-      que cede e revela a boca (Devoradora), texturas da escola, armários como contêineres de loot.
+- [x] **Polimento da Degolificada** (2026-11-07): `char_degolificada.py` — o rosto preso na superfície (raio na malha),
+      a FITA EM X sobre a boca costurada e a BOCA GRANDE escondida (gengiva e dentes); os ALUNOS PRESOS no cabelo
+      (5 braços com mãos, uma cabeça meio engolida, mangas de camisa e sangue; PROPOSTA a disposição). Despertar
+      (Devoradora): a fita some, a boca e os alunos aparecem e ela cresce 20% (`sp.grow` novo no `awakenMode`); o
+      Grito rasga a fita por um instante. No chefe da Escola, `becomeDevourer` faz o mesmo (escala 1.15).
+      Armários: os ESCANINHOS do corredor e do laboratório viraram armários de aço de verdade, cuja porta gira na
+      dobradiça e mostra o achado (chave, moedas, cura) — `Drawer` com `spot.locker`.
+- [ ] Texturas da Escola (o que sobrou do polimento da Degolificada): paredes, piso e armários com textura em vez de
+      cor lisa (`arena_escola.py`).
 - [x] **Pupilas em 8 do Espreitador** (2026-11-07; wiki: "pupilas que se multiplicam com o passar do tempo" e "o olho
       de duas pupilas" na fresta): `char_espreitador.py` — as pupilas duplas nascem COLADAS uma em cima da outra (um 8;
       um terço dos olhos já tem, alguns viram um 3 em fila) e o olho da boca tem as duas. As que faltam formam a peça

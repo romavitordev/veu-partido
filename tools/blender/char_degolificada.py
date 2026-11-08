@@ -21,6 +21,7 @@ from lib import *
 from lib import BONES, build_armature
 from sculpt_lib import Sculpt, ridge, n3, rod, vcol_material, paint
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'degolificada.glb'
 random.seed(29)  # 29 de fevereiro, a noite em que tudo começou na escola
@@ -266,21 +267,53 @@ fwd = UP.cross(V(1, 0, 0)).normalized()
 if fwd.y > 0:
     fwd = -fwd
 side = V(1, 0, 0)
+# o rosto fica NA SUPERFÍCIE da cabeça esculpida (raio na malha): antes os olhos, a boca e as faixas ficavam enterrados
+# dentro dela (a cabeça de metaball é maior que os números à mão) e não apareciam (2026-11-07)
+TB = BVHTree.FromPolygons([Vector(v) for v in body_mesh[0]], body_mesh[1])
+
+
+def face_pt(d):
+    d = d.normalized()
+    hit = TB.ray_cast(HC + d * 0.6, -d)
+    return (hit[0], hit[1].normalized()) if hit[0] is not None else (HC + d * 0.13, d)
+
+
 for s_ in (-1, 1):
-    b.add(f'socket{s_}', ellipsoid(tuple(HC + fwd * 0.088 + UP * 0.025 + side * s_ * 0.035), (0.022, 0.012, 0.016), 10, 8), socket, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
-MOUTH = HC + fwd * 0.09 - UP * 0.055
+    ep, en = face_pt(fwd * 0.088 + UP * 0.025 + side * s_ * 0.035)
+    b.add(f'socket{s_}', ellipsoid(tuple(ep - en * 0.002), (0.022, 0.016, 0.018), 10, 8), socket, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+MOUTH, MN = face_pt(fwd * 0.09 - UP * 0.055)
+# a FITA EM X na boca (wiki, hospedeira Agatha: "uma fita em formato de X na boca"): duas tiras cruzadas por cima da
+# costura. É uma peça (prop) porque CEDE: na Devoradora / com o tempo ela some e a boca enorme aparece (models/props.js)
 bands = []
-for k, (a, off) in enumerate(((0.25, 0.0), (-0.3, 0.018), (0.05, -0.022))):
+for a in (0.62, -0.62):
     rot = side * math.cos(a) + UP * math.sin(a)
-    c = MOUTH + fwd * 0.004 + UP * off
-    pts = [c + rot * (u * 0.075) + fwd * (-0.035 * abs(u) ** 2) for u in (-1, -0.5, 0, 0.5, 1)]
-    bands.append(rod(pts, [0.012] * 5, 5))
-b.add('bands', merge(*bands), band, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+    c = MOUTH + MN * 0.008
+    pts = [c + rot * (u * 0.075) + MN * (-0.03 * abs(u) ** 2 + (0.004 if a > 0 else 0)) for u in (-1, -0.5, 0, 0.5, 1)]
+    bands.append(rod(pts, [0.0105] * 5, 5))
+b.add('prop_mouthTape', merge(*bands), band, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 st = []
 for i in range(7):  # os pontos da costura atravessando os lábios
-    c = MOUTH + side * ((i - 3) * 0.013) + fwd * 0.016
+    c = MOUTH + side * ((i - 3) * 0.013) + MN * 0.002
     st.append(rod([c + UP * 0.012, c - UP * 0.012], [0.0025, 0.0025], 4))
 b.add('stitches', merge(*st), stitch, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
+
+# a BOCA ENORME (wiki: "a fita cedeu e uma enorme boca com poderosos dentes foi revelada, uma aparência similar a
+# Degolificada Devoradora"): o rasgo escuro do rosto até o peito, com DENTES grandes em volta. Escondida (prop) até ceder.
+mouth_m = material('boca_degolificada', '#140203', 0.6)
+gum = material('gengiva_degolificada', '#5a0c12', 0.4)
+tooth = material('dente_degolificada', '#d8cfb4', 0.45)
+BM = MOUTH + MN * 0.004 - UP * 0.045  # desce pelo queixo até o peito
+b.add('prop_bigMouth', ellipsoid(tuple(BM), (0.058, 0.03, 0.105), 18, 14), mouth_m, region='torso', weight_fn=lambda p: {'hd': 0.6, 'neck': 0.4}, subdiv=0)
+gums, teeth = [], []
+for i in range(22):
+    t = i / 22 * math.tau
+    rim = BM + side * math.sin(t) * 0.062 + UP * math.cos(t) * 0.11 + MN * 0.022
+    gums.append(ellipsoid(tuple(rim), (0.016, 0.012, 0.016), 6, 5))
+    inward = (BM + MN * 0.035 - rim).normalized()
+    L = random.uniform(0.028, 0.048)  # "poderosos dentes": grandes e tortos
+    teeth.append(cone(tuple(rim), tuple(rim + inward * L + V(random.uniform(-0.006, 0.006), 0, random.uniform(-0.006, 0.006))), 0.0085 + random.random() * 0.004, 6))
+b.add('prop_bigMouthGums', merge(*gums), gum, region='torso', weight_fn=lambda p: {'hd': 0.6, 'neck': 0.4}, subdiv=0)
+b.add('prop_bigMouthTeeth', merge(*teeth), tooth, region='torso', weight_fn=lambda p: {'hd': 0.6, 'neck': 0.4}, subdiv=0)
 
 # ================================================================ O CABELO
 # 1) a COLUNA: mechas do couro cabeludo que caem retas até o chão, na frente e dos lados (o rosto aparece numa fresta)
@@ -363,6 +396,34 @@ def hair_w(p):
 
 
 b.add('hair', merge(*strands), hairm, region='torso', weight_fn=hair_w, subdiv=0)
+
+# os ALUNOS PRESOS no cabelo (cânone da luta final citado pelo dono, 2026-11-06): braços de uniforme escolar saindo da
+# coluna de cabelo, moles, e uma cabeça meio engolida embaixo. Peça escondida (prop) até a Devoradora. PROPOSTA: quantos
+# e onde (a wiki não descreve a cena).
+st_skin = material('pele_aluno', '#a89c8e', 0.85)  # pele sem vida, acinzentada
+shirt = material('camisa_aluno', '#d8d4c8', 0.9)
+st_hair = material('cabelo_aluno', '#2a1a10', 0.6)
+blood = material('sangue_aluno', '#5a0a0e', 0.4)
+arms_s, arms_k, hands, heads, caps, bl = [], [], [], [], [], []
+for a, h, reach in ((-1.1, 0.95, 0.5), (1.25, 0.78, 0.55), (2.6, 1.05, 0.45), (-2.3, 0.62, 0.5), (0.25, 0.5, 0.42)):
+    o = V(col_c.x + math.sin(a) * 0.12, col_c.y - math.cos(a) * 0.12, h + LIFT * 0.4)
+    d = V(math.sin(a), -math.cos(a), 0)
+    sd = V(-d.y, d.x, 0)
+    elbow = o + d * reach * 0.55 + V(0, 0, -0.05)
+    wrist = o + d * reach + V(0, 0, -0.2)  # caídos: sem força
+    arms_s.append(rod([o - d * 0.05, o + d * 0.12, elbow], [0.04, 0.038, 0.034], 8))  # a manga da camisa do uniforme
+    arms_k.append(rod([elbow - d * 0.02, (elbow + wrist) / 2, wrist], [0.027, 0.024, 0.021], 8))
+    palm = wrist + V(0, 0, -0.04) + d * 0.01
+    hands.append(ellipsoid(tuple(palm), (0.028, 0.02, 0.04), 8, 6))
+    for k in range(4):  # os dedos abertos, pendurados
+        base = palm + sd * ((k - 1.5) * 0.012) + V(0, 0, -0.03)
+        hands.append(rod([base, base + V(0, 0, -0.035) + d * 0.01 + sd * ((k - 1.5) * 0.006), base + V(0, 0, -0.062) + d * 0.022], [0.0075, 0.0065, 0.005], 5))
+    bl.append(ellipsoid(tuple(o + d * 0.035), (0.04, 0.04, 0.03), 8, 6))  # o sangue onde o braço some no cabelo
+hc_ = V(col_c.x + 0.05, col_c.y - 0.1, 0.3)  # a cabeça de um aluno, meio engolida perto do chão
+heads.append(ellipsoid(tuple(hc_), (0.08, 0.075, 0.095), 14, 10))
+caps.append(ellipsoid(tuple(hc_ + V(0, 0.015, 0.03)), (0.085, 0.08, 0.08), 12, 9))
+for nm, lst, m in (('Sleeves', arms_s, shirt), ('Arms', arms_k, st_skin), ('Hands', hands, st_skin), ('Head', heads, st_skin), ('Hair', caps, st_hair), ('Blood', bl, blood)):
+    b.add(f'prop_trapped{nm}', merge(*lst), m, region='torso', weight_fn=hair_w, subdiv=0)
 b.add('hairCap', ellipsoid(tuple(HC + UP * 0.025 + V(0, 0.01, 0)), (0.172, 0.172, 0.178), 20, 14), hairm, region='torso', weight_fn=lambda p: {'hd': 1.0}, subdiv=0)
 
 b.export(OUT)

@@ -217,6 +217,10 @@ export default {
     type: 'awakenMode',
     anim: 'ai_frenzy',
     mult: 1.18, affects: ['melee', 'ability'], takenMult: 0.88, speedMult: 1.2, cdRate: 1.3, aura: 'blood', color: BLOOD, heal: 0.1,
+    // cânone (wiki): a fita em X CEDE e revela a boca enorme de dentes; ela fica maior, com os alunos presos no cabelo
+    // (luta final, citado pelo dono). PROPOSTA: o tamanho.
+    grow: 1.2,
+    props: [['mouthTape', false], ['bigMouth', true], ['bigMouthGums', true], ['bigMouthTeeth', true], ['trappedSleeves', true], ['trappedArms', true], ['trappedHands', true], ['trappedHead', true], ['trappedHair', true], ['trappedBlood', true]],
   },
 
   passives: [],

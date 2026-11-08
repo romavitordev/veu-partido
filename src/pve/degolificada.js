@@ -24,6 +24,7 @@ import { distXZ, yawTo, turnTowards } from '../core/util.js';
 import { applyHit } from '../combat/damage.js';
 import { resolveBody } from '../combat/positioning.js';
 import { inkTentacle } from '../fx/inkFx.js';
+import { DEGOLIFICADA_DEVOUR_PROPS } from '../models/props.js';
 
 const v1 = new THREE.Vector3();
 const HAIR = 0x0a0909;
@@ -824,6 +825,9 @@ export class DegolificadaBrain {
     if (!this.screamed) {
       this.screamed = true;
       if (b.rig.body) b.rig.body.position.x = 0;
+      // a fita em X se rasga no grito (cânone) e volta depois — na Devoradora a boca já fica aberta
+      this.mouth(true);
+      this.w.after(0.75, () => { if (!this.devourer && this.boss) this.mouth(false); });
       this.w.audio.play('scare', { volume: 1.2, pitch: 1.4 });
       this.w.cameraRig.shake(0.4, 0.5);
       for (let i = 0; i < 3; i++) this.w.after(i * 0.08, () => this.w.fx.ring(b.chestPos(new THREE.Vector3()).setY(1.6), { color: 0xe0e8e0, radius: S.radius * (0.5 + i * 0.25), life: 0.45 }));
@@ -834,6 +838,14 @@ export class DegolificadaBrain {
       }
     }
     if (this.st > S.windup + 0.6) this.backToDuel();
+  }
+
+  // a fita em X cede (true) ou volta (false): a boca enorme de dentes (peças do .glb)
+  mouth(open) {
+    const r = this.boss && this.boss.rig;
+    if (!r || !r.props || !r.props.mouthTape) return;
+    r.showProp('mouthTape', !open);
+    for (const p of ['bigMouth', 'bigMouthGums', 'bigMouthTeeth']) r.showProp(p, open);
   }
 
   // ------------------------------------------------ DEVORADORA (a metamorfose de Sangue): maior, mais rápida, mais fios
@@ -847,6 +859,11 @@ export class DegolificadaBrain {
     this.w.fx.burst(b.chestPos(v1).clone(), { count: 40, color: 0x7a0a10, speed: 3, life: 0.8, size: 0.14 });
     b.cpuEdge = { ...(b.cpuEdge || {}), dealt: (b.cpuEdge?.dealt ?? 1) * C.dealt };
     if (b.rig.root) b.rig.root.scale.multiplyScalar(C.size);
+    // a fita em X cede: a boca enorme de dentes aparece, e os alunos presos no cabelo (cânone)
+    if (b.rig.props) {
+      b.rig.showProp('mouthTape', false);
+      for (const p of DEGOLIFICADA_DEVOUR_PROPS) b.rig.showProp(p, true);
+    }
   }
 
   // caiu: o FOGO AZUL (cânone: ao dizerem o nome do Gabriel, o fogo ficou azul e a criatura foi dissipada)
@@ -871,5 +888,9 @@ export class DegolificadaBrain {
     if (b.rig.body) b.rig.body.position.set(0, 0, 0);
     b.moveSpeed = this.baseSpeed;
     if (this.devourer && b.rig.root) b.rig.root.scale.divideScalar(DEGOLIFICADA_CFG.devour.size);
+    if (this.devourer && b.rig.props) {
+      b.rig.showProp('mouthTape', true);
+      for (const p of DEGOLIFICADA_DEVOUR_PROPS) b.rig.showProp(p, false);
+    }
   }
 }
