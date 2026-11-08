@@ -7,6 +7,39 @@ import { TELEGRAPH } from './telegraph.js';
 import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose } from '../../camera/shots.js';
 import { HoloCopy } from '../holo.js';
 import { groundMark, blindFighter } from '../abilities.js';
+import { buildOrpheu } from '../../models/orpheu.js';
+
+// h.bird: o pássaro sai do ombro e voa em volta da cabeça do alvo, mergulhando de tempos em tempos, até o fim da cena
+// (Beatrice — o Orpheu na Menina do Pássaro). Devolve { step(dt), dispose() } — o cleanup chama dispose e o pássaro some em penas.
+function flyBird(world, f, opp) {
+  const bird = buildOrpheu();
+  const shoulder = () => (f.rig.joints.sL ? f.rig.joints.sL.getWorldPosition(new THREE.Vector3()) : f.chestPos()).add(new THREE.Vector3(0, 0.25, 0));
+  bird.root.position.copy(shoulder());
+  world.scene.add(bird.root);
+  world.fx.burst(bird.root.position.clone(), { count: 10, color: 0x8a7458, speed: 1.6, life: 0.5, size: 0.08, gravity: 3 });
+  world.audio.play('swing', { pitch: 1.7, volume: 0.6 });
+  let t = 0;
+  // movido pelo update do especial (o mundo fica congelado na cena: os tickers do World não andam)
+  return {
+    step(dt) {
+      t += dt;
+      const head = opp.chestPos().add(new THREE.Vector3(0, 0.45, 0));
+      const dive = t > 0.35 && t % 0.5 > 0.36; // circula e mergulha no rosto a cada meio segundo
+      const goal = dive ? head : head.clone().add(new THREE.Vector3(Math.sin(t * 7) * 0.75, 0.35, Math.cos(t * 7) * 0.75));
+      const to = goal.clone().sub(bird.root.position);
+      const d = to.length();
+      if (d > 1e-4) bird.root.position.addScaledVector(to.multiplyScalar(1 / d), Math.min(d, 15 * dt));
+      if (dive && d < 0.3 && Math.random() < dt * 12) world.fx.burst(head, { count: 4, color: 0x8a7458, speed: 2, life: 0.4, size: 0.07, gravity: 4 });
+      bird.root.lookAt(goal);
+      bird.update(world.time, 1);
+    },
+    dispose() {
+      world.fx.burst(bird.root.position.clone(), { count: 12, color: 0x8a7458, speed: 2, life: 0.5, size: 0.08, gravity: 3 });
+      world.scene.remove(bird.root);
+      bird.dispose();
+    },
+  };
+}
 
 // Especial genérico "avança e executa uma sequência de golpes com câmera
 // cinematográfica". Usado por Arthur, Aghata, Injustiça e Kian;
@@ -243,6 +276,7 @@ export const cinematicCombo = {
     let xMark = null; // h.xMark: o X no chão
     let hidden = false; // h.vanish: sumido
     let mine = null; // h.mine: a mina no chão
+    let bird = null; // h.bird: o pássaro voando (a peça do ombro volta no fim)
     let propSwaps = []; // h.props: peças trocadas no meio da cena (a faca do Johnny no fim do especial do Rubens)
     const ownStrike = (i) => opp.def.melee?.strikes?.[i]?.anim || 'hit';
     const cleanup = () => {
@@ -258,6 +292,7 @@ export const cinematicCombo = {
       emitters = [];
       propSwaps.reverse().forEach(([p, v]) => f.rig.showProp(p, v));
       propSwaps = [];
+      if (bird) { bird.dispose(); f.orpheuOut = false; if (f.state !== 'ko') f.rig.showProp(bird.props, true); bird = null; }
       // a peça some no fim — a não ser que um estado ativo a mantenha (ex.: máscara do Aguiar)
       if (sp.prepare?.showProp && !(sp.prepare.keepIfBuff && f.findBuff(sp.prepare.keepIfBuff))) {
         f.rig.showProp(sp.prepare.showProp, false);
@@ -274,6 +309,8 @@ export const cinematicCombo = {
     const stepFx = (h) => {
       if (h.shout) f.notify(h.shout, true);
       if (h.props) for (const [p, v] of h.props) { f.rig.showProp(p, v); propSwaps.push([p, !v]); }
+      // o Voo do Orpheu já no ar: o pássaro é um só (não sai outro do ombro vazio)
+      if (h.bird && !bird && !f.orpheuOut) { f.rig.showProp(h.bird.props, false); f.orpheuOut = true; bird = flyBird(world, f, opp); bird.props = h.bird.props; }
       if (h.vanish) {
         // some numa fumaça e volta depois de h.vanish s (Jae — Shhh...)
         world.fx.burst(f.chestPos(), { count: 22, color: 0x0a0608, kind: 'smoke', speed: 2, life: 0.5, size: 0.6, grow: 1 });
@@ -500,6 +537,7 @@ export const cinematicCombo = {
     return {
       update(dt) {
         if (sphere) sphere.update(dt);
+        if (bird) bird.step(dt);
         if (trap) trap.update(dt);
         t += dt;
         if (phase === 'prepare') {

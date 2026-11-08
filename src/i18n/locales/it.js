@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "UN PICCHIADURO PARANORMALE",
   "menu.fanmade": "Gioco fan made di romavitordev · ispirato a Ordem Paranormal",
   "menu.press_start": "PREMI <b>START</b>, <b>{ok}</b> O <kbd>INVIO</kbd>",
+  "menu.loading": "PREPARAZIONE DEGLI SCONTRI…",
   "menu.press_touch": "TOCCA LO SCHERMO PER INIZIARE",
   "menu.foot_touch": "Tocca un'opzione per scegliere · la freccia nell'angolo torna indietro",
   "menu.foot_confirm": "<b>{ok}</b> conferma · <b>{back}</b> indietro",

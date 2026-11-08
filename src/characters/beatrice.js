@@ -170,7 +170,7 @@ export default {
     dash: { speed: 24, maxTime: 0.45, contact: 2.4 },
     standOff: 2.4,
     hits: [
-      { t: 0.25, anim: 'point', dur: 0.4, share: 0.14, fx: { kind: 'punch' }, sound: 'swing', props: [[ORPHEU, false]], call: 'ORPHEU!', victimAnim: 'stagger', push: 0.02 },
+      { t: 0.25, anim: 'point', dur: 0.4, share: 0.14, fx: { kind: 'punch' }, sound: 'swing', bird: { props: ORPHEU }, call: 'ORPHEU!', victimAnim: 'stagger', push: 0.02 },
       { t: 0.75, anim: 'point', dur: 0.4, share: 0.2, fx: { kind: 'stab' }, sound: 'bladeHit', burst: { count: 1, gap: 0.1, sound: 'knifeThrow' }, push: 0.05 },
       { t: 1.25, anim: 'point', dur: 0.4, share: 0.2, fx: { kind: 'stab' }, sound: 'bladeHit', burst: { count: 1, gap: 0.1, sound: 'knifeThrow' }, push: 0.05 },
       { t: 1.85, anim: 'knife_final', dur: 0.5, share: 0.46, fx: { kind: 'stab', big: true }, sound: 'slashFinal', props: [['crossbow', false], ['knife', true]], closeIn: true, final: true, shout: 'SABER TUDO É PERDER TUDO.' },

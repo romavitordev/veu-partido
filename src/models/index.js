@@ -55,6 +55,7 @@ const BLENDER_MODELS = {
   seita: { url: 'models/seita.glb', props: addSeitaProps }, // membro da Seita das Máscaras (as invocações da Magistrada)
   gaius: { url: 'models/gaius.glb', props: addGaiusProps }, // Gaius (Ordo Calamitas, Calamidade, 67 d.C.)
   amalia: { url: 'models/amalia.glb', props: addAmaliaProps }, // Amalia, a arqueira da Ordo Calamitas (Calamidade, 67 d.C.)
+  interflorado: { url: 'models/interflorado.glb', props: null }, // Interflorado aflorado (o Ninho do Estrangeiro; fora da seleção)
   doppel: { url: 'models/doppel.glb', props: addDoppelProps }, // Doppelganger, um dos Homens de Terno (as invocações do Estrangeiro)
 };
 

@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "초자연 격투 게임",
   "menu.fanmade": "romavitordev의 팬메이드 게임 · Ordem Paranormal에서 영감",
   "menu.press_start": "<b>START</b>, <b>{ok}</b> 또는 <kbd>ENTER</kbd>를 누르세요",
+  "menu.loading": "대전 준비 중…",
   "menu.press_touch": "화면을 터치해 시작",
   "menu.foot_touch": "옵션을 터치해 선택 · 모서리 화살표로 뒤로",
   "menu.foot_confirm": "<b>{ok}</b> 확인 · <b>{back}</b> 뒤로",

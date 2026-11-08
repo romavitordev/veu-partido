@@ -9,8 +9,20 @@
 - Degolificada: fita em X, boca devoradora e alunos presos (`char_degolificada.py`, `models/props.js`); `awakenMode` com `sp.grow`; Grito abre a boca (`outroLadoAbilities.js`, `pve/degolificada.js`).
 - Espreitador: pupilas em 8 (`char_espreitador.py`, prop `morePupils`).
 - Correção dos travamentos: `disposeClonedRig` (`models/glbRig.js`) e erros isolados por quadro (`World.js`, `main.js`, `Dungeon.updateInteract`).
+- `pve/degolificada.js`: a Devoradora chega 120 s depois que o escudo cai (antes: 120 s do início da luta).
+- `pve/dungeons.js`: `bossTune` por dungeon (Escola: vida ×0,75, dano ×0,6 na Degolificada; aplicado em `Dungeon.startBoss`/`beginBossFight`); `PVE_CHAR_TUNE` pela metade (saíram celestine, chico e deus_morte).
+- `ai/CpuController.js`: com o adversário escondido (`lurking`), qualquer monstro da sala vira alvo (antes ignorava os com mais de 120 de vida).
+- Estrangeiro: habilidade **Ninho de Interflorados** (Trás + □; tipo `interfloradoNest`, `InterfloradoNest` em `combat/npcs.js`); modelo novo `char_interflorado.py` → `public/models/interflorado.glb`; texturas `tee_/plaid_/jeans_/arms_interflorado` em `models/textures.js`.
+- `tools/gen-moves.mjs`: nomes dos comandos `ranged+back`/`ranged+forward` no HABILIDADES.md.
 - `dev/pveBattery.js`: parâmetro de dungeon; provas contam como achadas no chefe-enigma.
-- Testes: `npm test` 81/81; `npm run check` e `vite build` ok.
+- `pve/dungeons.js` + `Dungeon.updateMist`: neblina crescente na Escola (`mist`: fog 0.045 → 0.085, 0.09 no chefe, fumaça rasteira); `PVE_CHAR_TUNE` dano ×1,1 para chico, arnaldo e kemi (2ª amostra da Escola).
+- Balanceamento: Estrangeiro com o Ninho 58% em 170 lutas (mantido 1.06/0.92).
+- `combat/specials/cinematicCombo.js`: opção `h.bird` (o Orpheu voa no especial da Beatrice, movido pelo update do especial porque os tickers do World param na cena); `characters/beatrice.js` usa `bird`.
+- Especial de dupla Balu + Rubens: `config/teamLinks.js` `balu_rubens` + coreografia em `combat/teamSpecials.js` (falas na legenda `ui.subtitle`); teste novo em `tests/team-links.test.js`.
+- Modelos: `char_diabo.py` (Portador do Trono maior, pernas, braços de baixo e massa esculpidos com `sculpt_lib`, `legs=False` no corpo base) e `char_magistrada.py` (pregas na capa, `cloth_pass`/`hair_pass`); `public/models/diabo.glb` e `magistrada.glb` refeitos.
+- Tela inicial: fundo estático `#backdrop` no `index.html` + CSS em `styles.css` (sai `ui/titleStage.js` e o render 3D dos menus; `body.static-bg` esconde o canvas); `body.booting` troca o "pressione start" por `menu.loading` (13 idiomas) até o preload terminar. O elenco aparece como imagem `public/title/elenco.webp` (`.bd-cast`), gerada por `src/dev/titleCast.js`. Refeita como key art em duas fileiras (heróis iluminados na frente, vilões em silhueta atrás; recorte automático do alfa). Recomposição: logo no topo, `.press`/`.boot` absolutos no rodapé, `#backdrop::after` (faixa escura), `body:has(#home.menu-on) .bd-cast` recua; bloco `max-height: 520px` no fim do CSS. `sobre.html`: capa `public/sobre/titulo.webp`/`titulo-480.webp` nova, alt, Balu + Rubens, neblina da Escola.
+- `docs/REFERENCIAS-ANIMACAO.md`: pesquisa de referências de animação e timing (TODO 2.1).
+- Testes: `npm test` 82/82; `npm run check` e `vite build` ok.
 
 ## v4.33.0 — Kits do cânone e frestas
 

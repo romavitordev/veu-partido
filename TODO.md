@@ -30,6 +30,10 @@
       refeita pelo cânone dos Existidos (pedido do dono, 2026-11-03): lenta, sem armas, sem rituais e sem especial;
       Pancada, Não Vai Embora (segura quem bate), Olha pra Mim (suga a sanidade e mata quem está com 30% ou menos) e
       Brilho Enlouquecedor + Fortalecimento Paranormal. Sem o Orpheu na forma (a morte dele devolve as memórias).
+      **Corrigido (2026-11-08):** no especial Menina do Pássaro o Orpheu só sumia do ombro. Agora ele VOA de verdade
+      (`h.bird` em `combat/specials/cinematicCombo.js`, o mesmo `buildOrpheu` do Voo do Orpheu): sai do ombro, circula a
+      cabeça do alvo e mergulha no rosto durante os disparos e some em penas no fim (volta ao ombro). Se o Voo do
+      Orpheu já estiver no ar, não sai um segundo pássaro. Conferido no jogo.
 - [x] **Força D — Dante e Erin na ligação** (v4.19.1, o dono aprovou): a ligação tem Arthur, Kaiser, Joui, Dante, Erin
       e Beatrice; o Dante entra com a Espiral de Lodo e a Erin com a granada Supernova. Dante + Arthur + Joui sozinhos
       continuam sendo os Abutres (`priority`). Elizabeth e Fernando entram quando estiverem no elenco.
@@ -234,7 +238,7 @@
         descarnado com as costelas à mostra e os braços rasgados até o osso, a língua comprida; descontrolado, mais rápido
         e forte, SEDE INCONTROLÁVEL: devora quem está morrendo e se cura).
         Equipe nova "Vampiros" (Alvira, Velisar, Zéfero, Sabara quando entrarem).
-- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** — **EM PRODUÇÃO desde 2026-11-05; a 1ª fase jogável (Território do Espreitador) saiu na v4.25.0** — o coop local saiu na v4.29.0; falta o coop online sincronizado, o backup e mais dungeons (pedido do dono: "leia tudo
+- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** — **EM PRODUÇÃO desde 2026-11-05; a 1ª fase jogável (Território do Espreitador) saiu na v4.25.0** — o coop local saiu na v4.29.0, o coop online na v4.30.0 e o backup na v4.31.0; falta: mais dungeons (a 3ª ficou para depois — decisão do dono, 2026-11-08) (pedido do dono: "leia tudo
   sobre o modo Outro Lado e comece a produção. Quero que tenha pelo menos uma fase jogável pra lançar"; antes ficou em
   espera de 2026-11-01 a 2026-11-05). O plano de produção está na seção 3.4; as ideias do dono, na seção 3.0. (dungeons, Espreitador como chefe, progressão, salvamento,
   cooperativo): antes da v4.25.0, já anunciado como "em desenvolvimento, sem data" na página Sobre. Na v3.47.0 entrou só a
@@ -448,7 +452,8 @@ As animações deverão respeitar o estilo de luta de cada personagem e ser comp
 
 - [x] **Melhoria geral de todas as animações do jogo (pedido de 2026-10-26):** todas as animações de movimento (corrida, caminhada, esquivas, dash, pulo, transições), ataques normais, sequências de combo, finalizadores e habilidades precisam ser aprimoradas para maior fluidez, impacto e naturalidade.
  — feito em 6 levas (ver MELHORIA GERAL DE TODAS AS ANIMAÇÕES, 2026-11-01).
-- [ ] **Pesquisa e uso de referências visuais da internet:** buscar referências de alta qualidade em jogos de luta consagrados (Naruto Storm, Guilty Gear, Tekken, Street Fighter), coreografias de artes marciais reais e cenas de ação em animes para guiar o timing, arcos de movimento (anticipation, follow-through, peso e inércia).
+- [x] **Pesquisa e uso de referências visuais da internet:** buscar referências de alta qualidade em jogos de luta consagrados (Naruto Storm, Guilty Gear, Tekken, Street Fighter), coreografias de artes marciais reais e cenas de ação em animes para guiar o timing, arcos de movimento (anticipation, follow-through, peso e inércia).
+ — feito em 2026-11-08: `docs/REFERENCIAS-ANIMACAO.md` (frame data do SF6, animação limitada do Guilty Gear, câmera do Storm). 3 PROPOSTAS para decidir com o dono: hitstop maior só nos finalizadores, pose de impacto segurada nos especiais e câmera girando em enxames.
 - [x] **Polimento individual por estilo de combate** (2026-11-01, `anim/animStyles.js`, ver a 5ª leva acima): garantir que cada combatente tenha animações fiéis ao seu estilo e personalidade narrativa (ex.: agilidade e esgrima de Joui, brutalidade pesada de Balu e Aguiar, técnica militar de Kaiser e Veríssimo, loucura caótica de Xande e Anfitrião, elegância sobrenatural de Kian).
 
 ### 2.2. Atualização dos modelos antigos
@@ -821,7 +826,16 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
   - Confirmar visual da máscara, fios, capa e proporções.
   - Fornecer contrajogo ao controle mental (telegraph, duração, escape).
   - Testar abdução em bordas, câmera, interrupção e fim de round.
-  - [ ] **Ninho de Interflorados (pedido do dono, 2026-11-06; arte de referência do Interflorado enviada):** o
+  - [x] **Feito (2026-11-08): Ninho de Interflorados** — Estrangeiro, Trás + □ (custo 30, recarga 30 s). Wiki
+    "Interflorado": um Alheio PARASITA de Transmissão (o mesmo grupo do Estrangeiro); aflorado, o corpo se retorce e a
+    cabeça estoura em "dedos verdes com olhos" — o Guincho agudo toca quando um brota. Modelo novo
+    `tools/blender/char_interflorado.py` (camiseta clara com limo, camisa xadrez marrom aberta com as mangas
+    arregaçadas, jeans, antebraços com veias verdes, mãos em raízes, a cabeça de dedos nodosos cheia de olhos amarelos e
+    o limo escorrendo). `InterfloradoNest` em `combat/npcs.js`; tipo `interfloradoNest` em `combat/abilities.js`.
+    PROPOSTA (decidido na implementação): o ninho nasce entre ele e o adversário, dura 40 s, "perto" = 3,2 m (anel
+    verde no chão), brota um a cada 3,5 s, até 3 em campo (40 de vida, golpes de 8–12, 12 s cada), um ninho por vez,
+    e o ninho tem 60 de vida (dá para destruí-lo). Falta: medir o Estrangeiro na rodada de equilíbrio.
+  - [x] ~~Ninho de Interflorados (pedido do dono, 2026-11-06; arte de referência do Interflorado enviada):~~ o
     Estrangeiro cria um PONTO DE SPAWN no chão. Por 40 s, sempre que o inimigo chega perto do ponto, nascem
     Interflorados dele. Eles são fracos e têm pouca vida, mas atrapalham no meio da luta. Visual pela arte: corpo de homem
     comum (camiseta clara, camisa xadrez marrom aberta, calça jeans), braços com veias verdes e mãos em raízes de dedos
@@ -1228,6 +1242,23 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       Arthur não limparam nenhuma das 2 (91 s, 80–130% de dano). Antes de mexer: a Devoradora chega aos 120 s
       contados do início da luta, então o tempo procurando provas já gasta esse relógio. Opções: contar os 120 s só
       depois do escudo cair, baixar a vida ou o dano dela, ou incluir a Escola no `PVE_CHAR_TUNE`.
+      **Feito (2026-11-08, 2ª parte):** a CPU da bateria IGNORAVA os Zumbis de Sangue (mais de 120 de vida) enquanto
+      o Devorado ficava escondido: Morato, Kaiser, Kemi, Arthur e Amália ficavam parados no meio deles. Corrigido em
+      `ai/CpuController.js` (com o adversário escondido, qualquer monstro da sala vira alvo): salas em 12–30 s. Sem
+      `PVE_CHAR_TUNE`, a chefe caiu só em 8 de 18 (72–232% da vida perdida) → `bossTune` da dungeon (vida ×0,75, dano
+      ×0,6) em `pve/dungeons.js`, aplicado em `Dungeon.startBoss`/`beginBossFight`. Remedido (12 personagens, 1
+      amostra): caiu em 9 de 12, em 86–159 s, com 20–65% da vida perdida (Chico, Arnaldo e Kemi a deixaram viva em
+      180 s) — parecido com o chefe do Espreitador.
+      **Feito (2026-11-08):** o relógio da Devoradora agora corre só depois que o escudo cai (`freeAt` em
+      `pve/degolificada.js`; conferido: 200 s com escudo sem virar, e vira 120 s depois da 3ª prova). Falta: medir de
+      novo com a bateria (ela já dá as provas no início, então o número dela não muda com isto) e decidir se a vida ou
+      o dano dela também baixam.
+      **2ª amostra (2026-11-08):** Chico, Arnaldo e Kemi com 3 amostras cada: limpam a sala (20–23 s) mas a chefe cai
+      só em 1 de 3 (169–178 s, 55–59% da vida perdida) → `PVE_CHAR_TUNE` dano ×1,1 para os três.
+- [x] **NEBLINA CRESCENTE NA ESCOLA** (pedido do dono, 2026-11-08: "bem fraca nas primeiras salas e ir aumentando a
+      cada sala até o boss"): `mist` em `pve/dungeons.js` + `Dungeon.updateMist`. O fog da cena vai de escuro e ralo
+      (0,045 no corredor) a cinza e denso (0,085 na última sala antes do chefe, 0,09 na biblioteca), mudando devagar
+      na troca de sala, com fumaça rasteira em volta de quem joga que cresce junto. Conferido: 0,045 → 0,058 → 0,084 → 0,09.
 - [x] **Pupilas em 8 do Espreitador** (2026-11-07; wiki: "pupilas que se multiplicam com o passar do tempo" e "o olho
       de duas pupilas" na fresta): `char_espreitador.py` — as pupilas duplas nascem COLADAS uma em cima da outra (um 8;
       um terço dos olhos já tem, alguns viram um 3 em fila) e o olho da boca tem as duas. As que faltam formam a peça
@@ -1272,6 +1303,10 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       (PROPOSTA). Depois: todos limpam 3/3 salas (40–60 s) e derrubam o chefe (78–123 s). A bateria virou ferramenta
       de dev: `src/dev/pveBattery.js` (instruções no topo). Falta: o Anfitrião ainda deixou o chefe vivo 1 de 3 vezes
       em 180 s — conferir jogando.
+      **Remedido (2026-11-08):** boa parte dos reforços compensava o defeito da CPU (ignorava monstros com mais de 120
+      de vida). Sem `PVE_CHAR_TUNE`, 2 amostras no Espreitador: os 10 limpam as salas (36–77 s) e derrubam o chefe em
+      19 de 20 — o Anfitrião derrubou nas 2 (136 s). Os ajustes caíram pela metade; saíram Celestine, Chico e Deus da
+      Morte.
 - [x] **Chamas de Energia saindo da barra de vida do Anfitrião** (pedido do dono, 2026-11-06): `.hb-energy .fill::before/
       ::after` em `styles.css` — roxo, rosa e ciano, só sobre a vida que resta.
 - [x] **A equipe Outro Lado não entra no modo Outro Lado** (pedido do dono, 2026-11-06): Estrangeiro, Amigo Imaginário,
@@ -2085,11 +2120,29 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 17. Câmera
 18. HUD
 19. Menus
-   - **Tela inicial estática, mais bonita e imediata:** a abertura atual depende dos modelos 3D do elenco; a cena só
+   - [x] **Tela inicial estática, mais bonita e imediata:** a abertura atual depende dos modelos 3D do elenco; a cena só
      monta os lutadores depois do preload, deixando a tela incompleta enquanto os arquivos carregam. Redesenhar a
      composição com arte estática leve e responsiva, sem modelos 3D na tela de título, para mostrar a abertura completa
      imediatamente. Separar essa exibição do preload necessário às partidas e indicar o carregamento sem permitir iniciar
      uma partida antes de os modelos necessários estarem prontos; medir o tempo até a tela e o menu ficarem utilizáveis.
+     **Feito (2026-11-08):** o fundo 3D (`ui/titleStage.js`, apagado) virou arte estática em HTML/CSS no `index.html`
+     (`#backdrop`): céu do Outro Lado, a fenda do Véu atrás do logo, o círculo ritual com os cinco elementos no chão e
+     cinzas subindo (só CSS, nada de 3D; parado com "reduzir movimento"). Os menus não desenham mais nada no WebGL
+     (`body.static-bg` esconde o canvas); a seleção, a torre e a luta continuam em 3D. Enquanto os modelos baixam, o
+     "pressione start" vira "CARREGANDO O ELENCO…" (`body.booting`, `menu.loading` nos 13 idiomas) e não dá para
+     começar. Medido no `npm run dev`: 1ª pintura com a tela completa em 0,38 s (antes a cena só aparecia depois de
+     todos os modelos); menu utilizável quando o preload termina.
+     **Ajuste do dono (2026-11-08):** os personagens voltaram como IMAGEM — `public/title/elenco.webp` (116 KB), sete
+     lutadores (Celestine, Dara, Kian, Arthur, Jae, O Diabo e a Degolificada) renderizados uma vez dos modelos do jogo
+     com o contorno na cor do poder, de pé no círculo ritual. Para refazer: `src/dev/titleCast.js`. O aviso de
+     carregamento virou "PREPARANDO AS LUTAS…".
+     **2º ajuste do dono ("ainda está ruim", 2026-11-08):** a imagem virou uma *key art* em duas fileiras
+     (`elenco.webp`, 2340×868, 215 KB): na frente, um herói de cada grupo, iluminado (Gaius, Dara, Kian, Arthur, Jae,
+     Arnaldo, Cristino); atrás, os vilões grandes em silhueta escura com só o contorno aceso (Raziel, o Portador do
+     Trono, a Degolificada, o Espreitador). O `titleCast.js` recorta o vazio sozinho. A tela foi recomposta: logo no
+     topo, elenco embaixo, "pressione start" no rodapé sobre uma faixa escura; com o menu aberto o elenco recua (mais
+     escuro, desfocado, para a direita); no celular deitado some a lista de grupos. Página Sobre: imagem de capa nova
+     (`public/sobre/titulo*.webp`), texto alternativo, Balu + Rubens nas equipes e a neblina da Escola.
 20. Áudio
 21. Efeitos
 22. Cenários
@@ -2178,6 +2231,9 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       afundados pelo próprio desenho — vale para a Celestine também); o AMIGO IMAGINÁRIO pela miniatura de O Segredo na
       Ilha (barbatanas da crista bem maiores, pregas fundas, a cauda longa arrastando, os fios de tinta compridos).
       Ainda na técnica antiga por baixo (sem `sculpt_lib` no corpo): um refazer completo fica para depois, se for preciso.
+      [x] 2026-11-08: a MAGISTRADA com acabamento `sculpt_lib`: a CAPA cai em pregas fundas que se abrem para baixo
+      (antes um cone liso), e a camisa, a calça e o tecido do pescoço ganharam dobras de pano e as tranças os fios.
+      As máscaras (`seita.glb`) ficaram como estavam.
 - [x] **O ESTRANGEIRO: os "SOLDADOS"** (feito em 2026-10-30) — no cânone são os DOPPELGANGERS (wiki "Doppelganger", apelido
       "Homens de Terno"; Sinais do Outro Lado ep. 3: chegam na van preta de terno e chapéu): o rosto rachado ao meio, olhos
       pequenos pretos de pupila verde, dedos longos e pontudos, e os FUZIS ALHEIOS (pistolas de plasma verde, sem munição).
@@ -2359,10 +2415,15 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 - [x] **A MAÇA DO GAIUS pela série** (feita em 2026-10-31: `weapons.js ironMace` refeita pela arte, a mão segura perto do pomo) (pedido de 2026-10-31): a arte oficial (wiki, "Maça de Gaius em Calamidade") é uma
       maça de ABAS — cabo longo escuro com o couro enrolado em diagonal, anel no colarinho, cabeça prateada com 6 abas
       pontudas em forma de lâmina, uma ponta no topo e uma pontinha no pomo. A do jogo era uma bola com caixinhas.
-- [ ] **MELHORAR O MODELO DO PORTADOR DO TRONO** (pedido de 2026-10-31) — a evolução do Diabo (o Juan no ódio → O Diabo →
+- [x] **MELHORAR O MODELO DO PORTADOR DO TRONO** (pedido de 2026-10-31) — a evolução do Diabo (o Juan no ódio → O Diabo →
       o Portador do Trono). A revisão acima (chifres, coroa de espinhos, asas, pernas de bode) ainda não basta: refazer o
       corpo na técnica atual (`sculpt_lib`) pela "Arte Completa Cinematic O Portador do Trono" e a wiki, para ele ler como
       a forma final e mais forte da linha do Diabo — maior e mais monstruoso que O Diabo, sem perder o kit e as juntas.
+      **Feito (2026-11-08, `char_diabo.py`):** maior (Builder 1,34 de altura, 1,3 de massa) e esculpido com o
+      `sculpt_lib`. As pernas de bode são uma forma contínua cada (coxa de pelo → joelho → jarrete para trás → canela),
+      com pelo em mechas, tufos no jarrete e no casco e o casco fendido em duas unhas. Os braços de baixo também viraram
+      escultura, e ganhou deltoides inchados, trapézio e dorsais de monstro e a coluna de espinhos de osso nas costas.
+      Conferido na galeria: bem maior e mais bruto que O Diabo.
 - [x] **O AMIGO IMAGINÁRIO: melhorar os PODERES e o CÂNONE** (pedido de 2026-10-31) — revisto pela wiki "Amigo
       Imaginário": o AGARRÃO (antes "Tentáculos que Prendem", poça debaixo do alvo — invenção) agora sai de baixo do capuz
       e PUXA a vítima até a criatura, a deixa para o Derreter; no Frenesi de Sangue, irritada, ARREMESSA longe (40, ~8 m).
@@ -2564,10 +2625,15 @@ Confirmadas pelo pedido:
 - [x] **Equipe Abutres — especial de grupo** (2026-11-02): coreografia jogável com Dante, Balu, Joui e Arthur, usando
   lodo, machado, katana e Arma de Sangue. [x] Carina Leone (v4.17.0) entra no fim com o mangual e a Glock. [x] Rubens
   Naluti (v4.18.0) fecha com o Salto Fantasma e a martelada.
-- [ ] **Balu + Rubens — especial de dupla** (pedido do dono, 2026-11-02; os dois amigos dos Abutres): o Balu avança
+- [x] **Balu + Rubens — especial de dupla** (pedido do dono, 2026-11-02; os dois amigos dos Abutres): o Balu avança
   para bater gritando **"RUBINHOO! VAMOS DAR UMA COÇA NELE!"**, o Rubens responde **"É RUBENS!"** e entra junto,
   ajudando a bater. Entra como `kind: 'duo'` em `config/teamLinks.js` (com `order`: o Balu primeiro). **As habilidades
   e golpes que cada um usa na cena serão escolhidos com o dono antes de implementar.**
+      **Feito (2026-11-08):** ligação `balu_rubens` (`config/teamLinks.js`, coreografia `balu_rubens` em
+      `combat/teamSpecials.js`): o Balu vem CORRENDO de longe e a fala sai na legenda de diálogo com o nome dele; abre
+      com a machadada. O Rubens chega correndo do lado com "É RUBENS!" e os dois batem JUNTOS, um golpe atrás do
+      outro (machado e martelo), até a pancada dupla. **PROPOSTA:** os golpes são os do kit de cada um, para o dono
+      trocar pelos que escolher.
 - [x] **OS CINCO — especial de grupo** (2026-11-02): Morato comanda e dispara a metralhadora; Chico combina pulso do
   scanner e clarão do farol; Xande avança de skate com o taco; Lírio prende com as Magras e golpeia com a Leonora; Guizo
   registra com a câmera e corta; Dara usa a lanterna UV e finaliza no corpo a corpo. Mantidos os itens e habilidades
@@ -3370,7 +3436,7 @@ qualidade do Cristino / Cristopher / Dante v2 — um por vez, com o kit e as jun
 ## Formas com modelo próprio
 
 * [x] O Anfitrião (2026-10-26)
-* [ ] O Portador do Trono (forma do Juan) — revisto em 2026-10-31; refazer completo pedido (ver *MELHORAR O MODELO DO PORTADOR DO TRONO*)
+* [x] O Portador do Trono (forma do Juan) — refeito no `sculpt_lib` em 2026-11-08 (ver *MELHORAR O MODELO DO PORTADOR DO TRONO*)
 * [x] A Fantasma (forma da Kemi) (v3.34.0)
 
 ## Invocações

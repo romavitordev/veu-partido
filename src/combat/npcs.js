@@ -919,3 +919,144 @@ export class BloodZombie extends Marionette {
     this.updateFlash();
   }
 }
+
+// ================================================================== O NINHO DE INTERFLORADOS (Estrangeiro)
+// Interflorado (wiki): um Alheio PARASITA de Transmissão — o mesmo grupo do Estrangeiro. PROPOSTA (pedido do dono,
+// 2026-11-06): o Estrangeiro planta um NINHO no chão — o limo verde com raízes e olhos — e, por a.life segundos, quando
+// o adversário chega perto, um INTERFLORADO AFLORADO brota dele (corpo de gente comum, a cabeça estourada em dedos verdes
+// cheios de olhos). Fracos e com pouca vida, mas atrapalham. O ninho tem vida: dá para destruí-lo.
+export class InterfloradoNest {
+  constructor(owner, world, pos, a) {
+    this.owner = owner;
+    this.world = world;
+    this.a = a;
+    this.pos = pos.clone();
+    this.pos.y = 0;
+    this.radius = 0.7;
+    this.height = 0.6;
+    this.hp = a.nestHp;
+    this.maxHp = this.hp;
+    this.alive = true;
+    this.isNest = true;
+    this.showBar = true;
+    this.name = 'NINHO DE INTERFLORADOS';
+    this.t = 0;
+    this.cd = 0.6; // o primeiro brota rápido
+    this.flash = 0;
+    this.brood = [];
+    const g = new THREE.Group();
+    g.position.copy(this.pos);
+    const slime = new THREE.MeshBasicMaterial({ color: 0x3a7a18, transparent: true, opacity: 0.85 });
+    const pool = new THREE.Mesh(new THREE.CircleGeometry(0.85, 28), slime);
+    pool.rotation.x = -Math.PI / 2;
+    pool.position.y = 0.03;
+    g.add(pool);
+    // o raio de "perto": um anel verde fraco no chão (o adversário vê onde não pisar)
+    const ringM = new THREE.MeshBasicMaterial({ color: 0x7aff4a, transparent: true, opacity: 0.22, depthWrite: false });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(a.near - 0.08, a.near, 48), ringM);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.04;
+    g.add(ring);
+    // as raízes e os olhos que saem do limo
+    const rootM = new THREE.MeshToonMaterial({ color: 0x3e4a26 });
+    const eyeM = new THREE.MeshBasicMaterial({ color: 0xd8e050 });
+    const pupM = new THREE.MeshBasicMaterial({ color: 0x050605 });
+    this.roots = [];
+    for (let i = 0; i < 9; i++) {
+      const ang = (i / 9) * Math.PI * 2 + Math.random() * 0.4;
+      const r = 0.15 + Math.random() * 0.5;
+      const h = 0.25 + Math.random() * 0.35;
+      const c = new THREE.Mesh(new THREE.ConeGeometry(0.035, h, 5), rootM);
+      c.position.set(Math.sin(ang) * r, h / 2, Math.cos(ang) * r);
+      c.rotation.set((Math.random() - 0.5) * 0.9, 0, (Math.random() - 0.5) * 0.9);
+      g.add(c);
+      this.roots.push(c);
+      if (i % 2 === 0) {
+        const e = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), eyeM);
+        e.position.set(Math.sin(ang + 0.3) * r * 0.8, 0.06, Math.cos(ang + 0.3) * r * 0.8);
+        const p = new THREE.Mesh(new THREE.SphereGeometry(0.022, 6, 5), pupM);
+        p.position.set(0, 0.035, 0);
+        e.add(p);
+        g.add(e);
+      }
+    }
+    this.group = g;
+    this.pool = pool;
+    this.ring = ring;
+    world.scene.add(g);
+  }
+
+  enemies() {
+    const f = this.owner;
+    return this.world.fighters.filter((x) => x !== f && !(f.team != null && x.team === f.team) && x.state !== 'ko' && x.visible !== false);
+  }
+
+  update(dt) {
+    if (!this.alive) return;
+    this.t += dt;
+    this.cd -= dt;
+    const a = this.a;
+    this.brood = this.brood.filter((n) => n.alive);
+    const k = 1 + Math.sin(this.t * 5) * 0.04;
+    this.pool.scale.set(k, k, 1);
+    this.ring.material.opacity = 0.16 + Math.sin(this.t * 3) * 0.06;
+    for (const r of this.roots) r.rotation.y += dt * 0.6;
+    if (this.flash > 0) this.flash -= dt;
+    if (this.t >= a.life || this.owner.state === 'ko') { this.wither(); return; }
+    const near = this.enemies().find((e) => distXZ(e.pos, this.pos) <= a.near);
+    if (near && this.cd <= 0 && this.brood.length < a.max) {
+      this.cd = a.every;
+      this.spawn(near);
+    }
+  }
+
+  spawn(target) {
+    const a = this.a;
+    const w = this.world;
+    const ang = Math.random() * Math.PI * 2;
+    const p = new THREE.Vector3(this.pos.x + Math.sin(ang) * 0.5, 0, this.pos.z + Math.cos(ang) * 0.5);
+    resolveBody(w.arena, p, 0.45);
+    w.fx.burst(new THREE.Vector3(p.x, 0.4, p.z), { count: 22, color: 0x5a9a2a, speed: 2.6, up: 2, life: 0.5, size: 0.14 });
+    w.audio.play('fearGaze', { volume: 0.45, pitch: 1.6 }); // o GUINCHO agudo (wiki) quando aflora
+    const npc = new DanteClone(this.owner, w, this.brood.length, a.brood.duration, {
+      model: 'interflorado', hp: a.brood.hp, damageMult: 1, element: 'transmissao', rise: true, strikes: a.brood.strikes,
+      restyle(m) { m.material.transparent = false; },
+    });
+    npc.isInterflorado = true;
+    npc.pos.copy(p);
+    npc.yaw = yawTo(p, target.pos);
+    this.brood.push(npc);
+    w.addNpc(npc);
+  }
+
+  hitTest(p, r) { return this.alive && hitTestNpc(this, p, r); }
+
+  hitBy(attacker, dmg) {
+    if (!this.alive) return;
+    this.hp -= dmg;
+    this.flash = 0.1;
+    this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.3, this.pos.z), { count: 10, color: 0x5a9a2a, speed: 2.4, life: 0.35, size: 0.12 });
+    this.world.audio.play('punch', { volume: 0.5, pitch: 0.7 });
+    if (this.hp <= 0) {
+      this.hp = 0;
+      attacker && attacker.notify && attacker.notify('NINHO DESTRUÍDO!', true);
+      this.wither();
+    }
+  }
+
+  // o ninho seca e some (os Interflorados que já brotaram ficam até o tempo deles acabar)
+  wither() {
+    if (!this.alive) return;
+    this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.3, this.pos.z), { count: 30, color: 0x2a3a14, kind: 'smoke', speed: 1.8, up: 1, life: 0.7, size: 0.4 });
+    this.kill();
+  }
+
+  kill() { this.dispose(); }
+
+  dispose() {
+    if (!this.alive && !this.group.parent) return;
+    this.alive = false;
+    this.world.scene.remove(this.group);
+    this.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+  }
+}

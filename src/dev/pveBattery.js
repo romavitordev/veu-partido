@@ -88,6 +88,9 @@ export async function run(ids, samples = 3, dungeon = 'espreitador') {
       } catch (e) {
         rec.err = String((e && e.stack) || e).slice(0, 300);
       }
+      // devolve o controle: sem isto a CPU da bateria seguia mexendo o personagem depois do fim (parecia travado)
+      const gm = game().match;
+      if (gm && gm.input) gm.input.players[0].cpu = null;
       const all = load(dungeon);
       (all[id] = all[id] || []).push(rec);
       localStorage.setItem(keyOf(dungeon), JSON.stringify(all));

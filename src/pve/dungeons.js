@@ -167,6 +167,13 @@ export const DUNGEONS = {
     boss: 'degolificada',
     bossName: 'A DEGOLIFICADA',
     restricted: ['degolificada'],
+    // a chefe mais branda (bateria de 2026-11-08, 18 personagens sem melhorias: caiu só em 8 de 18 em 180 s, e quem a
+    // enfrentou perdeu 72–232% da vida): vida ×0,75 e dano ×0,6 (PROPOSTA; ver Dungeon.startBoss/beginBossFight)
+    bossTune: { hp: 0.75, dealt: 0.6 },
+    // a NEBLINA (pedido do dono, 2026-11-08): bem fraca nas primeiras salas e mais grossa a cada sala até o chefe
+    // (Dungeon.updateMist): a cor e a densidade do FogExp2 vão de `from` a `to` pelo avanço da rota; no chefe, `boss`.
+    // A névoa rasteira (fumaça baixa em volta de quem joga) cresce junto.
+    mist: { from: { color: 0x0b0e11, density: 0.045 }, to: { color: 0x4a5456, density: 0.085 }, boss: { color: 0x5a6466, density: 0.09 }, wisps: 7 },
     minDepth: 1,
     minions: 'zumbi', // as salas de luta: Zumbis de Sangue (pve/Dungeon.js startZombieEncounter)
     drops: { heal: { chance: 0.5, amount: 0.2 } },
@@ -396,17 +403,20 @@ export const DUNGEON_ORDER = Object.values(DUNGEONS)
 // um chefe. Quem fica para trás aqui ganha dano (dealt) e/ou resistência (taken < 1) — não muda nada no modo de luta.
 // Valores medidos pela bateria (CPU Difícil no lugar do jogador, 3 amostras: sala de 3 monstros + chefe). PROPOSTA.
 // Referência (Joui, Agatha, Veríssimo, Kian, Nubi, Guizo): sala em ~40 s com ~33% da vida perdida; chefe em ~107 s.
+// 2026-11-08: a CPU da bateria ignorava os monstros da sala com mais de 120 de vida enquanto o Devorado ficava escondido
+// (corrigido em ai/CpuController.js) — boa parte destes reforços compensava isso. Remedido SEM os ajustes (Espreitador,
+// 2 amostras): os 10 limpam as salas em 36–77 s e derrubam o chefe em 19 de 20; os ajustes caíram pela metade e saíram
+// os que já passavam folgado (Celestine 68 s no chefe; Chico, Deus da Morte)
 export const PVE_CHAR_TUNE = {
-  anfitriao: { dealt: 1.5 }, // sala 56 s, chefe 151 s (caiu 3 de 9); com 1,4: chefe 132 s
-  morato: { dealt: 1.5, taken: 0.85 }, // o Devorado atira de longe e o kit é de perto: limpou 1 de 9 salas em 75 s
-  amalia: { dealt: 1.45, taken: 0.75 }, // salas: 73 s e 74% da vida (o chefe ela derruba normal)
-  kaiser: { dealt: 1.3 }, // sala 64 s; com 1,2: 62 s
-  kemi: { dealt: 1.2, taken: 0.85 }, // sala 58 s, 60% da vida
-  magistrada: { dealt: 1.2, taken: 0.85 }, // sala 56 s, 50% da vida
-  deus_morte: { dealt: 1.2 }, // sala 56 s, chefe 112 s
-  rubens: { dealt: 1.15, taken: 0.8 }, // sala 56 s, chefe 124 s com 65% da vida perdida
-  celestine: { taken: 0.85 }, // rápida, mas perde 53% da vida por sala
-  chico: { taken: 0.9 }, // 44% da vida por sala
+  anfitriao: { dealt: 1.2 }, // sem ajuste: sala 63 s, chefe 136 s
+  morato: { dealt: 1.25, taken: 0.9 }, // sem ajuste: sala 77 s (a mais lenta), chefe 167 s
+  amalia: { dealt: 1.2, taken: 0.85 }, // sem ajuste: sala 73 s com 72% da vida
+  kaiser: { dealt: 1.1 }, // sem ajuste: sala 62 s
+  kemi: { dealt: 1.1, taken: 0.9 }, // sem ajuste: sala 55 s com 66% da vida | Escola (3 amostras): chefe caiu 1 de 3, 169 s
+  chico: { dealt: 1.1 }, // Escola, 3 amostras (2026-11-08): chefe caiu 1 de 3, 171 s, perdeu 59% da vida
+  arnaldo: { dealt: 1.1 }, // Escola, 3 amostras (2026-11-08): chefe caiu 1 de 3, 178 s, perdeu 58% da vida
+  magistrada: { dealt: 1.1, taken: 0.9 }, // sem ajuste: chefe 155 s
+  rubens: { dealt: 1.1, taken: 0.85 }, // sem ajuste: chefe 173 s com 138% da vida (caiu 1 de 2)
 };
 
 export function charTune(id) {

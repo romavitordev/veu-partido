@@ -78,3 +78,11 @@ test('team select recommends the next member of the linked team (Storm 4)', () =
   assert.equal(recommendNext(['xande'], has), null);
   assert.equal(recommendNext(['dalmo', 'aguiar', 'jae'], has), null);
 });
+
+test('team links identify Balu and Rubens duo', () => {
+  const link = getTeamLink(['balu', 'rubens', 'kemi']);
+  assert.ok(link);
+  assert.equal(link.id, 'balu_rubens');
+  assert.equal(link.choreo, 'balu_rubens');
+  assert.deepEqual(link.order, ['balu', 'rubens']);
+});

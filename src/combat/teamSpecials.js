@@ -778,6 +778,91 @@ const CHOREO = {
     return F;
   },
 
+  // BALU + RUBENS (pedido do dono, 2026-11-02): "Balu fala RUBINHOO! VAMOS DAR UMA COÇA NELE! avançando pra bater,
+  // Rubens diz: É RUBENS! e Rubens o ajuda a bater." O Balu vem CORRENDO de longe com a fala na legenda e abre com a
+  // machadada; o Rubens chega correndo do lado, corrige o nome e os DOIS batem juntos, um golpe atrás do outro, até a
+  // pancada dupla. Golpes: os do próprio kit (machado do Balu, martelo do Rubens) — PROPOSTA até o dono escolher.
+  balu_rubens({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 4.6;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const balu = tools.get('balu'), rubens = tools.get('rubens');
+    const hits = splitDamage(crewTotal, 7);
+    const hex = (def, fb) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? fb).getHexString());
+    // a fala na legenda de diálogo (nome de quem fala + texto), a mesma das falas da luta
+    const say = (actor, text) => world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def, 0xe8b23a), text, side: actor === balu ? 0 : 1 });
+    // corre de `from` até `to` entre t0 e t1 (o corpo de verdade anda; a câmera acompanha)
+    const run = (actor, t0, t1, fromAng, fromR, toAng, toR) => {
+      let a0 = null, a1 = null;
+      tl.add(t0, () => {
+        if (!live()) return;
+        a0 = tools.around(actor, fromAng, fromR);
+        a1 = tools.around(actor, toAng, toR);
+        actor.show(END - t0, a0);
+        actor.pos.set(a0.x, 0, a0.z);
+        actor.face(opp);
+        actor.play('run', t1 - t0 + 0.1);
+      });
+      tl.each((time) => {
+        if (!a0 || time < t0 || time > t1 || !live()) return;
+        const k = smooth((time - t0) / (t1 - t0));
+        actor.pos.set(a0.x + (a1.x - a0.x) * k, 0, a0.z + (a1.z - a0.z) * k);
+        actor.face(opp);
+      });
+    };
+    const blow = (actor, t, anim, dur, i, opts) => {
+      if (!actor) return;
+      tl.add(t, () => { if (!live()) return; actor.face(opp); actor.play(anim, dur); });
+      tl.add(t + dur * 0.45, () => tools.impact(actor, hits[i], opts));
+    };
+    const AXE = { sound: 'axeHit', color: 0xd8d8de, slash: true };
+    const HAMMER = { sound: 'heavyPunch', color: 0xe8b23a };
+
+    // 1. o Balu avança correndo e gritando
+    if (balu) {
+      run(balu, S, S + 1.0, 0.25, 7, 0.25, 1.5);
+      tl.add(S, () => {
+        if (!live()) return;
+        say(balu, 'RUBINHOO! VAMOS DAR UMA COÇA NELE!');
+        world.cameraRig.playShots([{ ...overShoulder(balu, opp, { dur: 1.05, back: 2.2, side: 0.8, height: 1.8, fov: 46 }), cut: true }]);
+      });
+      blow(balu, S + 1.0, 'hammer_v', 0.5, 0, AXE);
+    }
+    // 2. o Rubens chega correndo do lado, corrigindo o nome
+    if (rubens) {
+      run(rubens, S + 1.25, S + 1.95, -1.5, 6, -1.2, 1.5);
+      tl.add(S + 1.3, () => {
+        if (!live()) return;
+        say(rubens, 'É RUBENS!');
+        world.cameraRig.playShots([{ ...twoShot(rubens, opp, { dur: 0.75, dist: 3, height: 1.5, side: -1, fov: 42 }), cut: true }]);
+      });
+    }
+    // 3. os dois batendo juntos, um golpe atrás do outro
+    tl.add(S + 1.95, () => {
+      if (!live()) return;
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.6, radius: 3.6, height: 1.7, a0: -0.5, a1: 0.5 }), cut: true }]);
+    });
+    blow(rubens, S + 1.95, 'hammer_h', 0.36, 1, HAMMER);
+    blow(balu, S + 2.2, 'hammer_diag', 0.45, 2, AXE);
+    blow(rubens, S + 2.5, 'hammer_diag', 0.42, 3, HAMMER);
+    blow(balu, S + 2.8, 'hammer_v', 0.45, 4, AXE);
+    blow(rubens, S + 3.05, 'hammer_v', 0.45, 5, HAMMER);
+    // 4. a pancada dupla: a Pancada do Urso e a martelada no mesmo instante
+    tl.add(S + 3.5, () => {
+      if (!live()) return;
+      if (balu) { balu.face(opp); balu.play('hammer_finisher', 0.75); }
+      if (rubens) { rubens.face(opp); rubens.play('hammer_finisher', 0.7); }
+      world.cameraRig.playShots([{ ...lowAngle(balu || rubens, { dur: 0.9, dist: 3, fov: 46 }), cut: true }]);
+    });
+    tl.add(S + 3.85, () => {
+      if (!live()) return;
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: 0xe8b23a, radius: 2.4, life: 0.5 });
+      tools.impact(balu || rubens, hits[6], { sound: 'axeHit', color: 0xe8b23a });
+      world.cameraRig.shake(0.45, 0.3);
+    });
+    tl.add(END, () => world.ui && world.ui.subtitle && world.ui.subtitle(null));
+    return END;
+  },
+
   abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const END = S + 5.4;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });

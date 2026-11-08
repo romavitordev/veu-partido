@@ -14,6 +14,56 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--ink); color: var(--paper); font-family: Inter, system-ui, sans-serif; user-select: none; -webkit-text-size-adjust: 100%; }
 canvas#game { display: block; position: fixed; inset: 0; width: 100%; height: 100%; }
+/* FUNDO ESTÁTICO DOS MENUS (2026-11-08): substitui o fundo 3D (lutadores renderizados) — leve e completo desde o 1º
+   quadro. O canvas some enquanto um menu sem cena própria está na tela (main.js liga body.static-bg). */
+#backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; display: none; background: #05030a; }
+body.static-bg #backdrop { display: block; }
+body.static-bg canvas#game { visibility: hidden; }
+#backdrop .bd-sky { position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 45% at 50% 42%, rgba(120,60,200,.32), transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(90,20,60,.45), transparent 70%),
+    linear-gradient(180deg, #06040c 0%, #120a22 45%, #1a0c22 70%, #07040a 100%); }
+#backdrop .bd-rift { position: absolute; left: 50%; top: -4%; width: clamp(90px, 11vw, 170px); height: 78%; transform: translateX(-50%) skewX(-6deg);
+  filter: drop-shadow(0 0 18px rgba(155,77,255,.9)) drop-shadow(0 0 60px rgba(209,18,46,.5)); opacity: .55; animation: bdRift 5s ease-in-out infinite alternate; }
+#backdrop .bd-rift path { fill: url(#bdRift); }
+@keyframes bdRift { from { opacity: .4; } to { opacity: .7; } }
+#backdrop .bd-glow { position: absolute; left: 50%; bottom: 6%; width: 120vmin; height: 40vmin; transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(164,107,255,.35), rgba(209,18,46,.12) 45%, transparent 70%); filter: blur(10px); }
+#backdrop .bd-floor { position: absolute; left: 50%; bottom: -34vmin; width: 115vmin; height: 115vmin; transform: translateX(-50%) perspective(900px) rotateX(72deg); }
+#backdrop .bd-sigil { width: 100%; height: 100%; overflow: visible; animation: bdSpin 90s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(164,107,255,.9)) drop-shadow(0 0 22px rgba(164,107,255,.5)); }
+@keyframes bdSpin { to { transform: rotate(360deg); } }
+#backdrop .bd-sigil circle, #backdrop .bd-sigil polygon, #backdrop .bd-sigil line { fill: none; stroke: #b58aff; }
+#backdrop .bd-sigil .r1 { stroke-width: 7; opacity: .85; }
+#backdrop .bd-sigil .r2 { stroke-width: 2.5; opacity: .5; }
+#backdrop .bd-sigil .r3 { stroke: #e0204a; stroke-width: 4; opacity: .6; }
+#backdrop .bd-sigil .ticks line { stroke-width: 3; opacity: .55; }
+#backdrop .bd-sigil .pent { stroke-width: 4; opacity: .55; }
+#backdrop .bd-sigil .node { stroke-width: 6; fill: #0a0612; }
+#backdrop .bd-sigil .n0 { stroke: #e3263a; } #backdrop .bd-sigil .n1 { stroke: #a865ff; } #backdrop .bd-sigil .n2 { stroke: #f2c230; }
+#backdrop .bd-sigil .n3 { stroke: #a7a3ad; } #backdrop .bd-sigil .n4 { stroke: #f4f1ff; }
+#backdrop .bd-cast { position: absolute; left: 50%; bottom: 0; width: min(98vw, 158vh); transform: translateX(-50%); z-index: 1;
+  filter: brightness(.95) drop-shadow(0 0 14px rgba(164,107,255,.45)); transition: opacity .4s ease, filter .4s ease, transform .5s ease;
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 99%); mask-image: linear-gradient(180deg, #000 78%, transparent 99%); }
+/* faixa escura no rodapé: o "pressione start" fica legível por cima dos pés do elenco */
+#backdrop::after { content: ''; position: absolute; inset: auto 0 0 0; height: 24vh; z-index: 2; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(6,4,10,.55) 45%, rgba(6,4,10,.9)); }
+/* menu aberto: o elenco recua (mais escuro, desfocado e para a direita), o menu é o que importa */
+body:has(#home.menu-on) #backdrop .bd-cast { opacity: .6; filter: brightness(.7) blur(1.5px); transform: translateX(-38%) scale(.94); transform-origin: 50% 100%; }
+#backdrop .bd-fog { position: absolute; inset: auto -20% 0 -20%; height: 45%;
+  background: radial-gradient(40% 50% at 25% 80%, rgba(140,110,180,.22), transparent 70%), radial-gradient(35% 45% at 75% 75%, rgba(110,80,150,.2), transparent 70%);
+  animation: fogDrift 22s ease-in-out infinite alternate; }
+#backdrop .bd-embers i { position: absolute; bottom: -10px; left: var(--x); width: var(--s); height: var(--s); border-radius: 50%;
+  background: #ffb070; box-shadow: 0 0 6px 2px rgba(255,120,60,.7); opacity: 0; animation: bdEmber var(--d) linear var(--w) infinite; }
+@keyframes bdEmber { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .9; } 80% { opacity: .5; } 100% { transform: translate(4vw, -85vh); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { #backdrop * { animation: none !important; } #backdrop .bd-embers { display: none; } }
+/* celular deitado (pouca altura): o círculo desce para ficar só no rodapé, sem passar atrás do texto */
+@media (max-height: 520px) { #backdrop .bd-cast { width: min(90vw, 150vh); } #backdrop .bd-floor { width: 100vw; height: 100vw; bottom: -52vw; } #backdrop .bd-rift { height: 70%; } }
+/* enquanto os modelos baixam: o menu já aparece, mas o "pressione start" vira o aviso de carregamento */
+#home .boot { display: none; }
+body.booting #home .press { display: none; }
+body.booting #home .boot { display: flex; align-items: center; gap: 10px; position: relative; margin-top: 4vh; font-size: 13px; letter-spacing: .3em; color: #b9a8d8; }
+#home .boot i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(181,138,255,.3); border-top-color: #b58aff; animation: spin .9s linear infinite; }
 .hidden { display: none !important; }
 .display { font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: .04em; }
 
@@ -486,7 +536,7 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 
 /* ---------------- tela inicial ---------------- */
 #home { justify-content: center; padding: 0 16px 4vh; overflow: hidden; background: transparent; }
-/* vinheta escura + granulado de filme por cima do fundo 3D (ui/titleStage.js) */
+/* vinheta escura + granulado de filme por cima do fundo estático (#backdrop no index.html) */
 #home .vignette { position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(ellipse 70% 62% at 50% 46%, transparent 35%, rgba(3,2,6,.55) 70%, rgba(2,1,4,.92) 100%),
     linear-gradient(180deg, rgba(4,2,8,.55), transparent 22%, transparent 70%, rgba(4,2,8,.85)); }
@@ -557,9 +607,9 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 /* tela grande: título no terço de cima, "pressione start" embaixo e os lutadores no meio; com o menu aberto o logo vai
    para o canto e o menu vira uma coluna à esquerda (os lutadores ficam à mostra à direita) */
 @media (min-width: 761px) and (min-height: 521px) {
-  #home { justify-content: flex-start; padding-top: 9vh; }
+  #home { justify-content: flex-start; padding-top: 6vh; }
   #home .logo .wm { font-size: clamp(64px, 10.5vw, 150px); }
-  #home .press { position: absolute; bottom: 13vh; margin-top: 0; }
+  #home .press, body.booting #home .boot { position: absolute; bottom: 6vh; margin-top: 0; z-index: 3; }
   #home.menu-on .logo { position: absolute; top: 6vh; left: 5vw; transform: scale(.42); transform-origin: left top; text-align: left; margin: 0; }
   #home.menu-on .logo .elements { justify-content: flex-start; }
   #home.menu-on .logo .elements .ln:first-child { display: none; }
@@ -1508,3 +1558,9 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #pvehud .pv-split { position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); background: #050506; pointer-events: none; }
 /* OUTRO LADO — cena de entrada do chefe: sem HUD (só o cronômetro some junto) */
 #hud.pve-cine .panel, #hud.pve-cine #pvehud > :not(.pv-fade), #hud.pve-cine .combo { visibility: hidden; }
+/* celular deitado: logo no topo sem a lista de grupos, o elenco embaixo e o "pressione start" no rodapé */
+@media (max-height: 520px) {
+  #home:not(.menu-on) { justify-content: flex-start; padding-top: 4vh; }
+  #home .logo .tag, #home .logo .fanmade { display: none; }
+  #home .press, html body.booting #home .boot { position: absolute; bottom: 13vh; margin-top: 0; z-index: 3; }
+}

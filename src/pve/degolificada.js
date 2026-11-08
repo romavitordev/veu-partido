@@ -150,6 +150,7 @@ export class DegolificadaBrain {
     b.noFlinch = true; // a IA controla o corpo; ela se defende com o cabelo
     this.holdCpu(true); // sem a CPU de luta: nada de soco, chute ou investida de corpo
     this.layers = Math.max(0, (dungeon.cluesNeeded || 3) - (dungeon.clues || 0)); // o escudo: um terço por prova que falta
+    this.freeAt = this.layers > 0 ? null : 0; // quando o escudo caiu (o relógio da Devoradora corre só daí em diante)
     this.applyShield();
     // os golpes que ela leva: no escudo, o brilho azul (sem dano); na defesa de cabelo, o estalo
     const prevHit = this.w.onHit;
@@ -198,6 +199,7 @@ export class DegolificadaBrain {
     this.w.cameraRig.shake(0.25, 0.35);
     if (this.layers <= 0) {
       // as três provas: quem está no corpo é o Gabriel — o escudo se desfaz
+      this.freeAt = this.t;
       this.d.hud.callout('GABRIEL', '#dce8ff');
       this.d.hint('O escudo caiu: quem está no corpo é o GABRIEL. Agora ela apanha');
       this.d.hintT = 5;
@@ -236,8 +238,9 @@ export class DegolificadaBrain {
     if (b.rig.body) b.rig.body.position.y = 0.22 + Math.sin(this.t * 2.2) * 0.07;
     this.hazards = this.hazards.filter((h) => !h.update(dt));
     this.updateFlung(dt);
-    // METAMORFOSE (Devoradora): com o tempo a vedação da boca cede
-    if (!this.devourer && this.state === 'duel' && this.t > C.devour.after) this.becomeDevourer('A boca se abriu');
+    // METAMORFOSE (Devoradora): com o tempo a vedação da boca cede — contado de quando o escudo caiu (bateria de
+    // 2026-11-08: contando do início, quem gastava tempo atrás das provas enfrentava a Devoradora a luta quase toda)
+    if (!this.devourer && this.state === 'duel' && this.freeAt !== null && this.t - this.freeAt > C.devour.after) this.becomeDevourer('A boca se abriu');
     switch (this.state) {
       case 'duel': this.updateDuel(dt); break;
       case 'lash': this.updateLash(dt); break;

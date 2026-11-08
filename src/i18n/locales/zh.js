@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "超自然格斗游戏",
   "menu.fanmade": "romavitordev 制作的粉丝游戏 · 灵感来自 Ordem Paranormal",
   "menu.press_start": "按 <b>START</b>、<b>{ok}</b> 或 <kbd>ENTER</kbd>",
+  "menu.loading": "正在准备对战…",
   "menu.press_touch": "轻触屏幕开始",
   "menu.foot_touch": "轻触选项进行选择 · 角落的箭头返回",
   "menu.foot_confirm": "<b>{ok}</b> 确认 · <b>{back}</b> 返回",

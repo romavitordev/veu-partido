@@ -149,7 +149,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Foto com Flash** — ranged+back · custo 15 · cooldown 12 s · alcance 9 m
+- **Foto com Flash** — Trás + □ / Trás + X · custo 15 · cooldown 12 s · alcance 9 m
   Ergue a câmera fotográfica, recua um passo e dispara o flash: quem estiver à frente e olhando para ele fica CEGO por 2 s (a guarda cai) e ATORDOADO por 1,2 s, e todo inimigo menor no clarão fica parado. De costas ou esquivando na hora, escapa.
 - **Sentir Através "Dendrobium"** — R2 + △ / RT + Y · custo 25 · cooldown 14 s · dano 45 · alcance 16 m
   Marca o alvo com o Símbolo da Emissão: raízes roxas e a flor de muitos olhos brotam sob ele — Kaiser o enxerga de perto e as raízes o prendem por um instante.
@@ -676,7 +676,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Ativar Ereshkigal** — ranged+back · custo 15 · cooldown 14 s
+- **Ativar Ereshkigal** — Trás + □ / Trás + X · custo 15 · cooldown 14 s
   Por 6 s, cada golpe físico que acerta faz o inimigo recuperar parte da vida e pagar 1,5× isso em sanidade — que vai para o Gal.
 - **Corrente Gancho** — △ + □ / Y + X · custo 20 · cooldown 8 s · dano 28 · alcance 14 m
   Prende a corrente no adversário e puxa o PRÓPRIO Gal até o adversário, chegando com um corte cruzado.
@@ -838,7 +838,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Vira um holograma, troca de lugar e deixa 3 cópias realistas em volta que imitam cada movimento dele. Por 7 s, um golpe (não especial) pode acertar uma cópia no lugar dele — a cópia se desfaz.
 - **Espirais da Perdição** — R2 + × / RT + A · custo 25 · cooldown 14 s · dano 12 · alcance 11 m
   Marca o chão do alvo com um anel de espirais; se ele não sair, elas sobem pelo corpo: por 5 s fica LENTO e os golpes dele perdem força.
-- **Cicatrização** — ranged+back · custo 30 · cooldown 26 s
+- **Cicatrização** — Trás + □ / Trás + X · custo 30 · cooldown 26 s
   Acelera o tempo nas feridas: recupera vida em instantes.
 
 ### Especial: Registro do Outro Lado
@@ -1854,9 +1854,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Chamas de Energia em volta da arena e a luz fica roxa por 8 s. A regra do orfanato: quem passar 4 s sem usar um ritual perde sanidade e leva dano de Energia.
 - **Botão do Anfitrião** — R2 + △ / RT + Y · custo 20 · cooldown 14 s
   O Anfitrião estala os dedos e leva os dois ao início da arena. Corra até o botão no centro e aperte o botão físico antes do adversário para lançar um evento aleatório do caos contra ele.
-- **Chicotada do Caos** — ranged+forward · custo 15 · cooldown 6 s · dano 38 · alcance 8 m
+- **Chicotada do Caos** — Frente + □ / Frente + X · custo 15 · cooldown 6 s · dano 38 · alcance 8 m
   Os cabos de Energia viram chicote (alcance 8 m); o estalo tem um efeito sorteado: puxa, dá choque, deixa lento ou joga para o alto.
-- **Tradição de Família** — ranged+back · custo 30 · cooldown 16 s · dano 72 · alcance 3.4 m
+- **Tradição de Família** — Trás + □ / Trás + X · custo 30 · cooldown 16 s · dano 72 · alcance 3.4 m
   Junta Energia entre as mãos (parado, dá para interromper) e explode em volta de si (3,4 m), lançando.
 - **A Plateia** — ranged+side · custo 10 · cooldown 22 s
   Vira para a plateia, faz uma reverência e recebe os aplausos: +20 de sanidade e, por 8 s, rituais e □ 20% mais fortes e o caos mais generoso com o raro. Fica aberto durante o número.
@@ -1903,6 +1903,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   O FEIXE DE LUZ verde desce do céu sobre o adversário e o segue devagar: se ele não sair a tempo, é ABDUZIDO — flutua girando no meio da luz, entre a interferência de sinal, e é cravado de volta no chão. Volta sem lembrar de nada: perde 15 de sanidade e fica DESORIENTADO (movimento invertido) por 1,8 s.
 - **Homens de Terno** — R2 + × / RT + A · custo 35 · cooldown 24 s
   Três DOPPELGANGERS (os Homens de Terno: Alheios de terno e chapéu, a cara rachada ao meio) aparecem numa interferência de sinal em volta do adversário por 10 s: dois ficam longe atirando o plasma verde do Fuzil Alheio e o terceiro chega perto e bate. "Somos Todos Um": quando um cai, os outros atiram mais rápido.
+- **Ninho de Interflorados** — Trás + □ / Trás + X · custo 30 · cooldown 30 s · alcance 9 m
+  Planta no chão um NINHO de Interflorados (o limo verde com raízes e olhos). Por 40 s, sempre que o adversário chega perto, um INTERFLORADO aflorado brota dele — corpo de gente comum, a cabeça estourada em dedos verdes cheios de olhos: fraco e com pouca vida, mas atrapalha. Até 3 em campo; o ninho pode ser destruído.
 - **Toque Sutil** — △ + L2 / Y + LT · custo 35 · cooldown 30 s · dano 40 · alcance 1.6 m
   Um toque de um dedo: o sangue do alvo borbulha e ele derrete por dentro — dano contínuo, lento e mais fraco por alguns segundos. Curtíssimo alcance; dá para esquivar.
 
@@ -2011,3 +2013,99 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Transformação: Instinto Mortal
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano, +15% de velocidade, recargas 50% mais rápidas, cura 8% na hora, □ passa a ser Investida Mortal.
+
+---
+
+## A DEGOLIFICADA
+
+*O corpo da Agatha com a mente do Gabriel* · arma: Os longos fios de cabelo e os braços pendentes
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Braço pendente | 30 | 2.5 m |  |
+| ○ 2 | Braço pendente | 30 | 2.5 m |  |
+| ○ 3 | Chicote de cabelo | 34 | 3.8 m |  |
+| ○ 4 | Fios cortantes | 42 (2 acertos) | 2.6 m |  |
+| ○ 5 | Esmagar a cabeça | 64 | 2.7 m | finalizador: lança |
+| Frente + ○ | Flutuar e golpear | 38 | 2.6 m |  |
+| Trás + ○ | Recua e chicoteia | 34 | 3.8 m | invulnerável no começo |
+| Lado + ○ | Varredura de cabelo | 32 | 3 m |  |
+| No ar + ○ | Desabar | 38 | 2.5 m | desce com impacto |
+| ↑ + ○ (no combo) | Erguer pelos cabelos | 42 | 2.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Esmagar | 48 | 2.6 m | finalizador: derruba |
+
+### Principal (□ / X): Investida de cabelo
+
+- Dano 32 · alcance 10 m · cooldown 3.5 s · custo 10
+
+### Habilidades
+
+- **Agarrar e Estrangular** — △ + ○ / Y + B · custo 30 · cooldown 14 s · alcance 8 m
+  Os fios agarram quem está à frente (até 8 m), puxam até ela, estrangulam e o ARREMESSAM na parede mais perto (bater na parede machuca mais).
+- **Cabelo rastejante** — △ + □ / Y + X · custo 20 · cooldown 11 s · dano 46
+  Um fio corre pelo chão perseguindo o adversário (vira devagar: dá para fugir de lado) e brota debaixo dele, jogando-o para o alto.
+- **Cabelo por cima** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 12 s · dano 34
+  Quatro círculos marcam o chão (um no adversário); os fios caem do alto em cada um, um depois do outro.
+- **Defesa de cabelo** — △ + L2 / Y + LT · custo 18 · cooldown 12 s · dano 22
+  Os fios fecham na frente dela por 1,2 s: recebe só 20% do dano e não recua. No fim, os fios EMPURRAM longe quem estiver perto.
+- **Grito Rasgado** — R2 + △ / RT + Y · custo 30 · cooldown 16 s · dano 34
+  Rompe a vedação da boca e GRITA: quem estiver a até 6 m é atordoado e fica ENSURDECIDO por alguns segundos.
+- **Arremessar** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 40
+  O cabelo arranca um caixote do chão, ergue sobre a cabeça e o arremessa onde o adversário está (a marca no chão segue o alvo e trava antes).
+
+### Especial: Desfiguramento Capilar
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Devoradora
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano (físico, habilidades), −12% de dano recebido, +20% de velocidade, recargas 30% mais rápidas, cura 10% na hora.
+
+---
+
+## O ESPREITADOR
+
+*A criatura de muitos olhos amarelos que mora nos armários* · arma: Os braços e dedos longos
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Pancada | 19 | 2.6 m |  |
+| ○ 2 | Pancada de volta | 19 | 2.6 m |  |
+| ○ 3 | Braços se debatendo | 24 (2 acertos) | 2.6 m |  |
+| ○ 4 | Pancada longa | 42 | 2.8000000000000003 m | finalizador: lança |
+| Frente + ○ | Avanço da fresta | 27 | 2.8000000000000003 m |  |
+| Trás + ○ | Recua e golpeia | 24 (2 acertos) | 2.7 m | invulnerável no começo |
+| Lado + ○ | Braço em giro | 24 | 2.7 m |  |
+| No ar + ○ | Cair sobre a vítima | 29 | 2.6 m | desce com impacto |
+| ↑ + ○ (no combo) | Dedos de baixo | 30 | 2.6 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Esmagar | 35 | 2.6 m | finalizador: derruba |
+
+### Principal (□ / X): Dedos longos
+
+- Dano 24 · alcance 13 m · cooldown 5.5 s · custo 15
+- Prende e puxa o inimigo para 1.8 m, abrindo 0.6 s para combar
+
+### Habilidades
+
+- **Drenar Energia** — △ + ○ / Y + B · custo 20 · cooldown 12 s · dano 30 · alcance 9 m
+  Os olhos amarelos se abrem: quem estiver à frente E OLHANDO para ele fica paralisado, perde Sanidade (energia) e ele a toma para si. De costas, não pega.
+- **Abrir Fresta** — △ + □ / Y + X · custo 10 · cooldown 4 s
+  Um armário entreaberto (uma FRESTA, com olhos lá dentro) brota do chão ao lado dele. Até 3 no mapa; o mais velho some. Um golpe ou tiro do adversário FECHA e TRANCA a fresta por 20 s.
+- **Correr pelas Frestas** — Energia + Pulo (△+× / Y+A) · custo 16 · cooldown 7 s · dano 52
+  Entra na fresta mais perto, os OLHOS AMARELOS acendem na fresta mais perto do adversário e ele sai por ela num BOTE. Com todas as frestas trancadas, fica APAVORADO (apanha mais por 3 s).
+- **Cópia Observada** — R2 + × / RT + A · custo 30 · cooldown 22 s
+  Encara o adversário e cria 2 DEVORADOS: cópias cinzentas dele que lutam com os golpes dele por 9 s (metade do dano; caem com poucos golpes).
+- **Fortalecer** — △ + L2 / Y + LT · custo 22 · cooldown 18 s
+  Segura a cabeça de um DEVORADO em campo: ele fica maior, com o dobro da vida e 70% mais forte. Sem Devorado, as pupilas se multiplicam nele: por 7 s bate 20% mais forte, anda 10% mais rápido e aguenta 2 golpes sem recuar.
+
+### Especial: O Olho da Boca
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Pupilas que se Multiplicam
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano, +12% de velocidade, recargas 50% mais rápidas, cura 8% na hora.

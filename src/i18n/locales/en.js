@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "A PARANORMAL FIGHTING GAME",
   "menu.fanmade": "Fan-made game by romavitordev · inspired by Ordem Paranormal",
   "menu.press_start": "PRESS <b>START</b>, <b>{ok}</b> OR <kbd>ENTER</kbd>",
+  "menu.loading": "GETTING THE FIGHTS READY…",
   "menu.press_touch": "TAP THE SCREEN TO START",
   "menu.foot_touch": "Tap an option to choose · the corner arrow goes back",
   "menu.foot_confirm": "<b>{ok}</b> confirm · <b>{back}</b> back",

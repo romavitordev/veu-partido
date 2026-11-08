@@ -105,6 +105,18 @@ export const TEAM_LINKS = {
     order: ['verissimo', 'arnaldo'],
     color: 0xd01c30,
   },
+  // Dupla Balu + Rubens (pedido do dono, 2026-11-02; os dois amigos dos Abutres): o Balu avança gritando, o Rubens
+  // corrige o nome e entra junto batendo (PROPOSTA dos golpes: machadadas do Balu, Salto Fantasma + martelada do Rubens)
+  balu_rubens: {
+    id: 'balu_rubens',
+    kind: 'duo',
+    name: 'A COÇA DOS ABUTRES',
+    banner: 'Balu e Rubens!',
+    members: ['balu', 'rubens'],
+    order: ['balu', 'rubens'],
+    choreo: 'balu_rubens',
+    color: 0xc8c4d0,
+  },
   // Dupla Cristopher + Kaiser (pai e filho: o dublê segura, o filho atira)
   cristopher_kaiser: {
     id: 'cristopher_kaiser',

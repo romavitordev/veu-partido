@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "PARANORMAL BİR DÖVÜŞ OYUNU",
   "menu.fanmade": "romavitordev tarafından hayran yapımı oyun · Ordem Paranormal'dan esinlenildi",
   "menu.press_start": "<b>START</b>, <b>{ok}</b> VEYA <kbd>ENTER</kbd> TUŞUNA BAS",
+  "menu.loading": "DÖVÜŞLER HAZIRLANIYOR…",
   "menu.press_touch": "BAŞLAMAK İÇİN EKRANA DOKUN",
   "menu.foot_touch": "Seçmek için bir seçeneğe dokun · köşedeki ok geri döner",
   "menu.foot_confirm": "<b>{ok}</b> onayla · <b>{back}</b> geri",

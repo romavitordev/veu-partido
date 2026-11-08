@@ -106,6 +106,7 @@ export class HomeScreen {
         <div class="fanmade">${t('menu.fanmade')}</div>
       </div>
       <div class="press">${touchOnly ? t('menu.press_touch') : t('menu.press_start', { ok: OK })}</div>
+      <div class="boot"><i></i>${t('menu.loading')}</div>
       <div class="menu-home">
         <div class="hlist"></div>
         <div class="hdesc"></div>

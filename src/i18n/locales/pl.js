@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "PARANORMALNA BIJATYKA",
   "menu.fanmade": "Gra fanowska autorstwa romavitordev · inspirowana Ordem Paranormal",
   "menu.press_start": "NACIŚNIJ <b>START</b>, <b>{ok}</b> LUB <kbd>ENTER</kbd>",
+  "menu.loading": "PRZYGOTOWYWANIE WALK…",
   "menu.press_touch": "DOTKNIJ EKRANU, ABY ZACZĄĆ",
   "menu.foot_touch": "Dotknij opcji, aby wybrać · strzałka w rogu wraca",
   "menu.foot_confirm": "<b>{ok}</b> potwierdź · <b>{back}</b> wstecz",

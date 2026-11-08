@@ -1245,6 +1245,52 @@ export const MATERIAL_TEXTURES = {
     for (let y = 232; y < 256; y += 7) { g.fillStyle = 'rgba(20,20,16,0.4)'; g.fillRect(0, y, 256, 2); }
   }, { wrap: true }),
   // pano xadrez preto e vermelho-escuro preso na pochete
+  // ---------------- INTERFLORADO (o Ninho do Estrangeiro): camiseta clara manchada de limo, camisa xadrez marrom,
+  // jeans gasto e os antebraços com as VEIAS VERDES (arte de referência do dono, 2026-11-06)
+  tee_interflorado: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#d6d2c4'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 9; i++) { // manchas de limo verde escorrendo
+      const x = Math.random() * 256; const h = 30 + Math.random() * 90;
+      const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, 'rgba(70,130,30,0.55)'); grd.addColorStop(1, 'rgba(70,130,30,0)');
+      g.fillStyle = grd; g.fillRect(x, Math.random() * 120, 4 + Math.random() * 10, h);
+    }
+    g.fillStyle = 'rgba(60,50,30,0.12)'; for (let i = 0; i < 300; i++) g.fillRect(Math.random() * 256, Math.random() * 256, 2, 2);
+  }, { wrap: true }),
+  plaid_interflorado: () => canvasTex(128, 128, (g) => {
+    g.fillStyle = '#6a4a30'; g.fillRect(0, 0, 128, 128);
+    g.fillStyle = 'rgba(30,18,10,0.5)';
+    for (let k = 0; k < 128; k += 32) { g.fillRect(k, 0, 14, 128); g.fillRect(0, k, 128, 14); }
+    g.fillStyle = 'rgba(210,180,130,0.3)';
+    for (let k = 22; k < 128; k += 32) { g.fillRect(k, 0, 3, 128); g.fillRect(0, k, 128, 3); }
+    g.fillStyle = 'rgba(140,40,30,0.25)';
+    for (let k = 8; k < 128; k += 32) { g.fillRect(k, 0, 2, 128); g.fillRect(0, k, 128, 2); }
+  }, { wrap: true, repeat: [3, 3] }),
+  jeans_interflorado: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#3a4a6a'; g.fillRect(0, 0, 256, 256);
+    g.strokeStyle = 'rgba(15,25,50,0.3)'; g.lineWidth = 1;
+    for (let i = -256; i < 256; i += 4) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + 256, 256); g.stroke(); }
+    const fade = g.createRadialGradient(128, 150, 4, 128, 150, 80);
+    fade.addColorStop(0, 'rgba(200,215,235,0.25)'); fade.addColorStop(1, 'rgba(200,215,235,0)');
+    g.fillStyle = fade; g.fillRect(0, 0, 256, 256);
+    g.fillStyle = 'rgba(70,130,30,0.35)'; for (let i = 0; i < 6; i++) g.fillRect(Math.random() * 256, Math.random() * 256, 6, 20 + Math.random() * 30);
+  }, { wrap: true }),
+  arms_interflorado: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#a8a88a'; g.fillRect(0, 0, 256, 256);
+    // as VEIAS verdes saltadas subindo pelo antebraço, ramificando
+    g.lineCap = 'round';
+    for (let i = 0; i < 9; i++) {
+      let x = Math.random() * 256; let y = 256;
+      g.strokeStyle = `rgba(${40 + Math.random() * 30},${110 + Math.random() * 50},${30},0.85)`;
+      g.lineWidth = 2 + Math.random() * 2.5;
+      g.beginPath(); g.moveTo(x, y);
+      for (let k = 0; k < 10; k++) {
+        x += (Math.random() - 0.5) * 30; y -= 20 + Math.random() * 10;
+        g.lineTo(x, y);
+        if (Math.random() < 0.3) { g.stroke(); g.beginPath(); g.moveTo(x, y); g.lineTo(x + (Math.random() - 0.5) * 40, y - 20); g.stroke(); g.beginPath(); g.moveTo(x, y); }
+      }
+      g.stroke();
+    }
+  }, { wrap: true }),
   plaid_guizo: () => canvasTex(128, 128, (g) => {
     g.fillStyle = '#6a1018'; g.fillRect(0, 0, 128, 128);
     g.fillStyle = 'rgba(10,8,10,0.55)';

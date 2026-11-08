@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "ПАРАНОРМАЛЬНЫЙ ФАЙТИНГ",
   "menu.fanmade": "Фанатская игра от romavitordev · по мотивам Ordem Paranormal",
   "menu.press_start": "НАЖМИТЕ <b>START</b>, <b>{ok}</b> ИЛИ <kbd>ENTER</kbd>",
+  "menu.loading": "ПОДГОТОВКА БОЁВ…",
   "menu.press_touch": "КОСНИТЕСЬ ЭКРАНА, ЧТОБЫ НАЧАТЬ",
   "menu.foot_touch": "Коснитесь варианта для выбора · стрелка в углу — назад",
   "menu.foot_confirm": "<b>{ok}</b> подтвердить · <b>{back}</b> назад",

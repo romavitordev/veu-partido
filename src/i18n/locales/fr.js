@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "UN JEU DE COMBAT PARANORMAL",
   "menu.fanmade": "Jeu fan made par romavitordev · inspiré de Ordem Paranormal",
   "menu.press_start": "APPUIE SUR <b>START</b>, <b>{ok}</b> OU <kbd>ENTRÉE</kbd>",
+  "menu.loading": "PRÉPARATION DES COMBATS…",
   "menu.press_touch": "TOUCHE L'ÉCRAN POUR COMMENCER",
   "menu.foot_touch": "Touche une option pour choisir · la flèche dans le coin revient",
   "menu.foot_confirm": "<b>{ok}</b> valider · <b>{back}</b> retour",

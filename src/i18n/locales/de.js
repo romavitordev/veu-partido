@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "EIN PARANORMALES KAMPFSPIEL",
   "menu.fanmade": "Fan-Spiel von romavitordev · inspiriert von Ordem Paranormal",
   "menu.press_start": "DRÜCKE <b>START</b>, <b>{ok}</b> ODER <kbd>ENTER</kbd>",
+  "menu.loading": "KÄMPFE WERDEN VORBEREITET…",
   "menu.press_touch": "TIPPE AUF DEN BILDSCHIRM, UM ZU STARTEN",
   "menu.foot_touch": "Tippe auf eine Option · der Pfeil in der Ecke geht zurück",
   "menu.foot_confirm": "<b>{ok}</b> bestätigen · <b>{back}</b> zurück",

@@ -14,7 +14,6 @@ import { renderPortraits } from './ui/portraits.js';
 import { renderArenaThumbs } from './ui/arenaThumbs.js';
 import { victoryLine } from './config/dialogues.js';
 import { preloadModels } from './models/index.js';
-import { TitleStage } from './ui/titleStage.js';
 import { loadLearned } from './ai/learner.js';
 import { ROSTER } from './characters/index.js';
 import { validatePassives } from './combat/passives.js';
@@ -101,14 +100,14 @@ Promise.all([preloadModels(), preloadArenas()])
     // lutadores da seleção (Relíquias) com o mesmo id; o retrato do elenco (com a cor da equipe) tem que ficar por último
     Object.assign(portraits, renderPortraits([...VILLAINS.map(getForm), ...ROSTER], renderer));
     booted = true;
+    document.body.classList.remove('booting'); // o "pressione start" volta no lugar do aviso de carregamento
     // não trava a tela inicial: gera os previews no quadro seguinte
     setTimeout(() => Object.assign(arenaThumbs, renderArenaThumbs(renderer)), 50);
   });
 
-// fundo animado dos menus: lutadores em 3D, círculo ritual e cinzas (ui/titleStage.js); montado depois que os modelos
-// carregam
-const titleStage = new TitleStage(ROSTER);
-const menuCam = titleStage.cam;
+// fundo dos menus: arte ESTÁTICA em HTML/CSS (#backdrop no index.html, 2026-11-08) — antes eram lutadores em 3D
+// (ui/titleStage.js) que só apareciam depois do download dos modelos e custavam um quadro 3D inteiro no menu
+const setStaticBg = (on) => { if (document.body.classList.contains('static-bg') !== on) document.body.classList.toggle('static-bg', on); };
 
 const game = {
   state: 'title',
@@ -672,7 +671,7 @@ window.addEventListener('keydown', () => audio.unlock());
 watchViewport(() => {
   const { w, h } = viewSize();
   renderer.setSize(w, h);
-  for (const cam of [menuCam, game.match && game.match.world.camera]) {
+  for (const cam of [game.match && game.match.world.camera]) {
     if (!cam) continue;
     cam.aspect = w / h;
     cam.updateProjectionMatrix();
@@ -700,7 +699,7 @@ let lastFrame = 0;
 
 // contador de desempenho de dev (dev/perf.js): ?perf na URL ou F8 no `npm run dev` — carregado só quando pedido
 let perf = null;
-const perfScene = () => (game.match && game.match.world ? game.match.world.scene : titleStage.scene);
+const perfScene = () => (game.match && game.match.world ? game.match.world.scene : null);
 const loadPerf = () => import('./dev/perf.js').then((mod) => { perf = perf || mod.createPerf(renderer, perfScene); });
 if (new URLSearchParams(location.search).has('perf')) loadPerf();
 if (import.meta.env.DEV) addEventListener('keydown', (e) => { if (e.code === 'F8') { if (perf) perf.toggle(); else loadPerf(); } });
@@ -1257,14 +1256,17 @@ const PHONE_LANDSCAPE = window.matchMedia('(max-height: 520px) and (max-width: 7
 
 function render() {
   if (game.match && (game.state === 'fight' || game.state === 'pause' || game.state === 'result' || game.state === 'commands')) {
+    setStaticBg(false);
     game.match.render();
   } else if (game.state === 'towerview' && game.towerStage) {
+    setStaticBg(false);
     game.towerStage.render(renderer);
   } else if (game.state === 'select' && game.screen && game.screen.stage && !PHONE_LANDSCAPE.matches) {
+    setStaticBg(false);
     game.screen.stage.render(renderer); // seleção: lutadores em 3D no centro
   } else {
-    if (booted) titleStage.ready();
-    titleStage.render(renderer);
+    setStaticBg(true); // menus: o fundo estático do #backdrop, sem desenhar nada em 3D
+    return;
   }
   pinPrograms(renderer); // shader compilado não é apagado: efeito de golpe não recompila (core/programPin.js)
 }

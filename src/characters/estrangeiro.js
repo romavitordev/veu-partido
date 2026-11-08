@@ -177,6 +177,34 @@ export default {
       color: GREEN,
     },
     {
+      // o NINHO DE INTERFLORADOS (pedido do dono, 2026-11-06): o Interflorado é um Alheio parasita de Transmissão, como
+      // ele (wiki "Interflorado"); o ninho, os números e o comando são PROPOSTA
+      id: 'ninhoInterflorados',
+      name: 'Ninho de Interflorados',
+      input: 'ranged+back', // ← + □
+      type: 'interfloradoNest',
+      description: 'Planta no chão um NINHO de Interflorados (o limo verde com raízes e olhos). Por 40 s, sempre que o adversário chega perto, um INTERFLORADO aflorado brota dele — corpo de gente comum, a cabeça estourada em dedos verdes cheios de olhos: fraco e com pouca vida, mas atrapalha. Até 3 em campo; o ninho pode ser destruído.',
+      energyCost: 30,
+      cooldown: 30,
+      range: 9,
+      ahead: 3,
+      life: 40,
+      near: 3.2, // o raio de "perto" (o anel verde no chão)
+      every: 3.5, // intervalo entre os que brotam
+      max: 3,
+      nestHp: 60,
+      brood: {
+        hp: 40,
+        duration: 12,
+        strikes: [
+          { anim: 'db_claw_r', dur: 0.4, active: [0.16, 0.26], range: 1.7, damage: 8 },
+          { anim: 'db_claw_l', dur: 0.4, active: [0.16, 0.26], range: 1.7, damage: 8 },
+          { anim: 'db_cross', dur: 0.5, active: [0.2, 0.32], range: 2.0, damage: 12 },
+        ],
+      },
+      color: GREEN,
+    },
+    {
       id: 'toqueSutil',
       name: 'Toque Sutil',
       input: 'carga+dodge', // △ + L2

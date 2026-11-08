@@ -647,15 +647,19 @@ export class CpuController {
     }
 
     // invocações FRACAS do adversário por perto (Zumbi fraco, clones do Trinitá): limpa antes de voltar a ele
+    // Outro Lado: com o adversário ESCONDIDO na sala (o Devorado `lurking`), os monstros da sala SÃO a luta — qualquer
+    // um serve, forte ou fraco, e de mais longe (antes os Zumbis de Sangue da Escola, com mais de 120 de vida, eram
+    // ignorados e alguns lutadores ficavam parados no meio deles)
+    const hidden = !!(opp.lurking || opp.visible === false);
     if ((f.state === 'idle' || f.state === 'charging') && f.onGround && w.hostileNpcs) {
       let prey = null;
-      let best = 5;
+      let best = hidden ? 30 : 5;
       for (const n of w.hostileNpcs(f)) {
-        if (!n.alive || n.state === 'rise' || n.state === 'die' || n.state === 'leave' || !(n.isClone || n.maxHp <= 120)) continue;
+        if (!n.alive || n.state === 'rise' || n.state === 'die' || n.state === 'leave' || n.isCloset || !(hidden || n.isClone || n.maxHp <= 120)) continue;
         const dn = distXZ(f.pos, n.pos);
-        if (dn < best && (dn < d - 1 || d > 4)) { best = dn; prey = n; }
+        if (dn < best && (hidden || dn < d - 1 || d > 4)) { best = dn; prey = n; }
       }
-      if (prey && Math.random() < 0.5 * k * (1 - L.mistake)) {
+      if (prey && Math.random() < (hidden ? 0.9 : 0.5 * k * (1 - L.mistake))) {
         if (best <= 1.9) this.tap('physical');
         else {
           const lx = prey.pos.x - f.pos.x;

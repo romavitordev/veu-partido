@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "超常格闘ゲーム",
   "menu.fanmade": "romavitordev によるファンメイドゲーム · Ordem Paranormal に着想",
   "menu.press_start": "<b>START</b>・<b>{ok}</b>・<kbd>ENTER</kbd> を押してください",
+  "menu.loading": "バトルを準備中…",
   "menu.press_touch": "画面をタップしてスタート",
   "menu.foot_touch": "項目をタップして選択 · 隅の矢印で戻る",
   "menu.foot_confirm": "<b>{ok}</b> 決定 · <b>{back}</b> 戻る",

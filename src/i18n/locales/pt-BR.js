@@ -5,6 +5,7 @@ export default {
   "menu.subtitle": "UM JOGO DE LUTA PARANORMAL",
   "menu.fanmade": "Jogo fan made por romavitordev · inspirado em Ordem Paranormal",
   "menu.press_start": "PRESSIONE <b>START</b>, <b>{ok}</b> OU <kbd>ENTER</kbd>",
+  "menu.loading": "PREPARANDO AS LUTAS…",
   "menu.press_touch": "TOQUE NA TELA PARA COMEÇAR",
   "menu.foot_touch": "Toque nas opções para escolher · a seta no canto volta",
   "menu.foot_confirm": "<b>{ok}</b> confirmar · <b>{back}</b> voltar",

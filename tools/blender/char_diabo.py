@@ -23,7 +23,7 @@ from mathutils import Vector
 from sculpt_lib import Sculpt, relief, ridge, n3
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'diabo.glb'
-b = Builder(width=1.08, bulk=1.2, height=1.25)
+b = Builder(width=1.12, bulk=1.3, height=1.34)  # 2026-11-08: maior que O Diabo (a forma final)
 sk = b.sk
 H = sk.h
 hz = sk['hips'].z
@@ -49,7 +49,7 @@ gold = material('crown_gold', '#b87810', 0.35, metal=0.7)  # sem emissão: o blo
 wing = material('wing_flesh', '#b0141c', 0.65)
 
 hc = b.body(M, [(-0.12, 0.17), (0.0, 0.17), (0.17, 0.155), (0.36, 0.215), (0.48, 0.24), (0.58, 0.13), (0.65, 0.07)],
-            arm_r=(0.056 * H, 0.048 * H, 0.04 * H), leg_r=(0.085 * H, 0.05 * H, 0.04 * H), head_r=(0.14, 0.15, 0.164), feet='bare')
+            arm_r=(0.056 * H, 0.048 * H, 0.04 * H), leg_r=(0.085 * H, 0.05 * H, 0.04 * H), head_r=(0.14, 0.15, 0.164), legs=False)  # as pernas de bode esculpidas abaixo
 
 
 def curve_tube(base, d1, d2, ln, r0, r1=0.003, n=10, seg=8):
@@ -323,34 +323,92 @@ def extra_arm_weights(side):
 
 for side in ('L', 'R'):
     sx = 1 if side == 'L' else -1
-    root = Vector((sx * 0.17 * H, 0.0, hz + 0.3 * H))
-    elbow = Vector((root.x + sx * 0.25 * H, 0.02 * H, root.z - 0.06 * H))
+    root = Vector((sx * 0.15 * H, 0.01 * H, hz + 0.3 * H))
+    elbow = Vector((root.x + sx * 0.25 * H, 0.03 * H, root.z - 0.05 * H))
     wrist = Vector((elbow.x + sx * 0.08 * H, -0.16 * H, elbow.z - 0.12 * H))
-    arm = merge(tube(limb_rings(root, elbow, 0.055 * H, 0.045 * H, n=4), 12), ellipsoid(tuple(elbow), (0.046 * H, 0.046 * H, 0.046 * H), 10, 8),
-                tube(limb_rings(elbow, wrist, 0.045 * H, 0.036 * H, n=4), 12))
+    # ESCULPIDO (2026-11-08): um braço só, liso, com o bíceps e o antebraço inchados (antes 3 tubos colados)
+    A = Sculpt()
+    A.chain([root, root.lerp(elbow, 0.45) + Vector((0, -0.01 * H, 0.015 * H)), elbow], [0.06 * H, 0.068 * H, 0.046 * H])
+    A.chain([elbow, elbow.lerp(wrist, 0.35) + Vector((0, 0, 0.01 * H)), wrist], [0.046 * H, 0.05 * H, 0.034 * H])
+    A.ell(elbow + Vector((0, 0.03 * H, 0)), (0.03 * H, 0.03 * H, 0.03 * H))  # a ponta do cotovelo
+    arm = A.mesh(res=0.006, smooth=2, disp=lambda q: 0.002 * H * n3(q, 60), target=2400)
     b.add('extra_arm' + side, arm, skin, region='extra', weight_fn=extra_arm_weights(side), subdiv=0)
     d = (wrist - elbow).normalized()
-    hand = [ellipsoid(tuple(wrist + d * 0.035 * H), (0.04 * H, 0.03 * H, 0.04 * H), 8, 6)]
+    hand = [ellipsoid(tuple(wrist + d * 0.035 * H), (0.044 * H, 0.032 * H, 0.044 * H), 8, 6)]
     for i in range(4):
-        o = Vector(((i - 1.5) * 0.016 * H, 0, (i - 1.5) * 0.006 * H))
+        o = Vector(((i - 1.5) * 0.018 * H, 0, (i - 1.5) * 0.006 * H))
         bse = wrist + d * 0.06 * H + o
-        hand.append(cone(tuple(bse), tuple(bse + d * 0.11 * H + Vector((0, 0, -0.03 * H))), 0.009 * H, 4))
+        hand.append(cone(tuple(bse), tuple(bse + d * 0.13 * H + Vector((0, 0, -0.04 * H))), 0.01 * H, 4))
     b.add('extra_hand' + side, merge(*hand), claw, region='extra', weight_fn=lambda p, side=side: {'e' + side: 1.0}, subdiv=0)
 
 # ---------------- pernas de BODE: coxa grossa de pelo, jarrete dobrado para trás, canela fina, casco fendido;
 # boca dentada no meio da tíbia
+# ESCULPIDAS (2026-11-08): cada perna é UMA forma contínua (coxa de pelo inchada → joelho → jarrete para trás →
+# canela fina), com o pelo em mechas no relevo e os tufos caindo do jarrete; o casco fendido em duas unhas curvas.
+fur = lambda q: 0.007 * H * (ridge(q.z / H * 38 + n3(q, 22) * 3.0, 2) - 0.35)
 for side in ('L', 'R'):
+    sx = 1 if side == 'L' else -1
     l, k, f = sk['l' + side], sk['k' + side], sk['foot' + side]
-    b.add('goat_thigh' + side, tube(limb_rings(l + Vector((0, 0, 0.02 * H)), l.lerp(k, 0.95) + Vector((0, -0.03 * H, 0)), 0.115 * H, 0.07 * H, n=5, bulge=0.12), 16), M['legs'], region='leg' + side)
-    hock = k.lerp(f, 0.6) + Vector((0, 0.13 * H, 0))  # o jarrete bem para trás (a perna de bode)
-    b.add('goat_hock' + side, merge(tube(limb_rings(k, hock, 0.06 * H, 0.045 * H, n=3), 12), ellipsoid(tuple(hock), (0.045 * H, 0.05 * H, 0.045 * H), 10, 8),
-                                    tube(limb_rings(hock, f + Vector((0, -0.02 * H, 0.03 * H)), 0.042 * H, 0.034 * H, n=3), 12)), M['legs'], region='k' + side, subdiv=0)
-    b.add('hoof' + side, merge(box((f.x - 0.018 * H, f.y - 0.04 * H, f.z - 0.005 * H), (0.034 * H, 0.08 * H, 0.05 * H), bevel=0.008 * H),
-                               box((f.x + 0.018 * H, f.y - 0.04 * H, f.z - 0.005 * H), (0.034 * H, 0.08 * H, 0.05 * H), bevel=0.008 * H)), M['feet'], region='foot' + side, subdiv=0)
+    hock = k.lerp(f, 0.6) + Vector((0, 0.14 * H, 0))  # o jarrete bem para trás (a perna de bode)
+    fet = f + Vector((0, -0.03 * H, 0.04 * H))
+    L = Sculpt()
+    L.chain([l + Vector((0, 0, 0.03 * H)), l.lerp(k, 0.4) + Vector((sx * 0.012 * H, -0.03 * H, 0)), l.lerp(k, 0.75) + Vector((0, -0.02 * H, 0)), k + Vector((0, -0.015 * H, 0))],
+            [0.082 * H, 0.09 * H, 0.074 * H, 0.054 * H])
+    L.ell(l.lerp(k, 0.45) + Vector((0, 0.04 * H, 0)), (0.066 * H, 0.066 * H, 0.11 * H))  # o posterior da coxa (o pernil)
+    L.chain([k + Vector((0, -0.015 * H, 0)), k.lerp(hock, 0.5) + Vector((0, -0.01 * H, 0)), hock], [0.052 * H, 0.044 * H, 0.04 * H])
+    L.ell(hock + Vector((0, 0.012 * H, 0)), (0.042 * H, 0.046 * H, 0.042 * H))
+    L.chain([hock, hock.lerp(fet, 0.5), fet], [0.036 * H, 0.029 * H, 0.032 * H])
+    b.add('goat_leg' + side, L.mesh(res=0.007, smooth=2, disp=lambda q, l=l, k=k: fur(q) if q.z > k.z - 0.06 * H else 0.0015 * H * n3(q, 70), target=5200),
+          M['legs'], region='leg' + side, subdiv=0)
+    # tufos de pelo caindo atrás do jarrete e em volta do casco
+    tufts = []
+    random.seed(11 + sx)
+    for i in range(7):
+        a = (i / 6 - 0.5) * 2.2
+        bp = hock + Vector((math.sin(a) * 0.04 * H, 0.03 * H, 0.01 * H))
+        tufts.append(cone(tuple(bp), tuple(bp + Vector((math.sin(a) * 0.03 * H, (0.04 + 0.03 * random.random()) * H, -(0.08 + 0.05 * random.random()) * H))), 0.016 * H, 4))
+    for i in range(8):
+        a = i / 8 * TAU
+        bp = fet + Vector((math.sin(a) * 0.036 * H, -math.cos(a) * 0.036 * H, 0.02 * H))
+        tufts.append(cone(tuple(bp), tuple(bp + Vector((math.sin(a) * 0.025 * H, -math.cos(a) * 0.025 * H, -0.05 * H))), 0.013 * H, 4))
+    b.add('goat_tufts' + side, merge(*tufts), M['legs'], region='k' + side, subdiv=0)
+    # o casco FENDIDO: duas unhas curvas e lisas
+    Hf = Sculpt()
+    for u in (1, -1):
+        c0 = f + Vector((u * 0.02 * H, -0.02 * H, 0.025 * H))
+        Hf.chain([c0, c0 + Vector((u * 0.004 * H, -0.04 * H, -0.012 * H)), c0 + Vector((u * 0.002 * H, -0.075 * H, -0.022 * H))], [0.03 * H, 0.026 * H, 0.012 * H])
+    b.add('hoof' + side, Hf.mesh(res=0.004, smooth=2, target=1600), M['feet'], region='foot' + side, subdiv=0)
     mo = k.lerp(hock, 0.55) + Vector((0, -0.05 * H, 0))
     teeth = [cone((mo.x + (i - 2) * 0.011 * H, mo.y - 0.004 * H, mo.z + 0.012 * H), (mo.x + (i - 2) * 0.011 * H, mo.y - 0.008 * H, mo.z - 0.003 * H), 0.004 * H, 3) for i in range(5)]
     teeth += [cone((mo.x + (i - 2) * 0.011 * H, mo.y - 0.004 * H, mo.z - 0.016 * H), (mo.x + (i - 2) * 0.011 * H, mo.y - 0.008 * H, mo.z - 0.002 * H), 0.004 * H, 3) for i in range(5)]
     b.add('shin_mouth' + side, merge(ellipsoid(tuple(mo), (0.03 * H, 0.012 * H, 0.022 * H), 8, 4), *teeth), claw, region='k' + side, subdiv=0)
+
+# ---------------- MASSA DE MONSTRO (2026-11-08): trapézio e dorsais inchados (o pescoço some entre os ombros) e a
+# COLUNA de espinhos de osso nas costas — ele lê como a forma final, mais bruta que O Diabo
+T = Sculpt()
+nz = sk['neck'].z
+for s in (1, -1):
+    T.chain([Vector((s * 0.05 * H, 0.03 * H, nz + 0.02 * H)), Vector((s * 0.13 * H, 0.04 * H, nz - 0.02 * H)), Vector((s * 0.2 * H, 0.03 * H, nz - 0.05 * H))],
+            [0.06 * H, 0.07 * H, 0.055 * H])
+    T.ell(Vector((s * 0.12 * H, 0.1 * H, hz + 0.33 * H)), (0.08 * H, 0.04 * H, 0.15 * H))  # dorsal
+T.ell(Vector((0, 0.06 * H, nz - 0.01 * H)), (0.09 * H, 0.06 * H, 0.06 * H))
+# os DELTOIDES e o bíceps inchados por cima dos braços do corpo base (que são cilindros): o ombro em bola de músculo
+for side in ('L', 'R'):
+    sh, el = sk['s' + side], sk['e' + side]
+    sx = 1 if side == 'L' else -1
+    D = Sculpt()
+    D.ell(sh + Vector((sx * 0.02 * H, 0, -0.01 * H)), (0.075 * H, 0.07 * H, 0.07 * H))
+    D.ell(sh.lerp(el, 0.5) + Vector((0, -0.015 * H, 0)), (0.05 * H, 0.05 * H, 0.09 * H))
+    D.ell(sh.lerp(el, 0.5) + Vector((0, 0.02 * H, 0)), (0.045 * H, 0.045 * H, 0.08 * H))
+    b.add('deltoid' + side, D.mesh(res=0.006, smooth=3, disp=lambda q: 0.0015 * H * n3(q, 60), target=2000), skin, region='arm' + side, subdiv=0)
+b.add('brute_mass', T.mesh(res=0.008, smooth=3, disp=lambda q: 0.004 * H * (ridge(q.x / H * 40, 3) - 0.3), target=3600), skin, region='chest', subdiv=0)
+bone_spikes = []
+for i in range(7):
+    z = hz + (0.12 + i * 0.065) * H
+    ln = (0.08 + 0.05 * math.sin(i / 6 * math.pi)) * H
+    y0 = belly_front(z) * -1.0 + 0.0 * H
+    bone_spikes.append(cone((0, y0 - 0.01 * H, z), (0, y0 + ln, z + ln * 0.5), 0.026 * H, 6))
+b.add('spine_spikes', merge(*bone_spikes), material('bone_spike', '#d8c8a8', 0.5), region='chest', subdiv=0)
 
 # o tronco com os MÚSCULOS em relevo (mantém o UV da textura do Símbolo e dos Sigilos): peitorais, os gomos do abdômen
 g2 = lambda x, s: math.exp(-(x / s) ** 2)
@@ -365,9 +423,5 @@ def muscles(q):
             d += 0.006 * H * g2(q.x / H - s * 0.035, 0.025) * g2(zz - (0.27 - 0.08 * r), 0.03)  # gomos
     return d
 relief(next(o for o in b.parts if o.name == 'torso'), muscles)
-# o PELO de bode em relevo nas coxas e no jarrete
-for o in b.parts:
-    if o.name.startswith('goat_thigh') or o.name.startswith('goat_hock'):
-        relief(o, lambda q: 0.006 * H * (ridge(q.z / H * 40 + n3(q, 25) * 2.5, 2) - 0.4))
 
 b.export(OUT)

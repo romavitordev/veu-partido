@@ -592,6 +592,36 @@ export class Dungeon {
     this.audio.play('creak', { volume: 0.8 });
   }
 
+  // a NEBLINA que engrossa a cada sala (D.mist): 0 no começo da rota, ~0,85 na última sala antes do chefe, 1 no chefe.
+  // A cor e a densidade do fog da cena seguem devagar (sem salto na troca de sala) e a névoa rasteira acompanha.
+  mistLevel() {
+    const M = this.mod;
+    if (!M) return 0;
+    if (M.kind === 'boss' || this.modId === this.D.bossModule) return 1;
+    if (M.kind === 'start') return 0;
+    return Math.min(0.85, 0.85 * this.step / Math.max(1, this.routeLen));
+  }
+
+  updateMist(dt) {
+    const fog = this.world.scene.fog;
+    const X = this.D.mist;
+    if (!fog || fog.density === undefined) return;
+    const want = this.mistLevel();
+    this.mistK = this.mistK === undefined ? want : this.mistK + (want - this.mistK) * Math.min(1, dt * 0.8);
+    const k = this.mistK;
+    const a = k < 0.85 ? X.from : X.to, b = k < 0.85 ? X.to : X.boss;
+    const t = k < 0.85 ? k / 0.85 : (k - 0.85) / 0.15;
+    fog.density = a.density + (b.density - a.density) * t;
+    if (!this.mistA) { this.mistA = new THREE.Color(); this.mistB = new THREE.Color(); }
+    fog.color.copy(this.mistA.setHex(a.color)).lerp(this.mistB.setHex(b.color), t);
+    // a névoa rasteira: fumaça baixa e lenta em volta de quem joga (nada no corredor do começo)
+    if (X.wisps && k > 0.05 && this.player && Math.random() < dt * X.wisps * k) {
+      const p = this.player.pos, ang = Math.random() * Math.PI * 2, r = 1.5 + Math.random() * 5;
+      const at = new THREE.Vector3(p.x + Math.sin(ang) * r, 0.15 + Math.random() * 0.35, p.z + Math.cos(ang) * r);
+      this.world.fx.burst(at, { count: 1, color: 0x8a9496, kind: 'smoke', speed: 0.15, up: 0.05, life: 3.2, size: 1.6 + k * 1.2, grow: 1 });
+    }
+  }
+
   // a porta trancada: o jogador (e o que for dele) não passa
   applyGates(dt) {
     const p = this.player;
@@ -713,7 +743,7 @@ export class Dungeon {
     e.applyDef(def, buildModel(isModelLoaded(def.model) ? def.model : 'carnical'));
     disposeRigResources(previousRig.root);
     e.lurking = false;
-    e.maxHealth = Math.round(def.stats.maxHealth * this.scale.hp);
+    e.maxHealth = Math.round(def.stats.maxHealth * this.scale.hp * (this.D.bossTune?.hp ?? 1));
     e.reset();
     this.hudAdd('pve-noboss');
     this.pveHud.hint(null);
@@ -736,7 +766,7 @@ export class Dungeon {
     e.setState('idle');
     this.player.setState('idle');
     this.attachEnemyCpu(this.diff.cpu);
-    e.cpuEdge = { dealt: this.scale.dealt, taken: 1 };
+    e.cpuEdge = { dealt: this.scale.dealt * (this.D.bossTune?.dealt ?? 1), taken: 1 };
     this.hudRemove('pve-noboss', 'pve-minor');
     if (this.D.boss === 'degolificada') {
       this.spawnBossBoxes();
@@ -1369,6 +1399,7 @@ export class Dungeon {
     this.players.forEach((q, i) => this.updateStairs(q, prev[i][0], prev[i][1]));
     this.applyGates(dt);
     this.updateExitDoor(dt);
+    if (this.D.mist) this.updateMist(dt);
     this.lamp.position.set(p.pos.x, p.pos.y + 2.4, p.pos.z);
     this.ambience && this.ambience.update(dt);
     for (const V of this.views) { this.updateLock(dt, V); this.updateArrows(dt, V); }

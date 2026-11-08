@@ -13,6 +13,8 @@ const INPUT = {
   'block+carga': 'R2 + △ / RT + Y',
   'block+jump': 'R2 + × / RT + A',
   'carga+dodge': '△ + L2 / Y + LT',
+  'ranged+back': 'Trás + □ / Trás + X',
+  'ranged+forward': 'Frente + □ / Frente + X',
 };
 const FIN = { launch: 'lança', launchHigh: 'lança alto (combo aéreo)', knockdown: 'derruba', push: 'afasta', stun: 'atordoa' };
 const DIR = { forward: 'Frente + ○', back: 'Trás + ○', side: 'Lado + ○', air: 'No ar + ○', up: '↑ + ○ (no combo)', down: '↓ + ○ (no combo)' };

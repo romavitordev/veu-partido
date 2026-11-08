@@ -9,7 +9,7 @@ import { fleshCut, rawFlesh } from './specials/ritual.js';
 import { hasPassive, betray } from './passives.js';
 import { startSelfHarmTrance } from './selfHarm.js';
 import { swapFace } from './specials/maskTransform.js';
-import { DanteClone, CLONE, BloodZombie } from './npcs.js';
+import { DanteClone, CLONE, BloodZombie, InterfloradoNest } from './npcs.js';
 
 // ARMA AMALDIÇOADA: o que cada elemento faz nos golpes (lido em damage.js) e as cores
 export const CURSE_ELEMENTS = {
@@ -3270,6 +3270,33 @@ Object.assign(ABILITY_TYPES, {
         f.notify(`OS HOMENS DE TERNO ×${a.count}`, true);
       });
       tl.end(0.7);
+      return seqFrom(tl);
+    },
+  },
+
+  // ESTRANGEIRO — O NINHO DE INTERFLORADOS (PROPOSTA; o Interflorado é um Alheio, como ele): planta o ninho no chão à
+  // frente, entre ele e o adversário; por a.life s, quem chega perto faz brotar um Interflorado (npcs.js InterfloradoNest)
+  interfloradoNest: {
+    start(f, a, world) {
+      const old = world.npcs.find((n) => n.alive && n.owner === f && n.isNest);
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      f.anim.play('point', { restart: true, duration: 0.6 });
+      world.audio.play('fearGaze', { volume: 0.6, pitch: 0.8 });
+      tl.add(0.35, () => {
+        if (old) old.wither(); // um ninho por vez: o novo toma o lugar do velho
+        const opp = f.opponent;
+        const fw = forwardFromYaw(f.yaw);
+        let want = { x: f.pos.x + fw.x * a.ahead, z: f.pos.z + fw.z * a.ahead };
+        if (opp && distXZ(f.pos, opp.pos) < a.ahead * 2) want = { x: (f.pos.x + opp.pos.x) / 2, z: (f.pos.z + opp.pos.z) / 2 };
+        const spot = findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.7, others: [] }) || want;
+        const p = new THREE.Vector3(spot.x, 0, spot.z);
+        world.fx.burst(p.clone().setY(0.3), { count: 26, color: 0x5a9a2a, speed: 2.2, up: 1.5, life: 0.6, size: 0.16 });
+        world.fx.ring(p.clone().setY(0.06), { color: a.color, radius: a.near, life: 0.6, inner: 0.9 });
+        world.addNpc(new InterfloradoNest(f, world, p, a));
+        f.notify('NINHO DE INTERFLORADOS', true);
+      });
+      tl.end(0.6);
       return seqFrom(tl);
     },
   },

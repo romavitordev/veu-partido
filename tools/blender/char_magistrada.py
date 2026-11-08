@@ -206,7 +206,9 @@ def cape_pt(u, v, out=1.0):
     if z < -0.16:
         p.x *= 1 + (-0.16 - z) * 0.32
         p.y *= 1 + (-0.16 - z) * 0.36
-    return Vector((p.x * out, p.y * out, p.z))
+    # PREGAS (2026-11-08): o pano cai em gomos fundos que se abrem para baixo (antes a capa era um cone liso)
+    k = 1 + v ** 1.4 * (0.06 * math.sin(u * 6.5 * TAU + 0.4) + 0.02 * math.sin(u * 15 * TAU + 1.3))
+    return Vector((p.x * out * k, p.y * out * k, p.z))
 
 
 def cape_weights(p):
@@ -217,12 +219,12 @@ def cape_weights(p):
     return {'chest': w_chest, 'hips': w_hip, 'l' + side: w_leg}
 
 
-b.add('cape', grid(lambda u, v: cape_pt(u, v), 48, 20), cape, region='torso', weight_fn=cape_weights, subdiv=0)
-b.add('cape_in', grid(lambda u, v: cape_pt(u, v, 0.985), 48, 20, flip=True), cape_in, region='torso', weight_fn=cape_weights, subdiv=0)
+b.add('cape', grid(lambda u, v: cape_pt(u, v), 110, 20), cape, region='torso', weight_fn=cape_weights, subdiv=0)
+b.add('cape_in', grid(lambda u, v: cape_pt(u, v, 0.985), 110, 20, flip=True), cape_in, region='torso', weight_fn=cape_weights, subdiv=0)
 # franja na barra da capa
 fr = []
-for i in range(56):
-    u = i / 55
+for i in range(88):
+    u = i / 87
     p = cape_pt(u, 1.0, 1.0)
     fr.append(cone(tuple(p + Vector((0, 0, 0.01 * H))), tuple(p + outward(p) * 0.004 * H + Vector((0, 0, -0.05 * H))), 0.011 * H, 3))
 b.add('cape_fringe', merge(*fr), cape, region='torso', weight_fn=cape_weights, subdiv=0)
@@ -315,4 +317,8 @@ for i in range(30):
         braids.append(ellipsoid(tuple(pts[-1]), (0.011 * H, 0.011 * H, 0.016 * H), 6, 4))
 b.add('braids', merge(*braids), hairm, region='head', subdiv=0)
 
+# as DOBRAS de pano na camisa, na calça e no tecido do pescoço, e os FIOS nas tranças (sculpt_lib, 2026-11-08)
+import sculpt_lib
+sculpt_lib.cloth_pass(b.parts, ['shirt_magistrada', 'pants_magistrada', 'scarf_magistrada'], H)
+sculpt_lib.hair_pass(b.parts, ['hair_magistrada'], H, (HC.x, HC.y, HC.z))
 b.export(OUT)
