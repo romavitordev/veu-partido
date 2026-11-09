@@ -129,7 +129,7 @@ export const TEAM_LINKS = {
     order: ['tristan', 'erin', 'fernando'],
     priority: 1,
     color: 0xff7a2a,
-    sceneProps: { tristan: { show: ['molotov'] }, fernando: { show: ['glock'], hide: ['knife'] } },
+    choreo: 'brasa', // combat/teamSpecials.js CHOREO.brasa (o fogo, a Supernova dentro dele, o Luciano no ar, o lança-chamas)
   },
   // IVETE + ARTHUR (wiki "Ivete Beicur": depois de O Segredo na Floresta "ambos passam a se tratar abertamente como mãe e
   // filho"). Coreografia do dono (2026-11-09, combat/teamSpecials.js CHOREO.mae_filho): o Arthur passa o Rebirth para a

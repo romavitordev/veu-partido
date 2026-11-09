@@ -150,10 +150,10 @@
       contra todo o elenco; modelo pelo Blender MCP conferido no jogo. PROPOSTA: elemento sangue e a insígnia do braço.
 - [x] **Especial Mãe e Filho** (2026-11-09, pedido do dono): o Arthur passa o Rebirth para a doze da Ivete, ela avança
       atirando e ele cobre de longe com a sniper; o trio com o Kaiser virou "A Casa da Ivete" com a mesma cena.
-- [ ] **Especiais de equipe sem coreografia própria** (análise de cânone de 2026-11-09): Equipe Brasa (Tristan, Erin,
-      Luciano/Fernando) ainda usa a cena genérica. Duplas canônicas que faltam: Tristan + Beatrice (mentor e aprendiz),
-      Tristan + Erin (ele a recrutou; o gosto por explosões). PROPOSTA a decidir com o dono: Ivete + Balu (o beijo na
-      sinuca) e Ivete + Rubens (ele a salvou do Carniçal da Esfinge).
+- [x] **Equipe Brasa com coreografia própria** (2026-11-09, análise de cânone aprovada pelo dono): o Molotov do Tristan
+      acende o chão, a Supernova da Erin explode dentro do fogo e joga o alvo para cima, o Luciano assume no ar com a
+      Glock e o lança-chamas fecha. O dono descartou as outras duplas sugeridas (Tristan + Beatrice, Tristan + Erin,
+      Ivete + Balu, Ivete + Rubens). Fernando segue sem rituais (wiki: "não conseguia utilizar esses rituais").
 - [ ] **Bateria de balanceamento**: Fernando/Luciano, Tristan e Ivete.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)

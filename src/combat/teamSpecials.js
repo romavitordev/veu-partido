@@ -1108,6 +1108,176 @@ const CHOREO = {
     return F + 0.3;
   },
 
+  // EQUIPE BRASA (wiki "Tristan Monteiro"/"Erin Parker"/"Luciano Carvalho"): o Tristan recrutou a Erin e os dois dividem
+  // o gosto por explosões e fogo; o Luciano é o ex-militar da equipe (o Fernando divide o corpo com ele e não conjura).
+  // PROPOSTA da cena (aprovada pelo dono, 2026-11-09): o Molotov do Tristan acende o chão, a Supernova da Erin cai DENTRO
+  // do fogo e a explosão joga o alvo para cima; no ar, os olhos ficam amarelos (o Luciano assume) e a Glock 17 acerta;
+  // no chão de novo, o lança-chamas do Tristan fecha com os três juntos.
+  brasa({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 5.4;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const tristan = tools.get('tristan'), erin = tools.get('erin'), fernando = tools.get('fernando');
+    const FIRE = 0xff7a2a, FLAME = 0xffd070, YELLOW = 0xe8b818;
+    const hits = splitDamage(crewTotal, 6);
+    const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? FIRE).getHexString());
+    const say = (actor, text, side) => actor && world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
+    const hand = (actor) => (actor.rig && actor.rig.sockets && actor.rig.sockets.handR ? actor.rig.sockets.handR.getWorldPosition(new THREE.Vector3()) : actor.chest());
+    const undo = [];
+    const prop = (actor, name, on) => {
+      const rig = actor && actor.rig;
+      if (!rig || !rig.props || !rig.props[name]) return;
+      undo.push([rig, name, rig.props[name].visible]);
+      rig.showProp(name, on);
+    };
+    // arremesso em arco: uma cópia do prop sai da mão e cai no alvo girando
+    const flying = new Set();
+    const lob = (actor, name, t0, dur, height) => {
+      let obj = null, from = null;
+      tl.add(t0, () => {
+        if (!live() || !actor) return;
+        const src = actor.rig && actor.rig.props && actor.rig.props[name];
+        from = hand(actor);
+        if (src) { obj = src.clone(true); obj.visible = true; world.scene.add(obj); flying.add(obj); prop(actor, name, false); }
+      });
+      tl.each((time) => {
+        if (!obj) return;
+        const k = (time - t0) / dur;
+        if (k < 0) return;
+        if (k >= 1 || !live()) { world.scene.remove(obj); flying.delete(obj); obj = null; return; }
+        const to = opp.pos.clone().setY(0.4);
+        obj.position.lerpVectors(from, to, k);
+        obj.position.y += Math.sin(Math.PI * k) * height;
+        obj.rotation.set(time * 9, 0, time * 13);
+      });
+    };
+    const lift = { t0: 0, t1: 0, on: false };
+    // o alvo sobe com a explosão e volta (só o corpo na cena; o golpe final é que o arremessa de verdade)
+    tl.each((time) => {
+      if (!lift.on || !live()) return;
+      const k = (time - lift.t0) / (lift.t1 - lift.t0);
+      if (k >= 1) { opp.pos.y = 0; lift.on = false; return; }
+      opp.pos.y = Math.max(0, Math.sin(Math.PI * k) * 2.4);
+    });
+
+    // 1. o MOLOTOV do Tristan: a garrafa voa em arco e o chão em volta do alvo pega fogo
+    if (tristan) {
+      tl.add(S, () => {
+        if (!live()) return;
+        tools.enter(tristan, -0.55, 5.2);
+        prop(tristan, 'molotov', true);
+        tristan.play('throw_r', 0.55);
+        say(tristan, 'Erin! Acende a festa!', 0);
+        world.cameraRig.playShots([{ ...overShoulder(tristan, opp, { dur: 1.2, back: 2.2, side: -0.8, height: 1.8, fov: 46 }), cut: true }]);
+      });
+      lob(tristan, 'molotov', S + 0.22, 0.55, 1.6);
+      tl.add(S + 0.77, () => {
+        if (!live()) return;
+        const at = opp.pos.clone();
+        world.audio.play('explosion', { volume: 0.7, pitch: 1.3 });
+        world.fx.ring(at.clone().setY(0.06), { color: FIRE, radius: 2.4, life: 0.6 });
+        world.fx.burst(at.clone().setY(0.3), { count: 30, color: FIRE, speed: 3, up: 2, life: 0.6, size: 0.26 });
+        tools.impact(tristan, hits[0], { sound: 'impact', color: FIRE });
+      });
+      // o fogo fica queimando no chão até o fim da cena
+      let tick = 0;
+      tl.each((time, dt) => {
+        if (time < S + 0.8 || time > END - 0.3 || !live()) return;
+        tick += dt || 1 / 60;
+        if (tick < 0.07) return;
+        tick = 0;
+        const a = Math.random() * Math.PI * 2, r = 0.4 + Math.random() * 1.6;
+        world.fx.burst(new THREE.Vector3(opp.pos.x + Math.cos(a) * r, 0.15, opp.pos.z + Math.sin(a) * r), { count: 3, color: Math.random() < 0.5 ? FIRE : FLAME, speed: 0.6, up: 2.4, life: 0.55, size: 0.3 });
+      });
+    }
+    // 2. a SUPERNOVA da Erin cai dentro do fogo: a explosão grande joga o alvo para cima
+    if (erin) {
+      tl.add(S + 0.95, () => {
+        if (!live()) return;
+        tools.enter(erin, 0.65, 5.0);
+        prop(erin, 'grenade', true);
+        erin.play('throw_r', 0.55);
+        say(erin, 'KABOOOM!', 1);
+        world.cameraRig.playShots([{ ...twoShot(erin, opp, { dur: 1.0, dist: 3.6, height: 1.6, side: 1, fov: 44 }), cut: true }]);
+      });
+      lob(erin, 'grenade', S + 1.17, 0.5, 1.8);
+      tl.add(S + 1.67, () => {
+        if (!live()) return;
+        const at = opp.pos.clone();
+        world.fx.flash(at.clone().setY(1), { color: FIRE, size: 4, life: 0.25 });
+        world.fx.ring(at.clone().setY(0.08), { color: FIRE, radius: 3, life: 0.5 });
+        world.fx.burst(at.clone().setY(0.6), { count: 44, color: 0x0c0a0e, kind: 'smoke', speed: 4, up: 1.6, life: 1.0, size: 0.75, grow: 1 });
+        world.fx.burst(at.clone().setY(0.6), { count: 44, color: FIRE, speed: 9, life: 0.55, size: 0.24 });
+        world.screenFlash && world.screenFlash(FIRE, 0.12);
+        world.cameraRig.shake(0.45, 0.3);
+        tools.impact(erin, hits[1], { sound: 'explosion', color: FIRE });
+        Object.assign(lift, { t0: S + 1.67, t1: S + 3.0, on: true });
+        world.cameraRig.playShots([{ ...lowAngle(opp, { dur: 1.2, dist: 4.5, fov: 54 }), cut: true }]);
+      });
+    }
+    // 3. no ar: os olhos ficam amarelos (o Luciano assume) e a Glock 17 acerta três vezes
+    if (fernando) {
+      tl.add(S + 2.0, () => {
+        if (!live()) return;
+        tools.enter(fernando, 0.0, 4.2);
+        prop(fernando, 'knife', false);
+        prop(fernando, 'glock', true);
+        world.fx.flash(fernando.chest().add(new THREE.Vector3(0, 0.55, 0)), { color: YELLOW, size: 0.9, life: 0.25 });
+        fernando.play('point', 1.0);
+        say(fernando, 'Deixa comigo, Fê.', 0);
+        world.cameraRig.playShots([{ ...overShoulder(fernando, opp, { dur: 1.0, back: 2.0, side: 0.7, height: 1.6, fov: 44 }), cut: true }]);
+      });
+      for (let i = 0; i < 3; i++) {
+        tl.add(S + 2.3 + i * 0.14, () => {
+          if (!live()) return;
+          const from = fernando.rig && fernando.rig.muzzle ? fernando.rig.muzzle.getWorldPosition(new THREE.Vector3()) : fernando.chest();
+          fernando.face(opp);
+          world.fx.flash(from, { color: 0xffe08a, size: 0.6, life: 0.06 });
+          world.fx.tracer(from, opp.chestPos(), { color: 0xffe08a, life: 0.1, width: 0.035 });
+          world.audio.play('m4', { volume: 0.55 });
+          tools.impact(fernando, hits[2 + i], { sound: 'impact', color: YELLOW });
+        });
+      }
+    }
+    // 4. o fecho: o alvo cai no fogo e o LANÇA-CHAMAS do Tristan, com a Erin e o Fernando dos lados
+    const F = S + 3.9;
+    tl.add(S + 3.1, () => {
+      if (!live()) return;
+      if (tristan) {
+        const at = tools.around(tristan, -0.15, 3.2);
+        tristan.pos.set(at.x, 0, at.z);
+        tristan.face(opp);
+        prop(tristan, 'flameTanks', true);
+        prop(tristan, 'flameLance', true);
+        tristan.play('point', 1.3);
+        say(tristan, 'QUEIMA!', 0);
+      }
+      if (erin) { erin.face(opp); erin.play('dual_cross', 0.6); }
+      if (fernando) { fernando.face(opp); fernando.play('point', 0.8); }
+      world.cameraRig.playShots([{ ...pullBack(tristan || erin || fernando, opp, { dur: 1.3, from: 2.8, to: 6.5, height: 2.0 }), cut: true }]);
+    });
+    if (tristan) {
+      for (let i = 0; i < 12; i++) {
+        tl.add(S + 3.25 + i * 0.06, () => {
+          if (!live()) return;
+          const a = hand(tristan), b = opp.chestPos();
+          world.fx.flash(a, { color: FLAME, size: 0.7, life: 0.06 });
+          for (let k = 1; k <= 7; k++) world.fx.burst(a.clone().lerp(b, k / 7), { count: 4, color: k < 3 ? FLAME : FIRE, speed: 1.4, up: 1.2, life: 0.4, size: 0.2 + k * 0.09 });
+          if (i === 0) world.audio.play('smoke', { volume: 0.8, pitch: 0.6 });
+        });
+      }
+    }
+    tl.add(F - 0.05, () => tools.impact(tristan || erin || fernando, hits[5], { sound: 'explosion', color: FIRE }));
+    tl.add(END, () => {
+      for (const o of flying) world.scene.remove(o);
+      flying.clear();
+      if (lift.on) { opp.pos.y = 0; lift.on = false; }
+      for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v);
+      undo.length = 0;
+      world.ui && world.ui.subtitle && world.ui.subtitle(null);
+    });
+    return F;
+  },
+
   abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const END = S + 5.4;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
