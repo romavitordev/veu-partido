@@ -149,7 +149,7 @@
       charuto e Juramento dos Gaudérios; duas ligações de equipe (com o Arthur; com o Arthur e o Kaiser); falas
       contra todo o elenco; modelo pelo Blender MCP conferido no jogo. PROPOSTA: elemento sangue e a insígnia do braço.
 - [x] **Especial Mãe e Filho** (2026-11-09, pedido do dono): o Arthur passa o Rebirth para a doze da Ivete, ela avança
-      atirando e ele cobre de longe com a sniper; o trio com o Kaiser virou "A Casa da Ivete" com a mesma cena.
+      atirando e ele cobre de longe com a sniper. O trio "A Casa da Ivete" (com o Kaiser) foi removido a pedido do dono.
 - [x] **Equipe Brasa com coreografia própria** (2026-11-09, análise de cânone aprovada pelo dono): o Molotov do Tristan
       acende o chão, a Supernova da Erin explode dentro do fogo e joga o alvo para cima, o Luciano assume no ar com a
       Glock e o lança-chamas fecha. O dono descartou as outras duplas sugeridas (Tristan + Beatrice, Tristan + Erin,

@@ -145,22 +145,6 @@ export const TEAM_LINKS = {
     choreo: 'mae_filho',
     sceneProps: { ivete: { show: ['shotgun'], hide: ['shotgunBack'] }, arthur: { show: ['sniperHand'] } },
   },
-  // A CASA DA IVETE (cânone: a Ivete, o Arthur e o Kaiser moram juntos em São Paulo — ela acorda no apartamento com os
-  // dois depois da invasão da Seita; o Kaiser a chama de "tia"). O juramento dos Gaudérios é só dela e do Arthur, então o
-  // nome do trio é a casa, não o brasão. Os três juntos ganham da Força D (priority). Mesma coreografia do Mãe e Filho, com
-  // o Kaiser entrando no meio com a M4. PROPOSTA do nome
-  casa_ivete: {
-    id: 'casa_ivete',
-    kind: 'trio',
-    name: 'A CASA DA IVETE',
-    banner: 'Ninguém mexe com os meus meninos!',
-    members: ['ivete', 'arthur', 'kaiser'],
-    order: ['ivete', 'kaiser', 'arthur'],
-    priority: 2,
-    color: 0x3aff6a,
-    choreo: 'mae_filho',
-    sceneProps: { ivete: { show: ['shotgun'], hide: ['shotgunBack'] }, arthur: { show: ['sniperHand'] }, kaiser: { show: ['m4Hand'], hide: ['m4Back'] } },
-  },
   // Dupla Cristopher + Kaiser (pai e filho: o dublê segura, o filho atira)
   cristopher_kaiser: {
     id: 'cristopher_kaiser',

@@ -951,13 +951,12 @@ const CHOREO = {
   // MÃE E FILHO (pedido do dono, 2026-11-09): o Arthur abre os olhos e passa o REBIRTH para a DOZE da Ivete (o ritual
   // Amaldiçoar Tecnologia "Rebirth": o pulso verde sobe até a mão que toca a arma; ser na arma dela é PROPOSTA), ela avança atirando chumbo
   // amaldiçoado e o filho cobre de longe, ajoelhado com a sniper. Fecha com ela colada no alvo e o tiro dele junto.
-  // Na Casa da Ivete o Kaiser entra no meio com as Balas Amaldiçoadas da M4.
   mae_filho({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
     const END = S + 5.2;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
-    const ivete = tools.get('ivete'), arthur = tools.get('arthur'), kaiser = tools.get('kaiser');
+    const ivete = tools.get('ivete'), arthur = tools.get('arthur');
     const GREEN = 0x3aff6a;
-    const hits = splitDamage(crewTotal, kaiser ? 7 : 6);
+    const hits = splitDamage(crewTotal, 6);
     const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? 0x5a8ab8).getHexString());
     const say = (actor, text, side) => actor && world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
     const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
@@ -1057,27 +1056,8 @@ const CHOREO = {
       });
       tl.add(S + 2.3, () => snipe(1));
     }
-    // (Casa da Ivete) o Kaiser chega do lado com a M4
-    if (kaiser) {
-      tl.add(S + 2.8, () => {
-        if (!live()) return;
-        tools.enter(kaiser, -1.2, 4.2);
-        kaiser.play('shoot_rifle', 0.7);
-        say(kaiser, 'Ninguém mexe com a tia Ivete!', 1);
-        world.cameraRig.playShots([{ ...overShoulder(kaiser, opp, { dur: 0.75, back: 1.8, side: -0.6, height: 1.6, fov: 42 }), cut: true }]);
-      });
-      for (let b = 0; b < 4; b++) {
-        tl.add(S + 3.0 + b * 0.08, () => {
-          if (!live()) return;
-          const from = muzzle(kaiser);
-          world.fx.tracer(from, opp.chestPos(), { color: 0xa865ff, life: 0.1, width: 0.04 });
-          world.audio.play(kaiser.def.ranged && kaiser.def.ranged.sound || 'swing', { volume: 0.5 });
-          if (b === 3) tools.impact(kaiser, hits[6], { sound: 'heavyPunch', color: 0xa865ff });
-        });
-      }
-    }
     // 3. o fecho: a doze colada no peito e o tiro do Arthur no mesmo instante
-    const F = S + (kaiser ? 3.75 : 3.3);
+    const F = S + 3.3;
     if (ivete) {
       run(ivete, F - 0.35, F - 0.05, 0.05, 2.6, 0.0, 1.2);
       tl.add(F, () => {
