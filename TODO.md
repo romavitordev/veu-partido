@@ -156,6 +156,21 @@
       Ivete + Balu, Ivete + Rubens). Fernando segue sem rituais (wiki: "não conseguia utilizar esses rituais").
 - [x] **Bateria de balanceamento**: Fernando/Luciano, Tristan e Ivete. Feito: 47%, 48% e 49% (92 lutas focadas cada).
 
+## Cenários de luta (pedido do dono, 2026-11-09)
+- [ ] **Melhorar a Mansão Endiabrada e a Escola Nostradamus no modo de luta**: estão feias comparadas aos outros
+      cenários. Comparar lado a lado com os melhores (Bar Suvaco Seco, Coliseu, Palco do Anfitrião, Ilha de Tipora) e
+      refazer o que destoa (iluminação, texturas, adereços, enquadramento e miniatura). São as versões de luta das
+      dungeons do Outro Lado (`mansao_luta`, `escola_luta` em `arena/index.js`).
+- [ ] **Remover o cenário Ruínas do Ritual** (`ruinas`) quando os novos entrarem. Conferir quem usa o `ruinas` como
+      padrão (`devStart`, testes, bateria de balanceamento, Torre, miniaturas) antes de tirar.
+- [ ] **Dois cenários novos**, escolhidos entre as ideias do dono (levantar cada lugar na wiki antes de modelar; o que
+      não for do cânone fica marcado como PROPOSTA):
+      - **A Granja Abobrinha**;
+      - **O sertão de Hexatombe** (por exemplo, o local da luta final do Cristino com a Harpia);
+      - **Acampamento Santa Bem Querença** (Natal Macabro);
+      - **Vilarejo Treb Ciach** (A Vigília);
+      - **Mansão Leone** (Calamidade).
+
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no
       □ do Instinto Mortal (dashStrike, nome no HUD troca). Testes 62/62, `check` e `build` verdes.
