@@ -19,7 +19,10 @@ export function addVictoryClips(CLIPS, k) {
     // Gal: braços abertos para baixo com as lâminas nas correntes, queixo erguido
     vic_gal: pose({ sp: [-0.15, 0, 0], hd: [-0.3, 0, 0], sL: [-0.3, 0, 0.9], eL: [-0.2, 0, 0], sR: [-0.3, 0, -0.9], eR: [-0.2, 0, 0], lL: [-0.1, 0, 0.2], lR: [0.1, 0, -0.2] }),
     // Kian: braços cruzados, pés afastados
-    vic_kian: pose({ sp: [-0.05, 0, 0], hd: [-0.15, 0, 0], sL: [-0.55, -0.95, 0.1], eL: [-2.05, 0, 0], sR: [-0.6, 0.95, -0.1], eR: [-2.0, 0, 0], lL: [-0.1, 0, 0.22], lR: [0.1, 0, -0.22] }),
+    // (refeita 2026-11-09: antes os cotovelos subiam até o ombro e os antebraços ficavam de pé na frente do rosto —
+    // lia como guarda de boxe e escondia o sigilo; agora o braço de cima fica na vertical e o giro leva o antebraço na
+    // horizontal pelo meio do peito, o queixo nivelado olhando a câmera e o peso na perna direita)
+    vic_kian: pose({ hip: [0, -0.1, 0], sp: [-0.03, 0.1, 0], hd: [0.04, -0.1, 0], sL: [-0.1, -1.1, 0.2], eL: [-1.75, 0, 0], sR: [-0.15, 1.1, -0.2], eR: [-1.8, 0, 0], lL: [-0.12, 0, 0.2], kL: [0.05, 0, 0], lR: [0.12, 0, -0.24], kR: [0.25, 0, 0] }),
     // Dante: mão no peito e a outra estendida, cabeça baixa (bênção)
     vic_dante: pose({ sp: [0.12, 0, 0], hd: [0.3, 0, 0], sR: [-1.0, 0.8, -0.1], eR: [-2.2, 0, 0], sL: [-1.0, 0.2, 0.3], eL: [-0.4, 0, 0] }),
     // Erin: escopeta no ombro e a outra mão na cintura

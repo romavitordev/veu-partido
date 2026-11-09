@@ -159,20 +159,32 @@ for side in ('L', 'R'):
     b.add('hand' + side, (hv, hf, hu), arms_m, region='e' + side)
 
 # ---------------------------------------------------------------- CALÇA cinza-escura e PÉS descalços escritos
-b.add('pants_hip', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.02 - v * 0.24, 1.0, 0.01), 32, 4), pants, region='torso', subdiv=0)
+b.add('pants_hip', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.02 - v * 0.21, 1.0, 0.01), 32, 4), pants, region='torso', subdiv=0)  # acaba onde as pernas começam (antes descia mais e virava um short)
 b.add('waistband', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.03 - v * 0.035, 1.0, 0.016), 32, 1), waist, region='torso', subdiv=0)  # cós mais baixo: aparece o V do abdômen
 for side in ('L', 'R'):
     l, k, f = sk['l' + side], sk['k' + side], sk['foot' + side]
-    topp = Vector((l.x, l.y, l.z + 0.07 * H))
+    topp = Vector((l.x * 1.03, l.y, l.z + 0.075 * H))  # o topo da coxa entra no quadril: sem degrau na virilha
     rings = []
-    # mais justa na coxa e afinando no joelho (as miniaturas); a barra solta um pouco no tornozelo
-    for t, r in ((0.0, 0.098), (0.35, 0.092), (0.75, 0.078), (1.0, 0.072)):
+    # mais justa na coxa e afinando no joelho (as miniaturas); a barra solta um pouco no tornozelo. Muitos anéis (antes
+    # eram 8 × 14 lados): as dobras esculpidas depois precisam de vértices onde aparecer
+    TH = ((0.0, 0.104), (0.25, 0.098), (0.6, 0.086), (1.0, 0.074))
+    SH = ((0.0, 0.072), (0.3, 0.068), (0.6, 0.064), (0.85, 0.066), (0.95, 0.071))
+    def prof(tab, t):
+        for (a0, r0), (a1, r1) in zip(tab, tab[1:]):
+            if t <= a1:
+                return r0 + (r1 - r0) * (t - a0) / (a1 - a0)
+        return tab[-1][1]
+    for i in range(14):
+        t = i / 13
         p = topp.lerp(k, t)
+        r = prof(TH, t)
         rings.append((p.x, p.y, p.z, r, r))
-    for t, r in ((0.3, 0.068), (0.6, 0.062), (0.85, 0.064), (0.93, 0.068)):
+    for i in range(1, 15):
+        t = i / 14 * 0.95
         p = k.lerp(f, t)
+        r = prof(SH, t)
         rings.append((p.x, p.y, p.z, r, r))
-    b.add('pants' + side, tube(rings, 14), pants, region='leg' + side, subdiv=0)
+    b.add('pants' + side, tube(rings, 22), pants, region='leg' + side, subdiv=0)
     b.add('ankle' + side, tube(limb_rings(k.lerp(f, 0.9), k.lerp(f, 1.0), 0.05, 0.048, n=1), 12), arms_m, region='k' + side, subdiv=0)
     # pé descalço maior, com o calcanhar e o arco (antes era um ovo pequeno e chato)
     b.add('foot' + side, merge(ellipsoid((f.x, f.y - 0.06 * H, f.z + 0.02 * H), (0.056 * H, 0.13 * H, 0.042 * H), 14, 8),
@@ -298,9 +310,45 @@ for side in ('L', 'R'):
 b.group('prop_wraps')
 
 # ================================================================ a CALÇA cinza: as dobras
+# Dobras com LUGAR (as miniaturas de Desconjuração e Calamidade): o franzido em zigue-zague na dobra do joelho (mais
+# fundo atrás), o pano acumulado em cima do pé (a barra solta, 3 anéis), os vincos diagonais que saem da virilha pela
+# parte de dentro da coxa e um grão leve. Antes era um relevo uniforme (faixas iguais do quadril ao pé).
+def pants_folds(side):
+    l_, k_, f_ = sk['l' + side], sk['k' + side], sk['foot' + side]
+    sx = 1 if side == 'L' else -1
+
+    def fn(p):
+        v = 0.0
+        dz = (p.z - k_.z) / H
+        ang = math.atan2(p.x - k_.x, -(p.y - k_.y))  # 0 = frente, ±pi = atrás
+        back = 0.5 - 0.5 * math.cos(ang)  # 0 na frente, 1 atrás
+        # joelho: 3 vincos que se cruzam em zigue-zague
+        if abs(dz) < 0.07:
+            w = math.exp(-(dz / 0.045) ** 2)
+            zz = math.sin((dz * 95) + 1.6 * math.sin(ang * 2.0))
+            v += (0.009 + 0.01 * back) * H * w * max(0.0, zz) ** 0.6
+        # tornozelo: o pano empilhado em cima do pé
+        da = (p.z - f_.z) / H
+        if 0.02 < da < 0.16:
+            w = math.exp(-((da - 0.08) / 0.05) ** 2)
+            v += 0.014 * H * w * max(0.0, math.sin(da * 120 + 0.8 * math.sin(ang * 3.0))) ** 0.6
+        # virilha: vincos diagonais na parte de dentro da coxa, descendo para fora
+        dt_ = (l_.z + 0.075 * H - p.z) / H
+        inner = -sx * (p.x - l_.x) / H
+        if 0.0 < dt_ < 0.22 and inner > -0.02:
+            w = math.exp(-((dt_ - 0.08) / 0.07) ** 2) * min(1.0, (inner + 0.02) / 0.04)
+            v += 0.009 * H * w * max(0.0, math.sin((dt_ * 70) + inner * 90)) ** 0.7
+        # coxa e canela: ondas largas e suaves (o pano não é liso), mais o grão
+        v += 0.004 * H * (n3(p, 7) - 0.5) + 0.0008 * H * (n3(p, 40) - 0.5)
+        return v
+    return fn
+
+
 for side in ('L', 'R'):
-    relief(part('pants' + side), lambda p: 0.005 * H * (ridge(p.z / H * 16 + n3(p, 9) * 1.6, 2) - 0.4))
-relief(part('pants_hip'), lambda p: 0.004 * H * (ridge(p.z / H * 16 + n3(p, 9) * 1.4, 2) - 0.4))
+    densify(part('pants' + side), 1)
+    relief(part('pants' + side), pants_folds(side))
+densify(part('pants_hip'), 1)
+relief(part('pants_hip'), lambda p: 0.003 * H * (ridge(p.z / H * 14 + n3(p, 9) * 1.4, 2) - 0.4) * (0.4 + 0.6 * abs(p.y) / (0.2 * H)))
 
 # ================================================================ o cabelo CURTO e rente (Desconjuração e Calamidade)
 HCv = Vector((hc.x, hc.y, hc.z))

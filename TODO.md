@@ -111,8 +111,13 @@
       escápulas no relevo; braços afinando (bíceps → cotovelo → antebraço → punho) com vão na axila; deltoide caindo da
       clavícula; mãos 20% maiores com UV plano da escrita (antes a mão sem UV ficava da cor do brilho); calça mais justa
       com o cós mais baixo; pés com calcanhar, arco e cinco dedos; faixas de Calamidade como tira chata (10 voltas).
-      Conferido na folha de 4 vistas (Kian e Calamidade) e numa luta. Fica para depois, se o dono quiser: as dobras
-      da calça no joelho e no tornozelo ainda são só o relevo de antes.
+      Conferido na folha de 4 vistas (Kian e Calamidade) e numa luta.
+      **Calça (2026-11-09, o dono cobrou):** tubo com 28 anéis × 22 lados (antes 8 × 14) e dobras com lugar — o
+      zigue-zague na dobra do joelho (mais fundo atrás), o pano empilhado em cima do pé, os vincos diagonais da virilha
+      e ondas largas; o quadril acaba onde a coxa começa (antes virava um "short" por cima das pernas, com degrau).
+      **Pose de vitória `vic_kian` refeita:** era para ser braços cruzados, mas os cotovelos subiam até o ombro e os
+      antebraços ficavam de pé na frente do rosto (lia como guarda de boxe e escondia o sigilo). Agora: braços cruzados
+      de verdade no meio do peito, queixo nivelado, peso na perna direita; conferida no Kian e na Calamidade.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no
