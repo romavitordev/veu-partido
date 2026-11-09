@@ -2,6 +2,17 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.35.0 — Tristan e Ivete
+- NOVO PERSONAGEM: Tristan Monteiro (Equipe Brasa e Força D), com lança-chamas segurável, Molotov que deixa fogo no chão, Glock tática e a passiva Piromania (mais dano em quem está queimando).
+- NOVA PERSONAGEM: Ivete Beicur, mãe do Arthur e dona do bar Suvaco Seco: briga de bar, espingarda, garrafada que atordoa, nuvem de charuto que deixa lento e engole projéteis, o Juramento para a equipe e o despertar A Última Gaudéria.
+- O golpe "Bem-vindo ao Suvaco Seco" da Ivete é uma tacada de sinuca de lado, com as duas mãos.
+- Especial em Equipe Mãe e Filho (Ivete + Arthur): o Arthur passa o Rebirth para a doze da Ivete, ela avança atirando enquanto ele cobre de longe com a sniper.
+- Especial em Equipe Brasa (Tristan, Erin e Fernando): Molotov, Supernova jogando o alvo para o alto, o Luciano atirando no ar e o lança-chamas para fechar.
+- Fernando e Luciano: o Fernando chama o marido de "Lu" e o Luciano chama de "Fê"; a abertura mostra o nome do Luciano quando ele fala, e o especial Varredura agora diz "Descansa, meu amor. Eu cuido disso."
+- Kian com o corpo novo, bem mais musculoso, e barba refeita.
+- Balanceamento dos novos: Fernando, Tristan e Ivete na faixa de equilíbrio do elenco.
+- Motor gráfico atualizado (Three.js 0.187).
+
 ## v4.34.0 — Fernando e Luciano
 - NOVO PERSONAGEM: Fernando Carvalho (Força D), com canivete, Glock 17, Calmantes, Lanterna, Canção do Pote de Vidro e o especial LuciFer.
 - Duas fichas num lutador só: a habilidade "Luciano" (△ + L2) troca o corpo para o Luciano Carvalho, com outro modelo e outro kit (M4, Reação, Descarnar Discente, Mente Inabalável e o especial Varredura); a habilidade "Fernando" troca de volta.

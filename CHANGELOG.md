@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.35.0 — Tristan e Ivete
+
+### Adicionado
+- Tristan Monteiro jogável (Equipe Brasa e Força D): lança-chamas segurável, Molotov com fogo no chão, Glock tática, passiva Piromania.
+- Ivete Beicur jogável: briga de bar, espingarda, garrafada, charuto, Juramento, despertar A Última Gaudéria; tacada de sinuca no "Bem-vindo ao Suvaco Seco".
+- Especiais em Equipe com coreografia própria: Mãe e Filho (Ivete + Arthur) e Brasa (Tristan, Erin, Fernando).
+
+### Alterado
+- Kian remodelado sobre o corpo do Luciano, mais musculoso.
+- Falas do Fernando e do Luciano ("Lu" e "Fê"); legenda da abertura com o nome do Luciano.
+- Balanceamento: Fernando 47%, Tristan 48%, Ivete 49%.
+- Three.js 0.169 → 0.187 (Timer no lugar do Clock; sombra PCF).
+
+### Removido
+- Especial em Equipe A Casa da Ivete (com os três, vale o Mãe e Filho).
+
 ## v4.34.0 — Fernando e Luciano
 
 ### Adicionado
