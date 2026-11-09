@@ -136,7 +136,15 @@ export class Match {
       if (activeLine.fighter !== this.lineIndex) {
         this.lineIndex = activeLine.fighter;
         const def = this.defs[activeLine.fighter];
-        this.hud.subtitle({ name: def.name, color: def.color, text: activeLine.text, side: activeLine.fighter });
+        // a outra voz do mesmo corpo (o Luciano no Fernando): a fala marcada sai com o nome dela
+        const alt = def.altSpeaker;
+        const other = alt && activeLine.text.startsWith(alt.tag);
+        this.hud.subtitle({
+          name: other ? alt.name : def.name,
+          color: other ? alt.color || def.color : def.color,
+          text: other ? activeLine.text.slice(alt.tag.length).trim() : activeLine.text,
+          side: activeLine.fighter,
+        });
       }
     } else {
       this.hud.subtitle(null);

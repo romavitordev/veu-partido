@@ -3536,8 +3536,8 @@ export function victoryLine(winner, loser, loserName = CHARACTER_NAMES[loser] ||
 // um Devorado do Espreitador; a Seita da Magistrada invadiu a base
 const VICTORY_FERNANDO = {
   fernando: {
-    arthur: ['Arthur! Tá tudo bem? Depois a gente toca aquela no violão, prometo.', '(olhos amarelos) Levanta, Cervero. O Fê ficou preocupado.'],
-    joui: ['Joui, desculpa! Eu não queria bater tão forte.', '(olhos amarelos) De pé, capitão. Bate continência pro Fê.'],
+    arthur: ['Arthur! Tá tudo bem? Depois a gente toca aquela no violão, prometo.', '(olhos amarelos) Levanta, Cervero. O Fer ficou preocupado.'],
+    joui: ['Joui, desculpa! Eu não queria bater tão forte.', '(olhos amarelos) De pé, capitão. Bate continência pro Fer.'],
     kaiser: ['Kaiser, você tá bem? Respira, respira.', '(olhos amarelos) Abaixa a arma da próxima vez que apontar pra mim.'],
     dante: ['Dante... eu confio em você agora. Mas hoje fui eu.', '(olhos amarelos) Ainda não esqueci o ritual, Dante. Fica no chão.'],
     erin: ['Erin! Minha melhor amiga no chão... me perdoa, irmã!', '(olhos amarelos) Treino é treino, Erin. Levanta que eu te ajudo.'],
@@ -3548,7 +3548,7 @@ const VICTORY_FERNANDO = {
     beatrice: ['Bia, você me acolheu na van. Desculpa, de verdade.', '(olhos amarelos) Boa mira, florista. A minha é melhor.'],
     verissimo: ['Senhor Veríssimo! Missão cumprida, eu acho?', '(olhos amarelos) Agente Carvalho se apresentando. Senhor.'],
     cristopher: ['Desculpa, Cristopher! Eu sei que dublê aguenta, mas mesmo assim.', '(olhos amarelos) Cena encerrada. Sem dublê pra mim.'],
-    kian: ['Você não vai me beijar de novo, Kian.', '(olhos amarelos) Esse corpo é meu. E ele é do Fê.'],
+    kian: ['Você não vai me beijar de novo, Kian.', '(olhos amarelos) Esse corpo é meu. E ele é do Fer.'],
     gal_sal: ['Você usou o meu rosto... sai daqui com essas correntes.', '(olhos amarelos) Escripta no chão. Do jeito que tem que ser.'],
     nubi: ['Me desculpa, mas eu vi o que vocês fazem com as pessoas.', '(olhos amarelos) Sem ritual nenhum. Só eu e a M4.'],
     xande: ['Tá tudo bem, menino? Que skate bonito.', '(olhos amarelos) Volta pra pista, garoto.'],

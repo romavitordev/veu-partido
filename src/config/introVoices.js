@@ -284,12 +284,12 @@ export const VOICES = {
     open: {
       ally: (o) => `${o.name}! Treino, né? Pega leve comigo, por favor.`,
       rival: (o) => `${o.name}... ${o.one}. Eu tô com medo, mas eu não saio daqui.`,
-      any: [(o) => `Oi, ${o.name}. Se eu me assustar muito, o Luciano aparece. Só avisando.`, (o) => `${o.name}, eu tenho um motivo pra lutar. Isso já basta.`],
+      any: [(o) => `Oi, ${o.name}. Se eu me assustar muito, o Lu aparece. Só avisando.`, (o) => `${o.name}, eu tenho um motivo pra lutar. Isso já basta.`],
     },
     reply: {
       ally: (o) => `Combinado, ${o.name}. Depois a gente toca alguma coisa.`,
       rival: (o) => `(olhos amarelos) Chega, ${o.name}. Agora é comigo.`,
-      any: [(o) => `Tá bom, ${o.name}. Respira, Fernando. Respira.`, (o) => `(olhos amarelos) Fala com o Fê de novo e eu atiro, ${o.name}.`],
+      any: [(o) => `Tá bom, ${o.name}. Respira, Fernando. Respira.`, (o) => `(olhos amarelos) Fala com o Fer de novo e eu atiro, ${o.name}.`],
     },
   },
   // TRISTAN MONTEIRO: carismático, brincalhão e barulhento, recrutador da Ordem — piromaníaco e protetor
