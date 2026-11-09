@@ -1,5 +1,9 @@
 # Registro administrativo de alterações
 
+## Não lançado
+
+- Fernando/Luciano (pedido do dono): a fala de vitória marcada "(olhos amarelos)" sai com o nome LUCIANO CARVALHO em amarelo, sem a marca, e o Fernando da pose de vitória fica com os olhos amarelos (`main.js` → `showVictoryLineup(lineup, { altFace })` em `World.js` e `speaker` no `VictoryScreen`; `swapPaintedTexture` em `models/glbRig.js` troca `face_fernando` → `face_luciano` só nessa cópia do modelo; `altSpeaker.face` em `fernando.js`). A habilidade "Fernando" do Luciano não funciona com a vida abaixo de 30% (`lockBelow: 0.3` em `forms/luciano.js`, checado no `partnerSwap` de `abilities.js`; avisa "O FÊ ESTÁ APAVORADO" e não gasta nada).
+
 ## v4.35.0 — Tristan e Ivete
 
 - Versão: `VERSION` 4.34.0 → **4.35.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-09. Testes: `npm test` 83/83; `npm run check` e `vite build` ok.

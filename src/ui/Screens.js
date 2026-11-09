@@ -794,7 +794,7 @@ export class BattleConfigScreen {
 
 // Tela de vitória sobre a arena: a equipe fica em pose no cenário e só o lutador ativo fala.
 export class VictoryScreen {
-  constructor(root, { winner, loser, slot, team = null, line, options, audio = null }) {
+  constructor(root, { winner, loser, slot, team = null, line, speaker = null, options, audio = null }) {
     this.options = options;
     this.audio = audio;
     this.index = 0;
@@ -803,7 +803,7 @@ export class VictoryScreen {
       <div class="vtop"><small>${slot}</small> ${t('vic.wins')}</div>
       <div class="vteam">${(team || [winner]).map((member) => `<span style="--c:${member.color}">${member.name}</span>`).join('')}</div>
       <div class="vquote">
-        <div class="vname" style="--c:${winner.color}">${winner.name}</div>
+        <div class="vname" style="--c:${(speaker || winner).color}">${(speaker || winner).name}</div>
         <div class="vline">“${line}”</div>
         <div class="vsub">${t('vic.defeated', { name: loser.name })}</div>
       </div>

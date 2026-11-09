@@ -4058,6 +4058,8 @@ Object.assign(ABILITY_TYPES, {
   // a.to: a forma para onde vai; sem a.to (ou já nela), volta para a forma base.
   partnerSwap: {
     start(f, a, world) {
+      // a.lockBelow: com a vida abaixo dessa fração não dá para trocar (o Fernando apavorado não volta; ver panicSwap)
+      if (a.lockBelow && f.health < f.maxHealth * a.lockBelow) { f.notify(a.lockText || 'NÃO DÁ AGORA'); return null; }
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
       f.anim.play(a.anim || 'concentrate', { restart: true, duration: a.time ?? 0.4 });

@@ -230,11 +230,16 @@ async function startMatch() {
         if (game.state !== 'fight' || game.match !== match) return;
         // quem terminou a luta fica no meio; o resto da equipe dos lados
         const lineup = team ? [def, ...team.filter((d) => d.id !== def.id)] : [def];
-        match.world.showVictoryLineup(lineup);
+        // fala marcada da outra voz do mesmo corpo (o Luciano no Fernando): sai com o nome dela e os olhos amarelos
+        let line = victoryLine(def.id, loser.id, loser.name);
+        const alt = def.altSpeaker && line.startsWith(def.altSpeaker.tag) ? def.altSpeaker : null;
+        if (alt) line = line.slice(alt.tag.length).trim();
+        match.world.showVictoryLineup(lineup, { altFace: alt && alt.face });
         hud.show(false);
         setOverlay('result', new VictoryScreen(screens, {
           winner: def, loser, slot: game.mode.kind === 'tournament' ? game.tourMatch.names[winner] : MODES[game.mode.kind].slots[winner], team: team ? lineup : null,
-          line: victoryLine(def.id, loser.id, loser.name),
+          line,
+          speaker: alt ? { name: alt.name, color: alt.color || def.color } : null,
           audio,
           options: game.mode.kind === 'tournament' ? [{ id: 'tour_next', label: t('tour.continue') }] : game.mode.kind === 'tower'
             ? (winner === 0

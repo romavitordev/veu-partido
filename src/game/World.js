@@ -5,7 +5,7 @@ import { CameraRig } from '../camera/CameraRig.js';
 import { Projectiles } from '../combat/projectiles.js';
 import { Fighter } from '../combat/Fighter.js';
 import { buildModel } from '../models/index.js';
-import { disposeSkeletons } from '../models/glbRig.js';
+import { disposeSkeletons, swapPaintedTexture } from '../models/glbRig.js';
 import { Animator } from '../anim/Animator.js';
 import { ARENAS } from '../arena/index.js';
 import { yawTo } from '../core/util.js';
@@ -115,7 +115,8 @@ export class World {
     this.npcs.length = 0;
   }
 
-  showVictoryLineup(defs) {
+  // altFace: [de, para] troca a textura do rosto de quem venceu (o Fernando com os olhos amarelos quando o Luciano fala)
+  showVictoryLineup(defs, { altFace = null } = {}) {
     this.clearTickers();
     this.clearNpcs();
     this.projectiles.clear();
@@ -132,6 +133,7 @@ export class World {
       const actor = { def, rig, anim, index };
       // arma que só aparece em uso (ex.: a sniper do Arthur) pode ficar à mostra na pose de vitória
       if (def.victoryProp && rig.props && rig.props[def.victoryProp]) rig.showProp(def.victoryProp, true);
+      if (index === 0 && altFace) swapPaintedTexture(rig.root, altFace[0], altFace[1]);
       this.scene.add(rig.root);
       anim.play('victory', { blend: 0 });
       return actor;

@@ -580,7 +580,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Fernando** — △ + L2 / Y + LT · custo 0 · cooldown 8 s
-  O Luciano relaxa e devolve o corpo: os olhos voltam ao ROSA e o kit vira o do Fernando (a vida é a mesma).
+  O Luciano relaxa e devolve o corpo: os olhos voltam ao ROSA e o kit vira o do Fernando (a vida é a mesma). Abaixo de 30% de vida não dá: o Fernando está apavorado.
 - **Reação** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
   Ritual de Energia: por 4 s, metade de todo dano recebido VOLTA para quem bateu como Energia caótica, e a outra metade vai para a mente (gasta sanidade em vez de vida).
 - **Descarnar Discente** — △ + ○ / Y + B · custo 30 · cooldown 14 s · dano 76 · alcance 9 m

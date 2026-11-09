@@ -93,6 +93,24 @@ export function disposeClonedRig(root) {
   });
 }
 
+// troca a textura pintada de um material SÓ nesta cópia do modelo (cada cópia tem os seus materiais; a textura segue
+// compartilhada). Uso: o Fernando na pose de vitória com os olhos AMARELOS quando quem fala é o Luciano (o mesmo corpo).
+export function swapPaintedTexture(root, fromKey, toKey) {
+  const tex = paintedTexture(toKey);
+  const map = tex && !tex.isTexture ? tex.map : tex;
+  if (!map) return false;
+  map.flipY = false;
+  map.needsUpdate = true;
+  let done = false;
+  root.traverse((o) => {
+    if (!o.isMesh || !o.material || o.material.name.replace(/^MAT_[A-Z]+_/, '') !== fromKey) return;
+    o.material.map = map;
+    o.material.needsUpdate = true;
+    done = true;
+  });
+  return done;
+}
+
 export function disposeRigResources(root) {
   const geometries = new Set();
   const materials = new Set();
