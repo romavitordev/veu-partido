@@ -274,6 +274,72 @@ export const TIPORA = {
   camera: { radius: 21, maxY: 14 },
 };
 
+// FERRO VELHO (Hexatombe, ep. 5 e 7): a base dos Couraças no fundo do cânion, à noite — o pátio entre as pilhas de
+// carcaças, a muralha de chapas com estacas, o portão entre as duas torres de janelas vermelhas, a grua amarela com a
+// cabine blindada do Miasma, a oficina acesa, o Abrigo vermelho da Escarlata e o símbolo de garras no paredão.
+// Luz pelos renders oficiais "Modelo 3D - Ferro Velho": lua cheia azul sobre o cânion, vermelho e âmbar embaixo.
+// Referências: docs/REFERENCIAS-MAPAS.md §1. As lâmpadas seguem os postes do .glb (r = 18,8; a do portão não existe).
+const FERRO_LAMPS = Array.from({ length: 7 }, (_, k) => ((k + 0.5) / 7) * Math.PI * 2 + 0.2)
+  .filter((a) => Math.abs(Math.atan2(Math.sin(a - Math.PI), Math.cos(a - Math.PI))) >= 0.3)
+  .map((a) => ({ type: 'point', color: 0xffa050, intensity: 9, distance: 11, decay: 1.6, pos: [Math.sin(a) * 18.8, 4.1, Math.cos(a) * 18.8], flicker: true }));
+export const FERRO_VELHO = {
+  id: 'ferro_velho',
+  name: 'Ferro Velho',
+  glb: 'arenas/ferro_velho.glb',
+  bounds: { radius: 18 },
+  spawns: [{ x: 0, z: -6 }, { x: 0, z: 6 }],
+  sky: 0x0a1428,
+  skyGradient: [[0, '#04070f'], [0.5, '#0c1a36'], [0.8, '#1a3060'], [1, '#2a4478']],
+  fog: { color: 0x0e1a34, density: 0.012 },
+  lights: [
+    { type: 'hemi', sky: 0x6a88d0, ground: 0x2a1a14, intensity: 1.05 },
+    { type: 'ambient', color: 0x34405a, intensity: 0.45 },
+    // o luar azul descendo pelo cânion (a lua fica acima do paredão do fundo, à esquerda)
+    { type: 'dir', color: 0x9ab4ff, intensity: 1.9, pos: [-14, 30, -26], shadow: true, area: 28 },
+    // o tambor de fogo, a luz quente principal do pátio
+    { type: 'point', color: 0xff7a20, intensity: 26, distance: 14, decay: 1.5, pos: [11, 1.6, 11.5], flicker: true },
+    ...FERRO_LAMPS,
+    // as janelas vermelhas das torres do portão, a oficina, o Abrigo e a cabine do Miasma
+    { type: 'point', color: 0xff2a1a, intensity: 14, distance: 14, pos: [-5.6, 10, -23] },
+    { type: 'point', color: 0xff2a1a, intensity: 14, distance: 14, pos: [5.6, 10, -23] },
+    { type: 'point', color: 0xff9a40, intensity: 16, distance: 12, pos: [21.5, 3, -6.6] },
+    { type: 'point', color: 0xff2a1a, intensity: 12, distance: 12, pos: [-21, 3, -7.7], flicker: true },
+    { type: 'point', color: 0xff2a1a, intensity: 8, distance: 10, pos: [-6.4, 19.5, -22.2] },
+  ],
+  fires: [{ pos: [11, 0.95, 11.5], scale: 0.35 }],
+  stars: { count: 900, radius: 170, size: 0.8 },
+  particles: [
+    { color: 0xffa040, count: 30, area: 0.8, height: 4, rise: 1.3, drift: 0.4, size: 0.06, opacity: 0.85, center: [11, 1, 11.5] }, // fagulhas do tambor
+    { color: 0xb8a890, count: 160, area: 40, height: 6, rise: 0.04, drift: 0.9, size: 0.05, opacity: 0.45 }, // poeira de ferrugem
+  ],
+  camera: { radius: 22, maxY: 15 },
+};
+
+// CIRCO DOS PSIKOLERA (Hexatombe, ep. 4, 7 e 8): o antigo Circo dos Irmãos Davo, parado na caatinga e tomado pela
+// banda — o pátio entre a lona com a entrada em cara de demônio, as barracas de jogos, os canhões e o medidor de força.
+// A única arena DE DIA: sol forte, céu azul, terra clara (prints de HEX ep. 4, 3h18–3h36). Referências:
+// docs/REFERENCIAS-MAPAS.md §2.
+export const CIRCO = {
+  id: 'circo',
+  name: 'Circo dos Psikolera',
+  glb: 'arenas/circo.glb',
+  bounds: { radius: 18 },
+  spawns: [{ x: 0, z: -6 }, { x: 0, z: 6 }],
+  sky: 0x8ab8e8,
+  skyGradient: [[0, '#3a78c8'], [0.45, '#6aa0dc'], [0.8, '#a8cceb'], [1, '#dcd8c8']],
+  fog: { color: 0xc8d4dc, density: 0.0065 },
+  lights: [
+    { type: 'hemi', sky: 0xbcd6ff, ground: 0xb08a5a, intensity: 1.35 },
+    { type: 'ambient', color: 0xfff0e0, intensity: 0.35 },
+    // o sol da tarde, por trás da câmera e à direita (as sombras caem para o fundo, como nos prints)
+    { type: 'dir', color: 0xfff0d6, intensity: 3.1, pos: [18, 30, 22], shadow: true, area: 30 },
+    // o brilho quente que sai da boca da lona (o picadeiro lá dentro)
+    { type: 'point', color: 0xff8a30, intensity: 10, distance: 9, decay: 1.6, pos: [0, 1.8, -22.8] },
+  ],
+  particles: { color: 0xe8d4b0, count: 140, area: 40, height: 5, rise: 0.03, drift: 1.1, size: 0.05, opacity: 0.4 }, // poeira de terra
+  camera: { radius: 22, maxY: 15 },
+};
+
 // MANSÃO ENDIABRADA (OUTRO LADO: o território do Espreitador) — mapa em linha, sem teto, no breu. Só no modo PvE
 // (fora da seleção de cenários). As luzes pontuais são um POOL que acompanha o jogador (lightPool). As portas trancadas,
 // os armários do quarto, a fresta do corredor B e a porta de saída são do jogo (src/pve/Dungeon.js).

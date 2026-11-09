@@ -163,7 +163,8 @@
       dungeons do Outro Lado (`mansao_luta`, `escola_luta` em `arena/index.js`).
 - [ ] **Remover o cenário Ruínas do Ritual** (`ruinas`) quando os novos entrarem. Conferir quem usa o `ruinas` como
       padrão (`devStart`, testes, bateria de balanceamento, Torre, miniaturas) antes de tirar.
-- [ ] **Dois cenários novos**, escolhidos entre as ideias do dono (levantar cada lugar na wiki antes de modelar; o que
+- [x] **Dois cenários novos** (2026-11-09: **Ferro Velho** = Base dos Couraças e **Circo dos Psikolera**, versão
+      básica; refinar com o tempo). Os outros seis ficam para depois. Escolhidos entre as ideias do dono (levantar cada lugar na wiki antes de modelar; o que
       não for do cânone fica marcado como PROPOSTA):
       - **A Granja Abobrinha**;
       - **O sertão de Hexatombe** (por exemplo, o local da luta final do Cristino com a Harpia);
@@ -173,6 +174,10 @@
       - **Base dos Couraças** (Hexatombe);
       - **Circo dos Psikolera**;
       - **Acampamento dos Pássaros** (meio destruído, como em Hexatombe).
+- [x] **Repertório de referências dos 8 lugares** (2026-11-09): wiki, 139 imagens oficiais e 32 prints dos episódios,
+      comparados em `docs/REFERENCIAS-MAPAS.md` (canon × PROPOSTA de arena, links com minuto). As imagens ficam em
+      `Referencias visuais/Mapas/` (fora do git). Recomendação: Ferro Velho e Circo dos PSIKOLERA. Nome canônico do
+      acampamento de Natal Macabro: **Lua da Benquerença**.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no

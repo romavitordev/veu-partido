@@ -798,7 +798,125 @@ export const ARENA_TEXTURES = {
     g.fillStyle = '#5a3a26'; g.fillRect(0, 0, s, s);
     noise(g, s, ['#8a4a20', '#2a1a10', '#6a5a4a'], 3000, [1, 4], 0.55);
   }, { roughness: 0.8 }),
+
+  // ---------------- Ferro Velho (Hexatombe): terra de cânion encharcada de óleo, paredão em estratos, sucata
+  junk_dirt: () => tex(512, 6, (g, s) => {
+    g.fillStyle = '#6a4a34'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#4a3222', '#8a6448', '#3a2a20', '#7a5a40'], 12000, [1, 4], 0.45);
+    for (let i = 0; i < 14; i++) { // poças de óleo
+      const x = Math.random() * s, y = Math.random() * s, r = rnd(10, 40);
+      const grd = g.createRadialGradient(x, y, 0, x, y, r);
+      grd.addColorStop(0, 'rgba(14,10,8,0.55)'); grd.addColorStop(1, 'rgba(14,10,8,0)');
+      g.fillStyle = grd; g.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    noise(g, s, ['#8a8a8a', '#5a3a2a'], 500, [2, 5], 0.5); // parafusos e cacos
+  }, { roughness: 1 }),
+  canyon_rock: () => tex(512, 6, (g, s) => {
+    g.fillStyle = '#5a4a44'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += rnd(10, 30)) { // estratos horizontais
+      const k = rnd(0.75, 1.2);
+      g.fillStyle = `rgba(${110 * k | 0},${88 * k | 0},${76 * k | 0},0.5)`;
+      g.fillRect(0, y, s, rnd(4, 16));
+    }
+    noise(g, s, ['#2a2224', '#7a6a60', '#3a3034'], 9000, [1, 5], 0.4);
+  }, { roughness: 1 }),
+  canyon_rock_dark: () => tex(512, 5, (g, s) => {
+    g.fillStyle = '#3e3434'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += rnd(12, 34)) { g.fillStyle = `rgba(20,16,18,${rnd(0.2, 0.5)})`; g.fillRect(0, y, s, rnd(3, 10)); }
+    noise(g, s, ['#1a1416', '#5a4a46'], 8000, [1, 5], 0.4);
+  }, { roughness: 1 }),
+  rust_metal: () => tex(256, 1.5, (g, s) => {
+    g.fillStyle = '#6a3a22'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#a0521e', '#3a2014', '#7a6a5a', '#c06a28'], 5000, [1, 6], 0.5);
+    g.fillStyle = 'rgba(30,20,14,0.6)';
+    for (let i = 0; i < 16; i++) g.fillRect(Math.random() * s, Math.random() * s, 4, 4); // rebites
+  }, { roughness: 0.85 }),
+  // chapa ondulada enferrujada, cada faixa de um tom (remendos de várias chapas)
+  corrugated_rust: () => tex(256, 2.4, (g, s) => {
+    const tones = ['#5a4030', '#6a3a26', '#4a4440', '#7a5030', '#3e3a36'];
+    for (let x = 0; x < s; x += 64) { g.fillStyle = tones[Math.floor(Math.random() * tones.length)]; g.fillRect(x, 0, 64, s); }
+    for (let x = 0; x < s; x += 10) { g.fillStyle = 'rgba(255,255,255,0.07)'; g.fillRect(x, 0, 4, s); g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(x + 6, 0, 3, s); }
+    noise(g, s, ['#a0521e', '#2a1a10'], 2500, [1, 6], 0.45);
+    const grd = g.createLinearGradient(0, s, 0, 0); // escorrido de ferrugem de baixo para cima
+    grd.addColorStop(0, 'rgba(90,40,14,0.5)'); grd.addColorStop(0.5, 'rgba(90,40,14,0)');
+    g.fillStyle = grd; g.fillRect(0, 0, s, s);
+  }, { roughness: 0.85 }),
+
+  // ---- CIRCO DOS PSIKOLERA (Hexatombe): terra clara de sol, tábuas pintadas e gastas, a lona listrada
+  circus_sand: () => tex(512, 6, (g, s) => {
+    g.fillStyle = '#c8a878'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#b09060', '#d8bc8c', '#a8885a', '#e0c8a0'], 14000, [1, 4], 0.4);
+    for (let i = 0; i < 40; i++) { // marcas de pneu e de pisada
+      g.strokeStyle = `rgba(120,90,60,${rnd(0.08, 0.2)})`; g.lineWidth = rnd(2, 6);
+      g.beginPath(); const y = Math.random() * s; g.moveTo(0, y); g.bezierCurveTo(s * 0.3, y + rnd(-40, 40), s * 0.6, y + rnd(-40, 40), s, y + rnd(-30, 30)); g.stroke();
+    }
+    noise(g, s, ['#7a6a4a', '#f0e0c0'], 800, [2, 4], 0.5); // pedrinhas
+  }, { roughness: 1 }),
+  sandstone: () => tex(512, 8, (g, s) => {
+    g.fillStyle = '#b48a62'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += rnd(10, 30)) { g.fillStyle = `rgba(${Math.random() < 0.5 ? '230,190,140' : '120,80,50'},${rnd(0.15, 0.35)})`; g.fillRect(0, y, s, rnd(3, 12)); }
+    noise(g, s, ['#8a6448', '#d0a880'], 8000, [1, 5], 0.35);
+  }, { roughness: 1 }),
+  sandstone_dark: () => tex(512, 8, (g, s) => {
+    g.fillStyle = '#8a6448'; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += rnd(10, 30)) { g.fillStyle = `rgba(80,50,30,${rnd(0.2, 0.4)})`; g.fillRect(0, y, s, rnd(3, 12)); }
+    noise(g, s, ['#6a4a34', '#b08a64'], 8000, [1, 5], 0.35);
+  }, { roughness: 1 }),
+  // as tábuas vermelhas do tapume de demônio (pintura descascada mostrando a madeira)
+  facade_planks: () => planks('#8a2418', '#5a3a24', 2.2),
+  stall_red: () => planks('#a82a1e', '#6a4a30', 1.6),
+  stall_blue: () => planks('#2a4ab0', '#6a5a48', 1.6),
+  stall_yellow: () => planks('#d8a028', '#7a5a34', 1.6),
+  sign_blue: () => planks('#2a50c0', '#5a5a5a', 2.5),
+  horn_red: () => planks('#c4301c', '#6a3020', 1.4),
+  wood_plank: () => planks('#6a4a30', '#3a2818', 1.2),
+  // o nariz xadrez da cara de demônio
+  checker_board: () => tex(128, 0.5, (g, s) => {
+    const n = 8, c = s / n;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { g.fillStyle = (i + j) % 2 ? '#1a1410' : '#e0d4a8'; g.fillRect(i * c, j * c, c, c); }
+  }, { roughness: 0.6 }),
+  // os panos escuros listrados das barracas
+  curtain_stripes: () => tex(256, 1.6, (g, s) => {
+    for (let x = 0; x < s; x += 32) { g.fillStyle = (x / 32) % 2 ? '#3a3028' : '#241e1a'; g.fillRect(x, 0, 32, s); }
+    noise(g, s, ['#14100c', '#4a4034'], 2000, [1, 3], 0.4);
+  }, { roughness: 0.95 }),
+  // o cano do canhão: vermelho com estrelinhas amarelas
+  cannon_stars: () => tex(256, 1.2, (g, s) => {
+    g.fillStyle = '#8a2a1e'; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#e0b030';
+    for (let i = 0; i < 18; i++) {
+      const x = Math.random() * s, y = Math.random() * s, r = rnd(5, 9);
+      g.beginPath();
+      for (let k = 0; k < 10; k++) { const a = (k * Math.PI) / 5, rr = k % 2 ? r * 0.45 : r; g.lineTo(x + Math.sin(a) * rr, y - Math.cos(a) * rr); }
+      g.fill();
+    }
+    noise(g, s, ['#5a1a10', '#b04a30'], 1500, [1, 4], 0.4);
+  }, { roughness: 0.6, metalness: 0.2 }),
+  brick_red: () => tex(256, 2, (g, s) => {
+    g.fillStyle = '#5a2a20'; g.fillRect(0, 0, s, s);
+    const bh = 16, bw = 48;
+    for (let y = 0, row = 0; y < s; y += bh, row++) for (let x = -(row % 2) * bw / 2; x < s; x += bw) {
+      g.fillStyle = ['#8a3a2a', '#7a3424', '#9a4632', '#6a3022'][Math.floor(Math.random() * 4)]; g.fillRect(x + 1, y + 1, bw - 2, bh - 2);
+    }
+    noise(g, s, ['#3a1a10', '#b06a50'], 2000, [1, 3], 0.35);
+  }, { roughness: 0.9 }),
 };
+
+// tábuas pintadas e gastas (o circo): faixas horizontais, junta escura e a madeira aparecendo onde a tinta caiu
+function planks(paint, wood, meters) {
+  return tex(256, meters, (g, s) => {
+    g.fillStyle = paint; g.fillRect(0, 0, s, s);
+    const n = 8, h = s / n;
+    for (let i = 0; i < n; i++) {
+      g.fillStyle = `rgba(0,0,0,${rnd(0.0, 0.15)})`; g.fillRect(0, i * h, s, h);
+      g.fillStyle = 'rgba(0,0,0,0.45)'; g.fillRect(0, i * h, s, 2);
+    }
+    g.fillStyle = wood;
+    for (let i = 0; i < 26; i++) { g.globalAlpha = rnd(0.4, 0.9); g.fillRect(Math.random() * s, Math.floor(Math.random() * n) * h + rnd(2, h - 6), rnd(6, 40), rnd(2, 6)); }
+    g.globalAlpha = 1;
+    noise(g, s, ['rgba(255,255,255,0.5)', 'rgba(0,0,0,0.5)'], 1500, [1, 3], 0.3);
+  }, { roughness: 0.85 });
+}
 
 function crate(color) {
   return tex(128, 0.45, (g, s) => {

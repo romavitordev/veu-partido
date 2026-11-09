@@ -1,8 +1,8 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -88,6 +88,22 @@ export const ARENAS = {
     thumbCamera: { pos: [-4, 4.5, 15], look: [4, 4, -40] }, // a praça com a igreja à direita e o mar e o farol ao fundo
     create: () => createGLBArena(TIPORA),
   },
+  ferro_velho: {
+    name: 'Ferro Velho',
+    description: 'A base dos Couraças em Hexatombe: o pátio entre pilhas de carcaças no fundo do cânion, a grua com a cabine do Miasma, o portão entre as torres e a lua cheia sobre o paredão.',
+    colors: ['#0c1a36', '#6a4a34', '#ff2a1a'],
+    available: true,
+    thumbCamera: { pos: [3, 3.5, 15], look: [-2, 7, -30] }, // o pátio com o portão, a grua e a lua ao fundo
+    create: () => createGLBArena(FERRO_VELHO),
+  },
+  circo: {
+    name: 'Circo dos Psikolera',
+    description: 'O velho Circo dos Irmãos Davo, tomado pela banda em Hexatombe: o pátio de terra entre a lona com a entrada em cara de demônio, as barracas de jogos, os canhões e o medidor de força, sob o sol da caatinga.',
+    colors: ['#6aa0dc', '#c8a878', '#a82a1e'],
+    available: true,
+    thumbCamera: { pos: [2, 3, 14], look: [0, 6, -30] }, // a fachada de demônio com a lona listrada atrás
+    create: () => createGLBArena(CIRCO),
+  },
 };
 
 // mapas do OUTRO LADO (PvE): fora da seleção (não entram em ARENA_ORDER) e carregados só ao entrar no modo
@@ -129,5 +145,5 @@ export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora', 'mansao_luta', 'escola_luta'];
+export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora', 'ferro_velho', 'circo', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ruinas';
