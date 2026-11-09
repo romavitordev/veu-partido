@@ -82,6 +82,37 @@
       curta, colada no queixo e na mandíbula, começando no meio da bochecha, bigode ligado. A cheia passou de 1,25× a
       largura da cabeça (r 0,03 H, queixo 0,05 H) para a largura da mandíbula (r 0,0085 H, queixo 0,006 H); o relevo de
       "fios" que virava faixas virou um grão fino. Conferido de frente, 3/4 e perfil no jogo.
+- [x] **Kian — remodelar o CORPO inteiro** (pedido do dono, 2026-11-09: "não quero remodel só pro rosto"). Diagnóstico
+      pela folha de 4 vistas (Luciano × Kian × Kian de Calamidade) contra as miniaturas oficiais da wiki ("Miniatura Kian
+      marcado em Desconjuração" e "Miniatura Kian em Calamidade"; perspectiva de cima, então servem para silhueta e
+      proporção relativa, não para medida absoluta). Medidas do modelo atual (altura 2,0; cabeça 0,27 de largura):
+      1. **Ombros em balão:** o deltoide é uma esfera que sobe acima da linha do trapézio e parece ombreira. Envergadura
+         0,94 = 3,5 larguras de cabeça (Luciano 0,73 = 2,7). Alvo ≈ 3,0 (≈ 0,80), deltoide caindo da clavícula e colado ao braço.
+      2. **Braços em tubo:** mesma grossura do ombro ao punho, sem cotovelo nem punho. Alvo em larguras de cabeça: bíceps
+         0,55 → cotovelo 0,42 → antebraço 0,48 → punho 0,30, com vão na axila (hoje o braço encosta no tronco).
+      3. **Mãos pequenas para o braço:** aumentar ~20% (a mão ≈ a altura do rosto), dedos separados, polegar para a frente.
+      4. **Tronco em caixa:** frente chata e cintura quase reta. Alvo em V: peito 0,60 → cintura ≈ 0,42 (hoje 0,465),
+         peitoral e caixa torácica com volume na MALHA (hoje o abdômen é quase só textura), oblíquos, e nas costas as
+         escápulas e a canaleta da coluna.
+      5. **Pescoço e trapézio:** o ombro sai reto do pescoço; o trapézio novo quase não aparece. Alvo: a rampa do
+         pescoço ao ombro bem marcada (é o que mais vende "musculoso" na silhueta).
+      6. **Calça:** dois tubos retos, sem joelho nem dobras, cós alto. Alvo (miniaturas): calça cinza mais justa na coxa,
+         dobras no joelho e no tornozelo, cós mais baixo mostrando o V do abdômen.
+      7. **Pés descalços pequenos e chatos:** aumentar, com arco, calcanhar e dedos (a escrita continua na textura).
+      8. **Faixas de Calamidade:** hoje são anéis grossos e iguais (parecem molas). Alvo: tiras chatas em espiral,
+         sobrepostas, do meio do antebraço aos nós dos dedos, com as pontas soltas finas.
+      9. **Cabelo (decisão do dono):** as duas miniaturas oficiais mostram BLACK POWER; o modelo usa o cabelo curto
+         (a análise de referências apontava curto em 3 de 4 artes). Confirmar antes de modelar.
+      Como fazer: partir do corpo do Luciano (`carvalho_common.py`, as mesmas juntas e a mesma cabeça) em vez do tronco
+      por tabela próprio do `char_kian.py`; blockout de silhueta primeiro (gate em 4 vistas e no tamanho de jogo), depois
+      formas (músculos na malha), depois as texturas de escrita reprojetadas; manter os UVs das linhas douradas.
+      **Feito (2026-11-09, não lançado; cabelo CURTO por decisão do dono):** Builder 1,06/1,16 (ombro 0,307 H; antes
+      0,342); tronco em V (meia-largura 0,166 na cintura → 0,276 no peito, peitoral mais fundo, rampa do trapézio) e
+      escápulas no relevo; braços afinando (bíceps → cotovelo → antebraço → punho) com vão na axila; deltoide caindo da
+      clavícula; mãos 20% maiores com UV plano da escrita (antes a mão sem UV ficava da cor do brilho); calça mais justa
+      com o cós mais baixo; pés com calcanhar, arco e cinco dedos; faixas de Calamidade como tira chata (10 voltas).
+      Conferido na folha de 4 vistas (Kian e Calamidade) e numa luta. Fica para depois, se o dono quiser: as dobras
+      da calça no joelho e no tornozelo ainda são só o relevo de antes.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no

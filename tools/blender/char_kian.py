@@ -23,7 +23,8 @@ from mathutils import Vector
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'kian.glb'
 random.seed(3150)  # Kushim
-b = Builder(width=1.12, bulk=1.22, height=0.99)  # a altura do Luciano; largura e massa bem acima das dele (1.02 / 1.1)
+b = Builder(width=1.06, bulk=1.16, height=0.99)  # a altura do Luciano; ombro 0,307 H (Luciano 0,28): o volume vai para o
+# tronco em V, o trapézio e os braços, não para a largura (com 1,12/1,22 a envergadura dava 3,5 larguras de cabeça)
 sk = b.sk
 H = sk.h
 hz = sk['hips'].z
@@ -94,20 +95,20 @@ def grid(fn, nu, nv, flip=False):
 
 
 # ---------------------------------------------------------------- TRONCO forte (peito e ombros largos, abdômen marcado)
-TT = [
-    (-0.16, 0.182, 0.134, 0.134),
-    (-0.06, 0.184, 0.136, 0.138),
-    (0.04, 0.186, 0.14, 0.142),
-    (0.14, 0.198, 0.148, 0.148),
-    (0.24, 0.22, 0.158, 0.154),
-    (0.33, 0.25, 0.172, 0.162),
-    (0.42, 0.268, 0.184, 0.168),   # peitoral
-    (0.5, 0.272, 0.18, 0.17),
-    (0.56, 0.252, 0.16, 0.164),
-    (0.6, 0.222, 0.136, 0.15),
-    (0.64, 0.17, 0.112, 0.128),    # trapézio
-    (0.675, 0.12, 0.092, 0.1),
-    (0.71, 0.092, 0.08, 0.084),
+TT = [  # (altura, meia-largura, frente, costas) em H — o V: cintura 0,166 → peito 0,276 (o Luciano tem camisa reta)
+    (-0.16, 0.18, 0.13, 0.134),
+    (-0.06, 0.172, 0.128, 0.136),
+    (0.04, 0.166, 0.13, 0.138),    # cintura
+    (0.14, 0.176, 0.14, 0.146),
+    (0.24, 0.2, 0.156, 0.154),     # caixa torácica
+    (0.33, 0.236, 0.176, 0.164),
+    (0.42, 0.266, 0.196, 0.172),   # peitoral (mais fundo na frente)
+    (0.5, 0.276, 0.192, 0.176),
+    (0.56, 0.262, 0.168, 0.172),
+    (0.6, 0.232, 0.14, 0.16),
+    (0.64, 0.19, 0.114, 0.138),    # trapézio: a rampa do pescoço ao ombro
+    (0.675, 0.142, 0.096, 0.112),
+    (0.71, 0.1, 0.082, 0.088),
 ]
 
 
@@ -136,38 +137,48 @@ for side in ('L', 'R'):
     s, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     sx = 1 if side == 'L' else -1
     rings = []
-    shtop = s + Vector((-sx * 0.02 * H, 0, 0.0))
+    shtop = s + Vector((sx * 0.004 * H, 0, -0.01 * H))  # um vão na axila (antes o braço encostava no tronco)
+    # perfis em larguras de cabeça (miniaturas): bíceps 0,55 → cotovelo 0,42 → antebraço 0,48 → punho 0,30
     for i in range(8):
         t = i / 7
         p = shtop.lerp(e, t)
-        r = 0.09 + 0.026 * math.sin(t * math.pi * 0.95) - 0.022 * t
-        rings.append((p.x, p.y, p.z, r, r * 1.04))
+        r = 0.066 + 0.016 * math.sin(min(1.0, t / 0.9) * math.pi * 0.85) - 0.022 * t * t
+        rings.append((p.x, p.y, p.z, r, r * 1.06))
     for i in range(1, 7):
         t = i / 6 * 0.94
         p = e.lerp(h, t)
-        r = 0.07 + 0.024 * math.sin(min(1.0, t * 2.2) * math.pi * 0.5) * (1 - t) - 0.02 * t
-        rings.append((p.x, p.y, p.z, r, r * 0.92))
+        r = 0.046 + 0.016 * math.sin(min(1.0, t * 3.0) * math.pi * 0.5) - 0.03 * t
+        rings.append((p.x, p.y, p.z, r, r * 0.86))
     b.add('arm' + side, tube(rings, 16), arms_m, region='arm' + side, subdiv=0)
-    b.add('delt' + side, ellipsoid((s.x + sx * 0.005 * H, s.y, s.z - 0.02 * H), (0.094 * H, 0.098 * H, 0.084 * H), 16, 12), arms_m, region='arm' + side, subdiv=0)
-    b.add('hand' + side, hand_part(sk, side, 0.07), arms_m, region='e' + side)
+    # o deltoide cai da clavícula e abraça o braço (antes era uma esfera acima da linha do trapézio: parecia ombreira)
+    b.add('delt' + side, ellipsoid((s.x + sx * 0.012 * H, s.y, s.z - 0.05 * H), (0.062 * H, 0.07 * H, 0.08 * H), 16, 12), arms_m, region='arm' + side, subdiv=0)
+    hv, hf, _ = hand_part(sk, side, 0.084)  # mãos ~20% maiores (a mão ≈ o rosto)
+    # a mão esculpida não traz UV: projeção plana que repete as fileiras de escrita (sem isso a textura caía num
+    # ponto só e a mão inteira ficava da cor do brilho dourado)
+    hu = [((p[0] + p[1]) / H * 7.0, p[2] / H * 7.0) for p in hv]
+    b.add('hand' + side, (hv, hf, hu), arms_m, region='e' + side)
 
 # ---------------------------------------------------------------- CALÇA cinza-escura e PÉS descalços escritos
-b.add('pants_hip', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.05 - v * 0.27, 1.0, 0.01), 32, 4), pants, region='torso', subdiv=0)
-b.add('waistband', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.06 - v * 0.04, 1.0, 0.016), 32, 1), waist, region='torso', subdiv=0)
+b.add('pants_hip', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.02 - v * 0.24, 1.0, 0.01), 32, 4), pants, region='torso', subdiv=0)
+b.add('waistband', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.03 - v * 0.035, 1.0, 0.016), 32, 1), waist, region='torso', subdiv=0)  # cós mais baixo: aparece o V do abdômen
 for side in ('L', 'R'):
     l, k, f = sk['l' + side], sk['k' + side], sk['foot' + side]
     topp = Vector((l.x, l.y, l.z + 0.07 * H))
     rings = []
-    for t, r in ((0.0, 0.1), (0.35, 0.098), (0.75, 0.086), (1.0, 0.08)):
+    # mais justa na coxa e afinando no joelho (as miniaturas); a barra solta um pouco no tornozelo
+    for t, r in ((0.0, 0.098), (0.35, 0.092), (0.75, 0.078), (1.0, 0.072)):
         p = topp.lerp(k, t)
         rings.append((p.x, p.y, p.z, r, r))
-    for t, r in ((0.3, 0.074), (0.6, 0.068), (0.85, 0.066), (0.93, 0.07)):
+    for t, r in ((0.3, 0.068), (0.6, 0.062), (0.85, 0.064), (0.93, 0.068)):
         p = k.lerp(f, t)
         rings.append((p.x, p.y, p.z, r, r))
     b.add('pants' + side, tube(rings, 14), pants, region='leg' + side, subdiv=0)
     b.add('ankle' + side, tube(limb_rings(k.lerp(f, 0.9), k.lerp(f, 1.0), 0.05, 0.048, n=1), 12), arms_m, region='k' + side, subdiv=0)
-    b.add('foot' + side, ellipsoid((f.x, f.y - 0.05 * H, f.z + 0.018 * H), (0.05 * H, 0.12 * H, 0.04 * H), 12, 8), arms_m, region='foot' + side, subdiv=0)
-    toes = [ellipsoid((f.x + (i - 1.5) * 0.017 * H, f.y - 0.16 * H, f.z + 0.012 * H), (0.009 * H, 0.014 * H, 0.009 * H), 6, 4) for i in range(4)]
+    # pé descalço maior, com o calcanhar e o arco (antes era um ovo pequeno e chato)
+    b.add('foot' + side, merge(ellipsoid((f.x, f.y - 0.06 * H, f.z + 0.02 * H), (0.056 * H, 0.13 * H, 0.042 * H), 14, 8),
+                               ellipsoid((f.x, f.y + 0.035 * H, f.z + 0.03 * H), (0.044 * H, 0.05 * H, 0.05 * H), 10, 8)), arms_m, region='foot' + side, subdiv=0)
+    toes = [ellipsoid((f.x + (i - 2) * 0.019 * H - (0.004 * H if i == 0 else 0), f.y - 0.18 * H + abs(i - 0.5) * 0.008 * H, f.z + 0.013 * H),
+                      ((0.013 if i == 0 else 0.0095) * H, 0.016 * H, 0.01 * H), 6, 4) for i in range(5)]
     b.add('toes' + side, merge(*toes), arms_m, region='foot' + side, subdiv=0)
 
 
@@ -231,6 +242,7 @@ def muscles(p):
         for s in (1, -1):
             v += bump(p, (s * 0.12 * H, 0.14 * H, hz + 0.4 * H), (0.09 * H, 0.2 * H, 0.15 * H), 0.02 * H)  # dorsais
             v += bump(p, (s * 0.07 * H, 0.06 * H, hz + 0.6 * H), (0.07 * H, 0.12 * H, 0.05 * H), 0.016 * H)  # trapézio
+            v += bump(p, (s * 0.11 * H, 0.16 * H, hz + 0.5 * H), (0.06 * H, 0.1 * H, 0.07 * H), 0.01 * H)   # escápulas
         if p.z > hz + 0.1 * H:
             v -= 0.006 * H * math.exp(-(p.x / (0.01 * H)) ** 2)  # a coluna
     return v
@@ -270,18 +282,18 @@ for side in ('L', 'R'):
     for i in range(241):
         t = i / 240
         c = e_.lerp(h_ + ax * 0.06 * H, 0.08 + 0.92 * t)
-        a = t * 13.0 * TAU
+        a = t * 10.0 * TAU  # 10 voltas de tira larga, uma por cima da outra
         d = u * math.cos(a) + v * math.sin(a)
-        q = surf('arm' + side, c + d * 0.4 * H, -d, 0.002 * H) or surf('hand' + side, c + d * 0.4 * H, -d, 0.002 * H)
+        q = surf('arm' + side, c + d * 0.4 * H, -d, 0.0035 * H) or surf('hand' + side, c + d * 0.4 * H, -d, 0.0035 * H)
         if q:
             wr.append(q)
     if len(wr) > 3:
-        b.add('prop_wraps_arm' + side, srod(wr, 0.014 * H, 5, caps=False, flat=(lambda p, e_=e_, ax=ax: (p - e_ - ax * (p - e_).dot(ax)), 0.85)), wrap, region='body', weight_fn=W('e' + side), subdiv=0)
+        b.add('prop_wraps_arm' + side, srod(wr, 0.016 * H, 5, caps=False, flat=(lambda p, e_=e_, ax=ax: (p - e_ - ax * (p - e_).dot(ax)), 0.22)), wrap, region='body', weight_fn=W('e' + side), subdiv=0)  # tira CHATA (antes 0,85 = anéis de mola)
     tails = []
     for k in range(2):
         p0 = e_.lerp(h_, 0.86) + Vector((sx * 0.055 * H, (0.015 - 0.03 * k) * H, 0.0))
         pts = [p0, p0 + Vector((sx * 0.025 * H, 0.008 * H, -0.06 * H)), p0 + Vector((sx * 0.035 * H, 0.012 * H, -0.13 * H - 0.03 * k * H))]
-        tails.append(srod(pts, [0.012 * H, 0.01 * H, 0.006 * H], 4, flat=(outward((e_.x, e_.y)), 0.3)))
+        tails.append(srod(pts, [0.011 * H, 0.009 * H, 0.006 * H], 4, flat=(outward((e_.x, e_.y)), 0.18)))
     b.add('prop_wraps_tails' + side, merge(*tails), wrap, region='body', weight_fn=W('e' + side), subdiv=0)
 b.group('prop_wraps')
 
