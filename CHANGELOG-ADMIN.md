@@ -1,7 +1,8 @@
 # Registro administrativo de alterações
 
-## Não lançado
+## v4.35.1 — Nomes dos especiais
 
+- Versão: `VERSION` 4.35.0 → **4.35.1** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-09. Testes: `npm test` 83/83; `npm run check` e `vite build` ok.
 - Nome dos especiais (pedido do dono): a faixa grande agora mostra o NOME do especial (`sp.name`, ex.: "Ninguém Mexe com os Meus Meninos") e a frase do personagem (`sp.banner`), quando é outra, sai como legenda embaixo com o nome dele e some sozinha depois de dar tempo de ler (`World.specialBanner`, que substitui os 40 `showBanner(sp.banner || …)` dos especiais; `hold` em `HUD.subtitle`). A faixa fica na tela pelo tamanho do texto, de 1,5 s a 4,2 s (`--bdur` em `HUD.banner` e `styles.css`); antes eram 1,5 s para qualquer frase.
 - Fernando/Luciano (pedido do dono): a fala de vitória marcada "(olhos amarelos)" sai com o nome LUCIANO CARVALHO em amarelo, sem a marca, e o Fernando da pose de vitória fica com os olhos amarelos (`main.js` → `showVictoryLineup(lineup, { altFace })` em `World.js` e `speaker` no `VictoryScreen`; `swapPaintedTexture` em `models/glbRig.js` troca `face_fernando` → `face_luciano` só nessa cópia do modelo; `altSpeaker.face` em `fernando.js`). A habilidade "Fernando" do Luciano não funciona com a vida abaixo de 30% (`lockBelow: 0.3` em `forms/luciano.js`, checado no `partnerSwap` de `abilities.js`; avisa "O FÊ ESTÁ APAVORADO" e não gasta nada).
 

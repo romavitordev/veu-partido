@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.35.1 — Nomes dos especiais
+- Especiais: a faixa grande agora mostra o NOME do especial (ex.: "Ninguém Mexe com os Meus Meninos", da Ivete) e fica na tela pelo tempo que o texto pede. A frase do personagem aparece embaixo, como legenda, com tempo para ler.
+- Fernando e Luciano: na tela de vitória, as falas do Luciano saem com o nome dele e o Fernando aparece com os olhos amarelos.
+- Com a vida abaixo de 30%, o Luciano não devolve mais o corpo para o Fernando (ele está apavorado).
+
 ## v4.35.0 — Tristan e Ivete
 - NOVO PERSONAGEM: Tristan Monteiro (Equipe Brasa e Força D), com lança-chamas segurável, Molotov que deixa fogo no chão, Glock tática e a passiva Piromania (mais dano em quem está queimando).
 - NOVA PERSONAGEM: Ivete Beicur, mãe do Arthur e dona do bar Suvaco Seco: briga de bar, espingarda, garrafada que atordoa, nuvem de charuto que deixa lento e engole projéteis, o Juramento para a equipe e o despertar A Última Gaudéria.

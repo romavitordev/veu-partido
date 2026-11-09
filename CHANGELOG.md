@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.35.1 — Nomes dos especiais
+
+### Alterado
+- A faixa dos especiais mostra o nome do especial, com duração pelo tamanho do texto (1,5 s a 4,2 s); a frase do personagem vira legenda temporizada.
+- Tela de vitória: falas "(olhos amarelos)" do Fernando saem como Luciano Carvalho, com os olhos amarelos no modelo.
+
+### Corrigido
+- A habilidade "Fernando" do Luciano não funciona abaixo de 30% de vida.
+
 ## v4.35.0 — Tristan e Ivete
 
 ### Adicionado

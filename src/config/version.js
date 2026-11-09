@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.35.0';
+export const VERSION = '4.35.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.35.1',
+    date: '2026-11-09',
+    title: 'Nomes dos especiais',
+    items: [
+      'Especiais: a faixa grande agora mostra o NOME do especial (ex.: "Ninguém Mexe com os Meus Meninos", da Ivete) e fica na tela pelo tempo que o texto pede. A frase do personagem aparece embaixo, como legenda, com tempo para ler.',
+      'Fernando e Luciano: na tela de vitória, as falas do Luciano saem com o nome dele e o Fernando aparece com os olhos amarelos.',
+      'Com a vida abaixo de 30%, o Luciano não devolve mais o corpo para o Fernando (ele está apavorado).',
+    ],
+  },
   {
     v: '4.35.0',
     date: '2026-11-09',
