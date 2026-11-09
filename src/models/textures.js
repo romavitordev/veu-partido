@@ -2362,6 +2362,81 @@ export const MATERIAL_TEXTURES = {
     g.fillStyle = '#e2b49c'; g.fillRect(0, 0, w, h);
     burnPatches(g, [[70, 80, 44, 36], [190, 120, 36, 46], [60, 320, 34, 40], [196, 360, 40, 30]], 23);
   }, { wrap: true }),
+  // ---------------- IVETE BEICUR (Desconjuração; wiki + a arte promocional): entre 50 e 60 anos, pele morena clara e
+  // marcada (pés de galinha, as linhas do nariz à boca, a testa), olhos escuros e semicerrados, sobrancelha fina e
+  // batom escuro
+  face_ivete: face((g) => {
+    g.strokeStyle = 'rgba(110,64,44,0.5)';
+    g.lineWidth = 1.3;
+    for (const s of [-1, 1]) {
+      for (let k = 0; k < 3; k++) { // pés de galinha
+        g.beginPath(); g.moveTo(CX + s * 50, EYE_Y - 4 + k * 5); g.lineTo(CX + s * (62 + k * 2), EYE_Y - 8 + k * 7); g.stroke();
+      }
+      g.beginPath(); g.moveTo(CX + s * 16, EYE_Y + 30); g.quadraticCurveTo(CX + s * 30, MOUTH_Y - 8, CX + s * 24, MOUTH_Y + 8); g.stroke(); // nariz → boca
+      g.beginPath(); g.moveTo(CX + s * 30, EYE_Y + 10); g.quadraticCurveTo(CX + s * 40, EYE_Y + 18, CX + s * 46, EYE_Y + 12); g.stroke(); // olheira
+    }
+    for (let k = 0; k < 2; k++) { g.beginPath(); g.moveTo(CX - 34, EYE_Y - 44 - k * 8); g.quadraticCurveTo(CX, EYE_Y - 48 - k * 8, CX + 34, EYE_Y - 44 - k * 8); g.stroke(); } // a testa
+  }, {
+    skin: '#d6a688',
+    eye: { iris: '#2a1c16', irisLight: '#5a3e30', w: 14, h: 6, tilt: 0.06, lid: 3.6, lashes: true, bags: true },
+    brow: { angry: 1.2, thick: 2.6, color: '#8a8480' },
+    mouth: { mouthW: 13, smile: 0, smirk: 1.5, lip: 'rgba(90,30,36,0.75)' },
+  }),
+  // o braço DIREITO com a TATUAGEM da insígnia dos Gaudérios Abutres (cânone: no braço direito, a mesma do pescoço do
+  // Arthur): o abutre de asas abertas com a faixa, e o resto do antebraço fechado com rosas e traços (a arte
+  // promocional). O desenho exato da insígnia é PROPOSTA
+  arms_ivete: () => canvasTex(256, 512, (g, w, h) => {
+    g.fillStyle = '#d6a688'; g.fillRect(0, 0, w, h);
+    const rnd = seeded(211);
+    const ink = 'rgba(28,24,30,0.88)';
+    g.strokeStyle = ink; g.fillStyle = ink; g.lineWidth = 2.4;
+    const vulture = (cx, cy, sc) => {
+      g.save(); g.translate(cx, cy); g.scale(sc, sc);
+      for (const s of [-1, 1]) { // as asas abertas em penas
+        for (let k = 0; k < 6; k++) {
+          g.beginPath(); g.moveTo(s * 8, -4 + k * 2); g.quadraticCurveTo(s * (24 + k * 6), -24 + k * 6, s * (40 + k * 4), -6 + k * 9); g.stroke();
+        }
+      }
+      g.beginPath(); g.ellipse(0, 4, 8, 14, 0, 0, Math.PI * 2); g.fill(); // o corpo
+      g.beginPath(); g.arc(0, -14, 5, 0, Math.PI * 2); g.fill(); // a cabeça careca
+      g.beginPath(); g.moveTo(0, -12); g.lineTo(5, -6); g.lineTo(-1, -9); g.fill(); // o bico
+      g.beginPath(); g.moveTo(-26, 26); g.quadraticCurveTo(0, 34, 26, 26); g.lineTo(26, 36); g.quadraticCurveTo(0, 44, -26, 36); g.closePath(); g.stroke(); // a faixa
+      g.restore();
+    };
+    vulture(128, 130, 1.6);
+    vulture(128, 380, 1.4);
+    for (let i = 0; i < 9; i++) { // rosas
+      const x = rnd() * w, y = rnd() * h, r = 8 + rnd() * 6;
+      for (let k = 0; k < 3; k++) { g.beginPath(); g.arc(x, y, r - k * 3, rnd() * 3, rnd() * 3 + 4.4); g.stroke(); }
+    }
+    for (let i = 0; i < 26; i++) { // traços e espinhos
+      const x = rnd() * w, y = rnd() * h;
+      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 10, y + 8, x + 4 + rnd() * 16, y + 16 + rnd() * 10); g.stroke();
+    }
+  }, { wrap: true }),
+  // a JAQUETA JEANS gasta (arte promocional de Desconjuração): azul desbotado, a trama diagonal, costuras amarelas,
+  // partes mais claras de desgaste e uns rasgos
+  denim_ivete: () => canvasTex(512, 512, (g, w, h) => {
+    const rnd = seeded(212);
+    g.fillStyle = '#5a7c9e'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(30,50,80,0.18)'; g.lineWidth = 1;
+    for (let i = -h; i < w; i += 4) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); } // a sarja
+    for (let i = 0; i < 3000; i++) { g.fillStyle = rnd() < 0.5 ? 'rgba(255,255,255,0.06)' : 'rgba(10,20,40,0.07)'; g.fillRect(rnd() * w, rnd() * h, 2, 1); }
+    for (let i = 0; i < 10; i++) { // desbotado
+      const grd = g.createRadialGradient(0, 0, 0, 0, 0, 1);
+      g.save(); g.translate(rnd() * w, rnd() * h); g.scale(30 + rnd() * 50, 20 + rnd() * 40);
+      grd.addColorStop(0, 'rgba(200,220,235,0.28)'); grd.addColorStop(1, 'rgba(200,220,235,0)');
+      g.fillStyle = grd; g.beginPath(); g.arc(0, 0, 1, 0, Math.PI * 2); g.fill(); g.restore();
+    }
+    g.strokeStyle = 'rgba(214,170,80,0.75)'; g.lineWidth = 2; g.setLineDash([6, 4]);
+    for (const x of [96, 256, 416]) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+    g.setLineDash([]);
+    for (let i = 0; i < 5; i++) { // rasgos
+      const x = rnd() * w, y = rnd() * h;
+      g.fillStyle = 'rgba(230,236,240,0.85)'; g.fillRect(x, y, 18 + rnd() * 14, 3);
+      g.fillStyle = 'rgba(230,236,240,0.6)'; g.fillRect(x + 2, y + 5, 14, 2);
+    }
+  }, { wrap: true }),
   // a camisa social branca do casal com as MANGAS de FLORES vinho (as artes da HQ e da campanha): flores de cinco pétalas
   // com o miolo claro, espalhadas, e folhinhas escuras
   sleeve_carvalho: () => canvasTex(256, 256, (g) => {

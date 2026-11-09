@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1689,4 +1689,27 @@ export function addTristanProps(rig) {
   lance.visible = false;
   sockets.handR.add(lance);
   props.flameLance = lance;
+}
+
+// IVETE BEICUR: a espingarda com o cinto de cartuchos PENDURADA NAS COSTAS pela bandoleira (a arte promocional) e uma
+// cópia na mão para os tiros (o □ e as habilidades trocam uma pela outra: showProp 'shotgun' / hideProp 'shotgunBack');
+// a garrafa do Suvaco Seco aparece na mão só para a garrafada
+export function addIveteProps(rig) {
+  const { sockets, props } = rig;
+  const back = ivetePump();
+  back.position.set(0.0, 0.0, -0.05);
+  back.rotation.set(0, 0, Math.PI - 0.55); // na diagonal: o cano sobe por cima do ombro esquerdo
+  sockets.back.add(back);
+  props.shotgunBack = back;
+  const gun = ivetePump();
+  gun.position.y = -0.02;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.shotgun = gun;
+  rig.muzzle = gun.userData.muzzle;
+  const bottle = barBottle();
+  inFist(bottle);
+  bottle.visible = false;
+  sockets.handR.add(bottle);
+  props.bottle = bottle;
 }

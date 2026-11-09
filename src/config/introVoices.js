@@ -305,6 +305,19 @@ export const VOICES = {
       any: [(o) => `Hahaha! Gostei de você, ${o.name}. Vai doer igual.`, (o) => `Calma, ${o.name}. O lança-chamas tá cheio, ó.`],
     },
   },
+  // IVETE BEICUR: bruta e fria com estranhos, carinhosa com os de perto; gaudéria, dona do Suvaco Seco, a mãe do Arthur
+  ivete: {
+    open: {
+      ally: (o) => `${o.name}, querido. Aquece aí que a tia não pega leve, não.`,
+      rival: (o) => `${o.name}... ${o.one}. No meu bar tu nem passava da porta.`,
+      any: [(o) => `Senta, ${o.name}. Primeiro a gente briga, depois eu sirvo uma.`, (o) => `Tá olhando o quê, ${o.name}? Nunca viu véia com espingarda?`],
+    },
+    reply: {
+      ally: (o) => `Tá bom, ${o.name}. Mas se machucar, quem cuida sou eu.`,
+      rival: (o) => `${o.group}? Já enterrei gangue inteira, ${o.name}. Vem.`,
+      any: [(o) => `Hm. Fala menos e vem logo, ${o.name}.`, (o) => `Deixa eu apagar o cigarro, ${o.name}. Pronto.`],
+    },
+  },
   // BEATRICE PORTINARI: gentil, curiosa e altruísta, mas firme com os Escriptas — "Saber tudo é perder tudo."
   beatrice: {
     open: {

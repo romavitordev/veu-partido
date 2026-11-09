@@ -156,6 +156,42 @@ def tank_keep(p):
 
 
 tk = b.add('tank', clothe(part('torso'), tank_keep, 0.008 * H, cuts=5), tank, region='body', weight_fn=W('torso'), subdiv=0)
+
+
+def snap_tank_edges(obj):
+    """Polimento (2026-11-09, "decote serrilhado"): o clothe guarda FACES inteiras, então as bordas saem em degraus.
+    Cada vértice da borda vai para a linha de corte mais próxima do tank_keep (V da frente, decote das costas, cavas,
+    alto das alças e barra) — a borda fica reta como uma costura."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    mw = obj.matrix_world
+    inv = mw.inverted()
+    for v in bm.verts:
+        if not any(e.is_boundary for e in v.link_edges):
+            continue
+        p = mw @ v.co
+        z, ax, sx = (p.z - hz) / H, abs(p.x) / H, (1 if p.x >= 0 else -1)
+        cands = []
+        if z < 0.09:
+            cands.append(Vector((p.x, p.y, hz + 0.035 * H)))  # a barra
+        if z > 0.6:
+            cands.append(Vector((p.x, p.y, hz + 0.66 * H)))  # o alto das alças
+        if z > 0.43 and ax > 0.12:
+            cands.append(Vector((sx * 0.16 * H, p.y, p.z)))  # as cavas
+        if p.y < 0 and 0.4 < z < 0.68 and ax < (z - 0.41) * 0.45 + 0.04:
+            cands.append(Vector((sx * max(0.0, z - 0.41) * 0.45 * H, p.y, p.z)))  # o V da frente
+        if p.y >= 0 and z > 0.57 and ax < 0.06 + (z - 0.58) * 0.6 + 0.04:
+            cands.append(Vector((sx * (0.06 + max(0.0, z - 0.58) * 0.6) * H, p.y, p.z)))  # o decote das costas
+        if cands:
+            q = min(cands, key=lambda c: (c - p).length)
+            if (q - p).length < 0.03 * H:
+                v.co = inv @ q
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+
+
+snap_tank_edges(tk)
 # tecido liso: só as dobras moles de malha folgada na barriga e embaixo do peito
 relief(tk, lambda p: 0.0022 * H * (ridge(p.z / H * 22 + math.atan2(p.x, -p.y) * 1.6 + n3(p, 9) * 1.4, 2) - 0.45) * (p.z < hz + 0.4 * H))
 
@@ -199,34 +235,110 @@ YOKE = [  # (z, meia-largura, meia-profundidade)
     (sz + 0.09 * H, 0.1 * H, 0.098 * H),       # em volta do pescoço (a gola por cima)
     (sz + 0.078 * H, SX * 0.7, 0.15 * H),      # o trapézio
     (sz + 0.07 * H, SX + 0.04 * H, 0.19 * H),  # por cima do alto do ombro
-    (sz + 0.045 * H, SX + 0.09 * H, 0.205 * H),  # a queda inclinada (sem "prateleira")
-    (sz + 0.0 * H, SX + 0.12 * H, 0.215 * H),  # a curva do deltoide
+    (sz + 0.045 * H, SX + 0.08 * H, 0.205 * H),  # a queda inclinada (sem "prateleira")
+    (sz + 0.012 * H, SX + 0.1 * H, 0.213 * H),  # a curva do deltoide
 ]
-yk = b.add('jacketYoke', shell_grid([ring_pts(z, rx, ry, JA, TAU - JA, NJ) for z, rx, ry in YOKE], 0.008), leather, region='torso', subdiv=1)
-BACK = [  # as costas: do ombro até a barra no quadril, atrás dos braços
-    (sz + 0.06 * H, SX + 0.0 * H, 0.2 * H),      # sai de baixo da capa dos ombros, seguindo a queda
-    (sz + 0.0 * H, SX + 0.1 * H, 0.214 * H),
-    (sz - 0.1 * H, SX + 0.1 * H, 0.222 * H),
-    (sz - 0.26 * H, SX + 0.085 * H, 0.222 * H),
-    (hz + 0.12 * H, SX + 0.07 * H, 0.218 * H),
-    (hz + 0.03 * H, SX + 0.075 * H, 0.222 * H),  # a barra (estilo aviador), mais junta
+def yoke_row(z, rx, ry, droop=0.0):
+    """a capa: elipse na frente; atrás, a mesma superelipse das costas com o meio mais perto da nuca. droop: nas
+    laterais (por cima do braço) a borda desce — o couro dobra sobre o ombro em vez de virar uma aba reta"""
+    pts = []
+    for i in range(NJ + 1):
+        a = JA + (TAU - 2 * JA) * i / NJ
+        c, sn = math.cos(a), math.sin(a)
+        y = -c * ry if c > 0 else abs(c) ** 0.6 * ry * 0.82
+        pts.append(Vector((sn * rx, y, z - droop * sn ** 4)))
+    return pts
+
+
+YROWS = [yoke_row(z, rx, ry) for z, rx, ry in YOKE]
+YROWS.append(yoke_row(sz - 0.01 * H, SX + 0.108 * H, 0.216 * H, droop=0.09 * H))  # a queda sobre o braço (polimento 2026-11-09)
+yk = b.add('jacketYoke', shell_grid(YROWS, 0.008), leather, region='torso', subdiv=1)
+# as costas: do ombro até a barra no quadril, atrás dos braços. Polimento (2026-11-09, "costas retangulares"): antes a
+# largura era a mesma do ombro à barra e a borda de baixo reta — lia como uma placa. Agora o couro é mais largo nas
+# escápulas e vai fechando até a barra FRANZIDA de aviador (mais estreita que os ombros), com a borda de baixo
+# arredondada nos cantos e as bordas dos lados entrando
+BACK = [  # (z, meia-largura, meia-profundidade NO MEIO das costas — a superelipse afasta os lados para livrar os braços)
+    (sz + 0.05 * H, SX + 0.06 * H, 0.17 * H),    # sai de baixo da capa dos ombros, seguindo a queda
+    (sz + 0.0 * H, SX + 0.112 * H, 0.168 * H),   # a mesma largura da borda da capa (sem a aba de "cogumelo")
+    (sz - 0.08 * H, SX + 0.108 * H, 0.162 * H),  # o mais largo: as escápulas
+    (sz - 0.18 * H, SX + 0.088 * H, 0.156 * H),
+    (sz - 0.28 * H, SX + 0.066 * H, 0.15 * H),
+    (hz + 0.12 * H, SX + 0.046 * H, 0.148 * H),
+    (hz + 0.05 * H, SX + 0.034 * H, 0.15 * H),   # a barra franzida, mais junta que os ombros
 ]
-bk = b.add('jacketBack', shell_grid([ring_pts(z, rx, ry, JB, TAU - JB, NJ) for z, rx, ry in BACK], 0.008), leather, region='torso', subdiv=1)
-relief(bk, lambda p: 0.007 * H * (ridge(math.atan2(p.x, -p.y) * 6 + n3(p, 7) * 1.4, 2) - 0.4) * lim((sz - 0.04 * H - p.z) / (0.12 * H)))  # o couro caindo em dobras
-hem = [Vector((math.sin(a) * BACK[-1][1], -math.cos(a) * BACK[-1][2], BACK[-1][0] + 0.012 * H)) for a in [JB + (TAU - 2 * JB) * i / NJ for i in range(NJ + 1)]]
-b.add('jacketHem', rod(hem, 0.016 * H, 6, caps=True, flat=(outward((0, 0)), 0.35)), leather_dk, region='torso', subdiv=0)
+
+
+def bpt(a, rx, ry, z):
+    """ponto das costas: superelipse na profundidade (|cos|^0,6): encosta no meio das costas (antes ficava 11 cm
+    longe, como mochila, medido no MCP) e ainda passa atrás dos braços nos lados"""
+    c = math.cos(a)
+    return Vector((math.sin(a) * rx, -math.copysign(abs(c) ** 0.6, c) * ry, z))
+
+
+def back_row(z, rx, ry, k):
+    """uma linha das costas; na de baixo (k = último) os cantos sobem um pouco (barra arredondada, não reta)"""
+    pts = []
+    for i in range(NJ + 1):
+        a = JB + (TAU - 2 * JB) * i / NJ
+        t = abs(a - math.pi) / (math.pi - JB)  # 0 no meio das costas, 1 na borda do lado
+        pts.append(bpt(a, rx, ry, z + (0.03 * H * t ** 3 if k == len(BACK) - 1 else 0.0)))
+    return pts
+
+
+rows = [back_row(z, rx, ry, k) for k, (z, rx, ry) in enumerate(BACK)]
+bk = b.add('jacketBack', shell_grid(rows, 0.008), leather, region='torso', subdiv=1)
+# o couro caindo: dobras verticais que abrem para baixo (mais fundas perto da barra franzida) e um vinco largo nas
+# escápulas onde a jaqueta apoia
+relief(bk, lambda p: 0.006 * H * (ridge(math.atan2(p.x, -p.y) * 7 + n3(p, 7) * 1.2, 2) - 0.4) * lim((sz - 0.06 * H - p.z) / (0.2 * H))
+       + 0.004 * H * (ridge(math.atan2(p.x, -p.y) * 14 + n3(p, 11), 3) - 0.5) * lim((hz + 0.16 * H - p.z) / (0.08 * H)))
+hem = rows[-1]
+hem = [q + Vector((0, 0, 0.012 * H)) for q in hem]
+b.add('jacketHem', rod(hem, 0.02 * H, 6, caps=True, flat=(outward((0, 0)), 0.35)), leather_dk, region='torso', subdiv=0)  # a barra de malha do aviador
+# a COSTURA DA PALA atravessando as costas (curva, um pouco abaixo dos ombros) e a costura do meio até a barra
+yoke_seam = [bpt(a, SX + 0.104 * H, 0.168 * H, sz - 0.05 * H - 0.025 * H * (1 - abs(a - math.pi) / (math.pi - JB)) ** 2)
+             for a in [JB + 0.08 + (TAU - 2 * JB - 0.16) * i / 24 for i in range(25)]]
+b.add('jacketYokeSeam', rod(yoke_seam, 0.005 * H, 5, caps=True, flat=(outward((0, 0)), 0.5)), leather_dk, region='torso', subdiv=0)
+cseam = [Vector((0, 0.16 * H + 0.006 * H, z)) for z in [sz - 0.075 * H + (hz + 0.07 * H - (sz - 0.075 * H)) * i / 8 for i in range(9)]]
+b.add('jacketCenterSeam', rod(cseam, 0.004 * H, 5, caps=True), leather_dk, region='torso', subdiv=0)
 # as FRENTES: duas abas penduradas na frente de cada ombro, até o meio do peito (cobrem o alto do braço por fora)
-FR = [(sz + 0.02 * H, SX + 0.105 * H, 0.212 * H), (sz - 0.06 * H, SX + 0.1 * H, 0.21 * H), (sz - 0.17 * H, SX + 0.09 * H, 0.2 * H), (sz - 0.26 * H, SX + 0.08 * H, 0.19 * H)]
+# Polimento (2026-11-09): antes cada aba era um bloco reto do lado do braço. Agora a aba cai como a frente de uma jaqueta
+# aberta: larga no ombro e afinando para DENTRO, deitada no peito (a borda de fora vai de 1,22 rad no ombro a 0,9 rad
+# embaixo), e cada ponto é empurrado para fora do tronco quando entraria nele
+FR = [  # (z, meia-largura, meia-profundidade, ângulo da borda de fora)
+    (sz + 0.02 * H, SX + 0.105 * H, 0.212 * H, 1.22),
+    (sz - 0.06 * H, SX + 0.075 * H, 0.2 * H, 1.08),
+    (sz - 0.17 * H, SX + 0.04 * H, 0.185 * H, 0.97),
+    (sz - 0.26 * H, SX + 0.02 * H, 0.175 * H, 0.9),
+]
+
+
+def off_torso(p, off):
+    """o ponto p, ou o ponto da superfície do tronco + off na mesma direção horizontal se p estiver dentro dele"""
+    d = Vector((p.x, p.y, 0.0))
+    if d.length < 1e-6:
+        return p
+    d.normalize()
+    q = surf('torso', Vector((0, 0, p.z)) + d * 0.8 * H, -d, off)
+    if q is None:
+        return p
+    return p if Vector((p.x, p.y, 0)).length >= Vector((q.x, q.y, 0)).length else Vector((q.x, q.y, p.z))
+
+
+def front_row(z, rx, ry, a_out, s):
+    a0, a1 = (JA, a_out) if s > 0 else (TAU - a_out, TAU - JA)
+    return [off_torso(q, 0.022 * H) for q in ring_pts(z, rx, ry, a0, a1, 10)]
+
+
 for s in (1, -1):
-    a0, a1 = (JA, 1.12) if s > 0 else (TAU - 1.12, TAU - JA)
-    fr = b.add(f'jacketFront{s}', shell_grid([ring_pts(z, rx, ry, a0, a1, 10) for z, rx, ry in FR], 0.008), leather, region='torso', subdiv=1)
+    a0, a1 = (JA, FR[-1][3]) if s > 0 else (TAU - FR[-1][3], TAU - JA)
+    fr = b.add(f'jacketFront{s}', shell_grid([front_row(z, rx, ry, ao, s) for z, rx, ry, ao in FR], 0.008), leather, region='torso', subdiv=1)
     relief(fr, lambda p: 0.004 * H * (ridge(p.x / H * 30 + n3(p, 8), 2) - 0.4))
     # a LAPELA de lã descendo pela borda da frente (a pele dobrada por fora) e o vivo escuro na barra da aba
-    ed = [Vector((s * math.sin(JA) * rx, -math.cos(JA) * ry, z)) for z, rx, ry in [YOKE[0]] + FR]
+    ed = [Vector((s * math.sin(JA) * YOKE[0][1], -math.cos(JA) * YOKE[0][2], YOKE[0][0]))] + [front_row(z, rx, ry, ao, s)[0 if s > 0 else -1] for z, rx, ry, ao in FR]
     ed[0] = ed[0] + Vector((0, -0.01 * H, 0))
     b.add(f'lapel{s}', rod(ed, [0.03 * H, 0.036 * H, 0.032 * H, 0.022 * H, 0.012 * H], 6, flat=(outward((0, 0)), 0.35)), fleece, region='torso', subdiv=0)
-    z, rx, ry = FR[-1]
-    b.add(f'frontHem{s}', rod([Vector((math.sin(a) * rx, -math.cos(a) * ry, z + 0.008 * H)) for a in [a0 + (a1 - a0) * k / 8 for k in range(9)]], 0.012 * H, 5, flat=(outward((0, 0)), 0.35)), leather_dk, region='torso', subdiv=0)
+    z, rx, ry, ao = FR[-1]
+    b.add(f'frontHem{s}', rod([q + Vector((0, 0, 0.008 * H)) for q in front_row(z, rx, ry, ao, s)], 0.012 * H, 5, flat=(outward((0, 0)), 0.35)), leather_dk, region='torso', subdiv=0)
 # a GOLA forrada de pele branca, larga, deitada em volta do pescoço e dos ombros
 gola = []
 for i in range(NJ + 1):
@@ -285,18 +397,27 @@ for s in (1, -1):
     if p0 and p1:
         D.chain([p0, p1, p1 + Vector((s * 0.012 * H, -0.006 * H, -0.08 * H)), p1 + Vector((s * 0.018 * H, 0.0, -0.13 * H))],
                 [0.02 * H, 0.022 * H, 0.016 * H, 0.004 * H], step=0.5)
-# o resto SOLTO dos lados e da nuca, até a metade do pescoço
+# o resto SOLTO dos lados e da nuca, até a metade do pescoço. Polimento (2026-11-09, "cabelo de trás com cara de
+# capacete"): antes as mechas nasciam todas na mesma altura (el 0,4), do mesmo tamanho e com a ponta abrindo PARA FORA —
+# um domo liso com uma franja reta. Agora cada mecha desce DO ALTO da cabeça (os sulcos aparecem no domo), o tamanho
+# alterna (mais comprida no meio da nuca) e as pontas fecham para o pescoço
 rnd = random.Random(29)
-for i in range(18):
-    a = math.copysign(min(math.pi, 1.0 + abs((i / 17 - 0.5) * 2) * 2.2), (i / 17 - 0.5) or 1)
-    p0 = on_head(a, 0.4, 0.016 * H)
-    if not p0:
+NB = 30
+for i in range(NB):
+    u = (i + 0.5) / NB  # 0 → 1 de um lado ao outro por trás
+    a = math.copysign(1.05 + abs(u - 0.5) * 2 * 0.0 + (1 - abs(u - 0.5) * 2) * (math.pi - 1.05), u - 0.5)
+    c0 = on_head(a * 0.85 if abs(a) < 2.4 else a, 1.2, 0.016 * H)
+    c1 = on_head(a, 0.75, 0.022 * H)
+    c2 = on_head(a, 0.25, 0.024 * H)
+    if not (c0 and c1 and c2):
         continue
     d = Vector((math.sin(a), -math.cos(a), 0)).normalized()
-    ln = rnd.uniform(0.15, 0.19) * H
-    pts = [p0 + Vector((0, 0, 0.03 * H)), p0, p0 + d * 0.02 * H + Vector((0, 0.004 * H, -ln * 0.5)), p0 + d * 0.03 * H + Vector((0, 0.008 * H, -ln * 0.85)), p0 + d * 0.034 * H + Vector((0, 0.01 * H, -ln))]
-    D.chain(pts, [0.024 * H, 0.026 * H, 0.022 * H, 0.014 * H, 0.004 * H], step=0.5)
-hd_ = lambda p: 0.002 * H * (ridge(p.x / H * 100 + p.z / H * 30 + n3(p, 30), 2) - 0.4)
+    back = 1 - abs(abs(a) - math.pi) / (math.pi - 1.05)  # 1 no meio da nuca, 0 do lado
+    ln = (0.09 + 0.07 * back + (0.035 if i % 2 else 0.0) + rnd.uniform(-0.015, 0.015)) * H
+    c3 = c2 + Vector((0, 0, -ln * 0.5)) - d * 0.006 * H
+    c4 = c2 + Vector((rnd.uniform(-0.01, 0.01) * H, 0, -ln)) - d * 0.016 * H
+    D.chain([c0, c1, c2, c3, c4], [0.017 * H, 0.022 * H, 0.024 * H, 0.016 * H, 0.004 * H], step=0.5)
+hd_ = lambda p: 0.0028 * H * (ridge(p.x / H * 110 + p.z / H * 25 + n3(p, 30), 2) - 0.4)  # os fios mais marcados
 b.add('hair', D.mesh(res=0.0045, smooth=2, disp=hd_, target=5200), hairm, region='body', weight_fn=HEAD, subdiv=0)
 
 # ================================================================ BARBA RALA (curta, rente: queixo, maxilar e o bigode fino)

@@ -3059,3 +3059,94 @@ export function glockTatica() {
   g.add(lens);
   return g;
 }
+
+// ESPINGARDA DA IVETE (wiki "Ivete Beicur", Arsenal: "Um modelo padrão de espingarda equipado com um cinto de munições
+// em sua coronha"; a arte promocional de Desconjuração): espingarda de bomba de madeira, o cinto de cartuchos vermelhos
+// na coronha e a bandoleira de couro
+export function ivetePump() {
+  const g = new THREE.Group();
+  const wood = 0x6a3e22;
+  const stock = part(new THREE.BoxGeometry(0.05, 0.3, 0.1), wood);
+  stock.position.set(0, 0.24, -0.03);
+  stock.rotation.x = 0.12;
+  g.add(stock);
+  const butt = part(new THREE.BoxGeometry(0.055, 0.04, 0.12), 0x241812);
+  butt.position.set(0, 0.39, -0.05);
+  g.add(butt);
+  // o cinto de munição na coronha: a faixa de couro e os cartuchos vermelhos de ponta dourada
+  const belt = part(new THREE.BoxGeometry(0.062, 0.12, 0.08), 0x3a2416);
+  belt.position.set(0, 0.22, -0.03);
+  belt.rotation.x = 0.12;
+  g.add(belt);
+  for (let i = 0; i < 4; i++) {
+    for (const s of [1, -1]) {
+      const shell = part(new THREE.CylinderGeometry(0.009, 0.009, 0.05, 6), 0xb81c1c, { outline: false });
+      shell.position.set(s * 0.034, 0.18 + i * 0.026, -0.03);
+      shell.rotation.x = Math.PI / 2;
+      g.add(shell);
+      const cap = part(new THREE.CylinderGeometry(0.0095, 0.0095, 0.012, 6), 0xd8b040, { outline: false });
+      cap.position.set(s * 0.034, 0.18 + i * 0.026, 0.0);
+      cap.rotation.x = Math.PI / 2;
+      g.add(cap);
+    }
+  }
+  const grip = part(new THREE.BoxGeometry(0.045, 0.08, 0.05), wood);
+  grip.position.set(0, 0.06, -0.04);
+  g.add(grip);
+  const body = part(new THREE.BoxGeometry(0.055, 0.2, 0.08), 0x26262a);
+  body.position.y = -0.06;
+  g.add(body);
+  const trigger = part(new THREE.TorusGeometry(0.022, 0.005, 4, 8, Math.PI), 0x1c1c1e, { outline: false });
+  trigger.position.set(0, 0.0, -0.05);
+  trigger.rotation.y = Math.PI / 2;
+  g.add(trigger);
+  const barrel = part(new THREE.CylinderGeometry(0.02, 0.02, 0.6, 10), 0x1c1c1e);
+  barrel.position.set(0, -0.45, 0.018);
+  g.add(barrel);
+  const tube = part(new THREE.CylinderGeometry(0.016, 0.016, 0.44, 8), 0x2a2a2e);
+  tube.position.set(0, -0.38, -0.018);
+  g.add(tube);
+  const pump = part(new THREE.CylinderGeometry(0.03, 0.03, 0.16, 10), wood);
+  pump.position.set(0, -0.32, -0.018);
+  g.add(pump);
+  for (let i = 0; i < 4; i++) {
+    const ridge = part(new THREE.TorusGeometry(0.031, 0.004, 4, 10), 0x4a2a16, { outline: false });
+    ridge.position.set(0, -0.27 - i * 0.032, -0.018);
+    ridge.rotation.x = Math.PI / 2;
+    g.add(ridge);
+  }
+  const bead = part(new THREE.SphereGeometry(0.008, 6, 4), 0xd8d0c0, { outline: false });
+  bead.position.set(0, -0.74, 0.04);
+  g.add(bead);
+  // a bandoleira: do cano à coronha, pendurada
+  const pts = [new THREE.Vector3(0, -0.5, -0.03), new THREE.Vector3(0, -0.2, -0.12), new THREE.Vector3(0, 0.15, -0.13), new THREE.Vector3(0, 0.36, -0.1)];
+  const sling = part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 16, 0.008, 4, false), 0x2a1a10, { outline: false });
+  g.add(sling);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.76, 0.018);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
+// GARRAFA DO SUVACO SECO (a Ivete é BARWOMAN; PROPOSTA de arma): long neck de vidro âmbar com o rótulo
+export function barBottle() {
+  const g = new THREE.Group();
+  const glass = new THREE.MeshToonMaterial({ color: 0x7a4a14, transparent: true, opacity: 0.9 });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.037, 0.15, 12), glass);
+  body.position.y = 0.05;
+  g.add(body);
+  const shoulder = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.035, 0.05, 12), glass);
+  shoulder.position.y = -0.05;
+  g.add(shoulder);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.014, 0.08, 10), glass);
+  neck.position.y = -0.115;
+  g.add(neck);
+  const label = part(new THREE.CylinderGeometry(0.0375, 0.0385, 0.06, 12, 1, true), 0xe8d8a8, { outline: false });
+  label.position.y = 0.05;
+  g.add(label);
+  const cap = part(new THREE.CylinderGeometry(0.014, 0.014, 0.012, 10), 0xc8a030, { outline: false });
+  cap.position.y = -0.16;
+  g.add(cap);
+  return g;
+}

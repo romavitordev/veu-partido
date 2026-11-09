@@ -948,6 +948,166 @@ const CHOREO = {
     return END;
   },
 
+  // MÃE E FILHO (pedido do dono, 2026-11-09): o Arthur abre os olhos e passa o REBIRTH para a DOZE da Ivete (o ritual
+  // Amaldiçoar Arma com Energia vale para uma arma tocada; ser na arma dela é PROPOSTA), ela avança atirando chumbo
+  // amaldiçoado e o filho cobre de longe, ajoelhado com a sniper. Fecha com ela colada no alvo e o tiro dele junto.
+  // Na Casa da Ivete o Kaiser entra no meio com as Balas Amaldiçoadas da M4.
+  mae_filho({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 5.2;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const ivete = tools.get('ivete'), arthur = tools.get('arthur'), kaiser = tools.get('kaiser');
+    const GREEN = 0x3aff6a;
+    const hits = splitDamage(crewTotal, kaiser ? 7 : 6);
+    const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? 0x5a8ab8).getHexString());
+    const say = (actor, text, side) => actor && world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
+    const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
+    const handles = [];
+    const run = (actor, t0, t1, fromAng, fromR, toAng, toR, anim = 'run') => {
+      let a0 = null, a1 = null;
+      tl.add(t0, () => {
+        if (!live()) return;
+        a0 = tools.around(actor, fromAng, fromR);
+        a1 = tools.around(actor, toAng, toR);
+        actor.show(END - t0, a0);
+        actor.pos.set(a0.x, 0, a0.z);
+        actor.face(opp);
+        actor.play(anim, t1 - t0 + 0.1);
+      });
+      tl.each((time) => {
+        if (!a0 || time < t0 || time > t1 || !live()) return;
+        const k = smooth((time - t0) / (t1 - t0));
+        actor.pos.set(a0.x + (a1.x - a0.x) * k, 0, a0.z + (a1.z - a0.z) * k);
+        actor.face(opp);
+      });
+    };
+    // a doze amaldiçoada: leque de bagos verdes saindo do cano
+    const blast = (actor, i, { pellets = 6, spread = 0.5, big = false } = {}) => {
+      if (!actor || !live()) return;
+      const from = muzzle(actor);
+      const to = opp.chestPos();
+      world.fx.flash(from, { color: GREEN, size: big ? 1.8 : 1.1, life: 0.1 });
+      for (let p = 0; p < pellets; p++) {
+        const off = new THREE.Vector3((Math.random() - 0.5) * spread, (Math.random() - 0.5) * spread * 0.7, (Math.random() - 0.5) * spread);
+        world.fx.tracer(from, to.clone().add(off), { color: p % 2 ? GREEN : 0xffe08a, life: 0.12, width: 0.035 });
+      }
+      world.audio.play('shotgun', { volume: big ? 1 : 0.85 });
+      tools.impact(actor, hits[i], { sound: 'clawHit', color: GREEN });
+    };
+    // a sniper do Rebirth: o traço verde de longe
+    const snipe = (i) => {
+      if (!arthur || !live()) return;
+      const from = muzzle(arthur);
+      world.fx.flash(from, { color: GREEN, size: 1.2, life: 0.1 });
+      world.fx.tracer(from, opp.chestPos(), { color: GREEN, life: 0.25, width: 0.07 });
+      world.audio.play('sniper', { volume: 0.9 });
+      tools.impact(arthur, hits[i], { sound: 'clawHit', color: GREEN });
+    };
+
+    // 1. o REBIRTH na doze: o Arthur atrás dela abre os olhos verdes e os raios passam para a espingarda
+    tl.add(S, () => {
+      if (!live()) return;
+      if (ivete) { const at = tools.enter(ivete, 0.15, 6.2); if (at) ivete.play('charge_fists', 1.3); }
+      if (arthur) {
+        tools.enter(arthur, 0.5, 7.6);
+        arthur.face(ivete || opp);
+        arthur.play('rebirth', 0.9);
+        if (arthur.rig && arthur.rig.props && arthur.rig.props.eyes) arthur.rig.showProp('eyes', true);
+      }
+      world.audio.play('rebirth');
+      say(arthur || ivete, arthur ? 'Mãe! Pega o Rebirth!' : 'Ninguém mexe com os meus meninos!', 1);
+      if (arthur && ivete) world.cameraRig.playShots([{ ...twoShot(arthur, ivete, { dur: 1.4, dist: 3.6, height: 1.6, side: 1, fov: 44 }), cut: true }]);
+    });
+    tl.add(S + 0.4, () => {
+      if (!live() || !ivete) return;
+      const src = arthur ? arthur.chest() : ivete.chest();
+      for (let i = 0; i < 5; i++) world.fx.lightning(src, muzzle(ivete).add(new THREE.Vector3((Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.3)), { color: GREEN, life: 0.3 });
+      handles.push(world.fx.runes(() => muzzle(ivete), { color: GREEN, count: 6, radius: 0.45, shape: 'skull', size: 0.22 }));
+      world.fx.flash(muzzle(ivete), { color: GREEN, size: 2.2, life: 0.2 });
+    });
+    tl.add(S + 0.85, () => {
+      if (!live() || !ivete) return;
+      ivete.face(opp);
+      say(ivete, 'Ninguém mexe com os meus meninos!', 0);
+      world.cameraRig.playShots([{ ...lowAngle(ivete, { dur: 0.6, dist: 2.6, fov: 46 }), cut: true }]);
+    });
+
+    // 2. ela RUSHA atirando; o filho ajoelha e cobre de longe
+    if (ivete) {
+      run(ivete, S + 1.3, S + 1.75, 0.15, 6.2, 0.1, 4.4);
+      tl.add(S + 1.75, () => { if (live()) { ivete.face(opp); ivete.play('shoot_rifle', 0.4); } });
+      tl.add(S + 1.85, () => blast(ivete, 0));
+      run(ivete, S + 2.15, S + 2.55, 0.1, 4.4, 0.05, 2.6);
+      tl.add(S + 2.55, () => { if (live()) { ivete.face(opp); ivete.play('shoot_rifle', 0.4); } });
+      tl.add(S + 2.65, () => blast(ivete, 2));
+    }
+    if (arthur) {
+      tl.add(S + 1.3, () => {
+        if (!live()) return;
+        const at = tools.around(arthur, 0.7, 9);
+        arthur.pos.set(at.x, 0, at.z);
+        arthur.face(opp);
+        arthur.play('sniper_kneel', 0.5);
+        world.cameraRig.playShots([{ ...overShoulder(ivete || arthur, opp, { dur: 1.0, back: 2.2, side: -0.8, height: 1.7, fov: 46 }), cut: true }]);
+      });
+      tl.add(S + 2.1, () => {
+        if (!live()) return;
+        arthur.face(opp);
+        arthur.play('shoot_sniper', 0.6);
+        world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.7, back: 2.6, side: 1.1, height: 1.7, fov: 34 }), cut: true }]);
+      });
+      tl.add(S + 2.3, () => snipe(1));
+    }
+    // (Casa da Ivete) o Kaiser chega do lado com a M4
+    if (kaiser) {
+      tl.add(S + 2.8, () => {
+        if (!live()) return;
+        tools.enter(kaiser, -1.2, 4.2);
+        kaiser.play('shoot_rifle', 0.7);
+        say(kaiser, 'Ninguém mexe com a tia Ivete!', 1);
+        world.cameraRig.playShots([{ ...overShoulder(kaiser, opp, { dur: 0.75, back: 1.8, side: -0.6, height: 1.6, fov: 42 }), cut: true }]);
+      });
+      for (let b = 0; b < 4; b++) {
+        tl.add(S + 3.0 + b * 0.08, () => {
+          if (!live()) return;
+          const from = muzzle(kaiser);
+          world.fx.tracer(from, opp.chestPos(), { color: 0xa865ff, life: 0.1, width: 0.04 });
+          world.audio.play(kaiser.def.ranged && kaiser.def.ranged.sound || 'swing', { volume: 0.5 });
+          if (b === 3) tools.impact(kaiser, hits[6], { sound: 'heavyPunch', color: 0xa865ff });
+        });
+      }
+    }
+    // 3. o fecho: a doze colada no peito e o tiro do Arthur no mesmo instante
+    const F = S + (kaiser ? 3.75 : 3.3);
+    if (ivete) {
+      run(ivete, F - 0.35, F - 0.05, 0.05, 2.6, 0.0, 1.2);
+      tl.add(F, () => {
+        if (!live()) return;
+        ivete.face(opp);
+        ivete.play('shoot_rifle', 0.6);
+        world.cameraRig.playShots([{ ...twoShot(ivete, opp, { dur: 0.45, dist: 2.8, height: 1.4, side: -1, fov: 42 }), cut: true }]);
+      });
+      tl.add(F + 0.1, () => blast(ivete, 3, { pellets: 9, spread: 0.3, big: true }));
+    }
+    if (arthur) {
+      tl.add(F - 0.2, () => { if (live()) { arthur.face(opp); arthur.play('shoot_sniper', 0.6); } });
+      tl.add(F + 0.12, () => snipe(4));
+    }
+    tl.add(F + 0.3, () => {
+      if (!live()) return;
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: GREEN, radius: 2.6, life: 0.5 });
+      world.fx.burst(opp.chestPos(), { count: 30, color: GREEN, speed: 5, life: 0.45, size: 0.18 });
+      tools.impact(ivete || arthur, hits[5], { sound: 'clawHit', color: GREEN });
+      world.cameraRig.playShots([{ ...pullBack(ivete || arthur, opp, { dur: 1.0, from: 3, to: 7, height: 2.2 }), cut: true }]);
+      world.cameraRig.shake(0.5, 0.3);
+    });
+    tl.add(END, () => {
+      for (const h of handles.splice(0)) h.stop();
+      if (arthur && arthur.rig && arthur.rig.props && arthur.rig.props.eyes) arthur.rig.showProp('eyes', false);
+      world.ui && world.ui.subtitle && world.ui.subtitle(null);
+    });
+    return F + 0.3;
+  },
+
   abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const END = S + 5.4;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });

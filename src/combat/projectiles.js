@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { applyHit } from './damage.js';
 import { inBounds } from './positioning.js';
 import { glowMat } from '../models/rig.js';
-import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow } from '../models/weapons.js';
+import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, barBottle } from '../models/weapons.js';
 import { createMistZone } from './abilities.js';
 import { addBloodPool } from './bloodPools.js';
 import { inscribe } from './kianPowers.js';
@@ -300,6 +300,17 @@ const VISUALS = {
     const spark = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 4), glowMat(0xffc040, 1));
     spark.position.y = 0.22;
     spin.add(spark);
+    g.add(spin);
+    g.userData.tumble = spin;
+    return g;
+  },
+  // a garrafa do Suvaco Seco (Ivete): a long neck girando de ponta a ponta
+  bottle() {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const b = barBottle();
+    b.scale.setScalar(1.3);
+    spin.add(b);
     g.add(spin);
     g.userData.tumble = spin;
     return g;

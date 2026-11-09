@@ -643,6 +643,50 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## IVETE BEICUR
+
+*A dona do Suvaco Seco, a mãe do Arthur e quem cuida do arsenal da Ordem* · arma: A espingarda com o cinto de cartuchos na coronha e as garrafas do Suvaco Seco
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Tapa | 20 | 1.5 m |  |
+| ○ 2 | Soco de balcão | 25 | 1.6 m |  |
+| ○ 3 | Cabeçada | 28 | 1.4 m |  |
+| ○ 4 | Bota na porta | 50 | 1.9 m | finalizador: lança |
+| Frente + ○ | Empurrão de bar | 30 | 1.9 m |  |
+| Trás + ○ | Recua e soca | 30 | 1.7 m | invulnerável no começo |
+| Lado + ○ | Chute lateral | 28 | 1.9 m |  |
+| No ar + ○ | Chute aéreo | 28 | 1.8 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho | 34 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Canelada | 34 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Espingarda
+
+- Dano 10 × 6 · alcance 9 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Bem-vindo ao Suvaco Seco** — △ + □ / Y + X · custo 20 · cooldown 9 s · dano 56 · alcance 2.6 m
+  Encosta o cano da espingarda no adversário e dispara à queima-roupa: só funciona COLADA nele (até 2,6 m) e joga longe.
+- **Garrafada** — △ + ○ / Y + B · custo 16 · cooldown 8 s
+  Arremessa uma garrafa do Suvaco Seco na cabeça do adversário: quem leva fica TONTO por meio segundo.
+- **Fumaça do Charuto** — △ + L2 / Y + LT · custo 18 · cooldown 13 s
+  Acende um charuto cubano e solta uma baforada grossa à frente: a fumaça engole projéteis, deixa o adversário lento e sem recuperar sanidade dentro dela.
+- **Juramento dos Gaudérios** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
+  Bate na insígnia tatuada no braço: por 6 s bate 20% mais forte, recebe 15% menos dano e não recua com golpes leves.
+
+### Especial: Ninguém Mexe com os Meus Meninos
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: A Última Gaudéria
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (físico, distância, habilidades), −12% de dano recebido, +5% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 10% na hora.
+
+---
+
 ## SENHOR VERÍSSIMO
 
 *Líder da Ordo Realitas: Inteligência Estratégica e o Segredo de Veríssimo* · arma: A espada do Arnaldo e uma escopeta curta
