@@ -45,14 +45,17 @@ export default {
   },
 
   // □: TEMPESTADE CAÓTICA (cânone: 8d10 — a Rajada era 8d8). Sem o capacete é uma bola de energia arremessada; com o
-  // capacete vira um RAIO CONTÍNUO que sai da Antena por alguns segundos e PERSEGUE o adversário (dá para fugir
-  // correndo de lado ou com dash, e a defesa de frente segura)
+  // capacete vira um RAIO CONTÍNUO que sai da Antena e PERSEGUE o adversário (dá para fugir correndo de lado ou com
+  // dash, e a defesa de frente segura). SEGURÁVEL COM LIMITE (pedido do dono, 2026-11-09): o raio dura enquanto o □
+  // fica apertado e apaga ao soltar, mas nunca passa de 2,2 s (antes, segurando, ele voltava a disparar sem parar)
   ranged: {
     name: 'Tempestade Caótica',
+    description: 'O raio contínuo da Antena persegue o adversário ENQUANTO O □ FICA APERTADO (até 2,2 s; soltar apaga).',
     type: 'beam',
     anim: 'point',
     windup: 0.3,
-    duration: 2.2,
+    duration: 2.2, // o máximo segurando o □
+    minHold: 0.3,
     recovery: 0.35,
     tick: 0.15, // pulso de dano
     damage: 9, // ~14 pulsos se ficar no raio o tempo todo (≈125)

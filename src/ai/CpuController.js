@@ -455,6 +455,12 @@ export class CpuController {
     }
     if (f.state !== 'downed') this.techTried = false;
 
+    // raios e jatos seguráveis (Tempestade Caótica do ???, o lança-chamas do Tristan): a CPU segura até o limite
+    if (f.holdChannel) {
+      if (f.state === 'ranged') out.held.ranged = true;
+      if (f.state === 'ability') { out.held.ranged = true; out.held.carga = true; }
+      if (f.state === 'ranged' || f.state === 'ability') return out;
+    }
     // Arthur: segurando □ para o tiro carregado (mais tempo de mira = mais dano)
     if (this.aimHold > 0) {
       this.aimHold -= dt;

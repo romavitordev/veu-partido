@@ -287,6 +287,32 @@ function face(paintExtras, o) {
   }, { wrap: true });
 }
 
+// QUEIMADURAS (Tristan): manchas irregulares de pele rosada repuxada, com a borda escura e as faixas de cicatriz por
+// dentro. spots = [[x, y, raioX, raioY]]
+function burnPatches(g, spots, seed = 1) {
+  let sd = seed * 7919 + 13;
+  const rnd = () => { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
+  for (const [x, y, rx, ry] of spots) {
+    const blob = (k) => {
+      g.beginPath();
+      for (let i = 0; i <= 14; i++) {
+        const a = (i / 14) * Math.PI * 2;
+        const r = k * (0.75 + rnd() * 0.4);
+        const px = x + Math.cos(a) * rx * r; const py = y + Math.sin(a) * ry * r;
+        if (i) g.lineTo(px, py); else g.moveTo(px, py);
+      }
+      g.closePath();
+    };
+    g.fillStyle = 'rgba(168,84,78,0.5)'; blob(1.08); g.fill();
+    g.fillStyle = 'rgba(222,140,128,0.75)'; blob(0.9); g.fill();
+    for (let i = 0; i < 3; i++) {
+      g.strokeStyle = i % 2 ? 'rgba(150,64,62,0.3)' : 'rgba(240,176,166,0.35)'; g.lineWidth = 1 + rnd() * 1.5;
+      const yy = y - ry * 0.4 + i * ry * 0.4;
+      g.beginPath(); g.moveTo(x - rx * 0.7, yy + rnd() * 4); g.bezierCurveTo(x - rx * 0.2, yy - 5, x + rx * 0.2, yy + 5, x + rx * 0.7, yy - rnd() * 4); g.stroke();
+    }
+  }
+}
+
 // O rosto do casal Carvalho (um corpo só): pele negra, barba rala, a cicatriz abaixo do olho direito (x < CX) e os
 // olhos de quem está no controle (iris/irisLight); smile > 0 = boca gentil (Fernando), < 0 = fechada (Luciano)
 function carvalhoFace(iris, irisLight, browO, smile) {
@@ -2314,6 +2340,28 @@ export const MATERIAL_TEXTURES = {
   // Fernando está no controle (sobrancelha aflita, gentil), AMARELOS quando é o Luciano (sobrancelha fechada, sério)
   face_fernando: carvalhoFace('#ff6ab8', '#ffb0dc', { angry: -0.6, thick: 3.4, color: '#1c1410' }, 2),
   face_luciano: carvalhoFace('#e8b818', '#fff07a', { angry: 1.6, thick: 3.8, color: '#1c1410' }, -1),
+  // ---------------- TRISTAN MONTEIRO (Desconjuração; wiki "Tristan Monteiro" + a miniatura e a arte promocional): pele
+  // clara, olhos escuros, barba rala, e as QUEIMADURAS das missões antigas nos braços e no peito (manchas rosadas de
+  // pele repuxada, com a borda mais escura) — o rosto fica limpo, só uma queimada subindo do pescoço do lado direito
+  face_tristan: face((g) => {
+    stubble(g, 'rgba(60,38,26,0.5)', 1700, { y0: 146, y1: 228, w: 82 });
+    burnPatches(g, [[CX - 96, 236, 26, 14]], 3);
+  }, {
+    skin: '#e2b49c',
+    eye: { iris: '#3a2618', irisLight: '#6a4a32', w: 14, h: 7, tilt: 0.02, lid: 3 },
+    brow: { angry: 0.2, thick: 3.6, color: '#3a2a1e' },
+    mouth: { mouthW: 13, smile: 2, lip: 'rgba(150,80,70,0.5)' },
+  }),
+  // tronco (só aparece no V da regata e nos ombros): as queimaduras no peito e nas clavículas
+  skin_torso_tristan: () => canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#e2b49c'; g.fillRect(0, 0, w, h);
+    burnPatches(g, [[236, 468, 34, 22], [282, 420, 20, 26], [140, 492, 40, 16], [380, 488, 34, 16]], 11);
+  }, { wrap: true }),
+  // braços: as queimaduras grandes no alto do braço e no antebraço (as da miniatura)
+  arms_tristan: () => canvasTex(256, 512, (g, w, h) => {
+    g.fillStyle = '#e2b49c'; g.fillRect(0, 0, w, h);
+    burnPatches(g, [[70, 80, 44, 36], [190, 120, 36, 46], [60, 320, 34, 40], [196, 360, 40, 30]], 23);
+  }, { wrap: true }),
   // a camisa social branca do casal com as MANGAS de FLORES vinho (as artes da HQ e da campanha): flores de cinco pétalas
   // com o miolo claro, espalhadas, e folhinhas escuras
   sleeve_carvalho: () => canvasTex(256, 256, (g) => {

@@ -292,6 +292,19 @@ export const VOICES = {
       any: [(o) => `Tá bom, ${o.name}. Respira, Fernando. Respira.`, (o) => `(olhos amarelos) Fala com o Fê de novo e eu atiro, ${o.name}.`],
     },
   },
+  // TRISTAN MONTEIRO: carismático, brincalhão e barulhento, recrutador da Ordem — piromaníaco e protetor
+  tristan: {
+    open: {
+      ally: (o) => `${o.name}! Treino? Fechou. Só não chora quando eu acender o fogo.`,
+      rival: (o) => `${o.name}... ${o.one}. Sabe o que eu faço com gente assim? Eu ponho fogo.`,
+      any: [(o) => `E aí, ${o.name}! Já pensou em entrar pra Ordem? Depois dessa a gente conversa.`, (o) => `${o.name}, relaxa. Se ficar quente demais, é culpa minha mesmo.`],
+    },
+    reply: {
+      ally: (o) => `Bora, ${o.name}! Depois a gente joga uma sinuca, eu pago.`,
+      rival: (o) => `${o.group}? Pode vir, ${o.name}. Eu me jogo na frente de quem for.`,
+      any: [(o) => `Hahaha! Gostei de você, ${o.name}. Vai doer igual.`, (o) => `Calma, ${o.name}. O lança-chamas tá cheio, ó.`],
+    },
+  },
   // BEATRICE PORTINARI: gentil, curiosa e altruísta, mas firme com os Escriptas — "Saber tudo é perder tudo."
   beatrice: {
     open: {

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17 } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1660,4 +1660,33 @@ export function addLucianoProps(rig) {
   gun.visible = false;
   sockets.handR.add(gun);
   props.glock = gun;
+}
+
+// TRISTAN MONTEIRO (Desconjuração): a Glock com silenciador e lanterna no punho (o □), o COQUETEL MOLOTOV que aparece
+// na mão na hora de arremessar, e o LANÇA-CHAMAS — os dois tanques bege nas costas e a lança na mão, só no jato
+export function addTristanProps(rig) {
+  const { sockets, props } = rig;
+  const gun = glockTatica();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  gun.visible = false;
+  sockets.handR.add(gun);
+  props.glock = gun;
+  rig.muzzle = gun.userData.muzzle;
+  const mol = molotov();
+  inFist(mol);
+  mol.visible = false;
+  sockets.handR.add(mol);
+  props.molotov = mol;
+  const tanks = flameTanks();
+  tanks.position.set(0, -0.12, -0.16); // por fora da jaqueta (o soquete das costas já fica atrás do tronco, -z)
+  tanks.visible = false; // como na arte promocional, o equipamento só vem para o jato (as habilidades do fogo mostram)
+  sockets.back.add(tanks);
+  props.flameTanks = tanks;
+  const lance = flameLance();
+  lance.rotation.x = -0.1;
+  lance.position.y = -0.03;
+  lance.visible = false;
+  sockets.handR.add(lance);
+  props.flameLance = lance;
 }

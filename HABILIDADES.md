@@ -599,6 +599,50 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## TRISTAN MONTEIRO
+
+*O recrutador da Ordem, mentor da Erin, com a jaqueta do Veríssimo nos ombros* · arma: Lança-chamas, coquetel molotov e a Glock com silenciador e lanterna
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Jab | 22 | 1.5 m |  |
+| ○ 2 | Direto | 26 | 1.6 m |  |
+| ○ 3 | Cotovelada | 28 | 1.5 m |  |
+| ○ 4 | Chute de quartel | 52 | 1.9 m | finalizador: lança |
+| Frente + ○ | Ombrada | 34 | 1.9 m |  |
+| Trás + ○ | Recua e soca | 32 | 1.7 m | invulnerável no começo |
+| Lado + ○ | Chute lateral | 30 | 1.9 m |  |
+| No ar + ○ | Chute aéreo | 30 | 1.8 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho | 36 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 36 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Glock com Silenciador
+
+- Dano 12 × 3 · alcance 28 m · cooldown 2.2 s · custo 0
+
+### Habilidades
+
+- **Lança-Chamas** — △ + □ / Y + X · custo 22 · cooldown 10 s · dano 9 · alcance 5.5 m
+  Põe os tanques nas costas e solta o jato de fogo em cone à frente ENQUANTO SEGURA (até 2,4 s; soltar apaga). Quem fica no fogo toma dano contínuo e sai QUEIMANDO.
+- **Coquetel Molotov** — △ + ○ / Y + B · custo 18 · cooldown 8 s · dano 48 · alcance 14 m
+  Arremessa o coquetel molotov onde o adversário está: a garrafa estoura em fogo, joga para cima e deixa o chão QUEIMANDO por alguns segundos.
+- **Lanterna Tática** — △ + L2 / Y + LT · custo 16 · cooldown 12 s · alcance 8 m
+  Acende a lanterna da Glock na cara do adversário: quem estiver de frente e olhando fica CEGO por 1 s e ATORDOADO por 0,6 s.
+- **Na Frente de Todos** — R2 + △ / RT + Y · custo 20 · cooldown 18 s
+  Firma o corpo como quem se joga na frente dos outros: por 5 s recebe 35% menos dano e não recua com golpes leves.
+
+### Especial: Incendiário
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Espírito da Ordem
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (físico, distância, habilidades), −12% de dano recebido, +5% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 8% na hora.
+
+---
+
 ## SENHOR VERÍSSIMO
 
 *Líder da Ordo Realitas: Inteligência Estratégica e o Segredo de Veríssimo* · arma: A espada do Arnaldo e uma escopeta curta

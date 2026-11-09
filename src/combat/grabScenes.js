@@ -188,6 +188,8 @@ export const GRAB_SCENES = {
   // FERNANDO: dois cortes nervosos do canivete e o empurrão; LUCIANO: o corte seco, a cotovelada e a estocada
   fernando: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('knife_2'), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'shove', fx: 'slam', sound: 'punch' }),
   luciano: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('sway_elbow'), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'knife_final', fx: 'slam', sound: 'slashFinal', bleed: { dps: 3, duration: 2 } }),
+  // TRISTAN: o jab, o direto e a cotovelada que derruba (briga de ex-militar)
+  tristan: scene({ ...S('jab'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('hook_r'), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'sway_elbow', fx: 'slam', sound: 'heavyPunch' }),
   beatrice: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('knife_2'), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'slam', sound: 'slashFinal' }),
   balu: scene({ ...S('hammer_h', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { ...S('hammer_diag', 0.34), fx: { kind: 'smash' }, sound: 'axeHit' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   ferreiro: scene({ ...S('slash_h', 0.32), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('slash_h_back', 0.32), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'slash_finisher', fx: 'consume', sound: 'slashFinal' }),

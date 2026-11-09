@@ -37,6 +37,14 @@ export function betray(f, n = 1) {
 }
 
 export const PASSIVES = {
+  // Tristan — PIROMANIA (cânone: a mania dele, wiki "Tristan Monteiro"; o número é PROPOSTA): bate mais forte em quem
+  // está QUEIMANDO (o lança-chamas, o molotov, o fogo no chão)
+  pyromania: {
+    damageMod({ victim, kind, passive }) {
+      if (kind === 'status' || kind === 'burn') return 1;
+      return victim.findBuff && victim.findBuff('burn') ? passive.mult ?? 1.15 : 1;
+    },
+  },
   // Joui: golpes vindos pelas costas do inimigo causam mais dano
   backstab: {
     damageMod({ attacker, victim, kind, passive }) {

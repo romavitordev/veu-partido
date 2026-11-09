@@ -118,6 +118,29 @@
       **Pose de vitória `vic_kian` refeita:** era para ser braços cruzados, mas os cotovelos subiam até o ombro e os
       antebraços ficavam de pé na frente do rosto (lia como guarda de boxe e escondia o sigilo). Agora: braços cruzados
       de verdade no meio do peito, queixo nivelado, peso na perna direita; conferida no Kian e na Calamidade.
+- [x] **Tristan Monteiro** (Equipe Brasa e Força D, Desconjuração; 2026-11-09, não lançado). Fecha a **Equipe Brasa**
+      (nova ligação `brasa`: Tristan + Erin + Fernando) e entra na Força D (cameo de lança-chamas no especial). Kit:
+      combo "Briga de Militar"; □ Glock com Silenciador; **Lança-Chamas** (△+□) SEGURÁVEL mas com limite de 2,4 s
+      (pedido do dono), cone que queima (`flameStream`, `combat/tristanAbilities.js`); **Molotov** (△+○) que deixa o
+      chão pegando fogo como o lampião do Cristino (`lanternThrow` com `lob: 'molotov'`); Lanterna Tática; Na Frente de
+      Todos; especial Incendiário; despertar O Espírito da Ordem; passiva **Piromania** (+15% em quem está queimando).
+      Visual pelo cânone: regata AZUL lisa e a **Jaqueta do Veríssimo** (couro marrom de aviador com gola de pelo
+      branco, jogada nos ombros), cicatrizes de queimadura, cabelo castanho com risca no meio. Modelo feito e conferido
+      **no Blender pelo MCP** (`tools/blender/mcp_build.py`), retrato, falas com os 43, voz e agarrão. Conferido no jogo
+      (lança-chamas segurado/solto, molotov, Piromania, especiais Brasa e Força D) sem erros. PROPOSTA: números, o
+      combo, o especial e o despertar.
+- [x] **Raio do "???" (Labirinto com o elmo) segurável COM LIMITE** (pedido do dono, 2026-11-09): era infinito enquanto
+      o □ ficasse apertado. Agora `startBeam` (`Fighter.js`) para ao soltar (depois do mínimo `minHold`) ou no `duration`;
+      a CPU segura enquanto `holdChannel` está ligado (`CpuController.js`). Conferido: toque, segurar 1 s e segurar sem soltar.
+- [x] **Regra: todo modelo novo pelo Blender MCP** (dono, 2026-11-09). `tools/blender/mcp_build.py` roda o `char_*.py`
+      no Blender aberto (sem derrubar o servidor do addon) e recarrega todos os módulos da pasta. Kian, Fernando e
+      Luciano (feitos só no headless) foram reconstruídos e conferidos em 4 vistas no MCP.
+- [x] **Topo da cabeça careca** (dono, 2026-11-09): Tristan (fileiras até o cocuruto), **Kaiser** (a calota parava na
+      elevação 0,85; fileiras novas no alto, ralas no lado queimado) e o casal **Fernando/Luciano** (a calota raspada
+      ficava recuada e deixava a frente do alto careca até a testa; adiantada em `carvalho_common.py`). Conferido de cima no MCP.
+- [ ] **Polir o modelo do Tristan**: a borda do decote em V serrilhada, as costas da jaqueta ainda retangulares e o
+      cabelo de trás com cara de capacete. Fazer no MCP contra as artes da wiki.
+- [ ] **Bateria de balanceamento**: Fernando/Luciano e Tristan.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no

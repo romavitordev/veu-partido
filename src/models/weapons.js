@@ -2951,3 +2951,111 @@ export function glock17() {
   g.userData.muzzle = muzzle;
   return g;
 }
+
+// COQUETEL MOLOTOV DO TRISTAN (wiki "Tristan Monteiro", Arsenal; a arte promocional de Desconjuração: a garrafa VERDE
+// com o pano claro enfiado no gargalo e pendurado). Gargalo para -Y, como as outras armas na mão
+export function molotov() {
+  const g = new THREE.Group();
+  const glass = new THREE.MeshToonMaterial({ color: 0x4a7a2a, transparent: true, opacity: 0.85 });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.042, 0.16, 12), glass);
+  body.position.y = 0.04;
+  g.add(body);
+  const shoulder = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.04, 0.05, 12), glass);
+  shoulder.position.y = -0.065;
+  g.add(shoulder);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.016, 0.06, 10), glass);
+  neck.position.y = -0.12;
+  g.add(neck);
+  const fuel = part(new THREE.CylinderGeometry(0.034, 0.036, 0.1, 12), 0xc8a040, { outline: false });
+  fuel.position.y = 0.07;
+  g.add(fuel);
+  const rag = part(new THREE.BoxGeometry(0.03, 0.12, 0.012), 0xe8dcc0);
+  rag.position.set(0.012, -0.19, 0);
+  rag.rotation.z = 0.25;
+  g.add(rag);
+  const flame = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.07, 8), glowMat(0xffa030, 0.95));
+  flame.position.set(0.026, -0.27, 0);
+  flame.rotation.z = Math.PI;
+  g.add(flame);
+  g.userData.flame = flame;
+  return g;
+}
+
+// LANÇA-CHAMAS DO TRISTAN (a arte promocional de Desconjuração; HQ6, o marcador "Cano Dispersante"): os DOIS TANQUES
+// bege lado a lado numa armação preta com as alças e o aviso DANGER, a mangueira saindo de baixo. Montado nas costas
+export function flameTanks() {
+  const g = new THREE.Group();
+  const tan = 0xc8a676;
+  const black = toon(0x1a1a1e);
+  for (const s of [-1, 1]) {
+    const t = part(new THREE.CylinderGeometry(0.075, 0.075, 0.46, 16), tan);
+    t.position.set(s * 0.08, 0, 0);
+    g.add(t);
+    for (const y of [-0.23, 0.23]) {
+      const cap = part(new THREE.SphereGeometry(0.075, 14, 8, 0, Math.PI * 2, y > 0 ? 0 : Math.PI / 2, Math.PI / 2), tan);
+      cap.position.set(s * 0.08, y, 0);
+      g.add(cap);
+    }
+    const valve = part(new THREE.CylinderGeometry(0.018, 0.018, 0.05, 8), 0x2a2a2e);
+    valve.position.set(s * 0.08, 0.32, 0);
+    g.add(valve);
+  }
+  for (const y of [-0.2, 0.0, 0.2]) { // a armação e as cintas
+    const bar = part(new THREE.BoxGeometry(0.34, 0.025, 0.17), 0, { mat: black });
+    bar.position.y = y;
+    g.add(bar);
+  }
+  for (const s of [-1, 1]) {
+    const rail = part(new THREE.BoxGeometry(0.02, 0.6, 0.02), 0, { mat: black });
+    rail.position.set(s * 0.17, 0, 0.07);
+    g.add(rail);
+  }
+  const sign = part(new THREE.BoxGeometry(0.06, 0.14, 0.006), 0xd8c8a0, { outline: false });
+  sign.position.set(0.08, -0.06, -0.077);
+  g.add(sign);
+  const hose = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.0, -0.3, 0), new THREE.Vector3(-0.08, -0.4, -0.05), new THREE.Vector3(-0.22, -0.36, -0.12), new THREE.Vector3(-0.3, -0.2, -0.16),
+  ]), 16, 0.018, 6, false), toon(0xc8a676));
+  g.add(hose);
+  return g;
+}
+
+// a LANÇA do lança-chamas (preta, o gatilho e o bico largo com o piloto aceso). Cano para -Y
+export function flameLance() {
+  const g = new THREE.Group();
+  const black = toon(0x1c1c20);
+  const pipe = part(new THREE.CylinderGeometry(0.02, 0.02, 0.5, 10), 0, { mat: black });
+  pipe.position.y = -0.18;
+  g.add(pipe);
+  const grip = part(new THREE.BoxGeometry(0.03, 0.04, 0.1), 0, { mat: black });
+  grip.position.set(0, 0.0, -0.045);
+  grip.rotation.x = -0.25;
+  g.add(grip);
+  const fore = part(new THREE.BoxGeometry(0.03, 0.035, 0.08), 0, { mat: black });
+  fore.position.set(0, -0.24, -0.035);
+  g.add(fore);
+  const nozzle = part(new THREE.CylinderGeometry(0.04, 0.028, 0.1, 12), 0x2a2a2e);
+  nozzle.position.y = -0.47;
+  g.add(nozzle);
+  const pilot = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 6), glowMat(0x4ab0ff, 0.9));
+  pilot.position.set(0, -0.5, 0.03);
+  g.add(pilot);
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.53, 0);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
+// a lanterna presa embaixo do cano da Glock com silenciador do Tristan (wiki: "Glock com silenciador e lanterna")
+export function glockTatica() {
+  const g = glockSilenciada();
+  const light = part(new THREE.BoxGeometry(0.026, 0.07, 0.03), 0x1a1a1e);
+  light.position.set(0, -0.11, -0.01);
+  g.add(light);
+  const lens = new THREE.Mesh(new THREE.CircleGeometry(0.012, 10), glowMat(0xfff4d0, 0.9));
+  lens.rotation.x = Math.PI / 2;
+  lens.position.set(0, -0.146, -0.01);
+  g.add(lens);
+  return g;
+}

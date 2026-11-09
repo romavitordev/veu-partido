@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Timeline, yawTo, distXZ, forwardFromYaw, angleDiff, DEG } from '../core/util.js';
 import { ABILITY_TYPES } from './abilities.js';
 import { applyHit } from './damage.js';
-import { spikedLantern } from '../models/weapons.js';
+import { spikedLantern, molotov } from '../models/weapons.js';
 
 // ------------------------------------------------------------------ CRISTINO (Transtornados, Hexatombe)
 // O cangaceiro que caçou o Quibungo com LAMPIÕES EXPLOSIVOS (wiki, Episódio 5): espalhou lamparinas no caminho do
@@ -163,9 +163,10 @@ export function detonateLanterns(world, f, { range = 18, arc = 80 } = {}) {
 }
 
 // um lampião arremessado em arco até um ponto do chão; ao chegar, chama `land(pos)`
-export function lobLantern(world, from, to, flight, land) {
-  const mesh = spikedLantern();
-  mesh.scale.setScalar(1.3);
+// (make: o que voa — o lampião do Cristino por padrão; o coquetel molotov do Tristan usa o mesmo arremesso)
+const LOBBED = { lantern: () => { const m = spikedLantern(); m.scale.setScalar(1.3); return m; }, molotov: () => { const m = molotov(); m.scale.setScalar(1.4); return m; } };
+export function lobLantern(world, from, to, flight, land, make = 'lantern') {
+  const mesh = (LOBBED[make] || LOBBED.lantern)();
   mesh.position.copy(from);
   world.scene.add(mesh);
   const start = from.clone();
@@ -211,7 +212,7 @@ Object.assign(ABILITY_TYPES, {
         const aim = opp && opp.state !== 'ko' && distXZ(f.pos, opp.pos) <= (a.range ?? 14)
           ? opp.pos.clone()
           : new THREE.Vector3(f.pos.x + F.x * (a.range ?? 14) * 0.6, 0, f.pos.z + F.z * (a.range ?? 14) * 0.6);
-        lobLantern(world, hand, aim, a.flight ?? 0.55, (p) => lanternBlast(world, f, p, a));
+        lobLantern(world, hand, aim, a.flight ?? 0.55, (p) => lanternBlast(world, f, p, a), a.lob);
         world.audio.play('knifeThrow');
       });
       tl.add(a.windup + a.recovery - 0.02, () => { if (a.hideProp) f.rig.showProp(a.hideProp, true); });

@@ -20,7 +20,7 @@ export const MASCARADOS = ['dalmo', 'aguiar', 'jae', 'kemi', 'labirinto', 'juan'
 // ligação. (2026-11-02, correção do dono) THIAGO e LIZ NÃO são da Força D: são da EQUIPE E (Segredo na Floresta), com o
 // Arthur, o Kaiser e o Joui MAIS NOVOS. O especial da Equipe E só entra quando existirem essas versões jovens; até lá o
 // Thiago e a Liz podem entrar no elenco como lutadores da Ordem, sem ligação de equipe.
-export const FORCA_D = ['arthur', 'kaiser', 'joui', 'dante', 'erin', 'beatrice', 'fernando']; // o Fernando (e o Luciano, a outra ficha) desde 2026-11-08
+export const FORCA_D = ['arthur', 'kaiser', 'joui', 'dante', 'erin', 'beatrice', 'fernando', 'tristan']; // o Fernando (e o Luciano, a outra ficha) desde 2026-11-08; o Tristan desde 2026-11-09
 // ORDO CALAMITAS (Calamidade, 67 d.C.): os guerreiros dos jogos de Amphitruo — Celestine, Gaius e Amalia hoje; Faustus,
 // Marius, Remus e Cascadia entram quando estiverem no elenco
 export const ORDO_CALAMITAS = ['celestine', 'gaius', 'amalia', 'faustus', 'marius', 'remus', 'cascadia'];
@@ -53,7 +53,7 @@ export const TEAM_LINKS = {
     min: 3,
     color: 0x4a90e2,
     choreo: 'forca_d',
-    sceneProps: { arthur: { show: ['bloodBlade'] }, beatrice: { show: ['crossbow'], hide: ['knife'] }, fernando: { show: ['glock'], hide: ['knife'] } },
+    sceneProps: { arthur: { show: ['bloodBlade'] }, beatrice: { show: ['crossbow'], hide: ['knife'] }, fernando: { show: ['glock'], hide: ['knife'] }, tristan: { show: ['flameLance', 'flameTanks'] } },
   },
   os_cinco: {
     id: 'os_cinco',
@@ -116,6 +116,20 @@ export const TEAM_LINKS = {
     order: ['balu', 'rubens'],
     choreo: 'balu_rubens',
     color: 0xc8c4d0,
+  },
+  // EQUIPE BRASA (Desconjuração; wiki "Tristan Monteiro"): o Tristan, a Erin (a pupila) e o casal Carvalho. Os três
+  // também são da Força D: uma equipe só com os três é a Brasa (priority, como os Abutres). PROPOSTA dos golpes: o
+  // molotov do Tristan, a explosão da Erin e os tiros do Fernando, cada um com o golpe próprio
+  brasa: {
+    id: 'brasa',
+    kind: 'trio',
+    name: 'EQUIPE BRASA',
+    banner: 'Equipe Brasa!',
+    members: ['tristan', 'erin', 'fernando'],
+    order: ['tristan', 'erin', 'fernando'],
+    priority: 1,
+    color: 0xff7a2a,
+    sceneProps: { tristan: { show: ['molotov'] }, fernando: { show: ['glock'], hide: ['knife'] } },
   },
   // Dupla Cristopher + Kaiser (pai e filho: o dublê segura, o filho atira)
   cristopher_kaiser: {

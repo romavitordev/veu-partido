@@ -119,8 +119,11 @@ def build(variant, OUT):
     # ============================================================ CABELO RASPADO (estilo militar): a calota bem rente
     HC = Vector((hc.x, hc.y, hc.z))
     Hr = Sculpt()
-    Hr.ell(HC + Vector((0, 0.006 * H, 0.008 * H)), (0.147 * H, 0.159 * H, 0.169 * H))  # a calota rente ao crânio (o miolo fica dentro da cabeça)
-    Hr.ell(HC + Vector((0, -0.12 * H, -0.06 * H)), (0.13 * H, 0.09 * H, 0.15 * H), neg=True)  # o rosto livre
+    # a calota rente ao crânio (o miolo fica dentro da cabeça). Adiantada e mais longa (2026-11-09, "falha no topo"):
+    # medido no MCP, o crânio vai até y −0,169 e a calota antiga (centro +0,006 H, ry 0,159 H) só até −0,064, deixando a
+    # frente do alto careca até a testa
+    Hr.ell(HC + Vector((0, -0.02 * H, 0.008 * H)), (0.147 * H, 0.175 * H, 0.169 * H))
+    Hr.ell(HC + Vector((0, -0.13 * H, -0.07 * H)), (0.13 * H, 0.09 * H, 0.14 * H), neg=True)  # o rosto livre (testa até +0,07 H)
     Hr.ell(HC + Vector((0, -0.03 * H, -0.12 * H)), (0.16 * H, 0.16 * H, 0.08 * H), neg=True)  # nada abaixo das orelhas
     for s in (1, -1):  # as orelhas para fora
         Hr.ell(HC + Vector((s * 0.14 * H, 0.0, -0.03 * H)), (0.03 * H, 0.05 * H, 0.06 * H), neg=True)

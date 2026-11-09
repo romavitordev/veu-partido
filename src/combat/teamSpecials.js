@@ -451,8 +451,8 @@ const CHOREO = {
   forca_d({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 6.4 });
     const kaiser = tools.get('kaiser'), joui = tools.get('joui'), dante = tools.get('dante'), arthur = tools.get('arthur');
-    const erin = tools.get('erin'), beatrice = tools.get('beatrice'), fernando = tools.get('fernando');
-    const actors = [kaiser, joui, dante, arthur, erin, beatrice, fernando].filter(Boolean);
+    const erin = tools.get('erin'), beatrice = tools.get('beatrice'), fernando = tools.get('fernando'), tristan = tools.get('tristan');
+    const actors = [kaiser, joui, dante, arthur, erin, beatrice, fernando, tristan].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
@@ -614,6 +614,28 @@ const CHOREO = {
           world.fx.tracer(fernando.chest(), opp.chestPos(), { color: 0xffe08a, life: 0.1, width: 0.03 });
           world.audio.play('m4', { volume: 0.5 });
           if (i === 2) tools.impact(fernando, damageOf(fernando), { sound: 'impact', color: 0xe8b818 });
+        });
+      }
+    }
+
+    // TRISTAN: do outro lado, o jato do lança-chamas em cima do alvo (os tanques nas costas)
+    if (tristan) {
+      tl.add(S + 5.2, () => {
+        if (!live()) return;
+        const at = tools.around(tristan, -1.1, 3.0);
+        tristan.show(END - (S + 5.2), at);
+        tristan.pos.set(at.x, 0, at.z);
+        tristan.face(opp);
+        tristan.play('point', 0.9);
+      });
+      for (let i = 0; i < 6; i++) {
+        tl.add(S + 5.35 + i * 0.1, () => {
+          if (!live()) return;
+          const a = tristan.chest();
+          const b = opp.chestPos();
+          for (let k = 1; k <= 4; k++) world.fx.burst(a.clone().lerp(b, k / 4), { count: 2, color: k < 2 ? 0xffd070 : 0xff7a2a, speed: 1, up: 1.4, life: 0.3, size: 0.25 + k * 0.08 });
+          if (i === 0) world.audio.play('smoke', { volume: 0.7, pitch: 0.6 });
+          if (i === 5) tools.impact(tristan, damageOf(tristan), { sound: 'impact', color: 0xff7a2a });
         });
       }
     }

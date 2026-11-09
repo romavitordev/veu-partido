@@ -14,6 +14,7 @@ import { ABILITY_TYPES, rejectMistFor, conjureSeq } from './abilities.js';
 import './hostAbilities.js'; // registra as habilidades do Anfitrião em ABILITY_TYPES
 import './guizoAbilities.js'; // e as do Guizo (Embaralhar, Decadência, Espirais da Perdição...)
 import { detonateLanterns } from './cristinoAbilities.js'; // e as do Cristino (lampiões, fogo no chão)
+import './tristanAbilities.js'; // e as do Tristan (o lança-chamas, a queimadura)
 import './cristopherAbilities.js'; // e a do Cristopher (o carro de dublê)
 import './razielAbilities.js'; // e a do Raziel (Mordida e Maldição Sanguínea)
 import './danteAbilities.js'; // e as do Dante de Olhos Abertos (Paradoxo, Eco Espiral)
@@ -2506,6 +2507,9 @@ export class Fighter {
   // a ponta PERSEGUE o adversário a r.track m/s (um dash ou correr de lado escapa). Pulsos de r.damage a cada r.tick s
   // em quem estiver no caminho (largura r.width). É um ataque à distância comum: defesa de frente segura, esquiva
   // desvia e apanhar no meio interrompe (o estado sai de 'ranged').
+  // SEGURÁVEL COM LIMITE (pedido do dono, 2026-11-09): o raio sai enquanto o □ fica apertado — soltar corta o raio na
+  // hora (depois de r.minHold s) — mas nunca passa de r.duration s, segurando ou não. A CPU segura até o fim
+  // (this.holdChannel avisa o CpuController).
   startBeam(r) {
     if (!this.spendEnergy(r.energyCost || 0)) {
       this.notify('SEM SANIDADE');
@@ -2516,10 +2520,12 @@ export class Fighter {
     this.setState('ranged');
     this.vel.x = 0;
     this.vel.z = 0;
-    const total = r.windup + r.duration + r.recovery;
+    let stopAt = r.windup + r.duration; // o fim do raio (soltar o □ adianta)
+    let total = stopAt + r.recovery;
     this.anim.play(r.anim || 'point', { duration: total, restart: true });
     const self = this;
     const w = this.world;
+    this.holdChannel = true;
     const src = () => (self.rig.sockets.handR ? self.rig.sockets.handR.getWorldPosition(new THREE.Vector3()) : self.chestPos());
     let aim = null; // ponta do raio
     let tickT = 0;
@@ -2534,7 +2540,13 @@ export class Fighter {
         if (opp) self.yaw = turnTowards(self.yaw, yawTo(self.pos, opp.pos), dt * 3); // gira devagar acompanhando
         self.vel.x = 0;
         self.vel.z = 0;
-        const firing = this.t >= r.windup && this.t < r.windup + r.duration;
+        if (self.holdChannel && this.t >= r.windup + (r.minHold ?? 0.35) && this.t < stopAt && !(self.input && self.input.held.ranged)) {
+          stopAt = this.t; // soltou o □: o raio apaga
+          total = stopAt + r.recovery;
+          self.holdChannel = false;
+        }
+        if (this.t >= stopAt) self.holdChannel = false;
+        const firing = this.t >= r.windup && this.t < stopAt;
         if (this.t < r.windup && Math.random() < 0.6) w.fx.burst(src(), { count: 2, color: r.color, speed: 1.5, life: 0.25, size: 0.12 });
         if (firing) {
           const from = src();
@@ -2569,10 +2581,10 @@ export class Fighter {
             }
           }
         }
-        if (this.t >= total) return true;
+        if (this.t >= total) { self.holdChannel = false; return true; }
         return false;
       },
-      cancel() {},
+      cancel() { self.holdChannel = false; },
     };
   }
 

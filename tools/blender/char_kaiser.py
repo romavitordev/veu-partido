@@ -263,6 +263,18 @@ for i in range(22):
         q = surf('head', Vector((hc.x, hc.y, hc.z)) + dd * 0.6 * H, -dd, 0.006 * H)
         if q:
             D.ell(q, (0.034 * H, 0.034 * H, 0.03 * H) if math.sin(a) < 0.35 else (0.022 * H, 0.022 * H, 0.018 * H))
+# o TOPO da cabeça (pedido do dono, 2026-11-09: "falha no topo"): a calota acima parava em el 0,85 e deixava o alto
+# careca; fileiras até o cocuruto (no lado queimado continua ralo, mas cobre)
+for i in range(20):
+    for el in (0.95, 1.12, 1.3):
+        a = i / 20 * TAU
+        dd = Vector((math.sin(a) * math.cos(el), -math.cos(a) * math.cos(el), math.sin(el)))
+        q = surf('head', Vector((hc.x, hc.y, hc.z)) + dd * 0.6 * H, -dd, 0.006 * H)
+        if q:
+            D.ell(q, (0.03 * H, 0.03 * H, 0.024 * H) if math.sin(a) < 0.35 else (0.024 * H, 0.024 * H, 0.016 * H))
+top = surf('head', Vector((hc.x, hc.y, hc.z + 0.6 * H)), Vector((0, 0, -1)), 0.006 * H)
+if top:
+    D.ell(top, (0.045 * H, 0.05 * H, 0.025 * H))
 NS = 30
 for i in range(NS):
     a = i / NS * TAU
