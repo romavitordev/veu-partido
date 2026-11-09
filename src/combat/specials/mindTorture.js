@@ -53,7 +53,7 @@ export const mindTorture = {
       orbit(f, { dur: 1.3, radius: 4.2, height: 2.0, a0: 0.4, a1: 1.3, lookH: 1.3 }),
     ]);
     tl.add(0.05, () => {
-      world.showBanner(sp.banner || sp.name, f.def.color);
+      world.specialBanner(f, sp, sp.name);
       world.audio.play('fearGaze', { volume: 1, pitch: 0.5 });
       f.anim.play('point', { restart: true, duration: 0.5 });
     });

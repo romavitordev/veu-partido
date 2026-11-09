@@ -318,6 +318,25 @@ export class World {
     this.ui && this.ui.banner(name, color);
   }
 
+  // nome do ESPECIAL (pedido do dono, 2026-11-09): a faixa grande mostra o NOME do golpe (o que está na ficha, ex.:
+  // "Ninguém Mexe com os Meus Meninos"); a frase do personagem (sp.banner), quando é outra, sai como legenda embaixo,
+  // com tempo para ler. Antes a faixa mostrava a frase longa por 1,5 s e o nome do golpe nem aparecia.
+  specialBanner(f, sp, fallback, color = f.def.color) {
+    const title = (sp && sp.name) || fallback || f.def.name;
+    this.showBanner(title, color);
+    const quote = sp && sp.banner;
+    const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
+    if (!quote || norm(quote) === norm(title) || !this.ui || !this.ui.subtitle) return;
+    const words = quote.trim().split(/\s+/).length;
+    this.ui.subtitle({
+      name: f.def.name,
+      color: typeof color === 'number' ? `#${color.toString(16).padStart(6, '0')}` : color,
+      text: quote,
+      side: f.index === 1 ? 1 : 0,
+      hold: 1.6 + words * 0.22,
+    });
+  }
+
   screenFlash(color, time) {
     // EFEITOS DE TELA REDUZIDOS (OPÇÕES): sem o clarão de tela cheia — conforto e fotossensibilidade
     if (SETTINGS.reduceFx) return;

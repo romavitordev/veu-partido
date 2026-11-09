@@ -98,7 +98,7 @@ export const ritual = {
       hand = world.fx.emitter({ rate: 40, follow: () => f.rig.sockets.handR.getWorldPosition(new THREE.Vector3()), particle: { color: DRIP, kind: 'debris', speed: 0.6, spread: 0.3, life: 0.6, size: 0.07, gravity: 9 } });
       world.audio.play('heartbeat');
     });
-    tl.add(1.75, () => world.showBanner(sp.banner || f.def.name, f.def.color));
+    tl.add(1.75, () => world.specialBanner(f, sp, f.def.name));
     // a carne DERRETENDO: pinga de todo o corpo e solta vapor de sangue até o fim do ritual (e um pouco depois)
     let drip = null;
     let steam = null;

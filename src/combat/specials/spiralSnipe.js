@@ -55,7 +55,7 @@ export const spiralSnipe = {
       look: () => bulletPos.clone().addScaledVector(bulletDir, 2),
     };
     const color = sp.color ?? 0xd8d4dc;
-    world.showBanner(sp.banner || sp.name, f.def.color);
+    world.specialBanner(f, sp, sp.name);
     return {
       update(dt) {
         t += dt;

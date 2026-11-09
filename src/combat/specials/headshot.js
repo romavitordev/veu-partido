@@ -45,7 +45,7 @@ export const headshot = {
       },
       overShoulder(f, opp, { dur: 0.9, back: 1.1, side: 0.45, height: 1.35, fov: 24 }),
     ]);
-    world.after(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+    world.after(0.25, () => world.specialBanner(f, sp, sp.name));
     world.audio.play('ritual', { volume: 0.6, pitch: 1.2 });
     const aura = world.fx.emitter({ rate: 40, follow: () => f.chestPos(), particle: { color, speed: 0.8, up: 1.6, spread: 0.5, life: 0.5, size: 0.16 } });
     let t = 0;

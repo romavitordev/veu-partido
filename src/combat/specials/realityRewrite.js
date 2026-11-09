@@ -40,7 +40,7 @@ export const realityRewrite = {
     ]);
     world.audio.play('ritual', { volume: 0.9, pitch: 0.8 });
     const runes = world.fx.runes(() => f.chestPos(), { color: col, count: 8, radius: 1.1, size: 0.28 });
-    tl.add(0.3, () => world.showBanner(sp.banner || sp.name, f.def.color));
+    tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
     tl.add(0.95, () => {
       // a Realidade é reescrita: o mundo "pisca" e os Sigilos se espalham
       world.screenFlash && world.screenFlash('#fff4d0', 0.1);

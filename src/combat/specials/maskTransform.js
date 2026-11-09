@@ -139,7 +139,7 @@ export const maskTransform = {
         lowAngle(f, { dur: 0.9, dist: 3.0, side: -0.6 }),
         faceClose(f, { dur: 1.0, from: 2.2, to: 1.6, side: 0.2, height: hy - 0.05 }),
       ]);
-      tl.add(0.3, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
       tl.add(1.1, () => { world.screenFlash && world.screenFlash('#300000', 0.15); world.fx.distort(f.chestPos(), { color: RED, radius: 1.8, life: 0.25 }); });
       tl.add(1.3, () => {
         f.anim.play('mask_lift', { restart: true, duration: 1.0 });
@@ -159,7 +159,7 @@ export const maskTransform = {
         lowAngle(f, { dur: 1.2, dist: 3.2, side: 1.3 }),
         faceClose(f, { dur: 1.0, from: 2.0, to: 1.5, side: -0.4, height: hy - 0.45 }),
       ]);
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.75, () => {
         lightTo = 5;
         if (carry) { f.rig.showProp(sp.prop, true); moveProp(new THREE.Vector3(), 0.7); }
@@ -178,7 +178,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.3, from: 1.6, to: 1.15, side: -0.25, height: hy - 0.05, fov: 36 }),
       ]);
       world.audio.play('fearGaze', { volume: 0.7, pitch: 1.7 }); // a risada
-      tl.add(0.3, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.6, () => world.audio.play('fearGaze', { volume: 0.6, pitch: 1.9 }));
       tl.add(1.2, () => {
         f.anim.play('mask_lift', { restart: true, duration: 1.0 });
@@ -197,7 +197,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.1, from: 1.3, to: 0.95, side: -0.12, height: hy - 0.02, fov: 32 }),
         lowAngle(f, { dur: 1.0, dist: 2.9, side: 0.7 }),
       ]);
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.8, () => {
         f.anim.play('hood_pull', { restart: true, duration: 0.6 });
         world.audio.play('swing', { volume: 0.5, pitch: 0.7 });
@@ -224,7 +224,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.0, from: 1.5, to: 1.1, side: -0.2, height: hy - 0.08, fov: 34 }),
         lowAngle(f, { dur: 1.0, dist: 2.8, side: 0.7 }),
       ]);
-      tl.add(0.2, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.2, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.3, () => {
         world.audio.play('bladeHit', { volume: 0.9, pitch: 0.8 });
         world.fx.burst(hand(), { count: 40, color: 0xb00018, speed: 3.5, life: 0.6, size: 0.16, gravity: 6 });
@@ -291,7 +291,7 @@ export const maskTransform = {
         });
         scrap.push(() => { stopAll(); if (f.glowTint && f.glowTint.color === tint) f.glowTint = null; });
       }
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       const glow = (big) => {
         world.fx.flash(head(), { color: tint, size: big ? 1.6 : 1.1, life: 0.15 });
         world.fx.burst(head(), { count: big ? 26 : 14, color: tint, speed: 2.2, life: 0.4, size: 0.12 });
@@ -318,7 +318,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.3, from: 1.5, to: 1.1, side: -0.2, height: hy - 0.04, fov: 34 }),
         lowAngle(f, { dur: 0.9, dist: 2.8, side: 0.6 }),
       ]);
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.5, () => {
         f.anim.play('face_wipe', { restart: true, duration: 0.8 });
         world.audio.play('blink', { volume: 0.8, pitch: 0.7 });
@@ -344,7 +344,7 @@ export const maskTransform = {
         faceClose(f, { dur: 0.9, from: 1.2, to: 0.95, side: -0.12, height: hy, fov: 32 }),
         lowAngle(f, { dur: 1.0, dist: 3.0, side: 0.7 }),
       ]);
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       const lodo = world.fx.emitter({
         rate: 70,
         follow: () => { const a = Math.random() * Math.PI * 2; const r = 0.6 + Math.random() * 0.9; return new THREE.Vector3(f.pos.x + Math.cos(a) * r, 0.1, f.pos.z + Math.sin(a) * r); },
@@ -384,7 +384,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.1, from: 1.5, to: 1.05, side: 0.25, height: hy, fov: 34 }),
         lowAngle(f, { dur: 0.9, dist: 3.0, side: -0.6 }),
       ]);
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.9, () => world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: tint, radius: 1.6, life: 0.8 }));
       tl.add(1.3, () => {
         scrap.push(swapFace(f.rig, 'face_carina', 'face_carina_gold'));
@@ -407,7 +407,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.1, from: 1.5, to: 1.05, side: -0.25, height: hy, fov: 34 }),
         lowAngle(f, { dur: 0.9, dist: 3.0, side: 0.6 }),
       ]);
-      tl.add(0.25, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.25, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.45, () => {
         const sh = f.rig.joints.sL ? f.rig.joints.sL.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.25, 0)) : head();
         f.rig.showProp(sp.hideProps || '', false);
@@ -448,7 +448,7 @@ export const maskTransform = {
         faceClose(f, { dur: 1.0, from: 1.4, to: 1.0, side: 0.1, height: hy, fov: 34 }),
         lowAngle(f, { dur: 1.2, dist: 3.4, side: -0.8 }),
       ]);
-      tl.add(0.3, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
       // 1–2: o relógio acende; o ar em volta distorce e o som fica estranho
       let lidT = -1;
       tl.add(0.8, () => {
@@ -544,7 +544,7 @@ export const maskTransform = {
         faceClose(f, { dur: 0.9, from: 1.9, to: 1.3, side: 0.2, height: hy }),
       ]);
       world.audio.play(sp.startSound || 'fearGaze', { volume: 0.6, pitch: 0.6 });
-      tl.add(0.3, () => world.showBanner(sp.banner || sp.name, f.def.color));
+      tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
       tl.add(0.95, () => maskOn(false));
       total = 1.55;
     }

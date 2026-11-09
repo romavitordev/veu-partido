@@ -49,7 +49,7 @@ export const devilDeal = {
         faceClose(f, { dur: 0.75, from: 3.4 * k, to: 2.6 * k, side: 0.5, height: 1.55 * k }),
         twoShot(f, opp, { dur: sp.choice + 0.3, dist: 4.6 * k, height: 1.5 * k, lookH: 1.2 * k, push: 0.5 }),
       ]);
-      world.showBanner(sp.banner || 'Eu vim te oferecer um pacto', f.def.color);
+      world.specialBanner(f, sp, 'Eu vim te oferecer um pacto');
       world.audio.play('fearGaze', { volume: 0.8, pitch: 0.6 });
       opp.pactOffer = offer;
     });

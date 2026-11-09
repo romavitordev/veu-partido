@@ -177,7 +177,7 @@ export const hostGame = {
     const tl = new Timeline();
     // 1. o apresentador
     f.anim.play('host_present', { restart: true, duration: 0.9 });
-    world.showBanner(sp.banner || 'O Jogo do Anfitrião', f.def.color);
+    world.specialBanner(f, sp, 'O Jogo do Anfitrião');
     world.audio.play('applause', { volume: 0.9 });
     tl.add(0.55, () => world.audio.play('laugh', { volume: 0.5 }));
     // 2. o palco

@@ -95,7 +95,7 @@ export const teleportStrike = {
         particle: { color: red, speed: 0.6, up: 1, spread: 0.3, life: 1.2, size: 0.15 },
       });
     });
-    tl.add(2.0, () => world.showBanner(sp.banner || f.def.name, f.def.color));
+    tl.add(2.0, () => world.specialBanner(f, sp, f.def.name));
 
     // 7–8: o golpe
     tl.add(2.75, () => {

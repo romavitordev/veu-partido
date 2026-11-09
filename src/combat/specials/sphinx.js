@@ -42,7 +42,7 @@ export const sphinx = {
       world.fx.ring(new THREE.Vector3(f.pos.x, 0.05, f.pos.z), { color: 0x2a2030, radius: 1.4, life: 0.7, inner: 0.7 });
     });
     tl.add(0.3, () => {
-      world.showBanner(sp.banner || 'Carniçal da Esfinge', f.def.color);
+      world.specialBanner(f, sp, 'Carniçal da Esfinge');
       drip = world.fx.emitter({ rate: 90, follow: head, particle: { color: 0x0a080c, kind: 'smoke', speed: 0.3, up: -1.6, spread: 0.12, life: 0.8, size: 0.24, gravity: 4 } });
       world.scene.add(pool);
       poolT = 0;

@@ -27,7 +27,7 @@ export const santoPact = {
     });
     // a espiral sendo cravada no peito
     tl.add(0.35, () => {
-      world.showBanner(sp.banner || 'Pacto do Santo', f.def.color);
+      world.specialBanner(f, sp, 'Pacto do Santo');
       for (let i = 0; i < 4; i++) world.after(i * 0.12, () => world.fx.ring(f.chestPos(), { color: 0x1a1620, radius: 0.5 + i * 0.5, life: 0.5, vertical: true, yaw: f.yaw }));
       world.fx.burst(f.chestPos(), { count: 30, color: 0x7a0010, speed: 3, life: 0.6, size: 0.18, gravity: 6 });
     });

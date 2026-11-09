@@ -48,7 +48,7 @@ export const devilPact = {
     };
     tl.add(0.3, () => {
       world.fx.burst(f.chestPos(), { count: 24, color: 0x9a0010, speed: 2.5, life: 0.5, size: 0.16, gravity: 7 });
-      world.showBanner(sp.banner || 'Renascimento', f.def.color);
+      world.specialBanner(f, sp, 'Renascimento');
     });
     tl.add(1.1, () => {
       world.fx.burst(new THREE.Vector3(f.pos.x, 2.6, f.pos.z), { count: 30, color: 0xd8a840, speed: 3, life: 0.6, size: 0.12, gravity: 1 });

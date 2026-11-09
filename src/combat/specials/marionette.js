@@ -23,7 +23,7 @@ export const marionette = {
     const F = forwardFromYaw(f.yaw, new THREE.Vector3());
     const want = f.pos.clone().addScaledVector(F, 1.8);
     const spot = findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.6, others: opp ? [{ x: opp.pos.x, z: opp.pos.z, r: 0.8 }] : [] }) || { x: want.x, z: want.z };
-    tl.add(0.25, () => world.showBanner(sp.banner || 'A Marionete!', f.def.color));
+    tl.add(0.25, () => world.specialBanner(f, sp, 'A Marionete!'));
     tl.add(0.45, () => {
       // invocada com o Dante TRANSFORMADO (Afinidade com o Outro Lado): já vem com os Fios do Luto
       const ranged = !!(sp.ranged || (sp.rangedWhenAwakened && f.findBuff('awakened')));

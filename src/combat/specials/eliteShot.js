@@ -48,7 +48,7 @@ export const eliteShot = {
     let fired = false;
     let bolts = 0;
     let done = false;
-    world.after(0.3, () => world.showBanner(sp.banner || sp.name, f.def.color));
+    world.after(0.3, () => world.specialBanner(f, sp, sp.name));
     return {
       update(dt) {
         t += dt;

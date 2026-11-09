@@ -443,7 +443,7 @@ export const cinematicCombo = {
       if (sp.sphere) sphere = shadowSphere(world, f, opp, sp.sphere);
 
       tl = new Timeline();
-      tl.add(sp.bannerAt ?? 0.1, () => world.showBanner(sp.banner || f.def.name, f.def.color));
+      tl.add(sp.bannerAt ?? 0.1, () => world.specialBanner(f, sp, f.def.name));
       if (sp.tether) {
         tl.add(sp.tether.at ?? 0, () => {
           const hands = sp.tether.hands === 'both' ? ['handL', 'handR'] : [sp.tether.hands === 'R' ? 'handR' : 'handL'];

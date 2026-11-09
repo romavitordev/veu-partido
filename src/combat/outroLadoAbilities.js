@@ -702,7 +702,7 @@ export const hairStrangle = {
     f.yaw = yawTo(f.pos, opp.pos);
     f.anim.play('ai_point', { restart: true, duration: 0.5 });
     world.audio.play(sp.sound || 'specialStart');
-    world.showBanner(sp.banner || sp.name, f.def.color);
+    world.specialBanner(f, sp, sp.name);
     world.audio.play('whip', { volume: 1, pitch: 0.5 });
     const from = () => headOf(f);
     const release = () => { for (const r of ropes) r.release && r.release(); ropes.length = 0; };
@@ -805,7 +805,7 @@ export const frestaAmbush = {
     f.vel.set(0, 0, 0);
     f.anim.play('vanish', { restart: true, duration: 0.35 });
     world.audio.play(sp.sound || 'specialStart');
-    world.showBanner(sp.banner || sp.name, f.def.color);
+    world.specialBanner(f, sp, sp.name);
     world.fx.burst(f.chestPos(new THREE.Vector3()), { count: 30, color: 0x2a2620, kind: 'smoke', speed: 2, life: 0.6, size: 0.7, grow: 1 });
     // o alvo fica paralisado de medo enquanto as frestas se abrem em volta (o cerco)
     opp.stun(1.4, 'fear');

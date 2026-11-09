@@ -61,7 +61,7 @@ export const inkRequiem = {
     ]);
     // 1. O SINO
     tl.add(0.05, () => {
-      world.showBanner(sp.banner || sp.name, f.def.color);
+      world.specialBanner(f, sp, sp.name);
       f.anim.play('ai_bell', { restart: true, duration: 0.9 });
       toll(1, 1, 5);
     });

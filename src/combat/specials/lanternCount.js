@@ -120,7 +120,7 @@ export const lanternCount = {
         applyHit(world, f, opp, { damage: dmg, kind: 'special', fire: true, reaction: false, ignoreInvuln: true, sound: 'heavyPunch', color: FIRE, scale: big ? 2.4 : 1.4 });
         if (big) {
           world.screenFlash && world.screenFlash('#ffd2a0', 0.14);
-          world.showBanner(sp.banner || 'Odeio Gente Barulhenta', f.def.color);
+          world.specialBanner(f, sp, 'Odeio Gente Barulhenta');
           addFireZone(world, f, center.x, center.z, { radius: 2.4, life: 4, dps: 0 });
           if (opp.state !== 'ko') opp.anim.play('launched', { restart: true });
         }

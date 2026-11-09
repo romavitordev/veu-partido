@@ -59,7 +59,7 @@ export const ghostBands = {
       mat.dispose();
       bands.length = 0;
     };
-    tl.add(0.3, () => world.showBanner(sp.banner || 'Vestir as Faixas', f.def.color));
+    tl.add(0.3, () => world.specialBanner(f, sp, 'Vestir as Faixas'));
     // as faixas dos braços chicoteiam para fora num rastro vermelho
     tl.add(0.8, () => {
       const c = f.chestPos();

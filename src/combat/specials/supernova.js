@@ -209,7 +209,7 @@ export const supernova = {
       world.cameraRig.shake(0.8, 0.45);
       applyHit(world, f, opp, { damage: blastDmg, kind: 'special', fire: true, reaction: false, ignoreInvuln: true, sound: 'heavyPunch', color, scale: 2.4 });
       if (opp.state !== 'ko') opp.anim.play('launched', { restart: true });
-      world.showBanner(sp.banner || 'SUPERNOVA', f.def.color);
+      world.specialBanner(f, sp, 'SUPERNOVA');
       // close nela sorrindo, com o clarão atrás
       world.cameraRig.playShots([faceClose(f, { dur: 1.4, from: 2.1, to: 1.4, side: 0.5, fov: 40 })]);
     };

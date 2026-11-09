@@ -39,7 +39,7 @@ export const actFinal = {
       faceClose(f, { dur: 0.75, from: 1.7, to: 1.3, side: -0.35, height: hy, fov: 36 }),
     ]);
     const intro = new Timeline();
-    intro.add(0.55, () => { f.anim.play('arn_bow', { restart: true, duration: 0.75 }); world.showBanner(sp.banner || sp.name, f.def.color); });
+    intro.add(0.55, () => { f.anim.play('arn_bow', { restart: true, duration: 0.75 }); world.specialBanner(f, sp, sp.name); });
     intro.end(1.3);
 
     const cleanup = () => { glints.forEach((g) => g.stop()); glints.length = 0; };

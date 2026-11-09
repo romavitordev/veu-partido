@@ -65,7 +65,7 @@ export const mistField = {
     });
     // 6: nome na tela
     tl.add(1.05, () => {
-      world.showBanner(sp.banner || f.def.name, f.def.color);
+      world.specialBanner(f, sp, f.def.name);
       world.audio.play('powerUp');
     });
     // TEMPESTADE DE ACÁCIA: flores roxas caem sobre o inimigo, cada vez mais rápidas; a última explode

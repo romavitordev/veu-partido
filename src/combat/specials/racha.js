@@ -32,7 +32,7 @@ export const racha = {
     f.yaw = yawTo(f.pos, opp.pos);
     f.anim.play('point', { restart: true, duration: 0.4 });
     world.audio.play(sp.sound || 'specialStart');
-    world.showBanner(sp.banner || sp.name, f.def.color);
+    world.specialBanner(f, sp, sp.name);
 
     const smoke = (p, n = 2) => world.fx.burst(new THREE.Vector3(p.x, 0.2, p.z), { count: n, color: 0x7a7068, kind: 'smoke', speed: 1, up: 0.8, life: 0.6, size: 0.8, grow: 1 });
     // a van sai de trás dela, apontada para onde o alvo está agora

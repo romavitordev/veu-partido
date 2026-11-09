@@ -110,7 +110,7 @@ export const kamikaze = {
       f.anim.play('cast_up', { restart: true, duration: 0.6 });
       world.audio.play('grenadePin', { volume: 1 });
       world.audio.play('fearGaze', { volume: 0.8, pitch: 1.7 });
-      world.showBanner(sp.banner || 'Em Nome do Caos!', f.def.color);
+      world.specialBanner(f, sp, 'Em Nome do Caos!');
     };
 
     const blast = (c) => {

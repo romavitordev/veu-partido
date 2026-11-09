@@ -67,7 +67,7 @@ export const abyssMaze = {
     f.anim.play('concentrate', { restart: true, duration: 0.7 });
     // o capacete NÃO aparece aqui: para os Mascarados a máscara é só da Transformação (forma labirinto_elmo)
     tl.add(0.35, () => { world.fx.flash(f.chestPos().add(new THREE.Vector3(0, 0.6, 0)), { color, size: 1.6, life: 0.15 }); });
-    tl.add(0.6, () => world.showBanner(sp.banner || f.def.name, f.def.color));
+    tl.add(0.6, () => world.specialBanner(f, sp, f.def.name));
     tl.add(0.8, () => { world.audio.play('ritual'); opp.anim.play('fear', { restart: true }); });
     // a vítima vagueia perdida dentro do labirinto
     let wander = 0;

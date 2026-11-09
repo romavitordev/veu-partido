@@ -65,7 +65,7 @@ export const ageGrab = {
               faceClose(opp, { dur: 1.2, from: 1.8, to: 1.1, side: 0.3, height: 1.4 }),
               orbit(f, { dur: 1.0, radius: 5, height: 2.4, a0: 0.6, a1: 1.6, lookH: 1.8 }),
             ]);
-            world.showBanner(sp.banner || sp.name, f.def.color);
+            world.specialBanner(f, sp, sp.name);
             world.audio.play('drain', { volume: 1.1, pitch: 0.45 });
           }
           return false;

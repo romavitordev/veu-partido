@@ -66,7 +66,7 @@ export const awakenMode = {
     // a roupa muda no mesmo close (Veríssimo veste a jaqueta) e fica até o fim do round
     let undoProps = null;
     if (sp.props) tl.add(0.45, () => { undoProps = showProps(f.rig, sp.props); });
-    tl.add(0.35, () => world.showBanner(sp.banner || sp.name, f.def.color));
+    tl.add(0.35, () => world.specialBanner(f, sp, sp.name));
     tl.add(1.0, () => {
       world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: col, radius: 5, life: 0.7 });
       world.fx.burst(f.chestPos(), { count: 70, color: col, speed: 8, life: 0.7, size: 0.3 });

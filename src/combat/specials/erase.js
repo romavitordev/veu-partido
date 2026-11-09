@@ -59,7 +59,7 @@ export const erase = {
         });
         opp.glowTint = { color: sp.color, base: 0.2 };
       });
-      tl.add(0.6, () => world.showBanner(sp.banner || 'Inexistir', f.def.color));
+      tl.add(0.6, () => world.specialBanner(f, sp, 'Inexistir'));
       tl.each((time) => {
         if (time > 0.15 && time < 1.75 && opp.glowTint) opp.glowTint.base = 0.2 + (time - 0.15) * 0.5; // brilha por dentro
       });

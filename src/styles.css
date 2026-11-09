@@ -277,8 +277,8 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 #banner { position: absolute; left: 0; right: 0; top: 50%; display: grid; place-items: center; transform: translateY(-50%) skewY(-6deg); pointer-events: none; overflow: hidden; padding: 10px 0; }
 #banner .stripe { grid-area: 1 / 1; align-self: stretch; justify-self: stretch; margin: 0 -10vw; background: linear-gradient(90deg, transparent, rgba(0,0,0,.85) 15%, rgba(0,0,0,.85) 85%, transparent); transform: scaleX(0); transform-origin: left; }
 #banner .txt { grid-area: 1 / 1; box-sizing: border-box; max-width: 94vw; padding: .14em 4vw .06em; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: var(--bfs, 96px); line-height: 1.02; letter-spacing: .1em; text-wrap: balance; overflow-wrap: anywhere; color: var(--c, #fff); text-shadow: 3px 3px 0 #000, 0 0 30px var(--c, #fff); opacity: 0; }
-#banner.show .stripe { animation: stripe 1.5s ease-out forwards; }
-#banner.show .txt { animation: bannerTxt 1.5s ease-out forwards; }
+#banner.show .stripe { animation: stripe var(--bdur, 1.5s) ease-out forwards; }
+#banner.show .txt { animation: bannerTxt var(--bdur, 1.5s) ease-out forwards; }
 @keyframes stripe { 0% { transform: scaleX(0); } 15% { transform: scaleX(1); } 85% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
 @keyframes bannerTxt { 0% { opacity: 0; letter-spacing: .3em; } 18% { opacity: 1; letter-spacing: .1em; } 82% { opacity: 1; } 100% { opacity: 0; letter-spacing: .14em; } }
 

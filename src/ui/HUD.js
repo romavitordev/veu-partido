@@ -344,6 +344,8 @@ export class HUD {
       words: s.text.trim().split(/\s+/).filter(Boolean),
       elapsed: 0,
       shown: 0,
+      // hold: segundos que a frase fica inteira na tela antes de sumir sozinha (sem hold, quem chamou é que limpa)
+      hold: s.hold ?? null,
     };
     this.showNextSubtitleWord();
     el.classList.remove('on');
@@ -353,7 +355,11 @@ export class HUD {
 
   updateSubtitle(dt) {
     const state = this.subtitleState;
-    if (!state || state.shown >= state.words.length) return;
+    if (!state) return;
+    if (state.shown >= state.words.length) {
+      if (state.hold != null && (state.hold -= dt) <= 0) this.subtitle(null);
+      return;
+    }
     state.elapsed += dt;
     while (state.elapsed >= SUBTITLE_WORD_INTERVAL && state.shown < state.words.length) {
       state.elapsed -= SUBTITLE_WORD_INTERVAL;
@@ -424,6 +430,8 @@ export class HUD {
     if (px < 54 && name.includes(' ')) px = W / (Math.ceil(n / 2) * 0.6 + 1);
     txt.style.setProperty('--bfs', `${Math.round(Math.max(30, Math.min(cap, px)))}px`);
     el.style.setProperty('--c', color);
+    // tempo na tela pelo tamanho do texto: 1,5 s para um nome curto, até ~4 s para um longo (antes era 1,5 s sempre)
+    el.style.setProperty('--bdur', `${Math.min(4.2, Math.max(1.5, 0.9 + name.length * 0.055)).toFixed(2)}s`);
     el.classList.remove('show');
     void el.offsetWidth;
     el.classList.add('show');
