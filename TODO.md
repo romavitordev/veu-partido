@@ -169,7 +169,10 @@
       - **O sertão de Hexatombe** (por exemplo, o local da luta final do Cristino com a Harpia);
       - **Acampamento Santa Bem Querença** (Natal Macabro);
       - **Vilarejo Treb Ciach** (A Vigília);
-      - **Mansão Leone** (Calamidade).
+      - **Mansão Leone** (Calamidade);
+      - **Base dos Couraças** (Hexatombe);
+      - **Circo dos Psikolera**;
+      - **Acampamento dos Pássaros** (meio destruído, como em Hexatombe).
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no
