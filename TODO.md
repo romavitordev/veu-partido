@@ -3314,7 +3314,7 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
 
 ## KAISER
 
-* [~] Revisar Cinerária (wiki, 2026-11-09: no cânone a névoa sai entre os dentes, em volta DELE, 5 m de raio, fortalece os rituais lá dentro e dá esquiva e furtividade; no jogo a Baforada é uma nuvem à frente que lentifica — falta decidir com o dono se vira a névoa em volta dele)
+* [x] Revisar Cinerária (decisão do dono, 2026-11-09: fica como está. Wiki: no cânone a névoa sai entre os dentes, em volta DELE, 5 m de raio, fortalece os rituais lá dentro e dá esquiva e furtividade; no jogo a Baforada é uma nuvem à frente que lentifica)
 * [ ] Conferir duração
 * [ ] Revisar rituais
 * [x] Avaliar Acácia (no kit)
