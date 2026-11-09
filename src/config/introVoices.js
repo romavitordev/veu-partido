@@ -289,7 +289,7 @@ export const VOICES = {
     reply: {
       ally: (o) => `Combinado, ${o.name}. Depois a gente toca alguma coisa.`,
       rival: (o) => `(olhos amarelos) Chega, ${o.name}. Agora é comigo.`,
-      any: [(o) => `Tá bom, ${o.name}. Respira, Fernando. Respira.`, (o) => `(olhos amarelos) Fala com o Fer de novo e eu atiro, ${o.name}.`],
+      any: [(o) => `Tá bom, ${o.name}. Respira, Fernando. Respira.`, (o) => `(olhos amarelos) Fala com o Fê de novo e eu atiro, ${o.name}.`],
     },
   },
   // TRISTAN MONTEIRO: carismático, brincalhão e barulhento, recrutador da Ordem — piromaníaco e protetor

@@ -1223,7 +1223,7 @@ const CHOREO = {
         prop(fernando, 'glock', true);
         world.fx.flash(fernando.chest().add(new THREE.Vector3(0, 0.55, 0)), { color: YELLOW, size: 0.9, life: 0.25 });
         fernando.play('point', 1.0);
-        world.ui && world.ui.subtitle && world.ui.subtitle({ name: 'LUCIANO CARVALHO', color: '#e8b818', text: 'Deixa comigo, Fer.', side: 0 });
+        world.ui && world.ui.subtitle && world.ui.subtitle({ name: 'LUCIANO CARVALHO', color: '#e8b818', text: 'Deixa comigo, Fê.', side: 0 });
         world.cameraRig.playShots([{ ...overShoulder(fernando, opp, { dur: 1.0, back: 2.0, side: 0.7, height: 1.6, fov: 44 }), cut: true }]);
       });
       for (let i = 0; i < 3; i++) {

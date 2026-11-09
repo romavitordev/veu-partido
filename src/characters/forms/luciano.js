@@ -98,7 +98,7 @@ export default {
       cooldown: 8,
       pairWith: 'luciano',
       color: PINK,
-      shout: 'Volta, Fer.',
+      shout: 'Volta, Fê.',
       grace: 0.25,
       ai: { when: 'never' },
     },
@@ -172,7 +172,7 @@ export default {
   // colada, o corte de canivete e a estocada final — "ninguém toca nele"
   special: {
     name: 'Varredura',
-    banner: 'Descansa, Fer. Eu cuido disso.', // os dois no mesmo corpo: o Luciano assume para o marido não ver (dono, 2026-11-09)
+    banner: 'Descansa, meu amor. Eu cuido disso.', // os dois no mesmo corpo: o Luciano assume para o marido não ver (dono, 2026-11-09)
     type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,

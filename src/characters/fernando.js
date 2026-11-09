@@ -19,8 +19,8 @@ export default {
   name: 'FERNANDO CARVALHO',
   model: 'fernando',
   color: '#ff6ab8', // os olhos rosa de quando o Fernando está no controle
-  // falas marcadas "(olhos amarelos)" são do Luciano: a legenda mostra o nome dele (game/Match.js). Apelidos (dono,
-  // 2026-11-09): o Luciano chama o marido de "Fer"; o Fernando chama o Luciano de "Lu"
+  // falas marcadas "(olhos amarelos)" são do Luciano: a legenda mostra o nome dele (game/Match.js). Apelidos (wiki):
+  // o Luciano chama o marido de "Fê" ou "meu amor"; o Fernando chama o Luciano de "Lu", "querido", "gatão", "meu amor"
   altSpeaker: { tag: '(olhos amarelos)', name: 'LUCIANO CARVALHO', color: '#e8b818' },
   origin: 'Ordo Realitas', // Equipe Brasa e Força D
   element: 'energia',
