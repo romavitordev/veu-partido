@@ -9,7 +9,7 @@
       Silenciada, faca do Johnny; Salto Fantasma, Tratar Ferimentos, Queima-Roupa, Mira de Elite, Coração Pulsante),
       especial Pelo Johnny (pedido do dono) e modelo no Blender pelo MCP com a arte de Calamidade. Balanceamento dele
       fica para a próxima rodada.
-- [ ] **Depois do Rubens: um personagem que COMPLETE uma equipe que já existe no jogo** (correção do dono, 2026-11-02:
+- [x] **Depois do Rubens: um personagem que COMPLETE uma equipe que já existe no jogo** (correção do dono, 2026-11-02:
       o Aaron NÃO é o próximo). Candidatos citados pelo dono: **Beatrice**, **Tristan**, **Luciano**, **Fernando** e
       outros na mesma situação. Antes de escolher: conferir na wiki a equipe de cada um e quais equipes do jogo estão
       incompletas, e dar prioridade a quem fecha uma equipe (o mesmo critério que trouxe a Carina e o Rubens). Depois,
@@ -3288,7 +3288,7 @@ SANGUE
 * [ ] Conferir rituais
 * [x] Conferir cores (`config/elements.js`: Sangue vermelho, Conhecimento dourado, Energia roxo, Morte cinza)
 * [x] Conferir seleção (elemento aparece na seleção e na lista de golpes)
-* [ ] Conferir nomenclatura
+* [x] Conferir nomenclatura (2026-11-09: os 148 `element` do elenco usam só os nomes de `config/elements.js` — Sangue, Morte, Conhecimento, Energia, Medo, Transmissão, Tinta)
 * [x] Não aplicar dano elemental universal
 
 ---
@@ -3314,12 +3314,12 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
 
 ## KAISER
 
-* [ ] Revisar Cinerária
+* [~] Revisar Cinerária (wiki, 2026-11-09: no cânone a névoa sai entre os dentes, em volta DELE, 5 m de raio, fortalece os rituais lá dentro e dá esquiva e furtividade; no jogo a Baforada é uma nuvem à frente que lentifica — falta decidir com o dono se vira a névoa em volta dele)
 * [ ] Conferir duração
 * [ ] Revisar rituais
 * [x] Avaliar Acácia (no kit)
-* [ ] Avaliar Dissipar Espíritos
-* [ ] Revisar Resistência
+* [x] Avaliar Dissipar Espíritos (wiki: "Acácia", olhos roxos, menos eficaz fora do elemento; no jogo +40% contra Energia — confere)
+* [x] Revisar Resistência (wiki: Resistente, armadura natural contra dano físico; no jogo `resistant` 0,9 no corpo a corpo — confere)
 * [x] Desert Eagle
 * [x] Karambit
 * [x] Balas amaldiçoadas
@@ -3333,11 +3333,11 @@ Não criar barra separada de Exposição Paranormal sem nova decisão.
 * [x] Conferir braço esquerdo
 * [x] Revisar Arma de Sangue (v3.39.0: habilidade R2 + ×, paga 40 de vida, alcance e sangramento; v3.41.0: a lâmina nasce do punho direito e o físico vira cortes)
 * [x] Arma de Sangue deve consumir vida (passiva `bloodPrice`: sem sanidade, paga com vida)
-* [x] Revisar Rebirth (v3.39.0: roxo de Calamidade, Energia)
+* [x] Revisar Rebirth (v3.39.0; hoje VERDE, a cor da HQ, pedido do dono. Wiki 2026-11-09: em Desconjuração é Amaldiçoar Tecnologia — o pulso verde sobe até a mão que toca a arma; no especial Mãe e Filho o Arthur fica colado na Ivete para isso)
 * [x] Revisar crânios (caveirinhas de energia no Rebirth)
 * [x] Revisar raios (raios roxos nos tiros)
-* [ ] Revisar Dystopia
-* [ ] Revisar Templo do Ódio
+* [x] Revisar Dystopia (wiki: Paralisia de Sangue, sangue no símbolo do peito, olhos vermelhos, paralisa o alvo por um tempo; no jogo custa vida e paralisa quem está à frente — confere)
+* [x] Revisar Templo do Ódio (wiki: corta a palma e sangra no olho; mais ataque e dano corpo a corpo, sem conjurar rituais e obrigado a atacar; no jogo ×1,35 no físico, mais rápido, sem defender nem conjurar — confere)
 * [x] Revisar sniper carregado (v3.14.0: laser com atraso e aviso — dá para desviar)
 * [ ] Conferir risco/recompensa
 

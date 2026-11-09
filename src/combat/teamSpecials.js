@@ -949,7 +949,7 @@ const CHOREO = {
   },
 
   // MÃE E FILHO (pedido do dono, 2026-11-09): o Arthur abre os olhos e passa o REBIRTH para a DOZE da Ivete (o ritual
-  // Amaldiçoar Arma com Energia vale para uma arma tocada; ser na arma dela é PROPOSTA), ela avança atirando chumbo
+  // Amaldiçoar Tecnologia "Rebirth": o pulso verde sobe até a mão que toca a arma; ser na arma dela é PROPOSTA), ela avança atirando chumbo
   // amaldiçoado e o filho cobre de longe, ajoelhado com a sniper. Fecha com ela colada no alvo e o tiro dele junto.
   // Na Casa da Ivete o Kaiser entra no meio com as Balas Amaldiçoadas da M4.
   mae_filho({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
@@ -1008,7 +1008,7 @@ const CHOREO = {
       if (!live()) return;
       if (ivete) { const at = tools.enter(ivete, 0.15, 6.2); if (at) ivete.play('charge_fists', 1.3); }
       if (arthur) {
-        tools.enter(arthur, 0.5, 7.6);
+        tools.enter(arthur, 0.33, 6.6); // colado nela: o Rebirth sobe pela mão que TOCA a arma (wiki)
         arthur.face(ivete || opp);
         arthur.play('rebirth', 0.9);
         if (arthur.rig && arthur.rig.props && arthur.rig.props.eyes) arthur.rig.showProp('eyes', true);
