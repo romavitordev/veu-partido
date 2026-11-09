@@ -3150,3 +3150,27 @@ export function barBottle() {
   g.add(cap);
   return g;
 }
+
+// TACO DE SINUCA da Ivete (o Suvaco Seco tinha mesa de sinuca — cânone: a partida do Rubens com o Balu): madeira clara
+// afinando até a ponteira, a coronha escura com o anel de metal, a virola branca e o giz azul na ponta. Pega pela
+// coronha: o taco desce em -Y como o martelo do Rubens
+export function poolCue() {
+  const g = new THREE.Group();
+  const butt = part(new THREE.CylinderGeometry(0.016, 0.019, 0.5, 10), 0x2a160c);
+  butt.position.y = 0.07;
+  g.add(butt);
+  const ring = part(new THREE.CylinderGeometry(0.0165, 0.0165, 0.02, 10), 0xc8c8cc, { outline: false });
+  ring.position.y = -0.19;
+  g.add(ring);
+  const shaft = part(new THREE.CylinderGeometry(0.008, 0.0155, 0.92, 10), 0xe0c08a);
+  shaft.position.y = -0.66;
+  g.add(shaft);
+  const ferrule = part(new THREE.CylinderGeometry(0.0082, 0.0082, 0.025, 8), 0xf2efe6, { outline: false });
+  ferrule.position.y = -1.13;
+  g.add(ferrule);
+  const tip = part(new THREE.CylinderGeometry(0.0078, 0.0082, 0.01, 8), 0x3a7ad8, { outline: false });
+  tip.position.y = -1.147;
+  g.add(tip);
+  g.userData.tip = tip;
+  return g;
+}

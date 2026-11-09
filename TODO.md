@@ -154,7 +154,7 @@
       acende o chão, a Supernova da Erin explode dentro do fogo e joga o alvo para cima, o Luciano assume no ar com a
       Glock e o lança-chamas fecha. O dono descartou as outras duplas sugeridas (Tristan + Beatrice, Tristan + Erin,
       Ivete + Balu, Ivete + Rubens). Fernando segue sem rituais (wiki: "não conseguia utilizar esses rituais").
-- [ ] **Bateria de balanceamento**: Fernando/Luciano, Tristan e Ivete.
+- [x] **Bateria de balanceamento**: Fernando/Luciano, Tristan e Ivete. Feito: 47%, 48% e 49% (92 lutas focadas cada).
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no

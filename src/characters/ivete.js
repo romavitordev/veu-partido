@@ -77,29 +77,33 @@ export default {
 
   abilities: [
     {
-      // △ + □ BEM-VINDO AO SUVACO SECO (PROPOSTA; base canônica: a espingarda e a atiradora que entrou no quarto do
-      // Espreitador): encosta o cano no adversário e dispara à queima-roupa
+      // △ + □ BEM-VINDO AO SUVACO SECO (PROPOSTA; pedido do dono, 2026-11-09; base canônica: a mesa de sinuca do bar —
+      // a partida em que o Rubens perdeu de propósito para ela beijar o Balu): pega o taco de sinuca e dá uma tacada
+      // de lado com as duas mãos, de quem já tirou muito bêbado do bar
       id: 'suvacoSeco',
       name: 'Bem-vindo ao Suvaco Seco',
       input: 'carga+ranged',
-      type: 'pointBlank',
+      type: 'heavyBlow',
       ritual: false,
-      description: 'Encosta o cano da espingarda no adversário e dispara à queima-roupa: só funciona COLADA nele (até 2,6 m) e joga longe.',
+      description: 'Pega o taco de sinuca do bar e dá uma tacada de lado com as duas mãos: avança um passo, aguenta um golpe pequeno na preparação e joga o adversário longe. Errar deixa ela aberta.',
       energyCost: 20,
       cooldown: 9,
-      range: 2.6,
-      windup: 0.16,
-      recovery: 0.36,
-      damage: 56,
-      knockback: 4,
-      hitstun: 0.6,
-      launch: true,
-      anim: 'shoot_rifle',
-      showProp: 'shotgun',
-      hideProp: 'shotgunBack',
-      sound: 'shotgun',
+      anim: 'hammer_h',
+      duration: 0.72,
+      armorFrom: 0.08,
+      impact: 0.34,
+      step: 4,
+      stepTime: 0.18,
+      track: true,
+      range: 2.7,
+      arc: 150,
+      damage: 58,
+      knockback: 7,
+      whiffRecovery: 0.35,
+      showProp: 'cue',
+      hitSound: 'heavyPunch',
       color: SHELL,
-      ai: { when: 'near', max: 2.4 },
+      ai: { when: 'near', max: 2.5 },
     },
     {
       // △ + ○ GARRAFADA (PROPOSTA; base canônica: BARWOMAN, a vida inteira atrás do balcão): arremessa uma long neck

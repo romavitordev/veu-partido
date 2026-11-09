@@ -2415,6 +2415,13 @@ Object.assign(ABILITY_TYPES, {
       if (opp && distXZ(f.pos, opp.pos) < 8) f.yaw = yawTo(f.pos, opp.pos);
       f.anim.play(a.anim || 'hammer_heavy', { restart: true, duration: a.duration });
       world.audio.play('carga', { volume: 0.6, pitch: 0.7 });
+      // a.showProp / a.hideProp: a peça na mão só durante o golpe (o taco de sinuca da Ivete); volta no fim e se cancelar
+      const props = f.rig && f.rig.props ? f.rig.props : {};
+      const swap = (on) => {
+        if (a.showProp && props[a.showProp]) f.rig.showProp(a.showProp, on);
+        for (const n of (a.hideProp || '').split('+').filter(Boolean)) if (props[n]) f.rig.showProp(n, !on);
+      };
+      swap(true);
       const now = world.time;
       f.superArmor = { from: now + a.armorFrom, to: now + a.impact, max: a.armorMax ?? 45, hits: a.armorHits ?? 1 };
       let hit = false;
@@ -2494,10 +2501,10 @@ Object.assign(ABILITY_TYPES, {
           t += dt;
           tl.update(dt);
           const done = t >= a.duration + (hit ? 0 : a.whiffRecovery || 0);
-          if (done) f.anim.speed = 1;
+          if (done) { f.anim.speed = 1; swap(false); }
           return done;
         },
-        cancel: () => { f.anim.speed = 1; },
+        cancel: () => { f.anim.speed = 1; swap(false); },
       };
     },
   },

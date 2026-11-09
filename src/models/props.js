@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1712,4 +1712,10 @@ export function addIveteProps(rig) {
   bottle.visible = false;
   sockets.handR.add(bottle);
   props.bottle = bottle;
+  // o TACO DE SINUCA do Bem-vindo ao Suvaco Seco: só aparece no golpe
+  const cue = poolCue();
+  inFist(cue, GRIP_HEAVY);
+  cue.visible = false;
+  sockets.handR.add(cue);
+  props.cue = cue;
 }

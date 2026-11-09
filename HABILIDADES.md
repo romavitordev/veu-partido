@@ -668,8 +668,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Bem-vindo ao Suvaco Seco** — △ + □ / Y + X · custo 20 · cooldown 9 s · dano 56 · alcance 2.6 m
-  Encosta o cano da espingarda no adversário e dispara à queima-roupa: só funciona COLADA nele (até 2,6 m) e joga longe.
+- **Bem-vindo ao Suvaco Seco** — △ + □ / Y + X · custo 20 · cooldown 9 s · dano 58 · alcance 2.7 m
+  Pega o taco de sinuca do bar e dá uma tacada de lado com as duas mãos: avança um passo, aguenta um golpe pequeno na preparação e joga o adversário longe. Errar deixa ela aberta.
 - **Garrafada** — △ + ○ / Y + B · custo 16 · cooldown 8 s
   Arremessa uma garrafa do Suvaco Seco na cabeça do adversário: quem leva fica TONTO por meio segundo.
 - **Fumaça do Charuto** — △ + L2 / Y + LT · custo 18 · cooldown 13 s

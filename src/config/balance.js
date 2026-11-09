@@ -56,6 +56,10 @@ export const BALANCE = {
   // nem o roubo de vida dele
   degolificada: { dealt: 1.36, taken: 0.79 }, // 8% (sem ajuste) → 33% (1.3/0.82, 86 lutas); kit novo (v4.33): 43% (172 lutas)
   espreitador: { dealt: 1.32, taken: 0.8 }, // kit novo (v4.33): 20% com 1.17/0.89 (132 lutas) → 48% (172 lutas)
+  // 2026-11-09 — os novos, focados (92 lutas cada, sem ajuste): Fernando 20%, Tristan 12%, Ivete 20%
+  fernando: { dealt: 1.13, taken: 0.93 }, // 20% (sem ajuste) → 70% (1.24/0.86) → 47% (92 lutas) (o Luciano é a mesma ficha: herda a linha)
+  tristan: { dealt: 1.19, taken: 0.89 }, // 12% (sem ajuste) → 80% (1.34/0.8) → 48% (92 lutas)
+  ivete: { dealt: 1.13, taken: 0.92 }, // 20% (sem ajuste) → 79% (1.26/0.84, 70 lutas) → 49% (92 lutas, já com a tacada de sinuca no lugar do Suvaco Seco)
 };
 
 // o coeficiente de um lutador (transformado: o do personagem de origem). As formas selecionáveis (o Portador, o Anfitrião
