@@ -6,6 +6,7 @@ import { Projectiles } from '../combat/projectiles.js';
 import { Fighter } from '../combat/Fighter.js';
 import { buildModel } from '../models/index.js';
 import { disposeSkeletons, swapPaintedTexture } from '../models/glbRig.js';
+import { dressFightRoom } from '../arena/fightDressing.js';
 import { Animator } from '../anim/Animator.js';
 import { ARENAS } from '../arena/index.js';
 import { yawTo } from '../core/util.js';
@@ -65,6 +66,8 @@ export class World {
     const A = ARENAS[arenaId];
     this.arena = A.create();
     this.arena.build(this.scene);
+    // as salas do Outro Lado como arena de luta: portas, armários, gavetas e caixas (arena/fightDressing.js)
+    this.dressing = this.arena.dressing ? dressFightRoom(this, this.arena.dressing) : null;
     this.fighters = defs.map((def, i) => new Fighter(def, i, this, this.input.players[i]));
     this.placeFighters();
     this.cameraRig.snap(this.fighters);
@@ -352,6 +355,7 @@ export class World {
     this.time += dt;
     this.inputTime = this.input.time;
     this.arena.update(dt);
+    if (this.dressing) this.dressing.update(dt);
 
     if (this.victoryActors) {
       for (const actor of this.victoryActors) actor.anim.update(dt);
@@ -449,6 +453,7 @@ export class World {
   dispose() {
     this.clearTickers();
     this.clearNpcs();
+    if (this.dressing) { this.dressing.dispose(); this.dressing = null; }
     for (const f of this.fighters || []) { if (f.assists) for (const a of f.assists) a.reset(); if (f.teamGuests) { for (const a of f.teamGuests) a.reset(); f.teamGuests = null; } }
     this.endCinematic();
     this.audio.stopAllLoops();

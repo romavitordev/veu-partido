@@ -72,6 +72,7 @@ export function createGLBArena(cfg) {
     bounds: cfg.bounds.rects ? { rects: cfg.bounds.rects } : null,
     colliders,
     boxes,
+    dressing: cfg.dressing || null, // portas e móveis do jogo nas salas do Outro Lado usadas como arena (fightDressing.js)
     occluders,
     solids,
     spawns: cfg.spawns,

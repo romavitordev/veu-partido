@@ -1,5 +1,6 @@
 // Configuração dos cenários feitos no Blender: limites andáveis, luz, céu, névoa,
 // partículas e câmera. A geometria e os obstáculos vêm do .glb (tools/blender/arena_*.py).
+import { DUNGEONS } from '../pve/dungeons.js';
 
 export const ORFANATO = {
   id: 'orfanato',
@@ -425,6 +426,25 @@ function fightRoom(base, id, r, { spawns, fog, center, fill }) {
   };
 }
 // o quarto principal (os armários e a lua nas janelas)
-export const MANSAO_LUTA = fightRoom(MANSAO, 'mansao_luta', MANSAO.bounds.rects[6], { spawns: [{ x: 45, z: 0 }, { x: 55, z: 0 }], fog: 0.012, center: [50, 0, 0], fill: 0xffc890 });
+// as portas, os móveis e as caixas que no Outro Lado são do jogo (pve/Dungeon.js), parados aqui (arena/fightDressing.js);
+// as posições vêm de pve/dungeons.js
+const ESP = DUNGEONS.espreitador;
+const DEG = DUNGEONS.degolificada;
+export const MANSAO_LUTA = {
+  ...fightRoom(MANSAO, 'mansao_luta', MANSAO.bounds.rects[6], { spawns: [{ x: 45, z: 0 }, { x: 55, z: 0 }], fog: 0.012, center: [50, 0, 0], fill: 0xffc890 }),
+  dressing: {
+    // a porta por onde se entra no quarto e a da saída (o corredor escuro)
+    doors: [ESP.modules.quarto.entry.door, { x: 61.98, z: 0, face: -Math.PI / 2, w: 2.2 }],
+    closets: ESP.closets, // os 4 armários (as frestas do Espreitador), entreabertos
+    drawers: ESP.modules.quarto.drawers,
+  },
+};
 // o bunker (o círculo do ritual e as velas)
-export const ESCOLA_LUTA = fightRoom(ESCOLA, 'escola_luta', ESCOLA.bounds.rects[ESCOLA.bounds.rects.length - 2], { spawns: [{ x: 76, z: 0 }, { x: 86, z: 0 }], fog: 0.012, center: [81, 0, 0], fill: 0xffd8a8 });
+export const ESCOLA_LUTA = {
+  ...fightRoom(ESCOLA, 'escola_luta', ESCOLA.bounds.rects[ESCOLA.bounds.rects.length - 2], { spawns: [{ x: 76, z: 0 }, { x: 86, z: 0 }], fog: 0.012, center: [81, 0, 0], fill: 0xffd8a8 }),
+  dressing: {
+    // a passagem secreta da biblioteca (oeste) e a saída do bunker (leste), fechadas
+    doors: [{ x: 70.32, z: 0, face: Math.PI / 2, w: 2.3 }, { x: 91.68, z: 0, face: -Math.PI / 2, w: 2.1 }],
+    crates: DEG.enigma.boxes, // as caixas de mantimentos do bunker
+  },
+};

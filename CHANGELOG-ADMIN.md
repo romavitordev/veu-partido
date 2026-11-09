@@ -1,5 +1,9 @@
 # Registro administrativo de alterações
 
+## Não lançado
+
+- Mansão Endiabrada e Escola Nostradamus no modo de luta (pedido do dono: "nem portas tem"): as portas, os armários do Espreitador, as gavetas e as caixas do bunker são objetos do jogo no Outro Lado (`pve/Dungeon.js`), não do .glb, e a sala recortada para a luta ficava com buracos pretos no lugar das portas. Novo `arena/fightDressing.js` (`dressFightRoom`) coloca esses objetos parados: Mansão com a porta de entrada e a de saída do quarto, os 4 armários entreabertos com os olhos piscando e as 3 gavetas; Escola com a passagem secreta e a saída do bunker fechadas e as 8 caixas de mantimentos. Posições de `pve/dungeons.js` (`dressing` em `MANSAO_LUTA`/`ESCOLA_LUTA`, `configs.js`); o `World` cria em `setup`, atualiza com o cenário e descarta no `dispose` (fica a partida inteira, não some no fim do round).
+
 ## v4.35.1 — Nomes dos especiais
 
 - Versão: `VERSION` 4.35.0 → **4.35.1** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-09. Testes: `npm test` 83/83; `npm run check` e `vite build` ok.
