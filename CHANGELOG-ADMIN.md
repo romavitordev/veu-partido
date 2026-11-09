@@ -1,5 +1,8 @@
 # Registro administrativo de alterações
 
+## Não lançado
+- Kian sobre o corpo do Luciano, bem mais musculoso (pedido do dono): `tools/blender/char_kian.py` (Builder 1,12/1,22/0,99, cabeça e pele do casal, braços, deltoides, peitoral, dorsais e trapézio) → `public/models/kian.glb`; `textures.js`: pele #5a3a28 e a cicatriz do Luciano em `face_desconjurado`, `skin_torso_kian` e `arms_kian`. Barba de Calamidade pela miniatura da wiki: `beard_sculpt` com bochecha a partir de el −0,4, costeletas a ±1,15 rad e 0,7 r, grão `n3` no lugar do `ridge`; `prop_beard_m` (−0,001 H, 0,0065 H) e `prop_beard_f` (0,0005 H, 0,0085 H, queixo 0,006 H).
+
 ## v4.34.0 — Fernando e Luciano
 
 - Versão: `VERSION` 4.33.0 → **4.34.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-08. Testes: `npm test` 83/83; `npm run check` e `vite build` ok.

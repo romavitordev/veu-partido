@@ -10,6 +10,9 @@ descalço. NENHUMA arma.
 Peças da Transformação (Desconjuração → CALAMIDADE, ligadas na cena "calamity"): a barba cresce em três etapas
 (prop_beard_s rala → prop_beard_m → prop_beard_f cheia) e aparecem as FAIXAS brancas nos antebraços com as pontas soltas
 (prop_wraps) — a miniatura de Calamidade.
+O CORPO É O DO LUCIANO CARVALHO (correção do dono, 2026-11-08): a mesma altura (1,78 m), a mesma cabeça, o mesmo
+tom de pele e a cicatriz abaixo do olho direito (carvalho_common.py), só que BEM MAIS MUSCULOSO: ombros, peito,
+trapézio, braços e pescoço maiores.
 Coordenadas do tronco ANTES da escala do Builder (x × k_tx, y × k_ty); espessuras em frações de H.
 """
 import sys, os, math, random
@@ -20,14 +23,14 @@ from mathutils import Vector
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'kian.glb'
 random.seed(3150)  # Kushim
-b = Builder(width=1.06, bulk=1.18, height=1.03)
+b = Builder(width=1.12, bulk=1.22, height=0.99)  # a altura do Luciano; largura e massa bem acima das dele (1.02 / 1.1)
 sk = b.sk
 H = sk.h
 hz = sk['hips'].z
 
 torso_m = material('skin_torso_kian', '#ffffff', 0.75)  # 'skin_': mantém o tom de pele sob a luz colorida das arenas       # pele com as linhas douradas (textura + brilho)
 arms_m = material('arms_kian', '#ffffff', 0.75)         # pele coberta de escrita que brilha
-skin = material('skin_kian', '#4e3426', 0.75)
+skin = material('skin_kian', '#5a3a28', 0.75)  # o tom do casal Carvalho
 pants = material('pants_desc', '#3a3836', 0.9)
 waist = material('waistband', '#2a2a2e', 0.8)
 wrap = material('wraps_desc', '#dcd6c8', 0.95)
@@ -126,7 +129,7 @@ def kian_torso(sk_, profile, seg=18, depth=0.62):
 
 
 lib.torso_part = kian_torso
-hc = b.body(M, [], arms=(), legs=False, head_r=(0.14, 0.15, 0.162), neck_r=0.085)
+hc = b.body(M, [], arms=(), legs=False, head_r=(0.136, 0.148, 0.16), neck_r=0.094)  # a cabeça do Luciano; pescoço grosso
 
 # ---------------------------------------------------------------- BRAÇOS fortes, inteiros escritos
 for side in ('L', 'R'):
@@ -137,15 +140,15 @@ for side in ('L', 'R'):
     for i in range(8):
         t = i / 7
         p = shtop.lerp(e, t)
-        r = 0.088 + 0.022 * math.sin(t * math.pi * 0.95) - 0.016 * t
+        r = 0.09 + 0.026 * math.sin(t * math.pi * 0.95) - 0.022 * t
         rings.append((p.x, p.y, p.z, r, r * 1.04))
     for i in range(1, 7):
         t = i / 6 * 0.94
         p = e.lerp(h, t)
-        r = 0.07 + 0.02 * math.sin(min(1.0, t * 2.2) * math.pi * 0.5) * (1 - t) - 0.014 * t
+        r = 0.07 + 0.024 * math.sin(min(1.0, t * 2.2) * math.pi * 0.5) * (1 - t) - 0.02 * t
         rings.append((p.x, p.y, p.z, r, r * 0.92))
     b.add('arm' + side, tube(rings, 16), arms_m, region='arm' + side, subdiv=0)
-    b.add('delt' + side, ellipsoid((s.x + sx * 0.005 * H, s.y, s.z - 0.02 * H), (0.088 * H, 0.094 * H, 0.08 * H), 16, 12), arms_m, region='arm' + side, subdiv=0)
+    b.add('delt' + side, ellipsoid((s.x + sx * 0.005 * H, s.y, s.z - 0.02 * H), (0.094 * H, 0.098 * H, 0.084 * H), 16, 12), arms_m, region='arm' + side, subdiv=0)
     b.add('hand' + side, hand_part(sk, side, 0.07), arms_m, region='e' + side)
 
 # ---------------------------------------------------------------- CALÇA cinza-escura e PÉS descalços escritos
@@ -216,17 +219,18 @@ def muscles(p):
     v = 0.0
     if p.y < 0.02 * H:  # frente
         for s in (1, -1):
-            v += bump(p, (s * 0.1 * H, -0.18 * H, hz + 0.46 * H), (0.09 * H, 0.2 * H, 0.06 * H), 0.016 * H)  # peitoral
-            v += bump(p, (s * 0.15 * H, -0.12 * H, hz + 0.2 * H), (0.04 * H, 0.2 * H, 0.1 * H), 0.006 * H)   # oblíquos
+            v += bump(p, (s * 0.1 * H, -0.18 * H, hz + 0.46 * H), (0.1 * H, 0.2 * H, 0.068 * H), 0.026 * H)  # peitoral
+            v += bump(p, (s * 0.15 * H, -0.12 * H, hz + 0.2 * H), (0.045 * H, 0.2 * H, 0.1 * H), 0.009 * H)   # oblíquos
             for z in (0.13, 0.21, 0.29):
-                v += bump(p, (s * 0.036 * H, -0.15 * H, hz + z * H), (0.03 * H, 0.2 * H, 0.03 * H), 0.008 * H)  # gomos
+                v += bump(p, (s * 0.036 * H, -0.15 * H, hz + z * H), (0.03 * H, 0.2 * H, 0.03 * H), 0.012 * H)  # gomos
         if hz + 0.08 * H < p.z < hz + 0.4 * H:
             v -= 0.006 * H * math.exp(-(p.x / (0.008 * H)) ** 2)  # linha alba
         if abs(p.x) < 0.17 * H:
             v -= 0.006 * H * math.exp(-((p.z - hz - 0.395 * H) / (0.012 * H)) ** 2)  # sob o peitoral
     else:  # costas
         for s in (1, -1):
-            v += bump(p, (s * 0.12 * H, 0.14 * H, hz + 0.4 * H), (0.08 * H, 0.2 * H, 0.14 * H), 0.012 * H)  # dorsais
+            v += bump(p, (s * 0.12 * H, 0.14 * H, hz + 0.4 * H), (0.09 * H, 0.2 * H, 0.15 * H), 0.02 * H)  # dorsais
+            v += bump(p, (s * 0.07 * H, 0.06 * H, hz + 0.6 * H), (0.07 * H, 0.12 * H, 0.05 * H), 0.016 * H)  # trapézio
         if p.z > hz + 0.1 * H:
             v -= 0.006 * H * math.exp(-(p.x / (0.01 * H)) ** 2)  # a coluna
     return v
@@ -251,8 +255,8 @@ for side in ('L', 'R'):
     s_, e_, h_ = sk['s' + side], sk['e' + side], sk['hand' + side]
     bc = s_.lerp(e_, 0.55)
     fc = e_.lerp(h_, 0.25)
-    relief(part('arm' + side), lambda p, bc=bc, fc=fc: bump(p, (bc.x, bc.y - 0.04 * H, bc.z), (0.06 * H, 0.06 * H, 0.09 * H), 0.012 * H)
-           + bump(p, (fc.x, fc.y, fc.z), (0.07 * H, 0.07 * H, 0.08 * H), 0.007 * H))
+    relief(part('arm' + side), lambda p, bc=bc, fc=fc: bump(p, (bc.x, bc.y - 0.04 * H, bc.z), (0.065 * H, 0.065 * H, 0.095 * H), 0.02 * H)
+           + bump(p, (fc.x, fc.y, fc.z), (0.07 * H, 0.07 * H, 0.08 * H), 0.011 * H))
 
 # ================================================================ FAIXAS (Calamidade): espiral colada do cotovelo aos nós dos dedos e as duas
 # pontas soltas caindo do pulso
@@ -322,23 +326,23 @@ def beard_sculpt(name, off, r, chin_drop, mus_r):
     B = Sculpt()
     for i in range(19):
         a = (i / 18 - 0.5) * 2.75
-        for el in (-0.24, -0.38, -0.52, -0.66, -0.8):
+        for el in (-0.3, -0.42, -0.54, -0.66, -0.78):
             if abs(a) < 0.34 and el > -0.56:
                 continue  # a boca
-            if abs(a) < 0.72 and el > -0.36:
-                continue  # as maçãs do rosto
+            if abs(a) < 0.95 and el > -0.4:
+                continue  # as maçãs do rosto: a barba começa no meio da bochecha (miniatura de Calamidade)
             q = on_head(a, el, off)
             if q:
                 B.ell(q, (r, r, r * 0.9))
     for s in (1, -1):
         for el in (-0.1, 0.05):
-            q = on_head(s * 1.25, el, off)
+            q = on_head(s * 1.15, el, off)  # as costeletas, rentes (miniatura de Calamidade)
             if q:
-                B.ell(q, (r * 0.85, r * 0.85, r))
+                B.ell(q, (r * 0.7, r * 0.7, r))
     chin = on_head(0.0, -0.82, off + 0.006 * H)
     if chin and chin_drop > 0:
         B.chain([chin, chin + Vector((0, -0.01 * H, -chin_drop))], [r * 1.3, r * 0.8], step=0.5)
-    b.add(name, B.mesh(res=0.004, smooth=2, disp=lambda p: 0.002 * H * (ridge(p.x / H * 140 + p.z / H * 40 + n3(p, 40), 2) - 0.4), target=2600), beard, region='body', weight_fn=HEAD, subdiv=0)
+    b.add(name, B.mesh(res=0.004, smooth=2, disp=lambda p: 0.0006 * H * (n3(p, 260) - 0.5), target=2600), beard, region='body', weight_fn=HEAD, subdiv=0)  # só um grão fino (o relevo de fios virava faixas)
     Mu = Sculpt()
     for s in (1, -1):
         pts = [on_head(s * a, el, off + 0.008 * H) for a, el in ((0.03, -0.36), (0.16, -0.38), (0.28, -0.46), (0.32, -0.56))]
@@ -348,8 +352,10 @@ def beard_sculpt(name, off, r, chin_drop, mus_r):
     b.add(name + '_mustache', Mu.mesh(res=0.0035, smooth=2, target=900), beard, region='body', weight_fn=HEAD, subdiv=0)
 
 
-beard_sculpt('prop_beard_m', 0.0, 0.016 * H, 0.0, 0.008 * H)  # crescendo: rente
-beard_sculpt('prop_beard_f', 0.01 * H, 0.03 * H, 0.05 * H, 0.015 * H)  # cheia e densa (Calamidade)
+# Medidas pela "Miniatura Kian em Calamidade" (wiki): barba CURTA e cheia colada no queixo e na mandíbula, bigode ligado,
+# sem passar da largura da mandíbula. A versão anterior (r 0,03 H, queixo 0,05 H) ficava 25% mais larga que a cabeça.
+beard_sculpt('prop_beard_m', -0.001 * H, 0.0065 * H, 0.0, 0.004 * H)  # crescendo: rente
+beard_sculpt('prop_beard_f', 0.0005 * H, 0.0085 * H, 0.006 * H, 0.0055 * H)  # cheia e curta (Calamidade)
 b.group('prop_beard_m')
 b.group('prop_beard_f')
 

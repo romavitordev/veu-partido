@@ -69,10 +69,19 @@
       apresentação, agarrões e o Fernando no especial da Força D (os olhos ficam amarelos e o Luciano atira).
       Conferido no jogo: troca de ida e volta, pânico, Reação, os dois especiais e o da Força D, sem erros.
       Retrato `public/sobre/elenco/fernando.webp` (renderPortraits). Falta: balanceamento numa bateria.
-- [ ] **Reformular o modelo do Kian** (pedido do dono, 2026-11-08): o corpo do Kian é o corpo do Luciano, só que bem
+- [x] **Reformular o modelo do Kian** (pedido do dono, 2026-11-08): o corpo do Kian é o corpo do Luciano, só que bem
       mais musculoso. Refazer o `char_kian.py` partindo do corpo do casal (`tools/blender/carvalho_common.py`: mesmas
       proporções de rosto e cabeça, pele, cabelo raspado e a cicatriz) e aumentar a massa muscular (ombros, peito,
       braços e pescoço); conferir em 4 vistas contra as referências do Kian e manter a roupa e os acessórios dele.
+      **Feito (2026-11-09, não lançado):** `char_kian.py` com a altura (0,99) e a cabeça do Luciano, o tom de pele do
+      casal (#5a3a28 no material e nas texturas `face_desconjurado`/`skin_torso_kian`/`arms_kian`) e a cicatriz abaixo
+      do olho direito; Builder 1,12 / 1,22 (o Luciano é 1,02 / 1,1), pescoço 0,094, braços e deltoides maiores, peitoral,
+      dorsais e gomos mais fundos e o trapézio novo. A barba e as faixas de Calamidade encaixam. Conferido de frente e de
+      costas, ao lado do Luciano, no jogo.
+      **Barba refeita (2026-11-09, o dono achou desproporcional):** medida pela "Miniatura Kian em Calamidade" da wiki —
+      curta, colada no queixo e na mandíbula, começando no meio da bochecha, bigode ligado. A cheia passou de 1,25× a
+      largura da cabeça (r 0,03 H, queixo 0,05 H) para a largura da mandíbula (r 0,0085 H, queixo 0,006 H); o relevo de
+      "fios" que virava faixas virou um grão fino. Conferido de frente, 3/4 e perfil no jogo.
 
 ## Revisão do trabalho do Copilot (v4.9.1, 2026-11-02)
 - [x] Conferido no jogo: Olhar ao Agressor (o atacante entra em transe e se golpeia, ~22 de dano) e Investida Mortal no

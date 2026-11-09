@@ -2563,9 +2563,14 @@ export const MATERIAL_TEXTURES = {
         g.lineWidth = 6 - i;
         g.beginPath(); g.moveTo(CX + 26 + i * 12, 104 + i * 2); g.quadraticCurveTo(CX + 30 + i * 13, 140, CX + 24 + i * 14, 176 - i * 6); g.stroke();
       }
+      // a cicatriz abaixo do olho direito: o corpo é o do Luciano Carvalho (o mesmo traço do carvalhoFace)
+      g.strokeStyle = 'rgba(40,22,16,0.85)'; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(CX - 52, EYE_Y + 12); g.lineTo(CX - 26, EYE_Y + 30); g.stroke();
+      g.strokeStyle = 'rgba(140,96,80,0.5)'; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(CX - 51, EYE_Y + 11); g.lineTo(CX - 27, EYE_Y + 28); g.stroke();
       paintKianSigils(g, '#f2e2b0');
     }, {
-      skin: '#4e3426',
+      skin: '#5a3a28', // o tom do casal Carvalho (o corpo é o do Luciano)
       eye: { iris: '#b8761a', irisLight: '#ffcf5a', tilt: 0.06 },
       brow: { angry: 5, thick: 7, color: '#120c0a' },
       mouth: { mouthW: 16, smile: -1, lipLine: '#1e100c', lip: 'rgba(70,30,24,0.55)' },
@@ -2588,7 +2593,7 @@ export const MATERIAL_TEXTURES = {
     // fecham o losango no umbigo; a linha do esterno até a cintura. Escrita escura: colunas dos dois lados da linha do
     // meio e fileiras ao longo das clavículas. Coordenadas "em pé": y = 0 no pescoço (≈ 588 px por unidade de altura).
     const paint = (g, glow) => {
-      g.fillStyle = glow ? '#000' : '#4e3426'; g.fillRect(0, 0, 512, 512);
+      g.fillStyle = glow ? '#000' : '#5a3a28'; g.fillRect(0, 0, 512, 512);
       g.save();
       g.translate(0, 512); g.scale(1, -1);
       if (!glow) {
@@ -2641,7 +2646,7 @@ export const MATERIAL_TEXTURES = {
   // braços, mãos e pés do Kian: fileiras de escrita que brilha, cobrindo tudo (a referência "desconjurado pose")
   arms_kian: () => {
     const paint = (g, glow) => {
-      g.fillStyle = glow ? '#000' : '#3c271b'; g.fillRect(0, 0, 256, 512);
+      g.fillStyle = glow ? '#000' : '#452d1f'; g.fillRect(0, 0, 256, 512);
       for (let y = 6; y < 512; y += 24) glyphs(g, 0, y, 256, 17, glow ? 'rgba(255,214,130,0.95)' : 'rgba(255,244,214,0.95)', 16, 0.5);
       // anéis dourados contínuos em volta do braço, de tempos em tempos (como nas artes)
       g.strokeStyle = glow ? '#ffd27a' : '#fff1c8'; g.lineWidth = glow ? 4 : 3;
