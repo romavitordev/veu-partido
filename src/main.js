@@ -50,7 +50,7 @@ function applyGraphics() {
   renderer.setPixelRatio(Math.min(G.pixelRatio, window.devicePixelRatio));
   renderer.setSize(viewSize().w, viewSize().h);
   renderer.shadowMap.enabled = G.shadows;
-  renderer.shadowMap.type = G.softShadows ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap; // desde a r182 o PCF já é suave (o PCFSoftShadowMap foi descontinuado)
   renderer.shadowMap.needsUpdate = true;
 }
 applyGraphics();
@@ -694,7 +694,8 @@ function placeVictoryLabels() {
   game.overlay.placeLabels(pts);
 }
 
-const clock = new THREE.Clock();
+const clock = new THREE.Timer(); // THREE.Clock foi descontinuado na r183
+clock.connect(document); // a aba em segundo plano não acumula um dt gigante ao voltar
 let lastFrame = 0;
 
 // contador de desempenho de dev (dev/perf.js): ?perf na URL ou F8 no `npm run dev` — carregado só quando pedido
@@ -708,6 +709,7 @@ function frame(now) {
   const cap = gfxProfile().maxFps;
   if (cap && now && now - lastFrame < 1000 / cap - 2) { requestAnimationFrame(frame); return; }
   lastFrame = now || performance.now();
+  clock.update(now);
   const dt = clock.getDelta();
   // um erro num quadro não pode parar o laço: antes, uma exceção no tick() pulava o requestAnimationFrame e o jogo
   // CONGELAVA de vez (P0 travamentos, 2026-11-06). O erro continua no console (uma vez por mensagem), não é escondido.

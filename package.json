@@ -22,7 +22,7 @@
     "dist:android": "vite build && cap sync android"
   },
   "dependencies": {
-    "three": "^0.169.0"
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@capacitor/android": "^6.2.2",

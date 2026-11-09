@@ -86,8 +86,9 @@ fit();
 // Para inspeção externa
 window.__gallery = { entries, setYaw: (v) => { yaw = v; } };
 
-const clock = new THREE.Clock();
-renderer.setAnimationLoop(() => {
+const clock = new THREE.Timer();
+renderer.setAnimationLoop((now) => {
+  clock.update(now);
   const dt = Math.min(0.05, clock.getDelta());
   for (const e of entries) {
     e.rig.root.rotation.y = yaw;
