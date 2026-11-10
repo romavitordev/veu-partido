@@ -632,7 +632,7 @@ function openPause(by = game.pausedBy) {
 }
 
 // Atalho de testes: partida completa pelo fluxo real (carregamento, falas, vitória)
-//   await __game.devStart({ kind: 'cpu', team: true, picks: [['dante','joui','arthur'], ['kaiser','aghata','gal_sal']], arenaId: 'ruinas' })
+//   await __game.devStart({ kind: 'cpu', team: true, picks: [['dante','joui','arthur'], ['kaiser','aghata','gal_sal']], arenaId: 'ferro_velho' })
 game.devStart = async ({ kind = 'cpu', team = false, picks, arenaId = DEFAULT_ARENA }) => {
   const byId = (id) => ROSTER.find((c) => c.id === id);
   const teams = picks.map((l) => (Array.isArray(l) ? l : [l]).map(byId));

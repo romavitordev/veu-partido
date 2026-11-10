@@ -1,8 +1,8 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, RUINAS, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, ruinas: RUINAS, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -16,14 +16,6 @@ export async function preloadArenas() {
 //  colors: [céu, chão, destaque] — usados no cartão da seleção enquanto o preview não fica pronto
 //  thumbCamera: { pos, look } — enquadramento da imagem de preview (src/ui/arenaThumbs.js)
 export const ARENAS = {
-  ruinas: {
-    name: 'Ruínas do Ritual',
-    description: 'Cemitério abandonado com um círculo de invocação, pilares e névoa roxa.',
-    colors: ['#1a1028', '#2a2232', '#a46bff'],
-    available: true,
-    thumbCamera: { pos: [0, 7, 15], look: [0, 0.5, 0] }, // enquadramento do preview na seleção
-    create: () => createGLBArena(RUINAS),
-  },
   orfanato: {
     name: 'Orfanato Santa Mega-Freira',
     description: 'O pátio de um casarão antigo num dia nublado: balanços nas árvores, raízes expostas e janelas que observam.',
@@ -145,5 +137,5 @@ export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'ruinas', 'acampamento', 'igreja', 'palco', 'tipora', 'ferro_velho', 'circo', 'mansao_luta', 'escola_luta'];
-export const DEFAULT_ARENA = 'ruinas';
+export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'palco', 'tipora', 'ferro_velho', 'circo', 'mansao_luta', 'escola_luta'];
+export const DEFAULT_ARENA = 'ferro_velho';

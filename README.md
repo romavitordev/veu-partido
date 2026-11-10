@@ -232,11 +232,11 @@ acessórios ficam em `MODEL_VARIANTS`. Armas e acessórios em código ficam em `
 modelos procedurais provisórios: se um `.glb` não carregar, o jogo tenta de novo e, se ainda falhar, avisa na tela.
 
 ### Cenários (Blender + modelos prontos)
-Os cenários (Ruínas do Ritual, Orfanato, Bar Suvaco Seco, Coliseu, Santo Berço, Acampamento, Igreja, o Palco do
-Anfitrião e a Ilha de Tipora) são montados no Blender por
+Os cenários (Orfanato, Bar Suvaco Seco, Coliseu, Santo Berço, Acampamento, Igreja, o Palco do Anfitrião, a Ilha de
+Tipora, Ferro Velho e Circo dos Psikolera) são montados no Blender por
 `tools/blender/arena_<id>.py` com **peças prontas e gratuitas dos kits do Kenney** (CC0) — casas, árvores, muralhas,
 lápides, móveis, ruas, carros — posicionadas por `tools/blender/kenney.py` (`put`, `house`, `tower`). Só os
-elementos únicos de cada lugar são feitos à mão (Símbolo Espiral, círculo ritual, estátuas, placas). Os kits ficam em
+elementos únicos de cada lugar são feitos à mão (Símbolo Espiral, estátuas, placas). Os kits ficam em
 `assets_src/kenney/` (fora do git; ver `assets_src/README.md`). Gerar: `node tools/blender/build.mjs <id>`.
 O **Palco do Anfitrião** é todo feito à mão (o roxo não sai do atlas do Kenney) e tem regras próprias em
 `src/arena/palcoHost.js`: o Anfitrião narra a luta, a plateia (objetos `CROWD_*`) pula com os golpes e, de tempos em

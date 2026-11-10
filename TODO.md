@@ -161,8 +161,8 @@
       cenários. Comparar lado a lado com os melhores (Bar Suvaco Seco, Coliseu, Palco do Anfitrião, Ilha de Tipora) e
       refazer o que destoa (iluminação, texturas, adereços, enquadramento e miniatura). São as versões de luta das
       dungeons do Outro Lado (`mansao_luta`, `escola_luta` em `arena/index.js`).
-- [ ] **Remover o cenário Ruínas do Ritual** (`ruinas`) quando os novos entrarem. Conferir quem usa o `ruinas` como
-      padrão (`devStart`, testes, bateria de balanceamento, Torre, miniaturas) antes de tirar.
+- [x] **Remover o cenário Ruínas do Ritual** (`ruinas`) após a entrada dos novos: removidos do registro, da seleção,
+      do pré-carregamento e do padrão; não havia testes, bateria de balanceamento, Torre ou miniaturas dependentes.
 - [x] **Dois cenários novos** (2026-11-09: **Ferro Velho** = Base dos Couraças e **Circo dos Psikolera**, versão
       básica; refinar com o tempo). Os outros seis ficam para depois. Escolhidos entre as ideias do dono (levantar cada lugar na wiki antes de modelar; o que
       não for do cânone fica marcado como PROPOSTA):

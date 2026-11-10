@@ -91,28 +91,6 @@ export const SANTO_BERCO = {
   camera: { radius: 23, maxY: 14 }, // não entra nas casas nem nas árvores
 };
 
-// Ruínas do Ritual: cemitério abandonado à noite, lua clara, névoa roxa e cinzas subindo; o círculo ritual brilha
-export const RUINAS = {
-  id: 'ruinas',
-  name: 'Ruínas do Ritual',
-  glb: 'arenas/ruinas.glb',
-  bounds: { radius: 21.5 },
-  spawns: [{ x: 0, z: -5 }, { x: 0, z: 5 }],
-  sky: 0x0d0a14,
-  skyGradient: [[0, '#05040a'], [0.6, '#140e22'], [1, '#2a1c3a']],
-  fog: { color: 0x1a1028, density: 0.022 },
-  lights: [
-    { type: 'hemi', sky: 0xa898d8, ground: 0x2a1c34, intensity: 1.6 },
-    { type: 'ambient', color: 0x6a5a8a, intensity: 0.5 },
-    { type: 'dir', color: 0xd8d0ff, intensity: 2.6, pos: [12, 22, 8], shadow: true, area: 28 },
-    { type: 'point', color: 0xa46bff, intensity: 30, distance: 30, decay: 1.6, pos: [0, 2.5, 0] },
-    { type: 'point', color: 0xffa050, intensity: 6, distance: 9, pos: [4, 0.8, 4], flicker: true },
-    { type: 'point', color: 0xffa050, intensity: 6, distance: 9, pos: [-4, 0.8, -4], flicker: true },
-  ],
-  particles: { color: 0xb89aff, count: 400, area: 50, height: 10, rise: 0.25, drift: 0.4, size: 0.07, opacity: 0.6 }, // cinzas roxas
-  camera: { radius: 25, maxY: 14 },
-};
-
 // Coliseu: arena de areia ao entardecer cercada por muralhas e torres em ruínas (peças do Castle Kit)
 export const COLISEU = {
   id: 'coliseu',

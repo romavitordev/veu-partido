@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.35.1';
+export const VERSION = '4.36.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.36.0',
+    date: '2026-11-09',
+    title: 'Ferro Velho e Circo dos Psikolera',
+    items: [
+      'NOVOS CENÁRIOS: Ferro Velho, a base dos Couraças em Hexatombe, e Circo dos Psikolera, o circo dos Irmãos Davo tomado pela banda.',
+    ],
+  },
   {
     v: '4.35.1',
     date: '2026-11-09',

@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.36.0 — Ferro Velho e Circo dos Psikolera
+
+### Adicionado
+- Dois novos cenários de luta: Ferro Velho, a base dos Couraças em Hexatombe, e Circo dos Psikolera, o circo dos Irmãos Davo tomado pela banda.
+
 ## v4.35.1 — Nomes dos especiais
 
 ### Alterado

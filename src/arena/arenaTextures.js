@@ -327,48 +327,6 @@ export const ARENA_TEXTURES = {
     noise(g, s, ['#000', '#5a1a10'], 2500, [1, 3], 0.35);
   }),
 
-  // ---------------- Ruínas do Ritual: chão de pedras escuras com o círculo de invocação roxo (brilha: glow)
-  ritual_circle: () => tex(1024, 1, (g) => {
-    g.fillStyle = '#1c1820'; g.fillRect(0, 0, 1024, 1024);
-    for (let i = 0; i < 900; i++) {
-      const v = 22 + Math.random() * 18;
-      g.fillStyle = `rgb(${v},${v - 3},${v + 4})`;
-      const x = Math.random() * 1024, y = Math.random() * 1024, s = 20 + Math.random() * 50;
-      g.fillRect(x, y, s, s * 0.7);
-    }
-    g.strokeStyle = 'rgba(0,0,0,0.35)';
-    for (let i = 0; i < 1024; i += 64) {
-      g.beginPath(); g.moveTo(i, 0); g.lineTo(i, 1024); g.stroke();
-      g.beginPath(); g.moveTo(0, i); g.lineTo(1024, i); g.stroke();
-    }
-    // fora do círculo: transparente aos poucos (o chão de terra aparece)
-    g.save();
-    g.globalCompositeOperation = 'destination-in';
-    const fade = g.createRadialGradient(512, 512, 470, 512, 512, 512);
-    fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
-    g.fillStyle = fade; g.fillRect(0, 0, 1024, 1024);
-    g.restore();
-    g.translate(512, 512);
-    g.strokeStyle = 'rgba(150,100,230,0.85)';
-    g.shadowColor = '#a46bff'; g.shadowBlur = 8; g.lineWidth = 3;
-    for (const r of [430, 400, 250]) { g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.stroke(); }
-    g.lineWidth = 2.5;
-    g.beginPath();
-    for (let i = 0; i <= 5; i++) {
-      const a = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-      const x = Math.cos(a) * 400, y = Math.sin(a) * 400;
-      if (i === 0) g.moveTo(x, y); else g.lineTo(x, y);
-    }
-    g.stroke();
-    g.font = 'bold 34px serif'; g.fillStyle = 'rgba(190,140,255,0.9)';
-    const glyphs = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
-    for (let i = 0; i < 36; i++) { g.save(); g.rotate((i / 36) * Math.PI * 2); g.fillText(glyphs[i % glyphs.length], -10, -408); g.restore(); }
-  }, { glow: 0.35 }),
-  ground_graveyard: () => tex(256, 3, (g, s) => {
-    g.fillStyle = '#3a3442'; g.fillRect(0, 0, s, s);
-    noise(g, s, ['#2a2430', '#4a4252', '#1e1a24', '#5a5060'], 6000, [1, 4], 0.45);
-  }, { roughness: 1 }),
-
   // ---------------- Santo Berço
   // reboco claro de casa medieval (as vigas escuras são peças do modelo); manchas de umidade embaixo
   timber_wall: () => tex(256, 2, (g, s) => {

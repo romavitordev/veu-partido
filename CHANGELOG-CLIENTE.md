@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.36.0 — Ferro Velho e Circo dos Psikolera
+- NOVOS CENÁRIOS: Ferro Velho, a base dos Couraças em Hexatombe, e Circo dos Psikolera, o circo dos Irmãos Davo tomado pela banda.
+
 ## v4.35.1 — Nomes dos especiais
 - Especiais: a faixa grande agora mostra o NOME do especial (ex.: "Ninguém Mexe com os Meus Meninos", da Ivete) e fica na tela pelo tempo que o texto pede. A frase do personagem aparece embaixo, como legenda, com tempo para ler.
 - Fernando e Luciano: na tela de vitória, as falas do Luciano saem com o nome dele e o Fernando aparece com os olhos amarelos.
