@@ -3,6 +3,7 @@ import { loadGLB } from '../models/glbRig.js';
 import { ARENA_TEXTURES } from './arenaTextures.js';
 import { gfxProfile } from '../config/settings.js';
 import { blocksPointGeneric } from '../combat/positioning.js';
+import { makeWindows, makeLightning, makeWalkers } from './nightLife.js';
 
 // Cenário feito no Blender (tools/blender/arena_<id>.py → public/arenas/<id>.glb).
 // Convenções dos objetos no .glb:
@@ -36,6 +37,7 @@ export function createGLBArena(cfg) {
   let mist = null;
   let fires = [];
   let beacons = [];
+  let night = []; // janelas acesas, relâmpagos e os Existidos andando (nightLife.js)
   const lightPool = { spots: [], lights: [], clock: 0 };
   // as luzes do pool vão para as lâmpadas mais perto do foco (refeito 4x por segundo; a troca acende devagar)
   function updateLightPool(dt) {
@@ -241,6 +243,10 @@ export function createGLBArena(cfg) {
       fires = (cfg.fires || []).map((o) => makeFire(group, o));
       if (cfg.mist) mist = makeMist(group, cfg.mist);
       beacons = (cfg.beacons || []).map((o) => makeBeacon(group, o));
+      night = [];
+      if (cfg.windows) night.push(makeWindows(group, cfg.windows));
+      if (cfg.lightning) night.push(makeLightning(group, cfg.lightning));
+      if (cfg.walkers) night.push(makeWalkers(group, cfg.walkers));
     },
 
     update(dt) {
@@ -274,6 +280,7 @@ export function createGLBArena(cfg) {
       for (const f of fires) f.update(dt, time);
       if (mist) mist.update(dt);
       for (const b of beacons) b.rotation.y += b.userData.speed * dt;
+      for (const n of night) n.update(dt, time);
     },
 
     // a plateia: level 0 (silêncio, prende a respiração) a 1 (de pé, pulando) por `time` s; depois volta ao normal

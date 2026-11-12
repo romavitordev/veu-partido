@@ -4,7 +4,7 @@ import { DUNGEONS } from '../pve/dungeons.js';
 
 export const ORFANATO = {
   id: 'orfanato',
-  name: 'Orfanato Santa Mega-Freira',
+  name: 'Orfanato Santa Menefreda (Dia)',
   glb: 'arenas/orfanato.glb',
   bounds: { radius: 20.2 },
   spawns: [{ x: 0, z: -5 }, { x: 0, z: 5 }],
@@ -19,6 +19,54 @@ export const ORFANATO = {
   ],
   particles: { color: 0x8a6a3a, count: 160, area: 40, height: 6, rise: -0.25, drift: 0.8, size: 0.09, opacity: 0.8 }, // folhas secas caindo
   camera: { radius: 26, maxY: 14 },
+};
+
+// O ORFANATO À NOITE (pedido do dono, 2026-11-12): o mesmo pátio sob tempestade seca — relâmpagos clareando o céu
+// escuro, janelas do casarão acesas (algumas piscando) e EXISTIDOS andando devagar do lado de fora da grade, com os olhos
+// e as escritas do corpo brilhando (os Existidos do Santa Menefreda, Desconjuração). Tudo do jogo (nightLife.js): o .glb
+// é o mesmo da versão de dia. Os vidros ficam logo atrás da fachada (x = 22), uma janela por célula de 3 m.
+function orfanatoWindows() {
+  const out = [];
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+  for (let fl = 0; fl < 3; fl++) {
+    for (let i = 0; i < 11; i++) {
+      if (fl === 0 && i === 5) continue; // a porta
+      const r = rnd();
+      if (r < 0.25) continue; // apagada
+      out.push({ pos: [22.2, fl * 3 + 1.62, (i - 5) * 3], size: [0.05, 1.15, 1.05], flicker: r > 0.72, intensity: 1.6 + rnd() * 1.2 });
+    }
+  }
+  return out;
+}
+export const ORFANATO_NOITE = {
+  ...ORFANATO,
+  id: 'orfanato_noite',
+  name: 'Orfanato Santa Menefreda (Noite)',
+  sky: 0x0a0e18,
+  skyGradient: [[0, '#04060c'], [0.55, '#0c1220'], [0.85, '#182236'], [1, '#26324a']],
+  fog: { color: 0x0e1420, density: 0.02 },
+  lights: [
+    { type: 'hemi', sky: 0x5a6a90, ground: 0x1a1810, intensity: 0.9 },
+    { type: 'ambient', color: 0x2a3040, intensity: 0.4 },
+    { type: 'dir', color: 0x9aaad8, intensity: 1.0, pos: [-14, 26, 10], shadow: true, area: 30 }, // o luar entre as nuvens
+    { type: 'point', color: 0xffb860, intensity: 18, distance: 10, pos: [19.2, 3, 0] }, // a porta
+    { type: 'point', color: 0xffa850, intensity: 10, distance: 12, pos: [20.4, 5, -9], flicker: true }, // a luz das janelas
+    { type: 'point', color: 0xffa850, intensity: 10, distance: 12, pos: [20.4, 5, 9] },
+  ],
+  windows: orfanatoWindows(),
+  lightning: { interval: [5, 11], distance: 110, top: 80, bottom: 18, arc: [Math.PI * 0.9, Math.PI * 2.1], intensity: 2.4, skyOpacity: 0.3 },
+  // cinco Existidos no corredor entre a grade de ferro (r 21) e a sebe (r 22,6): fora da área de luta (r 20,2), vistos
+  // entre as barras com a sebe escura atrás; longe do casarão (+x). Vagam devagar, param e olham para o pátio
+  walkers: [
+    { arc: [2.7, 3.5], radius: 21.8, wobble: 0.15, speed: 0.75, scale: 1.15 },
+    { arc: [3.7, 4.4], radius: 21.8, wobble: 0.15, speed: 0.6, scale: 1.2 },
+    { arc: [4.6, 5.4], radius: 21.8, wobble: 0.15, speed: 0.8, scale: 1.1 },
+    { arc: [5.6, 6.3], radius: 21.8, wobble: 0.15, speed: 0.7, scale: 1.2 },
+    { arc: [6.45, 7.05], radius: 21.8, wobble: 0.15, speed: 0.65, scale: 1.15 },
+  ],
+  stars: { count: 300, radius: 170, size: 0.7 },
+  particles: { color: 0x3a3428, count: 120, area: 40, height: 6, rise: -0.25, drift: 1.2, size: 0.08, opacity: 0.7 }, // folhas no vento
 };
 
 // Bar: dá para lutar no salão e sair pela porta para a calçada

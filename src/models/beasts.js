@@ -3,10 +3,11 @@ import { buildNpcModel } from './npcRig.js';
 import { buildBloodZombie } from './bloodZombie.js';
 import { toon } from './rig.js';
 
+// kind 'existido': o Existido de CONHECIMENTO (humano mumificado, sem o Lodo; o Orfanato à noite) — mesmo esqueleto.
 // O EXISTIDO DE MORTE (invocação do Deus da Morte, tools/blender/npc_existido_morte.py): mesmo esqueleto dos Zumbis de
 // Sangue, então a pose (combat/npcs.js BloodZombie.pose) serve igual. Sem o .glb, usa o zumbi provisório.
-export function buildExistido() {
-  const m = buildNpcModel('existido_morte', { outline: 0.012, noOutline: ['lodo_existido', 'dente'] });
+export function buildExistido(kind = 'existido_morte') {
+  const m = buildNpcModel(kind, { outline: 0.012, noOutline: ['lodo_existido', 'dente'] });
   if (!m) return buildBloodZombie(true);
   const J = m.joint;
   return {

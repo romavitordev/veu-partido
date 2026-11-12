@@ -95,7 +95,7 @@ export const ARENA_TEXTURES = {
     noise(g, s, ['#8a8476', '#c2baa8', '#6a6458'], 4000, [1, 4], 0.4);
   }),
 
-  // ---------------- Orfanato Santa Mega-Freira
+  // ---------------- Orfanato Santa Menefreda
   brick_manor: () => tex(512, 1.6, (g, s) => bricks(g, s, { base: [122, 74, 56], mortar: '#6e6258', rows: 22, cols: 7, vary: 26, dirt: 0.3 })),
   stone_manor: () => tex(512, 2, (g, s) => {
     g.fillStyle = '#7a7266'; g.fillRect(0, 0, s, s);

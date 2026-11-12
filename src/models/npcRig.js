@@ -11,6 +11,7 @@ export const NPC_MODELS = {
   zumbi_sangue: 'npcs/zumbi_sangue.glb',
   zumbi_sangue_forte: 'npcs/zumbi_sangue_forte.glb',
   existido_morte: 'npcs/existido_morte.glb', // o Existido de Morte (invocação do Deus da Morte)
+  existido: 'npcs/existido.glb', // o Existido de Conhecimento (os que vagam pelo Orfanato à noite; tools/blender/npc_existido.py)
   javali_tinta: 'npcs/javali_tinta.glb', // os animais infectados pela Tinta (invocação do Amigo Imaginário)
   cao_tinta: 'npcs/cao_tinta.glb',
   esfinge: 'npcs/esfinge.glb', // o Carniçal da Esfinge (especial da Nubi)

@@ -1,9 +1,9 @@
 """
-ORFANATO SANTA MEGA-FREIRA — public/arenas/orfanato.glb
+ORFANATO SANTA MENEFREDA — public/arenas/orfanato.glb
 UM casarão de pedra de três andares com telhado vermelho e uma torre, visto do pátio num dia NUBLADO: gramado seco,
 pinheiros enormes com balanços de corda, toco, troncos caídos, lago com pedras, bancos, grade de ferro, sebe e névoa.
 Casarão, torre, pinheiros, troncos, pedras, bancos, grade e sebe são PEÇAS PRONTAS dos kits do Kenney (CC0:
-Fantasy Town, Nature e Graveyard Kit — tools/blender/kenney.py). Feitos aqui só: a estátua da Santa Mega-Freira,
+Fantasy Town, Nature e Graveyard Kit — tools/blender/kenney.py). Feitos aqui só: a estátua da Santa Menefreda,
 os balanços e a água do lago.
 Coordenadas do jogo: arena no centro (raio andável ~19 m); o casarão fica em +x, com a fachada olhando o pátio (-x).
 """
@@ -67,7 +67,7 @@ for k, (x, z, a) in enumerate([(-11, -11, 0.6), (9, 4, -0.3)]):
     put('nature', 'log_large', (x, 0, z), a, 4.0)
     col_box(f'log{k}', (x, 0.4, z), (3.6 if abs(a) < 0.5 else 3.0, 0.8, 1.6))
 
-# ---------------- estátua da Santa Mega-Freira num pedestal (fica transparente se tampar)
+# ---------------- estátua da Santa Menefreda num pedestal (fica transparente se tampar)
 SX, SZ = -11, 7
 before = set(o.name for o in bpy.context.scene.objects)
 box('pedestal', (SX, 0.5, SZ), (1.7, 1.0, 1.7), M['trim'], bevel=0.05)

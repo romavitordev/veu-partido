@@ -1,10 +1,10 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
 const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
 // variantes de horário (mesmo .glb, outra luz): não carregam de novo, só seguem a disponibilidade do original
-const VARIANTS = { ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'] };
+const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'] };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -20,12 +20,20 @@ export async function preloadArenas() {
 //  thumbCamera: { pos, look } — enquadramento da imagem de preview (src/ui/arenaThumbs.js)
 export const ARENAS = {
   orfanato: {
-    name: 'Orfanato Santa Mega-Freira',
+    name: 'Orfanato Santa Menefreda (Dia)',
     description: 'O pátio de um casarão antigo num dia nublado: balanços nas árvores, raízes expostas e janelas que observam.',
     colors: ['#c9ccd0', '#6b5a3e', '#e8b860'],
     available: true,
     thumbCamera: { pos: [-10, 2.2, 0], look: [14, 5.5, 0] }, // enquadramento do preview na seleção
     create: () => createGLBArena(ORFANATO),
+  },
+  orfanato_noite: {
+    name: 'Orfanato Santa Menefreda (Noite)',
+    description: 'O mesmo pátio numa noite de tempestade: relâmpagos no céu escuro, janelas acesas piscando no casarão e Existidos andando além da grade, com os olhos e as escritas do corpo brilhando.',
+    colors: ['#0c1220', '#3a3a2a', '#ffc040'],
+    available: true,
+    thumbCamera: { pos: [-10, 2.2, 0], look: [14, 5.5, 0] },
+    create: () => createGLBArena(ORFANATO_NOITE),
   },
   suvaco: {
     name: 'Bar Suvaco Seco',
@@ -164,5 +172,5 @@ export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'mansao_luta', 'escola_luta'];
+export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ferro_velho';
