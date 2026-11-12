@@ -145,6 +145,28 @@ export const TEAM_LINKS = {
     choreo: 'mae_filho',
     sceneProps: { ivete: { show: ['shotgun'], hide: ['shotgunBack'] }, arthur: { show: ['sniperHand'] } },
   },
+  // IRMÃOS LUKIC (pedido do dono, 2026-11-12: os gêmeos entram como dois personagens ligados): a Foice Amaldiçoada do
+  // cânone — a gadanha do Boris com a bengala do Damir encaixada (combat/teamSpecials.js CHOREO.irmaos_lukic)
+  irmaos_lukic: {
+    id: 'irmaos_lukic',
+    kind: 'duo',
+    name: 'A FOICE AMALDIÇOADA',
+    banner: 'Irmãos Lukic!',
+    members: ['damir', 'boris'],
+    order: ['damir', 'boris'],
+    color: 0xf2c230,
+    choreo: 'irmaos_lukic',
+  },
+  // OS ESCRIPTAS (os Marcados do Kian em Calamidade): vale com 3 na equipe e aparecem todos
+  escriptas: {
+    id: 'escriptas',
+    kind: 'group',
+    name: 'OS MARCADOS DO KIAN',
+    banner: 'Escriptas!',
+    group: ['kian', 'gal_sal', 'nubi', 'damir', 'boris', 'artemis'],
+    min: 3,
+    color: 0xf2c230,
+  },
   // Dupla Cristopher + Kaiser (pai e filho: o dublê segura, o filho atira)
   cristopher_kaiser: {
     id: 'cristopher_kaiser',

@@ -931,6 +931,153 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## DAMIR LUKIC
+
+*O gêmeo esperto dos Lukic, que se achava poderoso* · arma: A bengala de castão de prata e o caderninho de rituais
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Castão | 24 | 2 m |  |
+| ○ 2 | Volta da bengala | 24 | 2 m |  |
+| ○ 3 | Ponta no peito | 28 | 2 m |  |
+| ○ 4 | Sigilo no queixo | 52 | 2.1 m | finalizador: lança |
+| Frente + ○ | Passo do trapezista | 32 | 2.1 m |  |
+| Trás + ○ | Recua e cutuca | 30 | 2 m | invulnerável no começo |
+| Lado + ○ | Giro do blazer | 28 | 2.1 m |  |
+| No ar + ○ | Salto do trapézio | 32 | 2.1 m | desce com impacto |
+| ↑ + ○ (no combo) | Bengala por baixo | 36 | 2.1 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Bengala no chão | 44 | 2.1 m | finalizador: derruba |
+
+### Principal (□ / X): Cartas do Destino
+
+- Dano 16 × 3 · alcance 15 m · cooldown 2.8 s · custo 0
+- Prende o inimigo por 0.18 s
+
+### Habilidades
+
+- **Amaldiçoar Arma** — △ + □ / Y + X · custo 20 · cooldown 18 s
+  Esfrega a bengala: os sigilos dourados de Conhecimento acendem e por 8 s cada golpe da bengala tira sanidade do alvo.
+- **Perturbação** — △ + ○ / Y + B · custo 22 · cooldown 12 s · dano 12 · alcance 7 m
+  Aponta a bengala e dá a ordem: "SENTA!". O alvo perto ajoelha na hora e fica parado por um instante.
+- **Blackout** — △ + L2 / Y + LT · custo 28 · cooldown 16 s · alcance 10 m
+  Lê o caderninho e apaga a mente do alvo: quem está atacando ou andando fica CONFUSO (comandos invertidos); quem está defendendo fica FRUSTRADO (perde sanidade e a guarda cai). Dá para esquivar do clarão.
+- **Horus** — R2 + × / RT + A · custo 26 · cooldown 22 s
+  O sangue sobe e fecha numa armadura de falcão: por 7 s recebe menos dano e aguenta golpes sem recuar.
+- **Embaralhar** — R2 + △ / RT + Y · custo 28 · cooldown 22 s
+  Some num clarão roxo, troca de lugar e deixa 3 cópias que imitam cada movimento dele. Por 7 s, um golpe (não especial) pode acertar uma cópia no lugar dele.
+- **Cicatrização** — Energia + Pulo (△+× / Y+A) · custo 30 · cooldown 26 s
+  Acelera o tempo nas feridas: recupera vida em instantes.
+- **Passiva — Afinidade com Conhecimento:** rituais de Conhecimento +10%
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
+
+### Especial: Baralho dos Lukic
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Olho Amarelo
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (habilidades, especial, distância), recargas 40% mais rápidas, sanidade regenera +30%, cura 10% na hora.
+
+---
+
+## BORIS LUKIC
+
+*O gêmeo grandão e sereno dos Lukic, que segue o irmão sem perguntar* · arma: A gadanha (foice de cabo longo) e o Elmo Sangrento
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Varrida baixa | 30 | 2.7 m |  |
+| ○ 2 | Volta da lâmina | 32 | 2.7 m |  |
+| ○ 3 | Ceifa por cima | 40 | 2.8 m |  |
+| ○ 4 | Colheita | 60 | 2.9 m | finalizador: lança |
+| Frente + ○ | Investida do grandão | 36 | 2.7 m |  |
+| Trás + ○ | Recua e ceifa | 32 | 2.7 m |  |
+| Lado + ○ | Giro da gadanha | 30 | 2.8 m |  |
+| No ar + ○ | Salto do Trapézio | 36 | 2.6 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho da gadanha | 38 | 2.6 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Lâmina no chão | 42 | 2.6 m | finalizador: derruba |
+
+### Principal (□ / X): Onda de Morte
+
+- Dano 42 · alcance 16 m · cooldown 3.4 s · custo 0
+
+### Habilidades
+
+- **Ataque Volátil** — △ + ○ / Y + B · custo 20 · cooldown 16 s
+  Firma a gadanha e põe o peso inteiro no braço: por 6 s os golpes da gadanha batem com o DOBRO da força (+35% de dano).
+- **Ataque Poderoso** — R2 + △ / RT + Y · custo 30 · cooldown 12 s · dano 92 · alcance 2.8 m
+  Ergue a gadanha bem alto, avança e desce com tudo: o golpe atravessa a defesa e derruba. Preparação longa (aguenta um golpe pequeno depois de concentrar); errar deixa ele aberto.
+- **Elmo Sangrento** — R2 + × / RT + A · custo 25 · cooldown 20 s
+  Veste o Elmo Sangrento: por 7 s recebe bem menos dano (quase nada de tiros e de Sangue) e aguenta golpes sem recuar.
+- **Investida do Trapezista** — △ + L2 / Y + LT · custo 22 · cooldown 10 s · dano 54 · alcance 2.4 m
+  Crava a gadanha, gira o corpo no cabo como no trapézio e cai em cima do alvo com a lâmina: derruba.
+- **Passiva — Afinidade com Morte:** rituais de Morte +10%
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
+- **Passiva — Resistente:** −8% de dano físico recebido
+
+### Especial: Pela Família Lukic
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Ainda de Pé
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano (físico, distância, habilidades), −15% de dano recebido, +4% de velocidade, recargas 20% mais rápidas, regenera 3 de vida/s, cura 12% na hora.
+
+---
+
+## ARTEMIS
+
+*A "Mamãe" dos Escriptas e o saruê que mora no bolso dela* · arma: O Revólver Apache, o rifle de precisão e o Gambá
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Soqueira | 20 | 1.6 m |  |
+| ○ 2 | Corte da lâmina | 22 | 1.6 m |  |
+| ○ 3 | Volta da lâmina | 22 | 1.6 m |  |
+| ○ 4 | Tiro colado | 50 | 1.9 m | finalizador: lança |
+| Frente + ○ | Bote | 28 | 1.8 m |  |
+| Trás + ○ | Recua e corta | 32 | 1.7 m | invulnerável no começo |
+| Lado + ○ | Corte de lado | 22 | 1.6 m |  |
+| No ar + ○ | Lâmina do alto | 28 | 1.7 m | desce com impacto |
+| ↑ + ○ (no combo) | Gancho de soqueira | 30 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 34 | 1.8 m | finalizador: derruba |
+
+### Principal (□ / X): Rifle de Precisão
+
+- Dano 90 · alcance 60 m · cooldown 3.4 s · custo 0
+
+### Habilidades
+
+- **Amaldiçoar Arma** — △ + □ / Y + X · custo 20 · cooldown 18 s
+  As veias do Apache acendem em roxo: por 8 s os golpes saem com Energia, imprevisíveis, e às vezes dão choque.
+- **Mira de Elite** — R2 + △ / RT + Y · custo 28 · cooldown 15 s
+  Ajoelha, firma o rifle e mira com calma: um tiro certeiro e pesado, difícil de sair da frente.
+- **Distorcer Aparência** — △ + L2 / Y + LT · custo 24 · cooldown 11 s
+  O corpo se desfaz numa casca de sangue e ela reaparece pelas costas do alvo já cortando: ele fica desprevenido.
+- **Enfeitiçar** — △ + ○ / Y + B · custo 32 · cooldown 18 s · alcance 10 m
+  Fala mansa de "mamãe": um anel de sangue fecha em volta do alvo (dá para esquivar) e ele vem andando até ela sem se defender. Apertar botões resiste.
+- **Gambá!** — Energia + Pulo (△+× / Y+A) · custo 18 · cooldown 9 s · dano 34 · alcance 7 m
+  Aponta e o Gambá salta do ombro (ou do chão) no alvo perto: morde forte, atordoa e faz sangrar. Escondido no bolso, ele não sai.
+- **Queima-Roupa** — R2 + × / RT + A · custo 18 · cooldown 9 s · dano 46 · alcance 2.4 m
+  Enfia a soqueira no adversário e dispara o Apache colado: só funciona de perto e joga longe.
+- **Passiva — Afinidade com Sangue:** rituais de Sangue +10%
+
+### Especial: Gostou do que a Mamãe Fez?
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Homem
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (físico, habilidades, especial), +6% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 10% na hora.
+
+---
+
 ## XANDE
 
 *Brigão versátil: amaldiçoa o taco, puxa ou repele com magnetismo e se protege com a Tela de Ruído* · arma: Taco com arame farpado e o Skate Caótico

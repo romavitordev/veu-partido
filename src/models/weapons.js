@@ -3174,3 +3174,223 @@ export function poolCue() {
   g.userData.tip = tip;
   return g;
 }
+
+// ---------------------------------------------------------------- OS LUKIC E A ARTEMIS (Escriptas, 2026-11-12)
+// A FOICE DO BORIS (referência do dono, 2026-11-12: "ele usa assim a foice, na maioria das lutas"): o cabo longo e
+// escuro com a ponteira dourada, o CABO DA BENGALA do Damir saindo para trás perto do alto (a guarda), o CÍRCULO DOS
+// LUKIC com a coroa de espinhos no topo e a LÂMINA DOURADA larga que desce do topo, quase paralela ao cabo, com a
+// escrita gravada. Pegada de duas mãos: a mão direita na origem, o cabo sobe para trás (+Y, ~0,45 m) e desce para a
+// frente (−Y, ~1,1 m) até a cabeça.
+// cursed: a mesma foice ACESA (o Damir esfregou a bengala: o ouro e a escrita brilham) — Pela Família Lukic e a dupla
+export function gadanha({ cursed = false } = {}) {
+  const g = new THREE.Group();
+  const shaft = part(new THREE.CylinderGeometry(0.02, 0.024, 1.56, 10), 0x1c1c20);
+  shaft.position.y = -0.32;
+  g.add(shaft);
+  const ferrule = part(new THREE.CylinderGeometry(0.024, 0.02, 0.07, 10), 0xb08a3a);
+  ferrule.position.y = 0.43;
+  g.add(ferrule);
+  const gold = cursed ? glowMat(0xf2c230, 0.95) : toon(0xc89a3a, { emissive: 0x2a1c06 });
+  const bladeMat = cursed ? glowMat(0xe0b040, 0.9) : toon(0xa8843c, { emissive: 0x1e1406 });
+  const ink = cursed ? glowMat(0xfff4d0, 0.95) : toon(0xd8d0b8);
+  // a cabeça: no desenho x = para a FRENTE do Boris, y = de volta para a pegada, z = espessura
+  const hd = new THREE.Group();
+  hd.rotation.y = Math.PI / 2;
+  hd.position.y = -1.1;
+  g.add(hd);
+  const sh = new THREE.Shape();
+  sh.moveTo(0.0, -0.04);
+  sh.quadraticCurveTo(0.12, -0.1, 0.2, 0.02); // o ombro da lâmina, saindo do círculo
+  sh.quadraticCurveTo(0.29, 0.35, 0.25, 0.86); // o dorso descendo até a ponta (para baixo)
+  sh.quadraticCurveTo(0.17, 0.42, 0.06, 0.12); // o fio, virado para o cabo
+  sh.lineTo(0.0, -0.04);
+  hd.add(part(extrude(sh, 0.012), 0, { mat: bladeMat, outline: !cursed }));
+  // a escrita gravada ao longo da lâmina, dos dois lados
+  for (let k = 0; k < 14; k++) {
+    const t = 0.08 + k * 0.05;
+    const x = 0.12 + 0.11 * t;
+    for (const z of [-0.008, 0.02]) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(0.012 + (k % 3) * 0.006, 0.022, 0.002), ink);
+      m.position.set(x + ((k * 7) % 3) * 0.008, t, z);
+      hd.add(m);
+    }
+  }
+  // o CÍRCULO DOS LUKIC no topo e a coroa de espinhos abrindo para cima
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.014, 8, 24), gold);
+  ring.position.set(0.1, -0.06, 0.006);
+  hd.add(ring);
+  const core = new THREE.Mesh(new THREE.CircleGeometry(0.06, 20), cursed ? glowMat(0xffd870, 0.8) : toon(0x4a3a18));
+  core.position.set(0.1, -0.06, 0.006);
+  hd.add(core);
+  for (let k = 0; k < 5; k++) {
+    const a = -0.5 + k * 0.28;
+    const sp = new THREE.Shape();
+    sp.moveTo(-0.014, 0);
+    sp.lineTo(0, -0.12 - (k % 2) * 0.03);
+    sp.lineTo(0.014, 0);
+    const m = part(extrude(sp, 0.01), 0, { mat: gold, outline: !cursed });
+    m.position.set(0.1 + Math.sin(a) * 0.07, -0.06 - Math.cos(a) * 0.07, 0.001);
+    m.rotation.z = -a;
+    hd.add(m);
+  }
+  // o CABO DA BENGALA do Damir, encaixado logo abaixo da cabeça, saindo para TRÁS como uma guarda
+  const grip = part(new THREE.BoxGeometry(0.03, 0.03, 0.03), 0x2a2420);
+  grip.position.set(0, 0.2, 0);
+  hd.add(grip);
+  const handle = part(new THREE.CylinderGeometry(0.016, 0.018, 0.13, 8), 0x2a2420);
+  handle.rotation.z = Math.PI / 2 - 0.35;
+  handle.position.set(-0.06, 0.18, 0);
+  hd.add(handle);
+  if (cursed) {
+    for (let k = 0; k < 9; k++) { // os sigilos de Conhecimento correndo pelo cabo
+      const s2 = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.03, 0.012), gold);
+      s2.position.set(0.024, -0.2 - k * 0.09, 0);
+      s2.rotation.y = Math.PI / 2;
+      g.add(s2);
+    }
+  }
+  g.userData.tipLength = 1.3;
+  return g;
+}
+
+// ELMO SANGRENTO (wiki, Itens Amaldiçoados): o capacete romano marrom-avermelhado com crista, as veias vermelhas
+// acesas e a borda de dentes pingando sobre o rosto. Preso no soquete da cabeça (o centro do crânio)
+export function elmoSangrento() {
+  const g = new THREE.Group();
+  const shell = toon(0x4a1e16, { emissive: 0x120403 });
+  const dome = part(new THREE.SphereGeometry(0.135, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.62), 0, { mat: shell });
+  dome.scale.set(1, 1.05, 1.12);
+  g.add(dome);
+  // as abas das bochechas e a nuca
+  for (const s of [-1, 1]) {
+    const cheek = part(new THREE.BoxGeometry(0.02, 0.12, 0.09), 0, { mat: shell });
+    cheek.position.set(s * 0.12, -0.08, 0.04);
+    cheek.rotation.z = s * 0.12;
+    g.add(cheek);
+  }
+  const neck = part(new THREE.BoxGeometry(0.22, 0.05, 0.03), 0, { mat: shell });
+  neck.position.set(0, -0.06, -0.14);
+  neck.rotation.x = 0.5;
+  g.add(neck);
+  const crest = part(new THREE.BoxGeometry(0.03, 0.09, 0.26), 0x2a0a08);
+  crest.position.set(0, 0.16, -0.01);
+  g.add(crest);
+  // os dentes da borda
+  const tooth = toon(0xd8c8b0);
+  for (let k = 0; k < 9; k++) {
+    const a = -0.9 + (k / 8) * 1.8;
+    const t = part(new THREE.ConeGeometry(0.01, 0.04, 4), 0, { mat: tooth, outline: false });
+    t.rotation.x = Math.PI;
+    t.position.set(Math.sin(a) * 0.13, -0.02, Math.cos(a) * 0.145);
+    g.add(t);
+  }
+  // as veias vermelhas acesas
+  const vein = glowMat(0xff2a1a, 0.9);
+  for (let k = 0; k < 6; k++) {
+    const a = (k / 6) * Math.PI * 2;
+    const pts = [];
+    for (let i = 0; i <= 6; i++) { const u = i / 6; const r = Math.sin(0.3 + u * 1.1); pts.push(new THREE.Vector3(Math.sin(a + u * 0.5) * 0.14 * r, 0.02 + u * 0.11, Math.cos(a + u * 0.5) * 0.15 * r)); }
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 10, 0.004, 4, false), vein));
+  }
+  return g;
+}
+
+// A BENGALA DO DAMIR (wiki "Damir Lukic", Arsenal): preta e fina, o castão de PRATA; esfregada, acende sigilos dourados
+export function bengalaDamir() {
+  const g = new THREE.Group();
+  const silver = toon(0xc8ccd4, { emissive: 0x16181c });
+  const shaft = part(new THREE.CylinderGeometry(0.013, 0.01, 0.9, 8), 0x141216);
+  shaft.position.y = -0.43;
+  g.add(shaft);
+  const tip = part(new THREE.CylinderGeometry(0.012, 0.014, 0.035, 8), 0, { mat: silver });
+  tip.position.y = -0.88;
+  g.add(tip);
+  const knob = part(new THREE.SphereGeometry(0.032, 12, 10), 0, { mat: silver });
+  knob.scale.set(1, 0.8, 1.2);
+  knob.position.set(0, 0.04, 0.012);
+  g.add(knob);
+  const collar = part(new THREE.CylinderGeometry(0.018, 0.016, 0.03, 10), 0, { mat: silver });
+  g.add(collar);
+  // os sigilos dourados (acendem quando ele amaldiçoa a bengala)
+  const sig = new THREE.Group();
+  const gold = glowMat(0xf2c230, 0.95);
+  for (let k = 0; k < 8; k++) {
+    const s = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.026, 0.01), gold);
+    s.position.set(Math.cos(k * 1.3) * 0.014, -0.12 - k * 0.085, Math.sin(k * 1.3) * 0.014);
+    sig.add(s);
+  }
+  sig.visible = false;
+  g.add(sig);
+  g.userData.sigils = sig;
+  g.userData.tipLength = 0.9;
+  return g;
+}
+
+// O CADERNINHO DO DAMIR: capa preta com o círculo dos Lukic em dourado; aberto, as páginas com os sigilos
+export function caderninho() {
+  const g = new THREE.Group();
+  const cover = toon(0x141216);
+  const page = toon(0xe6dcc4);
+  for (const s of [-1, 1]) {
+    const c = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.008, 0.12), cover);
+    c.position.set(s * 0.041, 0, 0);
+    c.rotation.z = s * -0.15;
+    g.add(c);
+    const pg = new THREE.Mesh(new THREE.BoxGeometry(0.074, 0.014, 0.112), page);
+    pg.position.set(s * 0.039, 0.008, 0);
+    pg.rotation.z = s * -0.15;
+    g.add(pg);
+  }
+  const gold = glowMat(0xf2c230, 0.95);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.003, 6, 18), gold);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.set(0.04, 0.017, 0);
+  g.add(ring);
+  return g;
+}
+
+// O REVÓLVER APACHE DA ARTEMIS (wiki "Artemis", Arsenal): a empunhadura de SOQUEIRA (anéis para os dedos), o tambor de
+// revólver e a LÂMINA dobrável sob o cano curto — soca, corta e atira. Cano para −Y, como as outras armas de fogo
+export function apache() {
+  const g = new THREE.Group();
+  const brass = toon(0xb0904a, { emissive: 0x1a1206 });
+  const dark = toon(0x222226);
+  for (let k = 0; k < 4; k++) {
+    const r = part(new THREE.TorusGeometry(0.016, 0.005, 5, 12), 0, { mat: brass });
+    r.rotation.y = Math.PI / 2;
+    r.position.set(0, 0.03, -0.035 + k * 0.026);
+    g.add(r);
+  }
+  const bar = part(new THREE.BoxGeometry(0.01, 0.014, 0.11), 0, { mat: brass });
+  bar.position.set(0, 0.01, 0.004);
+  g.add(bar);
+  const drum = part(new THREE.CylinderGeometry(0.024, 0.024, 0.05, 8), 0, { mat: dark });
+  drum.position.set(0, -0.03, 0.03);
+  g.add(drum);
+  const barrel = part(new THREE.CylinderGeometry(0.008, 0.008, 0.08, 8), 0, { mat: dark });
+  barrel.position.set(0, -0.09, 0.04);
+  g.add(barrel);
+  const sh = new THREE.Shape();
+  sh.moveTo(0, 0); sh.lineTo(0.02, 0); sh.lineTo(0.012, -0.11); sh.lineTo(0, -0.08); sh.lineTo(0, 0);
+  const blade = part(extrude(sh, 0.004), 0, { mat: toon(0xc4c8cc, { emissive: 0x101214 }) });
+  blade.rotation.y = -Math.PI / 2;
+  blade.position.set(0, -0.04, 0.0);
+  g.add(blade);
+  // as veias roxas da arma amaldiçoada com Energia (cânone; acendem no ritual: userData.veins)
+  const veins = new THREE.Group();
+  const purple = glowMat(0xb06aff, 0.95);
+  for (let k = 0; k < 4; k++) {
+    const v = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.05, 0.003), purple);
+    v.position.set(0.012, -0.03 - k * 0.018, 0.03 + (k % 2) * 0.012);
+    v.rotation.x = 0.4 * (k % 2 ? 1 : -1);
+    veins.add(v);
+  }
+  veins.visible = false;
+  g.add(veins);
+  g.userData.veins = veins;
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, -0.13, 0.04);
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}

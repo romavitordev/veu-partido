@@ -3,6 +3,7 @@
 
 import { startSelfHarmTrance } from './selfHarm.js';
 import { transform } from './forms.js';
+import { companionStrike } from './companion.js';
 
 /**
  * Regra do Injustiça (determinística, sem aleatoriedade):
@@ -319,6 +320,25 @@ export const PASSIVES = {
   // Senhor Veríssimo — Segredo de Veríssimo: sabe como vai morrer; uma vez por partida um golpe fatal o deixa com 1 de
   // vida (contra o Kian, uma vez por round; lido em Fighter.takeDamage)
   verissimoSecret: {},
+  escapeDeath: {}, // Boris (Fighter.takeDamage): uma vez por round fica com 1 de vida
+  // Artemis — O GAMBÁ LUTA JUNTO (pedido do dono, 2026-11-12): nem todo golpe — uma chance por golpe físico que acerta,
+  // com intervalo mínimo; ele salta do ombro ou do chão, morde e volta (combat/companion.js)
+  companionAttack: {
+    onMeleeHit({ attacker, victim, dealt, passive }) {
+      if (dealt > 0 && victim && victim.state !== 'ko') companionStrike(attacker, victim, passive);
+    },
+  },
+  // Artemis — DEVORAR (cânone: termina uma vítima que está morrendo e ganha vida temporária): o golpe físico em quem já
+  // está com pouca vida (passive.below) a cura de uma parte do dano (o número é PROPOSTA)
+  devour: {
+    onMeleeHit({ attacker, victim, dealt, passive, world }) {
+      if (!(dealt > 0) || attacker.state === 'ko' || !victim || victim.health > victim.maxHealth * (passive.below ?? 0.3)) return;
+      const heal = Math.round(dealt * (passive.ratio ?? 0.5));
+      attacker.health = Math.min(attacker.maxHealth, attacker.health + heal);
+      world.fx.burst(attacker.chestPos(), { count: 8, color: 0xc01828, speed: 1.4, life: 0.45, size: 0.14 });
+      if (!attacker.devourTold || world.time - attacker.devourTold > 4) { attacker.devourTold = world.time; attacker.notify('DEVORAR', true); }
+    },
+  },
   // Kemi — Sede de Vingança (o poder de intenção da Lena no corpo dela): ao cair abaixo de passive.below de vida pela
   // primeira vez no round, revida com tudo — mais dano e velocidade por um tempo e sanidade de volta
   revenge: {

@@ -5,6 +5,9 @@ import aghata from './aghata.js';
 import gal_sal from './gal_sal.js';
 import nubi from './nubi.js';
 import kian from './kian.js';
+import damir from './damir.js';
+import boris from './boris.js';
+import artemis from './artemis.js';
 import dante from './dante.js';
 import erin from './erin.js';
 import aguiar from './aguiar.js';
@@ -56,7 +59,7 @@ import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectable
 // junto da equipe dele nesta lista.
 export const ROSTER = [
   arthur, joui, kaiser, dante, erin, aghata, balu, carina, rubens, beatrice, fernando, tristan, ivete, verissimo, cristopher, // Ordo Realitas (o Cris fecha a Equipe E de OSNF; Carina e Rubens, dos Abutres, ao lado do Balu; a Beatrice, da Força D)
-  kian, gal_sal, nubi, // Escriptas
+  kian, gal_sal, nubi, damir, boris, artemis, // Escriptas
   xande, guizo, lirio, dara, chico, morato, // Os Cinco (Sinais do Outro Lado) — o Guizo do lado do melhor amigo; a Dara, a médica
   dalmo, aguiar, jae, kemi, labirinto, juan, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo

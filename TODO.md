@@ -34,6 +34,23 @@
       (`h.bird` em `combat/specials/cinematicCombo.js`, o mesmo `buildOrpheu` do Voo do Orpheu): sai do ombro, circula a
       cabeça do alvo e mergulha no rosto durante os disparos e some em penas no fim (volta ao ombro). Se o Voo do
       Orpheu já estiver no ar, não sai um segundo pássaro. Conferido no jogo.
+- [x] **DAMIR, BORIS e ARTEMIS — os Escriptas que faltavam** (pedido do dono, 2026-11-12: os gêmeos como DOIS
+      personagens ligados por equipe, e a Artemis lutando junto com o Gambá). Versão de Calamidade nos três; números e o
+      que não tem fonte = PROPOSTA. Modelos "jogável primeiro" (`tools/blender/char_damir.py`, `char_boris.py`,
+      `char_artemis.py`); polir com o Blender MCP ao vivo depois.
+      - **DAMIR** (Conhecimento): bengala de prata SEGURADA PARA BAIXO; □ Cartas do Destino (3 cartas, PASMO); Amaldiçoar
+        Arma (Conhecimento), Perturbação "SENTA!", Blackout (CONFUSO; em quem defende vira FRUSTRADO), Horus, Embaralhar,
+        Cicatrização; especial Baralho dos Lukic; despertar O Olho Amarelo.
+      - **BORIS** (Morte): a FOICE pela referência do dono (cabo escuro, ponteira dourada, cabo da bengala como guarda,
+        círculo dos Lukic com a coroa de espinhos e a lâmina dourada descendo com a escrita); □ Onda de Morte; Ataque
+        Volátil, Ataque Poderoso, Elmo Sangrento, Investida do Trapezista; especial Pela Família Lukic (a foice ACENDE);
+        despertar Ainda de Pé; passivas Precognição, Resistente e Escapar da Morte.
+      - **ARTEMIS** (Sangue): Apache e rifle de precisão; Amaldiçoar Arma (Energia), Mira de Elite, Distorcer Aparência,
+        Enfeitiçar, Gambá!, Queima-Roupa; especial "Gostou do que a Mamãe Fez?"; despertar O Homem. O **GAMBÁ** é
+        companheiro (`combat/companion.js`): anda no ombro ou ao lado dela, troca sozinho, se esconde no bolso quando
+        ela apanha e morde de vez em quando nos golpes dela (não em todos) — base para a Mia e o Lupi.
+      - **Ligações:** dupla **Irmãos Lukic** (o Damir joga as cartas e manda sentar, o Boris corta, o Damir esfrega a
+        bengala e a foice acende para a ceifa final) e o grupo **Escriptas** (3 ou mais Marcados do Kian).
 - [x] **Força D — Dante e Erin na ligação** (v4.19.1, o dono aprovou): a ligação tem Arthur, Kaiser, Joui, Dante, Erin
       e Beatrice; o Dante entra com a Espiral de Lodo e a Erin com a granada Supernova. Dante + Arthur + Joui sozinhos
       continuam sendo os Abutres (`priority`). Elizabeth e Fernando entram quando estiverem no elenco.

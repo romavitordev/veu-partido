@@ -2460,6 +2460,42 @@ export const MATERIAL_TEXTURES = {
     }
   }, { wrap: true, repeat: [2, 2] }),
   // RUBENS NALUTI: pardo, olhos CASTANHOS (wiki), o rosto sério e fechado de quem fala por palavras-chave
+  // ---------------- DAMIR LUKIC (wiki: careca, pálido, o TAPA-OLHO preto sobre o olho direito; o esquerdo castanho,
+  // as sobrancelhas finas e o ar de deboche)
+  face_damir: face((g) => {
+    // o tapa-olho (o olho direito do personagem fica à esquerda da textura, s = −1) e a tira subindo para as têmporas
+    g.fillStyle = '#0e0e10';
+    g.beginPath(); g.ellipse(CX - 32, EYE_Y + 2, 21, 17, -0.12, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#0e0e10'; g.lineWidth = 4;
+    g.beginPath(); g.moveTo(CX - 52, EYE_Y - 6); g.lineTo(CX - 110, EYE_Y - 30); g.stroke();
+    g.beginPath(); g.moveTo(CX - 14, EYE_Y - 10); g.lineTo(CX + 40, EYE_Y - 58); g.lineTo(CX + 110, EYE_Y - 62); g.stroke();
+  }, {
+    skin: '#e4c8b4',
+    eye: { iris: '#4a3020', irisLight: '#7a5434', w: 14, h: 6, tilt: 0.06, lid: 3.6 },
+    brow: { angry: 0.6, thick: 2.6, color: '#6a5444' },
+    mouth: { mouthW: 13, smile: 3, lip: 'rgba(140,80,80,0.5)' },
+  }),
+  // ---------------- BORIS LUKIC (wiki: a barba curta cinzenta, o rosto sereno e o sorriso meigo)
+  face_boris: face((g) => {
+    stubble(g, 'rgba(110,108,104,0.75)', 2600, { y0: 150, y1: 236, w: 88 });
+    g.fillStyle = 'rgba(120,118,114,0.6)';
+    g.beginPath(); g.ellipse(CX, MOUTH_Y - 9, 26, 6, 0, 0, Math.PI * 2); g.fill(); // o bigode
+  }, {
+    skin: '#e0b89c',
+    eye: { iris: '#4a5a54', irisLight: '#7a8a80', w: 13, h: 6, tilt: -0.04, lid: 3.4 },
+    brow: { angry: -0.4, thick: 4, color: '#7a7670' },
+    mouth: { mouthW: 14, smile: 5, lip: 'rgba(140,80,70,0.45)' },
+  }),
+  // ---------------- ARTEMIS (wiki: os olhos CINZENTOS, o olhar fixo e o sorriso torto da "Mamãe")
+  face_artemis: face((g) => {
+    g.strokeStyle = 'rgba(90,60,60,0.35)'; g.lineWidth = 1.4;
+    for (const s of [-1, 1]) { g.beginPath(); g.moveTo(CX + s * 20, EYE_Y + 16); g.quadraticCurveTo(CX + s * 32, EYE_Y + 22, CX + s * 46, EYE_Y + 14); g.stroke(); } // as olheiras
+  }, {
+    skin: '#e6c4ae',
+    eye: { iris: '#8a9098', irisLight: '#c4c8ce', w: 15, h: 8, tilt: 0.02, lid: 2.4 },
+    brow: { angry: 0.3, thick: 3, color: '#2a2224' },
+    mouth: { mouthW: 15, smile: 4, lip: 'rgba(120,60,64,0.6)' },
+  }),
   face_rubens: face(() => {}, {
     skin: '#9a6a46',
     eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },

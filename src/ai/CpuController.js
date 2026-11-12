@@ -154,6 +154,11 @@ export function abilityUsePrior(a, f, opp, { distance, lowHp, opening, threat, l
   if (a.type === 'falseAlliance') return distance < 3.5 && (threat || opp.state === 'attack' || opp.state === 'ability') ? 2 : distance < 2.5 ? 0.25 : 0;
   // Queima-Roupa (Rubens): só encostado — de longe a pistola nem sai
   if (a.type === 'pointBlank') return distance < a.range + 0.3 ? 1.6 : 0;
+  // GAMBÁ! (Artemis): só com o bicho fora do bolso e o alvo no alcance do bote
+  if (a.type === 'gambaCall') return f.companion && f.companion.mode !== 'bolso' && !f.companion.bite && distance < (a.range || 6) ? (opening ? 2.2 : 1.1) : 0;
+  // BLACKOUT (Damir): contra quem defende vira FRUSTRADO (drena e atordoa) — vale mais com o alvo na guarda
+  if (a.type === 'blackout' && distance > (a.range || 7)) return 0;
+  if (a.type === 'blackout' && opp.state === 'block') return 2.4;
   if (a.type === 'orpheuFlight' && f.orpheuOut) return 0; // o Orpheu ainda está voando
 
   let prior = a.id === lastAbility ? 0.3 : 0.65;

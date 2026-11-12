@@ -948,6 +948,111 @@ const CHOREO = {
     return END;
   },
 
+  // IRMÃOS LUKIC (cânone: a FOICE AMALDIÇOADA é a gadanha do Boris com a bengala do Damir encaixada — o Damir esfrega a
+  // bengala, os sigilos dourados de Conhecimento acendem e dão poder à foice; o corte deixa a escrita na pele do alvo).
+  // PROPOSTA da cena: o Damir abre com as Cartas do Destino, manda o alvo sentar, encaixa a bengala e o Boris ceifa
+  irmaos_lukic({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 4.6;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const damir = tools.get('damir'), boris = tools.get('boris');
+    const hits = splitDamage(crewTotal, 6);
+    const GOLD = 0xf2c230;
+    const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? GOLD).getHexString());
+    const say = (actor, text, side) => world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
+    const undo = [];
+    const prop = (actor, name, on) => {
+      const rig = actor && actor.rig;
+      if (!rig || !rig.props || !rig.props[name]) return;
+      undo.push([rig, name, rig.props[name].visible]);
+      rig.showProp(name, on);
+    };
+    const place = (actor, ang, r, t) => tl.add(t, () => {
+      if (!live() || !actor) return;
+      const p = tools.around(actor, ang, r);
+      actor.show(END - t, p);
+      actor.pos.set(p.x, 0, p.z);
+      actor.face(opp);
+    });
+    // 1. o Damir de longe: três cartas e "SENTA."
+    if (damir) {
+      place(damir, -0.4, 5.5, S);
+      tl.add(S, () => {
+        if (!live()) return;
+        say(damir, 'Grandão. Segura ele pra mim.', 0);
+        damir.play('throw_r', 0.5);
+        world.cameraRig.playShots([{ ...overShoulder(damir, opp, { dur: 1.3, back: 2, side: 0.8, height: 1.7, fov: 46 }), cut: true }]);
+      });
+      for (let i = 0; i < 3; i++) {
+        tl.add(S + 0.2 + i * 0.12, () => {
+          if (!live()) return;
+          world.fx.tracer(damir.chest(), opp.chestPos(), { color: GOLD, life: 0.16, width: 0.05 });
+          world.audio.play('knifeThrow', { volume: 0.6, pitch: 1.2 });
+        });
+      }
+      tl.add(S + 0.5, () => tools.impact(damir, hits[0], { sound: 'impact', color: GOLD }));
+      tl.add(S + 0.9, () => {
+        if (!live()) return;
+        damir.play('point', 0.7);
+        say(damir, 'Senta.', 0);
+        if (opp.state !== 'ko') opp.stun(2.6, 'forced_kneel');
+        world.fx.ring(opp.chestPos(), { color: GOLD, radius: 1.4, life: 0.45, vertical: true, yaw: damir.yaw });
+      });
+    }
+    // 2. o Boris chega com a gadanha e corta duas vezes
+    if (boris) {
+      place(boris, 0.5, 2.2, S + 0.8);
+      tl.add(S + 0.85, () => {
+        if (!live()) return;
+        world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.3, radius: 3.6, height: 1.6, a0: 0.4, a1: -0.4 }), cut: true }]);
+      });
+      tl.add(S + 1.1, () => { if (live()) { boris.face(opp); boris.play('hammer_h', 0.4); } });
+      tl.add(S + 1.3, () => live() && say(boris, 'Tô aqui, irmão.', 1));
+      tl.add(S + 1.28, () => tools.impact(boris, hits[1], { sound: 'bladeHit', color: 0xb8bcc4, slash: true }));
+      tl.add(S + 1.5, () => { if (live()) { boris.face(opp); boris.play('hammer_diag', 0.42); } });
+      tl.add(S + 1.7, () => tools.impact(boris, hits[2], { sound: 'bladeHit', color: 0xb8bcc4, slash: true }));
+    }
+    // 3. o Damir esfrega a bengala (os sigilos acendem) e a encaixa na gadanha: a FOICE AMALDIÇOADA
+    tl.add(S + 1.95, () => {
+      if (!live()) return;
+      if (damir && boris) { // o Damir chega do lado do irmão para encaixar a bengala
+        const yaw = boris.yaw + Math.PI / 2;
+        damir.pos.set(boris.pos.x + Math.sin(yaw) * 1.1, 0, boris.pos.z + Math.cos(yaw) * 1.1);
+        damir.face(boris);
+        world.fx.burst(damir.chest(), { count: 10, color: GOLD, speed: 1.2, life: 0.4, size: 0.08 });
+      }
+      if (damir) { damir.play('concentrate', 0.7); prop(damir, 'caneSigils', true); }
+      world.cameraRig.playShots([{ ...twoShot(damir || boris, boris || damir, { dur: 1.0, dist: 3.2, height: 1.5, side: 1, fov: 42 }), cut: true }]);
+    });
+    tl.add(S + 2.6, () => {
+      if (!live()) return;
+      if (damir) prop(damir, 'cane', false);
+      if (boris) {
+        prop(boris, 'scythe', false);
+        prop(boris, 'foice', true);
+        world.fx.flash(boris.chest(), { color: GOLD, size: 1.8, life: 0.25 });
+        say(boris, 'Nostis omnia perdet omnia.', 1);
+      }
+      world.audio.play('ritual', { volume: 0.7 });
+    });
+    // 4. a ceifa da Foice Amaldiçoada: a escrita dourada fica na pele do alvo
+    tl.add(S + 3.1, () => {
+      if (!live() || !boris) return;
+      boris.face(opp);
+      boris.play('hammer_finisher', 0.8);
+      world.cameraRig.playShots([{ ...lowAngle(boris, { dur: 1.2, dist: 3, fov: 46 }), cut: true }]);
+    });
+    tl.add(S + 3.45, () => {
+      if (!live()) return;
+      tools.impact(boris || damir, hits[3] + hits[4] + hits[5], { sound: 'slashFinal', color: GOLD, slash: true });
+      world.fx.slash(opp.chestPos(), (boris || damir).yaw, { color: GOLD, radius: 2.2, arc: 3, life: 0.45, width: 0.6, roll: 1.2 });
+      for (let i = 0; i < 10; i++) world.fx.burst(opp.chestPos().add(new THREE.Vector3((Math.random() - 0.5) * 0.6, (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.6)), { count: 2, color: GOLD, speed: 0.6, life: 0.9, size: 0.06 });
+      world.cameraRig.shake(0.45, 0.3);
+    });
+    tl.add(END, () => { for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v); undo.length = 0; });
+    tl.add(END, () => world.ui && world.ui.subtitle && world.ui.subtitle(null));
+    return END;
+  },
+
   // MÃE E FILHO (pedido do dono, 2026-11-09): o Arthur abre os olhos e passa o REBIRTH para a DOZE da Ivete (o ritual
   // Amaldiçoar Tecnologia "Rebirth": o pulso verde sobe até a mão que toca a arma; ser na arma dela é PROPOSTA), ela avança atirando chumbo
   // amaldiçoado e o filho cobre de longe, ajoelhado com a sniper. Fecha com ela colada no alvo e o tiro dele junto.

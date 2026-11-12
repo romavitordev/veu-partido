@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1718,4 +1718,60 @@ export function addIveteProps(rig) {
   cue.visible = false;
   sockets.handR.add(cue);
   props.cue = cue;
+}
+
+// BORIS LUKIC (Escriptas): a GADANHA nas duas mãos, a FOICE AMALDIÇOADA dourada (só no especial, quando o Damir
+// encaixa a bengala) e o ELMO SANGRENTO na cabeça (só na habilidade)
+export function addBorisProps(rig) {
+  const { sockets, props } = rig;
+  const scythe = gadanha();
+  inFist(scythe, GRIP_HEAVY);
+  sockets.handR.add(scythe);
+  props.scythe = scythe;
+  const foice = gadanha({ cursed: true });
+  inFist(foice, GRIP_HEAVY);
+  foice.visible = false;
+  sockets.handR.add(foice);
+  props.foice = foice;
+  const helm = elmoSangrento();
+  helm.position.set(0, 0.1, 0.0);
+  helm.visible = false;
+  sockets.head.add(helm);
+  props.helmet = helm;
+}
+
+// DAMIR LUKIC (Escriptas): a BENGALA de castão de prata na direita (os sigilos dourados acendem no Amaldiçoar Arma) e o
+// CADERNINHO preto aberto na esquerda, só nos rituais
+export function addDamirProps(rig) {
+  const { sockets, props } = rig;
+  const cane = bengalaDamir();
+  inFist(cane, 0); // segurada PARA BAIXO, a ponta no chão (como na série), não apontada para a frente
+  sockets.handR.add(cane);
+  props.cane = cane;
+  props.caneSigils = cane.userData.sigils;
+  const book = caderninho();
+  book.position.set(0, -0.08, 0.05);
+  book.rotation.set(-0.9, 0, 0);
+  book.visible = false;
+  sockets.handL.add(book);
+  props.notebook = book;
+}
+
+// ARTEMIS (Escriptas): o REVÓLVER APACHE na direita (soqueira + tambor + lâmina; as veias roxas do Amaldiçoar Arma com
+// Energia) e o RIFLE DE PRECISÃO, que aparece no □ e na Mira de Elite. O GAMBÁ não é peça do rig: é o companheiro
+// (combat/companion.js), que anda solto
+export function addArtemisProps(rig) {
+  const { sockets, props } = rig;
+  const gun = apache();
+  gun.rotation.x = -0.1;
+  gun.position.y = -0.03;
+  sockets.handR.add(gun);
+  props.apache = gun;
+  props.apacheVeins = gun.userData.veins;
+  const rifle = sniper();
+  rifle.position.y = -0.02;
+  rifle.visible = false;
+  sockets.handR.add(rifle);
+  props.sniperHand = rifle;
+  rig.muzzle = rifle.userData.muzzle; // o □ é o rifle (a Mira de Elite também)
 }

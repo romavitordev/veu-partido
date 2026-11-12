@@ -105,6 +105,45 @@ export const VOICES = {
       any: [(o) => `Escolha feita, ${o.name}. Agora carrega o peso dela.`, (o) => `As correntes não mentem, ${o.name}.`],
     },
   },
+  // DAMIR LUKIC (cânone: arrogante e ganancioso, manda no irmão; "senta")
+  damir: {
+    open: {
+      ally: (o) => `${o.name}. Escripta ou não, aqui quem manda sou eu. Senta e aprende.`,
+      rival: (o) => `${o.name}. Quanto ${o.group} pagam pra você apanhar? Eu cobro menos.`,
+      any: [(o) => `${o.name}. Tudo tem preço. O seu é baixo.`, (o) => `Tira o chapéu pra mim, ${o.name}. Ah, esqueci. O chapéu é meu.`],
+    },
+    reply: {
+      ally: (o) => `Calma, ${o.name}. Eu sei o seu truque. Sei o de todo mundo.`,
+      rival: (o) => `${o.group}... gente que trabalha de graça. Que desperdício, ${o.name}.`,
+      any: [(o) => `Senta, ${o.name}.`, (o) => `Anotado no caderninho, ${o.name}. Na página dos que caem.`],
+    },
+  },
+  // BORIS LUKIC (cânone: sereno, sorriso meigo, obedece ao irmão; quer matar o Diabo "por Lucas")
+  boris: {
+    open: {
+      ally: (o) => `${o.name}. Vamos com calma. Eu não quero te machucar muito.`,
+      rival: (o) => `${o.name}. Nada contra ${o.group}. Eu só tô no caminho.`,
+      any: [(o) => `Oi, ${o.name}. Pode vir. Eu espero.`, (o) => `${o.name}, meu irmão mandou. Desculpa.`],
+    },
+    reply: {
+      ally: (o) => `Tá bom, ${o.name}. Mas não chora depois.`,
+      rival: (o) => `Já enfrentei ${o.group} antes, ${o.name}. Sorrindo.`,
+      any: [(o) => `Hm. Tá bem, ${o.name}.`, (o) => `Por Lucas, ${o.name}. Sempre por ele.`],
+    },
+  },
+  // ARTEMIS (cânone: a "Mamãe", o Gambá no bolso, "o homem" na cabeça)
+  artemis: {
+    open: {
+      ally: (o) => `${o.name}, querido. Vem com a mamãe. Vai doer só um pouquinho.`,
+      rival: (o) => `${o.name}. A mamãe adora brincar com ${o.one}.`,
+      any: [(o) => `${o.name}. O homem disse que você é bonito. Vamos ver por dentro.`, (o) => `Shh, Gambá. Fica no bolso. A mamãe vai brincar com ${o.name}.`],
+    },
+    reply: {
+      ally: (o) => `Ai, ${o.name}. Assim a mamãe fica brava.`,
+      rival: (o) => `${o.group}? O Gambá não gosta do cheiro de vocês, ${o.name}.`,
+      any: [(o) => `Hihi. ${o.name}, você é engraçado.`, (o) => `O homem tá rindo de você, ${o.name}.`],
+    },
+  },
   nubi: {
     open: {
       ally: (o) => `${o.name}. Lute devagar comigo. Eu vou ver tudo de qualquer jeito.`,

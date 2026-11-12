@@ -320,6 +320,8 @@ export const ABILITY_TYPES = {
         const c = new THREE.Vector3(p.x, 1.1, p.z);
         world.fx.distort(c, { color: a.color, radius: 1.6, life: 0.4 });
         if (a.vanishFx === 'sigil') world.fx.ring(new THREE.Vector3(p.x, 0.05, p.z), { color: a.color, radius: 1.6, life: 0.5 });
+        // 'blood' (Artemis — Distorcer Aparência: o corpo antigo se desfaz numa casca de sangue)
+        if (a.vanishFx === 'blood') { world.fx.burst(c, { count: 26, color: 0x8a0a12, speed: 2.4, life: 0.7, size: 0.18, gravity: 6 }); world.fx.play('FX_BLOOD', c, { scale: 1.2 }); }
         if (a.vanishFx === 'signal') for (let i = 0; i < 4; i++) world.fx.lightning(c.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.2)), c.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.2)), { color: a.color, life: 0.18 });
       };
       vanishFx(f.pos);
@@ -2909,12 +2911,14 @@ Object.assign(ABILITY_TYPES, {
       world.audio.play('fearGaze', { volume: 0.6, pitch: 1.1 });
       tl.add(a.windup, () => {
         if (!opp || opp.state === 'ko' || opp.isInvulnerable() || distXZ(f.pos, opp.pos) > a.range) { f.notify('NINGUÉM OUVIU', true); return; }
-        const orders = ['PARE!', 'VENHA!', 'AJOELHE!'];
+        // a.orders: as ordens possíveis (o Damir só tem a Perturbação "SENTA!")
+        const orders = a.orders || ['PARE!', 'VENHA!', 'AJOELHE!'];
         const o = orders[Math.floor(Math.random() * orders.length)];
-        world.fx.ring(opp.chestPos(), { color: 0xc01828, radius: 1.4, life: 0.4, vertical: true, yaw: f.yaw });
+        world.fx.ring(opp.chestPos(), { color: a.color ?? 0xc01828, radius: 1.4, life: 0.4, vertical: true, yaw: f.yaw });
         f.notify(o, true);
         opp.notify(o, true);
         if (o === 'PARE!') opp.stun(a.stun, 'stagger');
+        else if (o === 'SENTA!') { opp.stun(a.stun, 'forced_kneel'); if (a.damage) applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: a.element || 'conhecimento', knockback: 0, hitstun: 0.1, sound: 'heavyPunch', color: a.color, scale: 0.8 }); }
         else if (o === 'VENHA!') {
           const F = forwardFromYaw(f.yaw);
           opp.pullTo(new THREE.Vector3(f.pos.x + F.x * 1.4, opp.pos.y, f.pos.z + F.z * 1.4), { time: 0.25, after: 0.4 });
@@ -4723,3 +4727,66 @@ export const DALMO_TYPES = {
 };
 Object.assign(ABILITY_TYPES, DALMO_TYPES);
 Object.assign(ABILITY_TYPES, AMIGO_TYPES);
+
+// ------------------------------------------------------------------ OS LUKIC E A ARTEMIS (Escriptas, 2026-11-12)
+Object.assign(ABILITY_TYPES, {
+  // BLACKOUT (Damir, cânone: o ritual de Conhecimento que apaga a mente do alvo — confuso, se defendendo, FRUSTRADO):
+  // aponta a bengala, um clarão escuro fecha nos olhos do alvo (dá para esquivar no instante do clarão). Quem estava
+  // atacando ou andando fica CONFUSO (os comandos invertidos); quem estava na defesa fica FRUSTRADO (perde sanidade e a
+  // guarda cai). Adaptação do jogo (PROPOSTA): os dois estados e os números
+  blackout: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      if (opp) f.yaw = yawTo(f.pos, opp.pos);
+      f.anim.play(a.anim || 'point', { restart: true, duration: a.windup + a.recovery });
+      if (a.showProp) f.rig.showProp(a.showProp, true);
+      world.audio.play('fearGaze', { volume: 0.6, pitch: 0.6 });
+      tl.add(a.windup * 0.4, () => opp && opp.state !== 'ko' && world.fx.ring(opp.chestPos(), { color: a.color, radius: 2.2, life: a.windup * 0.6, vertical: true, yaw: f.yaw }));
+      tl.add(a.windup, () => {
+        if (!opp || opp.state === 'ko' || opp.isInvulnerable() || distXZ(f.pos, opp.pos) > a.range) { f.notify('ERROU O BLACKOUT', true); return; }
+        const head = opp.chestPos().add(new THREE.Vector3(0, 0.5, 0));
+        world.fx.burst(head, { count: 22, color: 0x0a0a10, kind: 'smoke', speed: 1.6, life: 0.7, size: 0.32 });
+        world.fx.flash(head, { color: a.color, size: 1.6, life: 0.15 });
+        world.audio.play('ritual', { volume: 0.6, pitch: 0.7 });
+        if (opp.state === 'block') {
+          if (opp.drainEnergy) opp.drainEnergy(a.drain ?? 25);
+          opp.stun(a.frustrate ?? 0.7, 'stagger');
+          opp.notify('FRUSTRADO', true);
+        } else {
+          const old = opp.findBuff('blackout');
+          if (old) old.time = a.duration;
+          else opp.addBuff({ type: 'blackout', name: 'CONFUSO', time: a.duration, duration: a.duration, invertMove: true });
+          opp.notify('CONFUSO', true);
+        }
+      });
+      const hide = () => a.showProp && f.rig.showProp(a.showProp, false);
+      tl.add(a.windup + a.recovery - 0.02, hide);
+      tl.end(a.windup + a.recovery);
+      return seqFrom(tl, { cancel: hide });
+    },
+  },
+
+  // GAMBÁ! (Artemis, PROPOSTA; o saruê é cânone): ela aponta e o Gambá salta de onde estiver e morde forte — atordoa e
+  // faz sangrar. Precisa do alvo perto; sem o companheiro (escondido no bolso) não sai
+  gambaCall: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      const c = f.companion;
+      if (!c || c.mode === 'bolso' || c.bite) { f.notify('O GAMBÁ ESTÁ ESCONDIDO'); return null; }
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      if (opp) f.yaw = yawTo(f.pos, opp.pos);
+      f.anim.play('point', { restart: true, duration: 0.45 });
+      f.notify(a.shout || 'PEGA, GAMBÁ!', true);
+      tl.add(0.15, () => {
+        if (!opp || opp.state === 'ko' || distXZ(f.pos, opp.pos) > a.range) return;
+        c.leap(opp, { damage: a.damage, bleed: a.bleed, stun: a.stun, label: 'MORDIDA DO GAMBÁ' });
+        c.cd = Math.max(c.cd, 3);
+      });
+      tl.end(0.45);
+      return seqFrom(tl);
+    },
+  },
+});

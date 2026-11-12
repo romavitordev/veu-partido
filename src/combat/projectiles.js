@@ -35,6 +35,28 @@ const VISUALS = {
     g.userData.spin = arms;
     return g;
   },
+  // CARTAS DO DESTINO (Damir, cânone): a carta de baralho preta com o círculo dos Lukic dourado aceso, girando no voo
+  card(color) {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    g.add(spin);
+    const face = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.38, 0.012), new THREE.MeshToonMaterial({ color: 0x141216, emissive: 0x0a080c }));
+    spin.add(face);
+    const gold = glowMat(color, 0.95);
+    for (const z of [-0.008, 0.008]) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.01, 6, 20), gold);
+      ring.position.z = z;
+      spin.add(ring);
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.22, 0.004), gold);
+      bar.position.z = z;
+      spin.add(bar);
+    }
+    const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.6), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+    spin.add(halo);
+    spin.rotation.x = -Math.PI / 2.4;
+    g.userData.spin = spin;
+    return g;
+  },
   // Decadenza (Dante): nuvem de fumaça preta com núcleo escuro e anel cinza
   decay(color) {
     const g = new THREE.Group();

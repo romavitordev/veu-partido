@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { updateCompanion, resetCompanion } from './companion.js';
 import { inkTentacle, inkSplash } from '../fx/inkFx.js';
 import { tAlert } from '../i18n/index.js';
 import { COMBAT } from '../config/combat.js';
@@ -115,6 +116,8 @@ export class Fighter {
     this.sacrificeWin = false;
     this.chronoCd = 0; // Percepção Anacrônica (Anfitrião): recarga da esquiva automática
     this.secretRound = false; // Segredo de Veríssimo contra o Kian: uma vez por round
+    this.escapedDeath = false; // Escapar da Morte (Boris): uma vez por round
+    resetCompanion(this); // o Gambá da Artemis volta para o ombro
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
     this.surgeUsed = false; // Surto Temporal (Rubens) / Mercenária (Carina): uma vez por round
     this.watchUsed = false; // Relógio de Arnaldo (Rubens): uma vez por round
@@ -290,6 +293,17 @@ export class Fighter {
         this.world.audio.play('perfectBlock', { volume: 0.8, pitch: 0.8 });
         return dealt;
       }
+    }
+    // ESCAPAR DA MORTE (Boris, cânone: uma vez por cena, o dano que o derrubaria não o deixa morrendo): uma vez por round,
+    // o golpe que o mataria o deixa com 1 de vida, um instante intocável
+    if (this.health <= 0 && !this.sacrificeWin && !this.escapedDeath && hasPassive(this, 'escapeDeath')) {
+      this.escapedDeath = true;
+      this.health = 1;
+      this.invuln = Math.max(this.invuln, 0.8);
+      this.notify('ESCAPAR DA MORTE', true);
+      this.world.fx.burst(this.chestPos(), { count: 34, color: 0x8a8494, kind: 'smoke', speed: 3.5, life: 0.7, size: 0.26 });
+      this.world.audio.play('perfectBlock', { volume: 0.8, pitch: 0.6 });
+      return dealt;
     }
     if (this.health <= 0 && this.lethalHook) {
       const hook = this.lethalHook;
@@ -933,6 +947,7 @@ export class Fighter {
     this.updateGrip();
     this.updateBloodShell(dt);
     this.updateDrips(dt);
+    if (this.def.companion) updateCompanion(this, dt); // o Gambá da Artemis (combat/companion.js)
     // posiciona o modelo ANTES de animar: o ajuste de pés/chão do rig usa a posição deste quadro
     this.rig.root.position.copy(this.pos);
     this.rig.root.rotation.y = this.yaw;

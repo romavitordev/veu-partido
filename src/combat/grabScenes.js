@@ -203,6 +203,12 @@ export const GRAB_SCENES = {
   arnaldo: scene({ ...S('slash_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'slash_finisher', fx: 'sigils', sound: 'slashFinal' }),
   // Nubi: prende com a bengala, uma pancada curta no tronco e a batida de baixo para cima com o Lodo respingando
   nubi: scene({ ...S('slash_h'), fx: { kind: 'slash' }, sound: 'heavyPunch' }, { ...S('thrust'), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'slash_up', fx: 'slam', sound: 'drain' }),
+  // DAMIR: o castão no rosto, a ponta no peito e o "SENTA!" — o alvo cai de joelhos (fx sigils de Conhecimento)
+  damir: scene({ ...S('slash_h'), fx: { kind: 'slash' }, sound: 'heavyPunch' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'heavyPunch' }, { anim: 'point', fx: 'sigils', sound: 'ritual', drain: 15 }),
+  // BORIS: agarra com uma mão, o cabo da gadanha no estômago e a ceifa que joga longe
+  boris: scene({ ...S('body_blow', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.36), fx: { kind: 'slash' }, sound: 'bladeHit' }, { anim: 'hammer_finisher', fx: 'slam', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } }),
+  // ARTEMIS: soqueira, a lâmina do Apache e o tiro colado (o Gambá morde no meio: o sangramento)
+  artemis: scene({ ...S('jab'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'pointBlank', sound: 'shotgun', bleed: { dps: 4, duration: 2 } }),
   // Cristino: segura pela gola, dois golpes de peixeira e a lâmina no pescoço ("Eu odeio gente barulhenta" — o Caíto)
   cristino: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),
   // Cristopher: soco no estômago, cabeçada e o suplex de dublê no chão
