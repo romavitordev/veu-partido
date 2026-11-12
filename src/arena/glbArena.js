@@ -4,6 +4,7 @@ import { ARENA_TEXTURES } from './arenaTextures.js';
 import { gfxProfile } from '../config/settings.js';
 import { blocksPointGeneric } from '../combat/positioning.js';
 import { makeWindows, makeLightning, makeWalkers } from './nightLife.js';
+import { buildRoomShell } from './roomShell.js';
 
 // Cenário feito no Blender (tools/blender/arena_<id>.py → public/arenas/<id>.glb).
 // Convenções dos objetos no .glb:
@@ -175,6 +176,8 @@ export function createGLBArena(cfg) {
         }
       });
       for (const o of remove) o.parent && o.parent.remove(o);
+      // as salas do Outro Lado na luta: paredes mais altas e teto (roomShell.js)
+      if (cfg.shell) buildRoomShell(group, occluders, cfg.shell);
       // além das peças OCC_, qualquer objeto ALTO do cenário (árvores, pedras, casas, colunas) fica transparente
       // quando fica entre a câmera e os lutadores (o material só é copiado na primeira vez que precisar sumir)
       const occSet = new Set(occluders);

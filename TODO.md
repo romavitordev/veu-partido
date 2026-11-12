@@ -157,7 +157,8 @@
 - [x] **Bateria de balanceamento**: Fernando/Luciano, Tristan e Ivete. Feito: 47%, 48% e 49% (92 lutas focadas cada).
 
 ## Cenários de luta (pedido do dono, 2026-11-09)
-- [ ] **Melhorar a Mansão Endiabrada e a Escola Nostradamus no modo de luta**: estão feias comparadas aos outros
+- [x] **Melhorar a Mansão Endiabrada e a Escola Nostradamus no modo de luta** (feito 2026-11-12: paredes altas, teto com
+      vigas, câmera dentro da sala, retratos no quarto, canos e arandelas no bunker — `arena/roomShell.js`): estão feias comparadas aos outros
       cenários. Comparar lado a lado com os melhores (Bar Suvaco Seco, Coliseu, Palco do Anfitrião, Ilha de Tipora) e
       refazer o que destoa (iluminação, texturas, adereços, enquadramento e miniatura). São as versões de luta das
       dungeons do Outro Lado (`mansao_luta`, `escola_luta` em `arena/index.js`).

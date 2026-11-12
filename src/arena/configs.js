@@ -589,7 +589,8 @@ function fightRoom(base, id, r, { spawns, fog, center, fill }) {
     ],
     fog: { color: base.fog.color, density: fog },
     particles: { ...base.particles, area: 22, center },
-    camera: { rect: { minX: r.minX - 6, maxX: r.maxX + 6, minZ: r.minZ - 10, maxZ: r.maxZ + 10 }, maxY: 11 },
+    // a câmera fica DENTRO da sala (com o teto do roomShell.js, de fora ela via o vazio preto em volta das paredes)
+    camera: { rect: { minX: r.minX + 0.6, maxX: r.maxX - 0.6, minZ: r.minZ + 0.6, maxZ: r.maxZ - 0.6 }, maxY: 5.6 },
   };
 }
 // o quarto principal (os armários e a lua nas janelas)
@@ -597,6 +598,14 @@ function fightRoom(base, id, r, { spawns, fog, center, fill }) {
 // as posições vêm de pve/dungeons.js
 const ESP = DUNGEONS.espreitador;
 const DEG = DUNGEONS.degolificada;
+// um quadro: a moldura dourada e a tela escura por cima (props do roomShell.js)
+function portrait(x, y, z, rotY, w, h) {
+  const nx = Math.round(Math.sin(rotY) * 100) / 100, nz = Math.round(Math.cos(rotY) * 100) / 100;
+  return [
+    { box: [x, y, z], size: [w, h, 0.06], rotY, color: 0x7a5a24, metal: 0.6, rough: 0.4 },
+    { box: [x + nx * 0.035, y, z + nz * 0.035], size: [w - 0.22, h - 0.22, 0.02], rotY, color: 0x2a1c18 },
+  ];
+}
 export const MANSAO_LUTA = {
   ...fightRoom(MANSAO, 'mansao_luta', MANSAO.bounds.rects[6], { spawns: [{ x: 45, z: 0 }, { x: 55, z: 0 }], fog: 0.012, center: [50, 0, 0], fill: 0xffc890 }),
   dressing: {
@@ -605,6 +614,22 @@ export const MANSAO_LUTA = {
     closets: ESP.closets, // os 4 armários (as frestas do Espreitador), entreabertos
     drawers: ESP.modules.quarto.drawers,
   },
+  // o papel de parede até o forro de madeira escura com vigas (roomShell.js)
+  shell: {
+    prefix: 'OCC_quarto_', layers: 1, ceiling: 0x1e1410, beams: { color: 0x2e1e14, every: 3, axis: 'z', depth: 0.3 }, trim: { color: 0x3a2618, h: 0.2 },
+    // os retratos da família na parte de cima das paredes (PROPOSTA: a wiki não descreve a decoração do quarto)
+    props: [
+      ...portrait(50, 4.7, -10.44, 0, 2.0, 2.4),
+      ...portrait(41.2, 4.6, -10.44, 0, 1.2, 1.5),
+      ...portrait(58.8, 4.6, -10.44, 0, 1.2, 1.5),
+      ...portrait(38.06, 4.6, -5.5, Math.PI / 2, 1.3, 1.0),
+      ...portrait(38.06, 4.6, 5.5, Math.PI / 2, 1.0, 1.3),
+      ...portrait(61.94, 4.6, -5.5, -Math.PI / 2, 1.0, 1.3),
+      ...portrait(61.94, 4.6, 5.5, -Math.PI / 2, 1.3, 1.0),
+    ],
+  },
+  // a poça da goteira molha o tapete (o material de água ficava um buraco preto em cima do tapete vermelho)
+  materials: { water_stain_mansao: { color: 0x3a1410 } },
 };
 // o bunker (o círculo do ritual e as velas)
 export const ESCOLA_LUTA = {
@@ -613,5 +638,23 @@ export const ESCOLA_LUTA = {
     // a passagem secreta da biblioteca (oeste) e a saída do bunker (leste), fechadas
     doors: [{ x: 70.32, z: 0, face: Math.PI / 2, w: 2.3 }, { x: 91.68, z: 0, face: -Math.PI / 2, w: 2.1 }],
     crates: DEG.enigma.boxes, // as caixas de mantimentos do bunker
+  },
+  // paredes de concreto até o teto de laje com vigas (roomShell.js)
+  shell: {
+    prefix: 'OCC_bunker_', layers: 1, ceiling: 0x24221f, beams: { color: 0x3a3632, every: 3.2, axis: 'z', depth: 0.45 }, trim: { color: 0x2e2b27, h: 0.22 },
+    // os canos do abrigo correndo pelas paredes e pelo teto, a grade de ventilação e as arandelas gradeadas
+    props: [
+      { pipe: [81, 5.7, -8.72], r: 0.13, len: 22, axis: 'x', color: 0x5a3a26, metal: 0.5 },
+      { pipe: [81, 5.3, -8.78], r: 0.07, len: 22, axis: 'x', color: 0x4a4a46, metal: 0.6 },
+      { pipe: [81, 5.7, 8.72], r: 0.13, len: 22, axis: 'x', color: 0x5a3a26, metal: 0.5 },
+      { pipe: [73.6, 6.05, 0], r: 0.1, len: 18, axis: 'z', color: 0x4a4a46, metal: 0.6 },
+      { pipe: [88.4, 6.05, 0], r: 0.1, len: 18, axis: 'z', color: 0x4a4a46, metal: 0.6 },
+      { pipe: [70.25, 4.8, -5], r: 0.09, len: 3.2, axis: 'y', color: 0x5a3a26, metal: 0.5 },
+      { pipe: [91.75, 4.8, 5], r: 0.09, len: 3.2, axis: 'y', color: 0x5a3a26, metal: 0.5 },
+      { box: [85, 4.6, -8.86], size: [1.4, 0.9, 0.06], color: 0x2a2a28, metal: 0.4 },
+      { box: [77, 4.6, 8.86], size: [1.4, 0.9, 0.06], color: 0x2a2a28, metal: 0.4 },
+      ...[[70.14, -5, 0], [70.14, 5, 0], [91.86, -5, 0], [91.86, 5, 0], [76, -8.86, 1], [86, 8.86, 1]].map(([x, z, f]) =>
+        ({ box: [x, 4.3, z], size: f ? [0.3, 0.26, 0.14] : [0.14, 0.26, 0.3], color: 0xffd8a0, emissive: 0xffc070, ei: 2.5 })),
+    ],
   },
 };
