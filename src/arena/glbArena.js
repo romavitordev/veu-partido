@@ -145,6 +145,21 @@ export function createGLBArena(cfg) {
           }
           if (m.metalness > 0.5) m.metalness = 0.4;
         }
+        // cfg.materials: a VARIANTE de horário do mesmo .glb (dia × noite de lua de sangue) troca cor/brilho de alguns
+        // materiais pelo nome — numa cópia, porque o .glb em cache é o mesmo das outras variantes
+        if (cfg.materials && mats.some((m) => cfg.materials[m.name.replace(/^MAT_[A-Z]+_/, '')])) {
+          const swap = (m) => {
+            const over = cfg.materials[m.name.replace(/^MAT_[A-Z]+_/, '')];
+            if (!over) return m;
+            const c = m.clone();
+            if (over.color !== undefined) c.color.set(over.color);
+            if (over.emissive !== undefined) c.emissive = new THREE.Color(over.emissive);
+            if (over.emissiveIntensity !== undefined) c.emissiveIntensity = over.emissiveIntensity;
+            if (over.hide) o.visible = false;
+            return c;
+          };
+          o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);
+        }
         if (n.startsWith('OCC_')) {
           // material próprio para poder ficar transparente sozinho
           o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();

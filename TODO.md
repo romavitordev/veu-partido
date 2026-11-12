@@ -174,6 +174,11 @@
       - **Base dos Couraças** (Hexatombe);
       - **Circo dos Psikolera**;
       - **Acampamento dos Pássaros** (meio destruído, como em Hexatombe).
+- [x] **Mapas de Hexatombe em duas versões, dia e noite de lua de sangue** (pedido do dono, 2026-11-12): Ferro Velho,
+      Circo dos Psikolera e Igreja Antiga, cada um com "(Dia)" e "(Noite)" na seleção (mesmo .glb, `cfg.materials`).
+      Os próximos mapas de Hexatombe (Acampamento dos Pássaros, sertão) já nascem com as duas versões.
+- [x] **Nova tela de escolha do cenário** (pedido do dono, 2026-11-12): cenário em tela cheia ao fundo, nome numa faixa
+      no meio e miniaturas em duas fileiras embaixo.
 - [x] **Repertório de referências dos 8 lugares** (2026-11-09): wiki, 139 imagens oficiais e 32 prints dos episódios,
       comparados em `docs/REFERENCIAS-MAPAS.md` (canon × PROPOSTA de arena, links com minuto). As imagens ficam em
       `Referencias visuais/Mapas/` (fora do git). Recomendação: Ferro Velho e Circo dos PSIKOLERA. Nome canônico do

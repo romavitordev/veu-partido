@@ -64,6 +64,7 @@ M = {
     'sign': material('sign_blue', '#2a50c0', 0.8),
     'gold': material('sign_gold', '#e0a838', 0.6),
     'ball': material('ball_yellow', '#e0c040', 0.6),
+    'moon': material('moon_blood', '#ff7a5a', 0.5, emission='#ff2a10', strength=2.5),  # só na variante de noite (some de dia)
     'crystal': material('crystal_ball', '#b080ff', 0.2, emission='#8040ff', strength=1.5),
 }
 R_FIGHT = 18.0
@@ -521,6 +522,9 @@ for k in range(26):
     x, z = at(a, r)
     rock(f'mesa{k}', (x, -1, z), (random.uniform(18, 30), random.uniform(14, 30), random.uniform(14, 22)), M['sandstone' if k % 3 else 'sandstone2'],
          rot_y=face_center(x, z) + random.uniform(-0.3, 0.3), jit=0.08, layers=random.randint(3, 6), taper=0.12)
+
+# a LUA DE SANGUE (a variante de noite; a de dia esconde pelo material — cfg.materials)
+sphere('moon', (-24, 44, -96), (7, 7, 7), M['moon'], seg=20, rings=12)
 
 for i, acc in enumerate(FLAGS):
     acc.done(f'bunting{i}', M[FLAG_MATS[i]])

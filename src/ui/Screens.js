@@ -851,21 +851,28 @@ export class StageSelectScreen {
     this.list = ARENA_ORDER.map((id) => ({ id, ...ARENAS[id] }));
     const prevIdx = prev ? this.list.findIndex((a) => a.id === prev) : -1;
     this.index = prevIdx >= 0 ? prevIdx : Math.max(0, this.list.findIndex((a) => a.available));
+    // tela cheia: o cenário escolhido ocupa o fundo (duas camadas que se cruzam ao trocar, com um zoom lento), o nome
+    // numa faixa no meio e a bandeja de miniaturas em duas fileiras embaixo
     this.el = el(root, 'screen', 'stage', `
-      <h2>${t('stage.title')}</h2>
-      <div class="stages">${this.list.map((a, i) => `
+      <div class="sbg"><div class="sbg-l"></div><div class="sbg-l"></div></div>
+      <div class="sshade"></div>
+      <h2 class="stitle">${t('stage.title')}</h2>
+      <div class="sband"><div class="sname"></div><div class="sdesc"></div></div>
+      <div class="stray"><div class="stages">${this.list.map((a, i) => `
         <div class="stagecard ${a.available ? '' : 'locked'}" data-i="${i}" style="--sky:${a.colors[0]};--ground:${a.colors[1]};--accent:${a.colors[2]}">
           ${thumbs[a.id] ? `<img src="${thumbs[a.id]}" alt="">` : '<div class="paint"></div>'}
           <div class="sn">${a.name}</div>
           ${a.available ? '' : `<div class="soon">${t('stage.soon')}</div>`}
         </div>`).join('')}
-      </div>
-      <div class="stageinfo"><div class="sprev"></div><div class="stxt"></div></div>
+      </div></div>
       <button class="stage-confirm" type="button">${t('stage.confirm')}</button>
       <div class="hint">${t('stage.hint', { ok: OK, jump: actionLabel(0, 'jump'), rand: RAND, carga: actionLabel(0, 'carga'), back: BACK, phys: actionLabel(0, 'physical') })}</div>`);
     this.cards = [...this.el.querySelectorAll('.stagecard')];
-    this.info = this.el.querySelector('.stageinfo .stxt');
-    this.prev = this.el.querySelector('.stageinfo .sprev');
+    this.nameEl = this.el.querySelector('.sname');
+    this.descEl = this.el.querySelector('.sdesc');
+    this.bgLayers = [...this.el.querySelectorAll('.sbg-l')];
+    this.bgFront = 0;
+    this.shownBg = null;
     this.confirmEl = this.el.querySelector('.stage-confirm');
     this.thumbs = thumbs;
     this.cards.forEach((c, i) => onTap(this, c, 1 + i, () => { this.index = i; this.render(); }));
@@ -892,12 +899,23 @@ export class StageSelectScreen {
     this.thumbsDone = this.refreshThumbs();
     this.cards.forEach((c, i) => c.classList.toggle('on', i === this.index));
     const a = this.list[this.index];
-    this.info.innerHTML = `<b>${a.name}</b><span>${a.description}</span>`;
+    this.nameEl.textContent = a.name;
+    this.descEl.textContent = a.description;
+    this.el.style.setProperty('--accent', a.colors[2]);
+    // o fundo: a imagem nova entra por cima da antiga (cruzando) e recomeça o zoom lento
     const src = this.thumbs[a.id];
-    this.prev.style.backgroundImage = src ? `url(${src})` : '';
-    this.prev.classList.toggle('empty', !src);
-    this.prev.style.setProperty('--sky', a.colors[0]);
-    this.prev.style.setProperty('--ground', a.colors[1]);
+    const key = src || `paint:${a.id}`;
+    if (key !== this.shownBg) {
+      this.shownBg = key;
+      this.bgFront = 1 - this.bgFront;
+      const L = this.bgLayers[this.bgFront];
+      L.style.backgroundImage = src ? `url(${src})` : `linear-gradient(180deg, ${a.colors[0]} 0 55%, ${a.colors[1]} 55%)`;
+      L.classList.remove('show');
+      void L.offsetWidth; // reinicia a animação
+      L.classList.add('show');
+      this.bgLayers[1 - this.bgFront].classList.remove('show');
+    }
+    this.cards[this.index].scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
   }
   update(input) {
     if (!this.thumbsDone) this.render();

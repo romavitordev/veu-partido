@@ -4,7 +4,7 @@ import { ARENAS, ARENA_ORDER } from '../arena/index.js';
 // Gera imagens de preview dos cenários renderizando cada um uma vez (dataURL), como os retratos.
 // Câmera padrão: de lado, entre os pontos de nascimento; um cenário pode definir `thumbCamera`
 // no registro ({ pos: [x, y, z], look: [x, y, z] }) para um enquadramento próprio.
-export function renderArenaThumbs(renderer, { w = 640, h = 360, cameras = {}, only = null } = {}) {
+export function renderArenaThumbs(renderer, { w = 960, h = 540, cameras = {}, only = null } = {}) {
   const target = new THREE.WebGLRenderTarget(w, h, { samples: 4 });
   target.texture.colorSpace = THREE.SRGBColorSpace;
   const canvas = document.createElement('canvas');

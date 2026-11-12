@@ -255,7 +255,7 @@ export const TIPORA = {
 // FERRO VELHO (Hexatombe, ep. 5 e 7): a base dos Couraças no fundo do cânion, à noite — o pátio entre as pilhas de
 // carcaças, a muralha de chapas com estacas, o portão entre as duas torres de janelas vermelhas, a grua amarela com a
 // cabine blindada do Miasma, a oficina acesa, o Abrigo vermelho da Escarlata e o símbolo de garras no paredão.
-// Luz pelos renders oficiais "Modelo 3D - Ferro Velho": lua cheia azul sobre o cânion, vermelho e âmbar embaixo.
+// Luz: a noite da LUA DE SANGUE de Hexatombe sobre o cânion, vermelho e âmbar embaixo (a versão de dia é FERRO_VELHO_DIA).
 // Referências: docs/REFERENCIAS-MAPAS.md §1. As lâmpadas seguem os postes do .glb (r = 18,8; a do portão não existe).
 const FERRO_LAMPS = Array.from({ length: 7 }, (_, k) => ((k + 0.5) / 7) * Math.PI * 2 + 0.2)
   .filter((a) => Math.abs(Math.atan2(Math.sin(a - Math.PI), Math.cos(a - Math.PI))) >= 0.3)
@@ -266,14 +266,16 @@ export const FERRO_VELHO = {
   glb: 'arenas/ferro_velho.glb',
   bounds: { radius: 18 },
   spawns: [{ x: 0, z: -6 }, { x: 0, z: 6 }],
-  sky: 0x0a1428,
-  skyGradient: [[0, '#04070f'], [0.5, '#0c1a36'], [0.8, '#1a3060'], [1, '#2a4478']],
-  fog: { color: 0x0e1a34, density: 0.012 },
+  sky: 0x1a0608,
+  skyGradient: [[0, '#070204'], [0.5, '#22080c'], [0.8, '#421218'], [1, '#62201c']],
+  fog: { color: 0x26090c, density: 0.012 },
+  // a lua do .glb (moon_blue) vira a LUA DE SANGUE de Hexatombe
+  materials: { moon_blue: { color: 0xff7a5a, emissive: 0xff2a10, emissiveIntensity: 2.6 } },
   lights: [
-    { type: 'hemi', sky: 0x6a88d0, ground: 0x2a1a14, intensity: 1.05 },
-    { type: 'ambient', color: 0x34405a, intensity: 0.45 },
-    // o luar azul descendo pelo cânion (a lua fica acima do paredão do fundo, à esquerda)
-    { type: 'dir', color: 0x9ab4ff, intensity: 1.9, pos: [-14, 30, -26], shadow: true, area: 28 },
+    { type: 'hemi', sky: 0x9a6070, ground: 0x2a1410, intensity: 1.05 },
+    { type: 'ambient', color: 0x452630, intensity: 0.45 },
+    // o luar vermelho descendo pelo cânion (a lua fica acima do paredão do fundo, à esquerda)
+    { type: 'dir', color: 0xff7a66, intensity: 1.9, pos: [-14, 30, -26], shadow: true, area: 28 },
     // o tambor de fogo, a luz quente principal do pátio
     { type: 'point', color: 0xff7a20, intensity: 26, distance: 14, decay: 1.5, pos: [11, 1.6, 11.5], flicker: true },
     ...FERRO_LAMPS,
@@ -301,6 +303,7 @@ export const CIRCO = {
   id: 'circo',
   name: 'Circo dos Psikolera',
   glb: 'arenas/circo.glb',
+  materials: { moon_blood: { hide: true } }, // a lua de sangue é só da variante de noite
   bounds: { radius: 18 },
   spawns: [{ x: 0, z: -6 }, { x: 0, z: 6 }],
   sky: 0x8ab8e8,
@@ -316,6 +319,78 @@ export const CIRCO = {
   ],
   particles: { color: 0xe8d4b0, count: 140, area: 40, height: 5, rise: 0.03, drift: 1.1, size: 0.05, opacity: 0.4 }, // poeira de terra
   camera: { radius: 22, maxY: 15 },
+};
+
+// AS VARIANTES DE HORÁRIO dos mapas de Hexatombe (pedido do dono, 2026-11-12): o mesmo .glb com outro céu e outra luz
+// (cfg.materials troca a lua, os vitrais e as lâmpadas). A noite é sempre a da LUA DE SANGUE.
+const SUN_SKY = [[0, '#3a78c8'], [0.45, '#6aa0dc'], [0.8, '#a8cceb'], [1, '#dcd8c8']];
+const BLOOD_SKY = [[0, '#070204'], [0.5, '#22080c'], [0.8, '#421218'], [1, '#62201c']];
+
+export const FERRO_VELHO_DIA = {
+  ...FERRO_VELHO,
+  id: 'ferro_velho_dia',
+  name: 'Ferro Velho (Dia)',
+  sky: 0x8ab8e8,
+  skyGradient: SUN_SKY,
+  fog: { color: 0xcfc4b4, density: 0.0065 },
+  materials: { moon_blue: { hide: true }, bulb_amber: { emissiveIntensity: 0.4 }, window_red: { emissiveIntensity: 0.5 } },
+  lights: [
+    { type: 'hemi', sky: 0xc0d4f0, ground: 0x7a5a40, intensity: 1.3 },
+    { type: 'ambient', color: 0xfff0e0, intensity: 0.35 },
+    // o sol de meio da tarde por cima do paredão da direita
+    { type: 'dir', color: 0xfff0d6, intensity: 3.0, pos: [20, 32, 14], shadow: true, area: 30 },
+    { type: 'point', color: 0xff7a20, intensity: 14, distance: 8, decay: 1.6, pos: [11, 1.6, 11.5], flicker: true }, // o tambor de fogo
+    { type: 'point', color: 0xff9a40, intensity: 8, distance: 10, pos: [21.5, 3, -6.6] }, // a oficina
+  ],
+  stars: null,
+  particles: [
+    { color: 0xffa040, count: 20, area: 0.8, height: 3, rise: 1.3, drift: 0.4, size: 0.06, opacity: 0.8, center: [11, 1, 11.5] },
+    { color: 0xd8c0a0, count: 160, area: 40, height: 6, rise: 0.04, drift: 1.0, size: 0.05, opacity: 0.4 }, // poeira do cânion
+  ],
+};
+
+// o Circo à noite: a lua de sangue atrás da lona, as lâmpadas dos cordões acesas e a boca do demônio brilhando
+const CIRCO_POLES = Array.from({ length: 8 }, (_, k) => ((k + 0.5) / 8) * Math.PI * 2)
+  .map((a) => ({ type: 'point', color: 0xffc070, intensity: 7, distance: 11, decay: 1.6, pos: [Math.sin(a) * 19.6, 7.2, Math.cos(a) * 19.6] }));
+export const CIRCO_NOITE = {
+  ...CIRCO,
+  id: 'circo_noite',
+  name: 'Circo dos Psikolera (Noite)',
+  sky: 0x1a0608,
+  skyGradient: BLOOD_SKY,
+  fog: { color: 0x26090c, density: 0.011 },
+  materials: { bulb_warm: { emissiveIntensity: 4 }, mouth_glow: { emissiveIntensity: 2.6 }, crystal_ball: { emissiveIntensity: 3 } },
+  lights: [
+    { type: 'hemi', sky: 0x9a6070, ground: 0x3a2018, intensity: 1.0 },
+    { type: 'ambient', color: 0x452630, intensity: 0.45 },
+    { type: 'dir', color: 0xff7a66, intensity: 1.8, pos: [-18, 30, -30], shadow: true, area: 30 }, // a lua de sangue atrás da lona
+    { type: 'point', color: 0xff8a30, intensity: 20, distance: 12, decay: 1.5, pos: [0, 1.8, -22.8] }, // a boca acesa
+    ...CIRCO_POLES,
+  ],
+  stars: { count: 700, radius: 170, size: 0.8 },
+  particles: { color: 0xffb070, count: 90, area: 36, height: 6, rise: 0.05, drift: 0.6, size: 0.05, opacity: 0.5 },
+};
+
+// a Igreja de dia: o sol entrando pelos vitrais (dourados de dia; de noite são a lua de sangue) e a poeira no facho
+export const IGREJA_DIA = {
+  ...IGREJA,
+  id: 'igreja_dia',
+  name: 'Igreja Antiga (Dia)',
+  sky: 0xb8c8d8,
+  skyGradient: [[0, '#6a90b8'], [0.6, '#a8c0d8'], [1, '#e0dcd0']],
+  fog: { color: 0x8a7a6a, density: 0.008 },
+  materials: { stained_blood: { color: 0xf0c880, emissive: 0xffd890, emissiveIntensity: 1.6 } },
+  lights: [
+    { type: 'hemi', sky: 0xe0d8cc, ground: 0x5a4a40, intensity: 1.35 },
+    { type: 'ambient', color: 0xfff0e0, intensity: 0.4 },
+    { type: 'point', color: 0xffe0b0, intensity: 26, distance: 24, decay: 1.4, pos: [0, 7, 3] }, // a luz do dia enchendo a nave
+    { type: 'dir', color: 0xfff0d0, intensity: 3.0, pos: [16, 20, 6], shadow: true, area: 30 }, // o sol pelos vitrais
+    { type: 'point', color: 0xff3a2a, intensity: 18, distance: 12, decay: 1.6, pos: [0, 8, -15] }, // o símbolo de sangue no altar
+    { type: 'point', color: 0xffa050, intensity: 10, distance: 8, pos: [0, 2.0, -8.5], flicker: true },
+    { type: 'point', color: 0xffb060, intensity: 7, distance: 8, pos: [0, 6.5, -15.8] },
+  ],
+  mist: { ...IGREJA.mist, color: 0xb8a890, opacity: 0.08, banks: [] },
+  particles: { color: 0xfff0c0, count: 200, area: 20, height: 9, rise: 0.03, drift: 0.2, size: 0.04, opacity: 0.55, center: [0, 0, -1] }, // poeira no sol
 };
 
 // MANSÃO ENDIABRADA (OUTRO LADO: o território do Espreitador) — mapa em linha, sem teto, no breu. Só no modo PvE

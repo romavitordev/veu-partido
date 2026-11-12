@@ -1,12 +1,15 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
 const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
+// variantes de horário (mesmo .glb, outra luz): não carregam de novo, só seguem a disponibilidade do original
+const VARIANTS = { ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'] };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
-    ARENAS[cfg.id].available = false;
+    // a variante de horário usa o mesmo .glb: some junto
+    for (const id of [cfg.id, ...(VARIANTS[cfg.id] || [])]) if (ARENAS[id]) ARENAS[id].available = false;
   })));
 }
 
@@ -57,12 +60,20 @@ export const ARENAS = {
     create: () => createGLBArena(ACAMPAMENTO),
   },
   igreja: {
-    name: 'Igreja Antiga',
+    name: 'Igreja Antiga (Noite)',
     description: 'A base dos Vampiros em Hexatombe: a nave gótica trancada, a mesa do banquete, a Dama da Culpa no altar, a névoa da membrana e a lua de sangue nos vitrais.',
     colors: ['#1a0406', '#2a2220', '#ff2a1a'],
     available: true,
     thumbCamera: { pos: [0, 3.2, 11], look: [0, 4, -16] }, // a nave até o altar
     create: () => createGLBArena(IGREJA),
+  },
+  igreja_dia: {
+    name: 'Igreja Antiga (Dia)',
+    description: 'A mesma nave dos Vampiros com o sol da tarde entrando pelos vitrais: a poeira dourada no ar, a mesa do banquete e o símbolo de sangue ainda aceso no altar.',
+    colors: ['#a8c0d8', '#4a4440', '#f0c880'],
+    available: true,
+    thumbCamera: { pos: [0, 3.2, 11], look: [0, 4, -16] },
+    create: () => createGLBArena(IGREJA_DIA),
   },
   palco: {
     name: 'O Palco do Anfitrião',
@@ -81,20 +92,36 @@ export const ARENAS = {
     create: () => createGLBArena(TIPORA),
   },
   ferro_velho: {
-    name: 'Ferro Velho',
-    description: 'A base dos Couraças em Hexatombe: o pátio entre pilhas de carcaças no fundo do cânion, a grua com a cabine do Miasma, o portão entre as torres e a lua cheia sobre o paredão.',
-    colors: ['#0c1a36', '#6a4a34', '#ff2a1a'],
+    name: 'Ferro Velho (Noite)',
+    description: 'A base dos Couraças em Hexatombe: o pátio entre pilhas de carcaças no fundo do cânion, a grua com a cabine do Miasma, o portão entre as torres e a lua de sangue sobre o paredão.',
+    colors: ['#22080c', '#6a4a34', '#ff2a1a'],
     available: true,
     thumbCamera: { pos: [3, 3.5, 15], look: [-2, 7, -30] }, // o pátio com o portão, a grua e a lua ao fundo
     create: () => createGLBArena(FERRO_VELHO),
   },
+  ferro_velho_dia: {
+    name: 'Ferro Velho (Dia)',
+    description: 'O desmanche dos Couraças sob o sol do cânion: as carcaças enferrujadas, a grua amarela, as torres do portão e a poeira subindo do pátio.',
+    colors: ['#6aa0dc', '#6a4a34', '#c89a20'],
+    available: true,
+    thumbCamera: { pos: [3, 3.5, 15], look: [-2, 7, -30] },
+    create: () => createGLBArena(FERRO_VELHO_DIA),
+  },
   circo: {
-    name: 'Circo dos Psikolera',
+    name: 'Circo dos Psikolera (Dia)',
     description: 'O velho Circo dos Irmãos Davo, tomado pela banda em Hexatombe: o pátio de terra entre a lona com a entrada em cara de demônio, as barracas de jogos, os canhões e o medidor de força, sob o sol da caatinga.',
     colors: ['#6aa0dc', '#c8a878', '#a82a1e'],
     available: true,
     thumbCamera: { pos: [2, 3, 14], look: [0, 6, -30] }, // a fachada de demônio com a lona listrada atrás
     create: () => createGLBArena(CIRCO),
+  },
+  circo_noite: {
+    name: 'Circo dos Psikolera (Noite)',
+    description: 'O circo da banda sob a lua de sangue: os cordões de lâmpadas acesos, a boca do demônio brilhando na lona e a caatinga no escuro.',
+    colors: ['#22080c', '#6a4a34', '#ffc070'],
+    available: true,
+    thumbCamera: { pos: [2, 3, 14], look: [0, 6, -30] },
+    create: () => createGLBArena(CIRCO_NOITE),
   },
 };
 
@@ -137,5 +164,5 @@ export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'palco', 'tipora', 'ferro_velho', 'circo', 'mansao_luta', 'escola_luta'];
+export const ARENA_ORDER = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ferro_velho';
