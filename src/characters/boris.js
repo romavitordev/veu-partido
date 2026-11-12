@@ -22,7 +22,7 @@ export default {
   element: 'morte',
   energyColor: MORTE,
   info: {
-    weapon: 'A gadanha (foice de cabo longo) e o Elmo Sangrento',
+    weapon: 'A foice dos Lukic (com o cabo da bengala do Damir) e o Elmo Sangrento',
     style: 'Linha de frente: gadanha larga de duas mãos, golpes que dobram de força e um elmo que segura bala',
     identity: 'O gêmeo grandão e sereno dos Lukic, que segue o irmão sem perguntar',
     tagline: 'Meu objetivo é matar o Diabo. Seja do lado de quem for.',

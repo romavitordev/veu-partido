@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.37.0 — Os Lukic e a Artemis
+
+### Adicionado
+- Damir Lukic, Boris Lukic e Artemis jogáveis (Escriptas), com retratos na página Sobre.
+- Gambá, o companheiro da Artemis: acompanha no ombro ou ao lado, se esconde no bolso e morde em alguns golpes e no "Gambá!".
+- Especial em Equipe Irmãos Lukic (Damir + Boris) e ligação de grupo dos Escriptas.
+- Versões de dia e de noite de lua de sangue para Ferro Velho, Circo dos Psikolera e Igreja; Orfanato Santa Menefreda à noite, com tempestade e Existidos.
+- Existido de Conhecimento (modelo novo).
+
+### Alterado
+- Mansão Endiabrada e Escola Nostradamus no modo de luta: paredes altas, teto, portas e objetos.
+- Tela de escolha do cenário em tela cheia, com miniaturas embaixo.
+- Orfanato: nome corrigido para Santa Menefreda.
+
 ## v4.36.0 — Ferro Velho e Circo dos Psikolera
 
 ### Adicionado

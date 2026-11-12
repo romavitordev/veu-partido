@@ -2,6 +2,16 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.37.0 — Os Lukic e a Artemis
+- NOVOS PERSONAGENS dos Escriptas: Damir Lukic (Conhecimento, bengala, Cartas do Destino, "Senta!", Blackout e Embaralhar), Boris Lukic (Morte, a foice dos Lukic, Elmo Sangrento e Escapar da Morte) e Artemis (Sangue, revólver Apache e rifle de precisão).
+- A Artemis luta junto com o GAMBÁ: ele anda no ombro dela ou ao lado, se esconde no bolso quando ela apanha, morde de vez em quando nos golpes dela e ataca quando ela chama "Gambá!".
+- Especial em Equipe Irmãos Lukic (Damir + Boris): cartas, "Senta.", os cortes do Boris e a Foice Amaldiçoada acesa para a ceifa final. Com 3 Escriptas na equipe, vale a ligação dos Escriptas.
+- Cenários de Hexatombe em versões de dia e de noite de lua de sangue (Ferro Velho, Circo dos Psikolera e Igreja).
+- Orfanato Santa Menefreda (nome corrigido) ganha a versão de noite de tempestade, com relâmpagos, janelas acesas e Existidos andando além da grade.
+- Mansão Endiabrada e Escola Nostradamus no modo de luta com paredes altas, teto, portas e objetos.
+- Nova tela de escolha do cenário, com o cenário em tela cheia e as miniaturas embaixo.
+- Damir, Boris e Artemis já aparecem no elenco da página Sobre.
+
 ## v4.36.0 — Ferro Velho e Circo dos Psikolera
 - NOVOS CENÁRIOS: Ferro Velho, a base dos Couraças em Hexatombe, e Circo dos Psikolera, o circo dos Irmãos Davo tomado pela banda.
 

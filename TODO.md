@@ -149,6 +149,14 @@
 - [x] **Raio do "???" (Labirinto com o elmo) segurável COM LIMITE** (pedido do dono, 2026-11-09): era infinito enquanto
       o □ ficasse apertado. Agora `startBeam` (`Fighter.js`) para ao soltar (depois do mínimo `minHold`) ou no `duration`;
       a CPU segura enquanto `holdChannel` está ligado (`CpuController.js`). Conferido: toque, segurar 1 s e segurar sem soltar.
+- [ ] **Polir no Blender MCP os modelos de Damir, Boris e Artemis** (pedido do dono, 2026-11-12). Os três saíram na v4.37.0
+      no nível "jogável primeiro", feitos só no headless (o MCP ao vivo não respondia). Fazer como no Tristan: rodar o
+      `char_*.py` pelo `tools/blender/mcp_build.py`, conferir em 4 vistas contra as referências da wiki e corrigir.
+      **Damir:** fedora (copa e vinco), gola drapeada, blazer mais justo, a mão tatuada. **Boris:** sobretudo (lapelas,
+      presilhas verdes, caimento), boina, barba e bigode em volume (hoje só textura), o braço tatuado. **Artemis:** cabelo
+      desgrenhado com franja (hoje em blocos), macacão dobrado na cintura com as mangas amarradas, bolsos, alças e
+      placas. Depois, refazer os retratos `public/sobre/elenco/<id>.webp` e conferir no jogo. Dar uma olhada também no
+      modelo do Gambá (`src/models/gamba.js`, procedural).
 - [x] **Regra: todo modelo novo pelo Blender MCP** (dono, 2026-11-09). `tools/blender/mcp_build.py` roda o `char_*.py`
       no Blender aberto (sem derrubar o servidor do addon) e recarrega todos os módulos da pasta. Kian, Fernando e
       Luciano (feitos só no headless) foram reconstruídos e conferidos em 4 vistas no MCP.

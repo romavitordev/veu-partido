@@ -1,7 +1,9 @@
 # Registro administrativo de alterações
 
-## Não lançado
+## v4.37.0 — Os Lukic e a Artemis
 
+- Versão: `VERSION` 4.36.0 → **4.37.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-12. Testes: `npm test` 83/83; `npm run check` e `vite build` ok.
+- Retratos `public/sobre/elenco/damir.webp`, `boris.webp` e `artemis.webp` (240 × 320, `renderPortraits` com o fundo padrão): os três entram no elenco da página Sobre (o card sai do ROSTER).
 - **Damir Lukic, Boris Lukic e Artemis** (Escriptas, Calamidade; pedido do dono): três personagens novos (`src/characters/damir.js`, `boris.js`, `artemis.js`), modelos pelo Builder (`tools/blender/char_*.py` → `public/models/*.glb`), rostos em `models/textures.js`, armas em `models/weapons.js` (`gadanha` refeita pela referência do dono, `bengalaDamir`, `caderninho`, `apache`, `elmoSangrento`), props em `models/props.js`, falas e vitórias em `config/dialogues.js`, vozes, agarrões. Tipos novos: `blackout` e `gambaCall` (`combat/abilities.js`); `command` aceita `orders` ("SENTA!"); `teleportBehind` com `vanishFx: 'blood'`; passivas `escapeDeath`, `devour` e `companionAttack`; carta de projétil `card`. IA: regras para `gambaCall` e `blackout` (`ai/CpuController.js`).
 - **Companheiro da Artemis** (`combat/companion.js` + `models/gamba.js`): o Gambá fica preso ao rig da dona, alterna ombro/chão a cada 6–13 s, se esconde no bolso em KO/derrubada/agarrão/atordoado, morde no ○ com 30% de chance (intervalo 6 s) e no "Gambá!" (dano, sangramento, atordoa). Pensado para servir depois à Mia e ao Lupi.
 - **Ligações de equipe:** dupla `irmaos_lukic` (coreografia em `combat/teamSpecials.js`) e grupo `escriptas` (min 3). `tools/check-roster.mjs`: o "Amaldiçoar Arma" só exige sangramento quando o elemento é Sangue.

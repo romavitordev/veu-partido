@@ -984,7 +984,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ## BORIS LUKIC
 
-*O gêmeo grandão e sereno dos Lukic, que segue o irmão sem perguntar* · arma: A gadanha (foice de cabo longo) e o Elmo Sangrento
+*O gêmeo grandão e sereno dos Lukic, que segue o irmão sem perguntar* · arma: A foice dos Lukic (com o cabo da bengala do Damir) e o Elmo Sangrento
 
 ### Físico (○ / B)
 
