@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.38.0 — A loja da Aghata
+
+### Adicionado
+- Outro Lado: menu do modo com moedas e tentativa; loja da Aghata para as melhorias permanentes (globais), com falas dela.
+- Melhorias Precisão, Baú Farto e Ressurreição; DEVOLVER TUDO devolve as moedas gastas.
+- Gacha de personagens com vitrine de 6, chances por personagem e roleta animada; compra direta continua.
+- Rifle de precisão próprio da Artemis.
+
+### Alterado
+- Telas do Outro Lado (entrada, jogadores, formato, dificuldade, dados, backup, confirmações, resultado) em cartões.
+- Chefes punem quem só aperta botão; Degolificada se solta de combos e entra em fúria; moedas por dificuldade.
+- Modelos de Damir, Boris e Artemis polidos pela arte oficial; gadanha, Foice Amaldiçoada, bengala e revólver Apache refeitos.
+- Artemis passa a comum e Damir/Boris a raros na loja; pontos antigos de melhoria convertidos em moedas.
+
 ## v4.37.0 — Os Lukic e a Artemis
 
 ### Adicionado

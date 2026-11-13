@@ -1,6 +1,6 @@
 # Registro administrativo de alterações
 
-## Não lançado — Outro Lado reformulado
+## v4.38.0 — A loja da Aghata (Outro Lado reformulado)
 
 - **As outras telas do Outro Lado no visual novo** (pedido do dono, 2026-11-13): a entrada (LOCAL/ONLINE), SOLO ou
   MULTIPLAYER, SOZINHO ou EM EQUIPE, DIFICULDADE (caveiras, descrição e o multiplicador de moedas em selo), DADOS, BACKUP,

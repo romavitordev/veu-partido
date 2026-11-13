@@ -2,6 +2,14 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.38.0 — A loja da Aghata
+- OUTRO LADO REFORMULADO: menu novo do modo com as moedas, a tentativa em andamento e um botão para CONTINUAR ou COMEÇAR; as outras telas (local ou online, solo ou multiplayer, sozinho ou em equipe, dificuldade, dados) viraram cartões com explicação de cada opção.
+- A LOJA DA AGHATA: as melhorias permanentes agora são compradas no balcão dela, que comenta cada compra. As melhorias valem para TODOS os personagens. Os pontos antigos viraram moedas.
+- Três melhorias novas: Precisão (chance de crítico), Baú Farto (baús com mais itens) e RESSURREIÇÃO, a mais cara do jogo: uma vez por tentativa, você volta com metade da vida. E DEVOLVER TUDO: desfaz as compras e devolve cada moeda para montar outra estratégia.
+- GACHA de personagens: uma vitrine com 6 personagens e a chance de cada um, giro de ● 150 com uma roleta que passa pelos retratos (às vezes o lendário passa raspando). Ou compre direto.
+- Chefes mais espertos: quem só aperta botão é empurrado para longe; a Degolificada se solta dos combos e entra em fúria no fim. Cada dificuldade dá mais ou menos moedas.
+- Damir, Boris e Artemis com os modelos polidos (cores e roupas da arte oficial), e as armas refeitas: a gadanha e a Foice Amaldiçoada do Boris, a bengala do Damir, o revólver Apache e um rifle de precisão novo para a Artemis.
+
 ## v4.37.0 — Os Lukic e a Artemis
 - NOVOS PERSONAGENS dos Escriptas: Damir Lukic (Conhecimento, bengala, Cartas do Destino, "Senta!", Blackout e Embaralhar), Boris Lukic (Morte, a foice dos Lukic, Elmo Sangrento e Escapar da Morte) e Artemis (Sangue, revólver Apache e rifle de precisão).
 - A Artemis luta junto com o GAMBÁ: ele anda no ombro dela ou ao lado, se esconde no bolso quando ela apanha, morde de vez em quando nos golpes dela e ataca quando ela chama "Gambá!".
