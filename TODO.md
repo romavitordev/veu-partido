@@ -149,7 +149,9 @@
 - [x] **Raio do "???" (Labirinto com o elmo) segurável COM LIMITE** (pedido do dono, 2026-11-09): era infinito enquanto
       o □ ficasse apertado. Agora `startBeam` (`Fighter.js`) para ao soltar (depois do mínimo `minHold`) ou no `duration`;
       a CPU segura enquanto `holdChannel` está ligado (`CpuController.js`). Conferido: toque, segurar 1 s e segurar sem soltar.
-- [ ] **Polir no Blender MCP os modelos de Damir, Boris e Artemis** (pedido do dono, 2026-11-12). Os três saíram na v4.37.0
+- [x] **Polir no Blender MCP os modelos de Damir, Boris e Artemis** (pedido do dono, 2026-11-12; 1ª passada feita em
+      2026-11-13 no MCP ao vivo contra os banners de Calamidade: cores, gola-cachecol e broche do Damir, sobretudo cinza do
+      Boris, peitilho e alças do macacão da Artemis; o resto da lista abaixo segue como refinamento opcional). Os três saíram na v4.37.0
       no nível "jogável primeiro", feitos só no headless (o MCP ao vivo não respondia). Fazer como no Tristan: rodar o
       `char_*.py` pelo `tools/blender/mcp_build.py`, conferir em 4 vistas contra as referências da wiki e corrigir.
       **Damir:** fedora (copa e vinco), gola drapeada, blazer mais justo, a mão tatuada. **Boris:** sobretudo (lapelas,
@@ -157,6 +159,16 @@
       desgrenhado com franja (hoje em blocos), macacão dobrado na cintura com as mangas amarradas, bolsos, alças e
       placas. Depois, refazer os retratos `public/sobre/elenco/<id>.webp` e conferir no jogo. Dar uma olhada também no
       modelo do Gambá (`src/models/gamba.js`, procedural).
+- [x] **Outro Lado reformulado** (pedido do dono, 2026-11-12, não lançado): melhorias globais por moedas, poderes
+      rebalanceados, Super Difícil e Aniquilação, anti-spam dos chefes (Repulsão), Degolificada com fúria e explosão
+      quando encurralada, loja com gacha (vitrine de 6 que troca a cada 4 h, giro só ×1), roleta animada, 3 melhorias novas (Ressurreição a ● 15.000) e DEVOLVER TUDO, menu novo com DADOS escondido e a loja da Aghata nas
+      Melhorias. Detalhes no CHANGELOG-ADMIN ("Não lançado").
+- [ ] **Calibrar a economia do Outro Lado com a bateria** (PROPOSTA a medir): renda por dungeon em cada dificuldade
+      contra os preços (giro 150, comum 250 … lendário 1600, melhorias 120–250 × grau).
+- [ ] **Render maior da Aghata para a loja** (o `sobre/elenco/aghata.webp` tem 240 × 320 e fica mole em tela grande).
+- [ ] **Próximo personagem: um dos PSIKOLERA** (pedido do dono, 2026-11-12), DEPOIS do polimento dos 3 Escriptas acima.
+      Os instrumentos musicais modificados são as ARMAS (como em Hexatombe). Anotações em `lore/EQUIPES-HEXATOMBE.md`
+      (ainda falta ler a página de cada membro dos Psikolera, Vampiros e Transtornados).
 - [x] **Regra: todo modelo novo pelo Blender MCP** (dono, 2026-11-09). `tools/blender/mcp_build.py` roda o `char_*.py`
       no Blender aberto (sem derrubar o servidor do addon) e recarrega todos os módulos da pasta. Kian, Fernando e
       Luciano (feitos só no headless) foram reconstruídos e conferidos em 4 vistas no MCP.

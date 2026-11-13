@@ -1551,3 +1551,172 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
   #home .logo .tag, #home .logo .fanmade { display: none; }
   #home .press, html body.booting #home .boot { position: absolute; bottom: 13vh; margin-top: 0; z-index: 3; }
 }
+
+/* OUTRO LADO — o balcão da Aghata (Melhorias) e a loja com gacha (2026-11-12) */
+@keyframes ptSay { from { transform: translateY(4px) scale(.97); opacity: .3; } to { transform: none; opacity: 1; } }
+.pve-tree .pt-tile.cant:not(.max) i { opacity: .5; }
+
+.pve-unlock .pu-tabs { display: flex; gap: 6px; }
+.pve-unlock .pu-tabs button { flex: 1; padding: 8px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 20px; letter-spacing: .08em; color: #a89cc8; background: #15122a; border: 2px solid #3a3458; }
+.pve-unlock .pu-tabs button.sel { color: #ffd84a; background: linear-gradient(#3a2c5c, #1d1934); border-color: #8a7440; }
+.pve-unlock .pu-tabs button.on { border-color: #ffd84a; box-shadow: 0 0 12px #f2c23055; }
+.pve-unlock .pu-gtop { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; font-size: 12px; color: #c8c0e0; }
+.pve-unlock .pu-gtop b { color: #ffd84a; }
+.pve-unlock .pu-odds i { font-style: normal; font-weight: 700; }
+.pve-unlock .pu-sun { color: #ffc23a; margin-left: 6px; }
+.pve-unlock .pu-banner { grid-template-columns: repeat(3, 1fr); max-height: none; }
+.pve-unlock .pu-tile { border-color: color-mix(in srgb, var(--c) 55%, #000); }
+.pve-unlock .pu-tile.r-lendario { background: linear-gradient(#5a4210, #1a1630 70%); box-shadow: inset 0 0 14px #ffc23a55; }
+.pve-unlock .pu-tile.r-epico { background: linear-gradient(#3e1e5a, #1a1630 70%); }
+.pve-unlock .pu-tile.r-raro { background: linear-gradient(#173a5a, #1a1630 70%); }
+.pve-unlock .pu-tile em { color: var(--c); }
+.pve-unlock .pu-tile:not(.locked) em { color: #7dffb0; }
+.pve-unlock .pt-info { border-color: var(--c, #4a4270); }
+.pve-unlock .pu-rar { font-size: 15px; letter-spacing: .1em; margin-left: 6px; }
+.pve-unlock .pt-buy.on { outline: 3px solid #ffd84a; }
+.pve-unlock .pu-gacha { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.pve-unlock .pu-result { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: radial-gradient(circle, color-mix(in srgb, var(--c) 35%, transparent), #050306ee 70%); cursor: pointer; animation: puIn .35s ease-out; }
+.pve-unlock .pu-result[hidden] { display: none; }
+.pve-unlock .pu-result > div { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.pve-unlock .pu-result img { width: 120px; height: 120px; object-fit: cover; object-position: 50% 12%; border-radius: 6px; border: 3px solid var(--c); box-shadow: 0 0 30px var(--c); animation: puSpin .6s ease-out; }
+.pve-unlock .pu-result span { font-weight: 800; letter-spacing: .2em; color: var(--c); font-size: 13px; }
+.pve-unlock .pu-result b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 34px; color: #fff; letter-spacing: .05em; }
+.pve-unlock .pu-result small { color: #e8e0cc; font-weight: 700; }
+.pve-unlock .pu-result em { font-size: 11px; color: #8a84a8; }
+@keyframes puIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes puSpin { from { transform: rotateY(540deg) scale(.4); } to { transform: none; } }
+@media (max-width: 620px) { .pve-unlock .pu-banner { grid-template-columns: repeat(3, 1fr); } .pve-tree .pt-clerk img { width: 60px; height: 60px; } }
+
+/* a LOJA DA AGHATA: a tela de Melhorias inteira (2026-11-12) */
+.pve-shop { --clerk: clamp(170px, 27vw, 360px); --cx: clamp(8px, 5vw, 140px); position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 30% 35%, #3a1c16 0%, #1c0c0c 55%, #070304 100%); justify-content: flex-end; padding-right: max(16px, 4vw); }
+.pve-shop .ps-room { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, #0000 0 118px, #00000040 118px 122px), linear-gradient(#24120e, #120707 62%); }
+.pve-shop .ps-shelf { position: absolute; left: 3%; width: 46%; height: 9%; display: flex; align-items: flex-end; justify-content: space-around; border-bottom: 10px solid #3e2414; box-shadow: 0 12px 18px #0008; }
+.pve-shop .ps-shelf.s1 { top: 10%; } .pve-shop .ps-shelf.s2 { top: 25%; } .pve-shop .ps-shelf.s3 { top: 40%; }
+.pve-shop .ps-shelf i { width: 22px; height: 60%; border-radius: 6px 6px 3px 3px; background: linear-gradient(#5a6a4888, #1e2a1acc); border: 1px solid #0008; box-shadow: inset 0 4px 6px #fff2; }
+.pve-shop .ps-shelf i:nth-child(3n) { height: 85%; width: 16px; background: linear-gradient(#7a1a2a99, #2a060ccc); }
+.pve-shop .ps-shelf i:nth-child(4n) { height: 40%; width: 34px; border-radius: 3px; background: linear-gradient(#6a4a26, #2e1c0c); }
+.pve-shop .ps-shelf i:nth-child(5n) { width: 26px; height: 55%; border-radius: 50% 50% 4px 4px; background: radial-gradient(circle at 40% 30%, #c8e0ff55, #2a3a5acc); }
+.pve-shop .ps-sign { position: absolute; top: 2.5%; left: 6%; padding: 4px 14px; font-family: 'Bebas Neue', Impact, sans-serif; letter-spacing: .14em; font-size: clamp(14px, 2vw, 22px); color: #e0204a; background: #120708; border: 2px solid #4a1a1a; transform: rotate(-1.5deg); text-shadow: 0 0 10px #e0204a88; }
+.pve-shop .ps-candle { position: absolute; top: -34px; width: 10px; height: 34px; border-radius: 2px; background: linear-gradient(#efe4cc, #b8a888); }
+.pve-shop .ps-candle::after { content: ''; position: absolute; left: 50%; top: -16px; width: 10px; height: 16px; transform: translateX(-50%); border-radius: 50% 50% 40% 40%; background: radial-gradient(circle at 50% 70%, #fff6c0, #ff9a30 55%, #0000 70%); box-shadow: 0 0 40px 18px #ff8a2a33; animation: psFlame 1.6s ease-in-out infinite alternate; }
+.pve-shop .ps-candle.c1 { left: 3%; } .pve-shop .ps-candle.c2 { left: 5%; top: -24px; height: 24px; } .pve-shop .ps-candle.c3 { left: 44%; }
+@keyframes psFlame { from { transform: translateX(-50%) scale(1, 1); opacity: .9; } to { transform: translateX(-46%) scale(.9, 1.12); opacity: 1; } }
+.pve-shop .ps-desk { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 31%; background: linear-gradient(#5a3418, #3a200e 18%, #24130a); border-top: 6px solid #7a4a22; box-shadow: 0 -10px 30px #0009; }
+.pve-shop .ps-clerk { position: absolute; left: var(--cx); bottom: 19%; width: var(--clerk); display: flex; flex-direction: column; align-items: center; z-index: 1; }
+.pve-shop .ps-clerk img { width: 100%; aspect-ratio: 3 / 4; object-fit: contain; filter: drop-shadow(0 10px 20px #000c); transform: rotate(calc(var(--look, 0) * 3deg)) translateX(calc(var(--look, 0) * 6px)); transition: transform .3s ease-out; -webkit-mask-image: linear-gradient(#000 78%, #0000 96%); mask-image: linear-gradient(#000 78%, #0000 96%); }
+.pve-shop .ps-clerk > b { margin-bottom: 4px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 18px; letter-spacing: .2em; color: #ff6a86; text-shadow: 0 2px 6px #000; }
+.pve-shop .ps-clerk .pt-say { position: relative; align-self: stretch; margin: 0 0 10px; padding: 10px 14px; border-radius: 10px; background: #f4ece0; color: #2a1416; font-size: 15px; font-style: italic; line-height: 1.4; box-shadow: 0 6px 18px #0008; }
+.pve-shop .ps-clerk .pt-say::before { content: ''; position: absolute; left: 50%; bottom: -9px; transform: translateX(-50%); border: 9px solid transparent; border-bottom: 0; border-top-color: #f4ece0; }
+.pve-shop .ps-panel { position: absolute; right: max(16px, 3vw); top: 50%; transform: translateY(-50%); z-index: 2; width: min(560px, calc(100vw - var(--clerk) - var(--cx) - 40px)); background: linear-gradient(#1d1934f2, #110e1ff2); }
+@media (max-width: 640px) {
+  .pve-shop .ps-panel { position: relative; right: auto; top: auto; transform: none; width: calc(100% - 16px); }
+  .pve-shop { justify-content: center; padding: 0; align-items: flex-end; }
+  .pve-shop .ps-clerk { left: 8px; bottom: auto; top: 8px; width: 110px; }
+  .pve-shop .ps-clerk .pt-say { position: fixed; left: 126px; right: 12px; top: 14px; font-size: 13px; }
+  .pve-shop .ps-clerk .pt-say::before { left: -9px; top: 50%; bottom: auto; transform: translateY(-50%); border: 9px solid transparent; border-left: 0; border-right-color: #f4ece0; }
+  .pve-shop .ps-panel { max-height: calc(100% - 150px); margin-bottom: 8px; }
+}
+
+/* OUTRO LADO — o menu do modo (2026-11-12) */
+.pve-hub { display: flex; align-items: center; justify-content: center; padding: 16px; background: radial-gradient(ellipse at 50% 30%, #2a0f1acc, #060307ee 70%); font-family: Inter, system-ui, sans-serif; color: #e8e2d4; }
+.pve-hub button { font: inherit; color: inherit; cursor: pointer; }
+.pve-hub .ph-wrap { width: min(720px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.pve-hub .ph-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.pve-hub .ph-top small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .3em; color: #b06a7a; }
+.pve-hub h1 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: clamp(44px, 8vw, 72px); line-height: .9; letter-spacing: .06em; color: #f4ece0; text-shadow: 0 0 30px #e0204a55; }
+.pve-hub .ph-coins { display: flex; align-items: baseline; gap: 6px; padding: 10px 16px; border-radius: 10px; background: #120a0ccc; border: 1px solid #8a7440; box-shadow: 0 0 24px #f2c23022; }
+.pve-hub .ph-coins i { font-style: normal; color: #ffc040; font-size: 20px; }
+.pve-hub .ph-coins b { font-size: 30px; font-weight: 800; color: #ffd84a; font-variant-numeric: tabular-nums; }
+.pve-hub .ph-coins small { font-size: 12px; letter-spacing: .1em; color: #c8a24a; }
+.pve-hub .ph-warn { margin: 0; padding: 10px 14px; border-radius: 8px; background: #3a2a0acc; border: 1px solid #c8a24a; font-size: 13px; }
+.pve-hub .ph-card { display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 12px; background: linear-gradient(120deg, #2a1220e6, #140a10e6); border: 1px solid #ffffff1a; box-shadow: 0 18px 40px #000a; }
+.pve-hub .ph-card img { flex: none; width: 92px; height: 92px; object-fit: cover; object-position: 50% 12%; border-radius: 10px; border: 2px solid #e0204a88; background: #0a0608; }
+.pve-hub .ph-run { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.pve-hub .ph-run small { font-size: 11px; font-weight: 700; letter-spacing: .22em; color: #b06a7a; }
+.pve-hub .ph-run b { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.25; }
+.pve-hub .ph-card.empty .ph-run b { font-size: 17px; }
+.pve-hub .ph-run span { font-size: 13px; color: #c8bfb0; }
+.pve-hub .ph-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.pve-hub .ph-tags em { font-style: normal; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 99px; background: #ffffff12; }
+.pve-hub .ph-tags em.d { background: #e0204a33; color: #ff8aa0; }
+.pve-hub .ph-main { flex: none; padding: 14px 22px; border-radius: 10px; border: 0; font-family: 'Bebas Neue', Impact, sans-serif !important; font-size: 26px !important; letter-spacing: .08em; color: #1a0606 !important; background: linear-gradient(#ffd84a, #e0a020); box-shadow: 0 6px 20px #f2c23044; transition: transform .12s, box-shadow .12s; }
+.pve-hub .ph-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.pve-hub .ph-grid button { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 16px; border-radius: 10px; background: #160c12d9; border: 1px solid #ffffff1a; text-align: left; transition: border-color .12s, transform .12s, background .12s; }
+.pve-hub .ph-grid b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 22px; letter-spacing: .06em; color: #f4ece0; }
+.pve-hub .ph-grid small { font-size: 12px; color: #a89c90; }
+.pve-hub .ph-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #8a8078; }
+.pve-hub .ph-sm { display: flex; gap: 6px; }
+.pve-hub .ph-sm button { padding: 6px 12px; border-radius: 6px; background: transparent; border: 1px solid #ffffff22; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #a89c90; }
+.pve-hub .on { outline: none; border-color: #ffd84a !important; transform: translateY(-2px); }
+.pve-hub .ph-grid button.on, .pve-hub .ph-sm button.on { background: #2a1a10e6; color: #ffd84a; }
+.pve-hub .ph-main.on { box-shadow: 0 0 0 3px #fff8, 0 8px 28px #f2c23088; }
+.pve-hub button:hover { border-color: #ffd84a88; }
+@media (max-width: 560px) { .pve-hub .ph-card { flex-wrap: wrap; } .pve-hub .ph-main { width: 100%; } .pve-hub .ph-coins b { font-size: 24px; } }
+.pve-unlock [hidden] { display: none !important; }
+
+/* o banner do gacha (referência visual do dono, 2026-11-12): destaque grande + grade com a chance de cada um; giro só ×1 */
+.pve-unlock .pu-gacha { padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #3a1630, #1a1030 45%, #0e1a34); border: 2px solid #ffc23a88; box-shadow: inset 0 0 40px #0008; }
+.pve-unlock .pu-gtop { align-items: center; }
+.pve-unlock .pu-gtop h3 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 28px; letter-spacing: .06em; color: #ffd84a; text-shadow: 2px 2px 0 #6a3a00; }
+.pve-unlock .pu-gtop > span { font-size: 13px; }
+.pve-unlock .pu-bbody { display: flex; gap: 10px; align-items: stretch; }
+.pve-unlock .pu-hero { position: relative; flex: 0 0 32%; min-height: 230px; border-radius: 6px; overflow: hidden; background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c, #ffc23a) 45%, transparent), #120a1c 70%), repeating-conic-gradient(from 0deg at 50% 45%, #ffffff10 0 8deg, #0000 8deg 16deg); border: 2px solid var(--c, #ffc23a); }
+.pve-unlock .pu-hero img { position: absolute; inset: 0 0 46px; width: 100%; height: calc(100% - 46px); object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 6px 12px #000c); }
+.pve-unlock .pu-hero > div { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 8px; display: flex; flex-direction: column; align-items: center; text-align: center; background: linear-gradient(#0000, #000c 40%); }
+.pve-unlock .pu-hero span { font-size: 10px; font-weight: 800; letter-spacing: .16em; color: var(--c, #ffc23a); }
+.pve-unlock .pu-hero b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 24px; color: #fff; line-height: 1; }
+.pve-unlock .pu-hero small { font-size: 11px; color: #d8d0c0; font-style: italic; }
+.pve-unlock .pu-bbody .pu-banner { flex: 1; align-content: start; }
+.pve-unlock .pu-banner .pu-tile em { font-size: 12px; }
+.pve-unlock .pu-odds { font-size: 12px; text-align: center; }
+.pve-unlock .pu-gacha ~ .pt-info .pt-buy { font-size: 26px; padding: 12px 22px; }
+@media (max-width: 620px) { .pve-unlock .pu-bbody { flex-direction: column; } .pve-unlock .pu-hero { min-height: 180px; } }
+
+/* a ROLETA do gacha (2026-11-12) */
+.pve-unlock .pu-reel { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; border-radius: 8px; background: radial-gradient(circle, #2a1a40ee, #050306f5 75%); animation: puIn .2s ease-out; }
+.pve-unlock .pu-rwin { position: relative; width: 100%; height: 170px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #0000, #000 18%, #000 82%, #0000); mask-image: linear-gradient(90deg, #0000, #000 18%, #000 82%, #0000); }
+.pve-unlock .pu-strip { position: absolute; top: 14px; left: 0; display: flex; gap: 8px; will-change: transform; }
+.pve-unlock .pu-rcard { flex: none; width: 104px; height: 140px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 5px; border-radius: 6px; background: linear-gradient(color-mix(in srgb, var(--c) 35%, #120a1c), #120a1c); border: 2px solid var(--c); box-shadow: 0 0 10px color-mix(in srgb, var(--c) 50%, transparent); }
+.pve-unlock .pu-rcard.r-lendario { box-shadow: 0 0 22px #ffc23a, inset 0 0 18px #ffc23a66; }
+.pve-unlock .pu-rcard img { width: 100%; height: 104px; object-fit: cover; object-position: 50% 12%; border-radius: 4px; background: #0a0610; }
+.pve-unlock .pu-rcard b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.pve-unlock .pu-mark { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; transform: translateX(-50%); background: linear-gradient(#ffd84a, #fff, #ffd84a); box-shadow: 0 0 14px #ffd84a, 0 0 30px #ffd84a88; border-radius: 2px; }
+.pve-unlock .pu-mark::before, .pve-unlock .pu-mark::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); border: 9px solid transparent; }
+.pve-unlock .pu-mark::before { top: 0; border-top-color: #ffd84a; }
+.pve-unlock .pu-mark::after { bottom: 0; border-bottom-color: #ffd84a; }
+.pve-unlock .pu-rcard.win { transform: scale(1.12); transition: transform .25s ease-out; box-shadow: 0 0 34px var(--c), 0 0 70px var(--c); z-index: 1; }
+.pve-unlock .pu-reel.done.r-lendario, .pve-unlock .pu-reel.done.r-epico { animation: puFlash .9s ease-out; }
+@keyframes puFlash { 0% { box-shadow: inset 0 0 0 #fff0; } 30% { box-shadow: inset 0 0 120px color-mix(in srgb, var(--c, #ffc23a) 80%, #fff); } 100% { box-shadow: inset 0 0 0 #fff0; } }
+.pve-unlock .pu-reel.r-lendario { --c: #ffc23a; } .pve-unlock .pu-reel.r-epico { --c: #b45cff; }
+
+/* loja da Aghata: DEVOLVER TUDO e a relíquia (2026-11-13) */
+.pve-tree .pt-btns button.pt-refund.armed { color: #1a0606; background: linear-gradient(#ffb04a, #e06a20); border-color: #ffd84a; }
+.pve-tree .pt-tile.relic { background: linear-gradient(120deg, #4a3410, #1a1630 60%); border-color: #c89a3a; box-shadow: inset 0 0 18px #ffc23a33; }
+.pve-tree .pt-tile.relic i { color: #ffe9a8; border-color: #ffc23a; }
+.pve-tree .pt-tile.relic.max { box-shadow: 0 0 18px #ffc23a88, inset 0 0 18px #ffc23a66; }
+
+/* OUTRO LADO: as telas de ESCOLHA no visual do menu do modo (2026-11-13) */
+.pve-choice .ph-wrap { width: min(760px, 100%); }
+.pve-choice h1 { font-size: clamp(38px, 6.5vw, 60px); }
+.pve-choice .pc-sub { margin: -4px 0 0; font-size: 14px; line-height: 1.45; color: #c8bfb0; }
+.pve-choice .pc-note { padding: 12px 16px; border-radius: 10px; background: #140a10d9; border: 1px solid #ffffff1a; font-size: 13px; line-height: 1.55; color: #d8cfc0; }
+.pve-choice .pc-note .pve-box { all: unset; display: block; }
+.pve-choice .pc-note b { color: #fff; }
+.pve-choice .pc-grid { display: grid; grid-template-columns: repeat(var(--cols, auto-fit), minmax(220px, 1fr)); gap: 10px; }
+.pve-choice .pc-grid button { position: relative; display: flex; align-items: center; gap: 14px; min-height: 84px; padding: 16px 18px; border-radius: 12px; text-align: left; background: linear-gradient(120deg, #2a1220e6, #140a10e6); border: 1px solid #ffffff1a; box-shadow: 0 12px 30px #0008; transition: border-color .12s, transform .12s, background .12s; }
+.pve-choice .pc-grid button.wide { grid-column: 1 / -1; }
+.pve-choice .pc-grid i { flex: none; display: grid; place-items: center; min-width: 52px; height: 52px; padding: 0 6px; border-radius: 10px; font-style: normal; font-size: 22px; letter-spacing: -.1em; color: #ffd84a; background: #0a0608; border: 1px solid #8a744088; }
+.pve-choice .pc-grid span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pve-choice .pc-grid b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 26px; letter-spacing: .06em; line-height: 1; color: #f4ece0; }
+.pve-choice .pc-grid small { font-size: 13px; line-height: 1.4; color: #b0a498; }
+.pve-choice .pc-grid em { position: absolute; top: 10px; right: 12px; font-style: normal; font-size: 11px; font-weight: 800; letter-spacing: .1em; padding: 3px 8px; border-radius: 99px; color: #ffd84a; background: #ffd84a1a; border: 1px solid #ffd84a55; }
+.pve-choice .pc-grid button.on { background: linear-gradient(120deg, #3a1a14f0, #1c0e0cf0); box-shadow: 0 0 0 1px #ffd84a, 0 14px 34px #f2c23033; }
+.pve-choice .pc-grid button.on b { color: #ffd84a; }
+.pve-choice .pc-grid button.gold i { background: linear-gradient(#ffd84a, #e0a020); color: #1a0606; border-color: #ffd84a; }
+.pve-choice .pc-grid button.danger i { color: #ff6a80; border-color: #e0204a88; }
+.pve-choice .pc-grid button.danger.on { box-shadow: 0 0 0 1px #ff4a6a, 0 14px 34px #e0204a44; }
+.pve-choice .pc-grid button.danger.on b { color: #ff8aa0; }
+.pve-choice .pc-grid button.disabled { opacity: .4; filter: grayscale(.6); }
+.pve-choice .ph-foot { justify-content: flex-end; }
+.pve-choice .ph-sm button.on { color: #ffd84a; background: #2a1a10e6; }
+@media (max-width: 560px) { .pve-choice .pc-grid { grid-template-columns: 1fr; } .pve-choice .pc-grid button { min-height: 0; } }

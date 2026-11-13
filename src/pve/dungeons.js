@@ -423,16 +423,21 @@ export function charTune(id) {
   return PVE_CHAR_TUNE[id] || null;
 }
 
+// DIFICULDADES (pedido do dono, 2026-11-12: "fases estão muito fáceis, no normal pelo menos; deve ter Super Difícil e
+// Aniquilação"). hp/dealt: vida e dano dos inimigos e do chefe; coin: multiplica as moedas (drops e recompensa do chefe);
+// rage: o chefe entra em FÚRIA mais cedo; counter: quantos golpes seguidos o chefe aguenta antes de REPELIR (anti-spam,
+// pve/bossRules.js). warnMult: quanto tempo os olhos avisam antes do bote do Espreitador. PROPOSTA: os números.
 export const PVE_DIFFICULTIES = {
-  // warnMult: quanto tempo os olhos avisam antes do bote do Espreitador
-  easy: { label: 'Fácil', cpu: 'normal', minion: 'easy', hp: 0.9, dealt: 0.8, drop: 1.25, warnMult: 1.3 },
-  normal: { label: 'Normal', cpu: 'hard', minion: 'normal', hp: 1, dealt: 1, drop: 1, warnMult: 1 },
-  hard: { label: 'Difícil', cpu: 'veryhard', minion: 'hard', hp: 1.15, dealt: 1.15, drop: 0.8, warnMult: 0.75 },
+  easy: { label: 'Fácil', cpu: 'normal', minion: 'normal', hp: 1, dealt: 0.95, drop: 1.2, warnMult: 1.25, coin: 0.7, counter: 9 },
+  normal: { label: 'Normal', cpu: 'veryhard', minion: 'hard', hp: 1.25, dealt: 1.3, drop: 1, warnMult: 0.9, coin: 1, counter: 7 },
+  hard: { label: 'Difícil', cpu: 'veryhard', minion: 'veryhard', hp: 1.55, dealt: 1.65, drop: 0.85, warnMult: 0.7, coin: 1.4, counter: 6 },
+  superhard: { label: 'Super Difícil', cpu: 'superhard', minion: 'veryhard', hp: 1.9, dealt: 2.05, drop: 0.7, warnMult: 0.55, coin: 1.9, counter: 5, rage: true },
+  annihilation: { label: 'Aniquilação', cpu: 'superhard', minion: 'superhard', hp: 2.4, dealt: 2.6, drop: 0.55, warnMult: 0.45, coin: 2.6, counter: 4, rage: true, annihilation: true },
 };
 
 // a ordem das dificuldades: ao terminar TODAS as dungeons ainda não jogadas, a tentativa volta à primeira um degrau acima
-// (pedido do dono, 2026-11-05); depois do Difícil sobe o "calor" (Difícil +1, +2…: +20% de vida e dano cada)
-export const DIFF_ORDER = ['easy', 'normal', 'hard'];
+// (pedido do dono, 2026-11-05); depois da Aniquilação sobe o "calor" (+1, +2…: +20% de vida e dano cada)
+export const DIFF_ORDER = ['easy', 'normal', 'hard', 'superhard', 'annihilation'];
 export function diffLabel(run) {
   const base = (PVE_DIFFICULTIES[run.difficulty] || PVE_DIFFICULTIES.normal).label;
   return run.heat ? `${base} +${run.heat}` : base;

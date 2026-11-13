@@ -3183,68 +3183,99 @@ export function poolCue() {
 // frente (−Y, ~1,1 m) até a cabeça.
 // cursed: a mesma foice ACESA (o Damir esfregou a bengala: o ouro e a escrita brilham) — Pela Família Lukic e a dupla
 export function gadanha({ cursed = false } = {}) {
+  // polimento 2026-11-13 contra as artes da wiki ("Gadanha de Boris" e "Foice de Boris em Calamidade"):
+  // a GADANHA comum é toda de aço escuro, cabo fino com uma luva mais grossa perto da mão e a lâmina estreita em gancho;
+  // o círculo dos Lukic, os espinhos, a escrita e o cabo da bengala são só da FOICE AMALDIÇOADA (cursed)
   const g = new THREE.Group();
-  const shaft = part(new THREE.CylinderGeometry(0.02, 0.024, 1.56, 10), 0x1c1c20);
+  const steel = toon(0x2c2c32, { emissive: 0x08080a });
+  const edgeM = toon(0x8a8c94, { emissive: 0x141418 });
+  const shaft = part(new THREE.CylinderGeometry(0.018, 0.022, 1.56, 10), 0x1a1a1e);
   shaft.position.y = -0.32;
   g.add(shaft);
-  const ferrule = part(new THREE.CylinderGeometry(0.024, 0.02, 0.07, 10), 0xb08a3a);
+  // a luva do cabo (a parte mais grossa onde a mão de trás segura)
+  const sleeve = part(new THREE.CylinderGeometry(0.026, 0.026, 0.34, 10), 0, { mat: steel });
+  sleeve.position.y = 0.12;
+  g.add(sleeve);
+  const ferrule = part(new THREE.CylinderGeometry(0.024, 0.02, 0.07, 10), cursed ? 0xc89a3a : 0x3a3a40);
   ferrule.position.y = 0.43;
   g.add(ferrule);
-  const gold = cursed ? glowMat(0xf2c230, 0.95) : toon(0xc89a3a, { emissive: 0x2a1c06 });
-  const bladeMat = cursed ? glowMat(0xe0b040, 0.9) : toon(0xa8843c, { emissive: 0x1e1406 });
-  const ink = cursed ? glowMat(0xfff4d0, 0.95) : toon(0xd8d0b8);
+  const gold = cursed ? glowMat(0xf2c230, 0.95) : steel;
   // a cabeça: no desenho x = para a FRENTE do Boris, y = de volta para a pegada, z = espessura
   const hd = new THREE.Group();
   hd.rotation.y = Math.PI / 2;
   hd.position.y = -1.1;
   g.add(hd);
+  const collar = part(new THREE.CylinderGeometry(0.03, 0.026, 0.06, 10), 0, { mat: steel });
+  collar.position.y = -1.08;
+  g.add(collar);
   const sh = new THREE.Shape();
-  sh.moveTo(0.0, -0.04);
-  sh.quadraticCurveTo(0.12, -0.1, 0.2, 0.02); // o ombro da lâmina, saindo do círculo
-  sh.quadraticCurveTo(0.29, 0.35, 0.25, 0.86); // o dorso descendo até a ponta (para baixo)
-  sh.quadraticCurveTo(0.17, 0.42, 0.06, 0.12); // o fio, virado para o cabo
-  sh.lineTo(0.0, -0.04);
-  hd.add(part(extrude(sh, 0.012), 0, { mat: bladeMat, outline: !cursed }));
-  // a escrita gravada ao longo da lâmina, dos dois lados
-  for (let k = 0; k < 14; k++) {
-    const t = 0.08 + k * 0.05;
-    const x = 0.12 + 0.11 * t;
-    for (const z of [-0.008, 0.02]) {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(0.012 + (k % 3) * 0.006, 0.022, 0.002), ink);
-      m.position.set(x + ((k * 7) % 3) * 0.008, t, z);
+  if (cursed) {
+    // a lâmina LONGA da foice, descendo paralela ao cabo: escura, com a escrita acesa
+    sh.moveTo(0.0, -0.04);
+    sh.quadraticCurveTo(0.12, -0.1, 0.2, 0.02);
+    sh.quadraticCurveTo(0.27, 0.4, 0.22, 0.9);
+    sh.quadraticCurveTo(0.15, 0.44, 0.06, 0.12);
+    sh.lineTo(0.0, -0.04);
+  } else {
+    // a gadanha: lâmina estreita em gancho
+    sh.moveTo(0.0, -0.02);
+    sh.quadraticCurveTo(0.1, -0.06, 0.16, 0.04);
+    sh.quadraticCurveTo(0.2, 0.3, 0.17, 0.56);
+    sh.quadraticCurveTo(0.12, 0.28, 0.04, 0.08);
+    sh.lineTo(0.0, -0.02);
+  }
+  hd.add(part(extrude(sh, 0.01), 0, { mat: cursed ? toon(0x2a2418, { emissive: 0x140c04 }) : steel }));
+  // o fio claro da lâmina
+  const edge = new THREE.Shape();
+  if (cursed) { edge.moveTo(0.06, 0.12); edge.quadraticCurveTo(0.15, 0.44, 0.22, 0.9); edge.quadraticCurveTo(0.165, 0.46, 0.085, 0.16); }
+  else { edge.moveTo(0.04, 0.08); edge.quadraticCurveTo(0.12, 0.28, 0.17, 0.56); edge.quadraticCurveTo(0.135, 0.3, 0.06, 0.1); }
+  const e1 = part(extrude(edge, 0.012), 0, { mat: cursed ? glowMat(0xffe9a8, 0.9) : edgeM, outline: false });
+  e1.position.z = -0.001;
+  hd.add(e1);
+  if (cursed) {
+    // "Nostis omnia perdet omnia" em sigilos de Conhecimento, ao longo da lâmina, dos dois lados
+    const ink = glowMat(0xfff4d0, 0.95);
+    for (let k = 0; k < 16; k++) {
+      const t = 0.08 + k * 0.048;
+      const x = 0.15 + 0.06 * Math.sin(t * 2.6);
+      for (const z of [-0.008, 0.018]) {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(0.012 + (k % 3) * 0.006, 0.022, 0.002), ink);
+        m.position.set(x + ((k * 7) % 3) * 0.006, t, z);
+        hd.add(m);
+      }
+    }
+    // o CÍRCULO DOS LUKIC no topo e a coroa de espinhos abrindo para cima
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.016, 8, 24), gold);
+    ring.position.set(0.1, -0.06, 0.006);
+    hd.add(ring);
+    const inner = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.008, 6, 20), gold);
+    inner.position.set(0.1, -0.06, 0.008);
+    hd.add(inner);
+    const core = new THREE.Mesh(new THREE.CircleGeometry(0.064, 20), glowMat(0xffb830, 0.55));
+    core.position.set(0.1, -0.06, 0.004);
+    hd.add(core);
+    for (let k = 0; k < 5; k++) {
+      const a = -0.55 + k * 0.28;
+      const sp = new THREE.Shape();
+      sp.moveTo(-0.016, 0);
+      sp.lineTo(0, -0.14 - (k % 2) * 0.04);
+      sp.lineTo(0.016, 0);
+      const m = part(extrude(sp, 0.01), 0, { mat: toon(0x2a2418, { emissive: 0x2a1c06 }) });
+      m.position.set(0.1 + Math.sin(a) * 0.075, -0.06 - Math.cos(a) * 0.075, 0.001);
+      m.rotation.z = -a;
       hd.add(m);
     }
-  }
-  // o CÍRCULO DOS LUKIC no topo e a coroa de espinhos abrindo para cima
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.014, 8, 24), gold);
-  ring.position.set(0.1, -0.06, 0.006);
-  hd.add(ring);
-  const core = new THREE.Mesh(new THREE.CircleGeometry(0.06, 20), cursed ? glowMat(0xffd870, 0.8) : toon(0x4a3a18));
-  core.position.set(0.1, -0.06, 0.006);
-  hd.add(core);
-  for (let k = 0; k < 5; k++) {
-    const a = -0.5 + k * 0.28;
-    const sp = new THREE.Shape();
-    sp.moveTo(-0.014, 0);
-    sp.lineTo(0, -0.12 - (k % 2) * 0.03);
-    sp.lineTo(0.014, 0);
-    const m = part(extrude(sp, 0.01), 0, { mat: gold, outline: !cursed });
-    m.position.set(0.1 + Math.sin(a) * 0.07, -0.06 - Math.cos(a) * 0.07, 0.001);
-    m.rotation.z = -a;
-    hd.add(m);
-  }
-  // o CABO DA BENGALA do Damir, encaixado logo abaixo da cabeça, saindo para TRÁS como uma guarda
-  const grip = part(new THREE.BoxGeometry(0.03, 0.03, 0.03), 0x2a2420);
-  grip.position.set(0, 0.2, 0);
-  hd.add(grip);
-  const handle = part(new THREE.CylinderGeometry(0.016, 0.018, 0.13, 8), 0x2a2420);
-  handle.rotation.z = Math.PI / 2 - 0.35;
-  handle.position.set(-0.06, 0.18, 0);
-  hd.add(handle);
-  if (cursed) {
+    // o CABO DA BENGALA do Damir encaixado no cabo: a curva (o castão) saindo para trás, como uma guarda
+    const crook = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 0.26, 0), new THREE.Vector3(-0.05, 0.2, 0), new THREE.Vector3(-0.08, 0.13, 0), new THREE.Vector3(-0.07, 0.08, 0),
+    ]);
+    hd.add(part(new THREE.TubeGeometry(crook, 10, 0.014, 6, false), 0x141216));
+    const cap = part(new THREE.SphereGeometry(0.016, 8, 6), 0, { mat: toon(0xc8ccd4, { emissive: 0x16181c }) });
+    cap.position.set(-0.07, 0.08, 0);
+    hd.add(cap);
     for (let k = 0; k < 9; k++) { // os sigilos de Conhecimento correndo pelo cabo
       const s2 = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.03, 0.012), gold);
-      s2.position.set(0.024, -0.2 - k * 0.09, 0);
+      s2.position.set(0.022, -0.2 - k * 0.09, 0);
       s2.rotation.y = Math.PI / 2;
       g.add(s2);
     }
@@ -3295,28 +3326,42 @@ export function elmoSangrento() {
   return g;
 }
 
-// A BENGALA DO DAMIR (wiki "Damir Lukic", Arsenal): preta e fina, o castão de PRATA; esfregada, acende sigilos dourados
+// A BENGALA DO DAMIR (wiki "Damir Lukic", Arsenal; arte "Bengala de Damir em Combate"): preta, fina e levemente
+// curvada, com a ponteira de PRATA comprida e o castão de prata ANGULADO (tipo derby, saindo para o lado), não uma bola.
+// Esfregada, acende sigilos dourados
 export function bengalaDamir() {
   const g = new THREE.Group();
-  const silver = toon(0xc8ccd4, { emissive: 0x16181c });
-  const shaft = part(new THREE.CylinderGeometry(0.013, 0.01, 0.9, 8), 0x141216);
-  shaft.position.y = -0.43;
-  g.add(shaft);
-  const tip = part(new THREE.CylinderGeometry(0.012, 0.014, 0.035, 8), 0, { mat: silver });
-  tip.position.y = -0.88;
+  const silver = toon(0xd0d4dc, { emissive: 0x16181c });
+  const curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, -0.02, 0), new THREE.Vector3(0, -0.3, 0.012), new THREE.Vector3(0, -0.6, 0.016), new THREE.Vector3(0, -0.84, 0.006),
+  ]);
+  g.add(part(new THREE.TubeGeometry(curve, 16, 0.012, 8, false), 0x121014));
+  const tip = part(new THREE.CylinderGeometry(0.012, 0.011, 0.07, 8), 0, { mat: silver });
+  tip.position.set(0, -0.87, 0.004);
   g.add(tip);
-  const knob = part(new THREE.SphereGeometry(0.032, 12, 10), 0, { mat: silver });
-  knob.scale.set(1, 0.8, 1.2);
-  knob.position.set(0, 0.04, 0.012);
-  g.add(knob);
-  const collar = part(new THREE.CylinderGeometry(0.018, 0.016, 0.03, 10), 0, { mat: silver });
+  const collar = part(new THREE.CylinderGeometry(0.017, 0.015, 0.04, 10), 0, { mat: silver });
+  collar.position.y = 0.0;
   g.add(collar);
+  // o castão: uma cunha de prata que sobe e dobra para a frente (+z), afinando na ponta
+  const sh = new THREE.Shape();
+  sh.moveTo(-0.016, 0.0);
+  sh.lineTo(0.016, 0.0);
+  sh.quadraticCurveTo(0.02, 0.05, 0.03, 0.062);
+  sh.lineTo(0.1, 0.05);
+  sh.quadraticCurveTo(0.11, 0.06, 0.1, 0.07);
+  sh.quadraticCurveTo(0.03, 0.1, -0.012, 0.074);
+  sh.quadraticCurveTo(-0.022, 0.04, -0.016, 0.0);
+  const head = part(extrude(sh, 0.022), 0, { mat: silver });
+  head.rotation.y = -Math.PI / 2;
+  head.position.set(-0.011, 0.012, 0);
+  g.add(head);
   // os sigilos dourados (acendem quando ele amaldiçoa a bengala)
   const sig = new THREE.Group();
   const gold = glowMat(0xf2c230, 0.95);
   for (let k = 0; k < 8; k++) {
     const s = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.026, 0.01), gold);
-    s.position.set(Math.cos(k * 1.3) * 0.014, -0.12 - k * 0.085, Math.sin(k * 1.3) * 0.014);
+    const pt = curve.getPoint(0.12 + k * 0.1);
+    s.position.set(pt.x + Math.cos(k * 1.3) * 0.013, pt.y, pt.z + Math.sin(k * 1.3) * 0.013);
     sig.add(s);
   }
   sig.visible = false;
@@ -3349,33 +3394,44 @@ export function caderninho() {
   return g;
 }
 
-// O REVÓLVER APACHE DA ARTEMIS (wiki "Artemis", Arsenal): a empunhadura de SOQUEIRA (anéis para os dedos), o tambor de
-// revólver e a LÂMINA dobrável sob o cano curto — soca, corta e atira. Cano para −Y, como as outras armas de fogo
+// O REVÓLVER APACHE DA ARTEMIS (wiki "Artemis", Arsenal; arte "Pistola Apache da Artemis"): todo de aço escuro, a
+// empunhadura virou SOCO INGLÊS (anéis para os dedos), SEM cano (foi removido) e uma LÂMINA ondulada saindo para a
+// frente por baixo do tambor. Soca, corta e atira. Frente para −Y, como as outras armas de fogo
 export function apache() {
   const g = new THREE.Group();
-  const brass = toon(0xb0904a, { emissive: 0x1a1206 });
-  const dark = toon(0x222226);
+  const gun = toon(0x34363c, { emissive: 0x0a0a0c });
+  const dark = toon(0x1c1c20);
+  const blade = toon(0xb8bcc4, { emissive: 0x101214 });
   for (let k = 0; k < 4; k++) {
-    const r = part(new THREE.TorusGeometry(0.016, 0.005, 5, 12), 0, { mat: brass });
+    const r = part(new THREE.TorusGeometry(0.016, 0.0055, 6, 14), 0, { mat: gun });
     r.rotation.y = Math.PI / 2;
     r.position.set(0, 0.03, -0.035 + k * 0.026);
     g.add(r);
   }
-  const bar = part(new THREE.BoxGeometry(0.01, 0.014, 0.11), 0, { mat: brass });
-  bar.position.set(0, 0.01, 0.004);
+  const bar = part(new THREE.BoxGeometry(0.012, 0.016, 0.112), 0, { mat: gun });
+  bar.position.set(0, 0.008, 0.004);
   g.add(bar);
-  const drum = part(new THREE.CylinderGeometry(0.024, 0.024, 0.05, 8), 0, { mat: dark });
-  drum.position.set(0, -0.03, 0.03);
+  // a armação e o tambor, sem cano
+  const frame = part(new THREE.BoxGeometry(0.016, 0.07, 0.04), 0, { mat: gun });
+  frame.position.set(0, -0.02, 0.05);
+  g.add(frame);
+  const drum = part(new THREE.CylinderGeometry(0.024, 0.024, 0.05, 6), 0, { mat: dark });
+  drum.position.set(0, -0.035, 0.056);
   g.add(drum);
-  const barrel = part(new THREE.CylinderGeometry(0.008, 0.008, 0.08, 8), 0, { mat: dark });
-  barrel.position.set(0, -0.09, 0.04);
-  g.add(barrel);
+  const hammer = part(new THREE.BoxGeometry(0.008, 0.02, 0.012), 0, { mat: dark });
+  hammer.position.set(0, 0.014, 0.075);
+  hammer.rotation.x = -0.5;
+  g.add(hammer);
+  // a lâmina ondulada (kris), da frente do tambor para a frente
   const sh = new THREE.Shape();
-  sh.moveTo(0, 0); sh.lineTo(0.02, 0); sh.lineTo(0.012, -0.11); sh.lineTo(0, -0.08); sh.lineTo(0, 0);
-  const blade = part(extrude(sh, 0.004), 0, { mat: toon(0xc4c8cc, { emissive: 0x101214 }) });
-  blade.rotation.y = -Math.PI / 2;
-  blade.position.set(0, -0.04, 0.0);
-  g.add(blade);
+  const N = 10;
+  sh.moveTo(0, 0);
+  for (let k = 1; k <= N; k++) { const t = k / N; sh.lineTo(-0.012 * (1 - t) + 0.006 * Math.sin(t * 9), -t * 0.15); }
+  for (let k = N - 1; k >= 0; k--) { const t = k / N; sh.lineTo(0.012 * (1 - t) + 0.006 * Math.sin(t * 9), -t * 0.15); }
+  const bl = part(extrude(sh, 0.004), 0, { mat: blade });
+  bl.rotation.y = -Math.PI / 2;
+  bl.position.set(0.002, -0.06, 0.036);
+  g.add(bl);
   // as veias roxas da arma amaldiçoada com Energia (cânone; acendem no ritual: userData.veins)
   const veins = new THREE.Group();
   const purple = glowMat(0xb06aff, 0.95);
@@ -3389,7 +3445,58 @@ export function apache() {
   g.add(veins);
   g.userData.veins = veins;
   const muzzle = new THREE.Object3D();
-  muzzle.position.set(0, -0.13, 0.04);
+  muzzle.position.set(0, -0.065, 0.056); // sai da frente do tambor
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}
+
+// O RIFLE DE PRECISÃO DA ARTEMIS (arte "Rifle de precisão da Artemis"): todo preto e moderno — coronha vazada, punho de
+// pistola, CARREGADOR DE TAMBOR, empunhadura frontal, luneta, guarda-mão, alça de mira e cano fino com freio de boca.
+// Mesma orientação do sniper(): cano em −Y, +Z para cima
+export function rifleArtemis() {
+  const g = new THREE.Group();
+  const blk = toon(0x1e1e22, { emissive: 0x060608 });
+  const mid = toon(0x34363c, { emissive: 0x0a0a0c });
+  const box = (w, h, d, x, y, z, m = blk, rx = 0) => { const b = part(new THREE.BoxGeometry(w, h, d), 0, { mat: m }); b.position.set(x, y, z); b.rotation.x = rx; g.add(b); return b; };
+  // a coronha vazada
+  box(0.04, 0.24, 0.03, 0, 0.3, 0.035);
+  box(0.04, 0.24, 0.03, 0, 0.3, -0.045);
+  box(0.044, 0.03, 0.11, 0, 0.415, -0.005);
+  box(0.036, 0.1, 0.05, 0, 0.17, 0.0);
+  // a caixa da culatra e o trilho
+  box(0.05, 0.42, 0.07, 0, -0.04, 0.0, mid);
+  box(0.03, 0.4, 0.012, 0, -0.06, 0.042);
+  // o punho de pistola
+  box(0.032, 0.05, 0.1, 0, 0.1, -0.075, blk, 0.35);
+  // o carregador de TAMBOR (eixo x), com as nervuras
+  const drum = part(new THREE.CylinderGeometry(0.065, 0.065, 0.05, 16), 0, { mat: blk });
+  drum.rotation.z = Math.PI / 2;
+  drum.position.set(0, -0.04, -0.1);
+  g.add(drum);
+  for (let k = 0; k < 6; k++) { const r = new THREE.Mesh(new THREE.TorusGeometry(0.066, 0.003, 4, 20, Math.PI * 0.9), mid); r.rotation.y = Math.PI / 2; r.rotation.x = Math.PI * 0.55; r.position.set(-0.02 + k * 0.008, -0.04, -0.1); g.add(r); }
+  // a empunhadura frontal
+  box(0.028, 0.034, 0.08, 0, -0.2, -0.07, blk, -0.15);
+  // o guarda-mão
+  box(0.044, 0.22, 0.05, 0, -0.34, 0.0, mid);
+  // a luneta com os dois anéis
+  const scope = part(new THREE.CylinderGeometry(0.022, 0.022, 0.26, 12), 0, { mat: blk });
+  scope.position.set(0, -0.04, 0.085);
+  g.add(scope);
+  for (const [y, r] of [[0.1, 0.03], [-0.18, 0.032]]) { const c = part(new THREE.CylinderGeometry(r, r * 0.9, 0.05, 12), 0, { mat: blk }); c.position.set(0, y, 0.085); g.add(c); }
+  for (const y of [0.02, -0.1]) box(0.012, 0.012, 0.04, 0, y, 0.06);
+  // a alça de mira dobrada na frente do guarda-mão
+  box(0.008, 0.012, 0.05, 0, -0.47, 0.04, blk, 0.4);
+  // o cano fino e o freio de boca com as fendas
+  const barrel = part(new THREE.CylinderGeometry(0.01, 0.012, 0.5, 8), 0, { mat: blk });
+  barrel.position.y = -0.7;
+  g.add(barrel);
+  const brake = part(new THREE.CylinderGeometry(0.018, 0.018, 0.1, 10), 0, { mat: mid });
+  brake.position.y = -0.98;
+  g.add(brake);
+  for (let k = 0; k < 3; k++) box(0.04, 0.008, 0.012, 0, -0.95 - k * 0.025, 0, toon(0x0a0a0c));
+  const muzzle = new THREE.Object3D();
+  muzzle.position.y = -1.04;
   g.add(muzzle);
   g.userData.muzzle = muzzle;
   return g;

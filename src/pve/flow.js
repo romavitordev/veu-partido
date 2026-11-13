@@ -18,7 +18,12 @@ const allowedEverywhere = (id) => !pveBanned(byId(id)) && DUNGEON_ORDER.every((d
 import { PveTreeScreen } from './treeScreen.js';
 import { lockedMap, isUnlocked, buyChar, pveBanned } from './unlocks.js';
 import { PveUnlockScreen } from './unlockScreen.js';
+import { PveChoiceScreen } from './choiceScreen.js';
+import { PveHubScreen } from './hubScreen.js';
 import { fmtTime } from './pveHud.js';
+import { spin } from './economy.js';
+import { TREE } from './upgrades.js';
+import { AGHATA_LINES, pickLine, buyLine } from './aghataShop.js';
 import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath, exportPve, parseBackup, describePve } from './save.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -34,7 +39,7 @@ export function createPveFlow(ctx) {
   let net = null;
   const online = () => !!(game.net && net);
   const attempt = () => (online() ? net.attempt : data.attempt);
-  const snapshot = () => JSON.parse(JSON.stringify({ unlocked: data.unlocked || [], profiles: data.profiles || {}, coins: data.coins || 0 }));
+  const snapshot = () => JSON.parse(JSON.stringify({ unlocked: data.unlocked || [], profiles: data.profiles || {}, tree: data.tree || {}, coins: data.coins || 0 }));
 
   const extraBox = (html) => `<div class="pve-box">${html}</div>`;
 
@@ -55,61 +60,91 @@ export function createPveFlow(ctx) {
     return lines.join('<br>');
   }
 
-  function menu(state, title, options, { subtitle = '', extra = '' } = {}) {
+  // as telas locais do modo usam o visual do menu do Outro Lado (cartões); a sala e as telas ONLINE seguem no MenuScreen
+  // (toque em rede e dono do menu)
+  function menu(state, title, options, { subtitle = '', extra = '', cols = 0, coins = true } = {}) {
     endMatch();
     setOverlay(null, null);
-    setScreen(state, new MenuScreen(screens, { title, subtitle, options, audio, extra, clear: false }));
+    if (online() || state === 'pveonline') setScreen(state, new MenuScreen(screens, { title, subtitle, options, audio, extra, clear: false }));
+    else setScreen(state, new PveChoiceScreen(screens, { title, subtitle, options, audio, extra, cols, coins: coins ? data.coins || 0 : null }));
   }
 
   // ------------------------------------------------ ENTRADA (pedido do dono, 2026-11-06): LOCAL ou ONLINE
   function toEntry() {
     data = loadPve();
     game.mode = { kind: 'pve', cpu: true, team: false };
+    const a = data.attempt;
     menu('pveentry', 'OUTRO LADO', [
-      { id: 'local', label: 'LOCAL' },
-      { id: 'online', label: 'ONLINE' },
+      { id: 'local', label: 'LOCAL', icon: '⌂', desc: 'Neste computador: sozinho ou com mais um jogador em tela dividida. Aqui ficam a sua tentativa, a loja e as melhorias.', tag: a ? 'TENTATIVA SALVA' : '' },
+      { id: 'online', label: 'ONLINE', icon: '⇄', desc: 'Crie uma sala ou entre na de um amigo. Cada um joga na própria tela, com o próprio personagem.' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'LOCAL: sozinho ou com mais um jogador neste computador (tela dividida). ONLINE: crie uma sala ou entre na de um amigo.', extra: extraBox(summary()) });
+    ], { subtitle: 'Desça pelo Outro Lado, derrote os chefes e junte moedas para liberar personagens e melhorias.' });
   }
 
   // ------------------------------------------------ quantos jogadores (local)
   function toPlayers() {
     menu('pveplayers', 'QUANTOS JOGADORES?', [
-      { id: 'solo', label: 'SOLO' },
-      { id: 'multi', label: 'MULTIPLAYER (2 JOGADORES, TELA DIVIDIDA)' },
+      { id: 'solo', label: 'SOLO', icon: '①', desc: 'Só você, com a tela inteira.' },
+      { id: 'multi', label: 'MULTIPLAYER', icon: '②', desc: '2 jogadores neste computador, tela dividida: cada um com a própria câmera. O P2 usa o 2º controle ou o lado direito do teclado.', tag: 'TELA DIVIDIDA' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'No multiplayer cada um tem a própria câmera, metade da tela. O P2 joga no 2º controle (ou no lado direito do teclado). A tentativa, o nível e as melhorias são do grupo.' });
+    ], { subtitle: 'A tentativa, o nível e as melhorias são do grupo.' });
   }
 
   // ------------------------------------------------ HUB
   function toHub() {
     data = loadPve();
     game.mode = { kind: 'pve', cpu: true, team: false };
-    menu('pvehub', 'OUTRO LADO', [
-      { id: 'continue', label: 'CONTINUAR', disabled: !data.attempt },
-      { id: 'new', label: 'NOVA TENTATIVA' },
-      { id: 'tree', label: 'MELHORIAS PERMANENTES' },
-      { id: 'unlock', label: 'DESBLOQUEAR PERSONAGENS' },
-      { id: 'restart', label: 'REINICIAR CAMPANHA', disabled: !data.attempt && !data.campaign.runs },
-      { id: 'backup', label: 'BACKUP (EXPORTAR / IMPORTAR)' },
-      { id: 'wipe', label: 'APAGAR DADOS DO OUTRO LADO' },
+    endMatch();
+    setOverlay(null, null);
+    const a = data.attempt;
+    const d = a ? byId(a.charId) : null;
+    let warn = '';
+    if (data.loadedFrom === 'prev') warn = '⚠ O save estava corrompido: o jogo voltou para a cópia automática. O arquivo quebrado ficou guardado.';
+    else if (data.loadedFrom === 'broken') warn = '⚠ O save estava corrompido e não havia cópia: o jogo começou do zero. Se tiver um BACKUP, importe em DADOS.';
+    else if (data.migratedCoins && !data.migrateSeen) { warn = `As melhorias agora valem para TODOS os personagens. Os seus pontos antigos viraram ● ${data.migratedCoins} moedas.`; data.migrateSeen = true; save(); }
+    const info = {
+      coins: data.coins || 0,
+      campaign: data.campaign,
+      owned: ROSTER.length - lockedMap(data, ROSTER).size,
+      total: ROSTER.length,
+      treeRanks: Object.values(data.tree || {}).reduce((x, y) => x + y, 0),
+      warn,
+      attempt: a ? {
+        name: d ? d.name : a.charId,
+        portrait: portraits[a.charId] || '',
+        team: a.team && a.team.length ? a.team.map((id) => byId(id)?.name || id).join(' e ') : '',
+        p2: a.coop ? byId(a.coop.charId)?.name || a.coop.charId : '',
+        depth: a.depth, level: a.level, diff: diffLabel(a),
+      } : null,
+    };
+    setScreen('pvehub', new PveHubScreen(screens, { audio, info }));
+  }
+
+  // DADOS: o que mexe no save fica aqui dentro, longe do caminho (pedido do dono, 2026-11-12)
+  function toData() {
+    const c0 = data.campaign;
+    menu('pvedata', 'DADOS', [
+      { id: 'backup', label: 'BACKUP', icon: '⇩', desc: 'Exportar o progresso para um arquivo, ou importar um backup salvo.', wide: true },
+      { id: 'restart', label: 'REINICIAR CAMPANHA', icon: '↺', desc: 'Zera profundidade, chefes, mortes e a tentativa. Moedas, personagens e melhorias ficam.', disabled: !data.attempt && !data.campaign.runs },
+      { id: 'wipe', label: 'APAGAR TUDO', icon: '✕', desc: 'Apaga TODO o progresso do Outro Lado. Pede confirmação.', tone: 'danger' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'Masmorras do Outro Lado: entre, sobreviva, derrote o chefe e vá mais fundo. (LOCAL)', extra: extraBox(summary()) });
-    if (!data.attempt) game.screen.index = 1;
+    ], { subtitle: `Guardar, reiniciar ou apagar o progresso deste modo. O resto do jogo não muda. Recorde: profundidade ${c0.bestDepth} · chefes ${c0.bossKills} · mortes ${c0.deaths}.`, cols: 2 });
+    game.screen.index = 3;
     game.screen.render();
   }
 
   function confirmBox(state, title, text, yes) {
-    menu(state, title, [{ id: 'no', label: 'NÃO' }, { id: 'yes', label: yes }], { extra: extraBox(text) });
+    const danger = state === 'pvewipe' || state === 'pveconfirm' || state === 'pverestart';
+    menu(state, title, [{ id: 'no', label: 'NÃO, VOLTAR' }, { id: 'yes', label: yes, icon: danger ? '!' : '✓', tone: danger ? 'danger' : 'gold', wide: true }], { extra: text });
   }
 
   // ------------------------------------------------ sozinho ou em equipe (o time entra só como ASSISTÊNCIA)
   function toFormat() {
     menu('pveformat', 'COMO VAI ENTRAR?', [
-      { id: 'solo', label: 'SOZINHO' },
-      { id: 'team', label: 'EM EQUIPE (LÍDER + 2 ASSISTÊNCIAS)' },
+      { id: 'solo', label: 'SOZINHO', icon: '◆', desc: 'Um personagem só. Sem assistência: tudo depende de você.' },
+      { id: 'team', label: 'EM EQUIPE', icon: '◆◆◆', desc: 'Um líder que luta e 2 assistências chamadas no botão (não dá para trocar). O Espreitador copia o time inteiro.', tag: 'LÍDER + 2' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: online() ? 'EXPEDIÇÃO ONLINE: cada um escolhe o próprio personagem e joga com a própria câmera. Em equipe, os outros dois são assistência.' : 'Em equipe, só o líder luta: os outros dois são chamados como assistência (não dá para trocar). O Espreitador copia o time inteiro.' });
+    ], { subtitle: online() ? 'EXPEDIÇÃO ONLINE: cada um escolhe o próprio personagem e joga com a própria câmera. Em equipe, os outros dois são assistência.' : 'Escolha antes de ver os personagens.' });
   }
 
   // ------------------------------------------------ escolha do personagem (só o P1) → dificuldade
@@ -124,7 +159,6 @@ export function createPveFlow(ctx) {
   // o main.js chama quando a seleção devolve um lutador no modo pve
   function onSelect(pick) {
     const def = pick.p1;
-    if (game.pvePurpose === 'tree') { toTree(def.id); return; }
     const team = pick.teams ? pick.teams[0].slice(1).map((d) => d.id) : [];
     // coop: o P2 e as assistências dele
     const coop = game.pveCoop && pick.p2 ? { charId: pick.p2.id, team: pick.teams && pick.teams[1] ? pick.teams[1].slice(1).map((d) => d.id) : [] } : null;
@@ -141,21 +175,28 @@ export function createPveFlow(ctx) {
   }
 
   function toDifficulty() {
-    menu('pvediff', 'DIFICULDADE', Object.entries(PVE_DIFFICULTIES).map(([id, d]) => ({ id: `diff:${id}`, label: d.label.toUpperCase() })).concat([{ id: 'back', label: 'VOLTAR' }]), {
-      subtitle: 'Muda a força dos inimigos e do chefe e a chance de cura. O chefe desafia mesmo no Fácil.',
+    const DIFF_DESC = {
+      easy: 'Para conhecer o modo. Inimigos mais fracos e mais cura.',
+      normal: 'O equilíbrio pensado para o modo.',
+      hard: 'Inimigos mais fortes, menos cura, chefe pune mais.',
+      superhard: 'O chefe entra em fúria cedo e castiga quem só aperta botão.',
+      annihilation: 'O limite. Para quem já tem a loja da Aghata quase toda.',
+    };
+    const fmt = (n) => String(n).replace('.', ',');
+    const order = Object.keys(PVE_DIFFICULTIES);
+    menu('pvediff', 'DIFICULDADE', Object.entries(PVE_DIFFICULTIES).map(([id, d]) => ({ id: `diff:${id}`, label: d.label.toUpperCase(), icon: '☠'.repeat(order.indexOf(id) + 1), desc: DIFF_DESC[id] || '', tag: `● ×${fmt(d.coin)}`, tone: d.rage ? 'danger' : id === 'normal' ? 'gold' : '' })).concat([{ id: 'back', label: 'VOLTAR' }]), {
+      cols: 1,
+      subtitle: 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. No Super Difícil e na Aniquilação o chefe entra em fúria mais cedo e pune quem só aperta botão.',
     });
     game.screen.index = 1;
     game.screen.render();
   }
 
-  // ------------------------------------------------ árvore permanente (por personagem)
-  function toTree(charId, index = 0) {
-    game.pveTreeChar = charId;
-    const p = profileOf(data, charId);
-    const d = byId(charId);
+  // ------------------------------------------------ melhorias permanentes (GLOBAIS: valem para todos, só moedas)
+  function toTree(index = 0) {
     endMatch();
     setOverlay(null, null);
-    setScreen('pvetree', new PveTreeScreen(screens, { audio, charName: d ? d.name : charId, profile: p, index, data }));
+    setScreen('pvetree', new PveTreeScreen(screens, { audio, index, data, portrait: portraits.aghata || '' }));
   }
 
   // ------------------------------------------------ a loja de personagens (moedas dos baús)
@@ -217,8 +258,8 @@ export function createPveFlow(ctx) {
     let failed = null;
     try {
       dungeon = new Dungeon({
-        renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: profileOf(d1, def.id), dungeonId: D.id,
-        coopDef, coopTeam: coopDef ? (a.coop.team || []).map(byId).filter(Boolean) : [], coopProfile: coopDef ? profileOf(d2, coopDef.id) : null,
+        renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: { tree: d1.tree || {} }, dungeonId: D.id,
+        coopDef, coopTeam: coopDef ? (a.coop.team || []).map(byId).filter(Boolean) : [], coopProfile: coopDef ? { tree: d2.tree || {} } : null,
         net: net0 ? { slot: game.net.slot } : null,
         onEnd: (r) => onDungeonEnd(dungeon, r),
       });
@@ -285,7 +326,7 @@ export function createPveFlow(ctx) {
       const depth = a ? a.depth : 1;
       endAttemptByDeath(data);
       save();
-      menu('pveresult', titles[0], [{ id: 'new', label: 'NOVA TENTATIVA' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO' }, { id: 'main', label: 'MENU PRINCIPAL' }], {
+      menu('pveresult', titles[0], [{ id: 'new', label: 'NOVA TENTATIVA', icon: '↻', desc: 'Escolher o personagem e descer de novo.', tone: 'gold' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.' }, { id: 'main', label: 'MENU PRINCIPAL', icon: '✕', desc: 'Sair do modo.' }], {
         subtitle: `A tentativa acabou na profundidade ${depth}. As melhorias da tentativa se perderam; o nível e os pontos do personagem ficam.`,
         extra: extraBox(statLine),
       });
@@ -305,9 +346,10 @@ export function createPveFlow(ctx) {
       a.dungeon = adv.dungeon;
       save();
       const p = profileOf(data, a.charId);
+      const tree = Object.values(data.tree || {}).reduce((x, y) => x + y, 0);
       const unlockLine = `<br>Moedas: +${s.coins || 0} nesta dungeon · ${data.coins} no total`;
-      menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER (PROFUNDIDADE ${a.depth})` }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO' }], {
-        subtitle: `O Espreitador caiu. Personagem: nível ${p.level} do Outro Lado, ${p.points} ponto(s) para gastar nas melhorias permanentes.`,
+      menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER · PROFUNDIDADE ${a.depth}`, icon: '▼', desc: 'Seguir com a tentativa. A próxima dungeon é mais forte.', tone: 'gold', wide: true }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'A tentativa fica salva aqui: compre e continue depois.', wide: true }], {
+        subtitle: `O chefe caiu. ${esc(byId(a.charId)?.name || a.charId)}: nível ${p.level} do Outro Lado · melhorias permanentes: ${tree} grau(s) (compre mais em MELHORIAS com as moedas).`,
         extra: extraBox(`${statLine}${recordLine}${unlockLine}${adv.looped ? `<br><b>Não há território novo: você volta ao primeiro, agora no ${esc(diffLabel(a))}.</b>` : ''}<br>A próxima dungeon é mais forte (+12% de vida e dano dos inimigos por profundidade). As melhorias da tentativa continuam.`),
       });
       return;
@@ -339,12 +381,15 @@ export function createPveFlow(ctx) {
       else if (c === 'new') {
         if (data.attempt) confirmBox('pveconfirm', 'NOVA TENTATIVA?', 'A tentativa atual será perdida (o nível e os pontos dos personagens ficam).', 'SIM, COMEÇAR OUTRA');
         else toPlayers();
-      } else if (c === 'tree') pickCharacter('tree');
+      } else if (c === 'tree') toTree();
       else if (c === 'unlock') toUnlock();
-      else if (c === 'backup') toBackup();
-      else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. O nível, os pontos e a árvore de cada personagem ficam.', 'SIM, REINICIAR');
-      else if (c === 'wipe') confirmBox('pvewipe', 'APAGAR DADOS?', 'Apaga TODO o progresso do Outro Lado: níveis, pontos, a campanha e a tentativa. O resto do jogo não muda.', 'SIM, APAGAR');
+      else if (c === 'data') toData();
       else if (c === 'back') toEntry();
+    } else if (state === 'pvedata') {
+      if (c === 'backup') toBackup();
+      else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. As moedas, os personagens comprados e as melhorias ficam.', 'SIM, REINICIAR');
+      else if (c === 'wipe') confirmBox('pvewipe', 'APAGAR TUDO?', `Apaga TODO o progresso do Outro Lado: ● ${data.coins || 0} moedas, os personagens comprados, as melhorias, a campanha e a tentativa. Não dá para desfazer (a não ser com um BACKUP).`, 'SIM, APAGAR TUDO');
+      else toHub();
     } else if (state === 'pveconfirm') {
       if (c === 'yes') toPlayers();
       else toHub();
@@ -354,12 +399,12 @@ export function createPveFlow(ctx) {
       else if (online()) toMainMenu(); // sai da expedição online (o main.js fecha a conexão)
       else toPlayers();
     } else if (state === 'pverestart') {
-      if (c === 'yes') { data.campaign = emptyData().campaign; data.attempt = null; save(); }
-      toHub();
+      if (c === 'yes') { data.campaign = emptyData().campaign; data.attempt = null; save(); toHub(); }
+      else toData();
     } else if (state === 'pvebackup') {
       if (c === 'export') exportBackup();
       else if (c === 'import') pickBackupFile();
-      else toHub();
+      else toData();
     } else if (state === 'pveimport') {
       if (c === 'yes' && pendingImport) {
         data = pendingImport.data;
@@ -373,8 +418,8 @@ export function createPveFlow(ctx) {
       if (online()) toMainMenu();
       else toHub();
     } else if (state === 'pvewipe') {
-      if (c === 'yes') { clearPve(); data = loadPve(); audio.play('ko', { volume: 0.5 }); }
-      toHub();
+      if (c === 'yes') { clearPve(); data = loadPve(); audio.play('ko', { volume: 0.5 }); toHub(); }
+      else toData();
     } else if (state === 'pvediff') {
       if (c === 'back') toFormat();
       else if (c.startsWith('diff:') && online()) {
@@ -391,16 +436,35 @@ export function createPveFlow(ctx) {
         startDungeon();
       }
     } else if (state === 'pvetree') {
-      const charId = game.pveTreeChar;
       if (c === 'back') toHub();
-      else if (c === 'refund') { refundTree(data, charId); save(); audio.play('confirm'); game.screen.render(); }
+      else if (c === 'refundAsk') game.screen.say(pickLine(AGHATA_LINES.refundAsk));
+      else if (c === 'refund') {
+        const back = refundTree(data);
+        save();
+        audio.play('confirm');
+        game.screen.say(pickLine(AGHATA_LINES.refund).replace('{n}', back));
+        game.screen.render();
+      }
       else if (c.startsWith('buy:')) {
-        if (buyRank(data, charId, c.slice(4))) { save(); audio.play('levelUp', { volume: 0.6 }); }
-        else audio.play('denied');
+        const id = c.slice(4);
+        const node = TREE.find((n) => n.id === id);
+        // a Aghata comenta a escolha no balcão (pve/aghataShop.js)
+        if (buyRank(data, id)) { save(); audio.play('levelUp', { volume: 0.6 }); game.screen.say(buyLine(id)); }
+        else {
+          audio.play('denied');
+          game.screen.say(pickLine(node && (data.tree?.[id] || 0) >= node.ranks ? AGHATA_LINES.max : AGHATA_LINES.poor));
+        }
         game.screen.render();
       }
     } else if (state === 'pveunlock') {
       if (c === 'back') toHub();
+      else if (c === 'spin') {
+        const res = spin(data, game.screen.banner);
+        if (!res) { audio.play('denied'); return true; }
+        save();
+        audio.play(res.dup ? 'confirm' : 'levelUp', { volume: res.rarity === 'lendario' || res.rarity === 'epico' ? 1 : 0.7 });
+        game.screen.showSpin(res);
+      }
       else if (c.startsWith('buy:')) {
         if (buyChar(data, c.slice(4))) { save(); audio.play('levelUp', { volume: 0.7 }); }
         else audio.play('denied');
@@ -423,9 +487,9 @@ export function createPveFlow(ctx) {
   let pendingImport = null;
   function toBackup(msg = '') {
     const d = describePve(data);
-    menu('pvebackup', 'BACKUP DO OUTRO LADO', [
-      { id: 'export', label: 'EXPORTAR (BAIXAR UM ARQUIVO)' },
-      { id: 'import', label: 'IMPORTAR DE UM ARQUIVO' },
+    menu('pvebackup', 'BACKUP', [
+      { id: 'export', label: 'EXPORTAR', icon: '⇩', desc: 'Baixa um arquivo .json com todo o progresso do Outro Lado.' },
+      { id: 'import', label: 'IMPORTAR', icon: '⇧', desc: 'Traz um backup de volta. Pede confirmação antes de substituir.' },
       { id: 'back', label: 'VOLTAR' },
     ], {
       subtitle: 'Guarde o seu progresso do Outro Lado num arquivo (moedas, personagens comprados, níveis, árvore e a tentativa) e traga de volta neste ou em outro computador.',

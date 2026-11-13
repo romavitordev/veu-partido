@@ -1,5 +1,42 @@
 # Registro administrativo de alterações
 
+## Não lançado — Outro Lado reformulado
+
+- **As outras telas do Outro Lado no visual novo** (pedido do dono, 2026-11-13): a entrada (LOCAL/ONLINE), SOLO ou
+  MULTIPLAYER, SOZINHO ou EM EQUIPE, DIFICULDADE (caveiras, descrição e o multiplicador de moedas em selo), DADOS, BACKUP,
+  as confirmações e as telas de resultado agora usam cartões grandes com ícone e uma linha explicando cada opção, o saldo de
+  moedas no canto, e VOLTAR/NÃO pequenos no rodapé (`src/pve/choiceScreen.js`). Apagar/reiniciar ficam em vermelho, e a
+  tela de DADOS continua abrindo com VOLTAR selecionado. As telas da sala ONLINE seguem no menu antigo (toque em rede).
+
+- **As armas dos Escriptas polidas** (2026-11-13, contra as artes do Arsenal na wiki):
+  - **Gadanha do Boris:** agora toda de aço escuro, cabo fino com a luva perto da mão e a lâmina estreita em gancho (o
+    dourado, o círculo e a escrita eram da Foice e saíram dela).
+  - **Foice Amaldiçoada:** lâmina longa e escura descendo ao lado do cabo, com a escrita acesa e o fio claro; o círculo dos
+    Lukic com o anel interno e os espinhos; o CABO DA BENGALA encaixado agora é um gancho de verdade; ponteira dourada.
+  - **Bengala do Damir:** levemente curvada, ponteira de prata comprida e o castão de prata angulado (era uma bola).
+  - **Revólver Apache da Artemis:** aço escuro, sem cano (como no cânone), soqueira, tambor e a lâmina ondulada para a frente.
+  - **Rifle de Precisão da Artemis:** modelo próprio (`rifleArtemis`), preto e moderno: coronha vazada, punho, carregador
+    de tambor, empunhadura frontal, luneta, alça de mira e freio de boca (antes usava o rifle de madeira genérico).
+- **Escriptas polidos no Blender MCP ao vivo** (2026-11-13, comparados com os banners de Calamidade da wiki):
+  - **Damir:** blazer índigo escuro e mangas menos infladas; a gola vinho sobe enrolada no pescoço como cachecol, com mais
+    dobras; fedora mais alto e beliscado na frente, em roxo escuro; o broche dos Lukic na lapela.
+  - **Boris:** sobretudo no cinza do banner (verde só de leve), mangas mais finas, calça marrom mais escura.
+  - **Artemis:** o macacão agora vestido (peitilho até o peito, bolso, alças cáqui cruzando nas costas, fivelas) em vez de
+    dobrado na cintura; oliva mais escuro e faixas cáqui nas laterais das pernas.
+
+- **Melhorias permanentes GLOBAIS** (pedido do dono, 2026-11-12: "fixas, valem para todos, um pouco caras"): `data.tree` no save (antes uma árvore por personagem com pontos). Só se compra com moedas; cada grau custa `TREE[].cost × (grau + 1)` (`save.js treeCoinCost`, PROPOSTA: Vida 160, Dano/Defesa 200, Sanidade 150, Velocidade 180, Recuperação 220, Crescimento 120, Sorte 140 e a nova **Ganância** 250, +6% de moedas por grau). Sem pontos e sem devolver (`refundTree` saiu). Migração única (`migrateTree`): cada ponto/grau antigo vira 100 moedas e o hub avisa uma vez. O chefe dá +1 nível do personagem e as moedas da recompensa (`economy.js bossBounty`).
+- **3 melhorias novas e DEVOLVER TUDO** (pedido do dono, 2026-11-13): **Precisão** (300, 3 graus, +2% de crítico cada; o Golpe Certeiro do baú soma por cima — `critChest`), **Baú Farto** (280, 3 graus, +8% de chance de baú com mais itens; `mods.chestLuck` em `openChest`) e **Ressurreição** (● 15.000, 1 grau, PROPOSTA "absurda de cara": uma vez por tentativa, ao cair volta com 50% da vida, 2,5 s intocável e uma onda que empurra os inimigos — `Dungeon.resurrect`; o gancho de morte encadeia Segundo Fôlego → Ressurreição e se rearma, já que o `Fighter` limpa o gancho antes de chamar). **DEVOLVER TUDO** na loja da Aghata (`save.js refundTree`): zera a árvore e devolve cada moeda gasta para montar outra build, como no Vampire Survivors; o 1º aperto mostra quanto volta e a Aghata pede confirmação, o 2º devolve. Falas novas dela para as três e para o reembolso.
+- **Poderes de nível rebalanceados** (`upgrades.js`): Vigor 10%, Fúria 8%, Foco 9%, Mira 10%, Couraça −6%, Sanguessuga 3%, Caçador 4%; sinergias menores; piso do dano recebido `MIN_TAKEN = 0,72` (nem empilhando passa de −28%). O chefe ganha +4% de dano por nível da tentativa (até +80%, `Dungeon.beginBossFight`), como no Vampire Survivors.
+- **Dificuldades** (`dungeons.js PVE_DIFFICULTIES`): Normal mais duro (CPU muito difícil, vida 1,25×, dano 1,3×) e duas novas, **Super Difícil** (1,9×/2,05×, CPU super difícil, fúria antecipada) e **Aniquilação** (2,4×/2,6×, cura 0,55×, olhos do Espreitador avisam em 45% do tempo). Cada uma multiplica as moedas (0,7× no Fácil até 2,6× na Aniquilação; `Dungeon.giveCoins`). A tela de dificuldade mostra o multiplicador. `DIFF_ORDER` estende o ciclo.
+- **Anti-spam dos chefes** (novo `pve/bossRules.js`, `BossPressure`): o chefe conta os golpes numa janela de 2,4 s; passou do limite da dificuldade (`counter`: 9 no Fácil … 4 na Aniquilação), avisa com um anel vermelho (0,42 s, sem reagir) e REPELE — empurrão, dano, atordoamento de 0,55 s e 0,9 s intocável; dica na primeira vez. Ligado ao Espreitador. As habilidades do Espreitador ganham `superArmor` (aguentam 4 golpes leves no começo; golpes fortes, lançamentos e especiais ainda interrompem).
+- **Degolificada** (`degolificada.js`): **Explosão de cabelo** quando encurralada (quer fugir, a parede não deixa, alguém perto por 0,45 s): empurra todos com dano e atordoamento (não dá para defender) e desliza para o meio do bunker quase intocável (`Dungeon.bossHome`). **FÚRIA** ao achar todas as provas (no Super Difícil e na Aniquilação, já com uma faltando): recargas ×0,72, dano ×1,2, velocidade ×1,25, Defesa de cabelo mais rápida e o aviso "FÚRIA".
+- **Loja de personagens com GACHA** (novo `pve/economy.js`, `unlockScreen.js` refeita): raridades Comum 250 / Raro 500 / Épico 900 / Lendário 1600 (`unlocks.js priceOf`). Aba GACHA: vitrine de 6 (2 comuns, 2 raros, 1 épico, 1 lendário; pedido do dono: "no máximo uns 6") que troca a cada 4 horas, a mesma em todo computador (semente = janela de 4 h); giro 150, chances 62/28/9,9/0,1% (lendário 0,5% aos domingos); repetido devolve 60. Visual no estilo da referência do dono (banner com o lendário da vez em destaque, de corpo inteiro; a grade com a chance de CADA personagem; relógio da troca); só giro ×1, sem giro ×10. **Roleta** ao girar (pedido do dono): uma fita de retratos da vitrine corre pela janela com o marcador dourado, desacelera em ~4 s com um clique por carta e para no sorteado (o resultado já vem de `spin`), que brilha na cor da raridade (lampejo em épico/lendário) antes do cartão; em 40% dos giros sem lendário, o lendário da vitrine aparece colado ao sorteado e a fita para puxando para o lado dele. Aba COMPRAR DIRETO: garantido e mais caro. Só moedas do jogo.
+- **Menu do Outro Lado novo** (`pve/hubScreen.js`): moedas em destaque, cartão da tentativa (retrato, profundidade, nível, dificuldade) com CONTINUAR/COMEÇAR, atalhos LOJA·GACHA e MELHORIAS, recorde no rodapé; backup, reiniciar e apagar foram para o submenu **DADOS** (o apagar mostra quantas moedas se perdem).
+- **A loja da Aghata** (pedido do dono): a tela de Melhorias virou a loja dela — prateleiras, velas, a placa, o balcão; a Aghata fica de pé atrás do balcão (render `sobre/elenco/aghata.webp`), inclina para o quadrado escolhido, cumprimenta ao abrir e comenta cada compra, a falta de moedas e o grau no máximo (`pve/aghataShop.js`, falas PROPOSTA). As melhorias ficam no painel ao lado.
+- Damir, Boris e Artemis estavam fora de `UNLOCK_TIERS` e caíam como lendários: Artemis vira **Comum** (pedido do dono: "não é tão forte"), Damir e Boris **Raros** (PROPOSTA). Teste novo garante que todo personagem do modo tem degrau de preço.
+- Pesquisa da wiki (pedido do dono): `lore/EQUIPES-HEXATOMBE.md` com cada membro dos PSIKOLERA (instrumento-arma, habilidade, aparência para modelar, destino), dos Vampiros e da Equipe Transtornados; recomendação (PROPOSTA) do próximo Psikolera: Eloy ou Cindy.
+- Testes: `tests/pve.test.js` atualizado (árvore global, migração, valores novos, vitrine 2/2/1/1, raridade de todos); `npm test` 86/86.
+
 ## v4.37.0 — Os Lukic e a Artemis
 
 - Versão: `VERSION` 4.36.0 → **4.37.0** (`package.json`, `package-lock.json` e `src/config/version.js`). Data: 2026-11-12. Testes: `npm test` 83/83; `npm run check` e `vite build` ok.

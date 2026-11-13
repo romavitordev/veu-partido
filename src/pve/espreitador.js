@@ -314,6 +314,9 @@ export class EspreitadorBrain {
     b.cancelAction && b.cancelAction();
     b.setState('ability');
     const seq = { update, cancelable: () => false };
+    // a habilidade não cai por qualquer pancada (pedido do dono, 2026-11-12: "apertar sem parar vence"): aguenta 4 golpes
+    // leves no começo dela; golpes fortes, lançamentos, agarrões e especiais ainda interrompem (é a janela de punir)
+    b.superArmor = { hits: 4, from: this.w.time, to: this.w.time + 1.6, max: 40 };
     b.seq = seq;
     this.seq = seq;
     return seq;

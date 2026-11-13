@@ -7,44 +7,54 @@
 
 // max: quantas vezes a mesma melhoria pode ser escolhida na tentativa
 export const UPGRADES = [
-  { id: 'vigor', name: 'Vigor', icon: '♥', max: 3, desc: '+15% de vida máxima (e cura o que ganhou).', apply: (m) => { m.hpMult += 0.15; } },
-  { id: 'furia', name: 'Fúria', icon: '✊', max: 3, desc: '+12% de dano dos golpes físicos.', apply: (m) => { m.dealt.melee += 0.12; } },
-  { id: 'foco', name: 'Foco', icon: '✦', max: 3, desc: '+14% de dano das habilidades e do especial.', apply: (m) => { m.dealt.ability += 0.14; m.dealt.special += 0.14; } },
-  { id: 'mira', name: 'Mira', icon: '◎', max: 3, desc: '+15% de dano dos tiros e arremessos.', apply: (m) => { m.dealt.ranged += 0.15; } },
-  { id: 'couraca', name: 'Couraça', icon: '⛨', max: 3, desc: '−9% de dano recebido.', apply: (m) => { m.taken *= 0.91; } },
+  { id: 'vigor', name: 'Vigor', icon: '♥', max: 3, desc: '+10% de vida máxima (e cura o que ganhou).', apply: (m) => { m.hpMult += 0.1; } },
+  { id: 'furia', name: 'Fúria', icon: '✊', max: 3, desc: '+8% de dano dos golpes físicos.', apply: (m) => { m.dealt.melee += 0.08; } },
+  { id: 'foco', name: 'Foco', icon: '✦', max: 3, desc: '+9% de dano das habilidades e do especial.', apply: (m) => { m.dealt.ability += 0.09; m.dealt.special += 0.09; } },
+  { id: 'mira', name: 'Mira', icon: '◎', max: 3, desc: '+10% de dano dos tiros e arremessos.', apply: (m) => { m.dealt.ranged += 0.1; } },
+  { id: 'couraca', name: 'Couraça', icon: '⛨', max: 3, desc: '−6% de dano recebido.', apply: (m) => { m.taken *= 0.94; } },
   { id: 'calma', name: 'Calma', icon: '☾', max: 2, desc: 'Habilidades custam 12% menos Sanidade.', apply: (m) => { m.costMult *= 0.88; } },
   { id: 'lucidez', name: 'Lucidez', icon: '◐', max: 2, desc: 'A Sanidade volta 25% mais rápido.', apply: (m) => { m.regenMult += 0.25; } },
-  { id: 'sanguessuga', name: 'Sanguessuga', icon: '⚕', max: 2, desc: 'Cura 4% do dano físico que causar.', apply: (m) => { m.lifesteal += 0.04; } },
-  { id: 'cacador', name: 'Caçador', icon: '✚', max: 2, desc: 'Derrotar um inimigo cura 6% da vida.', apply: (m) => { m.killHeal += 0.06; } },
+  { id: 'sanguessuga', name: 'Sanguessuga', icon: '⚕', max: 2, desc: 'Cura 3% do dano físico que causar.', apply: (m) => { m.lifesteal += 0.03; } },
+  { id: 'cacador', name: 'Caçador', icon: '✚', max: 2, desc: 'Derrotar um inimigo cura 4% da vida.', apply: (m) => { m.killHeal += 0.04; } },
   { id: 'agilidade', name: 'Agilidade', icon: '➶', max: 2, desc: '+8% de velocidade de movimento.', apply: (m) => { m.speedMult += 0.08; } },
   // HABILIDADES DO BAÚ (pedido do dono, 2026-11-06): só saem de BAÚ (nunca nas cartas de nível). PROPOSTA: os efeitos e
   // os números. pulse/thorns/crit/secondWind são lidos em Dungeon.js (modsFor e o laço) e em combat/damage.js
   { id: 'pulsoMedo', chest: true, name: 'Pulso de Medo', icon: '◉', max: 3, desc: 'A cada 4,5 s uma onda de Medo sai de você e machuca quem estiver a 3 m (+ dano por nível).', apply: (m) => { m.pulse += 1; } },
   { id: 'espinhos', chest: true, name: 'Pele de Espinhos', icon: '✷', max: 3, desc: 'Devolve 15% do dano corpo a corpo que você recebe a quem bateu (+10% por nível).', apply: (m) => { m.thorns += m.thorns ? 0.1 : 0.15; } },
-  { id: 'certeiro', chest: true, name: 'Golpe Certeiro', icon: '✧', max: 3, desc: '10% de chance de o golpe causar o dobro do dano (+6% por nível).', apply: (m) => { m.crit += m.crit ? 0.06 : 0.1; } },
+  { id: 'certeiro', chest: true, name: 'Golpe Certeiro', icon: '✧', max: 3, desc: '10% de chance de o golpe causar o dobro do dano (+6% por nível).', apply: (m) => { m.crit += m.critChest ? 0.06 : 0.1; m.critChest = true; } },
   { id: 'folego', chest: true, name: 'Segundo Fôlego', icon: '✝', max: 1, desc: 'Uma vez por tentativa: o golpe que ia te derrubar te deixa com 30% da vida.', apply: (m) => { m.secondWind = true; } },
 ];
 
 // duas melhorias juntas: o efeito extra (needs: ids que precisam estar na build)
 export const SYNERGIES = [
-  { id: 'ritualFurioso', name: 'Ritual Furioso', needs: ['furia', 'foco'], desc: '+10% de dano das habilidades.', apply: (m) => { m.dealt.ability += 0.1; } },
-  { id: 'carneDura', name: 'Carne Dura', needs: ['couraca', 'vigor'], desc: 'Regenera 0,6% da vida por segundo fora de combo.', apply: (m) => { m.regenHp += 0.006; } },
-  { id: 'sedeDeSangue', name: 'Sede de Sangue', needs: ['sanguessuga', 'furia'], desc: 'O roubo de vida dobra.', apply: (m) => { m.lifesteal *= 2; } },
+  { id: 'ritualFurioso', name: 'Ritual Furioso', needs: ['furia', 'foco'], desc: '+6% de dano das habilidades.', apply: (m) => { m.dealt.ability += 0.06; } },
+  { id: 'carneDura', name: 'Carne Dura', needs: ['couraca', 'vigor'], desc: 'Regenera 0,3% da vida por segundo fora de combo.', apply: (m) => { m.regenHp += 0.003; } },
+  { id: 'sedeDeSangue', name: 'Sede de Sangue', needs: ['sanguessuga', 'furia'], desc: 'O roubo de vida sobe 50%.', apply: (m) => { m.lifesteal *= 1.5; } },
   { id: 'mente', name: 'Mente Blindada', needs: ['calma', 'lucidez'], desc: 'O Drenar Energia tira metade.', apply: (m) => { m.drainTaken *= 0.5; } },
 ];
 
-// ÁRVORE PERMANENTE (TODO §7.3): por personagem, 5 graus cada, 1 ponto por grau
+// MELHORIAS PERMANENTES (pedido do dono, 2026-11-12): UMA árvore para TODOS os personagens, comprada só com moedas e
+// "um pouco cara" (save.js treeCoinCost: cost × (grau + 1)). PROPOSTA: os números. A árvore inteira custa ~16 mil moedas.
 export const TREE = [
-  { id: 'vida', name: 'Vida', icon: '♥', ranks: 5, per: 0.05, desc: '+5% de vida máxima por grau.', apply: (m, r) => { m.hpMult += 0.05 * r; } },
-  { id: 'dano', name: 'Dano', icon: '✊', ranks: 5, per: 0.04, desc: '+4% de dano por grau.', apply: (m, r) => { for (const k in m.dealt) m.dealt[k] += 0.04 * r; } },
-  { id: 'defesa', name: 'Defesa', icon: '⛨', ranks: 5, per: 0.04, desc: '−4% de dano recebido por grau.', apply: (m, r) => { m.taken *= 1 - 0.04 * r; } },
-  { id: 'sanidade', name: 'Sanidade', icon: '✦', ranks: 5, per: 0.05, desc: 'Habilidades 5% mais baratas por grau.', apply: (m, r) => { m.costMult *= 1 - 0.05 * r; } },
-  { id: 'velocidade', name: 'Velocidade', icon: '➶', ranks: 3, per: 0.03, desc: '+3% de velocidade de movimento por grau.', apply: (m, r) => { m.speedMult += 0.03 * r; } },
-  { id: 'recuperacao', name: 'Recuperação', icon: '✚', ranks: 3, per: 0.001, desc: 'Regenera 0,1% da vida por segundo por grau.', apply: (m, r) => { m.regenHp += 0.001 * r; } },
-  { id: 'crescimento', name: 'Crescimento', icon: '▲', ranks: 5, per: 0.06, desc: '+6% de experiência por grau.', apply: (m, r) => { m.xpMult += 0.06 * r; } },
-  { id: 'sorte', name: 'Sorte', icon: '♣', ranks: 3, per: 0.1, desc: '+10% de chance de os inimigos deixarem cura, por grau.', apply: (m, r) => { m.dropMult += 0.1 * r; } },
+  { id: 'vida', name: 'Vida', icon: '♥', ranks: 5, cost: 160, desc: '+4% de vida máxima por grau.', apply: (m, r) => { m.hpMult += 0.04 * r; } },
+  { id: 'dano', name: 'Dano', icon: '✊', ranks: 5, cost: 200, desc: '+3% de dano por grau.', apply: (m, r) => { for (const k in m.dealt) m.dealt[k] += 0.03 * r; } },
+  { id: 'defesa', name: 'Defesa', icon: '⛨', ranks: 5, cost: 200, desc: '−3% de dano recebido por grau.', apply: (m, r) => { m.taken *= 1 - 0.03 * r; } },
+  { id: 'sanidade', name: 'Sanidade', icon: '✦', ranks: 5, cost: 150, desc: 'Habilidades 4% mais baratas por grau.', apply: (m, r) => { m.costMult *= 1 - 0.04 * r; } },
+  { id: 'velocidade', name: 'Velocidade', icon: '➶', ranks: 3, cost: 180, desc: '+3% de velocidade de movimento por grau.', apply: (m, r) => { m.speedMult += 0.03 * r; } },
+  { id: 'recuperacao', name: 'Recuperação', icon: '✚', ranks: 3, cost: 220, desc: 'Regenera 0,1% da vida por segundo por grau.', apply: (m, r) => { m.regenHp += 0.001 * r; } },
+  { id: 'crescimento', name: 'Crescimento', icon: '▲', ranks: 5, cost: 120, desc: '+6% de experiência por grau.', apply: (m, r) => { m.xpMult += 0.06 * r; } },
+  { id: 'sorte', name: 'Sorte', icon: '♣', ranks: 3, cost: 140, desc: '+10% de chance de os inimigos deixarem cura, por grau.', apply: (m, r) => { m.dropMult += 0.1 * r; } },
+  { id: 'ganancia', name: 'Ganância', icon: '●', ranks: 5, cost: 250, desc: '+6% de moedas por grau (drops e recompensa do chefe).', apply: (m, r) => { m.coinMult += 0.06 * r; } },
+  // 2026-11-13 (pedido do dono: "umas 3 melhorias novas, a mais cara uma ressurreição, absurda de cara, das últimas
+  // coisas a liberar"). PROPOSTA: os números
+  { id: 'precisao', name: 'Precisão', icon: '✧', ranks: 3, cost: 300, desc: '+2% de chance de golpe crítico (dano dobrado) por grau.', apply: (m, r) => { m.crit += 0.02 * r; } },
+  { id: 'farto', name: 'Baú Farto', icon: '▣', ranks: 3, cost: 280, desc: '+8% de chance de o baú trazer mais itens, por grau.', apply: (m, r) => { m.chestLuck += 0.08 * r; } },
+  { id: 'ressurreicao', name: 'Ressurreição', icon: '☥', ranks: 1, cost: 15000, desc: 'Uma vez por tentativa: ao cair, você VOLTA com metade da vida e uma onda afasta os inimigos.', apply: (m) => { m.revive = true; } },
 ];
-export const treeCost = (rank) => 1; // eslint-disable-line no-unused-vars -- 1 ponto por grau (pode crescer depois)
+
+// o PISO da resistência (pedido do dono: "ao chegar no boss, ele ainda dá dano o suficiente pra deixar o player com medo de
+// morrer"): somando tudo, o jogador nunca recebe menos que 72% do dano
+export const MIN_TAKEN = 0.72;
 
 export function baseMods() {
   return {
@@ -60,10 +70,13 @@ export function baseMods() {
     drainTaken: 1,
     xpMult: 1,
     dropMult: 1,
+    coinMult: 1,
     pulse: 0,
     thorns: 0,
     crit: 0,
     secondWind: false,
+    chestLuck: 0,
+    revive: false,
   };
 }
 
@@ -80,6 +93,7 @@ export function computeMods(picks = [], tree = {}) {
   for (const n of TREE) if (tree[n.id]) n.apply(m, Math.min(n.ranks, tree[n.id]));
   for (const id of picks) { const u = byId(UPGRADES, id); if (u) u.apply(m); }
   for (const s of activeSynergies(picks)) s.apply(m);
+  m.taken = Math.max(MIN_TAKEN, m.taken);
   return m;
 }
 

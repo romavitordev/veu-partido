@@ -27,13 +27,13 @@ M = {
     'skin': material('skin_boris', '#e0b89c', 0.8),
     'face': material('face_boris', '#ffffff', 0.8),
     'torso': material('turtleneck_boris', '#18181c', 0.9),
-    'arm': material('turtleneck_boris', '#18181c', 0.9),
+    'arm': material('coat_boris', '#6c7068', 0.85),  # o braço base fica por dentro da manga
     'hand': material('hand_boris', '#c89a80', 0.8),  # as mãos tatuadas (mais escuras)
-    'legs': material('pants_boris', '#5a3e2a', 0.9),
+    'legs': material('pants_boris', '#4a3824', 0.9),
     'feet': material('boot_boris', '#1e1814', 0.55),
 }
-coat = material('coat_boris', '#5e6a5a', 0.85)
-coat_dk = material('coat_boris_dk', '#424c40', 0.85)
+coat = material('coat_boris', '#6c7068', 0.85)  # polimento 2026-11-13: o cinza do banner de Calamidade, verde só de leve
+coat_dk = material('coat_boris_dk', '#4a4e48', 0.85)
 cap = material('cap_boris', '#6a4a30', 0.9)
 cap_dk = material('cap_boris_dk', '#4a3220', 0.9)
 gold = material('brooch_boris', '#d8b040', 0.3, metal=0.9)
@@ -89,12 +89,12 @@ for side in ('L', 'R'):
     s_, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     end = e.lerp(h, 0.82)
     S = Sculpt()
-    S.chain([s_ + Vector((0, 0, 0.02 * H)), s_.lerp(e, 0.5), e, end], [0.05 * H, 0.046 * H, 0.046 * H, 0.043 * H], step=0.4)
-    S.ell(s_ + Vector((0, 0, 0.025 * H)), (0.05 * H, 0.05 * H, 0.045 * H))
+    S.chain([s_ + Vector((0, 0, 0.02 * H)), s_.lerp(e, 0.5), e, end], [0.044 * H, 0.04 * H, 0.04 * H, 0.037 * H], step=0.4)
+    S.ell(s_ + Vector((0, 0, 0.016 * H)), (0.045 * H, 0.045 * H, 0.038 * H))
     ax = (e - s_).normalized()
     fold = lambda p, a=s_, ax=ax: 0.0032 * H * (ridge((p - a).dot(ax) / H * 60 + n3(p, 12) * 2, 2) - 0.4)
     b.add('sleeve' + side, S.mesh(res=0.008, smooth=3, disp=fold, target=1100), coat, region='arm' + side, subdiv=0)
-    b.add('sleeveCuff' + side, tube(limb_rings(end + (h - e).normalized() * 0.014 * H, end - (h - e).normalized() * 0.01 * H, 0.046 * H, 0.046 * H, n=1), 14), coat_dk, region='e' + side, subdiv=0)
+    b.add('sleeveCuff' + side, tube(limb_rings(end + (h - e).normalized() * 0.014 * H, end - (h - e).normalized() * 0.01 * H, 0.04 * H, 0.04 * H, n=1), 14), coat_dk, region='e' + side, subdiv=0)
 
 # ================================================================ CALÇA MARROM e BOTAS escuras
 for side in ('L', 'R'):

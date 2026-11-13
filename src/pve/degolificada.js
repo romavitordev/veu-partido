@@ -44,6 +44,13 @@ export const DEGOLIFICADA_CFG = {
   guard: { near: 2.7, after: 0.35, time: 1.0, taken: 0.2, push: 3.4, damage: 14, knockback: 9, cd: 4.5 },
   scream: { windup: 1.1, radius: 6.2, damage: 28, stun: 1.2, cd: 11 },
   devour: { after: 120, size: 1.15, speed: 1.2, dealt: 1.2, cd: 0.75 },
+  // ENCURRALADA (pedido do dono, 2026-11-12: "dá para prender ela na parede"): presa (não consegue fugir) com alguém
+  // perto por `after` s, ela solta uma explosão de cabelo que EMPURRA todos (com dano e atordoamento curto) e desliza
+  // para o meio do bunker, quase intocável. Não espera a recarga da Defesa de cabelo.
+  breakout: { after: 0.45, windup: 0.28, radius: 4.4, damage: 22, knockback: 14, stun: 0.55, glide: 0.7, glideSpeed: 11, taken: 0.25, cd: 2.2 },
+  // FÚRIA (pedido do dono: "quando acha todas as pistas, ela fica mais difícil/furiosa"): sem o escudo ela ataca mais
+  // rápido, mais forte e se move mais. rage (Super Difícil/Aniquilação): a fúria já vem com a última prova faltando
+  fury: { cd: 0.72, dealt: 1.2, speed: 1.25, guardAfter: 0.18 },
 };
 
 // ================================================================== a CENA DE ENTRADA
@@ -140,7 +147,8 @@ export class DegolificadaBrain {
     this.t = 0;
     this.st = 0;
     this.next = 1.4;
-    this.cds = { lash: 0, grab: 4, crawl: 2, rain: 3, toss: 0.5, guard: 0, scream: 8 };
+    this.cds = { lash: 0, grab: 4, crawl: 2, rain: 3, toss: 0.5, guard: 0, scream: 8, breakout: 0 };
+    this.cornered = 0;
     this.hazards = []; // golpes que seguem sozinhos (cabelo rastejante, cabelo por cima, a caixa voando)
     this.marks = [];
     this.near = 0;
@@ -152,6 +160,7 @@ export class DegolificadaBrain {
     this.layers = Math.max(0, (dungeon.cluesNeeded || 3) - (dungeon.clues || 0)); // o escudo: um terço por prova que falta
     this.freeAt = this.layers > 0 ? null : 0; // quando o escudo caiu (o relógio da Devoradora corre só daí em diante)
     this.applyShield();
+    this.checkFury();
     // os golpes que ela leva: no escudo, o brilho azul (sem dano); na defesa de cabelo, o estalo
     const prevHit = this.w.onHit;
     this.prevHit = prevHit;
@@ -160,7 +169,7 @@ export class DegolificadaBrain {
 
   get boss() { return this.d.enemy; }
   get players() { return this.d.players.filter((p) => p.state !== 'ko'); }
-  get cdMult() { return this.devourer ? DEGOLIFICADA_CFG.devour.cd : 1; }
+  get cdMult() { return (this.devourer ? DEGOLIFICADA_CFG.devour.cd : 1) * (this.fury ? DEGOLIFICADA_CFG.fury.cd : 1); }
   // o nome do golpe: pequeno, no canto (pedido do dono)
   say(text) { this.d.pveHud && this.d.pveHud.moveName(text); }
   dealt(n) { return Math.round(n * (this.boss.cpuEdge?.dealt ?? 1)); }
@@ -170,7 +179,8 @@ export class DegolificadaBrain {
   applyShield() {
     const b = this.boss;
     const on = this.layers > 0;
-    b.cpuEdge = { ...(b.cpuEdge || {}), taken: on ? 0 : this.state === 'guard' ? DEGOLIFICADA_CFG.guard.taken : 1 };
+    const taken = on ? 0 : this.state === 'guard' ? DEGOLIFICADA_CFG.guard.taken : this.state === 'breakout' ? DEGOLIFICADA_CFG.breakout.taken : 1;
+    b.cpuEdge = { ...(b.cpuEdge || {}), taken };
     b.lethalHook = on ? () => { b.health = Math.max(1, b.health); return true; } : null;
     this.d.pveHud && this.d.pveHud.setShield(this.layers, this.d.cluesNeeded || 3, b);
   }
@@ -206,6 +216,27 @@ export class DegolificadaBrain {
       this.w.fx.burst(b.chestPos(v1).clone(), { count: 60, color: 0xdce8ff, speed: 5, life: 1, size: 0.18 });
     }
     this.applyShield();
+    this.checkFury();
+  }
+
+  // FÚRIA: todas as provas achadas (no Super Difícil e na Aniquilação, já com uma faltando)
+  checkFury() {
+    if (this.fury) return;
+    const rage = !!this.d.diff?.rage;
+    if (this.layers > (rage ? 1 : 0)) return;
+    const F = DEGOLIFICADA_CFG.fury;
+    const b = this.boss;
+    this.fury = true;
+    b.cpuEdge = { ...(b.cpuEdge || {}), dealt: (b.cpuEdge?.dealt ?? 1) * F.dealt };
+    this.w.after(this.layers > 0 ? 0 : 1.6, () => {
+      if (!this.boss || this.boss.state === 'ko') return;
+      this.d.hud.callout('FÚRIA', '#ff3a3a');
+      this.say('Fúria — ela não deixa mais ninguém chegar perto');
+      this.w.audio.play('fearGaze', { volume: 1, pitch: 0.5 });
+      this.w.cameraRig.shake(0.3, 0.45);
+      this.w.fx.burst(this.boss.chestPos(v1).clone(), { count: 40, color: 0xff2a2a, speed: 4, life: 0.8, size: 0.16 });
+    });
+    if (this.boss.rig.body) this.boss.rig.body.traverse?.((o) => { if (o.material && o.material.emissive && !o.userData.furyTint) { o.userData.furyTint = true; o.material = o.material.clone(); o.material.emissive.lerp(new THREE.Color(0x5a0000), 0.5); } });
   }
 
   holdCpu(on) {
@@ -248,6 +279,7 @@ export class DegolificadaBrain {
       case 'cast': this.updateCast(dt); break;
       case 'toss': this.updateToss(dt); break;
       case 'guard': this.updateGuard(dt); break;
+      case 'breakout': this.updateBreakout(dt); break;
       case 'scream': this.updateScream(dt); break;
       default: break;
     }
@@ -268,7 +300,7 @@ export class DegolificadaBrain {
     if (d < C.range[0]) fwd = -C.float.flee / C.float.speed;
     else if (d > C.range[1]) fwd = 1;
     if (Math.random() < dt * 0.4) this.strafe = -this.strafe;
-    const sp = this.baseSpeed * 0.5 * (C.float.speed / 3.4) * (this.devourer ? C.devour.speed : 1) * mult;
+    const sp = this.baseSpeed * 0.5 * (C.float.speed / 3.4) * (this.devourer ? C.devour.speed : 1) * (this.fury ? C.fury.speed : 1) * mult;
     const sx = -to.z * this.strafe * C.float.strafe;
     const sz = to.x * this.strafe * C.float.strafe;
     const ox = b.pos.x;
@@ -276,7 +308,11 @@ export class DegolificadaBrain {
     b.pos.x += (to.x * fwd + sx) * sp * dt;
     b.pos.z += (to.z * fwd + sz) * sp * dt;
     resolveBody(this.w.arena, b.pos, b.radius);
-    if (Math.hypot(b.pos.x - ox, b.pos.z - oz) < 0.2 * sp * dt) this.strafe = -this.strafe; // encostou: rodeia para o outro lado
+    const moved = Math.hypot(b.pos.x - ox, b.pos.z - oz);
+    if (moved < 0.2 * sp * dt) this.strafe = -this.strafe; // encostou: rodeia para o outro lado
+    // ENCURRALADA: queria fugir (alguém perto) mas a parede não deixa
+    const crowd = this.players.some((q) => distXZ(q.pos, b.pos) < C.range[0] * 0.75);
+    this.cornered = fwd < 0 && crowd && moved < 0.55 * sp * dt ? this.cornered + dt : Math.max(0, this.cornered - dt * 2);
     b.yaw = turnTowards(b.yaw, yawTo(b.pos, p.pos), dt * 6);
     b.vel.set(0, 0, 0);
   }
@@ -290,9 +326,10 @@ export class DegolificadaBrain {
     if (b.anim.currentName !== b.anim.resolve('idle')) b.anim.play('idle');
     const d = distXZ(b.pos, p.pos);
     // DEFESA DE CABELO: quem fica colado nela
+    if (this.cornered > C.breakout.after && this.cds.breakout <= 0) { this.startBreakout(); return; }
     const close = this.players.some((q) => distXZ(q.pos, b.pos) < C.guard.near);
     this.near = close ? this.near + dt : 0;
-    if (this.near > C.guard.after && this.cds.guard <= 0) { this.startGuard(); return; }
+    if (this.near > (this.fury ? C.fury.guardAfter : C.guard.after) && this.cds.guard <= 0) { this.startGuard(); return; }
     this.next -= dt;
     if (this.next > 0) return;
     const opts = [];
@@ -803,6 +840,69 @@ export class DegolificadaBrain {
       }
     }
     if (this.st > C.time) this.backToDuel();
+  }
+
+  // ------------------------------------------------ EXPLOSÃO DE CABELO (encurralada): empurra todos e desliza para o meio
+  startBreakout() {
+    const C = DEGOLIFICADA_CFG.breakout;
+    const b = this.boss;
+    this.cds.breakout = C.cd;
+    this.cds.guard = Math.max(this.cds.guard, 1.2);
+    this.cornered = 0;
+    this.near = 0;
+    this.setState('breakout');
+    b.anim.play('taunt_roar', { restart: true, duration: C.windup + 0.3 });
+    this.w.audio.play('whisper', { volume: 1, pitch: 1.9 });
+    this.w.fx.ring(new THREE.Vector3(b.pos.x, 0.07, b.pos.z), { color: WARN, radius: C.radius, life: C.windup });
+    this.say('Explosão de cabelo');
+    this.pushed = false;
+    // para onde deslizar: o meio do bunker (ou, sem ele, para longe de quem está perto)
+    const home = this.d.bossHome;
+    if (home) this.glideDir = new THREE.Vector3(home.x - b.pos.x, 0, home.z - b.pos.z);
+    else {
+      const c = new THREE.Vector3();
+      for (const q of this.players) c.add(q.pos);
+      c.multiplyScalar(1 / Math.max(1, this.players.length));
+      this.glideDir = new THREE.Vector3(b.pos.x - c.x, 0, b.pos.z - c.z).multiplyScalar(-1);
+    }
+    if (this.glideDir.lengthSq() < 1e-4) this.glideDir.set(1, 0, 0);
+    this.glideDir.normalize();
+  }
+
+  updateBreakout(dt) {
+    const C = DEGOLIFICADA_CFG.breakout;
+    const b = this.boss;
+    if (this.st < C.windup) return;
+    if (!this.pushed) {
+      this.pushed = true;
+      const from = this.head();
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * Math.PI * 2;
+        const end = new THREE.Vector3(b.pos.x + Math.sin(a) * C.radius, 0.4 + (i % 3) * 0.35, b.pos.z + Math.cos(a) * C.radius);
+        inkTentacle(this.w, from, end, { grow: 0.06, hold: 0.1, retract: 0.25, arc: 0.2, wiggle: 0.1, radius: 0.08, color: HAIR, emissive: HAIR_E, splash: false });
+      }
+      this.w.fx.ring(new THREE.Vector3(b.pos.x, 0.08, b.pos.z), { color: 0x3a3838, radius: C.radius, life: 0.4 });
+      this.w.audio.play('whip', { volume: 1, pitch: 0.4 });
+      this.w.cameraRig.shake(0.22, 0.3);
+      for (const q of this.players) {
+        if (distXZ(q.pos, b.pos) > C.radius + q.radius) continue;
+        const dir = new THREE.Vector3(q.pos.x - b.pos.x, 0, q.pos.z - b.pos.z);
+        if (dir.lengthSq() < 1e-4) dir.copy(this.glideDir).multiplyScalar(-1);
+        dir.normalize();
+        // não dá para defender nem esquivar parado em cima dela: é a punição por prendê-la
+        const res = applyHit(this.w, b, q, { damage: this.dealt(C.damage), kind: 'ability', knockback: C.knockback, hitstun: 0.5, dir, unblockable: true, ignoreInvuln: true, sound: 'clawHit', color: 0x2a2626, scale: 1.2 });
+        if (typeof res === 'number' && q.state !== 'ko') q.stun(C.stun, 'stagger');
+      }
+    }
+    // desliza para o meio (quase intocável enquanto desliza)
+    const k = this.st - C.windup;
+    if (k < C.glide) {
+      b.pos.x += this.glideDir.x * C.glideSpeed * dt * (1 - k / C.glide);
+      b.pos.z += this.glideDir.z * C.glideSpeed * dt * (1 - k / C.glide);
+      resolveBody(this.w.arena, b.pos, b.radius);
+      return;
+    }
+    this.backToDuel();
   }
 
   // ------------------------------------------------ GRITO RASGADO

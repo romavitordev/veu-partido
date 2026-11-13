@@ -6,9 +6,9 @@
 export const UNLOCK_TIERS = [
   { price: 0, ids: ['chico', 'dara', 'guizo', 'lirio'] },
   { price: 60, ids: ['morato', 'xande', 'cristopher', 'balu'] },
-  { price: 110, ids: ['verissimo', 'beatrice', 'carina', 'arthur'] },
+  { price: 110, ids: ['verissimo', 'beatrice', 'carina', 'arthur', 'artemis'] }, // Artemis: comum (pedido do dono, 2026-11-12)
   { price: 170, ids: ['erin', 'aghata', 'rubens', 'dante', 'nubi', 'fernando', 'tristan', 'ivete'] },
-  { price: 250, ids: ['joui', 'kaiser', 'kian', 'gal_sal', 'dalmo', 'aguiar', 'cristino'] },
+  { price: 250, ids: ['joui', 'kaiser', 'kian', 'gal_sal', 'dalmo', 'aguiar', 'cristino', 'damir', 'boris'] },
   { price: 350, ids: ['jae', 'kemi', 'labirinto', 'juan', 'raziel', 'arnaldo', 'ferreiro', 'celestine'] },
   { price: 500, ids: ['gaius', 'amalia', 'juan_odio', 'magistrada'] },
   { price: 700, ids: ['o_diabo', 'deus_morte', 'anfitriao'] },
@@ -20,16 +20,19 @@ export function pveBanned(def) {
   return !!def && [def.origin, ...(def.teams || [])].includes(PVE_BANNED_TEAM);
 }
 
-// quem não está na lista (personagem novo) custa o preço do último degrau
-const LAST = UNLOCK_TIERS[UNLOCK_TIERS.length - 1].price;
+// o PREÇO na loja (pedido do dono, 2026-11-12): pela RARIDADE (pve/economy.js) — comum, raro, épico e lendário. Os 4
+// do primeiro degrau (preço 0) já vêm liberados; personagem novo fora da lista = lendário
+const FREE = new Set(UNLOCK_TIERS[0].ids);
+const RARITY_PRICE = { 60: 250, 110: 250, 170: 500, 250: 500, 350: 900, 500: 1600, 700: 1600 };
 
 export function priceOf(id) {
+  if (FREE.has(id)) return 0;
   const t = UNLOCK_TIERS.find((x) => x.ids.includes(id));
-  return t ? t.price : LAST;
+  return t ? RARITY_PRICE[t.price] || 900 : 1600;
 }
 
 export function isUnlocked(data, id) {
-  return priceOf(id) === 0 || (data.unlocked || []).includes(id);
+  return FREE.has(id) || (data.unlocked || []).includes(id);
 }
 
 // compra com moedas; false sem moedas suficientes (ou já liberado)
@@ -46,7 +49,7 @@ export function buyChar(data, id) {
 export function lockedMap(data, roster) {
   const out = new Map();
   for (const c of roster) if (pveBanned(c)) out.set(c.id, 'é da equipe Outro Lado: não entra neste modo');
-  for (const c of roster) if (!pveBanned(c) && !isUnlocked(data, c.id)) out.set(c.id, `custa ${priceOf(c.id)} moedas (você tem ${data.coins || 0}) · compre em DESBLOQUEAR PERSONAGENS`);
+  for (const c of roster) if (!pveBanned(c) && !isUnlocked(data, c.id)) out.set(c.id, `custa ${priceOf(c.id)} moedas (você tem ${data.coins || 0}) · compre na LOJA ou tente a sorte no GACHA`);
   return out;
 }
 

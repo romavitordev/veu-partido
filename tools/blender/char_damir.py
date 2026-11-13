@@ -24,16 +24,16 @@ hz = sk['hips'].z
 M = {
     'skin': material('skin_damir', '#e4c8b4', 0.8),
     'face': material('face_damir', '#ffffff', 0.8),
-    'torso': material('shirt_damir', '#6a1a32', 0.85),
-    'arm': material('shirt_damir', '#6a1a32', 0.85),
+    'torso': material('shirt_damir', '#8a1848', 0.85),
+    'arm': material('blazer_damir', '#2c2858', 0.8),  # o braço base fica por dentro da manga: mesma cor do blazer
     'hand': material('hand_damir', '#d8b8a2', 0.8),
     'legs': material('pants_damir', '#16161a', 0.9),
     'feet': material('shoe_damir', '#0e0e10', 0.4),
 }
-blazer = material('blazer_damir', '#5a3478', 0.8)
-blazer_dk = material('blazer_damir_dk', '#3e2254', 0.8)
-shirt_dk = material('shirt_damir_dk', '#4e1024', 0.85)
-hat = material('hat_damir', '#5e3a7e', 0.85)
+blazer = material('blazer_damir', '#2c2858', 0.8)  # polimento 2026-11-13: índigo escuro do banner de Calamidade
+blazer_dk = material('blazer_damir_dk', '#1c1840', 0.8)
+shirt_dk = material('shirt_damir_dk', '#5e0e30', 0.85)
+hat = material('hat_damir', '#3a2c72', 0.85)
 band = material('hatband_damir', '#121214', 0.7)
 sole = material('sole_damir', '#08080a', 0.8)
 beltm = material('belt_damir', '#121214', 0.5)
@@ -49,12 +49,13 @@ hc = b.body(M, [(-0.11, 0.15), (0.0, 0.152), (0.17, 0.142), (0.32, 0.172), (0.45
             arm_r=(0.054, 0.046, 0.04), leg_r=(0.08, 0.062, 0.048), head_r=(0.134, 0.148, 0.164))
 
 # ================================================================ a GOLA DRAPEADA (cowl) da camisa vinho: dobras caindo em U no peito
-for k in range(3):
-    dz = 1.6 * H - k * 0.035 * H
-    rr = 0.105 * H + k * 0.012 * H
-    pts = [(math.sin(a) * rr, -math.cos(a) * (rr * 0.92) - k * 0.006 * H, dz - (0.05 + k * 0.03) * H * math.cos(a) ** 2) for a in [-1.3 + 2.6 * i / 16 for i in range(17)]]
-    b.add(f'cowl{k}', rod(pts, 0.014 * H, 6), M['torso'] if k % 2 == 0 else shirt_dk, region='chest', subdiv=0)
-b.add('cowlBack', tube([(0, 0, 1.57 * H, 0.1 * H, 0.094 * H), (0, 0, 1.64 * H, 0.094 * H, 0.088 * H)], 14), M['torso'], region='neck', subdiv=0)
+# polimento 2026-11-13 (banner de Calamidade): a gola sobe enrolada no pescoço, como um cachecol, e cai em mais dobras
+for k in range(4):
+    dz = 1.63 * H - k * 0.034 * H
+    rr = 0.1 * H + k * 0.013 * H
+    pts = [(math.sin(a) * rr, -math.cos(a) * (rr * 0.92) - k * 0.007 * H, dz - (0.045 + k * 0.032) * H * math.cos(a) ** 2) for a in [-1.35 + 2.7 * i / 16 for i in range(17)]]
+    b.add(f'cowl{k}', rod(pts, (0.017 - 0.001 * k) * H, 6), M['torso'] if k % 2 == 0 else shirt_dk, region='chest' if k else 'neck', subdiv=0)
+b.add('cowlBack', tube([(0, 0.004 * H, 1.56 * H, 0.104 * H, 0.098 * H), (0, 0.004 * H, 1.62 * H, 0.096 * H, 0.09 * H), (0, 0.004 * H, 1.67 * H, 0.088 * H, 0.084 * H)], 14), M['torso'], region='neck', subdiv=0)
 
 # ================================================================ BLAZER ROXO aberto, até o quadril
 JK = [(-0.12, 0.172, 0.138, 0.6), (0.0, 0.17, 0.136, 0.6), (0.13, 0.166, 0.134, 0.6), (0.24, 0.168, 0.13, 0.6),
@@ -79,12 +80,12 @@ for side in ('L', 'R'):  # as mangas do blazer até o pulso
     s_, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     end = e.lerp(h, 0.8)
     S = Sculpt()
-    S.chain([s_ + Vector((0, 0, 0.02 * H)), s_.lerp(e, 0.5), e, end], [0.046 * H, 0.042 * H, 0.042 * H, 0.04 * H], step=0.4)
-    S.ell(s_ + Vector((0, 0, 0.025 * H)), (0.047 * H, 0.047 * H, 0.042 * H))
+    S.chain([s_ + Vector((0, 0, 0.012 * H)), s_.lerp(e, 0.5), e, end], [0.036 * H, 0.032 * H, 0.031 * H, 0.03 * H], step=0.4)
+    S.ell(s_ + Vector((0, 0, 0.012 * H)), (0.038 * H, 0.038 * H, 0.032 * H))
     ax = (e - s_).normalized()
     fold = lambda p, a=s_, ax=ax: 0.0025 * H * (ridge((p - a).dot(ax) / H * 60 + n3(p, 12) * 2, 2) - 0.4)
     b.add('sleeve' + side, S.mesh(res=0.007, smooth=3, disp=fold, target=1000), blazer, region='arm' + side, subdiv=0)
-    b.add('shirtCuff' + side, tube(limb_rings(e.lerp(h, 0.8), e.lerp(h, 0.88), 0.038 * H, 0.038 * H, n=1), 12), M['torso'], region='e' + side, subdiv=0)
+    b.add('shirtCuff' + side, tube(limb_rings(e.lerp(h, 0.8), e.lerp(h, 0.88), 0.03 * H, 0.03 * H, n=1), 12), M['torso'], region='e' + side, subdiv=0)
 
 # ================================================================ CALÇA PRETA e SAPATOS
 for side in ('L', 'R'):
@@ -111,11 +112,17 @@ HC = Vector((hc.x, hc.y, hc.z))
 Vh = lambda x, y, z: HC + Vector((x * H, y * H, z * H))
 Ht = Sculpt()
 Ht.ell(Vh(0, 0.0, 0.1), (0.146 * H, 0.156 * H, 0.11 * H))  # a copa assentada na cabeça (a cabeça fica por dentro)
-Ht.ell(Vh(0, 0.0, 0.215), (0.05 * H, 0.09 * H, 0.03 * H), neg=True)  # o vinco no alto
+Ht.ell(Vh(0, 0.01, 0.16), (0.13 * H, 0.14 * H, 0.085 * H))  # a copa sobe (fedora alto do banner)
+Ht.ell(Vh(0, 0.0, 0.255), (0.045 * H, 0.1 * H, 0.035 * H), neg=True)  # o vinco no alto
+for sx in (1, -1):  # o BELISCO na frente da copa
+    Ht.ell(Vh(sx * 0.11, -0.1, 0.2), (0.04 * H, 0.05 * H, 0.06 * H), neg=True)
 b.add('hatCrown', Ht.mesh(res=0.006, smooth=3, target=1400), hat, region='head', subdiv=0)
-brim = [ring_pts(hc.z + (0.045 - 0.012 * (r - 0.14) / 0.1) * H, r * H, r * 1.08 * H, 0.0, TAU, 32) for r in (0.14, 0.19, 0.235)]
+brim = [ring_pts(hc.z + (0.045 - 0.012 * (r - 0.14) / 0.1) * H, r * H, r * 1.08 * H, 0.0, TAU, 32) for r in (0.14, 0.18, 0.215)]
 b.add('hatBrim', shell_grid(brim, 0.012), hat, region='head', subdiv=1)
 b.add('hatBand', tube([(HC.x, HC.y, hc.z + 0.05 * H, 0.147 * H, 0.158 * H), (HC.x, HC.y, hc.z + 0.09 * H, 0.145 * H, 0.156 * H)], 24), band, region='head', subdiv=0)
+
+# o BROCHE dos Lukic na lapela (wiki: "um broche com o símbolo dos Lukic fixado em sua lapela")
+b.add('brooch', tube([(0.105 * H, -0.158 * H, hz + 0.47 * H, 0.016 * H, 0.016 * H), (0.105 * H, -0.164 * H, hz + 0.47 * H, 0.014 * H, 0.014 * H)], 12), silver, region='chest', subdiv=0)
 
 b.export(OUT)
 

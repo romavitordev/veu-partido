@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KINDS, kindsOf, rewardChoices } from '../src/pve/upgrades.js';
-import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
+import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, treeCoinCost, migrateTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
 import { Closet, PeekingCrack } from '../src/pve/espreitador.js';
@@ -13,12 +13,14 @@ test('melhorias: somam, as sinergias ligam com as duas peças e a árvore entra 
   const m0 = computeMods([]);
   assert.equal(m0.hpMult, 1);
   const m = computeMods(['furia', 'foco', 'vigor'], { dano: 2 });
-  assert.ok(Math.abs(m.dealt.melee - (1 + 0.12 + 0.08)) < 1e-9);
-  assert.ok(Math.abs(m.dealt.ability - (1 + 0.14 + 0.1 + 0.08)) < 1e-9); // Ritual Furioso
+  assert.ok(Math.abs(m.dealt.melee - (1 + 0.08 + 0.06)) < 1e-9);
+  assert.ok(Math.abs(m.dealt.ability - (1 + 0.09 + 0.06 + 0.06)) < 1e-9); // Ritual Furioso
   assert.deepEqual(activeSynergies(['furia', 'foco']).map((s) => s.id), ['ritualFurioso']);
   assert.equal(activeSynergies(['furia']).length, 0);
   const s = computeMods(['sanguessuga', 'furia']);
-  assert.ok(Math.abs(s.lifesteal - 0.08) < 1e-9);
+  assert.ok(Math.abs(s.lifesteal - 0.045) < 1e-9); // Sede de Sangue: ×1,5
+  // o piso do dano recebido: nem empilhando Couraça e Defesa passa de −28%
+  assert.ok(computeMods(['couraca', 'couraca', 'couraca'], { defesa: 5 }).taken >= 0.72 - 1e-9);
 });
 
 test('melhorias: o sorteio não repete e respeita o máximo de cada uma', () => {
@@ -41,27 +43,27 @@ test('experiência: sobe de nível e guarda a sobra', () => {
   assert.equal(run.xp, 5);
 });
 
-test('salvamento: chave própria, perfil por personagem, a morte só apaga a tentativa', () => {
+test('salvamento: chave própria, árvore GLOBAL por moedas, a morte só apaga a tentativa', () => {
   const s = mem();
   const d = emptyData();
   d.attempt = newAttempt({ charId: 'kaiser', dungeon: 'espreitador' });
   assert.ok(rewardBoss(d, 'kaiser', 'run1:1'));
   assert.ok(!rewardBoss(d, 'kaiser', 'run1:1'), 'a mesma recompensa não vale duas vezes');
-  assert.equal(profileOf(d, 'kaiser').points, 1);
   assert.equal(profileOf(d, 'kaiser').level, 2);
-  assert.equal(profileOf(d, 'arthur').points, 0, 'cada personagem evolui separado');
-  assert.ok(buyRank(d, 'kaiser', 'vida'));
-  assert.ok(!buyRank(d, 'kaiser', 'vida'), 'sem ponto');
+  assert.equal(profileOf(d, 'arthur').level, 1, 'o nível é de cada personagem');
+  assert.ok(!buyRank(d, 'vida'), 'sem moedas');
+  d.coins = treeCoinCost('vida', 0) + treeCoinCost('vida', 1) - 1;
+  assert.ok(buyRank(d, 'vida'));
+  assert.ok(!buyRank(d, 'vida'), 'o 2º grau custa mais');
+  assert.equal(d.coins, treeCoinCost('vida', 1) - 1);
   savePve(d, s);
   assert.deepEqual([...s.m.keys()], [PVE_KEY]);
   const back = loadPve(s);
-  assert.equal(back.profiles.kaiser.tree.vida, 1);
+  assert.equal(back.tree.vida, 1);
   endAttemptByDeath(back);
   assert.equal(back.attempt, null);
   assert.equal(back.campaign.deaths, 1);
-  assert.equal(back.profiles.kaiser.tree.vida, 1, 'o permanente fica');
-  refundTree(back, 'kaiser');
-  assert.equal(back.profiles.kaiser.points, 1);
+  assert.equal(back.tree.vida, 1, 'o permanente fica');
   clearPve(s);
   assert.equal(s.m.size, 0);
 });
@@ -290,4 +292,53 @@ test('moedas: aparecem sempre, mas poucas (pedido do dono, 2026-11-08)', async (
   k = 0;
   const r3 = rollLoot('monster', rng, 3);
   assert.ok(r3.amount <= 5, `profundidade 3: no máximo 5 (veio ${r3.amount})`);
+});
+
+test('salvamento: a árvore antiga (por personagem, com pontos) vira moedas na árvore global', () => {
+  const old = { version: 1, coins: 10, profiles: { kaiser: { level: 3, points: 1, spent: 2, tree: { vida: 2 } } }, campaign: {} };
+  const out = JSON.parse(JSON.stringify(old));
+  migrateTree(out);
+  assert.ok(out.treeGlobal);
+  assert.deepEqual(out.profiles.kaiser.tree || {}, {});
+  assert.ok(out.coins > 10, 'os pontos viram moedas');
+});
+
+test('loja: todo personagem tem raridade e a vitrine do gacha tem 6 (2/2/1/1), igual em toda janela de 4 h', async () => {
+  const { ROSTER } = await import('../src/characters/index.js');
+  const { UNLOCK_TIERS, pveBanned } = await import('../src/pve/unlocks.js');
+  const { shopBanner, rarityOf, spin } = await import('../src/pve/economy.js');
+  const listed = new Set(UNLOCK_TIERS.flatMap((t) => t.ids));
+  const missing = ROSTER.filter((c) => !pveBanned(c) && !listed.has(c.id)).map((c) => c.id);
+  assert.deepEqual(missing, [], 'personagem sem degrau de preço vira lendário sem querer');
+  assert.equal(rarityOf('artemis'), 'comum');
+  const ids = ROSTER.filter((c) => !pveBanned(c) && rarityOf(c.id)).map((c) => c.id);
+  const b = shopBanner(ids, 1e12);
+  assert.equal(b.slots.length, 6);
+  const n = (r) => b.slots.filter((x) => x.rarity === r).length;
+  assert.deepEqual([n('comum'), n('raro'), n('epico'), n('lendario')], [2, 2, 1, 1]);
+  assert.deepEqual(shopBanner(ids, 1e12 + 1000).slots, b.slots, 'mesma janela, mesma vitrine');
+  const d = emptyData();
+  assert.equal(spin(d, b), false, 'sem moedas');
+  d.coins = 150;
+  const r = spin(d, b, () => 0);
+  assert.equal(r.rarity, 'comum');
+  assert.ok(d.unlocked.includes(r.id));
+});
+
+test('loja da Aghata: DEVOLVER TUDO devolve cada moeda; a Ressurreição é cara e liga o revive', () => {
+  const d = emptyData();
+  d.coins = 5000;
+  assert.ok(buyRank(d, 'vida'));
+  assert.ok(buyRank(d, 'vida'));
+  assert.ok(buyRank(d, 'dano'));
+  const spent = 5000 - d.coins;
+  assert.equal(refundTree(d), spent);
+  assert.equal(d.coins, 5000);
+  assert.deepEqual(d.tree, {});
+  const res = TREE.find((n) => n.id === 'ressurreicao');
+  assert.ok(res && res.ranks === 1);
+  const rest = TREE.filter((n) => n !== res).reduce((a, n) => a + Array.from({ length: n.ranks }, (_, r) => treeCoinCost(n, r)).reduce((x, y) => x + y, 0), 0);
+  assert.ok(treeCoinCost(res, 0) >= rest * 0.6, 'a Ressurreição custa perto de toda a loja junta');
+  assert.ok(computeMods([], { ressurreicao: 1 }).revive);
+  assert.ok(Math.abs(computeMods(['certeiro'], { precisao: 3 }).crit - 0.16) < 1e-9, 'o Golpe Certeiro do baú soma por cima da Precisão');
 });

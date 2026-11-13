@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1768,7 +1768,7 @@ export function addArtemisProps(rig) {
   sockets.handR.add(gun);
   props.apache = gun;
   props.apacheVeins = gun.userData.veins;
-  const rifle = sniper();
+  const rifle = rifleArtemis(); // o rifle preto do arsenal dela (polimento 2026-11-13)
   rifle.position.y = -0.02;
   rifle.visible = false;
   sockets.handR.add(rifle);

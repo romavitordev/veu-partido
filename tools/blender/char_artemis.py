@@ -29,16 +29,16 @@ M = {
     'torso': skin,
     'arm': skin,
     'hand': skin,
-    'legs': material('overall_artemis', '#6e6e46', 0.9),
+    'legs': material('overall_artemis', '#4e4c30', 0.9),
     'feet': material('boot_artemis', '#141416', 0.55),
 }
 overall = M['legs']
-overall_dk = material('overall_artemis_dk', '#52522f', 0.9)
+overall_dk = material('overall_artemis_dk', '#3a3822', 0.9)
 top = material('top_artemis', '#141416', 0.85)
 hairm = material('hair_artemis', '#1c1618', 0.7)
 steel = material('tags_artemis', '#b8bcc4', 0.3, metal=0.9)
 sole = material('sole_artemis', '#08080a', 0.8)
-strap = material('strap_artemis', '#3a3a24', 0.8)
+strap = material('strap_artemis', '#9a8050', 0.8)  # as alças e faixas cáqui
 
 PREVIEW = {'face_artemis': '#e6c4ae'}
 for m in bpy.data.materials:
@@ -81,12 +81,24 @@ Hp = Sculpt()
 Hp.ell(Vector((0, 0.0, hz - 0.01 * H)), (0.168 * H, 0.124 * H, 0.11 * H))
 Hp.ell(Vector((0, 0.01 * H, hz + 0.08 * H)), (0.15 * H, 0.112 * H, 0.08 * H))
 b.add('overallHip', Hp.mesh(res=0.011, smooth=3, disp=lambda p: 0.0016 * H * n3(p, 14), target=900), overall, region='body', weight_fn=lambda p: auto_weights(sk, p, None), subdiv=0)
-# a parte de cima do macacão DOBRADA na cintura (as mangas amarradas na frente) e as ALÇAS caídas pelas coxas
-wrap = [(math.sin(a) * 0.162 * H, -math.cos(a) * 0.122 * H, hz + 0.13 * H) for a in [i / 30 * TAU for i in range(31)]]
-b.add('overallFold', rod(wrap, 0.017 * H, 7, caps=False), overall_dk, region='torso', subdiv=0)
+# polimento 2026-11-13 (banner de Calamidade): o macacão VESTIDO, com o PEITILHO até o peito e as ALÇAS cáqui por cima
+# dos ombros, cruzando nas costas (antes estava dobrado na cintura)
+Wst = Sculpt()
+Wst.ell(Vector((0, 0.004 * H, hz + 0.15 * H)), (0.142 * H, 0.112 * H, 0.06 * H))
+b.add('overallWaist', Wst.mesh(res=0.01, smooth=3, target=600), overall, region='torso', subdiv=0)
+BIB = [(0.1, 0.17, 0.134, 1.15), (0.2, 0.152, 0.126, 0.95), (0.3, 0.17, 0.136, 0.78), (0.41, 0.19, 0.15, 0.6)]
+rows = [ring_pts(hz + dz * H, rx * H, ry * H, -a, a, 14) for dz, rx, ry, a in BIB]
+b.add('bib', shell_grid(rows, 0.007), overall, region='torso', subdiv=1)
+b.add('bibPocket', box((0, -0.152 * H, hz + 0.3 * H), (0.11 * H, 0.008 * H, 0.08 * H), bevel=0.004), overall_dk, region='torso', subdiv=0)
 for s in (1, -1):
-    b.add(f'hangStrap{s}', rod([(s * 0.1 * H, -0.12 * H, hz + 0.13 * H), (s * 0.13 * H, -0.1 * H, hz - 0.05 * H), (s * 0.14 * H, -0.06 * H, hz - 0.2 * H)], 0.01 * H, 5, flat=(outward((0, 0)), 0.3)), strap, region='skirt', subdiv=0)
-    b.add(f'buckle{s}', box((s * 0.14 * H, -0.065 * H, hz - 0.2 * H), (0.02 * H, 0.008 * H, 0.024 * H), bevel=0.002), steel, region='skirt', subdiv=0)
+    tx, ty_ = math.sin(0.6) * 0.19 * H * s, -math.cos(0.6) * 0.15 * H
+    b.add(f'bibStrap{s}', rod([(tx, ty_ - 0.004 * H, hz + 0.41 * H), (s * 0.095 * H, -0.1 * H, hz + 0.54 * H), (s * 0.09 * H, -0.02 * H, hz + 0.61 * H),
+                               (s * 0.08 * H, 0.07 * H, hz + 0.58 * H), (s * 0.02 * H, 0.13 * H, hz + 0.44 * H), (-s * 0.06 * H, 0.13 * H, hz + 0.24 * H)],
+                              0.012 * H, 5, flat=(outward((0, 0)), 0.3)), strap, region='chest', subdiv=0)
+    b.add(f'buckle{s}', box((tx, ty_ - 0.012 * H, hz + 0.42 * H), (0.026 * H, 0.008 * H, 0.03 * H), bevel=0.002), steel, region='chest', subdiv=0)
+    # a faixa cáqui na lateral da perna (o detalhe claro do banner)
+    l, k = sk['l' + ('L' if s == 1 else 'R')], sk['k' + ('L' if s == 1 else 'R')]
+    b.add(f'sidePanel{s}', rod([l + Vector((s * 0.082 * H, 0, 0.06 * H)), l.lerp(k, 0.5) + Vector((s * 0.076 * H, 0, 0)), k + Vector((s * 0.066 * H, 0, 0))], 0.012 * H, 5), strap, region='leg' + ('L' if s == 1 else 'R'), subdiv=0)
 
 # ================================================================ a corrente de PLACAS no pescoço
 ty = -0.11 * H

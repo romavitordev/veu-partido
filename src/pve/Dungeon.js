@@ -3,6 +3,8 @@
 // do World de sempre, com DOIS lutadores: o jogador (fighters[0]) e o "inimigo da vez" (fighters[1]) — primeiro os
 // Devorados (cópias do lutador do jogador), depois o chefe. Entre um encontro e outro o inimigo fica escondido na próxima
 // sala (`lurking`: invisível, sem agir e sem travar a mira). Os Devorados menores são NPCs (combat/npcs.js).
+import { bossBounty } from './economy.js';
+import { BossPressure } from './bossRules.js';
 import * as THREE from 'three';
 import { COMBAT } from '../config/combat.js';
 import { World } from '../game/World.js';
@@ -223,19 +225,50 @@ export class Dungeon {
       applyHit(this.world, p, attacker, { damage: Math.max(1, Math.round(dealt * m.thorns)), kind: 'ability', thorns: true, unblockable: true, reaction: false, knockback: 0, hitstun: 0, sound: 'clawHit', color: 0xc8a0ff, scale: 0.6 });
     } : null;
     // SEGUNDO FÔLEGO (baú): uma vez por tentativa, o golpe que ia derrubar deixa com 30%
-    if (m.secondWind && !(this.run.secondWindUsed || []).includes(p === this.player ? 0 : 1)) {
-      p.lethalHook = () => {
-        this.run.secondWindUsed = [...(this.run.secondWindUsed || []), p === this.player ? 0 : 1];
-        p.health = Math.round(p.maxHealth * 0.3);
-        p.invuln = Math.max(p.invuln || 0, 1.2);
-        this.world.fx.burst(p.chestPos(v1).clone(), { count: 40, color: 0xfff0c0, speed: 4, life: 0.7, size: 0.18 });
-        this.hud.callout('SEGUNDO FÔLEGO', '#fff0c0');
-        this.audio.play('levelUp', { volume: 0.9, pitch: 1.2 });
+    // RESSURREIÇÃO (loja da Aghata): uma vez por tentativa, depois do Segundo Fôlego, volta com 50% e afasta os inimigos
+    const slot = p === this.player ? 0 : 1;
+    const windOk = m.secondWind && !(this.run.secondWindUsed || []).includes(slot);
+    const reviveOk = m.revive && !(this.run.reviveUsed || []).includes(slot);
+    if (windOk || reviveOk) {
+      const hook = () => {
+        const wind = m.secondWind && !(this.run.secondWindUsed || []).includes(slot);
+        const rev = m.revive && !(this.run.reviveUsed || []).includes(slot);
+        if (wind) {
+          this.run.secondWindUsed = [...(this.run.secondWindUsed || []), slot];
+          p.health = Math.round(p.maxHealth * 0.3);
+          p.invuln = Math.max(p.invuln || 0, 1.2);
+          this.world.fx.burst(p.chestPos(v1).clone(), { count: 40, color: 0xfff0c0, speed: 4, life: 0.7, size: 0.18 });
+          this.hud.callout('SEGUNDO FÔLEGO', '#fff0c0');
+          this.audio.play('levelUp', { volume: 0.9, pitch: 1.2 });
+        } else if (rev) {
+          this.run.reviveUsed = [...(this.run.reviveUsed || []), slot];
+          this.resurrect(p);
+        } else return false;
+        // o Fighter limpa o gancho antes de chamar: sobrou outra vida (Fôlego e Ressurreição juntos), rearma
+        if ((m.secondWind && !(this.run.secondWindUsed || []).includes(slot)) || (m.revive && !(this.run.reviveUsed || []).includes(slot))) p.lethalHook = hook;
         return true;
       };
-    } else if (!m.secondWind) p.lethalHook = null;
+      p.lethalHook = hook;
+    } else p.lethalHook = null;
     p.pveMods = m;
     return m;
+  }
+
+  // a RESSURREIÇÃO: volta com metade da vida, 2,5 s intocável, e uma onda empurra quem estiver perto
+  resurrect(p) {
+    const w = this.world;
+    p.health = Math.round(p.maxHealth * 0.5);
+    p.invuln = Math.max(p.invuln || 0, 2.5);
+    const at = p.chestPos(v1).clone();
+    for (let i = 0; i < 4; i++) w.after(i * 0.1, () => w.fx.burst(at.clone().setY(0.3 + i * 0.4), { count: 30, color: 0xffe9a8, speed: 3 + i, up: 3, life: 0.9, size: 0.2, gravity: -2 }));
+    w.fx.ring(new THREE.Vector3(p.pos.x, 0.08, p.pos.z), { color: 0xffe9a8, radius: 4.5, life: 0.6 });
+    w.cameraRig.shake(0.3, 0.5);
+    this.hud.callout('RESSURREIÇÃO', '#ffe9a8');
+    this.audio.play('ritual', { volume: 1, pitch: 1.2 });
+    for (const e of w.fighters || []) {
+      if (e === p || this.players.includes(e) || e.state === 'ko' || distXZ(e.pos, p.pos) > 4.5) continue;
+      applyHit(w, p, e, { damage: 1, kind: 'ability', knockback: 12, hitstun: 0.6, unblockable: true, sound: 'impact', color: 0xffe9a8, scale: 1.2 });
+    }
   }
 
   // ------------------------------------------------ começo
@@ -762,6 +795,7 @@ export class Dungeon {
         for (const q of this.players) if (q.pos.x < gx + 0.6) { q.pos.set(gx + 1.6, q.pos.y, 0); resolveBody(w.arena, q.pos, q.radius || 0.5); }
       }
       // ela se forma no meio do bunker (pve/degolificada.js), depois a luta
+      this.bossHome = { x: r.spawn.x, z: r.spawn.z }; // o meio do bunker: para onde ela desliza quando a encurralam
       this.bossIntro = new DegolificadaIntro(this, r.spawn);
       return;
     }
@@ -779,7 +813,10 @@ export class Dungeon {
     e.setState('idle');
     this.player.setState('idle');
     this.attachEnemyCpu(this.diff.cpu);
-    e.cpuEdge = { dealt: this.scale.dealt * (this.D.bossTune?.dealt ?? 1), taken: 1 };
+    // O CHEFE ACOMPANHA A BUILD (pedido do dono, 2026-11-12, "como no Vampire Survivors: mesmo com vários poderes, o chefe
+    // ainda dá medo"): +4% de dano por nível da tentativa (até +80%)
+    const lvl = Math.min(1.8, 1 + 0.04 * Math.max(0, (this.run.level || 1) - 1));
+    e.cpuEdge = { dealt: this.scale.dealt * (this.D.bossTune?.dealt ?? 1) * lvl, taken: 1 };
     this.hudRemove('pve-noboss', 'pve-minor');
     if (this.D.boss === 'degolificada') {
       this.spawnBossBoxes();
@@ -790,6 +827,7 @@ export class Dungeon {
       return;
     }
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
+    this.pressure = new BossPressure(this, e, this.diff.counter ?? 7); // a REPULSÃO contra quem só aperta botão (bossRules.js)
     this.brain = new EspreitadorBrain(this, { closets: this.closets, playerDef: this.playerDef, cloneDefs: this.cloneDefs });
     this.bindHud();
     this.pveHud.hint('Os ARMÁRIOS são as frestas dele: bata neles para TRANCAR · OLHOS AMARELOS acesos = ele vai sair por ali');
@@ -814,7 +852,7 @@ export class Dungeon {
   // moedas. Devolve os ícones que saem do baú (a animação em pickups.js Chest)
   openChest(c) {
     this.stats.chests++;
-    const n = chestCount(Math.random, c.luck || 0);
+    const n = chestCount(Math.random, (c.luck || 0) + (this.mods?.chestLuck || 0)); // + Baú Farto (loja da Aghata)
     const ups = chestUpgrades(this.run.picks, Math.random, n);
     const items = [];
     const rows = [];
@@ -844,7 +882,9 @@ export class Dungeon {
   }
 
   // as moedas entram no save NA HORA (a morte não leva): o flow.js grava (onCoins)
-  giveCoins(n) {
+  giveCoins(n, raw = false) {
+    // a dificuldade (PVE_DIFFICULTIES[].coin) e a Ganância da árvore aumentam as moedas; raw = já calculado (a recompensa)
+    if (!raw) n = Math.max(1, Math.round(n * (this.diff.coin ?? 1) * (this.mods?.coinMult ?? 1)));
     this.stats.coins += n;
     this.audio.play('pickup', { volume: 1, pitch: 1.4 });
     this.popup(0, `+${n} MOEDAS`, '#ffc040');
@@ -878,6 +918,8 @@ export class Dungeon {
       this.brain && this.brain.onDeath && this.brain.onDeath();
       this.brain && this.brain.dispose();
       this.brain = null;
+      this.pressure && this.pressure.dispose();
+      this.pressure = null;
       this.clearEspreitadorEyes();
       this.bossDeadAt = at;
       this.phase = 'bossDown';
@@ -1535,6 +1577,7 @@ export class Dungeon {
       }
     }
     if (this.brain && enc && enc.boss && !enc.done) this.brain.update(this.lastDt);
+    if (this.pressure && enc && enc.boss && !enc.done) this.pressure.update(this.lastDt);
     // a sala do chefe com gatilho (o bunker da escola): a luta começa quando alguém passa dele
     const B = this.pendingBoss;
     if (B && this.mod === B && !this.transit && this.players.some((q) => q.state !== 'ko' && q.pos.x > B.bossTrigger.x)) {
@@ -1547,11 +1590,12 @@ export class Dungeon {
 
   takeReward() {
     this.giveXp(this.D.xp.boss);
-    if (this.D.chests && this.D.chests.coinsBoss) this.giveCoins(Math.round(this.D.chests.coinsBoss * (1 + 0.25 * (this.run.depth - 1))));
+    // a recompensa do chefe em moedas (economy.js bossBounty + o bônus da dungeon); a dificuldade e a Ganância multiplicam
+    const extra = this.D.chests && this.D.chests.coinsBoss ? Math.round(this.D.chests.coinsBoss * (1 + 0.25 * (this.run.depth - 1))) : 0;
+    this.giveCoins(bossBounty(this.run.depth) + extra);
     this.rewardTaken = true;
-    this.onReward && this.onReward(this); // o main.js grava o nível e o ponto permanente (uma vez por dungeon)
+    this.onReward && this.onReward(this); // o flow.js grava o nível do personagem (uma vez por dungeon)
     this.hud.callout('+1 NÍVEL DO PERSONAGEM', '#ffd84a');
-    this.popup(0, '+1 PONTO PERMANENTE', '#ffd84a');
     this.unlockExit();
   }
 
@@ -1669,6 +1713,7 @@ export class Dungeon {
     this.bossIntro && this.bossIntro.dispose();
     this.ambience && this.ambience.dispose();
     this.brain && this.brain.dispose();
+    this.pressure && this.pressure.dispose();
     for (const k of this.pickups) k.dispose();
     for (const c of this.closets) c.dispose();
     for (const id in this.cracks) this.cracks[id].dispose();
