@@ -167,13 +167,23 @@
       rebalanceados, Super Difícil e Aniquilação, anti-spam dos chefes (Repulsão), Degolificada com fúria e explosão
       quando encurralada, loja com gacha (vitrine de 6 que troca a cada 4 h, giro só ×1), roleta animada, 3 melhorias novas (Ressurreição a ● 15.000) e DEVOLVER TUDO, menu novo com DADOS escondido e a loja da Aghata nas
       Melhorias. Lançado na v4.38.0; detalhes no CHANGELOG-ADMIN.
-- [ ] **Calibrar a economia do Outro Lado com a bateria** (PROPOSTA a medir): renda por dungeon em cada dificuldade
-      contra os preços (giro 150, comum 250 … lendário 1600, melhorias 120–250 × grau).
-- [ ] **Render maior da Aghata para a loja** (o `sobre/elenco/aghata.webp` tem 240 × 320 e fica mole em tela grande).
+- [~] **Calibrar a economia do Outro Lado com a bateria** (PROPOSTA a medir): renda por dungeon em cada dificuldade
+      contra os preços (giro 200, comum 250 … lendário 1600, melhorias 120–250 × grau). **Medido em 2026-11-13** com
+      `node tools/pve-economy.mjs` (simulação com os sorteios reais do jogo, jogador que abre tudo): Normal ≈ 30 de drops +
+      58 do chefe por dungeon, **≈ 320 por tentativa de 3 dungeons** (giro em 0,6 tentativa, comum em 0,8, lendário em 5).
+      Fácil 228 · Difícil 445 · Super Difícil 597 · Aniquilação 809 por tentativa. O chefe paga 2/3 da renda. Falta o
+      dono decidir se sobe os preços (a meta do comentário de economy.js era lendário em ~7 tentativas no Normal).
+- [x] **Render maior da Aghata para a loja** — `sobre/elenco/aghata_loja.webp`, 720 × 960 com fundo transparente (2026-11-13).
 - [x] **Próximo personagem: um dos PSIKOLERA restantes** — Cindy Lopes (v4.41.0, com o especial Amor e Sangue; o Hora do Show! fica guardado até
       a PSIKOLERA completa), remodelada pelas artes oficiais e com o retrato do Sobre. (pedido do dono, 2026-11-12), depois do Eloy (v4.39.0) e do
       polimento dos 3 Escriptas acima. Os instrumentos musicais modificados são as ARMAS (como em Hexatombe). Anotações
       em `lore/EQUIPES-HEXATOMBE.md` (ainda falta ler a página de cada membro dos Psikolera, Vampiros e Transtornados).
+- [ ] **3ª dungeon do Outro Lado: TORRE DA TV VARMINHO** ("Torre de Transmissão"; pedido do dono, 2026-11-13). Chefe:
+      o Estrangeiro na Sala do Sino; miniboss opcional no meio da rota; Alheios variados; a sala das PILASTRAS (parkour:
+      cair = voltar do céu à entrada com dano, as pilastras trocam de lugar; no coop os dois voltam). Estudo e plano em
+      `docs/TORRE-TRANSMISSAO.md`; 265 prints dos ep. 6 e 7 em `Referencias visuais/Mapas/torre-tv-varminho/`.
+      Recomendação: miniboss = RASTROPODA (invisível, revelado pela câmera e pela farinha); o BILU vira a ameaça do
+      quarto escuro (fraco, rápido, volta em outro lugar). Feito: o estudo. Próximo: arena no Blender e as pilastras.
 - [ ] **Lançar o especial HORA DO SHOW! (PSIKOLERA)** (dono, 2026-11-13: só sai com a PSIKOLERA completa). A
       coreografia já existe (`CHOREO.psikolera`); a ligação está com `unreleased: true` em `src/config/teamLinks.js`.
       Quando Franco, Caio e Alê entrarem: incluir os três na coreografia, subir `min` para 3, tirar o `unreleased`.

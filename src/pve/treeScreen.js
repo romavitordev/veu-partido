@@ -22,7 +22,7 @@ export class PveTreeScreen {
     el.className = 'screen pve-tree pve-shop';
     // A LOJA DA AGHATA (pedido do dono, 2026-11-12): a tela inteira é a loja dela — prateleiras, velas, o balcão —, ela
     // fica de pé ao lado, olhando você escolher, e as melhorias ficam num painel (popup) em cima do balcão
-    const art = `${import.meta.env.BASE_URL || '/'}sobre/elenco/aghata.webp`;
+    const art = `${import.meta.env.BASE_URL || '/'}sobre/elenco/aghata_loja.webp`; // 720 × 960 (o do Sobre tem 240 × 320 e ficava mole)
     el.innerHTML = `
       <div class="ps-room" aria-hidden="true">
         <div class="ps-shelf s1">${'<i></i>'.repeat(7)}</div>
