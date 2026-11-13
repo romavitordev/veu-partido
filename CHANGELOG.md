@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.41.0 — Amor e Sangue
+
+### Adicionado
+- Cindy Lopes (PSIKOLERA): Fuzil Baixo, Silenciar, Tiro do Palco, Máscara PSIKOLERA, Pirueta no Cânion, Última Nota, especial Show no Monica Club e despertar Pegadas de Sangue.
+- Especial em equipe Amor e Sangue (Eloy + Kemi).
+
+### Alterado
+- Modelos de Eloy e Artemis polidos pelas artes oficiais; retratos do Sobre renderizados de novo.
+
 ## v4.40.0 — O show continua
 
 ### Adicionado

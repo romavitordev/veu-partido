@@ -2,6 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.41.0 — Amor e Sangue
+- NOVA PERSONAGEM: Cindy Lopes, a baixista da PSIKOLERA. Ela luta com o FUZIL BAIXO, um baixo com o salto alto amarrado na ponta e um fuzil por baixo: segura como baixo, com o braço apontado para o inimigo, e atira pela ponta.
+- Cindy: SILENCIAR, o grito que deixa o alvo sem habilidades, mais fraco e mais lento; Tiro do Palco; Máscara PSIKOLERA, que a deixa mais rápida e mais forte dançando; Pirueta no Cânion; e a Última Nota, um acorde que empurra e queima.
+- Especial SHOW NO MONICA CLUB: a Cindy toca o baixo, veste a máscara e entra dançando no mosh. No despertar Pegadas de Sangue a máscara fica no rosto.
+- ESPECIAL EM EQUIPE novo: AMOR E SANGUE (Eloy + Kemi). Ele conta o tempo na bateria, ela atira nas batidas, e os dois fecham juntos com o prato e o último tiro.
+- Eloy e Artemis com o visual mais fiel às artes: o macacão e o arnês do Eloy, a regata, o macacão e o cabelo da Artemis.
+
 ## v4.40.0 — O show continua
 - SOLO DE BATERIA DO ELOY: a bateria surge na frente dele, ele toca, tranca a focinheira com raiva, chuta a bateria longe e parte para cima, agora como uma cena com a câmera nele.
 - Eloy segura as baquetas do jeito certo, com a ponta para cima. Com a FOCINHEIRA ele ruge, fica curvado e bate mais rápido, e no despertar O Show Não Para ele veste a máscara até o fim do round.

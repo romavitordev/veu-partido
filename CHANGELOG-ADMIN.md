@@ -1,5 +1,61 @@
 # Registro administrativo de alterações
 
+## v4.41.0 — Amor e Sangue
+
+- **Cindy Lopes (PSIKOLERA) jogável (kit aprovado pelo dono, 2026-11-14):** a baixista da banda, de Sangue, pequena e
+  rápida. Usa o **Fuzil Baixo**: o baixo branco com o salto alto amarrado na ponta e o fuzil por baixo. Ela segura como
+  baixo, com o corpo na cintura e o braço apontado para o inimigo, e atira pela ponta (poses próprias `idle_bass` e
+  `shoot_bass`).
+  - **Ataques:** sequência com o corpo do baixo, coronhada, o salto alto, giro e tiro colado. O □ é uma rajada de 3
+    tiros.
+  - **Habilidades:** **Silenciar** (cânone): o grito em cone deixa o alvo SILENCIADO, sem habilidades, mais fraco e
+    mais lento. **Tiro do Palco:** o tiro pesado mirado. **Máscara PSIKOLERA:** mais rápida e mais forte, com a idle
+    dançando. **Pirueta no Cânion:** leque de tiros girando para trás. **Última Nota:** cone de som que empurra e
+    queima.
+  - **Passiva Tiros de Aviso:** tiros extras saem nos golpes corpo a corpo, com mais chance de máscara.
+  - **Especial Show no Monica Club:** ela toca o baixo, veste a máscara e entra dançando no mosh.
+  - **Despertar Pegadas de Sangue:** a máscara fica no rosto, com a idle dançando.
+  - **Remodel pelas referências (pedido do dono, 2026-11-14):** comparado com as artes oficiais da wiki ("Arte Cindy
+    com Baixo" de frente e de costas, "Arte Cindy sem Máscara" de frente e de costas, a arte conceitual, o pôster e a
+    "Arte Fuzil de Cindy"), com as fanarts do Pinterest só para confirmar as cores.
+    - **Modelo:** o arnês agora é em X, com a argola no alto e três cintas largas embaixo do peito. Cada braço tem
+      três faixas com abas chatas e manga longa rasgada, com uma tira de ponta triangular. Correntes em V descem até
+      a argola da frente e em U nas costas, e duas tiras com ponta de metal pendem na frente. A alça preta do baixo
+      cruza o peito e as costas. As botas ganharam fivelas largas e cravos na sola.
+    - **Cabelo:** loiro-acinzentado e fofo, cobrindo a nuca, com a franja até a sobrancelha. A parte de baixo
+      vermelha fica só nas laterais (antes era rosa e cobria a nuca inteira).
+    - **Máscara:** olhos vermelhos e três lágrimas vermelhas escorrendo de cada olho (antes, triângulos e sorriso).
+      Sem a máscara, a boca ficou mais vermelha.
+    - **Fuzil Baixo:** corpo assimétrico com o chifre longo e espinhos, coberto de respingos de sangue. A escala é
+      preta com marcações vermelhas acesas. O cano com freio de boca passa da cabeça do braço, e o carregador curvo
+      vermelho-escuro sai da lateral do corpo.
+    - O retrato do Sobre (`public/sobre/elenco/cindy.webp`) foi renderizado com o modelo novo.
+  - **Registro:** falas de vitória contra todos e de todos contra ela; cenas próprias com o Eloy, a Kemi e o Raziel;
+    voz nas introduções; cena de agarrão; Outro Lado no grupo de 170 moedas.
+- **Especiais em equipe (pedido do dono, 2026-11-14; nomes do dono):**
+  - **Amor e Sangue (Eloy + Kemi):** o Eloy conta o tempo na bateria e a Kemi, ajoelhada com a sniper, atira nas
+    batidas. Depois ele veste a focinheira, chuta a bateria e fecha com o prato de ataque no mesmo tempo do último tiro
+    dela. Os golpes são PROPOSTA; o casal é cânone.
+  - **Hora do Show! (PSIKOLERA) — pronto, mas NÃO LANÇADO** (dono: só sai com a PSIKOLERA completa; `unreleased`
+    em `teamLinks.js`): Eloy na bateria e Cindy no baixo, os dois de máscara. Ela grita e prende o alvo,
+    ele entra no rufo, ela gira atirando em leque e os dois fecham juntos com a Última Nota e o prato. Vale com os dois
+    na equipe. Franco, Caio e Alê entram no grupo quando estiverem no elenco.
+- **Modelos polidos pelas referências (pedido do dono, 2026-11-13):**
+  - **Eloy** (pôster "PSIKOLERA - Eloy" e arte conceitual da wiki): o macacão ficou cáqui-oliva (antes bege claro, que
+    no jogo saía quase branco). O X do peito virou o arnês da camisa de força: duas faixas descem dos ombros em V até
+    o cadeado. Ganhou também a faixa larga enrolada no peito, o zíper no meio, as tiras penduradas na cintura (duas
+    com fivela e uma longa com ponta triangular de metal) e a barra dobrada na perna esquerda. A focinheira agora tem
+    a tira por cima da cabeça com o espinho no alto. As faixas do peito e das costas, que flutuavam fora do corpo,
+    agora ficam rentes ao tecido.
+  - **Artemis** (banner de Calamidade): a regata preta agora é justa e vai até a cintura (antes era um top em caixa,
+    com uma "prateleira" que escondia as alças). O peitilho oliva acompanha o corpo e tem a bolsa grande cáqui com aba
+    e fivela. As alças de lona sobem do peitilho, passam por cima dos ombros com fivelas e cruzam nas costas. Os bolsos
+    das coxas ficaram cáqui. O gancho da calça agora é fechado (antes aparecia pele). O cabelo ganhou mechas mais finas
+    com as pontas viradas e uma franja reta que termina acima da sobrancelha (antes cobria os olhos).
+  - **Ferramentas:** `sculpt_lib` ganhou `hug()`, que gruda faixas na superfície do corpo, e `smooth_border()`, que
+    alisa a borda serrilhada das roupas cortadas com `clothe()`.
+  - Os retratos do Sobre (`public/sobre/elenco/eloy.webp` e `artemis.webp`) foram renderizados de novo.
+
 ## v4.40.0 — O show continua
 
 - **Eloy (pedido do dono, 2026-11-13):**

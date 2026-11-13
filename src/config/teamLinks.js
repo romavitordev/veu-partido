@@ -4,6 +4,7 @@
 // fica em combat/teamSpecials.js.
 //   members  os personagens da ligação (trio ou dupla; todos precisam estar na equipe)
 //   group + min  grupo: vale com `min` membros na equipe e aparecem TODOS os membros, mesmo os de fora da equipe
+//   unreleased  (opcional) a ligação está pronta mas ainda não vale no jogo (espera o resto da equipe entrar no elenco)
 //   priority  (opcional) desempate manual quando duas ligações valem para a mesma equipe (maior ganha)
 //
 // VERSÕES DO MESMO PERSONAGEM (pedido de 2026-10-26: vão existir várias versões, e especiais diferentes com membros em
@@ -157,6 +158,36 @@ export const TEAM_LINKS = {
     color: 0xf2c230,
     choreo: 'irmaos_lukic',
   },
+  // ELOY + KEMI (pedido do dono, 2026-11-14; cânone: o casal — ela segura o Eloy quando a focinheira pesa): o Eloy conta
+  // o tempo na bateria e a Kemi atira nas batidas (combat/teamSpecials.js CHOREO.eloy_kemi; os golpes são PROPOSTA)
+  eloy_kemi: {
+    id: 'eloy_kemi',
+    kind: 'duo',
+    name: 'AMOR E SANGUE',
+    banner: 'Amor e Sangue!',
+    members: ['eloy', 'kemi'],
+    order: ['eloy', 'kemi'],
+    color: 0xff5a8a,
+    choreo: 'eloy_kemi',
+    sceneProps: { kemi: { show: ['sniperHand'], hide: ['stowed'] } },
+  },
+  // PSIKOLERA (pedido do dono, 2026-11-14): a banda de Hexatombe. Hoje o Eloy (bateria) e a Cindy (baixo); Franco, Caio e
+  // Alê entram no grupo quando estiverem no elenco (aí o mínimo sobe para 3, como os outros grupos). Os dois de máscara
+  // (combat/teamSpecials.js CHOREO.psikolera). NÃO LANÇADO (dono, 2026-11-13: "só vai ser lançado quando ter todos
+  // psikolera"): a coreografia fica pronta, mas a ligação só vale quando tirar o `unreleased`
+  psikolera: {
+    unreleased: true,
+    id: 'psikolera',
+    kind: 'group',
+    name: 'HORA DO SHOW!',
+    banner: 'Hora do Show!',
+    group: ['eloy', 'cindy'],
+    min: 2,
+    order: ['eloy', 'cindy'],
+    color: 0xc6f03a,
+    choreo: 'psikolera',
+    masks: { eloy: { show: ['maskOn'] }, cindy: { show: ['maskOn'] } },
+  },
   // OS ESCRIPTAS (os Marcados do Kian em Calamidade): vale com 3 na equipe e aparecem todos
   escriptas: {
     id: 'escriptas',
@@ -236,6 +267,7 @@ export function getTeamLink(members) {
   const leader = defs[0];
   const ok = [];
   Object.values(TEAM_LINKS).forEach((l, order) => {
+    if (l.unreleased) return;
     const c = coverage(l, defs);
     const entries = (l.group || l.members).length;
     const valid = l.group ? c.hit >= l.min && people >= l.min && new Set(defs.filter((d) => inLink(l, d)).map(linkId)).size >= l.min : c.hit === entries;

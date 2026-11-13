@@ -5,6 +5,7 @@ import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { applyHit } from './damage.js';
 import { twoShot, orbit, pullBack, overShoulder, lowAngle, faceClose, impactClose } from '../camera/shots.js';
 import { ROSTER } from '../characters/index.js';
+import { bateriaEloy } from '../models/weapons.js';
 import { getTeamLink, linkId, inLink as inLinkOf, matchesEntry } from '../config/teamLinks.js';
 
 // ESPECIAL EM EQUIPE = CINEMÁTICA DA EQUIPE INTEIRA (pedido do dono, 2026-11-01: "não são apenas assistências atacando no
@@ -439,6 +440,25 @@ function choreographyTools({ f, opp, world, crew, guests, live, end }) {
     world.hitstop(0.05);
   };
   return { get, around, enter, impact };
+}
+
+// legenda com o nome e a cor de quem fala (side 0 = esquerda, 1 = direita)
+function sayer(world) {
+  const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? 0xc4241c).getHexString());
+  return (actor, text, side) => actor && world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
+}
+
+// liga/desliga peças do modelo durante a cena e devolve tudo como estava no fim (prop.undo())
+function propSwapper() {
+  const undo = [];
+  const prop = (actor, name, on) => {
+    const rig = actor && actor.rig;
+    if (!rig || !rig.props || !rig.props[name]) return;
+    undo.push([rig, name, rig.props[name].visible]);
+    rig.showProp(name, on);
+  };
+  prop.undo = () => { for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v); undo.length = 0; };
+  return prop;
 }
 
 function splitDamage(total, count) {
@@ -1050,6 +1070,208 @@ const CHOREO = {
     });
     tl.add(END, () => { for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v); undo.length = 0; });
     tl.add(END, () => world.ui && world.ui.subtitle && world.ui.subtitle(null));
+    return END;
+  },
+
+  // AMOR E SANGUE (nome do dono; pedido de 2026-11-14: "Eloy precisa ter especial em conjunto com Kemi"). Cânone: os dois são um
+  // casal e ela é quem segura o Eloy quando a focinheira pesa; a Kemi é a atiradora dos Mascarados. PROPOSTA dos golpes: o
+  // Eloy conta o tempo na bateria e a Kemi atira NAS BATIDAS, de joelhos com a sniper; no fim ele veste a focinheira,
+  // chuta a bateria e fecha com o prato de ataque no MESMO tempo do último tiro dela
+  eloy_kemi({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 5.4;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const eloy = tools.get('eloy'), kemi = tools.get('kemi');
+    const hits = splitDamage(crewTotal, 6);
+    const ROSE = 0xff5a8a;
+    const say = sayer(world);
+    const prop = propSwapper();
+    const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
+    let kit = null;
+    // 1. a bateria aparece na frente do Eloy (de lado para o alvo); a Kemi ajoelha longe com a sniper
+    tl.add(S, () => {
+      if (!live()) return;
+      if (eloy) {
+        tools.enter(eloy, -0.9, 4.6);
+        kit = bateriaEloy();
+        kit.position.set(eloy.pos.x, 0, eloy.pos.z);
+        kit.rotation.y = eloy.yaw;
+        world.scene.add(kit);
+        world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.6)), { count: 20, color: 0x2a2226, kind: 'smoke', speed: 1.4, life: 0.5, size: 0.6, grow: 1 });
+        eloy.play('drum_play', 2.2);
+        say(eloy, 'Kemi! Conta comigo: um, dois, três, quatro!', 0);
+        world.cameraRig.playShots([{ ...overShoulder(eloy, opp, { dur: 1.2, back: 2.2, side: -0.9, height: 1.6, fov: 46 }), cut: true }]);
+      }
+      if (kemi) {
+        tools.enter(kemi, 0.85, 7.5);
+        kemi.play('sniper_kneel', 2.4);
+      }
+    });
+    // 2. quatro batidas, quatro tiros: o bumbo e o tiro saem juntos
+    for (let i = 0; i < 4; i++) {
+      const t = S + 0.75 + i * 0.36;
+      tl.add(t, () => {
+        if (!live()) return;
+        world.audio.play(i % 2 ? 'drumSnare' : 'drumKick', { volume: 0.9 });
+        if (kit) world.fx.ring(kit.localToWorld(new THREE.Vector3(0, 0.5, 0.4)), { color: ROSE, radius: 0.6 + i * 0.15, life: 0.25 });
+        if (!kemi) return tools.impact(eloy, hits[i], { sound: 'punch', color: ROSE });
+        if (i === 1) world.cameraRig.playShots([{ ...overShoulder(kemi, opp, { dur: 1.1, back: 1.6, side: 0.7, height: 1.1, fov: 38 }), cut: true }]);
+        kemi.face(opp);
+        const from = muzzle(kemi);
+        world.fx.flash(from, { color: 0xffe08a, size: 1.1, life: 0.08 });
+        world.fx.tracer(from, opp.chestPos(), { color: 0xffe08a, life: 0.18, width: 0.05 });
+        world.audio.play('sniper', { volume: 0.7, pitch: 1 + i * 0.04 });
+        tools.impact(kemi, hits[i], { sound: 'clawHit', color: ROSE });
+      });
+    }
+    tl.add(S + 1.55, () => live() && kemi && say(kemi, 'No tempo, amor. Eu tô aqui.', 1));
+    // 3. a focinheira: o Eloy veste, grita e chuta a bateria em cima do alvo
+    tl.add(S + 2.35, () => {
+      if (!live() || !eloy) return;
+      prop(eloy, 'maskOn', true);
+      eloy.play('taunt_roar', 0.5);
+      world.audio.play('maskOn');
+      say(eloy, 'NÃO ENCOSTA EM MIM!', 0);
+      world.cameraRig.playShots([{ ...faceClose(eloy, { dur: 0.7, from: 2.4, to: 1.3, height: 1.6, fov: 36 }), cut: true }]);
+    });
+    tl.add(S + 2.95, () => {
+      if (!live() || !eloy) return;
+      eloy.play('kick_front', 0.35);
+      world.audio.play('drumCrash', { volume: 1 });
+      if (kit) { world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.5)), { count: 26, color: 0xd8d0c0, speed: 5, life: 0.45, size: 0.2 }); world.scene.remove(kit); kit = null; }
+      world.cameraRig.shake(0.3, 0.2);
+    });
+    // 4. corre e fecha: o prato de ataque e o último tiro dela no MESMO tempo
+    tl.add(S + 3.3, () => {
+      if (!live() || !eloy) return;
+      const at = tools.around(eloy, -0.2, 1.4);
+      eloy.pos.set(at.x, 0, at.z);
+      eloy.face(opp);
+      world.fx.burst(eloy.chest(), { count: 10, color: 0x2a2226, kind: 'smoke', speed: 1.4, life: 0.35, size: 0.4 });
+      eloy.play('flurry', 0.45);
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.2, radius: 3.4, height: 1.5, a0: -0.5, a1: 0.4 }), cut: true }]);
+    });
+    tl.add(S + 3.5, () => tools.impact(eloy || kemi, hits[4], { sound: 'heavyPunch', color: ROSE }));
+    tl.add(S + 3.95, () => {
+      if (!live()) return;
+      if (eloy) { eloy.face(opp); eloy.play('dual_both', 0.55); }
+      if (kemi) kemi.play('shoot_sniper', 0.5);
+      world.cameraRig.playShots([{ ...lowAngle(eloy || kemi, { dur: 1.1, dist: 3, fov: 46 }), cut: true }]);
+    });
+    tl.add(S + 4.2, () => {
+      if (!live()) return;
+      if (kemi) world.fx.tracer(muzzle(kemi), opp.chestPos(), { color: ROSE, life: 0.3, width: 0.08 });
+      world.audio.play('drumCrash', { volume: 1.1 });
+      world.audio.play('sniper', { volume: 1 });
+      tools.impact(eloy || kemi, hits[5], { sound: 'slashFinal', color: ROSE });
+      world.fx.ring(opp.chestPos(), { color: ROSE, radius: 1.8, life: 0.4, vertical: true, yaw: (eloy || kemi).yaw });
+      world.cameraRig.shake(0.45, 0.3);
+    });
+    tl.add(END, () => { if (kit) world.scene.remove(kit); kit = null; prop.undo(); world.ui && world.ui.subtitle && world.ui.subtitle(null); });
+    return END;
+  },
+
+  // HORA DO SHOW! (nome do dono; pedido de 2026-11-14: "um especial dos psikolera"). A PSIKOLERA em cena: o Eloy na bateria e
+  // a Cindy no Fuzil Baixo, os dois de máscara (link.masks). PROPOSTA: a batida, o GRITO da Cindy (Silenciar, cânone)
+  // que prende o alvo, o rufo do Eloy, o leque de tiros dela dançando e a ÚLTIMA NOTA com o prato no fim. Franco, Caio e
+  // Alê entram na coreografia quando estiverem no elenco
+  psikolera({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 5.6;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const eloy = tools.get('eloy'), cindy = tools.get('cindy');
+    const hits = splitDamage(crewTotal, 8);
+    const ACID = 0xc6f03a, BLOOD = 0xd01c30;
+    const say = sayer(world);
+    const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
+    let kit = null;
+    // 1. o palco: a bateria atrás, o Eloy contando e a Cindy no baixo
+    tl.add(S, () => {
+      if (!live()) return;
+      if (eloy) {
+        tools.enter(eloy, -0.5, 5.2);
+        kit = bateriaEloy();
+        kit.position.set(eloy.pos.x, 0, eloy.pos.z);
+        kit.rotation.y = eloy.yaw;
+        world.scene.add(kit);
+        eloy.play('drum_play', 1.6);
+      }
+      if (cindy) {
+        tools.enter(cindy, 0.45, 4.2);
+        cindy.play('bass_play', 1.6);
+      }
+      world.audio.play('drumCrash', { volume: 0.8 });
+      say(eloy || cindy, eloy ? 'UM, DOIS, TRÊS, QUATRO!' : 'Boa noite, Monica Club! ✩☾', 0);
+      if (eloy && cindy) world.cameraRig.playShots([{ ...twoShot(eloy, cindy, { dur: 1.5, dist: 4.2, height: 1.5, side: -1, fov: 46 }), cut: true }]);
+    });
+    for (let i = 0; i < 4; i++) {
+      tl.add(S + 0.3 + i * 0.3, () => {
+        if (!live()) return;
+        world.audio.play(i % 2 ? 'drumSnare' : 'drumKick', { volume: 0.8 });
+        world.audio.play('bassNote', { volume: 0.7, freq: [55, 55, 73, 82][i] });
+        const at = cindy ? cindy.chest() : opp.chestPos();
+        world.fx.ring(at, { color: ACID, radius: 0.5 + i * 0.2, life: 0.3, vertical: true, yaw: (cindy || eloy || f).yaw + Math.PI / 2 });
+      });
+    }
+    // 2. o GRITO: a Cindy Silencia o alvo (preso no lugar)
+    tl.add(S + 1.55, () => {
+      if (!live()) return;
+      const who = cindy || eloy;
+      if (cindy) { cindy.face(opp); cindy.play('taunt_roar', 0.6); say(cindy, 'SHHH... SILÊNCIO NA PLATEIA!', 1); }
+      world.audio.play('scream', { volume: 1 });
+      world.fx.distort(who.chest(), { color: ACID, radius: 2.4, life: 0.4 });
+      for (let i = 1; i <= 3; i++) world.fx.ring(who.chest().lerp(opp.chestPos(), i / 3), { color: ACID, radius: 0.6 + i * 0.4, life: 0.35, vertical: true, yaw: who.yaw + Math.PI / 2 });
+      if (opp.state !== 'ko') { opp.stun(2.2, 'stagger'); opp.notify('SILENCIADO', true); }
+      tools.impact(who, hits[0], { sound: 'impact', color: ACID });
+      world.cameraRig.playShots([{ ...faceClose(who, { dur: 0.8, from: 2.4, to: 1.3, height: 1.6, fov: 36 }), cut: true }]);
+    });
+    // 3. o Eloy chuta a bateria e entra no rufo
+    tl.add(S + 2.25, () => {
+      if (!live() || !eloy) return;
+      eloy.play('kick_front', 0.3);
+      world.audio.play('drumCrash', { volume: 1 });
+      if (kit) { world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.5)), { count: 24, color: 0xd8d0c0, speed: 5, life: 0.45, size: 0.2 }); world.scene.remove(kit); kit = null; }
+    });
+    tl.add(S + 2.5, () => {
+      if (!live() || !eloy) return;
+      const at = tools.around(eloy, -0.4, 1.4);
+      eloy.pos.set(at.x, 0, at.z);
+      eloy.face(opp);
+      eloy.play('flurry', 0.5);
+      say(eloy, 'NO RITMO!', 0);
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.2, radius: 3.4, height: 1.5, a0: -0.6, a1: 0.2 }), cut: true }]);
+    });
+    tl.add(S + 2.6, () => tools.impact(eloy, hits[1], { sound: 'punch', color: BLOOD }));
+    tl.add(S + 2.78, () => tools.impact(eloy, hits[2], { sound: 'heavyPunch', color: BLOOD }));
+    // 4. a Cindy dança girando e atira em leque (Pirueta no Cânion)
+    for (let i = 0; i < 3; i++) {
+      tl.add(S + 3.05 + i * 0.17, () => {
+        if (!live() || !cindy) return;
+        if (i === 0) { cindy.play('dual_spin', 0.55); world.cameraRig.playShots([{ ...overShoulder(cindy, opp, { dur: 0.9, back: 2, side: 0.8, height: 1.5, fov: 44 }), cut: true }]); }
+        const from = muzzle(cindy);
+        world.fx.flash(from, { color: 0xffe08a, size: 0.9, life: 0.08 });
+        world.fx.tracer(from, opp.chestPos().add(new THREE.Vector3((i - 1) * 0.3, 0, 0)), { color: 0xffe08a, life: 0.14, width: 0.04 });
+        world.audio.play('rifleShot', { volume: 0.7 });
+        tools.impact(cindy, hits[3 + i], { sound: 'clawHit', color: BLOOD });
+      });
+    }
+    // 5. a ÚLTIMA NOTA e o prato de ataque juntos
+    tl.add(S + 3.85, () => {
+      if (!live()) return;
+      if (cindy) { cindy.face(opp); cindy.play('bass_play', 0.8); say(cindy, 'Última nota, amor. ✩☾', 1); }
+      if (eloy) { eloy.face(opp); eloy.play('dual_both', 0.55); }
+      world.audio.play('bassNote', { volume: 1, freq: 41 });
+      world.cameraRig.playShots([{ ...lowAngle(cindy || eloy, { dur: 1.3, dist: 3.2, fov: 48 }), cut: true }]);
+    });
+    tl.add(S + 4.15, () => {
+      if (!live()) return;
+      const who = cindy || eloy;
+      world.audio.play('drumCrash', { volume: 1.1 });
+      world.audio.play('heavyPunch', { volume: 1.1, pitch: 0.45 });
+      for (let i = 1; i <= 4; i++) world.fx.ring(who.chest().lerp(opp.chestPos(), i / 4), { color: i % 2 ? ACID : 0xffb040, radius: 0.6 + i * 0.45, life: 0.35, vertical: true, yaw: who.yaw + Math.PI / 2 });
+      world.fx.burst(opp.chestPos(), { count: 30, color: 0xffb040, speed: 5, up: 2, life: 0.5, size: 0.2 });
+      tools.impact(who, hits[6] + hits[7], { sound: 'slashFinal', color: ACID });
+      world.cameraRig.shake(0.5, 0.35);
+    });
+    tl.add(END, () => { if (kit) world.scene.remove(kit); kit = null; world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return END;
   },
 

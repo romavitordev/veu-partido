@@ -10,6 +10,7 @@ import math
 import bpy
 import bmesh
 from mathutils import Vector, noise
+from mathutils.bvhtree import BVHTree
 
 TAU = math.tau
 
@@ -360,3 +361,39 @@ def pleat_pass(parts, mats, H, top=0.6, amp=0.016, n=14, cx=0.0, cy=0.0, min_ver
             wob = n3(p, 5) * 0.8
             return amp * H * k * (math.sin(a * n + wob) * 0.8 + math.sin(a * n * 2.3 + 1.1 + wob) * 0.2)
         relief(o, fn)
+
+
+def hug(obj, pts, off, center=None):
+    """gruda os pontos na superfície de obj (+off para fora): raio horizontal a partir do eixo do tronco, ou radial a partir
+    de center (cabeça). Assim as faixas ficam rentes ao corpo em vez de flutuar."""
+    bpy.context.view_layer.update()
+    dg = bpy.context.evaluated_depsgraph_get()
+    ts = [BVHTree.FromObject(o, dg) for o in (obj if isinstance(obj, (list, tuple)) else [obj])]
+    out = []
+    for q in pts:
+        q = Vector(q)
+        c = Vector(center) if center is not None else Vector((0, 0, q.z))
+        d = q - c
+        if d.length < 1e-6:
+            d = Vector((0, -1, 0))
+        d.normalize()
+        hits = [h for h in (t.ray_cast(c + d * 2.0, -d) for t in ts) if h[0] is not None]
+        hit = min(hits, key=lambda h: h[3]) if hits else None  # o primeiro de fora para dentro
+        out.append(hit[0] + d * off if hit else q)
+    return out
+
+
+def smooth_border(obj, iters=12):
+    """alisa a BORDA de uma peça cortada por clothe(): o corte por faces sai em degraus (serrilhado); cada volta puxa os
+    vértices da borda para a média dos vizinhos de borda, e a linha do corte fica corrida, como uma bainha."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    border = [v for v in bm.verts if v.is_boundary]
+    nb = {v: [e.other_vert(v) for e in v.link_edges if e.is_boundary] for v in border}
+    for _ in range(iters):
+        new = {v: (v.co + sum((u.co for u in nb[v]), Vector()) ) / (1 + len(nb[v])) for v in border if len(nb[v]) == 2}
+        for v, co in new.items():
+            v.co = co
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()

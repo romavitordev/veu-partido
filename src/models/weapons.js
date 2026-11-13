@@ -3701,3 +3701,117 @@ export function bateriaEloy() {
   g.userData.pieces = pieces;
   return g;
 }
+
+// FUZIL BAIXO DA CINDY (wiki "Cindy Lopes": "Arte Fuzil de Cindy em Hexatombe", "Arte Cindy com Baixo" de frente e de
+// costas e a arte conceitual): um BAIXO acoplado a um FUZIL. O corpo BRANCO assimétrico (o chifre longo e pontudo de um
+// lado, o curto do outro, um ESPINHO na ponta do chifre e outro no fim do corpo) coberto de RESPINGOS DE SANGUE; o braço
+// vermelho com a escala preta e as marcações vermelhas acesas; a cabeça do braço é o SALTO ALTO BRANCO amarrado com a
+// corda vermelha; o CANO preto com o freio de boca passa da cabeça; o CARREGADOR curvo vermelho-escuro sai da lateral
+// do corpo. Empunhadura na origem (o punho de pistola), o braço e o cano apontando para −Y, as cordas em +Z.
+// userData.muzzle: a boca do cano.
+export function fuzilBaixo() {
+  const g = new THREE.Group();
+  const WHITE = toon(0xf4f1ea, { emissive: 0x1a1816 });
+  const RED = toon(0x9a1218, { emissive: 0x200204 });
+  const BLOOD = toon(0x8a0c12, { emissive: 0x1c0204 });
+  const BLOOD_DK = toon(0x5e070c, { emissive: 0x120002 });
+  const BLK = toon(0x1c1c20, { emissive: 0x050506 });
+  const FRET = toon(0x141216, { emissive: 0x030304 });
+  const GLOW = toon(0xff2a2a, { emissive: 0xc0101a });
+  const MET = toon(0xb8b8be, { emissive: 0x18181c });
+  const add = (geo, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = part(geo, 0, { mat }); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m; };
+  // o CORPO: o chifre LONGO de +X corre ao lado do braço até a ponta com o espinho; o curto de −X; o bojo grande embaixo
+  const s = new THREE.Shape();
+  s.moveTo(0.028, 0.05);
+  s.bezierCurveTo(0.04, -0.02, 0.05, -0.1, 0.062, -0.17); // a borda de dentro do chifre longo
+  s.bezierCurveTo(0.09, -0.12, 0.13, -0.05, 0.13, 0.04); // a ponta e a borda de fora
+  s.bezierCurveTo(0.13, 0.1, 0.1, 0.14, 0.12, 0.2); // a cintura
+  s.bezierCurveTo(0.17, 0.27, 0.15, 0.38, 0.07, 0.42); // o bojo de baixo
+  s.bezierCurveTo(0.0, 0.45, -0.1, 0.43, -0.14, 0.36);
+  s.bezierCurveTo(-0.17, 0.29, -0.12, 0.22, -0.11, 0.17); // a cintura do outro lado
+  s.bezierCurveTo(-0.1, 0.12, -0.15, 0.08, -0.12, 0.0); // o chifre curto
+  s.bezierCurveTo(-0.1, -0.04, -0.07, -0.03, -0.06, 0.01); // a ponta do chifre curto
+  s.bezierCurveTo(-0.05, 0.05, -0.04, 0.06, -0.028, 0.05); // o recorte fundo até o braço
+  const bodyGeo = new THREE.ExtrudeGeometry(s, { depth: 0.045, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 2, curveSegments: 16 });
+  bodyGeo.translate(0, 0, -0.0225);
+  add(bodyGeo, WHITE, 0, 0.06, 0.02);
+  // os ESPINHOS: na ponta do chifre longo e no fim do corpo
+  add(new THREE.ConeGeometry(0.012, 0.07, 8), BLK, 0.092, -0.15, 0.02, 0, 0, 0.55);
+  add(new THREE.ConeGeometry(0.012, 0.07, 8), BLK, 0.0, 0.54, 0.02, 0, 0, Math.PI);
+  // os RESPINGOS DE SANGUE: manchas grandes (aglomerados) e gotas pequenas nas duas faces, só dentro do corpo
+  const rnd = (() => { let x = 7; return () => ((x = (x * 16807) % 2147483647) / 2147483647); })();
+  const inside = (x, y) => (y > 0.1 && y < 0.47 && Math.abs(x) < 0.12 - Math.max(0, 0.2 - y) * 0.15) || (y > -0.1 && y <= 0.1 && x > 0.05 && x < 0.12);
+  const blot = (x, y, r, mat) => { for (const side of [1, -1]) add(new THREE.CircleGeometry(r, 12), mat, x, y, 0.02 + side * 0.032, side > 0 ? 0 : Math.PI); };
+  for (let i = 0; i < 9; i++) { // as manchas grandes: um borrão e respingos em volta
+    let x, y;
+    do { x = (rnd() - 0.5) * 0.24; y = -0.08 + rnd() * 0.54; } while (!inside(x, y));
+    const R = 0.018 + rnd() * 0.022;
+    blot(x, y, R, i % 3 ? BLOOD : BLOOD_DK);
+    for (let k = 0; k < 5; k++) {
+      const a = rnd() * Math.PI * 2, d = R * (0.8 + rnd() * 0.9);
+      if (inside(x + Math.cos(a) * d, y + Math.sin(a) * d)) blot(x + Math.cos(a) * d, y + Math.sin(a) * d, R * (0.25 + rnd() * 0.35), BLOOD);
+    }
+  }
+  for (let i = 0; i < 46; i++) { // as gotas soltas
+    const x = (rnd() - 0.5) * 0.26, y = -0.1 + rnd() * 0.58;
+    if (inside(x, y)) blot(x, y, 0.003 + rnd() * rnd() * 0.012, BLOOD);
+  }
+  // os captadores, a ponte e os controles
+  add(new THREE.BoxGeometry(0.075, 0.03, 0.012), BLK, 0, 0.16, 0.058);
+  add(new THREE.BoxGeometry(0.075, 0.03, 0.012), BLK, 0, 0.24, 0.058);
+  add(new THREE.BoxGeometry(0.07, 0.035, 0.014), MET, 0, 0.34, 0.058);
+  for (const [x, y] of [[0.075, 0.3], [0.08, 0.34], [0.06, 0.38]]) add(new THREE.CylinderGeometry(0.01, 0.01, 0.014, 10), MET, x, y, 0.058, Math.PI / 2);
+  // o BRAÇO vermelho com a ESCALA PRETA, os trastes, as marcações vermelhas acesas e as quatro cordas
+  const NECK = 0.72;
+  add(new THREE.BoxGeometry(0.05, NECK, 0.026), RED, 0, 0.08 - NECK / 2, 0.036);
+  add(new THREE.BoxGeometry(0.046, NECK, 0.006), FRET, 0, 0.08 - NECK / 2, 0.051);
+  for (let k = 0; k < 16; k++) {
+    const y = 0.04 - k * 0.048 * (1 - k * 0.016);
+    add(new THREE.BoxGeometry(0.048, 0.003, 0.004), MET, 0, y, 0.055);
+    if ([2, 4, 6, 8, 11, 14].includes(k)) add(new THREE.BoxGeometry(0.03, 0.018, 0.003), GLOW, 0, y - 0.022, 0.0545);
+  }
+  for (const x of [-0.016, -0.0055, 0.0055, 0.016]) add(new THREE.CylinderGeometry(0.0015, 0.0015, NECK + 0.28, 4), MET, x, 0.34 - (NECK + 0.28) / 2, 0.06);
+  // respingos subindo pelo braço
+  for (let i = 0; i < 10; i++) add(new THREE.CircleGeometry(0.004 + rnd() * 0.008, 8), BLOOD, (rnd() - 0.5) * 0.04, 0.05 - rnd() * 0.5, 0.0495 - 0.025 * (i % 2), i % 2 ? Math.PI : 0);
+  // a cabeça do braço com as tarraxas
+  const HY = 0.08 - NECK;
+  add(new THREE.BoxGeometry(0.06, 0.14, 0.024), RED, 0.008, HY - 0.07, 0.036, 0, 0, 0.12);
+  for (let k = 0; k < 4; k++) add(new THREE.CylinderGeometry(0.006, 0.006, 0.03, 6), MET, 0.045, HY - 0.025 - k * 0.03, 0.036, 0, 0, Math.PI / 2);
+  // o SALTO ALTO BRANCO amarrado na ponta (a sola, o salto agulha e a corda vermelha dando voltas)
+  const heel = new THREE.Group();
+  const sole = part(new THREE.BoxGeometry(0.05, 0.16, 0.014), 0, { mat: WHITE });
+  sole.rotation.x = -0.35;
+  heel.add(sole);
+  const spike = part(new THREE.CylinderGeometry(0.004, 0.009, 0.11, 8), 0, { mat: WHITE });
+  spike.position.set(0, 0.07, -0.05);
+  spike.rotation.x = 0.25;
+  heel.add(spike);
+  const cup = part(new THREE.BoxGeometry(0.05, 0.05, 0.04), 0, { mat: WHITE });
+  cup.position.set(0, 0.065, -0.012);
+  heel.add(cup);
+  for (let i = 0; i < 4; i++) { const d = part(new THREE.CircleGeometry(0.006 + i * 0.002, 8), 0, { mat: BLOOD }); d.position.set((i - 1.5) * 0.01, -0.02 + i * 0.025, 0.01); heel.add(d); }
+  heel.position.set(0.0, HY - 0.18, 0.02);
+  heel.rotation.z = 0.2;
+  g.add(heel);
+  for (let k = 0; k < 5; k++) add(new THREE.TorusGeometry(0.036, 0.0035, 5, 16), RED, 0, HY - 0.08 - k * 0.012, 0.03, Math.PI / 2 + (k - 2) * 0.25);
+  // o FUZIL: o cano preto por baixo do braço, passando da cabeça, com o FREIO DE BOCA (o cilindro com os furos)
+  add(new THREE.CylinderGeometry(0.013, 0.015, 1.02, 10), BLK, 0, -0.4, 0.0);
+  add(new THREE.CylinderGeometry(0.022, 0.022, 0.09, 10), BLK, 0, -0.93, 0.0);
+  for (let k = 0; k < 3; k++) for (const sx of [1, -1]) add(new THREE.BoxGeometry(0.006, 0.012, 0.03), MET, sx * 0.02, -0.905 - k * 0.022, 0.0);
+  add(new THREE.CylinderGeometry(0.012, 0.012, 0.03, 8), BLK, 0, -0.66, 0.026); // a massa de mira
+  // o punho de pistola e o gatilho
+  add(new THREE.BoxGeometry(0.034, 0.06, 0.1), BLK, 0, 0.0, -0.05, 0.35);
+  add(new THREE.BoxGeometry(0.046, 0.14, 0.05), BLK, 0, 0.04, -0.005);
+  // o CARREGADOR curvo (AK), vermelho-escuro, saindo da lateral do corpo do lado do chifre curto
+  // (curva para trás, rente ao corpo: não atravessa a coxa dela na empunhadura de baixo)
+  for (let k = 0; k < 5; k++) {
+    const x = -0.14 - k * 0.026, y = 0.13 + k * 0.03 + k * k * 0.006, a = -0.5 - k * 0.14;
+    add(new THREE.BoxGeometry(0.06, 0.034, 0.03), BLOOD_DK, x, y, 0.0, 0, 0, a);
+    add(new THREE.BoxGeometry(0.06, 0.004, 0.032), BLK, x + 0.012, y + 0.014, 0.0, 0, 0, a);
+  }
+  const muzzle = new THREE.Object3D();
+  muzzle.position.y = -0.98;
+  g.add(muzzle);
+  g.userData.muzzle = muzzle;
+  return g;
+}

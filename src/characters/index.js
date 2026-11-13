@@ -31,6 +31,7 @@ import cristino from './cristino.js';
 import cristopher from './cristopher.js';
 import raziel from './raziel.js';
 import eloy from './eloy.js';
+import cindy from './cindy.js';
 import sabara from './sabara.js';
 import celestine from './celestine.js';
 import gaius from './gaius.js';
@@ -65,7 +66,7 @@ export const ROSTER = [
   xande, guizo, lirio, dara, chico, morato, // Os Cinco (Sinais do Outro Lado) — o Guizo do lado do melhor amigo; a Dara, a médica
   dalmo, aguiar, jae, kemi, labirinto, juan, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo
-  eloy, // PSIKOLERA (Hexatombe) — o baterista e fundador; Cindy, Franco e o resto da banda depois
+  eloy, cindy, // PSIKOLERA (Hexatombe) — o baterista e fundador e a baixista; Franco, Caio e Alê depois
   raziel, sabara, // Vampiros (Hexatombe) — o líder e a batedora; Alvira, Velisar e Zéfero entram depois
   // (2026-10-27) PORTADORES ≠ RELÍQUIAS: quem CARREGA a Relíquia e quem É a Relíquia. As formas ainda acontecem na luta
   // (Henri → Juan (Portador) → Portador do Trono; Arnaldo → Anfitrião; Ferreiro → Deus da Morte), mas também dá para

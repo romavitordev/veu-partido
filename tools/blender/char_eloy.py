@@ -14,7 +14,7 @@ TÉCNICA (a da Artemis): corpo pelo Builder; macacão como o próprio corpo com 
 import sys, os, math, random
 sys.path.insert(0, os.path.dirname(__file__))
 from lib import *
-from sculpt_lib import Sculpt, ridge, n3, rod, outward, ring_pts, shell_grid, relief
+from sculpt_lib import Sculpt, ridge, n3, rod, outward, ring_pts, shell_grid, relief, hug
 from mathutils import Vector
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'eloy.glb'
@@ -26,7 +26,7 @@ H = sk.h
 hz = sk['hips'].z
 
 skin = material('skin_eloy', '#e0b898', 0.8)
-suit = material('suit_eloy', '#c4bca6', 0.92)  # o macacão de camisa de força bege-acinzentado
+suit = material('suit_eloy', '#8c8768', 0.92)  # o macacão de camisa de força cáqui-oliva acinzentado (pôster)
 M = {
     'skin': skin,
     'face': material('face_eloy', '#ffffff', 0.8),
@@ -36,8 +36,8 @@ M = {
     'legs': suit,
     'feet': material('shoe_eloy', '#1a1a20', 0.7),
 }
-suit_dk = material('suit_eloy_dk', '#9c947e', 0.92)
-strap = material('strap_eloy', '#d6cfba', 0.85)
+suit_dk = material('suit_eloy_dk', '#5f5b46', 0.92)
+strap = material('strap_eloy', '#6e6a54', 0.85)  # as faixas um tom abaixo do tecido (arte conceitual)
 wrap = M['hand']
 metal = material('buckle_eloy', '#a8a8ac', 0.35, metal=0.9)
 lock = material('lock_eloy', '#8a7a4a', 0.35, metal=0.9)
@@ -81,6 +81,9 @@ for side in ('L', 'R'):
         p0 = Vector((bz.x, bz.y, bz.z)) + d * 0.076 * H
         ln = random.uniform(0.03, 0.06) * H
         b.add(f'hem{side}{i}', rod([p0, p0 + d * 0.006 * H + Vector((0, 0, -ln))], [0.012 * H, 0.004 * H], 4), suit_dk, region='k' + side, subdiv=0)
+    if side == 'L':  # a barra DOBRADA (enrolada) na perna esquerda
+        cz = k.lerp(f, 0.68)
+        b.add('cuffL', tube([(cz.x, cz.y, cz.z - 0.025 * H, 0.08 * H, 0.08 * H), (cz.x, cz.y, cz.z, 0.088 * H, 0.088 * H), (cz.x, cz.y, cz.z + 0.025 * H, 0.08 * H, 0.08 * H)], 18), suit_dk, region='k' + side, subdiv=0)
     # o tênis tipo ALL STAR: cano até o tornozelo, a biqueira e a sola brancas
     sx = f.x
     B = Sculpt()
@@ -90,20 +93,41 @@ for side in ('L', 'R'):
     b.add('shoeSole' + side, sole_part((sx, f.y - 0.045 * H, f.z - 0.012 * H), (0.1 * H, 0.25 * H, 0.032 * H), bevel=0.006), sole, region='k' + side, subdiv=0)
     b.add('shoeToe' + side, ellipsoid((sx, f.y - 0.15 * H, f.z + 0.012 * H), (0.044 * H, 0.04 * H, 0.026 * H), 12, 8), sole, region='k' + side, subdiv=0)
 
-# ================================================================ as FAIXAS CRUZADAS no peito, a vertical com o CADEADO e o cinto
-ty = -0.2 * H
+# ================================================================ o ARNÊS da camisa de força (pôster + arte conceitual)
+TOR = part('torso')
+flat = (outward((0, 0)), 0.3)
+# as duas faixas dos OMBROS descendo em V até o CADEADO central, logo abaixo da gola
+lockz = hz + 0.46 * H
 for s in (1, -1):
-    pts = [(s * 0.2 * H, ty + 0.05 * H, hz + 0.56 * H), (s * 0.1 * H, ty - 0.012 * H, hz + 0.44 * H), (-s * 0.04 * H, ty - 0.012 * H, hz + 0.3 * H), (-s * 0.16 * H, ty + 0.03 * H, hz + 0.16 * H)]
-    b.add(f'cross{s}', rod(pts, 0.016 * H, 5, flat=(outward((0, 0)), 0.3)), strap, region='chest', subdiv=0)
-    b.add(f'crossBuckle{s}', box((-s * 0.12 * H, ty + 0.0 * H, hz + 0.21 * H), (0.03 * H, 0.01 * H, 0.03 * H), bevel=0.002), metal, region='torso', subdiv=0)
-    # as costas: as faixas cruzando atrás também
-    b.add(f'crossBack{s}', rod([(s * 0.2 * H, 0.18 * H, hz + 0.56 * H), (0, 0.205 * H, hz + 0.36 * H), (-s * 0.17 * H, 0.17 * H, hz + 0.16 * H)], 0.016 * H, 5), strap, region='chest', subdiv=0)
-b.add('vertStrap', rod([(0, ty - 0.004 * H, hz + 0.08 * H), (0, ty - 0.016 * H, hz + 0.32 * H), (0, ty + 0.03 * H, hz + 0.56 * H), (0, -0.09 * H, hz + 0.63 * H)], 0.014 * H, 5), strap, region='chest', subdiv=0)
-b.add('belt', tube([(0, 0.004 * H, hz + 0.03 * H, 0.182 * H, 0.15 * H), (0, 0.004 * H, hz + 0.07 * H, 0.18 * H, 0.148 * H)], 24), strap, region='torso', subdiv=0)
+    v = hug(TOR, [(s * 0.19 * H, -0.04 * H, hz + 0.58 * H), (s * 0.16 * H, -0.12 * H, hz + 0.55 * H), (s * 0.09 * H, -0.2 * H, hz + 0.5 * H), (s * 0.014 * H, -0.2 * H, lockz + 0.01 * H)], 0.006 * H)
+    b.add(f'vStrap{s}', rod(v, 0.017 * H, 5, flat=flat), strap, region='chest', subdiv=0)
+    # nas costas, as faixas cruzando em X
+    bk = hug(TOR, [(s * 0.15 * H, 0.03 * H, hz + 0.6 * H), (s * 0.08 * H, 0.2 * H, hz + 0.46 * H), (0, 0.2 * H, hz + 0.36 * H), (-s * 0.09 * H, 0.2 * H, hz + 0.24 * H), (-s * 0.16 * H, 0.1 * H, hz + 0.14 * H)], 0.006 * H)
+    b.add(f'crossBack{s}', rod(bk, 0.016 * H, 5, flat=flat), strap, region='chest', subdiv=0)
+# a FAIXA LARGA enrolada no peito (abraça o tronco todo)
+for z, w in ((hz + 0.4 * H, 0.03 * H), (hz + 0.24 * H, 0.02 * H)):
+    ring = hug(TOR, [(math.sin(a) * 0.3 * H, -math.cos(a) * 0.3 * H, z) for a in [i / 40 * TAU for i in range(41)]], 0.007 * H)
+    b.add(f'chestBand{int(w * 1000)}', rod(ring, w, 6, caps=False, flat=flat), strap, region='chest', subdiv=0)
+# o ZÍPER no meio, da gola até o cinto
+zp = hug(TOR, [(0, -0.2 * H, z) for z in [hz + 0.08 * H + 0.5 * H * i / 10 for i in range(11)]], 0.004 * H)
+b.add('zipper', rod(zp, 0.006 * H, 5), metal, region='chest', subdiv=0)
+# o cinto e a fivela
+BELT = b.add('belt', tube([(0, 0.004 * H, hz + 0.03 * H, 0.182 * H, 0.15 * H), (0, 0.004 * H, hz + 0.07 * H, 0.18 * H, 0.148 * H)], 24), strap, region='torso', subdiv=0)
 b.add('beltBuckle', box((0, -0.156 * H, hz + 0.05 * H), (0.05 * H, 0.012 * H, 0.04 * H), bevel=0.003), metal, region='torso', subdiv=0)
-# o CADEADO na gola (prende a faixa vertical; com a focinheira, prende a máscara também)
-b.add('padlock', box((0, -0.11 * H, hz + 0.6 * H), (0.034 * H, 0.016 * H, 0.032 * H), bevel=0.004), lock, region='chest', subdiv=0)
-b.add('padlockShackle', rod([(-0.01 * H, -0.11 * H, hz + 0.615 * H), (-0.01 * H, -0.11 * H, hz + 0.635 * H), (0.01 * H, -0.11 * H, hz + 0.635 * H), (0.01 * H, -0.11 * H, hz + 0.615 * H)], 0.0035 * H, 5), metal, region='chest', subdiv=0)
+# as FAIXAS PENDURADAS na frente da cintura: duas curtas com fivela e uma longa com a ponta triangular
+for i, (x, ln) in enumerate(((0.07, 0.13), (-0.035, 0.11), (-0.1, 0.27))):
+    pts = [Vector((x * H + 0.004 * H * k * (1 if i % 2 else -1), -0.3 * H, hz + 0.04 * H - ln * H * k / 4)) for k in range(5)]
+    pts = hug([TOR, BELT, part('pantsL'), part('pantsR')], pts, 0.014 * H)
+    b.add(f'hang{i}', rod(pts, 0.013 * H, 4, flat=((lambda p: Vector((0, -1, 0))), 0.3)), strap, region='hips', subdiv=0)
+    e = pts[-1]
+    if i == 2:  # a ponta triangular de metal
+        b.add('hangTip', cone(e + Vector((0, 0, 0.005 * H)), e + Vector((0, 0, -0.04 * H)), 0.016 * H, 3), metal, region='hips', subdiv=0)
+    else:
+        b.add(f'hangBuckle{i}', box(tuple(e + Vector((0, 0, 0.02 * H))), (0.03 * H, 0.008 * H, 0.026 * H), bevel=0.002), metal, region='hips', subdiv=0)
+# o CADEADO no encontro das faixas do peito
+lk = hug(TOR, [(0, -0.2 * H, lockz)], 0.02 * H)[0]
+b.add('padlock', box(tuple(lk), (0.036 * H, 0.018 * H, 0.034 * H), bevel=0.004), lock, region='chest', subdiv=0)
+b.add('padlockShackle', rod([lk + Vector((sx_ * 0.011 * H, 0, dz * H)) for sx_, dz in ((-1, 0.016), (-1, 0.036), (1, 0.036), (1, 0.016))], 0.0035 * H, 5), metal, region='chest', subdiv=0)
 
 # ================================================================ a GOLA RASGADA com PONTAS nos ombros
 for i in range(22):
@@ -169,7 +193,7 @@ def straight(p):
     return 0.004 * H * (ridge(math.atan2(p.x - HC.x, p.y - HC.y) * 18 + n3(p, 30) * 2, 2) - 0.4)
 
 
-b.add('hair', Hr.mesh(res=0.006, smooth=2, disp=straight, target=4500), hairm, region='head', subdiv=0)
+HAIR = b.add('hair', Hr.mesh(res=0.006, smooth=2, disp=straight, target=4500), hairm, region='head', subdiv=0)
 
 # ================================================================ prop_maskOn: a FOCINHEIRA de espinhos + os olhos BRANCOS
 fz = hc.z - 0.065 * H
@@ -186,6 +210,10 @@ for i in range(5):  # os espinhos da frente
         mask_parts.append(cone(base, base + d * 0.03 * H, 0.009 * H, 6))
 mask_parts.append(rod([(s * 0.11 * H, -0.03 * H, fz + 0.02 * H) for s in (1,)] + [(0.13 * H, 0.06 * H, fz + 0.04 * H), (0, 0.15 * H, fz + 0.05 * H), (-0.13 * H, 0.06 * H, fz + 0.04 * H), (-0.11 * H, -0.03 * H, fz + 0.02 * H)], 0.008 * H, 5))
 b.add('prop_maskOnSpikes', merge(*mask_parts), spike, region='head', subdiv=0)
+hp = hug([HAIR, part('head')], [HC + Vector((0, -math.cos(a) * 0.2 * H, math.sin(a) * 0.2 * H)) for a in [-0.22 + (math.pi + 0.1) * i / 16 for i in range(17)]], 0.006 * H, center=HC)
+b.add('prop_maskOnHarness', rod(hp, 0.014 * H, 5, flat=((lambda p: p - HC), 0.35)), muz, region='head', subdiv=0)
+top = max(hp, key=lambda v: v.z)
+mask_parts.append(cone(top - Vector((0, 0, 0.01 * H)), top + Vector((0, 0.01 * H, 0.07 * H)), 0.018 * H, 6))
 eyes = [ellipsoid((s * 0.045 * H, hc.y - 0.137 * H, hc.z + 0.004 * H), (0.022 * H, 0.008 * H, 0.012 * H), 10, 6) for s in (1, -1)]
 b.add('prop_maskOnEyes', merge(*eyes), eyew, region='head', subdiv=0)
 b.group('prop_maskOn', 'prop_maskOn')  # uma peça só (dois materiais): o jogo liga e desliga junto

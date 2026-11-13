@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1789,6 +1789,20 @@ export function addEloyProps(rig) {
     sockets['hand' + side].add(st);
     props['stick' + side] = st;
   }
+  if (props.maskOn) rig.showProp('maskOn', false);
+}
+
+// CINDY (PSIKOLERA): o FUZIL BAIXO na direita, empunhado como fuzil (o punho de pistola na mão, o braço do baixo e o
+// cano para a frente). A MÁSCARA BRANCA é a peça prop_maskOn do modelo (tools/blender/char_cindy.py): só aparece na
+// habilidade Máscara PSIKOLERA e no despertar
+export function addCindyProps(rig) {
+  const { sockets, props } = rig;
+  const gun = fuzilBaixo();
+  gun.position.y = -0.2; // empunhado como BAIXO: o corpo fica embaixo do antebraço (na cintura), o braço apontado para a frente
+  gun.rotation.y = -Math.PI / 2; // a face das cordas para FORA (de lado), como um baixo tocado
+  sockets.handR.add(gun);
+  props.fuzilBaixo = gun;
+  rig.muzzle = gun.userData.muzzle;
   if (props.maskOn) rig.showProp('maskOn', false);
 }
 

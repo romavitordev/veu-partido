@@ -146,6 +146,19 @@ export const VOICES = {
       any: [(o) => `Calma, ${o.name}. Respira. Depois a gente briga.`, (o) => `NO RITMO, ${o.name.toUpperCase()}.`],
     },
   },
+  // CINDY LOPES (cânone: a baixista da PSIKOLERA, assina "✩☾", Silencia com um grito; tom debochado de palco = PROPOSTA)
+  cindy: {
+    open: {
+      ally: (o) => `${o.name}! Fica do lado do palco que eu cuido do grave. ✩☾`,
+      rival: (o) => `${o.name}. ${o.group} veio pro show? Primeira fila, amor.`,
+      any: [(o) => `Shh, ${o.name}. Agora é o solo do baixo.`, (o) => `Sorri, ${o.name}. Tem câmera, tem plateia, tem tiro.`],
+    },
+    reply: {
+      ally: (o) => `Tá, ${o.name}. Mas o holofote é meu.`,
+      rival: (o) => `${o.group}? Fofo. Sobe no palco, ${o.name}.`,
+      any: [(o) => `Grita mais alto, ${o.name}. Não te escuto.`, (o) => `Ai, ${o.name}. Que fã dedicado. ✩☾`],
+    },
+  },
   // SABARA (cânone: arrogante, exige gestos de humilhação; tira a bandana para mostrar o rosto de vampira)
   sabara: {
     open: {

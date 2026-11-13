@@ -82,6 +82,42 @@ export const CLIPS = {
       k(1, { h: -0.14, sp: [0.3, 0, 0], hd: [0.3, 0, 0], sR: [-0.75, 0, -0.35], eR: [-0.5, 0, 0], sL: [-1.25, 0, 0.35], eL: [-1.7, 0, 0], lL: [-0.3, 0, 0.14], kL: [0.5, 0, 0], lR: [0.25, 0, -0.14], kR: [0.45, 0, 0] }),
     ],
   },
+  // CINDY COM A MÁSCARA (cânone: "não consegue parar de DANÇAR e CANTAROLAR, mesmo lutando"): o quadril balança de um
+  // lado para o outro, a cabeça acompanha, um pé de cada vez sobe no tempo e o Fuzil Baixo fica baixo, solto na mão
+  idle_dance: {
+    dur: 0.9, loop: true, keys: [
+      k(0, { h: -0.06, hip: [0, -0.35, 0.12], sp: [0.05, 0.25, -0.16], hd: [0.1, -0.2, 0.25], sR: [-0.6, 0.2, -0.2], eR: [-1.1, 0, 0], sL: [-0.5, -0.3, 0.6], eL: [-1.3, 0, 0], lL: [-0.45, 0, 0.1], kL: [0.9, 0, 0], lR: [0.05, 0, -0.08], kR: [0.15, 0, 0] }),
+      k(0.5, { h: -0.06, hip: [0, -0.25, -0.12], sp: [0.05, 0.35, 0.16], hd: [0.1, -0.3, -0.25], sR: [-0.7, 0.2, -0.3], eR: [-1.2, 0, 0], sL: [-0.6, -0.3, 0.4], eL: [-1.1, 0, 0], lL: [0.05, 0, 0.08], kL: [0.15, 0, 0], lR: [-0.45, 0, -0.1], kR: [0.9, 0, 0] }),
+      k(1, { h: -0.06, hip: [0, -0.35, 0.12], sp: [0.05, 0.25, -0.16], hd: [0.1, -0.2, 0.25], sR: [-0.6, 0.2, -0.2], eR: [-1.1, 0, 0], sL: [-0.5, -0.3, 0.6], eL: [-1.3, 0, 0], lL: [-0.45, 0, 0.1], kL: [0.9, 0, 0], lR: [0.05, 0, -0.08], kR: [0.15, 0, 0] }),
+    ],
+  },
+  // CINDY TOCANDO O BAIXO (o especial): a mão do braço do baixo à frente, a outra palhetando na altura do quadril,
+  // o corpo marcando o tempo com a cabeça
+  bass_play: {
+    dur: 0.48, loop: true, keys: [
+      k(0, { h: -0.08, hip: [0, -0.5, 0], sp: [0.12, 0.45, -0.08], hd: [0.3, -0.35, 0], sR: [-0.35, 0.5, -0.25], eR: [-1.3, 0, 0], sL: [-1.2, -0.5, 0.25], eL: [-0.45, 0, 0], lL: [-0.25, 0, 0.12], kL: [0.35, 0, 0], lR: [0.2, 0, -0.12], kR: [0.3, 0, 0] }),
+      k(0.5, { h: -0.12, hip: [0, -0.5, 0], sp: [0.18, 0.45, 0.04], hd: [-0.1, -0.35, 0], sR: [-0.5, 0.5, -0.25], eR: [-1.5, 0, 0], sL: [-1.15, -0.5, 0.25], eL: [-0.55, 0, 0], lL: [-0.25, 0, 0.12], kL: [0.45, 0, 0], lR: [0.2, 0, -0.12], kR: [0.4, 0, 0] }),
+      k(1, { h: -0.08, hip: [0, -0.5, 0], sp: [0.12, 0.45, -0.08], hd: [0.3, -0.35, 0], sR: [-0.35, 0.5, -0.25], eR: [-1.3, 0, 0], sL: [-1.2, -0.5, 0.25], eL: [-0.45, 0, 0], lL: [-0.25, 0, 0.12], kL: [0.35, 0, 0], lR: [0.2, 0, -0.12], kR: [0.3, 0, 0] }),
+    ],
+  },
+  // CINDY com o FUZIL BAIXO (pedido do dono, 2026-11-14: "segurando como um baixo e mirando a ponta pro inimigo"): o
+  // punho na mão direita NA ALTURA DO QUADRIL (o corpo do baixo encostado na barriga), o braço do baixo apontado para a
+  // frente e a mão esquerda segurando o braço como quem faz um acorde
+  idle_bass: {
+    dur: 1.4, loop: true, keys: [
+      k(0, { ...LEGS, hip: [0, -0.35, 0], sp: [0.04, 0.35, 0], hd: [0.02, -0.35, 0], sR: [-0.12, 0.35, -0.22], eR: [-1.45, 0, 0], sL: [-0.8, -0.45, 0.1], eL: [-0.3, 0, 0] }),
+      k(0.5, { ...LEGS, h: -0.08, hip: [0, -0.35, 0], sp: [0.08, 0.35, 0], hd: [0.08, -0.35, 0], sR: [-0.16, 0.35, -0.22], eR: [-1.42, 0, 0], sL: [-0.83, -0.45, 0.1], eL: [-0.32, 0, 0] }),
+      k(1, { ...LEGS, hip: [0, -0.35, 0], sp: [0.04, 0.35, 0], hd: [0.02, -0.35, 0], sR: [-0.12, 0.35, -0.22], eR: [-1.45, 0, 0], sL: [-0.8, -0.45, 0.1], eL: [-0.3, 0, 0] }),
+    ],
+  },
+  // o tiro do Fuzil Baixo: na mesma empunhadura de baixo, o coice joga a ponta para cima e volta
+  shoot_bass: {
+    dur: 0.5, keys: [
+      k(0, { ...LEGS, hip: [0, -0.35, 0], sp: [0.08, 0.35, 0], hd: [0.05, -0.35, 0], sR: [-0.15, 0.35, -0.22], eR: [-1.5, 0, 0], sL: [-0.8, -0.45, 0.1], eL: [-0.3, 0, 0] }),
+      k(0.2, { ...LEGS, hip: [0, -0.35, 0], sp: [-0.06, 0.35, 0], hd: [-0.08, -0.35, 0], sR: [-0.3, 0.35, -0.22], eR: [-1.7, 0, 0], sL: [-1.0, -0.45, 0.1], eL: [-0.28, 0, 0] }),
+      k(1, { ...LEGS, hip: [0, -0.35, 0], sp: [0.08, 0.35, 0], hd: [0.05, -0.35, 0], sR: [-0.15, 0.35, -0.22], eR: [-1.5, 0, 0], sL: [-0.8, -0.45, 0.1], eL: [-0.3, 0, 0] }),
+    ],
+  },
   idle_rifle: {
     dur: 1.6, loop: true, keys: [
       k(0, { ...LEGS, hip: [0, -0.3, 0], sp: [0.05, 0.3, 0], hd: [0, -0.3, 0], sR: [-0.5, 0.3, -0.1], eR: [-1.5, 0, 0], sL: [-0.9, -0.3, 0.2], eL: [-1.6, 0, 0] }),

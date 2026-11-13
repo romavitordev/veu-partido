@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.39.0 (2026-11-13: Eloy Furtado e Sabara jogáveis, acabamento dos Escriptas e página Sobre do Outro Lado em destaque). Antes: v4.38.0 (a loja da Aghata, melhorias globais, gacha e reformulação do Outro Lado); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.41.0 (2026-11-13: Cindy Lopes jogável, especial Amor e Sangue, Eloy e Artemis polidos). Antes: v4.38.0 (a loja da Aghata, melhorias globais, gacha e reformulação do Outro Lado); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -170,9 +170,14 @@
 - [ ] **Calibrar a economia do Outro Lado com a bateria** (PROPOSTA a medir): renda por dungeon em cada dificuldade
       contra os preços (giro 150, comum 250 … lendário 1600, melhorias 120–250 × grau).
 - [ ] **Render maior da Aghata para a loja** (o `sobre/elenco/aghata.webp` tem 240 × 320 e fica mole em tela grande).
-- [ ] **Próximo personagem: um dos PSIKOLERA restantes** (pedido do dono, 2026-11-12), depois do Eloy (v4.39.0) e do
+- [x] **Próximo personagem: um dos PSIKOLERA restantes** — Cindy Lopes (v4.41.0, com o especial Amor e Sangue; o Hora do Show! fica guardado até
+      a PSIKOLERA completa), remodelada pelas artes oficiais e com o retrato do Sobre. (pedido do dono, 2026-11-12), depois do Eloy (v4.39.0) e do
       polimento dos 3 Escriptas acima. Os instrumentos musicais modificados são as ARMAS (como em Hexatombe). Anotações
       em `lore/EQUIPES-HEXATOMBE.md` (ainda falta ler a página de cada membro dos Psikolera, Vampiros e Transtornados).
+- [ ] **Lançar o especial HORA DO SHOW! (PSIKOLERA)** (dono, 2026-11-13: só sai com a PSIKOLERA completa). A
+      coreografia já existe (`CHOREO.psikolera`); a ligação está com `unreleased: true` em `src/config/teamLinks.js`.
+      Quando Franco, Caio e Alê entrarem: incluir os três na coreografia, subir `min` para 3, tirar o `unreleased`.
+- [ ] **Telemetria de balanço da Cindy** (entrou sem rodada de bateria; ver `balance.js`).
 - [ ] **Futuro: equipe dos COURAÇAS** (pedido do dono, 2026-11-13), os donos do Ferro Velho (o cenário "Base dos
       Couraças" já existe). Eloy (PSIKOLERA) e Sabara (Vampiros) entraram na v4.39.0. Antes de modelar, ler na wiki a
       página da equipe e de cada membro (aparência, armas, cenas de Hexatombe) e anotar em `lore/EQUIPES-HEXATOMBE.md`.

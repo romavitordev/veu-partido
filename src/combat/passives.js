@@ -336,6 +336,28 @@ export const PASSIVES = {
   escapeDeath: {}, // Boris (Fighter.takeDamage): uma vez por round fica com 1 de vida
   // Artemis — O GAMBÁ LUTA JUNTO (pedido do dono, 2026-11-12): nem todo golpe — uma chance por golpe físico que acerta,
   // com intervalo mínimo; ele salta do ombro ou do chão, morde e volta (combat/companion.js)
+  // Cindy — TIROS DE AVISO (cânone, bônus de aliado: quando o aliado ataca, ela atira junto no mesmo alvo — dano extra
+  // mesmo se o aliado errar): no jogo, os golpes físicos dela têm passive.chance de puxar um tiro do Fuzil Baixo logo
+  // depois (passive.damage, sem defesa: é o tiro de aviso), com intervalo mínimo passive.interval
+  warningShots: {
+    onMeleeHit({ attacker, victim, dealt, passive, world }) {
+      if (!(dealt > 0) || !victim || victim.state === 'ko' || !world) return;
+      const now = world.time;
+      const chance = (passive.chance ?? 0.35) * (attacker.findBuff && attacker.findBuff('mask') ? 1.6 : 1); // com a máscara, dançando, atira mais
+      if (now < (attacker._warnShotAt ?? -99) || Math.random() > chance) return;
+      attacker._warnShotAt = now + (passive.interval ?? 1.2);
+      world.after(passive.delay ?? 0.14, () => {
+        if (victim.state === 'ko' || attacker.state === 'ko') return;
+        const from = attacker.rig && attacker.rig.muzzle ? attacker.rig.muzzle.getWorldPosition(victim.chestPos().clone()) : attacker.chestPos();
+        world.fx.tracer(from, victim.chestPos(), { color: 0xffe0b0, life: 0.1, width: 0.04 });
+        world.audio.play('rifleShot', { volume: 0.55, pitch: 1.25 });
+        const n = passive.damage ?? 8;
+        victim.takeDamage(n);
+        world.fx.burst(victim.chestPos(), { count: 5, color: 0xc01828, speed: 1.6, life: 0.3, size: 0.1 });
+        world.onHit && world.onHit(attacker, victim, n, { kind: 'ranged', passive: 'warningShots' });
+      });
+    },
+  },
   companionAttack: {
     onMeleeHit({ attacker, victim, dealt, passive }) {
       if (dealt > 0 && victim && victim.state !== 'ko') companionStrike(attacker, victim, passive);

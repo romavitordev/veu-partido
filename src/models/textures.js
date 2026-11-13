@@ -2508,6 +2508,22 @@ export const MATERIAL_TEXTURES = {
     brow: { angry: -0.6, thick: 4, color: '#3a2618' },
     mouth: { mouthW: 14, smile: 2, lip: 'rgba(140,80,70,0.4)' },
   }),
+  // ---------------- CINDY LOPES (wiki: sem a máscara, os olhos AZUIS com a maquiagem que IMITA SANGUE escorrendo, a
+  // PINTA à esquerda perto do nariz e o sorriso debochado; com a máscara, a peça prop_maskOn do modelo)
+  face_cindy: face((g) => {
+    for (const sx of [-1, 1]) { // a maquiagem de sangue: o borrão escuro em volta e os fios escorrendo
+      g.fillStyle = 'rgba(90,10,20,0.35)';
+      g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 20, 11, sx * 0.1, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = 'rgba(150,14,24,0.85)'; g.lineWidth = 2.2; g.lineCap = 'round';
+      for (const dx of [-6, 3]) { g.beginPath(); g.moveTo(CX + sx * 32 + dx, EYE_Y + 10); g.lineTo(CX + sx * 32 + dx + sx, EYE_Y + 26 + Math.abs(dx) * 1.5); g.stroke(); }
+    }
+    g.fillStyle = '#4a2a22'; g.beginPath(); g.arc(CX + 14, EYE_Y + 40, 2.2, 0, Math.PI * 2); g.fill(); // a pinta
+  }, {
+    skin: '#f0d2be',
+    eye: { iris: '#3a7ac8', irisLight: '#8ac0f0', w: 14, h: 7, tilt: 0.06, lid: 3 },
+    brow: { angry: 0.2, thick: 2.6, color: '#b8904a' },
+    mouth: { mouthW: 13, smile: 5, lip: 'rgba(140,16,28,0.92)' },
+  }),
   // os braços de fora do Eloy: a pele com as CICATRIZES DE CORTE (wiki)
   arm_eloy: () => canvasTex(256, 256, (g) => {
     g.fillStyle = '#e0b898'; g.fillRect(0, 0, 256, 256);

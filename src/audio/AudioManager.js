@@ -302,6 +302,20 @@ const SYNTHS = {
     a.noise(t, 1.3, { vol: 0.42 * v, type: 'highpass', freq: 4200, attack: 0.003 });
     a.noise(t, 0.6, { vol: 0.22 * v, type: 'bandpass', freq: 7000, q: 0.7 });
   },
+  // CINDY (PSIKOLERA): o tiro seco do Fuzil Baixo, a NOTA grave do baixo (o especial, a Última Nota) e o grito do Silenciar
+  rifleShot: (a, t, v) => {
+    a.noise(t, 0.09, { vol: 0.75 * v, freq: 3200, freqEnd: 500, attack: 0.002 });
+    a.tone(t, 0.1, { vol: 0.5 * v, freq: 140, freqEnd: 50 });
+  },
+  bassNote: (a, t, v, o = {}) => {
+    const f = o.freq ?? 55;
+    a.tone(t, 0.55, { vol: 0.75 * v, freq: f, freqEnd: f * 0.98, type: 'sawtooth', attack: 0.01 });
+    a.tone(t, 0.5, { vol: 0.5 * v, freq: f * 2, freqEnd: f * 1.96, type: 'triangle', attack: 0.01 });
+  },
+  scream: (a, t, v) => {
+    a.noise(t, 0.6, { vol: 0.55 * v, type: 'bandpass', freq: 1400, freqEnd: 2600, q: 3, attack: 0.03 });
+    a.tone(t, 0.55, { vol: 0.35 * v, freq: 620, freqEnd: 900, type: 'sawtooth', attack: 0.03 });
+  },
   kick: (a, t, v) => {
     a.tone(t, 0.16, { vol: 0.7 * v, freq: 120, freqEnd: 40 });
     a.noise(t, 0.1, { vol: 0.45 * v, freq: 1200, freqEnd: 200 });

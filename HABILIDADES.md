@@ -1726,6 +1726,53 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## CINDY LOPES
+
+*A líder e baixista da PSIKOLERA* · arma: O Fuzil Baixo: um baixo branco manchado de sangue acoplado a um fuzil, com um salto alto amarrado na ponta
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corpo do baixo | 18 | 1.8 m |  |
+| ○ 2 | Coronhada | 20 | 1.8 m |  |
+| ○ 3 | Salto alto | 22 | 2 m |  |
+| ○ 4 | Giro | 20 | 1.9 m |  |
+| ○ 5 | Tiro colado | 46 | 2 m | finalizador: lança |
+| Frente + ○ | Avança dançando | 26 | 1.9 m |  |
+| Trás + ○ | Recua atirando | 26 | 2.2 m | invulnerável no começo |
+| Lado + ○ | Pirueta curta | 22 | 1.8 m |  |
+| No ar + ○ | Baixo do alto | 30 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Braço do baixo | 30 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão de coturno | 32 | 1.7 m | finalizador: derruba |
+
+### Principal (□ / X): Rajada do Fuzil Baixo
+
+- Dano 15 × 3 · alcance 30 m · cooldown 1.6 s · custo 0
+
+### Habilidades
+
+- **Silenciar** — △ + ○ / Y + B · custo 26 · cooldown 16 s · alcance 7 m
+  Grita para o adversário calar a boca: na frente dela, ele treme por um instante e, por 5 s, fica SILENCIADO: não usa habilidades, bate mais fraco e anda mais devagar.
+- **Tiro do Palco** — △ + □ / Y + X · custo 26 · cooldown 14 s
+  Apoia o Fuzil Baixo no ombro como no fim do show e mira com calma: um tiro só, longo e pesado.
+- **Máscara PSIKOLERA** — R2 + △ / RT + Y · custo 28 · cooldown 20 s
+  Põe a máscara branca dos triângulos vermelhos e começa a dançar: por 9 s ela fica mais rápida, os golpes e os tiros saem mais rápidos e mais fortes, e os Tiros de Aviso saem mais vezes.
+- **Pirueta no Cânion** — △ + L2 / Y + LT · custo 20 · cooldown 10 s
+  Gira para trás numa pirueta, sem tomar dano no começo, e solta um leque de tiros no meio do giro.
+- **Última Nota** — R2 + × / RT + A · custo 22 · cooldown 12 s · dano 34 · alcance 5 m
+  Toca um acorde grave no Fuzil Baixo: a onda de som sai em cone na frente dela, empurra e deixa o adversário queimando.
+
+### Especial: Show no Monica Club
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Pegadas de Sangue
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades, especial), +10% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 12% na hora.
+
+---
+
 ## RAZIEL
 
 *O líder dos Vampiros e anfitrião da Ceia na Igreja Antiga — por baixo das vestes, a verdadeira forma* · arma: Garras, a Mordida e os rituais de Sangue

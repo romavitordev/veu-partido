@@ -78,6 +78,13 @@ const PREP_SHOTS = {
     faceClose(f, { dur: 0.6, from: 1.9, to: 1.25, side: 0.3 }),
     orbit(f, { dur: 0.35, radius: 4.2, height: 1.8, a0: -0.4, a1: 0.4, lookH: 1.0 }),
   ],
+  // o Show no Monica Club da Cindy: plano baixo no baixo, órbita, close na máscara e a órbita da última nota
+  bassSolo: (f) => [
+    lowAngle(f, { dur: 0.8, dist: 2.6, side: -1.4, fov: 46 }),
+    orbit(f, { dur: 0.5, radius: 3.2, height: 1.4, a0: -0.5, a1: 0.3, lookH: 1.0 }),
+    faceClose(f, { dur: 0.55, from: 1.7, to: 1.1, side: -0.3 }),
+    orbit(f, { dur: 0.4, radius: 4.0, height: 1.7, a0: 0.4, a1: -0.4, lookH: 1.0 }),
+  ],
 };
 const DRUM_SOUND = { snare: 'drumSnare', tomL: 'drumTom', tomR: 'drumTom', floor: 'drumTom', kick: 'drumKick', crash: 'drumCrash', hihat: 'drumSnare' };
 
@@ -618,6 +625,14 @@ export const cinematicCombo = {
               if (piece && piece !== kit) { piece.scale.setScalar(1.08); pulses.push({ o: piece, t: 0.07 }); }
               if (name === 'crash' || name === 'kick') world.cameraRig.shake(0.12, 0.08);
             }
+          }
+          // prep.notes: [[t, freq]] — as notas do baixo (Cindy): o grave sai com um anel de som na frente dela
+          for (const [b, freq] of prep.notes || []) {
+            if (!(t - dt < b && t >= b)) continue;
+            world.audio.play('bassNote', { volume: 0.8, freq });
+            const p = f.chestPos();
+            world.fx.ring(p, { color: sp.color, radius: 0.6 + (freq % 7) * 0.05, life: 0.28, vertical: true, yaw: f.yaw + Math.PI / 2, inner: 0.88 });
+            world.fx.burst(p, { count: 4, color: sp.color, speed: 1.6, up: 1, life: 0.3, size: 0.08 });
           }
           // prep.steps: a cena da preparação (anim, grito, raiva, chute na bateria)
           for (const st of prep.steps || []) {

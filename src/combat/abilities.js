@@ -392,8 +392,9 @@ export const ABILITY_TYPES = {
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
       if (opp) f.yaw = yawTo(f.pos, opp.pos);
-      f.anim.play('gaze', { restart: true, duration: a.windup + a.recovery });
-      world.audio.play('fearGaze');
+      f.anim.play(a.anim || 'gaze', { restart: true, duration: a.windup + a.recovery }); // a.anim: o grito da Cindy (Silenciar)
+      world.audio.play(a.sound || 'fearGaze');
+      if (a.shout) f.notify(a.shout, true);
       const head = () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.15, 0));
       const eyes = world.fx.emitter({ rate: 40, follow: head, particle: { color: a.color, speed: 0.5, spread: 0.3, life: 0.3, size: 0.15 } });
       tl.add(a.windup, () => {
@@ -439,6 +440,15 @@ export const ABILITY_TYPES = {
             if (old) old.time = a.wither.duration;
             else opp.addBuff({ type: 'withered', name: 'ESMORECIDO', time: a.wither.duration, duration: a.wither.duration, mult: a.wither.mult, affects: ['melee', 'ranged', 'ability', 'special'] });
             world.after(a.stun, () => { if (opp.state !== 'ko') opp.notify('ESMORECIDO', true); });
+          }
+          // a.silence (Cindy — Silenciar, cânone: o alvo fica em silêncio total, perde a determinação, fica fraco em
+          // Força/Agilidade e TRÊMULO): passado o tremor (a.stun), não usa habilidades, bate mais fraco e anda mais devagar
+          if (a.silence) {
+            const sl = a.silence;
+            const old = opp.findBuff('silenced');
+            if (old) old.time = sl.duration;
+            else opp.addBuff({ type: 'silenced', name: 'SILENCIADO', time: sl.duration, duration: sl.duration, noAbilities: true, lockMsg: 'SILENCIADO', mult: sl.mult ?? 0.85, affects: ['melee', 'ranged', 'ability', 'special'], speedMult: sl.speedMult ?? 0.85 });
+            world.after(a.stun, () => { if (opp.state !== 'ko') opp.notify('SILENCIADO', true); });
           }
           world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
         }
@@ -4258,7 +4268,7 @@ function applySelfBuff(f, a, world) {
 const NOT_RITUAL = new Set(['throwProjectile', 'bearTrap', 'heavyBlow', 'sweepStrike', 'calmEvade', 'arenaGrab', 'stompQuake', 'arenaCounterStance', 'teamSpecial', 'rejectMist']);
 
 // os estados ruins que o Mateo (Joui com a Shi no Kage) fecha na hora
-const CLEANSE = new Set(['bleed', 'noHeal', 'dying', 'aging', 'burn', 'blind', 'deaf', 'ritualWeak', 'curseSlow', 'lodoWeak', 'withered', 'deathMark', 'impaled', 'grabSlow', 'chaosSlow']);
+const CLEANSE = new Set(['silenced', 'bleed', 'noHeal', 'dying', 'aging', 'burn', 'blind', 'deaf', 'ritualWeak', 'curseSlow', 'lodoWeak', 'withered', 'deathMark', 'impaled', 'grabSlow', 'chaosSlow']);
 
 // a área de Rejeitar Névoa de um ADVERSÁRIO em que f está agora (ou null)
 export function rejectMistFor(world, f, a) {
@@ -4831,7 +4841,7 @@ Object.assign(ABILITY_TYPES, {
           const ang = ((i - (n - 1) / 2) / Math.max(1, n - 1)) * (a.fan ?? 0.5);
           dir.applyAxisAngle(new THREE.Vector3(0, 1, 0), ang);
           world.projectiles.spawn(f, { ...a.projectile, element: a.element }, origin, dir);
-          world.audio.play('knifeThrow', { volume: 0.6, pitch: 1 + i * 0.05 });
+          world.audio.play(a.shotSound || 'knifeThrow', { volume: 0.6, pitch: 1 + i * 0.05 }); // a.shotSound: a Pirueta da Cindy atira
         });
       }
       const hide = () => a.showProp && f.rig.showProp(a.showProp, false);
