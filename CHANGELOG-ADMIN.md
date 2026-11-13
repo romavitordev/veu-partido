@@ -1,6 +1,14 @@
 # Registro administrativo de alterações
 
-## Não lançado
+## v4.43.0 — A Torre continua
+
+- **Torre: teste do labirinto e da tela dividida (dono, 2026-11-14):**
+  - Especial em tela dividida: a cena ocupa a TELA TODA (sai a divisão) e volta dividida no fim. Vale também para as
+    cenas de entrada, a saída e o fim da tentativa.
+  - Trava de mira com linha de visão: não escolhe nem mantém alvo atrás de parede (o labirinto puxava a câmera).
+  - Cápsulas de loot maiores, com brilho no chão, a 1,4 m dos cantos; a seta azul também aponta para a cápsula fechada.
+  - Labirinto: objetivo "Ache a saída", portas e entrada no centro das células, Alheios surgem a 3–5 passos dos
+    jogadores; as entradas das salas da Torre ficam 2,2 m para dentro (a câmera prendia na parede).
 
 ## v4.42.0 — Sinais da Torre
 

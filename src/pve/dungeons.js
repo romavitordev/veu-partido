@@ -355,7 +355,7 @@ export const DUNGEONS = {
         kind: 'stalk', floor: 0, title: 'Os Becos', objective: 'Escolha uma porta',
         hint: 'Os Becos: corredores que não cabem no prédio… escolha uma porta',
         rects: [{ minX: 60.3, maxX: 77.7, minZ: 29.3, maxZ: 40.7 }],
-        entry: { x: 61.0, z: 35, yaw: Math.PI / 2, door: { x: 60.02, z: 35, face: Math.PI / 2, w: 1.4 } },
+        entry: { x: 62.2, z: 35, yaw: Math.PI / 2, door: { x: 60.02, z: 35, face: Math.PI / 2, w: 1.4 } },
         exits: {
           left: { x: 68, z: 29.02, face: 0, w: 1.4 },
           front: { x: 77.98, z: 35, face: -Math.PI / 2, w: 1.4 },
@@ -368,7 +368,7 @@ export const DUNGEONS = {
         kind: 'stalk', floor: 0, title: 'Os Becos: o Fusca Azul', objective: 'Escolha uma porta',
         hint: 'Um Fusca Azul batido na parede, o alarme tocando… e uma vontade estranha de socar quem está do lado',
         rects: [{ minX: 60.3, maxX: 75.7, minZ: 49.3, maxZ: 60.7 }],
-        entry: { x: 61.0, z: 55, yaw: Math.PI / 2, door: { x: 60.02, z: 55, face: Math.PI / 2, w: 1.4 } },
+        entry: { x: 62.2, z: 55, yaw: Math.PI / 2, door: { x: 60.02, z: 55, face: Math.PI / 2, w: 1.4 } },
         exits: {
           left: { x: 67, z: 49.02, face: 0, w: 1.4 },
           front: { x: 75.98, z: 59.0, face: -Math.PI / 2, w: 1.4 },
@@ -399,12 +399,14 @@ export const DUNGEONS = {
         kind: 'maze', weight: 0.6, floor: 0, title: 'Os Becos: o labirinto', objective: 'Ache a saída',
         hint: 'Os corredores não são os mesmos de antes… ACHE A SAÍDA (portas na parede do fundo) · algo anda por aqui',
         rects: [{ minX: 110.3, maxX: 145.7, minZ: 50.3, maxZ: 85.7 }],
+        // as portas (entrada e saídas) ficam no MEIO de uma célula (z 52/60/72/84): na linha entre duas, uma parede de
+        // dentro podia encostar no meio da porta
         maze: { x0: 110, z0: 50, cell: 4, cols: 9, rows: 9, loops: 0.12, spawn: { every: [8, 13], max: 3 } },
-        entry: { x: 111.2, z: 52, yaw: Math.PI / 2, door: { x: 110.02, z: 52, face: Math.PI / 2, w: 1.4 } },
+        entry: { x: 112.0, z: 52, yaw: Math.PI / 2, door: { x: 110.02, z: 52, face: Math.PI / 2, w: 1.4 } },
         exits: {
-          left: { x: 145.98, z: 58, face: -Math.PI / 2, w: 1.4 },
-          front: { x: 145.98, z: 70, face: -Math.PI / 2, w: 1.4 },
-          right: { x: 145.98, z: 82, face: -Math.PI / 2, w: 1.4 },
+          left: { x: 145.98, z: 60, face: -Math.PI / 2, w: 1.4 },
+          front: { x: 145.98, z: 72, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 145.98, z: 84, face: -Math.PI / 2, w: 1.4 },
         },
         chests: [{ x: 144, z: 52 }, { x: 112, z: 84 }],
         drawers: [{ x: 128, z: 68, pod: true }, { x: 136, z: 76, pod: true }],
@@ -440,7 +442,7 @@ function classroom(x0, z0, title) {
   return {
     kind: 'fight', floor: 0, title,
     rects: [{ minX: x0 + 0.3, maxX: x0 + 11.7, minZ: z0 + 0.3, maxZ: z0 + 9.7 }],
-    entry: { x: x0 + 1.0, z: z0 + 2.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 2.5, face: Math.PI / 2, w: 1.4 } },
+    entry: { x: x0 + 2.2, z: z0 + 2.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 2.5, face: Math.PI / 2, w: 1.4 } },
     spawn: { x: x0 + 9, z: z0 + 5 },
     exits: {
       left: { x: x0 + 6.6, z: z0 + 0.02, face: 0, w: 1.4 },
@@ -465,7 +467,7 @@ function torreRoom(x0, z0, title, { front = z0 + 5, foes = 'doppel', kind = 'fig
   return {
     kind, floor: 0, title, foes,
     rects: [{ minX: x0 + 0.3, maxX: x0 + TW - 0.3, minZ: z0 + 0.3, maxZ: z0 + TD - 0.3 }],
-    entry: { x: x0 + 1.0, z: z0 + 3.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 3.5, face: Math.PI / 2, w: 1.4 } },
+    entry: { x: x0 + 2.2, z: z0 + 3.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 3.5, face: Math.PI / 2, w: 1.4 } },
     spawn: { x: x0 + 11.3, z: z0 + 7 },
     exits: {
       left: { x: x0 + 9.4, z: z0 + 0.02, face: 0, w: 1.4 },
@@ -473,7 +475,7 @@ function torreRoom(x0, z0, title, { front = z0 + 5, foes = 'doppel', kind = 'fig
       right: { x: x0 + 7.6, z: z0 + TD - 0.02, face: Math.PI, w: 1.4 },
     },
     chests: [{ x: x0 + 1.1, z: z0 + TD - 1.0 }, { x: x0 + TW - 1.1, z: z0 + 1.0 }],
-    drawers: pods.map((c) => (c === 'near' ? { x: x0 + 0.8, z: z0 + 0.8, pod: true } : { x: x0 + TW - 0.8, z: z0 + TD - 0.8, pod: true })),
+    drawers: pods.map((c) => (c === 'near' ? { x: x0 + 1.4, z: z0 + 1.4, pod: true } : { x: x0 + TW - 1.4, z: z0 + TD - 1.4, pod: true })),
   };
 }
 

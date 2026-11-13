@@ -635,7 +635,7 @@ export class Dungeon {
   unlockExits(hint) {
     for (const d of this.doors) if (d.exit) d.setLocked(false);
     if (!this.pveHud) return;
-    this.pveHud.setObjective('Escolha uma porta');
+    this.pveHud.setObjective(this.mod && this.mod.kind === 'maze' ? this.mod.objective || 'Ache a saída' : 'Escolha uma porta');
     this.pveHud.hint(hint || (this.player.input?.source === 'gamepad' ? 'B' : 'E') + ' abre portas, baús e gavetas · setas AMARELAS: as portas · seta AZUL: um baú (opcional)');
     this.hintT = 4;
   }
@@ -1264,6 +1264,13 @@ export class Dungeon {
         const d = distXZ(k.pos, p);
         if (d < bd) { bd = d; chest = k.pos; }
       }
+      // as CÁPSULAS DE LOOT da Torre também são loot opcional: a seta azul aponta a mais perto (pedido do dono,
+      // 2026-11-14: "não encontrei as cápsulas de loot")
+      for (const dr of this.drawers) {
+        if (!dr.spot.pod || dr.opened) continue;
+        const d = distXZ(dr.pos, p);
+        if (d < bd) { bd = d; chest = dr.pos; }
+      }
       if (this.reward && this.reward.alive) yellow.push(this.reward.pos);
       else if (this.exitDoor.unlocked) yellow.push(v3.set(this.D.exit.door.x, 0, this.D.exit.door.z));
       else if (!this.maze) for (const d of this.doors) if (d.exit && !d.locked) yellow.push(d.target(new THREE.Vector3())); // no labirinto, achar a saída é o desafio
@@ -1278,18 +1285,44 @@ export class Dungeon {
   lockCandidates(p) {
     const e = this.enemy;
     const out = [];
-    if (e.visible && !e.lurking && e.state !== 'intro' && e.state !== 'ko' && distXZ(p.pos, e.pos) < LOCK_RANGE) out.push(e);
+    if (e.visible && !e.lurking && e.state !== 'intro' && e.state !== 'ko' && distXZ(p.pos, e.pos) < LOCK_RANGE && this.sees(p.pos, e.pos)) out.push(e);
     for (const n of this.world.npcs) {
       if (!n.alive || n.isCloset || this.players.includes(n.owner) || !n.pos) continue;
-      if (distXZ(n.pos, p.pos) < LOCK_RANGE) out.push(n);
+      if (distXZ(n.pos, p.pos) < LOCK_RANGE && this.sees(p.pos, n.pos)) out.push(n);
     }
     return out;
   }
 
+  // LINHA DE VISÃO no chão: nenhuma parede alta (caixa de colisão com h ≥ 1,8 — as paredes do labirinto, divisórias)
+  // entre `a` e `b`. A trava de mira não pega nem segura alvo atrás de parede (pedido do dono, 2026-11-14: "a trava de
+  // mira às vezes buga a câmera e atrapalha andar no labirinto")
+  sees(a, b) {
+    const dx = b.x - a.x;
+    const dz = b.z - a.z;
+    for (const x of this.world.arena.boxes) {
+      if ((x.h ?? 3) < 1.8) continue;
+      // o teste das faixas (slab) do segmento a→b contra a caixa
+      let t0 = 0;
+      let t1 = 1;
+      let ok = true;
+      for (const [o, d, lo, hi] of [[a.x, dx, x.minX, x.maxX], [a.z, dz, x.minZ, x.maxZ]]) {
+        if (Math.abs(d) < 1e-9) { if (o < lo || o > hi) { ok = false; break; } continue; }
+        let u0 = (lo - o) / d;
+        let u1 = (hi - o) / d;
+        if (u0 > u1) [u0, u1] = [u1, u0];
+        t0 = Math.max(t0, u0);
+        t1 = Math.min(t1, u1);
+        if (t0 > t1) { ok = false; break; }
+      }
+      if (ok) return false;
+    }
+    return true;
+  }
+
   validLock(t, p) {
     if (!t) return false;
-    if (t === this.enemy) return t.visible && !t.lurking && t.state !== 'ko' && t.state !== 'intro' && distXZ(t.pos, p.pos) < LOCK_RANGE + 3;
-    return t.alive && distXZ(t.pos, p.pos) < LOCK_RANGE + 3;
+    if (t === this.enemy) return t.visible && !t.lurking && t.state !== 'ko' && t.state !== 'intro' && distXZ(t.pos, p.pos) < LOCK_RANGE + 3 && this.sees(p.pos, t.pos);
+    return t.alive && distXZ(t.pos, p.pos) < LOCK_RANGE + 3 && this.sees(p.pos, t.pos);
   }
 
   // o alvo na direção `side` (−1 esquerda, +1 direita) a partir do atual; sem side: o mais perto do centro da tela
@@ -1913,7 +1946,12 @@ export class Dungeon {
       r.render(w.scene, cam);
       return;
     }
-    const full = !this.coop || this.net || this.bossIntro || this.phase === 'exit' || this.phase === 'over';
+    // TELA DIVIDIDA: um ESPECIAL (cinematic do mundo ou planos na câmera principal) toma a tela toda — tira a divisão e
+    // mostra a cena (pedido do dono, 2026-11-14); as cenas de entrada, a saída e o fim também
+    const cine = !!(w.cinematic || w.cameraRig.shots);
+    const full = !this.coop || this.net || this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over';
+    if (this.coop && !this.net && this.pveHud && this.pveHud.split === full) this.pveHud.setSplit(!full);
+    if (this.coop && !this.net) this.hud.root.classList.toggle('pve-solo', full);
     if (full) {
       const asp = size.x / Math.max(1, size.y);
       if (Math.abs(w.camera.aspect - asp) > 1e-3) { w.camera.aspect = asp; w.camera.updateProjectionMatrix(); }

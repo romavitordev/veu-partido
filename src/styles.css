@@ -1755,3 +1755,4 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 @keyframes sigRoll { from { background-position: 0 0; } to { background-position: 0 300px; } }
 @keyframes sigHit { 0% { opacity: calc(.18 + .3 * var(--snow)); } 100% { opacity: .07; } }
 #hud.pve-cine #npcbar { visibility: hidden; }
+#hud.pve.pve-coop.pve-solo .panel.p1 { bottom: 14px; } /* tela dividida desfeita (especial, cena): o P1 volta para baixo */

@@ -204,6 +204,7 @@
   - [x] Barras de vida da Torre com chiado/transmissão (chefe trava em interferência durante a Presença).
   - [x] Cenas de entrada (`pve/torreIntros.js`): o Estrangeiro (o sino toca, ele se forma), o Rastropoda (pela lente
         da câmera, REC) e o Bilu (os olhos no escuro, o clarão).
+  - [x] Tela dividida: especiais e cenas em tela cheia; trava de mira com linha de visão; cápsulas de loot visíveis.
   - [ ] Bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira (o dono).
   - [x] Tirar o `hidden` (lançada na v4.42.0).
   - [ ] Polir os modelos da arena no Blender MCP (está em blocos).

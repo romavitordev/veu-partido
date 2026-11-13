@@ -362,7 +362,13 @@ export class Drawer {
     light.position.y = 0.08;
     lid.add(cap, light);
     lid.position.y = 1.04;
-    g.add(base, glass, liquid, lid);
+    // o brilho verde no chão em volta (acha-se de longe) — some ao abrir
+    const glow = new THREE.Mesh(new THREE.CircleGeometry(0.95, 24), new THREE.MeshBasicMaterial({ color: 0x5aff6a, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false }));
+    glow.rotation.x = -Math.PI / 2;
+    glow.position.y = 0.03;
+    g.add(base, glass, liquid, lid, glow);
+    g.scale.setScalar(1.4); // da altura do peito (1,5 m): visível por cima dos móveis
+    this.podGlow = glow;
     if (content && content.kind === 'key') {
       const km = new THREE.MeshBasicMaterial({ color: 0xe8c050, toneMapped: false });
       const key = new THREE.Group();
@@ -401,6 +407,7 @@ export class Drawer {
       this.liquid.scale.y = Math.max(0.02, 1 - this.k);
       this.liquid.position.y = 0.19 + 0.39 * this.liquid.scale.y;
       this.podLight.visible = !this.opened;
+      this.podGlow.material.opacity = (1 - this.k) * (0.16 + 0.08 * Math.sin(performance.now() / 300));
     } else if (this.hinge) this.hinge.rotation.y = -this.k * 1.9; // a porta do escaninho gira para fora
     else this.slide.position.z = this.k * 0.26;
     if (this.keyMesh && this.opened) {

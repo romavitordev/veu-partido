@@ -101,13 +101,15 @@ export class MazeRoom {
     this.next -= dt;
     if (this.next > 0 || this.spawned.length >= S.max) return;
     this.next = S.every[0] + Math.random() * (S.every[1] - S.every[0]);
-    const p = this.d.player;
-    if (p.state === 'ko') return;
-    // uma célula a 3–5 passos de corredor (não atravessa parede, não nasce na cara)
-    const [pc, pr] = this.cellOf(p.pos);
-    const dist = mazeDistances(this.m, pc, pr);
+    const alive = this.d.players.filter((q) => q.state !== 'ko');
+    if (!alive.length) return;
+    // uma célula a 3–5 passos de corredor de ALGUÉM e a pelo menos 3 de TODOS (no coop não nasce na cara do outro)
+    const maps = alive.map((q) => { const [pc, pr] = this.cellOf(q.pos); return mazeDistances(this.m, pc, pr); });
     const opts = [];
-    for (let r = 0; r < this.Z.rows; r++) for (let c = 0; c < this.Z.cols; c++) if (dist[r][c] >= 3 && dist[r][c] <= 5) opts.push([c, r]);
+    for (let r = 0; r < this.Z.rows; r++) for (let c = 0; c < this.Z.cols; c++) {
+      const ds = maps.map((d) => d[r][c]);
+      if (Math.min(...ds) >= 3 && ds.some((d) => d <= 5)) opts.push([c, r]);
+    }
     if (!opts.length) return;
     const [c, r] = opts[Math.floor(Math.random() * opts.length)];
     const pos = new THREE.Vector3(this.Z.x0 + (c + 0.5) * this.Z.cell, 0, this.Z.z0 + (r + 0.5) * this.Z.cell);

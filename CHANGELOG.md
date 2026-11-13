@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.43.0 — A Torre continua
+
+### Adicionado
+- Cápsulas de loot maiores, com brilho no chão e indicadas pela seta azul quando fechadas.
+
+### Alterado
+- No coop da Torre, especiais e cenas de entrada, saída e fim da tentativa ocupam a tela toda; a tela dividida volta ao terminar.
+- A trava de mira não atravessa paredes no labirinto; o objetivo agora indica para achar a saída e as portas ficam no centro das células.
+- Alheios surgem a 3–5 passos dos jogadores vivos; entradas das salas da Torre ficam mais afastadas das paredes.
+
 ## v4.42.0 — Sinais da Torre
 
 ### Adicionado

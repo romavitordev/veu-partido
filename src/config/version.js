@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.42.0';
+export const VERSION = '4.43.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.43.0',
+    date: '2026-11-13',
+    title: 'A Torre continua',
+    items: [
+      'COOP NA TORRE: especiais, cenas de entrada, saída e fim da tentativa agora ocupam a tela toda e voltam à tela dividida ao terminar.',
+      'LABIRINTO DOS BECOS: a trava de mira respeita as paredes; o objetivo indica para achar a saída e as portas ficam no centro das células.',
+      'CÁPSULAS DE LOOT maiores e com brilho verde no chão; a seta azul também aponta para a cápsula fechada.',
+      'Alheios surgem a 3–5 passos de qualquer jogador vivo; entradas das salas da Torre ficam mais afastadas das paredes.',
+    ],
+  },
   {
     v: '4.42.0',
     date: '2026-11-14',
