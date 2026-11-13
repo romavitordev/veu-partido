@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.39.0';
+export const VERSION = '4.40.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,19 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.40.0',
+    date: '2026-11-13',
+    title: 'O show continua',
+    items: [
+      'SOLO DE BATERIA DO ELOY: a bateria surge na frente dele, ele toca, tranca a focinheira com raiva, chuta a bateria longe e parte para cima, agora como uma cena com a câmera nele.',
+      'Eloy segura as baquetas do jeito certo, com a ponta para cima. Com a FOCINHEIRA ele ruge, fica curvado e bate mais rápido, e no despertar O Show Não Para ele veste a máscara até o fim do round.',
+      'VALSA DE SANGUE, o novo especial da Sabara: ela dança girando com a espada e a adaga, corta, gira pelas costas do alvo e termina mordendo o pescoço para se curar.',
+      'Equilíbrio: Eloy, Damir, Boris, Artemis e Sabara ficaram mais fortes e agora brigam de igual com o resto do elenco. O Damir ganhou a Força Paranormal e o Ódio Incontrolável no despertar.',
+      'OUTRO LADO: a build começa vazia. Antes do nível 2, os baús dão só moedas ou experiência.',
+      'Gacha mais difícil: o giro custa ● 200 e personagens épicos ficaram mais raros (3,9%). Repetido ainda devolve ● 60.',
+    ],
+  },
   {
     v: '4.39.0',
     date: '2026-11-13',

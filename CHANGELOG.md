@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.40.0 — O show continua
+
+### Adicionado
+- Solo de Bateria do Eloy como cinematic, com a bateria em cena; Focinheira com postura agressiva; despertar com a máscara.
+- Valsa de Sangue, novo especial da Sabara (dança com as lâminas e mordida que cura).
+- Damir: Força Paranormal e Ódio Incontrolável no despertar.
+
+### Alterado
+- Equilíbrio de Eloy, Damir, Boris, Artemis e Sabara contra o elenco.
+- Outro Lado: baús só dão moedas ou experiência antes do nível 2.
+- Gacha: giro a ● 200 e chance de épico menor.
+
 ## v4.39.0 — Eloy e Sabara
 
 ### Adicionado

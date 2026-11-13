@@ -1,6 +1,6 @@
 # Registro administrativo de alterações
 
-## Não lançado
+## v4.40.0 — O show continua
 
 - **Eloy (pedido do dono, 2026-11-13):**
   - **Despertar com a máscara:** como os Mascarados, a PSIKOLERA fica mais forte com as máscaras. No O Show Não Para ele

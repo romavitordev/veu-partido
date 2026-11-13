@@ -2,6 +2,14 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.40.0 — O show continua
+- SOLO DE BATERIA DO ELOY: a bateria surge na frente dele, ele toca, tranca a focinheira com raiva, chuta a bateria longe e parte para cima, agora como uma cena com a câmera nele.
+- Eloy segura as baquetas do jeito certo, com a ponta para cima. Com a FOCINHEIRA ele ruge, fica curvado e bate mais rápido, e no despertar O Show Não Para ele veste a máscara até o fim do round.
+- VALSA DE SANGUE, o novo especial da Sabara: ela dança girando com a espada e a adaga, corta, gira pelas costas do alvo e termina mordendo o pescoço para se curar.
+- Equilíbrio: Eloy, Damir, Boris, Artemis e Sabara ficaram mais fortes e agora brigam de igual com o resto do elenco. O Damir ganhou a Força Paranormal e o Ódio Incontrolável no despertar.
+- OUTRO LADO: a build começa vazia. Antes do nível 2, os baús dão só moedas ou experiência.
+- Gacha mais difícil: o giro custa ● 200 e personagens épicos ficaram mais raros (3,9%). Repetido ainda devolve ● 60.
+
 ## v4.39.0 — Eloy e Sabara
 - NOVOS PERSONAGENS: Eloy Furtado, baterista da PSIKOLERA, e Sabara, batedora dos Vampiros, cada um com armas e golpes próprios.
 - A página Sobre agora dá mais destaque ao Outro Lado: veja como funciona a descida, as masmorras, os chefes e o que fazer entre partidas.

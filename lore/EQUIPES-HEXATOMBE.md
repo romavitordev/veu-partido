@@ -137,6 +137,37 @@ Fontes: páginas "Eloy Furtado", "Sabara" e "Hexatombe - Episódio 4" da wiki, a
   finalização pelo Mutilador `5/5e/Arte_Cinematic_Finaliza%C3%A7%C3%A3o_Mutilador_Noturno.png`.
 - Ligações no jogo: Aguiar (a matou e usa a espada dela) e Raziel (Vampiros) já estão no elenco.
 
+### CINDY LOPES (PSIKOLERA, líder e baixista; pesquisa de 2026-11-13)
+Fonte: página "Cindy Lopes" da wiki (infobox, Aparência, Personalidade, Biografia, Habilidades, Arsenal). Resumo nosso.
+- **Quem é**: Cristiene "Cindy" Lopes, 25 anos, de Santos; líder e baixista; ocultista; namorada (em segredo) do Caio;
+  mandou matar o ex, Andrei, para fechar o acordo com Giovanni Opspor. Os Mascarados a chamam de "Loirinha". Fala:
+  "Para, Caio! Eu sou baixinha!". No Twitter da banda escrevia com estrelas e luas (✩☾).
+- **Aparência**: baixinha e delicada; cabelo CURTO loiro por fora e ROSA por dentro; macacão de camisa de força com
+  CORRENTES na cintura e as pontas das mangas rasgadas; MÁSCARA BRANCA com delineado grande e dois TRIÂNGULOS VERMELHOS
+  descendo de baixo dos olhos; gargantilha de espinhos, brincos e piercings, dois ANÉIS PRETOS na mão direita, COTURNOS
+  pretos. Sem máscara: olhos azuis com maquiagem que imita sangue, pinta à esquerda perto do nariz, piercing na língua.
+- **Personalidade**: debochada e arrogante, quer ser o centro das atenções, possessiva com o Caio; boa líder (a banda
+  tem receio de decidir sem ela). **Com a máscara fica animada e descontraída: não consegue parar de DANÇAR e
+  CANTAROLAR, mesmo lutando.**
+- **Arma — FUZIL BAIXO**: um fuzil acoplado a um baixo, BRANCO, com manchas de sangue em padrão quase artístico e um
+  SALTO ALTO BRANCO amarrado na ponta. Serve para tocar nos shows e para combater. É a única da banda com arma de fogo.
+- **Habilidade — SILENCIAR**: grita para o alvo ficar em silêncio total; ele perde determinação, fica fraco em Força e
+  Agilidade e TRÊMULO.
+- **Bônus de aliado — TIROS DE AVISO**: quando o aliado ataca, ela atira junto no mesmo alvo (dano extra mesmo se o
+  aliado errar).
+- **Cenas de combate**:
+  - No fim do show no The Monica Club, mata o último do mosh pit com um tiro do fuzil de cima do palco e se joga no
+    portal.
+  - Do alto de um cânion, atira na Ana e no Chispa (Couraças) DANÇANDO E FAZENDO PIRUETAS, e some atrás das rochas.
+  - Na guerra contra os Couraças, coloca a máscara, canta baixinho e fica com a Kemi num ponto alto (atiradoras de
+    longe); a Guerra de Intenções a liga ao Miasma.
+  - Toca a ÚLTIMA NOTA no lança-chamas do Franco para cremar Franco e Alê e acende um cigarro em homenagem.
+  - Atira no Eloy quando ele parte para cima dela (o Caio intercepta); a faca do Jae no braço dela.
+  - Contra o Raziel: dispara várias vezes com o rifle; é dilacerada e o Raziel devora o rosto dela (a Sede
+    Incontrolável) — morta no ep. 9.
+- **Artes para modelar**: miniaturas "Arte Cindy com Baixo em Hexatombe.png" (frente e costas) e "Arte Cindy sem
+  Máscara em Hexatombe.png"; pôster "PSIKOLERA - Cindy.jpeg"; "Arte conceitual de Cindy.jpg".
+
 ## COURAÇAS (futuro, pedido do dono em 2026-11-13)
 - Os donos do Ferro Velho; o cenário "Base dos Couraças" já está no jogo.
 - A equipe entra depois do Eloy e da Sabara.
