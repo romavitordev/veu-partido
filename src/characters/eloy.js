@@ -197,7 +197,7 @@ export default {
     sound: 'specialStart',
     physical: true,
     prepare: {
-      anim: 'drum_play', loop: true, time: 2.35, kit: 'drums',
+      anim: 'drum_play', loop: true, time: 2.35, kit: 'drums', shots: 'drumSolo',
       // a levada (bumbo/caixa), a virada nos tons e o prato
       drums: [
         [0.12, 'kick'], [0.12, 'crash'], [0.3, 'hihat'], [0.48, 'snare'], [0.66, 'kick'], [0.75, 'kick'], [0.84, 'snare'],
@@ -228,11 +228,16 @@ export default {
     length: 2.7,
   },
 
-  // O SHOW NÃO PARA (PROPOSTA; cânone: o show no The Monica Club — o mosh pit e o portal aberto)
+  // O SHOW NÃO PARA (PROPOSTA; cânone: o show no The Monica Club — o mosh pit e o portal aberto). Como os Mascarados, a
+  // PSIKOLERA fica mais forte com as máscaras: no despertar ele TRANCA A FOCINHEIRA e fica com ela até o fim do round —
+  // os olhos brancos, a postura de bicho (batendo a cabeça e o pé no ritmo)
   awakening: {
     name: 'O Show Não Para',
     banner: 'O SHOW NÃO PARA!',
     type: 'awakenMode',
+    anim: 'taunt_roar',
+    props: [['maskOn', true]],
+    idleAnim: 'idle_wild',
     mult: 1.15, affects: ['melee', 'ability', 'special'], cdRate: 1.3, regen: 2, heal: 0.12, speedMult: 1.06, aura: 'flame', color: BLOOD,
   },
 

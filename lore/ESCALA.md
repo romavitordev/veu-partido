@@ -75,3 +75,25 @@ impressionantes (e mais caras/arriscadas); quem é mais fraco ganha consistênci
 - **Xande (C):** se continuar acima de 50%, reduzir o bônus de velocidade (Tênis Lépidos) em vez do dano.
 - **Balu (B):** o melhor corpo a corpo humano: muita vida, golpes pesados com armadura; sem ferramentas de distância
   fortes (meta 45–55%).
+
+## Revisão dos personagens novos (2026-11-13)
+Cânone conferido contra as páginas da wiki já resumidas nos cabeçalhos de cada personagem (`src/characters/*.js`) e em
+`lore/EQUIPES-HEXATOMBE.md`. Os modelos foram polidos antes no Blender MCP contra as artes oficiais (banners de
+Calamidade e Hexatombe, artes do Arsenal).
+
+| Nível | Personagem | Cânone do kit | Faltava | Vitórias sem ajuste |
+|---|---|---|---|---|
+| C | Ivete | espingarda com cinto de munição, briga de bar, charuto, Juramento dos Gaudérios; sem rituais | — | 46% (já ajustada) |
+| B | Artemis | Apache e rifle, Amaldiçoar Arma, Mira de Elite, Distorcer Aparência, Enfeitiçar, Devorar, Afinidade com Sangue, o Gambá | (o machado enferrujado; fica de fora) | 24% |
+| B | Boris | gadanha e Foice Amaldiçoada, Elmo Sangrento, Ataque Volátil, Ataque Poderoso, Precognição, Escapar da Morte, Afinidade com Morte | — | 10% |
+| B | Damir | bengala, caderninho, Cartas do Destino, Perturbação, Blackout, Horus, Embaralhar, Cicatrização, Amaldiçoar Arma, Precognição, Ritual Veloz | **Força Paranormal** e **Ódio Incontrolável** | 5% |
+| B | Sabara | espada longa e adaga curva, facas dos cintos, Dança das Lâminas, Aparar e Revidar, a mordida, o "De Joelhos", Afinidade com Sangue | — | 31% |
+| C/B | Eloy | baquetas, socos, Moeller Method, Porrada Rítmica, Focinheira (olhos brancos, aversão a toque), o que mais voltou do "Morrendo" | (a página não lista afinidade própria: Sangue fica pela banda) | 3% |
+
+- **Damir:** ganhou a passiva Força Paranormal (físico +8%) e o Ódio Incontrolável dentro do despertar O Olho Amarelo
+  (o despertar passa a fortalecer também a bengala). As 6 combinações de habilidade já estavam ocupadas.
+- **Por que tão baixos:** nenhum golpe travado; os kits novos causam ~40% menos dano por luta que a média (Eloy ~1800,
+  Damir ~1400 contra ~3300 da Ivete e do Kaiser). Mesma situação de Fernando (20%), Tristan (12%) e Ivete (20%) antes
+  do ajuste. A correção vai nos coeficientes de `src/config/balance.js`.
+- **Resultado do ajuste (2026-11-13, 102 lutas cada):** Sabara 40%, Artemis 37%, Boris 51%, Damir 40%, Eloy 42%,
+  Ivete 46%. Todos na faixa de 35–65%.

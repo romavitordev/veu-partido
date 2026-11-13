@@ -250,6 +250,12 @@ export const PASSIVES = {
     },
   },
   // Lírio — Mão Pesada: golpes físicos empurram mais e deixam o alvo atordoado um pouco mais (não mexe no dano)
+  // Damir — Força Paranormal (cânone): os golpes físicos (a bengala) batem mais forte
+  forcaParanormal: {
+    damageMod({ kind, passive }) {
+      return kind === 'melee' ? passive.mult ?? 1.1 : 1;
+    },
+  },
   heavyHand: {
     knockbackMod({ kind, passive }) {
       return kind === 'melee' ? passive.knockback ?? 1.3 : 1;

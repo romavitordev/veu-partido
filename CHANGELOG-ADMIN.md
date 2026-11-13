@@ -1,5 +1,39 @@
 # Registro administrativo de alterações
 
+## Não lançado
+
+- **Eloy (pedido do dono, 2026-11-13):**
+  - **Despertar com a máscara:** como os Mascarados, a PSIKOLERA fica mais forte com as máscaras. No O Show Não Para ele
+    ruge, tranca a focinheira e fica com ela e com a postura selvagem (`idle_wild`) até o fim do round. A Focinheira
+    usada durante o despertar não tira mais a máscara ao acabar.
+  - **Solo de Bateria como cinematic:** enquanto ele toca a bateria, o mundo congela e a câmera fica nele (plano baixo,
+    órbita, close na focinheira, órbita no chute da bateria). Antes a câmera ficava aberta e o adversário podia andar.
+- **Sabara — Valsa de Sangue:** a mordida cura mais (2,5× o dano dela, ~100 de vida; antes ~33).
+- **Outro Lado — a build começa vazia (pedido do dono):** antes do nível 2, ou sem nenhuma habilidade escolhida, o baú
+  só dá moedas ou experiência. Depois disso ele volta a subir as habilidades que o jogador escolheu.
+- **Gacha mais difícil (pedido do dono: "muito fácil de pegar um épico"):** o giro custa ● 200 (antes 150) e as chances
+  ficaram comum 71%, raro 25%, épico 3,9% (antes 9,9%) e lendário 0,1% (0,5% aos domingos). O repetido continua
+  devolvendo ● 60, então quem tira repetido perde ● 140.
+  - **Moedas por fase:** pelo código, uma dungeon no Normal rende ~80–100 moedas (drops de 1–3 moedas e a recompensa do
+    chefe, ~57). Muitas moedas logo de cara vêm da conversão dos pontos antigos de melhoria (100 moedas por ponto,
+    `MIGRATE_COINS`). A renda das fases não mudou; o giro agora custa ~2–2,5 dungeons.
+- **Balanceamento dos personagens novos (pedido do dono, 2026-11-13):** medição CPU × CPU focada contra o elenco
+  inteiro (102 lutas por personagem, 4 abas). Sem ajuste: Ivete 46%, Sabara 31%, Artemis 24%, Boris 10%, Damir 5% e
+  Eloy 3%. Nenhum golpe travado: os kits novos causavam ~40% menos dano por luta que a média. Coeficientes novos em
+  `src/config/balance.js` (dano causado/recebido): Sabara 1,08/0,95 → 40%; Artemis 1,12/0,93 → 37%; Boris
+  1,25/0,86 → 51% (com 1,2/0,88 deu 32%); Damir 1,22/0,87 → 40%; Eloy 1,28/0,85 → 42%. A Ivete fica como estava (46%).
+  Todos na faixa de 35–65%. Uma rodada tem ruído de ±7%: vale medir de novo na próxima rodada geral.
+- **Cânone do Damir:** faltavam duas coisas da ficha. Ganhou a passiva **Força Paranormal** (golpes físicos +8%,
+  `forcaParanormal` em `passives.js`) e o **Ódio Incontrolável** entrou no despertar O Olho Amarelo, que agora também
+  fortalece a bengala. As 6 combinações de habilidade dele já estavam ocupadas. Os outros cinco já batiam com a wiki
+  (tabela em `lore/ESCALA.md`).
+- **Registro do que já foi na v4.39.0 sem nota:** baquetas na empunhadura de baterista (ponta para cima, 30% maiores);
+  Focinheira agressiva (rugido, vapor vermelho nos olhos, postura `idle_wild`, golpes 15% mais rápidos); o Solo de
+  Bateria com a bateria procedural (`bateriaEloy`, sons `drumSnare`/`drumTom`/`drumKick`/`drumCrash`), a focinheira no
+  meio da virada e o chute na bateria (PROPOSTA, base: o show no The Monica Club); e a Valsa de Sangue da Sabara, com
+  piruetas (`blade_waltz`, `blade_low_spin`), giro para as costas do alvo e a mordida que cura (PROPOSTA, base: a Dança
+  das Lâminas e a mordida canônica).
+
 ## v4.39.0 — Eloy, Sabara e a página Sobre
 
 - **Eloy Furtado (PSIKOLERA):** novo personagem jogável, com baquetas, combo no ritmo, Moeller Method, Do Alto, Focinheira

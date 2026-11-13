@@ -978,7 +978,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Transformação: O Olho Amarelo
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (habilidades, especial, distância), recargas 40% mais rápidas, sanidade regenera +30%, cura 10% na hora.
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (físico, habilidades, especial, distância), recargas 40% mais rápidas, sanidade regenera +30%, cura 10% na hora.
 
 ---
 

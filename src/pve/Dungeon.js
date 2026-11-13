@@ -853,6 +853,9 @@ export class Dungeon {
   openChest(c) {
     this.stats.chests++;
     const n = chestCount(Math.random, (c.luck || 0) + (this.mods?.chestLuck || 0)); // + Baú Farto (loja da Aghata)
+    // A BUILD COMEÇA VAZIA (pedido do dono, 2026-11-13): o baú só sobe habilidades que o jogador ESCOLHEU ao subir de
+    // nível. Antes do nível 2 (ou sem nenhuma habilidade ainda) ele só dá moedas ou experiência — sem melhoria de graça
+    if ((this.run.level || 1) < 2 || !this.run.picks.length) return this.openEarlyChest(c, n);
     const ups = chestUpgrades(this.run.picks, Math.random, n);
     const items = [];
     const rows = [];
@@ -877,6 +880,24 @@ export class Dungeon {
       this.pendingRewards = [...(this.pendingRewards || []), { coins, heal }];
     }
     for (const id of ups) if (getUpgrade(id).chest && countOf(this.run.picks, id) === 1) this.hud.callout(getUpgrade(id).name.toUpperCase(), '#7ec8ff');
+    this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
+    return items;
+  }
+
+  // o baú do começo (nível 1, build vazia): cada item é um punhado de moedas ou de experiência, sorteado
+  openEarlyChest(c, n) {
+    const items = [];
+    const rows = [];
+    let coins = 0;
+    let xp = 0;
+    const scale = (1 + 0.25 * Math.max(0, this.run.depth - 1)) * (1 + (c.luck || 0));
+    for (let i = 0; i < n; i++) {
+      if (Math.random() < 0.5) coins += Math.round((3 + Math.random() * 3) * scale);
+      else xp += Math.round((18 + Math.random() * 12) * scale);
+    }
+    if (coins) { items.push({ icon: '●', colorCss: '#ffc040' }); rows.push({ icon: '●', name: 'Moedas', tag: `+${coins}` }); }
+    if (xp) { items.push({ icon: '✦', colorCss: '#7ec8ff' }); rows.push({ icon: '✦', name: 'Experiência', tag: `+${xp}` }); }
+    this.world.after(0.6, () => { if (coins) this.giveCoins(coins); if (xp) this.giveXp(xp); });
     this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
     return items;
   }

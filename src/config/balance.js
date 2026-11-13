@@ -59,7 +59,15 @@ export const BALANCE = {
   // 2026-11-09 — os novos, focados (92 lutas cada, sem ajuste): Fernando 20%, Tristan 12%, Ivete 20%
   fernando: { dealt: 1.13, taken: 0.93 }, // 20% (sem ajuste) → 70% (1.24/0.86) → 47% (92 lutas) (o Luciano é a mesma ficha: herda a linha)
   tristan: { dealt: 1.19, taken: 0.89 }, // 12% (sem ajuste) → 80% (1.34/0.8) → 48% (92 lutas)
-  ivete: { dealt: 1.13, taken: 0.92 }, // 20% (sem ajuste) → 79% (1.26/0.84, 70 lutas) → 49% (92 lutas, já com a tacada de sinuca no lugar do Suvaco Seco)
+  ivete: { dealt: 1.13, taken: 0.92 }, // 20% (sem ajuste) → 79% (1.26/0.84, 70 lutas) → 49% (92 lutas, já com a tacada de sinuca no lugar do Suvaco Seco) → 46% (102 lutas, 2026-11-13)
+  // 2026-11-13 — Escriptas e Hexatombe, focados (102 lutas cada, sem ajuste): Sabara 31%, Artemis 24%, Boris 10%,
+  // Damir 5%, Eloy 3%. Nenhum golpe travado: os kits novos só causam ~40% menos dano por luta (Eloy ~1800, Damir
+  // ~1400 contra ~3300 da Ivete e do Kaiser). O Damir também ganhou a Força Paranormal (cânone) no físico.
+  sabara: { dealt: 1.08, taken: 0.95 }, // 31% (sem ajuste) → 40%
+  artemis: { dealt: 1.12, taken: 0.93 }, // 24% (sem ajuste) → 37%
+  boris: { dealt: 1.25, taken: 0.86 }, // 10% (sem ajuste) → 32% (1.2/0.88) → 51%
+  damir: { dealt: 1.22, taken: 0.87 }, // 5% (sem ajuste; + Força Paranormal 1.08 no físico) → 40%
+  eloy: { dealt: 1.28, taken: 0.85 }, // 3% (sem ajuste) → 42%
 };
 
 // o coeficiente de um lutador (transformado: o do personagem de origem). As formas selecionáveis (o Portador, o Anfitrião

@@ -8,7 +8,7 @@
 //  Aos DOMINGOS o lendário sobe de 0,1% para 0,5%.
 // Renda (para calibrar os preços, PROPOSTA — medir com a bateria): no Normal uma dungeon rende ~40 moedas dos drops +
 // a recompensa do chefe (BOSS_BOUNTY, cresce com a profundidade e a dificuldade): ~80–100 por dungeon, ~300 numa
-// tentativa de 3 dungeons. Um giro ≈ 2 dungeons; um comum ≈ 3; um lendário ≈ 20 no Normal (menos no Aniquilação).
+// tentativa de 3 dungeons. Um giro ≈ 2–2,5 dungeons; um comum ≈ 3; um lendário ≈ 20 no Normal (menos no Aniquilação).
 import { UNLOCK_TIERS, priceOf } from './unlocks.js';
 
 export const RARITIES = ['comum', 'raro', 'epico', 'lendario'];
@@ -21,11 +21,12 @@ export const RARITY_INFO = {
 // o degrau de preço antigo → a raridade
 const TIER_RARITY = { 60: 'comum', 110: 'comum', 170: 'raro', 250: 'raro', 350: 'epico', 500: 'lendario', 700: 'lendario' };
 
-export const SPIN_PRICE = 150;
+// giro mais caro e épico mais raro (pedido do dono, 2026-11-13: "muito fácil de pegar um épico"; antes 150 e 9,9%)
+export const SPIN_PRICE = 200;
 export const DUP_REFUND = 60;
 export const SHOP_WINDOW_MS = 4 * 60 * 60 * 1000;
 // chances do giro (somam 1). Domingo: o lendário pega 0,4% a mais, tirado do comum
-export const SPIN_ODDS = { comum: 0.62, raro: 0.28, epico: 0.099, lendario: 0.001 };
+export const SPIN_ODDS = { comum: 0.71, raro: 0.25, epico: 0.039, lendario: 0.001 };
 export const SUNDAY_LEGENDARY = 0.005;
 
 export function rarityOf(id) {

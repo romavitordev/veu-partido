@@ -192,7 +192,7 @@ export default {
       { t: 1.35, anim: 'dual_cross', dur: 0.3, share: 0.07, fx: { kind: 'cross', color: CRIMSON }, sound: 'bladeHit' },
       { t: 1.65, anim: 'blade_waltz', dur: 0.5, share: 0.08, fx: { kind: 'slash' }, sound: 'bladeHit', behind: true, bleed: { dps: 3, duration: 2.5 } },
       // a mordida: bebe o sangue e se cura (drain)
-      { t: 2.2, anim: 'raziel_feast', dur: 0.7, share: 0.16, fx: { kind: 'punch', color: BLOOD }, sound: 'clawHit', victimAnim: 'stun', drain: 1.0, gore: true, stream: true, shout: 'QUE GOSTO BOM...' },
+      { t: 2.2, anim: 'raziel_feast', dur: 0.7, share: 0.16, fx: { kind: 'punch', color: BLOOD }, sound: 'clawHit', victimAnim: 'stun', drain: 2.5, gore: true, stream: true, shout: 'QUE GOSTO BOM...' },
       { t: 3.05, anim: 'thrust', dur: 0.5, share: 0.48, fx: { kind: 'stab', big: true, color: BLOOD }, sound: 'slashFinal', final: true },
     ],
     bannerAt: 0.2,

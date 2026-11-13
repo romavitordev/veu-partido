@@ -306,7 +306,7 @@ test('salvamento: a árvore antiga (por personagem, com pontos) vira moedas na �
 test('loja: todo personagem tem raridade e a vitrine do gacha tem 6 (2/2/1/1), igual em toda janela de 4 h', async () => {
   const { ROSTER } = await import('../src/characters/index.js');
   const { UNLOCK_TIERS, pveBanned } = await import('../src/pve/unlocks.js');
-  const { shopBanner, rarityOf, spin } = await import('../src/pve/economy.js');
+  const { shopBanner, rarityOf, spin, SPIN_PRICE } = await import('../src/pve/economy.js');
   const listed = new Set(UNLOCK_TIERS.flatMap((t) => t.ids));
   const missing = ROSTER.filter((c) => !pveBanned(c) && !listed.has(c.id)).map((c) => c.id);
   assert.deepEqual(missing, [], 'personagem sem degrau de preço vira lendário sem querer');
@@ -319,7 +319,7 @@ test('loja: todo personagem tem raridade e a vitrine do gacha tem 6 (2/2/1/1), i
   assert.deepEqual(shopBanner(ids, 1e12 + 1000).slots, b.slots, 'mesma janela, mesma vitrine');
   const d = emptyData();
   assert.equal(spin(d, b), false, 'sem moedas');
-  d.coins = 150;
+  d.coins = SPIN_PRICE;
   const r = spin(d, b, () => 0);
   assert.equal(r.rarity, 'comum');
   assert.ok(d.unlocked.includes(r.id));

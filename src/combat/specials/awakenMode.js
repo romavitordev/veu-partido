@@ -38,6 +38,7 @@ import { DanteClone } from '../npcs.js';
 //                       Aghata: na troca de corpos cada mente usa as habilidades do corpo novo)
 //   props               [[peça, visível], ...]: troca peças do modelo no close e mantém até o fim do round (a Jaqueta de
 //                       Veríssimo); a habilidade que veste a mesma peça não a tira enquanto durar (buff.keepProps)
+//   idleAnim            a postura parada muda até o fim do round (o Eloy de focinheira: curvado, batendo a cabeça)
 export const awakenMode = {
   canStart: (f) => !f.findBuff('awakened'),
   blockMsg: 'JÁ DESPERTOU',
@@ -123,6 +124,8 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
   if (grow !== 1) { f.rig.root.scale.multiplyScalar(grow); f.radius *= grow; }
   const tint = { color: col, base: 0.16 };
   f.buffTint = tint;
+  const prevIdle = f.anim.animMap.idle;
+  if (sp.idleAnim) f.anim.animMap = { ...f.anim.animMap, idle: sp.idleAnim };
   // a Passagem: o □ do adversário (a forma em que ele está agora), com a recarga e o custo dele
   const src = sp.stealRanged && f.opponent && f.opponent.def.ranged;
   const ranged = src ? { ...src, stolenFrom: f.opponent.def.name } : sp.ranged;
@@ -165,7 +168,8 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
         if (armorClock >= sp.armorEvery && (f.armorHits || 0) < (sp.armorMax ?? 1)) { armorClock = 0; f.armorHits = (f.armorHits || 0) + 1; }
       }
     },
-    onEnd() { aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); if (f.buffTint === tint) f.buffTint = null; if (grow !== 1 && f.rig.root) { f.rig.root.scale.divideScalar(grow); f.radius /= grow; } },
+    idleAnim: sp.idleAnim,
+    onEnd() { if (sp.idleAnim) f.anim.animMap = { ...f.anim.animMap, idle: prevIdle }; aura.stop(); if (drip) drip.stop(); if (undoFace) undoFace(); if (glow) glow.undo(); if (undoProps) undoProps(); if (f.buffTint === tint) f.buffTint = null; if (grow !== 1 && f.rig.root) { f.rig.root.scale.divideScalar(grow); f.radius /= grow; } },
   });
   if (ranged) f.cooldownMax.ranged = ranged.cooldown || 1;
   if (src) { f.cooldowns.ranged = 0; f.notify(`□: ${(src.name || 'ATAQUE').toUpperCase()} (${f.opponent.def.name})`, true); }

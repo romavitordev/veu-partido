@@ -70,6 +70,15 @@ function flyBird(world, f, opp) {
 
 // prep.kit: um cenário montado na frente de quem prepara o especial (a bateria do Eloy)
 const PREP_KITS = { drums: bateriaEloy };
+// prep.shots: a preparação vira cena (o mundo congela e a câmera fica nele) — o Solo de Bateria do Eloy
+const PREP_SHOTS = {
+  drumSolo: (f) => [
+    lowAngle(f, { dur: 0.95, dist: 2.8, side: 1.6, fov: 48 }),
+    orbit(f, { dur: 0.45, radius: 3.4, height: 1.5, a0: 0.6, a1: -0.2, lookH: 1.1 }),
+    faceClose(f, { dur: 0.6, from: 1.9, to: 1.25, side: 0.3 }),
+    orbit(f, { dur: 0.35, radius: 4.2, height: 1.8, a0: -0.4, a1: 0.4, lookH: 1.0 }),
+  ],
+};
 const DRUM_SOUND = { snare: 'drumSnare', tomL: 'drumTom', tomR: 'drumTom', floor: 'drumTom', kick: 'drumKick', crash: 'drumCrash', hihat: 'drumSnare' };
 
 const PREP_FX = {
@@ -285,6 +294,15 @@ export const cinematicCombo = {
       world.scene.add(kit);
       world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.6)), { count: 24, color: 0x2a2226, kind: 'smoke', speed: 1.6, life: 0.5, size: 0.6, grow: 1 });
     }
+    // a preparação em cena: o mundo congela (world.cinematic sem alvo) e a câmera fica nele até sair a investida
+    let prepCine = false;
+    const pulses = []; // peças da bateria tremendo na batida (o mundo congelado não roda world.after)
+    if (prep.shots && PREP_SHOTS[prep.shots] && !world.cinematic) {
+      prepCine = true;
+      world.beginCinematic(f, null);
+      world.cameraRig.playShots(PREP_SHOTS[prep.shots](f));
+    }
+    const endPrepCine = () => { if (prepCine) { prepCine = false; if (world.cinematic && world.cinematic.actor === f) world.endCinematic(); } };
     const removeKit = () => { if (kit) { world.scene.remove(kit); kit = null; kitFly = null; } };
     world.audio.play(sp.sound || 'specialStart');
     if (prep.fx && PREP_FX[prep.fx]) emitters = PREP_FX[prep.fx](f, world, sp);
@@ -306,6 +324,7 @@ export const cinematicCombo = {
     const ownStrike = (i) => opp.def.melee?.strikes?.[i]?.anim || 'hit';
     const cleanup = () => {
       removeKit();
+      endPrepCine();
       if (mine) { mine.stop(); mine = null; }
       if (sphere) { world.scene.remove(sphere.group); sphere = null; }
       if (trap) { trap.stop(); trap = null; }
@@ -316,7 +335,7 @@ export const cinematicCombo = {
       copies = [];
       emitters.forEach((e) => e.stop());
       emitters = [];
-      propSwaps.reverse().forEach(([p, v]) => { if (!(p === 'maskOn' && !v && f.findBuff('mask'))) f.rig.showProp(p, v); });
+      propSwaps.reverse().forEach(([p, v]) => { if (!(p === 'maskOn' && !v && (f.findBuff('mask') || f.findBuff('awakened')?.keepProps?.includes('maskOn')))) f.rig.showProp(p, v); });
       propSwaps = [];
       if (bird) { bird.dispose(); f.orpheuOut = false; if (f.state !== 'ko') f.rig.showProp(bird.props, true); bird = null; }
       // a peça some no fim — a não ser que um estado ativo a mantenha (ex.: máscara do Aguiar)
@@ -566,6 +585,7 @@ export const cinematicCombo = {
     return {
       update(dt) {
         if (sphere) sphere.update(dt);
+        for (let i = pulses.length - 1; i >= 0; i--) if ((pulses[i].t -= dt) <= 0) { pulses[i].o.scale.setScalar(1); pulses.splice(i, 1); }
         if (kitFly) {
           kitFly.t += dt;
           for (const p of kitFly.parts) {
@@ -595,7 +615,7 @@ export const cinematicCombo = {
               world.fx.flash(p, { color: name === 'crash' ? 0xffe08a : 0xfff0d0, size: name === 'crash' ? 1.4 : 0.7, life: 0.08 });
               world.fx.burst(p, { count: name === 'crash' ? 18 : 6, color: name === 'crash' ? 0xffd27a : sp.color, speed: 3, up: 1.5, life: 0.3, size: 0.08, gravity: 6 });
               const piece = pt.parent;
-              if (piece && piece !== kit) { piece.scale.setScalar(1.08); world.after(0.06, () => piece.scale.setScalar(1)); }
+              if (piece && piece !== kit) { piece.scale.setScalar(1.08); pulses.push({ o: piece, t: 0.07 }); }
               if (name === 'crash' || name === 'kick') world.cameraRig.shake(0.12, 0.08);
             }
           }
@@ -625,6 +645,7 @@ export const cinematicCombo = {
           }
           if (t >= prep.time) {
             t = 0;
+            endPrepCine();
             if (sp.approach === 'chain') {
               // 1: lança a lâmina presa à corrente
               phase = 'chain';

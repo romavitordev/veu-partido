@@ -1959,8 +1959,10 @@ Object.assign(ABILITY_TYPES, {
           onEnd() {
             aura.stop();
             if (eyes) eyes.stop();
-            if (a.idleAnim) f.anim.animMap = prevMap;
-            if (f.rig.props.maskOn) f.rig.showProp('maskOn', false);
+            // o despertar que veste a mesma máscara (Eloy — O Show Não Para) segura a máscara e a postura
+            const aw = f.findBuff('awakened');
+            if (a.idleAnim) f.anim.animMap = { ...f.anim.animMap, idle: aw?.idleAnim || prevMap.idle };
+            if (f.rig.props.maskOn && !aw?.keepProps?.includes('maskOn')) f.rig.showProp('maskOn', false);
             f.armorHits = 0;
             if (f.buffTint && f.buffTint.color === a.color) f.buffTint = prevTint || null;
           },

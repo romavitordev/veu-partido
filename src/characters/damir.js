@@ -199,17 +199,19 @@ export default {
     length: 2.7,
   },
 
-  // O OLHO AMARELO (PROPOSTA; cânone: depois da luta com o Kian, sem o tapa-olho, o olho direito é amarelo)
+  // O OLHO AMARELO (PROPOSTA; cânone: depois da luta com o Kian, sem o tapa-olho, o olho direito é amarelo). Junta o
+  // ÓDIO INCONTROLÁVEL (ritual canônico dele): a bengala também bate mais forte enquanto durar
   awakening: {
     name: 'O Olho Amarelo',
     banner: 'Eu não tinha nada. Agora eu vejo.',
     type: 'awakenMode',
-    mult: 1.14, affects: ['ability', 'special', 'ranged'], cdRate: 1.4, energyRegenMult: 1.3, aura: 'smoke', color: GOLD, heal: 0.1,
+    mult: 1.14, affects: ['melee', 'ability', 'special', 'ranged'], cdRate: 1.4, energyRegenMult: 1.3, aura: 'smoke', color: GOLD, heal: 0.1,
   },
 
   passives: [
     { type: 'elementalAffinity', element: 'conhecimento', mult: 1.1 }, // Afinidade com Conhecimento
     { type: 'precognition' }, // Precognição (cânone)
     { type: 'ritualFocus', mult: 0.85 }, // Ritual Veloz (cânone; no jogo: os rituais custam menos sanidade)
+    { type: 'forcaParanormal', mult: 1.08 }, // Força Paranormal (cânone): a bengala bate 8% mais forte
   ],
 };
