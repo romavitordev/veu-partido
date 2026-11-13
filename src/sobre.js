@@ -51,19 +51,21 @@ async function buildBossPortraits() {
   const status = document.getElementById('boss-portrait-status');
   let renderer;
   try {
-    const [THREE, { renderPortraits }, { ensureModels }, espreitador, degolificada] = await Promise.all([
+    const [THREE, { renderPortraits }, { ensureModels }, espreitador, degolificada, estrangeiro] = await Promise.all([
       import('three'),
       import('./ui/portraits.js'),
       import('./models/index.js'),
       import('./characters/bosses/espreitador.js'),
       import('./characters/bosses/degolificada.js'),
+      import('./characters/bosses/estrangeiro.js'),
     ]);
-    const bosses = [espreitador.default, degolificada.default];
+    const bosses = [espreitador.default, degolificada.default, estrangeiro.default];
     await ensureModels(bosses.map((boss) => boss.model));
     renderer = new THREE.WebGLRenderer({ canvas: document.createElement('canvas'), antialias: true, alpha: true });
     const portraits = {
       ...renderPortraits([espreitador.default], renderer),
       ...renderPortraits([degolificada.default], renderer, { turn: 0.35 }),
+      ...renderPortraits([estrangeiro.default], renderer, { turn: -0.25 }),
     };
     for (const img of bossRosterEl.querySelectorAll('.boss-portrait')) {
       const src = portraits[img.dataset.boss];

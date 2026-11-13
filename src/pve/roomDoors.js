@@ -259,6 +259,7 @@ export class Drawer {
     g.position.set(spot.x, spot.y ?? 0.6, spot.z);
     g.rotation.y = spot.face || 0;
     if (spot.locker) { this.buildLocker(g, content); return; }
+    if (spot.pod) { this.buildPod(g, content); return; }
     const wood = new THREE.MeshToonMaterial({ color: 0x6a4428, emissive: 0x24140a });
     const slide = new THREE.Group();
     const front = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.17, 0.03), wood);
@@ -344,6 +345,43 @@ export class Drawer {
     this.group = g;
   }
 
+  // a CÁPSULA DE LOOT (Torre da TV Varminho; pedido do dono, 2026-11-13: "gavetas customizadas que podem ser cápsulas
+  // para serem abertas"): um tubo de vidro baixo com o líquido verde da Torre; ao abrir, a tampa sobe e o líquido escoa
+  buildPod(g, content) {
+    g.position.y = 0;
+    const steel = new THREE.MeshToonMaterial({ color: 0x4a5048, emissive: 0x080a08 });
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.18, 16), steel);
+    base.position.y = 0.09;
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.8, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xbaffd0, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide }));
+    glass.position.y = 0.58;
+    const liquid = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.78, 16), new THREE.MeshBasicMaterial({ color: 0x3aff4a, transparent: true, opacity: 0.55, toneMapped: false }));
+    liquid.position.y = 0.58;
+    const lid = new THREE.Group();
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.32, 0.12, 16), steel);
+    const light = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), new THREE.MeshBasicMaterial({ color: 0x7aff4a, toneMapped: false }));
+    light.position.y = 0.08;
+    lid.add(cap, light);
+    lid.position.y = 1.04;
+    g.add(base, glass, liquid, lid);
+    if (content && content.kind === 'key') {
+      const km = new THREE.MeshBasicMaterial({ color: 0xe8c050, toneMapped: false });
+      const key = new THREE.Group();
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.008, 6, 12), km);
+      const stem = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.1, 0.012), km);
+      stem.position.y = -0.06;
+      key.add(ring, stem);
+      key.position.y = 0.6; // boiando no líquido
+      g.add(key);
+      this.keyMesh = key;
+    }
+    this.w.scene.add(g);
+    this.group = g;
+    this.lid = lid;
+    this.liquid = liquid;
+    this.podLight = light;
+    this.slide = null;
+  }
+
   reach(p) {
     const d = Math.hypot(p.x - this.spot.x, p.z - this.spot.z);
     return !this.opened && d < 1.25 ? d : Infinity;
@@ -356,7 +394,14 @@ export class Drawer {
 
   update(dt) {
     this.k += ((this.opened ? 1 : 0) - this.k) * Math.min(1, dt * 7);
-    if (this.hinge) this.hinge.rotation.y = -this.k * 1.9; // a porta do escaninho gira para fora
+    if (this.lid) {
+      // a tampa sobe e inclina; o líquido escoa; a luz apaga
+      this.lid.position.y = 1.04 + this.k * 0.5;
+      this.lid.rotation.z = this.k * 0.5;
+      this.liquid.scale.y = Math.max(0.02, 1 - this.k);
+      this.liquid.position.y = 0.19 + 0.39 * this.liquid.scale.y;
+      this.podLight.visible = !this.opened;
+    } else if (this.hinge) this.hinge.rotation.y = -this.k * 1.9; // a porta do escaninho gira para fora
     else this.slide.position.z = this.k * 0.26;
     if (this.keyMesh && this.opened) {
       // a chave sobe brilhando e some (foi para o bolso)

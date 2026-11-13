@@ -176,11 +176,42 @@ for i, x in enumerate((-18, -12, -6)):
 scatter_papers('recepcao_paper', -10, 2.5, 6, 2.0)
 
 
-# =============================================================== AS SALAS DE LUTA (12 × 10, entrada no oeste)
+# =============================================================== AS SALAS DE LUTA (17 × 14, entrada no oeste)
+# Salas MAIORES (pedido do dono, 2026-11-13: "as salas estão meio apertadas"): eram 12 × 10. A mobília de cada sala foi
+# desenhada para 12 × 10 e é ESTICADA para o tamanho novo (stretch: as posições, não os tamanhos) — o que estava
+# encostado na parede continua encostado. As salas dos Becos também cresceram.
+import arena_lib
+RW, RD = 17, 14
+XF = None
+_place = arena_lib.place
+
+
+def _place_xf(obj, pos, rot_y=0.0, rot_x=0.0, rot_z=0.0):
+    if XF:
+        ox, oz, nx, nz, kx, kz = XF
+        pos = (nx + (pos[0] - ox) * kx, pos[1], nz + (pos[2] - oz) * kz)
+    return _place(obj, pos, rot_y, rot_x, rot_z)
+
+
+arena_lib.place = _place_xf
+
+
+def stretch(ox, oz, nx, nz, kx, kz):
+    global XF
+    XF = (ox, oz, nx, nz, kx, kz)
+
+
+def unstretch():
+    global XF
+    XF = None
+
+
 def fight_room(name, x0, z0, floor='carpet', wmat=None):
-    closed_room(name, x0, x0 + 12, z0, z0 + 10, floor=floor, wmat=wmat)
-    lamp(f'{name}_lamp1', x0 + 4, z0 + 5, flicker=True)
-    lamp(f'{name}_lamp2', x0 + 8.5, z0 + 5)
+    unstretch()
+    closed_room(name, x0, x0 + RW, z0, z0 + RD, floor=floor, wmat=wmat)
+    for i, (lx, lz) in enumerate(((4.5, 4.5), (12.5, 4.5), (4.5, 9.5), (12.5, 9.5))):
+        lamp(f'{name}_lamp{i}', x0 + lx, z0 + lz, flicker=(i % 3 == 0))
+    stretch(x0, z0, x0, z0, RW / 12, RD / 10)  # a mobília (desenhada para 12 × 10)
 
 
 # a SALA DE SEGURANÇA (0, 30): a grade 4 × 4 de monitores na parede leste, o 1º Ponto de Transmissão
@@ -245,10 +276,17 @@ floor_number('laboratorio_n4', 0.13, 57.5, 4, math.pi / 2)
 
 
 # OS BECOS (5º andar): o papel de parede amarelo-esverdeado e as fluorescentes que zumbem
-def becos_room(name, x0, z0, w=12, d=10):
+def becos_room(name, x0, z0, w=RW, d=RD, old=(None, None, 12, 10), lamps=True):
+    """old = (x0, z0, largura, fundo) do desenho antigo da mobília (None = o mesmo canto)"""
+    unstretch()
     closed_room(name, x0, x0 + w, z0, z0 + d, floor='becos_floor', wmat=M['becos'])
-    for i in range(int(w // 4)):
-        lamp(f'{name}_lamp{i}', x0 + 2 + i * 4, z0 + d / 2, flicker=(i % 2 == 1))
+    if lamps:
+        for i in range(int(w // 4)):
+            for j, lz in enumerate((d * 0.3, d * 0.7)):
+                lamp(f'{name}_lamp{i}{j}', x0 + 2 + i * 4, z0 + lz, flicker=((i + j) % 2 == 1))
+    ox = x0 if old[0] is None else old[0]
+    oz = z0 if old[1] is None else old[1]
+    stretch(ox, oz, x0, z0, w / old[2], d / old[3])
 
 
 # a SALA DOS CASULOS (20, 50): os casulos alienígenas com silhuetas, o líquido verde (os Interflorados saem daqui)
@@ -263,20 +301,24 @@ box('casulos_keyboard', (20.5, 1.0, 55), (0.5, 0.1, 1.6), M['steel'], rot_z=-0.4
 
 # a SALA DOS ARMÁRIOS (40, 50): armários de ponta-cabeça pendurados no teto (7 × 6 no cânone; aqui 6 × 4)
 becos_room('armarios', 40, 50)
-for i in range(6):
-    for j in range(4):
-        x, z = 41.5 + i * 1.8, 51.4 + j * 2.4
+unstretch()
+for i in range(8):  # a sala cresceu: 8 × 5 armários de ponta-cabeça (o cânone tem 7 × 6)
+    for j in range(5):
+        x, z = 41.6 + i * 1.97, 51.6 + j * 2.7
         box(f'armarios_cab{i}{j}', (x, 2.7, z), (0.6, 1.0, 0.5), M['steel'], rot_y=random.uniform(-0.15, 0.15))
         box(f'armarios_cab{i}{j}_rod', (x, 3.3, z), (0.04, 0.3, 0.04), M['steel'])
 
 # OS BECOS: o corredor (60, 31…39) — sala de espreita
-becos_room('becos', 60, 31, w=16, d=8)
-for k, x in enumerate((64, 70)):
-    wall(f'becos_spur{k}', x, x, 31, 33.4, M['becos'])  # as bifurcações que não levam a lugar nenhum
+becos_room('becos', 60, 29, w=18, d=12, old=(60, 31, 16, 8))
+XF_b = XF
+unstretch()
+for k, x in enumerate((64.5, 71.0)):
+    wall(f'becos_spur{k}', x, x, 29, 32.6, M['becos'])  # as bifurcações que não levam a lugar nenhum
+XF = XF_b
 scatter_papers('becos_paper', 68, 35, 4, 3)
 
 # a SALA DO FUSCA AZUL (60, 51…59): o fusca batido na parede com o alarme tocando — sala de espreita
-becos_room('fusca', 60, 51, w=12, d=8)
+becos_room('fusca', 60, 49, w=16, d=12, old=(60, 51, 12, 8))
 box('fusca_body', (69.6, 0.55, 55), (3.6, 0.8, 1.55), M['blue'], bevel=0.25, rot_y=0.25)
 sphere('fusca_roof', (69.4, 1.05, 54.95), (1.2, 0.45, 0.72), M['blue'])
 for sx in (-1, 1):
@@ -285,6 +327,49 @@ for sx in (-1, 1):
 box('fusca_crumple', (71.4, 0.6, 55.4), (0.4, 0.9, 1.4), M['blue'], rot_y=0.6, rot_z=0.3)
 box('DECAL_fusca_crack', (71.88, 1.4, 55.5), (0.02, 1.6, 1.8), M['black'])
 col_box('fusca', (69.6, 0.7, 55), (3.8, 1.4, 1.9), rot_y=0.25)
+
+# o ESCRITÓRIO DE ANÁLISE (0, 70) — 4º andar: a sala do RASTROPODA (miniboss sorteado). Cânone: armários de arquivo e o
+# quadro de investigação com os resultados das pesquisas; gosma verde. Os sacos de farinha são do jogo (pve/Dungeon.js).
+fight_room('analise', 0, 70, floor='floor', wmat=M['lab'])
+for k in range(5):
+    filing(f'analise_file{k}', 0.45, 71.2 + k * 0.6 if k < 3 else 76.6 + (k - 3) * 0.6, math.pi / 2)
+box('analise_board', (11.86, 1.7, 75), (0.04, 1.4, 3.2), M['paper'])
+for k in range(9):
+    box(f'analise_note{k}', (11.82, 1.3 + (k % 3) * 0.35, 73.8 + (k // 3) * 0.9), (0.01, 0.22, 0.3), M['paper' if k % 2 else 'wall'])
+for k in range(6):
+    box(f'analise_string{k}', (11.81, 1.6, 74.3 + k * 0.35), (0.005, 0.01, 0.6), M['red'], rot_x=random.uniform(-0.6, 0.6))
+office_desk('analise_desk0', 4.0, 71.4, 0.0)
+office_desk('analise_desk1', 8.6, 78.6, math.pi)
+for k in range(10):
+    box(f'DECAL_analise_slime{k}', (random.uniform(1.5, 10.5), 0.006, random.uniform(71, 79)), (random.uniform(0.3, 0.8), 0.01, random.uniform(0.3, 0.7)), M['slime'], rot_y=random.uniform(0, TAU))
+# as marcas no teto (ele PULA DO TETO): gosma pingando das paredes no alto
+for k in range(6):
+    box(f'DECAL_analise_drip{k}', (random.uniform(1, 11), random.uniform(2.5, 3.1), 70.12), (0.12, random.uniform(0.3, 0.7), 0.02), M['slime'])
+floor_number('analise_n4', 0.13, 78.5, 4, math.pi / 2)
+scatter_papers('analise_paper', 6, 75, 12, 3)
+
+# o QUARTO ESCURO (20, 70) — Os Becos: o BILU. Sem luz (só uma fluorescente morta piscando), o papel de parede dos Becos.
+becos_room('escuro', 20, 70, lamps=False)
+box('escuro_housing', (26, 2.95, 75), (1.4, 0.06, 0.32), M['steel'])
+box('FLICKER_escuro_tube', (26, 2.9, 75), (1.3, 0.05, 0.12), M['lamp'])
+for k in range(4):
+    box(f'escuro_pillar{k}', (23.5 + (k % 2) * 5, 1.6, 72.8 + (k // 2) * 4.4), (0.5, 3.2, 0.5), M['becos'])
+    col_box(f'escuro_pillar{k}', (23.5 + (k % 2) * 5, 1.6, 72.8 + (k // 2) * 4.4), (0.5, 3.2, 0.5))
+for k in range(6):  # os riscos de unha nas paredes
+    box(f'DECAL_escuro_scratch{k}', (random.uniform(21, 31), random.uniform(0.8, 2.4), 70.12), (random.uniform(0.3, 0.6), 0.02, 0.01), M['black'], rot_x=0.0, rot_z=random.uniform(-0.6, 0.6))
+
+unstretch()
+
+# =============================================================== O LABIRINTO DOS BECOS (x 110…146, z 50…86)
+# só o piso, as paredes de fora e as fluorescentes: as paredes de dentro são SORTEADAS pelo jogo a cada visita
+# (src/pve/maze.js; pedido do dono, 2026-11-13: "um labirinto aleatório de corredores como uma backrooms")
+LX0, LX1, LZ0, LZ1 = 110, 146, 50, 86
+closed_room('labirinto', LX0, LX1, LZ0, LZ1, floor='becos_floor', wmat=M['becos'])
+for i in range(6):
+    for j in range(6):
+        lamp(f'labirinto_lamp{i}{j}', LX0 + 3 + i * 6, LZ0 + 4 + j * 6, flicker=((i * 7 + j * 3) % 5 == 0))
+for k in range(10):
+    box(f'DECAL_labirinto_stain{k}', (random.uniform(LX0 + 1, LX1 - 1), 0.006, random.uniform(LZ0 + 1, LZ1 - 1)), (random.uniform(0.5, 1.4), 0.01, random.uniform(0.4, 1.0)), M['slime'], rot_y=random.uniform(0, TAU))
 
 # =============================================================== A SALA DAS PILASTRAS (x 80…104, z 28…40)
 # a sala dos buracos do 5º virou precipício: só a borda da entrada (x 80…83), a da saída (x 100…104) e o fosso escuro.

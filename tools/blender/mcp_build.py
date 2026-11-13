@@ -4,6 +4,7 @@ Roda um char_*.py DENTRO do Blender aberto (pelo Blender MCP), como pede a regra
 (look nas 4 vistas) e exportado da própria sessão.
 Uso pelo MCP (execute_blender_code):
     exec(open(r"E:/arena paranormal/tools/blender/mcp_build.py", encoding="utf-8").read()); mcp_build("tristan")
+    invocações (npc_*.py → public/npcs): mcp_build("rastropoda", kind="npc")
 Diferença para o build.mjs (headless): o lib.py chama wm.read_factory_settings ao importar, o que derruba o servidor do
 addon do MCP; aqui essa chamada vira uma limpeza manual da cena. O .glb vai para public/models/<nome>.glb e o .blend
 para tools/blender/fonte/<nome>.blend, como no build.mjs.
@@ -32,7 +33,8 @@ class _WM:
         return _clear if n in ('read_factory_settings', 'read_homefile') else getattr(self._real, n)
 
 
-def mcp_build(name, root=r"E:/arena paranormal/tools/blender"):
+def mcp_build(name, root=r"E:/arena paranormal/tools/blender", kind="char"):
+    """kind: 'char' (public/models) ou 'npc' (invocações em peças rígidas, public/npcs)"""
     if root not in sys.path:
         sys.path.insert(0, root)
     rn = os.path.normcase(os.path.abspath(root))
@@ -40,12 +42,12 @@ def mcp_build(name, root=r"E:/arena paranormal/tools/blender"):
         f = getattr(m, '__file__', None)
         if f and os.path.normcase(os.path.dirname(os.path.abspath(f))) == rn:
             del sys.modules[k]
-    out = os.path.join(os.path.dirname(os.path.dirname(root)), 'public', 'models', name + '.glb')
+    out = os.path.join(os.path.dirname(os.path.dirname(root)), 'public', 'npcs' if kind == 'npc' else 'models', name + '.glb')
     old_argv, real = sys.argv, bpy.ops.wm
     sys.argv = ['blender', '--', out]
     bpy.ops.wm = _WM(real)
     try:
-        runpy.run_path(os.path.join(root, 'char_' + name + '.py'), run_name='__main__')
+        runpy.run_path(os.path.join(root, kind + '_' + name + '.py'), run_name='__main__')
     finally:
         bpy.ops.wm = real
         sys.argv = old_argv

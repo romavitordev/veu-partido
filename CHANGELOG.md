@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.42.0 — Sinais da Torre
+
+### Adicionado
+- Masmorra 3 do Outro Lado: Torre da TV Varminho, com o chefe Estrangeiro (A Presença, cápsulas, o sino, 3 fases, saída deitando numa cápsula).
+- Minibosses sorteados por sala: Rastropoda (invisível; câmera, sacos de farinha arremessáveis, vida oculta) e Bilu (volta duas vezes).
+- Labirinto dos Becos com paredes sorteadas, sala das pilastras, gavetas-casulo e cenas de entrada dos chefes e minibosses.
+- Barras de vida com efeito de transmissão nos inimigos da Torre.
+
+### Alterado
+- Orfanato: escada da porta consertada. Loja da Aghata com retrato maior.
+- O Estrangeiro jogável fica fora da seleção do Outro Lado (é o chefe da Torre), como os outros chefes.
+
 ## v4.41.0 — Amor e Sangue
 
 ### Adicionado

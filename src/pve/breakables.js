@@ -3,6 +3,8 @@
 //  As CAIXAS DO BUNKER (a luta contra a Degolificada): o jogador NÃO as quebra; ela as pega com o CABELO e as arremessa.
 //  Ao quebrar, de dentro pode sair uma das PROVAS de que o corpo é o da Agatha mas quem está nele é o Gabriel
 //  (pve/degolificada.js).
+//  Os SACOS DE FARINHA da Torre (kind 'sack'): estouram numa nuvem branca — o pó revela o RASTROPODA invisível
+//  (pve/alheioMinis.js; cânone: ele aparece coberto de pó).
 // Para os golpes, o barril é um NPC do inimigo (o mundo o acerta como acerta os NPCs); isCloset = fora da mira e da câmera.
 import * as THREE from 'three';
 
@@ -22,9 +24,9 @@ export class Breakable {
     this.onBreak = onBreak;
     this.pos = new THREE.Vector3(x, 0, z);
     this.y = 0; // a altura (só muda quando o cabelo da Degolificada levanta o objeto)
-    this.radius = kind === 'barrel' ? 0.42 : kind === 'bossBox' ? 0.6 : 0.5;
-    this.height = kind === 'barrel' ? 1.0 : kind === 'bossBox' ? 1.1 : 0.9;
-    this.hp = kind === 'barrel' ? 2 : 3;
+    this.radius = kind === 'barrel' ? 0.42 : kind === 'bossBox' ? 0.6 : kind === 'sack' ? 0.4 : 0.5;
+    this.height = kind === 'barrel' ? 1.0 : kind === 'bossBox' ? 1.1 : kind === 'sack' ? 0.8 : 0.9;
+    this.hp = kind === 'barrel' || kind === 'sack' ? (kind === 'sack' ? 1 : 2) : 3;
     this.maxHp = this.hp;
     this.alive = true;
     this.broken = false;
@@ -41,7 +43,19 @@ export class Breakable {
     const wood = new THREE.MeshToonMaterial({ color: WOOD });
     const dark = new THREE.MeshToonMaterial({ color: WOOD_DK });
     const iron = new THREE.MeshToonMaterial({ color: IRON });
-    if (this.kind === 'barrel') {
+    if (this.kind === 'sack') {
+      // o saco de pano cheio de farinha: um corpo gordo, a boca amarrada em cima
+      const cloth = new THREE.MeshToonMaterial({ color: 0xe8e0c8 });
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 10), cloth);
+      body.scale.set(0.95, 1.0, 0.8);
+      body.position.y = 0.38;
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.16, 0.22, 10), cloth);
+      neck.position.y = 0.82;
+      const tie = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.02, 6, 12), dark);
+      tie.rotation.x = Math.PI / 2;
+      tie.position.y = 0.78;
+      g.add(body, neck, tie);
+    } else if (this.kind === 'barrel') {
       const body = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.4, 0.95, 14), wood);
       body.position.y = 0.48;
       g.add(body);
@@ -125,9 +139,15 @@ export class Breakable {
     const w = this.world;
     const i = w.arena.boxes.indexOf(this.box);
     if (i >= 0) w.arena.boxes.splice(i, 1);
-    w.audio.play('heavyPunch', { volume: 0.7, pitch: 0.6 });
-    w.fx.burst(new THREE.Vector3(this.pos.x, 0.6, this.pos.z), { count: 22, color: WOOD, speed: 4, life: 0.7, size: 0.12, up: 2 });
-    w.fx.burst(new THREE.Vector3(this.pos.x, 0.4, this.pos.z), { count: 10, color: 0x6c6a66, kind: 'smoke', speed: 1.4, life: 0.6, size: 0.5, grow: 1 });
+    if (this.kind === 'sack') {
+      // PUF: a nuvem de farinha
+      w.audio.play('impact', { volume: 0.6, pitch: 0.5 });
+      w.fx.burst(new THREE.Vector3(this.pos.x, 0.7, this.pos.z), { count: 40, color: 0xf4f0e4, kind: 'smoke', speed: 3.2, up: 1.2, life: 1.6, size: 1.2, grow: 1.6 });
+    } else {
+      w.audio.play('heavyPunch', { volume: 0.7, pitch: 0.6 });
+      w.fx.burst(new THREE.Vector3(this.pos.x, 0.6, this.pos.z), { count: 22, color: WOOD, speed: 4, life: 0.7, size: 0.12, up: 2 });
+      w.fx.burst(new THREE.Vector3(this.pos.x, 0.4, this.pos.z), { count: 10, color: 0x6c6a66, kind: 'smoke', speed: 1.4, life: 0.6, size: 0.5, grow: 1 });
+    }
     this.onBreak && this.onBreak(this, by);
   }
 

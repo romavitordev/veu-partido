@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.41.0';
+export const VERSION = '4.42.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,19 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.42.0',
+    date: '2026-11-14',
+    title: 'Sinais da Torre',
+    items: [
+      'NOVA MASMORRA DO OUTRO LADO: a TORRE DA TV VARMINHO, o território do Estrangeiro (Sinais do Outro Lado). Recepção, redação, estúdio, laboratório, os Becos e a Sala do Sino, com Doppelgangers e Interflorados de roupas variadas.',
+      'CHEFE: O ESTRANGEIRO. Ninguém lembrava dele. Ele solta A PRESENÇA, uma onda que paralisa e dá ORDENS. Corra para a CÁPSULA que se abrir: lá dentro você fica protegido e o SINO o deixa EXPOSTO. Vencido, a saída é deitar numa cápsula.',
+      'MINIBOSSES que às vezes aparecem: o RASTROPODA, invisível, que só a câmera do tripé e a FARINHA revelam (pegue os sacos e arremesse nele; a vida dele é SINAL PERDIDO), e o BILU, no quarto escuro, que morre fácil e volta.',
+      'O LABIRINTO DOS BECOS: corredores amarelados que mudam a cada visita, com Alheios surgindo enquanto você procura a saída.',
+      'Cenas de entrada para o Estrangeiro, o Rastropoda e o Bilu; barras de vida com chiado de transmissão; e gavetas-casulo com loot.',
+      'Sala das PILASTRAS sobre o precipício: quem cai volta do alto com um pouco de dano.',
+    ],
+  },
   {
     v: '4.41.0',
     date: '2026-11-13',

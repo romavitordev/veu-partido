@@ -191,9 +191,22 @@
   - [x] Doppelgangers Civis, Combatentes e monstruosos e os Interflorados dos casulos nas salas de luta.
   - [x] Sala das pilastras (`src/pve/pillars.js`): queda, volta do alto com 12% de dano, troca de caminho, coop.
   - [x] Chefe Estrangeiro (`characters/bosses/estrangeiro.js` + `pve/estrangeiro.js`): Homens de Terno, Ninho, Abdução.
-  - [ ] Rastropoda (miniboss sorteado; modelo no Blender MCP) e Bilu (quarto escuro).
-  - [ ] Cena de entrada do Estrangeiro, bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira.
-  - [ ] Polir os modelos da arena no Blender MCP (está em blocos) e tirar o `hidden`.
+  - [x] Modelos refeitos pela arte das miniaturas (Blender MCP): Rastropoda, Bilu e o Estrangeiro (mais fiel).
+  - [x] Variações de roupa dos Interflorados (7) e dos Homens de Terno (4).
+  - [x] Chefe com mecânicas da série: A PRESENÇA (onda que paralisa e COMANDA; as CÁPSULAS protegem e o SINO o deixa
+        EXPOSTO), Oblívio de abertura, Comandar, toque que derrete; 3 fases. Saída: DEITAR numa cápsula.
+  - [x] Rastropoda (miniboss sorteado por sala): invisível; câmera no tripé e SACOS DE FARINHA para pegar e arremessar;
+        a barra de vida é SINAL PERDIDO (ninguém sabe quanto falta). Telecinese (arremessa entulho).
+  - [x] Bilu (sorteado no quarto escuro, Becos e Fusca): morre fácil e volta 2 vezes noutro canto.
+  - [x] Salas maiores (17 × 14 m; Armários, Becos, Fusca), cápsulas de loot (gavetas-casulo) e salas novas (análise,
+        quarto escuro).
+  - [x] LABIRINTO dos Becos (`pve/maze.js`): paredes sorteadas a cada visita, Alheios surgindo nos corredores.
+  - [x] Barras de vida da Torre com chiado/transmissão (chefe trava em interferência durante a Presença).
+  - [x] Cenas de entrada (`pve/torreIntros.js`): o Estrangeiro (o sino toca, ele se forma), o Rastropoda (pela lente
+        da câmera, REC) e o Bilu (os olhos no escuro, o clarão).
+  - [ ] Bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira (o dono).
+  - [x] Tirar o `hidden` (lançada na v4.42.0).
+  - [ ] Polir os modelos da arena no Blender MCP (está em blocos).
 - [ ] **Lançar o especial HORA DO SHOW! (PSIKOLERA)** (dono, 2026-11-13: só sai com a PSIKOLERA completa). A
       coreografia já existe (`CHOREO.psikolera`); a ligação está com `unreleased: true` em `src/config/teamLinks.js`.
       Quando Franco, Caio e Alê entrarem: incluir os três na coreografia, subir `min` para 3, tirar o `unreleased`.

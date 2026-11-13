@@ -367,6 +367,22 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 #npcbar .mk.used { background: #3a3040; box-shadow: none; }
 #npcbar .mk.used::after { color: #4a4050; }
 #npcbar .fill { height: 100%; width: 100%; background: linear-gradient(180deg, #2a2a2e, #050506); box-shadow: inset 0 0 6px rgba(138,216,192,.5); transition: width .15s; }
+/* TRANSMISSÃO (a Torre: Alheios, Bilu, Rastropoda): verde de tubo, linhas de varredura, chiado correndo e o nome que
+   falha; .lost = SINAL PERDIDO — a largura é ruído (HUD.js) e a barra pisca de neve */
+#npcbar.sig b { color: #9dffb0; animation: sigName 3.1s steps(1) infinite; }
+#npcbar.sig .bar { background: #06120a; box-shadow: 0 0 0 1px rgba(90,255,106,.45), 0 0 12px rgba(90,255,106,.35); overflow: hidden; }
+#npcbar.sig .fill { background: linear-gradient(180deg, #c8ffc8, #3adf5a 55%, #0a6a1e); box-shadow: none; animation: hbFlicker 2.4s steps(1) infinite; }
+#npcbar.sig .bar::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.4) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, transparent 0 40px, rgba(220,255,220,.45) 40px 42px, transparent 42px 70px); background-size: 100% 100%, 110px 100%; animation: hbScan .7s linear infinite; }
+#npcbar.sig.lost .fill { transition: none; background: repeating-linear-gradient(90deg, #d8ffd8 0 2px, #2a6a34 2px 5px, #9adfa4 5px 6px, #0a2a10 6px 9px); animation: sigSnow .12s steps(2) infinite; }
+#npcbar.sig.lost .bar::before { content: 'SINAL PERDIDO'; position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; font: 400 11px/1 'Bebas Neue', sans-serif; letter-spacing: .3em; color: #eaffea; text-shadow: 1px 1px 0 #000, -1px 0 0 #ff2a6a, 1px 0 0 #2affd8; animation: sigName 1.7s steps(1) infinite; }
+@keyframes sigSnow { 0% { background-position: 0 0; filter: brightness(1); } 50% { background-position: 7px 0; filter: brightness(1.5); } 100% { background-position: -3px 0; filter: brightness(.8); } }
+@keyframes sigName { 0%, 100% { transform: none; opacity: 1; } 31% { transform: translateX(3px) skewX(-12deg); opacity: .6; } 33% { transform: none; opacity: 1; } 71% { transform: translateX(-2px); opacity: .8; } 72% { transform: none; } }
+/* o chefe durante a PRESENÇA: a barra vira interferência pura */
+.bar.health.hb-signal.jam .fill { animation: sigSnow .1s steps(2) infinite; background: repeating-linear-gradient(90deg, #d8ffd8 0 2px, #2a6a34 2px 5px, #9adfa4 5px 6px, #0a2a10 6px 9px); }
+.bar.health.hb-signal.jam { animation: sigName .6s steps(1) infinite; }
+#pvehud .pv-enemy.sig b { color: #9dffb0; animation: sigName 3.1s steps(1) infinite; }
+#pvehud .pv-enemy.sig .pv-ebar { background: #06120a; box-shadow: 0 0 6px rgba(90,255,106,.4); }
+#pvehud .pv-enemy.sig .pv-ebar i { background: linear-gradient(90deg, #3adf5a, #c8ffc8); animation: hbFlicker 2.4s steps(1) infinite; }
 /* ENIGMA DA ESFINGE (Nubi): pergunta no alto, respostas no losango Y (cima) X (esq.) B (dir.) A (baixo) */
 #riddle { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 16px; background: radial-gradient(ellipse at center, rgba(20,8,30,.55), rgba(0,0,0,.82)); z-index: 6; pointer-events: none; }
 #riddle.on { display: flex; }
@@ -1720,3 +1736,22 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 .pve-choice .ph-foot { justify-content: flex-end; }
 .pve-choice .ph-sm button.on { color: #ffd84a; background: #2a1a10e6; }
 @media (max-width: 560px) { .pve-choice .pc-grid { grid-template-columns: 1fr; } .pve-choice .pc-grid button { min-height: 0; } }
+
+/* AS CENAS DA TORRE (pve/torreIntros.js): o véu de TRANSMISSÃO — neve, linhas de varredura, o corte de chiado (.hit) e,
+   pela lente da câmera do tripé (.rec), o REC piscando, o contador e a moldura verde */
+#sigfx { position: absolute; inset: 0; pointer-events: none; z-index: 5; --snow: 0; }
+#sigfx i { position: absolute; inset: 0; }
+#sigfx .lines { background: repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 1px, transparent 1px 3px); animation: sigRoll 6s linear infinite; }
+#sigfx .snow { opacity: .07; background: repeating-radial-gradient(circle at 17% 31%, rgba(255,255,255,.9) 0 1px, transparent 1px 3px), repeating-radial-gradient(circle at 71% 63%, rgba(200,255,200,.8) 0 1px, transparent 1px 4px); background-size: 7px 9px, 11px 6px; animation: sigSnow .12s steps(2) infinite; mix-blend-mode: screen; }
+#sigfx.hit .snow { animation: sigSnow .12s steps(2) infinite, sigHit .45s ease-out; }
+#sigfx .rec, #sigfx .tc { display: none; position: absolute; font: 400 22px/1 'Bebas Neue', sans-serif; letter-spacing: .12em; color: #eaffea; text-shadow: 1px 1px 0 #000; text-decoration: none; }
+#sigfx .rec { top: 7%; left: 6%; }
+#sigfx .rec::first-letter { color: #ff2a2a; }
+#sigfx .tc { top: 7%; right: 6%; }
+#sigfx.rec .rec { display: block; animation: hbFlicker 1s steps(1) infinite; }
+#sigfx.rec .tc { display: block; }
+#sigfx.rec::before { content: ''; position: absolute; inset: 4%; border: 2px solid rgba(220,255,220,.55); box-shadow: inset 0 0 90px rgba(40,120,50,.25); }
+#sigfx.rec::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,.4)); }
+@keyframes sigRoll { from { background-position: 0 0; } to { background-position: 0 300px; } }
+@keyframes sigHit { 0% { opacity: calc(.18 + .3 * var(--snow)); } 100% { opacity: .07; } }
+#hud.pve-cine #npcbar { visibility: hidden; }

@@ -146,3 +146,17 @@ pilastras ou a das TVs) → corredor dos cabos → Sala do Sino. O elevador troc
 **Andamento (2026-11-13):** feitos os passos 2, 3, 4 e uma 1ª versão do 7 (chefe sem cena de entrada; o cérebro em
 `src/pve/estrangeiro.js`). A dungeon tem id `estrangeiro` e fica `hidden` até o fim. Para jogar no dev:
 `const B = await import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')` (ou `newAttempt({ dungeon: 'estrangeiro' })`).
+
+## 8. O que entrou no jogo (2026-11-13)
+
+- **Chefe (`pve/sino.js`, `pve/estrangeiro.js`):**
+  - A PRESENÇA paralisa e comanda (ajoelhe / ataque-se / esqueça).
+  - As cápsulas protegem e o sino o deixa exposto.
+  - O Oblívio abre a luta e há 3 fases.
+  - A saída é deitar numa cápsula. PROPOSTA: tempos e números.
+- **Minibosses (`pve/alheioMinis.js`, chances em `DUNGEONS.estrangeiro.minibosses`):**
+  - Rastropoda: câmera, sacos arremessáveis e barra "sinal perdido".
+  - Bilu: 3 vidas.
+- **Labirinto (`pve/maze.js`):** 9 × 9 células de 4 m (x 110–146, z 50–86), paredes sorteadas e atalhos (`loops` 0,12).
+- **Cenas de entrada (`pve/torreIntros.js`):** com o véu de transmissão (`#sigfx`). A do Rastropoda é vista pela lente
+  da câmera (cânone: o Guizo só o viu pela câmera). PROPOSTA: os planos.

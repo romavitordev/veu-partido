@@ -15,6 +15,8 @@ export const NPC_MODELS = {
   javali_tinta: 'npcs/javali_tinta.glb', // os animais infectados pela Tinta (invocação do Amigo Imaginário)
   cao_tinta: 'npcs/cao_tinta.glb',
   esfinge: 'npcs/esfinge.glb', // o Carniçal da Esfinge (especial da Nubi)
+  rastropoda: 'npcs/rastropoda.glb', // o Rastropoda (miniboss da Torre; tools/blender/npc_rastropoda.py)
+  bilu: 'npcs/bilu.glb', // o Bilu (o quarto escuro da Torre; tools/blender/npc_bilu.py)
   // ARMAS feitas no Blender (peças rígidas, mesmo carregador): models/weapons.js usa o .glb e, sem ele, a versão em código
   xande_bat: 'npcs/xande_bat.glb', // o taco com arame farpado do Xande
   leonora: 'npcs/leonora.glb', // a Leonora, a marreta do Lírio (tools/blender/npc_leonora.py)

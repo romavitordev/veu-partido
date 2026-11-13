@@ -573,10 +573,13 @@ export const TORRE = {
   bounds: {
     rects: [
       { minX: -21.6, maxX: -0.3, minZ: -5.7, maxZ: 5.7 }, // recepção
-      room(0, 30), room(20, 30), room(40, 30), room(0, 50), room(20, 50), room(40, 50), // as salas de luta
-      { minX: 60.3, maxX: 75.7, minZ: 31.3, maxZ: 38.7 }, // os Becos
-      { minX: 60.3, maxX: 71.7, minZ: 51.3, maxZ: 58.7 }, // o Fusca Azul
+      // as salas de luta (17 × 14: cresceram, pedido do dono, 2026-11-13), a de análise e o quarto escuro
+      room(0, 30, 17, 14), room(20, 30, 17, 14), room(40, 30, 17, 14), room(0, 50, 17, 14), room(20, 50, 17, 14), room(40, 50, 17, 14),
+      room(0, 70, 17, 14), room(20, 70, 17, 14),
+      { minX: 60.3, maxX: 77.7, minZ: 29.3, maxZ: 40.7 }, // os Becos
+      { minX: 60.3, maxX: 75.7, minZ: 49.3, maxZ: 60.7 }, // o Fusca Azul
       { minX: 80.3, maxX: 103.7, minZ: 28.3, maxZ: 39.7 }, // as pilastras
+      { minX: 110.3, maxX: 145.7, minZ: 50.3, maxZ: 85.7 }, // o labirinto dos Becos (as paredes de dentro: pve/maze.js)
       { minX: 70.3, maxX: 93.7, minZ: -10.7, maxZ: 10.7 }, // a Sala do Sino
       { minX: 38.3, maxX: 71.8, minZ: -1.5, maxZ: 1.5 }, // o corredor de cabos
       { minX: 92.2, maxX: 103.6, minZ: -1.0, maxZ: 1.0 }, // a saída
@@ -591,19 +594,22 @@ export const TORRE = {
     { type: 'ambient', color: 0x22281e, intensity: 0.45 },
     { type: 'dir', color: 0x6a90a0, intensity: 0.25, pos: [20, 30, -18], shadow: false },
     fluo(-18, 0), fluo(-12, 0, 9, true), fluo(-6, 0), green(-9.5, -5, 8), // a recepção e o símbolo da emissora
-    green(11, 34.5, 14, true), fluo(4, 35, 6, true), // a segurança: só a grade de monitores
-    fluo(24, 35, 10, true), fluo(28.5, 35), // o editorial
-    fluo(44, 35, 10), green(51, 35, 10), // o estúdio
-    green(4, 55, 12, true), green(9, 55, 10), // o laboratório verde
-    fluo(24, 55, 9, true), green(28, 55, 9), fluo(44, 55, 9, true), fluo(49, 55), // casulos e armários
-    fluo(62, 35, 9, true), fluo(70, 35, 9), fluo(66, 55, 8, true), { type: 'point', color: 0xff3a2a, intensity: 8, distance: 6, pos: [70, 1.2, 55], flicker: true }, // Becos e o Fusca (o alarme)
+    green(15.6, 36.3, 14, true), fluo(5.5, 37, 7, true), // a segurança: só a grade de monitores
+    fluo(25, 37, 11, true), fluo(32, 37), // o editorial
+    fluo(45, 37, 11), green(53, 37, 11), // o estúdio
+    green(5, 57, 13, true), green(12.5, 57, 11), // o laboratório verde
+    fluo(25, 57, 10, true), green(32, 57, 10), fluo(45, 57, 10, true), fluo(52, 57), // casulos e armários
+    green(5, 77, 11, true), fluo(12.5, 77, 9), // a análise (o Rastropoda)
+    { type: 'point', color: 0xc8d0a0, intensity: 4, distance: 6, pos: [28.5, 2.8, 77], flicker: true }, // o quarto escuro (o Bilu): quase nada
+    fluo(63, 35, 10, true), fluo(72, 35, 10), fluo(67, 55, 9, true), { type: 'point', color: 0xff3a2a, intensity: 8, distance: 6, pos: [71, 1.2, 55], flicker: true }, // Becos e o Fusca (o alarme)
     fluo(82, 34, 9, true), fluo(92, 34, 9), fluo(102, 34, 9, true), // as pilastras
+    fluo(116, 56, 9, true), fluo(134, 56, 9), fluo(122, 68, 9), fluo(140, 68, 9, true), fluo(116, 80, 9), fluo(134, 80, 9, true), // o labirinto
     green(46, 0, 7, true), green(60, 0, 7, true), // o corredor de cabos
     green(82, 0, 18), green(76, -8, 9, true), green(88, 8, 9), green(92, -6.5, 9), green(92, 6.5, 9), // a Sala do Sino
     { type: 'point', color: 0x8090c0, intensity: 8, distance: 8, pos: [103, 1.5, 0] },
   ],
   particles: { color: 0x9aff8a, count: 120, area: 30, height: 3, rise: 0.04, drift: 0.2, size: 0.03, opacity: 0.35, center: [40, 0, 20] }, // a interferência
-  camera: { rect: { minX: -30, maxX: 110, minZ: -20, maxZ: 68 }, maxY: 11 },
+  camera: { rect: { minX: -30, maxX: 160, minZ: -20, maxZ: 100 }, maxY: 11 },
 };
 
 // ARENAS DE LUTA do Outro Lado (pedido do dono, 2026-11-06): uma sala só de cada mapa do PvE, no modo de luta. Usam o

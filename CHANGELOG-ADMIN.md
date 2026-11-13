@@ -2,6 +2,8 @@
 
 ## Não lançado
 
+## v4.42.0 — Sinais da Torre
+
 - **Orfanato: escada da porta consertada (dono, 2026-11-13: "a escada dele está bugada na porta", nas duas versões):**
   a `stairs-wide-stone` do kit do Kenney entrava girada, subia de lado pela fachada até a parede do 1º andar e tampava
   metade da porta. Agora é uma escadinha de pedra de três degraus (0,12 / 0,24 / 0,36 m) de frente para o pátio, e um
@@ -11,7 +13,7 @@
   mesma escadinha para a próxima reconstrução. Conferido no jogo, de dia e de noite.
 - **Loja da Aghata:** retrato maior (`aghata_loja.webp`, 720 × 960). **Economia:** `tools/pve-economy.mjs` mede a renda
   por dungeon e por tentativa (resultado no TODO). **Torre da TV Varminho:** estudo em `docs/TORRE-TRANSMISSAO.md`.
-- **Torre da TV Varminho, 3ª dungeon do Outro Lado (em produção, fora do sorteio):** pedido do dono (2026-11-13), chefe
+- **Torre da TV Varminho, 3ª dungeon do Outro Lado (lançada na v4.42.0: saiu o `hidden`):** pedido do dono (2026-11-13), chefe
   o Estrangeiro. Arena em blocos `torre.glb` (`tools/blender/arena_torre.py`) com as salas do cânone dos ep. 6 e 7 de
   Sinais do Outro Lado. Dungeon `estrangeiro` com `hidden: true` (`DUNGEON_ORDER` e a economia ignoram as escondidas).
   Inimigos: Doppelgangers Civis (pistola de plasma), Combatentes e em forma monstruosa (laboratório), e Interflorados
@@ -21,6 +23,35 @@
   despertar, e um cérebro que chama os Homens de Terno, o Ninho de Interflorados e a Abdução. Testado no jogo: rota,
   pilastras (queda, dano, troca), salas de luta e chefe sem erros. Faltam Rastropoda, Bilu, a cena de entrada e a bateria.
   Levantamento das criaturas da Torre no wiki em `docs/TORRE-TRANSMISSAO.md`.
+- **Torre: modelos fiéis, chefe com mecânicas da série, minibosses, labirinto e cenas (dono, 2026-11-13):**
+  - Rastropoda, Bilu e Estrangeiro refeitos no Blender MCP a partir da arte das miniaturas (wiki, vista no navegador).
+  - Roupas variadas: 7 para os Interflorados e 4 ternos para os Doppelgangers.
+  - **O Estrangeiro:** começa com o Oblívio ("você não se lembrava dele") e lança **A PRESENÇA**, uma onda verde que
+    paralisa e dá ORDENS (ajoelhe, ataque-se, e na fase 3 esqueça as recargas). Uma CÁPSULA se abre: quem está dentro
+    fica protegido, e o SINO responde e o deixa EXPOSTO (mais dano por 7 s). Quem fica paralisado perto dele leva o
+    toque que derrete. São 3 fases. Ao vencer, a saída é **deitar numa cápsula**.
+  - **Minibosses sorteados por sala** (`pve/alheioMinis.js`, uma vez por tentativa):
+    - **Rastropoda:** invisível. Aparece no cone da câmera do tripé ou coberto de farinha: encoste num saco para pegar
+      e use o botão de tiro para ARREMESSAR (os sacos voltam). A barra de vida dele é **SINAL PERDIDO**: a largura é
+      ruído e ninguém sabe quanto falta. Arremessa entulho com a mente.
+    - **Bilu:** fraco e rápido; volta duas vezes noutro canto.
+  - **Salas maiores** (17 × 14 m) e duas salas novas: o escritório de análise e o quarto escuro.
+  - **Cápsulas de loot:** gavetas-casulo que se abrem e escoam o líquido.
+  - **Labirinto dos Becos** (`pve/maze.js`): as paredes são sorteadas a cada visita, Alheios surgem nos corredores e as
+    portas de saída ficam no fundo.
+  - **Barras de transmissão:** chiado, linhas e o nome falhando (chefe, Bilu e Rastropoda). A barra do chefe vira
+    interferência pura durante a Presença.
+  - **Cenas de entrada** (`pve/torreIntros.js`; pula com pulo ou start):
+    - Estrangeiro: a porta bate, o sino toca sozinho e ele se forma piscando na interferência.
+    - Rastropoda: visto pela lente da câmera, com REC; no corte não há nada na sala.
+    - Bilu: dois olhos verdes no escuro e um clarão.
+  - **Consertos:**
+    - a barreira invisível da porta de saída antiga (x 94) bloqueava o labirinto e o fim das pilastras; agora só vale
+      na faixa da porta;
+    - o limite da câmera da Torre não cobria as salas novas;
+    - a tabela de chances dos minibosses estava na dungeon da mansão.
+  - Testado no jogo numa aba separada: cenas, sacos (acerto direto revela por 9 s), barras, Bilu, labirinto (colisão e
+    surgimento).
 
 ## v4.41.0 — Amor e Sangue
 

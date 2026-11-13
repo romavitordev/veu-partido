@@ -155,6 +155,7 @@ export class HUD {
       e.hpFill.style.width = `${hp * 100}%`;
       e.hpTrail.style.width = `${hp * 100}%`;
       e.hp.classList.toggle('low', hp < 0.3);
+      e.hp.classList.toggle('jam', !!(match && match.sino && match.sino.wave && f === match.enemy));
       // a vida não mostra número. Os PORTADORES (alguns só transformados: Ferreiro → Deus da Morte, Arnaldo →
       // Anfitrião) têm barra própria, com as cores e o efeito da Relíquia (def.hpBar.style → .hb-*)
       const hb = f.def.hpBar ? `hb-${f.def.hpBar.style}` : '';
@@ -282,9 +283,25 @@ export class HUD {
     const mar = match && match.world && match.world.npcs.find((n) => (n.isMarionette || n.bossBar) && n.alive);
     this.vignette.classList.toggle('on', !!mar);
     this.npcBar.classList.toggle('on', !!mar);
+    // a Torre (Sinais do Outro Lado): as barras são TRANSMISSÃO — chiado, linhas, e o Rastropoda com SINAL PERDIDO
+    // (pedido do dono, 2026-11-13: o jogador não sabe quanto de vida ele tem)
+    this.npcBar.classList.toggle('sig', !!(mar && mar.barStyle === 'signal'));
+    this.npcBar.classList.toggle('lost', !!(mar && mar.barLost));
     if (mar) {
-      this.npcBar.querySelector('b').textContent = `${mar.barName || mar.name} · ${mar.owner.def.name}`;
-      this.npcBar.querySelector('.fill').style.width = `${Math.max(0, mar.hp / mar.maxHp) * 100}%`;
+      const lbl = `${mar.barName || mar.name} · ${mar.barOwner || mar.owner.def.name}`;
+      const nb = this.npcBar.querySelector('b');
+      if (nb.textContent !== lbl) nb.textContent = lbl;
+      let k = Math.max(0, mar.hp / mar.maxHp);
+      if (mar.barLost) {
+        // a largura é ruído: pula entre valores falsos; só um lampejo raro mostra algo perto do real (±25%)
+        const now = performance.now();
+        if (!this.lostT || now > this.lostT) {
+          this.lostT = now + 90 + Math.random() * 260;
+          this.lostK = Math.random() < 0.12 ? Math.min(1, Math.max(0.05, k + (Math.random() - 0.5) * 0.5)) : 0.15 + Math.random() * 0.85;
+        }
+        k = this.lostK;
+      }
+      this.npcBar.querySelector('.fill').style.width = `${k * 100}%`;
       // as MARCAS do enigma (Carniçal da Esfinge): um traço em cada uma; apagam depois de usadas
       const marks = mar.cfg && mar.cfg.marks ? mar.cfg.marks : [];
       const key = marks.map((m) => `${m}:${mar.marksLeft && mar.marksLeft.includes(m) ? 1 : 0}`).join(',');

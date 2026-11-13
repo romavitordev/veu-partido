@@ -37,6 +37,39 @@ import estrangeiroBossDef from '../characters/bosses/estrangeiro.js';
 import estrangeiroDef from '../characters/estrangeiro.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
+import { SinoMechanics } from './sino.js';
+import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
+import { MazeRoom } from './maze.js';
+import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
+
+// AS ROUPAS dos Alheios da Torre (PROPOSTA: gente comum de Varminho que virou hospedeiro; os Homens de Terno com ternos
+// de cores diferentes). Cada peça é achada pelo nome do material do .glb e TINGIDA (a textura continua por baixo).
+const INTERFLORADO_OUTFITS = [
+  {}, // a do cânone: a camisa xadrez marrom e a camiseta clara
+  { plaid: 0xc04838 }, // a camisa xadrez vermelha
+  { plaid: 0x4a68b8, jeans: 0x8a96a8 }, // a xadrez azul, o jeans desbotado
+  { plaid: 0xe09a30, tee: 0xd8d0a8 }, // o colete laranja de obra
+  { plaid: 0x3c3c40, tee: 0x8a8a80, jeans: 0x4a5058 }, // tudo escuro
+  { plaid: 0x6a9a4a, jeans: 0x7a6a50 }, // a xadrez verde, a calça cáqui
+  { plaid: 0xe8e4dc, tee: 0x7a9ab8 }, // a camisa branca de escritório
+];
+const DOPPEL_OUTFITS = [
+  {}, // o terno preto do cânone
+  { suit: 0x2a3048 }, // azul-marinho
+  { suit: 0x4a4038 }, // marrom
+  { suit: 0x5a5a5e, shirt: 0xd8dcc8 }, // cinza
+];
+const pickOutfit = (list) => list[Math.floor(Math.random() * list.length)];
+function dress(m, outfit) {
+  if (!m.material || m.userData.isOutline) return;
+  const n = m.material.name || '';
+  for (const part in outfit) {
+    if (!n.includes(part)) continue;
+    m.material = m.material.clone();
+    m.material.color.setHex(outfit[part]);
+    return;
+  }
+}
 
 const BOSSES = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroBossDef };
 // os ALHEIOS da Torre da TV Varminho (pve/dungeons.js DUNGEONS.estrangeiro; docs/TORRE-TRANSMISSAO.md): vida de cada um
@@ -148,6 +181,10 @@ export class Dungeon {
     this.cluesFound = [];
     this.bossBoxes = [];
     this.props = []; // os barris e caixas quebráveis da sala
+    this.met = {}; // os minibosses da Torre que já apareceram nesta tentativa (pve/alheioMinis.js)
+    this.minis = null; // a sala do Rastropoda (a câmera do tripé)
+    this.bilu = null; // o Bilu do quarto escuro
+    this.maze = null; // o labirinto dos Becos (pve/maze.js)
     // a ROTA desta tentativa: quantas salas até o chefe (varia), e as salas por onde já passou
     this.routeLen = rollRouteLength(this.D, run.depth);
     this.step = 0;
@@ -331,6 +368,10 @@ export class Dungeon {
     this.setupStairs(M);
     if (this.pillars) { this.pillars.dispose(); this.pillars = null; }
     if (M.pillars) this.pillars = new PillarRoom(this, M);
+    if (this.minis) { this.minis.dispose(); this.minis = null; }
+    if (this.bilu) { this.bilu.dispose(); this.bilu = null; }
+    if (this.maze) { this.maze.dispose(); this.maze = null; }
+    if (M.maze) this.maze = new MazeRoom(this, M);
     for (const d of this.doors) d.dispose();
     this.doors = [];
     for (const d of this.drawers) d.dispose();
@@ -410,7 +451,7 @@ export class Dungeon {
     this.props = [];
     for (const x of this.bossBoxes) x.dispose();
     this.bossBoxes = [];
-    if (M.pillars) return; // o precipício: nada no chão
+    if (M.pillars || M.maze) return; // o precipício e o labirinto: nada no chão
     const R = M.rects[M.kind === 'boss' ? 1 : 0] || M.rects[0];
     if (!R) return;
     const avoid = [M.entry, ...Object.values(M.exits || {}), ...(M.chests || []), ...(M.drawers || [])];
@@ -574,13 +615,20 @@ export class Dungeon {
       this.pendingBoss = M;
       if (this.pveHud) { this.pveHud.hint(M.hint || null); this.hintT = 8; }
     } else if (M.kind === 'boss') this.startBoss(M);
-    else if (M.kind === 'parkour') {
+    else if (M.kind === 'parkour' || M.kind === 'maze') {
       this.encounter = null;
       this.unlockExits(M.hint);
       this.hintT = 8;
     } else {
       this.encounter = null;
       this.unlockExits(M.kind === 'stalk' ? (M.hint || 'Uma fresta… NÃO OLHE para ela (defenda para desviar o olhar) · escolha uma porta') : null);
+      // o BILU (miniboss sorteado por sala): rápido e fraco, morre e volta noutro canto
+      if (M.kind === 'stalk' && rollMiniboss(this.D, 'bilu', this.modId, this.met)) {
+        this.met.bilu = true;
+        this.bilu = new BiluStalker(this, M);
+        this.pveHud.hint('Um barulho de bicho no escuro… o BILU é rápido mas fraco: ele VOLTA depois de cair');
+        this.hintT = 7;
+      }
     }
   }
 
@@ -622,8 +670,10 @@ export class Dungeon {
     }
   }
 
-  addGate(x, side, { visual = true } = {}) {
-    const g = { x, side, open: false };
+  // band: { z, half } = a barreira só vale nessa faixa de z (a porta de saída da Torre fica em z 0, e o labirinto e as
+  // pilastras estão a leste dela, noutras faixas: sem a faixa a barreira invisível as bloqueava inteiras)
+  addGate(x, side, { visual = true, band = null } = {}) {
+    const g = { x, side, open: false, band };
     if (visual) {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.2), new THREE.MeshBasicMaterial({ color: 0x050306, transparent: true, opacity: 0.0, side: THREE.DoubleSide, depthWrite: false }));
       m.position.set(x, 1.6, 0);
@@ -687,6 +737,7 @@ export class Dungeon {
       if (g.open) continue;
       for (const p of bodies) {
         if (!p || !p.pos) continue;
+        if (g.band && Math.abs(p.pos.z - g.band.z) > g.band.half) continue;
         if (g.side === 'max' && p.pos.x > g.x - 0.55) p.pos.x = g.x - 0.55;
         if (g.side === 'min' && p.pos.x < g.x + 0.55) p.pos.x = g.x + 0.55;
       }
@@ -725,6 +776,23 @@ export class Dungeon {
   // laboratório e os Interflorados dos casulos (r.foes). O dono do bando é o inimigo escondido (como os Zumbis da Escola).
   startAlheioEncounter(r, count = 2) {
     const e = this.enemy;
+    // o RASTROPODA (miniboss sorteado por sala: D.minibosses): sozinho, invisível, com a câmera e os sacos de farinha
+    if (rollMiniboss(this.D, 'rastropoda', this.modId, this.met)) {
+      this.met.rastropoda = true;
+      this.encounter = { room: r, done: false, koAt: this.world.time, zombies: true, miniboss: true };
+      e.pos.set(r.spawn.x, 0, r.spawn.z);
+      this.minis = new RastropodaRoom(this, r);
+      this.copias.push(this.minis.boss);
+      e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+      // a CENA pela lente da câmera do tripé (pve/torreIntros.js); a dica vem depois dela
+      this.bossIntro = new RastropodaIntro(this, this.minis);
+      this.bossIntro.onDone = () => {
+        this.hud.callout('ALGO INVISÍVEL ESTÁ AQUI', '#7aff4a');
+        this.pveHud.hint('O RASTROPODA é INVISÍVEL: siga o rastro de gosma · a CÂMERA do canto o mostra · PEGUE os SACOS DE FARINHA (encoste) e ARREMESSE nele (botão de tiro)');
+        this.hintT = 10;
+      };
+      return;
+    }
     this.encounter = { room: r, done: false, koAt: this.world.time, zombies: true };
     e.pos.set(r.spawn.x, 0, r.spawn.z);
     const foes = r.foes || 'doppel';
@@ -735,17 +803,31 @@ export class Dungeon {
       if (foes === 'casulos') kind = count >= 3 && i === 0 ? 'combatente' : 'interflorado';
       else if (foes === 'monstro' && i === 0) kind = 'monstro';
       else if (i % 3 === 1) kind = 'combatente';
-      const strong = kind === 'monstro' || kind === 'combatente';
       const ang = Math.PI / 2 + ((i + 0.5) / count) * Math.PI * 2;
       const pos = new THREE.Vector3(r.spawn.x + Math.sin(ang) * (count > 1 ? 2.2 : 0), 0, r.spawn.z + Math.cos(ang) * (count > 1 ? 2.2 : 0));
+      this.spawnAlheio(kind, pos, i);
+    }
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+    this.audio.play('teleport', { volume: 0.6, pitch: 0.7 });
+    this.pveHud.hint(null);
+  }
+
+  // um Alheio da Torre (kind: civil | combatente | monstro | interflorado) em `pos`, com a roupa sorteada; vai para
+  // this.copias (some ao trocar de sala). Usado pelas salas de luta e pelo LABIRINTO (pve/maze.js).
+  spawnAlheio(kind, pos, i = 0) {
+    const e = this.enemy;
+    {
+      const strong = kind === 'monstro' || kind === 'combatente';
       resolveBody(this.world.arena, pos, 0.8);
       const hp = Math.round(ALHEIO_HP[kind] * this.scale.hp);
+      // cada um com a sua ROUPA (pedido do dono, 2026-11-13: "variações de skin, os aflorados com outras roupas")
+      const outfit = pickOutfit(kind === 'interflorado' ? INTERFLORADO_OUTFITS : DOPPEL_OUTFITS);
       const o = kind === 'interflorado'
-        ? { model: 'interflorado', hp, damageMult: 1, element: 'transmissao', rise: true, strikes: NEST.brood.strikes, restyle(m) { m.material.transparent = false; } }
+        ? { model: 'interflorado', hp, damageMult: 1, element: 'transmissao', rise: true, strikes: NEST.brood.strikes, restyle(m) { m.material.transparent = false; dress(m, outfit); } }
         : {
           model: 'doppel', hp, damageMult: kind === 'monstro' ? 1.5 : 1, element: 'transmissao', strikes: DOPPEL_GUN.strikes,
           sludge: kind === 'civil' ? { ...DOPPEL_GUN.gun, cd: 2.8 } : null,
-          restyle(m) { m.material.transparent = false; },
+          restyle(m) { m.material.transparent = false; dress(m, outfit); },
           setup(rig) { rig.showProp('pistol', kind === 'civil'); if (kind === 'monstro') rig.root.scale.set(1.12, 1.35, 1.12); },
         };
       o.onSlain = (c) => this.onZombieSlain(c);
@@ -757,10 +839,9 @@ export class Dungeon {
       this.world.fx.distort(new THREE.Vector3(pos.x, 1.1, pos.z), { color: 0x8aff4a, radius: 1.5, life: 0.4 });
       this.world.addNpc(c);
       this.copias.push(c);
+      if (!e.cpuEdge || this.maze) e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+      return c;
     }
-    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
-    this.audio.play('teleport', { volume: 0.6, pitch: 0.7 });
-    this.pveHud.hint(null);
   }
 
   startEncounter(r, count = 2) {
@@ -860,21 +941,15 @@ export class Dungeon {
       return;
     }
     if (this.D.boss === 'estrangeiro') {
-      // a PORTA VERDE se fecha atrás de quem entrou na Sala do Sino; ele aparece numa interferência atrás do sino.
-      // PROPOSTA: a cena de entrada (o Estrangeiro no fim do corredor, ep. 7 3h11) fica para depois
+      // a PORTA VERDE se fecha atrás de quem entrou na Sala do Sino; a CENA (pve/torreIntros.js): o sino toca sozinho e
+      // ele se forma numa interferência; depois a luta
       if (r.bossTrigger && !this.bossGate) {
         const gx = r.rects[0].minX - 0.2;
         this.bossGate = this.addGate(gx, 'min');
         this.audio.play('closetSlam', { volume: 0.8, pitch: 0.6 });
         for (const q of this.players) if (q.pos.x < gx + 0.6) { q.pos.set(gx + 1.6, q.pos.y, 0); resolveBody(w.arena, q.pos, q.radius || 0.5); }
       }
-      e.pos.set(r.spawn.x, 0, r.spawn.z);
-      e.yaw = Math.atan2(this.player.pos.x - e.pos.x, this.player.pos.z - e.pos.z);
-      e.setVisible(true);
-      w.fx.distort(new THREE.Vector3(e.pos.x, 1.2, e.pos.z), { color: 0x8aff4a, radius: 2.4, life: 0.7 });
-      this.audio.play('teleport', { volume: 0.9, pitch: 0.5 });
-      this.hud.callout('O ESTRANGEIRO', '#8acf4a');
-      this.beginBossFight();
+      this.bossIntro = new EstrangeiroIntro(this, r.spawn, { x: 82, y: 4.4, z: 0 });
       return;
     }
     // ele sai do armário mais perto da porta: primeiro a CENA (pve/espreitadorIntro.js), depois a luta
@@ -906,10 +981,11 @@ export class Dungeon {
     }
     if (this.D.boss === 'estrangeiro') {
       this.pressure = new BossPressure(this, e, this.diff.counter ?? 7);
-      this.brain = new EstrangeiroBrain(this);
+      this.sino = new SinoMechanics(this); // a PRESENÇA e as cápsulas (pve/sino.js)
+      this.brain = new EstrangeiroBrain(this, this.sino);
       this.bindHud();
-      this.pveHud.hint('Os HOMENS DE TERNO saem da interferência; o NINHO verde solta Interflorados (quebre-o). Saia da LUZ VERDE que desce do céu');
-      this.hintT = 8;
+      this.pveHud.hint('Quando ele soltar A PRESENÇA, corra para a CÁPSULA que se abrir: lá dentro você está protegido e o SINO o deixa EXPOSTO');
+      this.hintT = 9;
       return;
     }
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
@@ -1027,6 +1103,7 @@ export class Dungeon {
       this.brain = null;
       this.pressure && this.pressure.dispose();
       this.pressure = null;
+      this.sino && this.sino.dispose(); // a onda some; as cápsulas ficam (a saída)
       this.clearEspreitadorEyes();
       this.bossDeadAt = at;
       this.phase = 'bossDown';
@@ -1189,7 +1266,7 @@ export class Dungeon {
       }
       if (this.reward && this.reward.alive) yellow.push(this.reward.pos);
       else if (this.exitDoor.unlocked) yellow.push(v3.set(this.D.exit.door.x, 0, this.D.exit.door.z));
-      else for (const d of this.doors) if (d.exit && !d.locked) yellow.push(d.target(new THREE.Vector3()));
+      else if (!this.maze) for (const d of this.doors) if (d.exit && !d.locked) yellow.push(d.target(new THREE.Vector3())); // no labirinto, achar a saída é o desafio
     }
     aimArrow(V.arrowChest, p, chest, dt, time, 1.0);
     V.arrowDoors.forEach((m, i) => aimArrow(m, p, yellow[i] || null, dt, time, 1.35));
@@ -1483,12 +1560,23 @@ export class Dungeon {
     g.add(pivot, glow);
     g.position.set(spot.x - 0.4, 0, spot.z);
     this.world.scene.add(g);
-    return { group: g, pivot, eye, glow, open: 0, unlocked: false, gate: this.addGate(spot.x - 0.3, 'max', { visual: false }) };
+    return { group: g, pivot, eye, glow, open: 0, unlocked: false, gate: this.addGate(spot.x - 0.3, 'max', { visual: false, band: { z: spot.z, half: 4 } }) };
   }
 
   unlockExit() {
     const d = this.exitDoor;
     if (d.unlocked) return;
+    // a TORRE: depois do Estrangeiro, a saída é uma CÁPSULA (pedido do dono, 2026-11-13: "deitar numa cápsula para
+    // passar para a próxima fase") — a porta fica trancada
+    if (this.sino && !this.sino.exitCap) {
+      this.sino.openExit(this.player.pos);
+      this.audio.play('teleport', { volume: 0.7, pitch: 0.6 });
+      this.hud.callout('UMA CÁPSULA SE ABRIU', '#7aff4a');
+      this.pveHud.setObjective('Deite na cápsula');
+      this.pveHud.hint('Entre no FEIXE VERDE da cápsula aberta para atravessar');
+      this.hintT = 6;
+      return;
+    }
     d.unlocked = true;
     this.openGate(d.gate);
     this.audio.play('creak', { volume: 1, pitch: 0.6 });
@@ -1518,7 +1606,10 @@ export class Dungeon {
       this.phaseTime += dt;
       this.world.update(dt);
       for (const c of this.closets) if (c !== this.bossIntro.c) c.tick(dt);
-      if (this.bossIntro.update(dt, this.input)) this.beginBossFight();
+      if (this.bossIntro.update(dt, this.input)) {
+        const B = this.bossIntro;
+        if (B.onDone) { this.bossIntro = null; B.onDone(); } else this.beginBossFight();
+      }
       this.hud.update(this);
       return;
     }
@@ -1555,6 +1646,7 @@ export class Dungeon {
       if (q.aimYaw !== null && V.lockT && V.lockT.pos) q.aimYaw = Math.atan2(V.lockT.pos.x - q.pos.x, V.lockT.pos.z - q.pos.z);
       // um erro na interação (porta, gaveta, baú) não pode impedir o mundo de andar logo abaixo (travamentos, 2026-11-07)
       try { this.updateInteract(V); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
+      if (this.minis && this.minis.input) this.minis.input(V); // os sacos de farinha do Rastropoda (pega/arremessa)
     }
     const prev = this.players.map((q) => [q.pos.x, q.pos.z]);
     w.update(dt);
@@ -1657,7 +1749,7 @@ export class Dungeon {
     if (this.coop) {
       const e = this.enemy;
       const show = this.encounter && !this.encounter.done && e.visible && !e.lurking && e.state !== 'intro';
-      this.pveHud.setEnemy(show ? e.def.name : null, e.health / e.maxHealth);
+      this.pveHud.setEnemy(show ? e.def.name : null, e.health / e.maxHealth, e.def.hpBar && e.def.hpBar.style === 'signal');
     }
     this.hud.update(this);
   }
@@ -1676,7 +1768,7 @@ export class Dungeon {
         this.hudRemove('pve-minor');
         this.hud.callout('SALA LIMPA', '#7dffb0');
         this.revivePlayers();
-        if (this.via && this.via.padlock === 'fight' && this.mod.chests && this.mod.chests.length) {
+        if (((this.via && this.via.padlock === 'fight') || enc.miniboss) && this.mod.chests && this.mod.chests.length) {
           const s = this.mod.chests.slice().sort((a, b) => distXZ(a, p.pos) - distXZ(b, p.pos))[0];
           const c = this.spawnChest(s, (this.D.locks || {}).luck || 0.6);
           this.world.fx.burst(new THREE.Vector3(c.pos.x, 0.6, c.pos.z), { count: 24, color: 0x6c6a66, kind: 'smoke', speed: 1.6, life: 0.7, size: 0.5, grow: 1 });
@@ -1686,6 +1778,12 @@ export class Dungeon {
     }
     if (this.brain && enc && enc.boss && !enc.done) this.brain.update(this.lastDt);
     if (this.pressure && enc && enc.boss && !enc.done) this.pressure.update(this.lastDt);
+    if (this.sino && enc && enc.boss && !enc.done) this.sino.update(this.lastDt);
+    if (this.minis) this.minis.update(this.lastDt);
+    if (this.bilu) this.bilu.update(this.lastDt);
+    if (this.maze && this.phase === 'explore' && !this.transit) this.maze.update(this.lastDt);
+    // a Torre: a saída é DEITAR numa cápsula (pve/sino.js)
+    if (this.sino && this.sino.exitCap && this.phase !== 'exit' && this.sino.exitReached(this.players)) this.startCapsuleExit();
     // a sala do chefe com gatilho (o bunker da escola): a luta começa quando alguém passa dele
     const B = this.pendingBoss;
     if (B && this.mod === B && !this.transit && this.players.some((q) => q.state !== 'ko' && q.pos.x > B.bossTrigger.x)) {
@@ -1728,7 +1826,48 @@ export class Dungeon {
     }]);
   }
 
+  // a saída da Torre: quem chega à cápsula entra, deita, o líquido verde sobe e a tela apaga
+  startCapsuleExit() {
+    const p = this.player;
+    const b = this.sino.exitCap;
+    this.phase = 'exit';
+    this.phaseTime = 0;
+    this.capsuleExit = { from: p.pos.clone(), to: { x: b.spot.x, z: b.spot.z + Math.sign(b.spot.z) * 0.6 } };
+    this.pveHud.hint(null);
+    for (const q of this.players) { q.cancelAction && q.cancelAction(); q.setState('intro'); }
+    p.anim.play('walk', { restart: true });
+    this.audio.play('teleport', { volume: 0.8, pitch: 0.5 });
+    const cam = this.world.cameraRig;
+    const from = cam.pos.clone();
+    const out = -Math.sign(b.spot.z);
+    cam.playShots([{
+      dur: 3.6,
+      fov: 45,
+      pos: (k) => v1.set(b.spot.x + 1.6, 2.2 - 0.3 * k, b.spot.z + out * 4.2).lerp(from, Math.max(0, 1 - k * 3)),
+      look: () => new THREE.Vector3(b.spot.x, 1.0, b.spot.z - out * 0.6),
+    }]);
+  }
+
+  updateCapsuleExit(dt) {
+    const X = this.capsuleExit;
+    const t = this.phaseTime;
+    const k = Math.min(1, t / 0.9);
+    this.players.forEach((q, i) => {
+      if (q.state === 'ko') return;
+      q.pos.x = X.from.x + (X.to.x + i * 0.5 - X.from.x) * k;
+      q.pos.z = X.from.z + (X.to.z - X.from.z) * k;
+      // anda olhando para a cápsula; dentro, vira de costas para ela (olhando a sala)
+      q.yaw = k < 1 ? Math.atan2(X.to.x - X.from.x, X.to.z - X.from.z) : Math.atan2(0, -Math.sign(X.to.z));
+      // chegou: deita (o corpo vai para trás, dentro do líquido)
+      if (k >= 1 && !q.lying) { q.lying = true; q.anim.play('downed', { restart: true }); }
+    });
+    this.sino.exitTick(Math.max(0, t - 0.9));
+    if (t > 2.0 && !this.fading) { this.fading = true; this.pveHud.fade(true, 1.2); }
+    if (t > 3.4 && !this.ended) { this.ended = true; for (const q of this.players) q.lying = false; this.finish('clear'); }
+  }
+
   updateExit(dt) {
+    if (this.capsuleExit) { this.updateCapsuleExit(dt); return; }
     const p = this.player;
     const p2 = this.player2;
     if (p2) { p2.setState('intro'); p2.pos.x = p.pos.x - 1.2; p2.pos.z = p.pos.z + 0.6; p2.yaw = Math.PI / 2; if (p2.anim.currentName !== p2.anim.resolve('walk')) p2.anim.play('walk'); }
@@ -1822,6 +1961,10 @@ export class Dungeon {
     this.ambience && this.ambience.dispose();
     this.brain && this.brain.dispose();
     this.pressure && this.pressure.dispose();
+    this.sino && this.sino.disposeAll();
+    this.minis && this.minis.dispose();
+    this.bilu && this.bilu.dispose();
+    this.maze && this.maze.dispose();
     for (const k of this.pickups) k.dispose();
     for (const c of this.closets) c.dispose();
     for (const id in this.cracks) this.cracks[id].dispose();

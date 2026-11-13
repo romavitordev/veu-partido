@@ -287,14 +287,13 @@ export const DUNGEONS = {
     },
   },
   // TORRE DA TV VARMINHO (pedido do dono, 2026-11-13: "a nova fase do Outro Lado: Torre de Transmissão, onde o boss será
-  // o Estrangeiro"; estudo em docs/TORRE-TRANSMISSAO.md). EM PRODUÇÃO: `hidden` a deixa fora do sorteio e da ordem da
-  // história até ficar pronta (dev: B = await import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')).
+  // o Estrangeiro"; estudo em docs/TORRE-TRANSMISSAO.md). Lançada na v4.42.0 (dev: B = await
+  // import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')).
   // Inimigos (dono, 2026-11-13: "canônicas + Interflorados"): os Doppelgangers Civis (pistola de plasma), Combatentes
   // (mais vida, no soco) e em forma monstruosa (o laboratório do 4º), e os Interflorados que saem dos casulos dos Becos.
-  // Ainda faltam (docs §7): o Rastropoda (miniboss sorteado) e o Bilu (quarto escuro).
+  // Minibosses sorteados por sala: o Rastropoda e o Bilu (pve/alheioMinis.js).
   estrangeiro: {
     id: 'estrangeiro',
-    hidden: true,
     storyOrder: 3, // Sinais do Outro Lado (2022): depois das outras duas
     name: 'Território do Estrangeiro',
     place: 'Torre da TV Varminho',
@@ -305,7 +304,7 @@ export const DUNGEONS = {
     restricted: ['estrangeiro'],
     bossTune: { hp: 0.85, dealt: 0.7 }, // PROPOSTA (sem bateria ainda)
     mist: { from: { color: 0x050806, density: 0.04 }, to: { color: 0x1e3a22, density: 0.075 }, boss: { color: 0x2a4a2a, density: 0.07 }, wisps: 6 },
-    minDepth: 1,
+    minDepth: 3, // a 3ª da história: só depois da Escola e da Mansão
     minions: 'alheios', // pve/Dungeon.js startAlheioEncounter
     models: ['doppel', 'interflorado'],
     drops: { heal: { chance: 0.5, amount: 0.2 } },
@@ -317,6 +316,12 @@ export const DUNGEONS = {
     bossDownText: 'O ESTRANGEIRO SUMIU NA INTERFERÊNCIA',
     bossCenter: 82,
     route: { rooms: [3, 5], monsters: [2, 4], stalkWeight: 0.35 },
+    // os MINIBOSSES sorteados (pedido do dono, 2026-11-13: "aparecem em salas diferentes e têm chance de aparecer, não é
+    // sempre"; pve/alheioMinis.js): a chance de cada sala, no máximo uma vez por tentativa. PROPOSTA: os números.
+    minibosses: {
+      rastropoda: { rooms: { analise: 0.65, laboratorio: 0.3, casulos: 0.2, armarios: 0.25 } },
+      bilu: { rooms: { escuro: 0.75, becos: 0.35, fusca: 0.3 } },
+    },
     start: 'recepcao',
     bossModule: 'sino',
     modules: {
@@ -338,29 +343,39 @@ export const DUNGEONS = {
       laboratorio: torreRoom(0, 50, 'Laboratório de análises', { foes: 'monstro' }),
       casulos: torreRoom(20, 50, 'Os Becos: sala dos casulos', { foes: 'casulos' }),
       armarios: torreRoom(40, 50, 'Os Becos: sala dos armários', { foes: 'doppel' }),
+      // o ESCRITÓRIO DE ANÁLISE (4º andar): a casa do RASTROPODA (no ep. 7 ele pulou do teto daqui) — a chance maior
+      analise: torreRoom(0, 70, 'Escritório de análise', { foes: 'doppel', pods: ['far'] }),
+      // o QUARTO ESCURO dos Becos: a casa do BILU (só ouvido no ep. 7)
+      escuro: {
+        ...torreRoom(20, 70, 'Os Becos: o quarto escuro', { kind: 'stalk' }),
+        objective: 'Escolha uma porta',
+        hint: 'Escuro demais… algo respira atrás das pilastras · escolha uma porta',
+      },
       becos: {
         kind: 'stalk', floor: 0, title: 'Os Becos', objective: 'Escolha uma porta',
         hint: 'Os Becos: corredores que não cabem no prédio… escolha uma porta',
-        rects: [{ minX: 60.3, maxX: 75.7, minZ: 31.3, maxZ: 38.7 }],
+        rects: [{ minX: 60.3, maxX: 77.7, minZ: 29.3, maxZ: 40.7 }],
         entry: { x: 61.0, z: 35, yaw: Math.PI / 2, door: { x: 60.02, z: 35, face: Math.PI / 2, w: 1.4 } },
         exits: {
-          left: { x: 67, z: 31.02, face: 0, w: 1.4 },
-          front: { x: 75.98, z: 35, face: -Math.PI / 2, w: 1.4 },
-          right: { x: 66, z: 38.98, face: Math.PI, w: 1.4 },
+          left: { x: 68, z: 29.02, face: 0, w: 1.4 },
+          front: { x: 77.98, z: 35, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 67, z: 40.98, face: Math.PI, w: 1.4 },
         },
-        chests: [{ x: 75.1, z: 31.9 }],
+        chests: [{ x: 77.0, z: 30.0 }],
+        drawers: [{ x: 61.0, z: 40.0, pod: true }, { x: 75.5, z: 40.0, pod: true }],
       },
       fusca: {
         kind: 'stalk', floor: 0, title: 'Os Becos: o Fusca Azul', objective: 'Escolha uma porta',
         hint: 'Um Fusca Azul batido na parede, o alarme tocando… e uma vontade estranha de socar quem está do lado',
-        rects: [{ minX: 60.3, maxX: 71.7, minZ: 51.3, maxZ: 58.7 }],
+        rects: [{ minX: 60.3, maxX: 75.7, minZ: 49.3, maxZ: 60.7 }],
         entry: { x: 61.0, z: 55, yaw: Math.PI / 2, door: { x: 60.02, z: 55, face: Math.PI / 2, w: 1.4 } },
         exits: {
-          left: { x: 66, z: 51.02, face: 0, w: 1.4 },
-          front: { x: 71.98, z: 57.8, face: -Math.PI / 2, w: 1.4 },
-          right: { x: 64, z: 58.98, face: Math.PI, w: 1.4 },
+          left: { x: 67, z: 49.02, face: 0, w: 1.4 },
+          front: { x: 75.98, z: 59.0, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 64, z: 60.98, face: Math.PI, w: 1.4 },
         },
-        chests: [{ x: 71.0, z: 51.9 }],
+        chests: [{ x: 75.0, z: 50.0 }],
+        drawers: [{ x: 61.0, z: 50.0, pod: true }],
       },
       // a SALA DAS PILASTRAS (pedido do dono, 2026-11-13): o precipício; cair = voltar do céu na entrada com dano, e as
       // pilastras mudam de lugar (pve/pillars.js). Sem monstros; o baú fica na borda da saída.
@@ -376,6 +391,23 @@ export const DUNGEONS = {
           right: { x: 102, z: 39.98, face: Math.PI, w: 1.4 },
         },
         chests: [{ x: 101.2, z: 30.4 }],
+      },
+      // O LABIRINTO DOS BECOS (pedido do dono, 2026-11-13): as paredes de dentro mudam a cada visita (pve/maze.js); as
+      // portas de saída ficam na parede do fundo e não há seta amarela — achar a saída é o desafio. Alheios aparecem
+      // pelos corredores. 9 × 9 células de 4 m. PROPOSTA: o tamanho, os atalhos e o ritmo dos monstros.
+      labirinto: {
+        kind: 'maze', weight: 0.6, floor: 0, title: 'Os Becos: o labirinto', objective: 'Ache a saída',
+        hint: 'Os corredores não são os mesmos de antes… ACHE A SAÍDA (portas na parede do fundo) · algo anda por aqui',
+        rects: [{ minX: 110.3, maxX: 145.7, minZ: 50.3, maxZ: 85.7 }],
+        maze: { x0: 110, z0: 50, cell: 4, cols: 9, rows: 9, loops: 0.12, spawn: { every: [8, 13], max: 3 } },
+        entry: { x: 111.2, z: 52, yaw: Math.PI / 2, door: { x: 110.02, z: 52, face: Math.PI / 2, w: 1.4 } },
+        exits: {
+          left: { x: 145.98, z: 58, face: -Math.PI / 2, w: 1.4 },
+          front: { x: 145.98, z: 70, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 145.98, z: 82, face: -Math.PI / 2, w: 1.4 },
+        },
+        chests: [{ x: 144, z: 52 }, { x: 112, z: 84 }],
+        drawers: [{ x: 128, z: 68, pod: true }, { x: 136, z: 76, pod: true }],
       },
       // a sala do chefe: o CORREDOR DE CABOS (calmo) → a porta verde → a SALA DO SINO (a luta começa ao entrar)
       sino: {
@@ -422,18 +454,26 @@ function classroom(x0, z0, title) {
 
 // uma sala de luta da Torre (12 × 10 a partir de x0, z0; tools/blender/arena_torre.py fight_room): a entrada no oeste;
 // `front` = o z da porta leste quando os móveis tampam o meio da parede; `foes` = quem aparece (startAlheioEncounter)
-function torreRoom(x0, z0, title, { front = z0 + 5, foes = 'doppel' } = {}) {
+// as salas da Torre têm 17 × 14 (cresceram de 12 × 10, pedido do dono, 2026-11-13: "estão meio apertadas"); `front` é
+// dado no desenho antigo (12 × 10) e esticado como a mobília (tools/blender/arena_torre.py stretch)
+// pods: as CÁPSULAS DE LOOT (as gavetas da Torre: pve/roomDoors.js Drawer.buildPod) nos cantos sem baú ('near' = o canto
+// da entrada, 'far' = o do fundo)
+function torreRoom(x0, z0, title, { front = z0 + 5, foes = 'doppel', kind = 'fight', pods = ['near', 'far'] } = {}) {
+  const TW = 17;
+  const TD = 14;
+  const fz = z0 + (front - z0) * (TD / 10);
   return {
-    kind: 'fight', floor: 0, title, foes,
-    rects: [{ minX: x0 + 0.3, maxX: x0 + 11.7, minZ: z0 + 0.3, maxZ: z0 + 9.7 }],
-    entry: { x: x0 + 1.0, z: z0 + 2.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 2.5, face: Math.PI / 2, w: 1.4 } },
-    spawn: { x: x0 + 8, z: z0 + 5 },
+    kind, floor: 0, title, foes,
+    rects: [{ minX: x0 + 0.3, maxX: x0 + TW - 0.3, minZ: z0 + 0.3, maxZ: z0 + TD - 0.3 }],
+    entry: { x: x0 + 1.0, z: z0 + 3.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 3.5, face: Math.PI / 2, w: 1.4 } },
+    spawn: { x: x0 + 11.3, z: z0 + 7 },
     exits: {
-      left: { x: x0 + 6.6, z: z0 + 0.02, face: 0, w: 1.4 },
-      front: { x: x0 + 11.98, z: front, face: -Math.PI / 2, w: 1.4 },
-      right: { x: x0 + 5.4, z: z0 + 9.98, face: Math.PI, w: 1.4 },
+      left: { x: x0 + 9.4, z: z0 + 0.02, face: 0, w: 1.4 },
+      front: { x: x0 + TW - 0.02, z: fz, face: -Math.PI / 2, w: 1.4 },
+      right: { x: x0 + 7.6, z: z0 + TD - 0.02, face: Math.PI, w: 1.4 },
     },
-    chests: [{ x: x0 + 1.1, z: z0 + 9.0 }, { x: x0 + 10.9, z: z0 + 1.0 }],
+    chests: [{ x: x0 + 1.1, z: z0 + TD - 1.0 }, { x: x0 + TW - 1.1, z: z0 + 1.0 }],
+    drawers: pods.map((c) => (c === 'near' ? { x: x0 + 0.8, z: z0 + 0.8, pod: true } : { x: x0 + TW - 0.8, z: z0 + TD - 0.8, pod: true })),
   };
 }
 

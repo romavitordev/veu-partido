@@ -2,6 +2,14 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.42.0 — Sinais da Torre
+- NOVA MASMORRA DO OUTRO LADO: a TORRE DA TV VARMINHO, o território do Estrangeiro (Sinais do Outro Lado). Recepção, redação, estúdio, laboratório, os Becos e a Sala do Sino, com Doppelgangers e Interflorados de roupas variadas.
+- CHEFE: O ESTRANGEIRO. Ninguém lembrava dele. Ele solta A PRESENÇA, uma onda que paralisa e dá ORDENS. Corra para a CÁPSULA que se abrir: lá dentro você fica protegido e o SINO o deixa EXPOSTO. Vencido, a saída é deitar numa cápsula.
+- MINIBOSSES que às vezes aparecem: o RASTROPODA, invisível, que só a câmera do tripé e a FARINHA revelam (pegue os sacos e arremesse nele; a vida dele é SINAL PERDIDO), e o BILU, no quarto escuro, que morre fácil e volta.
+- O LABIRINTO DOS BECOS: corredores amarelados que mudam a cada visita, com Alheios surgindo enquanto você procura a saída.
+- Cenas de entrada para o Estrangeiro, o Rastropoda e o Bilu; barras de vida com chiado de transmissão; e gavetas-casulo com loot.
+- Sala das PILASTRAS sobre o precipício: quem cai volta do alto com um pouco de dano.
+
 ## v4.41.0 — Amor e Sangue
 - NOVA PERSONAGEM: Cindy Lopes, a baixista da PSIKOLERA. Ela luta com o FUZIL BAIXO, um baixo com o salto alto amarrado na ponta e um fuzil por baixo: segura como baixo, com o braço apontado para o inimigo, e atira pela ponta.
 - Cindy: SILENCIAR, o grito que deixa o alvo sem habilidades, mais fraco e mais lento; Tiro do Palco; Máscara PSIKOLERA, que a deixa mais rápida e mais forte dançando; Pirueta no Cânion; e a Última Nota, um acorde que empurra e queima.

@@ -21,20 +21,31 @@ b = Builder(width=0.78, bulk=0.74, height=1.24)  # 2,5 m — o mais alto do jogo
 sk = b.sk
 H = sk.h
 hz = sk['hips'].z
+# os BRAÇOS ficam POR FORA do manto, entre ele e a capa aberta (a miniatura): o esqueleto padrão pendura os braços em
+# x ≈ 0,18 m, dentro da armadura e do manto; aqui os ombros vão para a borda da armadura e os braços descem abrindo
+from lib import build_armature
+for s_ in (1, -1):
+    sd = 'L' if s_ > 0 else 'R'
+    # e são COMPRIDOS: o punho desce até o meio da coxa e as garras passam dele (a miniatura)
+    for j_, x_, zf in (('s', 0.31, 1.55), ('e', 0.37, 1.2), ('hand', 0.42, 0.84), ('handTip', 0.43, 0.75)):
+        q_ = sk.j[j_ + sd]
+        sk.j[j_ + sd] = Vector((s_ * x_, q_.y - 0.02, zf * H))
+bpy.data.objects.remove(b.arm)
+b.arm = build_armature(sk)
 
-skin = material('skin_estrangeiro', '#9a9a8e', 0.7)
+skin = material('skin_estrangeiro', '#7a7e6c', 0.7)  # cinza-oliva (a miniatura), não branco
 armor = material('armor_estrangeiro', '#4e5a3e', 0.4, metal=0.6)
 green = material('cord_estrangeiro', '#5a7a34', 0.7)
 dark = material('cable_estrangeiro', '#16181a', 0.6)
-cape = material('cape_estrangeiro', '#4a5236', 0.9)
-cape_in = material('cape_estrangeiro_in', '#262a1c', 0.9)
-robe = material('robe_estrangeiro', '#2c3022', 0.9)
+cape = material('cape_estrangeiro', '#858766', 0.9)  # a capa da miniatura é CLARA (cáqui-oliva), mais clara que o resto
+cape_in = material('cape_estrangeiro_in', '#4a4c38', 0.9)
+robe = material('robe_estrangeiro', '#2a3426', 0.9)
 claw_m = material('claw_estrangeiro', '#d8d6c8', 0.5)
 glow = material('eyeglow_estrangeiro', '#22e83a', 0.4, emission='#12d02a', strength=1.6)  # verde (forte demais virava amarelo)
 leaf = material('leaf_estrangeiro', '#4e8a34', 0.5, emission='#2e6a22', strength=0.25)  # os ornamentos do peito
 sash = material('sash_estrangeiro', '#3a4230', 0.9)  # a faixa de pano enrolada na cintura
 
-M = {'skin': skin, 'face': material('face_estrangeiro', '#ffffff', 0.5), 'torso': armor, 'hand': skin}
+M = {'skin': skin, 'face': material('face_estrangeiro', '#7c806c', 0.6), 'torso': armor, 'hand': skin}  # a cabeça base some atrás da máscara (mesma cor: nada branco vaza)
 
 
 def lerp_table(tab, x):
@@ -161,7 +172,7 @@ HP = [  # (z relativo ao centro, meia-largura, meia-profundidade, expoente da se
 ]
 HP_UP = [(-q[0],) + q[1:] for q in HP]  # lerp_table quer o x crescendo
 EYE_Z, EYE_X = -0.005, 0.044
-mask_m = material('mask_estrangeiro', '#8e937e', 0.6)  # cinza-esverdeado da miniatura
+mask_m = material('mask_estrangeiro', '#7c806c', 0.6)  # cinza-esverdeado da miniatura
 
 
 def spow(v, e):
@@ -256,7 +267,7 @@ for side in ('L', 'R'):
         # dedos longos e finos que viram garras (as artes: as garras passam do meio da coxa)
         base = h + ax * 0.05 * H + off
         knuckle = base + ax * 0.1 * H + off * 0.4
-        tip = knuckle + ax * 0.2 * H + Vector((0, -0.05 * H, 0)) + off * 0.5
+        tip = knuckle + ax * 0.26 * H + Vector((0, -0.05 * H, 0)) + off * 0.5
         claws.append(rod([base, knuckle], [0.008 * H, 0.007 * H], 5))
         claws.append(cone(tuple(knuckle), tuple(tip), 0.007 * H, 5))
     b.add('claws' + side, merge(*claws), claw_m, region='e' + side, subdiv=0)
@@ -283,7 +294,7 @@ b.add('belt', merge(*belts), sash, region='torso', subdiv=0)
 # ele parece FLUTUAR) e a CAPA enorme dos ombros quadrados até o chão, aberta na frente
 def robe_pt(u, v, out=1.0):
     a = (u - 0.5) * TAU + math.pi
-    z = 0.06 - v * 1.02
+    z = 0.06 - v * 0.95  # para acima do tornozelo: os PÉS de garra aparecem (a miniatura)
     p = torso_pt(a, max(z, -0.16), 1.0, 0.02 + max(0.0, -z) * 0.05)
     p.z = hz + z * H
     if z < -0.16:
@@ -299,7 +310,7 @@ def robe_weights(p):
 
 
 b.add('robe', grid(robe_pt, 36, 14), robe, region='torso', weight_fn=robe_weights, subdiv=0)
-CGAP = 0.15
+CGAP = 0.29  # a capa ABRE na frente: os braços magros ficam à mostra entre a capa e o manto (a miniatura)
 
 
 def cape_pt(u, v, out=1.0):
@@ -318,7 +329,7 @@ def cape_pt(u, v, out=1.0):
     p.z += 0.26 * H * side * lift
     p.x *= 1 + 0.18 * side * lift
     if z < -0.16:
-        p.x *= 1 + (-0.16 - z) * 0.55
+        p.x *= 1 + (-0.16 - z) * 0.95  # a barra da capa abre bem mais larga que os ombros (a miniatura)
         p.y *= 1 + (-0.16 - z) * 0.6
     return Vector((p.x * out, p.y * out, p.z))
 

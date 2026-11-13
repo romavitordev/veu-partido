@@ -233,12 +233,13 @@ export class PveHud {
   // COOP LOCAL: a vida do inimigo da vez (os dois painéis da HUD são dos jogadores) e a linha do meio da tela dividida
   // Na tela dividida (coop local) a barra aparece nas DUAS metades (pedido do dono, 2026-11-06): .pv-enemy em cima e
   // .pv-enemy.low na de baixo; o escudo da Degolificada vai nas duas (ensureShield)
-  setEnemy(name, frac) {
+  setEnemy(name, frac, sig = false) {
     const els = [this.enemyBar('pv-enemy', true)];
     if (this.split) els.push(this.enemyBar('pv-enemy low', true));
     else this.q('.pv-enemy.low')?.remove();
     for (const el of els) {
       el.hidden = name == null;
+      el.classList.toggle('sig', !!sig);
       if (name == null) continue;
       const b = el.querySelector('b');
       if (b.textContent !== name) b.textContent = name;

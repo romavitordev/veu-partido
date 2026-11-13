@@ -349,6 +349,7 @@ export class Marionette {
 
   update(dt) {
     if (!this.alive) return;
+    if (this.held && this.state !== 'rise') { this.pose(dt); return; } // numa cena de entrada (pve/torreIntros.js): parado (mas termina de surgir)
     const w = this.world;
     this.t += dt;
     this.stateT += dt;
