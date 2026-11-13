@@ -41,10 +41,16 @@ S = 3.0
 house('manor', (22.0 + S, 0, 0), -math.pi / 2, cells=(11, 2), floors=3, s=S, wood=False, door_at=5, prefix='OCC_')
 for z in (-12, -3, 6, 13):
     put('town', 'chimney', (25.5, 9.0, z), 0.0, 4.0)
-# escadaria de pedra na porta
-put('town', 'stairs-wide-stone', (20.6, 0, 0), math.pi / 2, S)
+# escadinha de pedra na porta, de frente para o pátio (2026-11-13: a 'stairs-wide-stone' do kit entrava girada, subia
+# de lado até o 1º andar e tampava a porta — ver fix_orfanato_escada.py) e o painel que tapa o buraco da porta do kit
+M['entry'] = material('entry_stone', '#9e9990', 0.95)
+M['door'] = material('entry_door_wood', '#2a1409', 0.8)
+box('entry_step_landing', (21.475, 0.18, 0), (1.05, 0.36, 3.4), M['entry'])
+box('entry_step_2', (20.75, 0.12, 0), (0.4, 0.24, 3.0), M['entry'])
+box('entry_step_1', (20.35, 0.06, 0), (0.4, 0.12, 2.6), M['entry'])
+box('entry_door_panel', (22.01, 1.075, 0), (0.04, 2.15, 1.05), M['door'])
 col_box('manor', (22.0 + S, 3, 0), (2 * S, 6, 11 * S))
-col_box('entry', (20.6, 1, 0), (2.4, 2, 3.4))
+col_box('entry', (21.075, 1, 0), (1.85, 2, 3.4))
 # torre de pedra na ponta do casarão
 TX, TZ = 23.5, -19.0
 tower('orfanato', (TX, 0, TZ), floors=5, window='wall-window-stone', window_face=math.pi)

@@ -1,5 +1,5 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
 const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
@@ -134,7 +134,7 @@ export const ARENAS = {
 };
 
 // mapas do OUTRO LADO (PvE): fora da seleção (não entram em ARENA_ORDER) e carregados só ao entrar no modo
-export const PVE_ARENAS = { mansao: MANSAO, escola: ESCOLA };
+export const PVE_ARENAS = { mansao: MANSAO, escola: ESCOLA, torre: TORRE };
 ARENAS.mansao = {
   name: 'Mansão Endiabrada',
   description: 'O território do Espreitador: corredores, armários entreabertos e o relógio parado nas 2:11.',
@@ -150,6 +150,14 @@ ARENAS.escola = {
   available: true,
   pve: true,
   create: () => createGLBArena(ESCOLA),
+};
+ARENAS.torre = {
+  name: 'Torre da TV Varminho',
+  description: 'O território do Estrangeiro: a recepção da emissora, os Becos do 5º andar, o precipício das pilastras e a Sala do Sino.',
+  colors: ['#020403', '#2e4a2a', '#8acf4a'],
+  available: true,
+  pve: true,
+  create: () => createGLBArena(TORRE),
 };
 // as salas do Outro Lado como ARENAS DE LUTA (entram na seleção; o mapa inteiro continua só no PvE)
 ARENAS.mansao_luta = {

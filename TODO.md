@@ -183,7 +183,17 @@
       cair = voltar do céu à entrada com dano, as pilastras trocam de lugar; no coop os dois voltam). Estudo e plano em
       `docs/TORRE-TRANSMISSAO.md`; 265 prints dos ep. 6 e 7 em `Referencias visuais/Mapas/torre-tv-varminho/`.
       Recomendação: miniboss = RASTROPODA (invisível, revelado pela câmera e pela farinha); o BILU vira a ameaça do
-      quarto escuro (fraco, rápido, volta em outro lugar). Feito: o estudo. Próximo: arena no Blender e as pilastras.
+      quarto escuro (fraco, rápido, volta em outro lugar). Inimigos (dono, 2026-11-13): os canônicos + Interflorados.
+  - [x] Estudo, prints e levantamento das criaturas (wiki: só Doppelganger, Bilu, Rastropoda e o Estrangeiro aparecem lá).
+  - [x] Arena em blocos (`tools/blender/arena_torre.py` → `torre.glb`): recepção, segurança, editorial, estúdio,
+        laboratório, Becos (casulos, armários, corredor, Fusca Azul), precipício, corredor de cabos e Sala do Sino.
+  - [x] Dungeon `estrangeiro` cadastrada com `hidden: true` (fora do sorteio e da ordem da história).
+  - [x] Doppelgangers Civis, Combatentes e monstruosos e os Interflorados dos casulos nas salas de luta.
+  - [x] Sala das pilastras (`src/pve/pillars.js`): queda, volta do alto com 12% de dano, troca de caminho, coop.
+  - [x] Chefe Estrangeiro (`characters/bosses/estrangeiro.js` + `pve/estrangeiro.js`): Homens de Terno, Ninho, Abdução.
+  - [ ] Rastropoda (miniboss sorteado; modelo no Blender MCP) e Bilu (quarto escuro).
+  - [ ] Cena de entrada do Estrangeiro, bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira.
+  - [ ] Polir os modelos da arena no Blender MCP (está em blocos) e tirar o `hidden`.
 - [ ] **Lançar o especial HORA DO SHOW! (PSIKOLERA)** (dono, 2026-11-13: só sai com a PSIKOLERA completa). A
       coreografia já existe (`CHOREO.psikolera`); a ligação está com `unreleased: true` em `src/config/teamLinks.js`.
       Quando Franco, Caio e Alê entrarem: incluir os três na coreografia, subir `min` para 3, tirar o `unreleased`.
@@ -239,6 +249,9 @@
       Os próximos mapas de Hexatombe (Acampamento dos Pássaros, sertão) já nascem com as duas versões.
 - [x] **Orfanato Santa Menefreda (Noite)** (pedido do dono, 2026-11-12): nome canônico, relâmpagos, janelas piscando e
       Existidos de Conhecimento (modelo novo, humanoide) andando entre a grade e a sebe com os olhos e as escritas acesos.
+- [x] **Orfanato: a escada está bugada na porta** (dono, 2026-11-13; consertada no mesmo dia: escadinha de frente para o pátio e porta tapada, `fix_orfanato_escada.py`), nas DUAS versões (`orfanato` e `orfanato_noite`,
+      que usam o mesmo `arenas/orfanato.glb`): conferir no jogo onde a escada encontra a porta (personagem travando,
+      atravessando ou flutuando), corrigir a geometria/colisão em `tools/blender/arena_orfanato.py` e reexportar o .glb.
 - [ ] **Orfanato: reconstruir o .glb** quando os kits do Kenney estiverem em `assets_src/kenney` (as janelas acesas
       podem virar peças do .glb; hoje são do jogo, em `nightLife.js`).
 - [x] **Nova tela de escolha do cenário** (pedido do dono, 2026-11-12): cenário em tela cheia ao fundo, nome numa faixa

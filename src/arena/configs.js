@@ -561,6 +561,51 @@ export const ESCOLA = {
   camera: { rect: { minX: -30, maxX: 110, minZ: -20, maxZ: 68 }, maxY: 11 },
 };
 
+// TORRE DA TV VARMINHO (OUTRO LADO: o território do Estrangeiro, a 3ª dungeon; docs/TORRE-TRANSMISSAO.md) — salas
+// soltas como a Escola (tools/blender/arena_torre.py; módulos em pve/dungeons.js DUNGEONS.estrangeiro). As pilastras da
+// sala do precipício são do jogo (pve/pillars.js).
+const green = (x, z, i = 10, flicker = false) => ({ type: 'point', color: 0x5aff6a, intensity: i, distance: 8, pos: [x, 2.2, z], flicker });
+const fluo = (x, z, i = 11, flicker = false) => ({ type: 'point', color: 0xf8f0c8, intensity: i, distance: 8, pos: [x, 2.8, z], flicker });
+export const TORRE = {
+  id: 'torre',
+  name: 'Torre da TV Varminho',
+  glb: 'arenas/torre.glb',
+  bounds: {
+    rects: [
+      { minX: -21.6, maxX: -0.3, minZ: -5.7, maxZ: 5.7 }, // recepção
+      room(0, 30), room(20, 30), room(40, 30), room(0, 50), room(20, 50), room(40, 50), // as salas de luta
+      { minX: 60.3, maxX: 75.7, minZ: 31.3, maxZ: 38.7 }, // os Becos
+      { minX: 60.3, maxX: 71.7, minZ: 51.3, maxZ: 58.7 }, // o Fusca Azul
+      { minX: 80.3, maxX: 103.7, minZ: 28.3, maxZ: 39.7 }, // as pilastras
+      { minX: 70.3, maxX: 93.7, minZ: -10.7, maxZ: 10.7 }, // a Sala do Sino
+      { minX: 38.3, maxX: 71.8, minZ: -1.5, maxZ: 1.5 }, // o corredor de cabos
+      { minX: 92.2, maxX: 103.6, minZ: -1.0, maxZ: 1.0 }, // a saída
+    ],
+  },
+  spawns: [{ x: -20.6, z: 0 }, { x: -19, z: 0 }],
+  sky: 0x020403,
+  fog: { color: 0x050806, density: 0.045 },
+  lightPool: 7,
+  lights: [
+    { type: 'hemi', sky: 0x3a4a3a, ground: 0x10120c, intensity: 0.5 },
+    { type: 'ambient', color: 0x22281e, intensity: 0.45 },
+    { type: 'dir', color: 0x6a90a0, intensity: 0.25, pos: [20, 30, -18], shadow: false },
+    fluo(-18, 0), fluo(-12, 0, 9, true), fluo(-6, 0), green(-9.5, -5, 8), // a recepção e o símbolo da emissora
+    green(11, 34.5, 14, true), fluo(4, 35, 6, true), // a segurança: só a grade de monitores
+    fluo(24, 35, 10, true), fluo(28.5, 35), // o editorial
+    fluo(44, 35, 10), green(51, 35, 10), // o estúdio
+    green(4, 55, 12, true), green(9, 55, 10), // o laboratório verde
+    fluo(24, 55, 9, true), green(28, 55, 9), fluo(44, 55, 9, true), fluo(49, 55), // casulos e armários
+    fluo(62, 35, 9, true), fluo(70, 35, 9), fluo(66, 55, 8, true), { type: 'point', color: 0xff3a2a, intensity: 8, distance: 6, pos: [70, 1.2, 55], flicker: true }, // Becos e o Fusca (o alarme)
+    fluo(82, 34, 9, true), fluo(92, 34, 9), fluo(102, 34, 9, true), // as pilastras
+    green(46, 0, 7, true), green(60, 0, 7, true), // o corredor de cabos
+    green(82, 0, 18), green(76, -8, 9, true), green(88, 8, 9), green(92, -6.5, 9), green(92, 6.5, 9), // a Sala do Sino
+    { type: 'point', color: 0x8090c0, intensity: 8, distance: 8, pos: [103, 1.5, 0] },
+  ],
+  particles: { color: 0x9aff8a, count: 120, area: 30, height: 3, rise: 0.04, drift: 0.2, size: 0.03, opacity: 0.35, center: [40, 0, 20] }, // a interferência
+  camera: { rect: { minX: -30, maxX: 110, minZ: -20, maxZ: 68 }, maxY: 11 },
+};
+
 // ARENAS DE LUTA do Outro Lado (pedido do dono, 2026-11-06): uma sala só de cada mapa do PvE, no modo de luta. Usam o
 // mesmo .glb; a luta fica presa na sala (bounds), a câmera não sai dela e só as luzes de dentro acendem (sem lightPool).
 // PROPOSTA: a escolha da sala (o quarto principal da Mansão e o bunker da Escola), a névoa mais leve e os nascimentos.

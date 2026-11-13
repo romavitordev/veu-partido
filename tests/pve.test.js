@@ -111,7 +111,7 @@ test('salvamento: dado quebrado ou de outra versão não derruba', () => {
 
 test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a profundidade escala', () => {
   assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador']);
-  assert.deepEqual(DUNGEON_ORDER, Object.values(DUNGEONS).sort((a, b) => a.storyOrder - b.storyOrder).map((d) => d.id));
+  assert.deepEqual(DUNGEON_ORDER, Object.values(DUNGEONS).filter((d) => !d.hidden).sort((a, b) => a.storyOrder - b.storyOrder).map((d) => d.id));
   assert.equal(new Set(Object.values(DUNGEONS).map((d) => d.storyOrder)).size, Object.keys(DUNGEONS).length, 'cada fase futura precisa de uma posição cronológica própria');
   assert.deepEqual(validDungeons(1), ['degolificada']);
   const run = { depth: 2, difficulty: 'easy', heat: 0, played: [] };

@@ -33,8 +33,17 @@ import { MansionAmbience } from './ambience.js';
 import { DegolificadaBrain, DegolificadaIntro } from './degolificada.js';
 import espreitadorDef from '../characters/bosses/espreitador.js';
 import degolificadaDef from '../characters/bosses/degolificada.js';
+import estrangeiroBossDef from '../characters/bosses/estrangeiro.js';
+import estrangeiroDef from '../characters/estrangeiro.js';
+import { PillarRoom } from './pillars.js';
+import { EstrangeiroBrain } from './estrangeiro.js';
 
-const BOSSES = { espreitador: espreitadorDef, degolificada: degolificadaDef };
+const BOSSES = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroBossDef };
+// os ALHEIOS da Torre da TV Varminho (pve/dungeons.js DUNGEONS.estrangeiro; docs/TORRE-TRANSMISSAO.md): vida de cada um
+// (×dificuldade) e a pistola de plasma dos Homens de Terno do kit do Estrangeiro. PROPOSTA: os números (sem bateria).
+const ALHEIO_HP = { civil: 140, combatente: 260, monstro: 420, interflorado: 110 };
+const DOPPEL_GUN = estrangeiroDef.abilities.find((a) => a.id === 'homensDeTerno');
+const NEST = estrangeiroDef.abilities.find((a) => a.id === 'ninhoInterflorados');
 const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (o bombeiro Jorge e os outros)
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
@@ -115,7 +124,8 @@ export class Dungeon {
     w.onSwitch = () => this.bindHud();
     w.onDrain = () => {};
     w.cameraFocus = () => this.cameraTargets();
-    w.groundAt = (f) => (f.onStairs ? this.stairHeight(f) : 0);
+    // o chão: a escada (Mansão) e as pilastras sobre o precipício (Torre; só para quem joga)
+    w.groundAt = (f) => (f.onStairs ? this.stairHeight(f) : this.pillars && this.players.includes(f) ? this.pillars.ground(f) : 0);
     // pontos que a câmera enquadra além do jogador; visible + chestPos: as paredes na frente deles também ficam transparentes
     const camPt = () => { const o = { pos: new THREE.Vector3(), size: 1, visible: true, chestPos: (v = new THREE.Vector3()) => v.set(o.pos.x, 1.2, o.pos.z) }; return o; };
     this.focusPt = camPt();
@@ -319,6 +329,8 @@ export class Dungeon {
     this.visited.push(id);
     w.arena.bounds.rects = M.rects;
     this.setupStairs(M);
+    if (this.pillars) { this.pillars.dispose(); this.pillars = null; }
+    if (M.pillars) this.pillars = new PillarRoom(this, M);
     for (const d of this.doors) d.dispose();
     this.doors = [];
     for (const d of this.drawers) d.dispose();
@@ -398,6 +410,7 @@ export class Dungeon {
     this.props = [];
     for (const x of this.bossBoxes) x.dispose();
     this.bossBoxes = [];
+    if (M.pillars) return; // o precipício: nada no chão
     const R = M.rects[M.kind === 'boss' ? 1 : 0] || M.rects[0];
     if (!R) return;
     const avoid = [M.entry, ...Object.values(M.exits || {}), ...(M.chests || []), ...(M.drawers || [])];
@@ -561,7 +574,11 @@ export class Dungeon {
       this.pendingBoss = M;
       if (this.pveHud) { this.pveHud.hint(M.hint || null); this.hintT = 8; }
     } else if (M.kind === 'boss') this.startBoss(M);
-    else {
+    else if (M.kind === 'parkour') {
+      this.encounter = null;
+      this.unlockExits(M.hint);
+      this.hintT = 8;
+    } else {
       this.encounter = null;
       this.unlockExits(M.kind === 'stalk' ? (M.hint || 'Uma fresta… NÃO OLHE para ela (defenda para desviar o olhar) · escolha uma porta') : null);
     }
@@ -704,8 +721,51 @@ export class Dungeon {
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
   }
 
+  // as salas de luta da TORRE: Doppelgangers (Civis com a pistola de plasma, Combatentes no soco), a forma monstruosa no
+  // laboratório e os Interflorados dos casulos (r.foes). O dono do bando é o inimigo escondido (como os Zumbis da Escola).
+  startAlheioEncounter(r, count = 2) {
+    const e = this.enemy;
+    this.encounter = { room: r, done: false, koAt: this.world.time, zombies: true };
+    e.pos.set(r.spawn.x, 0, r.spawn.z);
+    const foes = r.foes || 'doppel';
+    for (let i = 0; i < count; i++) {
+      // quem é cada um: nos casulos, Interflorados (um Doppelganger junto quando são 3+); no laboratório, o 1º é a forma
+      // monstruosa; no resto, Civis atirando e um Combatente a cada três
+      let kind = 'civil';
+      if (foes === 'casulos') kind = count >= 3 && i === 0 ? 'combatente' : 'interflorado';
+      else if (foes === 'monstro' && i === 0) kind = 'monstro';
+      else if (i % 3 === 1) kind = 'combatente';
+      const strong = kind === 'monstro' || kind === 'combatente';
+      const ang = Math.PI / 2 + ((i + 0.5) / count) * Math.PI * 2;
+      const pos = new THREE.Vector3(r.spawn.x + Math.sin(ang) * (count > 1 ? 2.2 : 0), 0, r.spawn.z + Math.cos(ang) * (count > 1 ? 2.2 : 0));
+      resolveBody(this.world.arena, pos, 0.8);
+      const hp = Math.round(ALHEIO_HP[kind] * this.scale.hp);
+      const o = kind === 'interflorado'
+        ? { model: 'interflorado', hp, damageMult: 1, element: 'transmissao', rise: true, strikes: NEST.brood.strikes, restyle(m) { m.material.transparent = false; } }
+        : {
+          model: 'doppel', hp, damageMult: kind === 'monstro' ? 1.5 : 1, element: 'transmissao', strikes: DOPPEL_GUN.strikes,
+          sludge: kind === 'civil' ? { ...DOPPEL_GUN.gun, cd: 2.8 } : null,
+          restyle(m) { m.material.transparent = false; },
+          setup(rig) { rig.showProp('pistol', kind === 'civil'); if (kind === 'monstro') rig.root.scale.set(1.12, 1.35, 1.12); },
+        };
+      o.onSlain = (c) => this.onZombieSlain(c);
+      const c = new DanteClone(e, this.world, i, Infinity, o);
+      c.strong = strong;
+      c.isDoppel = kind !== 'interflorado';
+      if (kind === 'monstro') c.height = 2.4;
+      c.pos.copy(pos);
+      this.world.fx.distort(new THREE.Vector3(pos.x, 1.1, pos.z), { color: 0x8aff4a, radius: 1.5, life: 0.4 });
+      this.world.addNpc(c);
+      this.copias.push(c);
+    }
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+    this.audio.play('teleport', { volume: 0.6, pitch: 0.7 });
+    this.pveHud.hint(null);
+  }
+
   startEncounter(r, count = 2) {
     if (this.D.minions === 'zumbi') { this.startZombieEncounter(r, count); return; }
+    if (this.D.minions === 'alheios') { this.startAlheioEncounter(r, count); return; }
     const e = this.enemy;
     this.encounter = { room: r, done: false, koAt: null };
     e.lurking = false;
@@ -799,6 +859,24 @@ export class Dungeon {
       this.bossIntro = new DegolificadaIntro(this, r.spawn);
       return;
     }
+    if (this.D.boss === 'estrangeiro') {
+      // a PORTA VERDE se fecha atrás de quem entrou na Sala do Sino; ele aparece numa interferência atrás do sino.
+      // PROPOSTA: a cena de entrada (o Estrangeiro no fim do corredor, ep. 7 3h11) fica para depois
+      if (r.bossTrigger && !this.bossGate) {
+        const gx = r.rects[0].minX - 0.2;
+        this.bossGate = this.addGate(gx, 'min');
+        this.audio.play('closetSlam', { volume: 0.8, pitch: 0.6 });
+        for (const q of this.players) if (q.pos.x < gx + 0.6) { q.pos.set(gx + 1.6, q.pos.y, 0); resolveBody(w.arena, q.pos, q.radius || 0.5); }
+      }
+      e.pos.set(r.spawn.x, 0, r.spawn.z);
+      e.yaw = Math.atan2(this.player.pos.x - e.pos.x, this.player.pos.z - e.pos.z);
+      e.setVisible(true);
+      w.fx.distort(new THREE.Vector3(e.pos.x, 1.2, e.pos.z), { color: 0x8aff4a, radius: 2.4, life: 0.7 });
+      this.audio.play('teleport', { volume: 0.9, pitch: 0.5 });
+      this.hud.callout('O ESTRANGEIRO', '#8acf4a');
+      this.beginBossFight();
+      return;
+    }
     // ele sai do armário mais perto da porta: primeiro a CENA (pve/espreitadorIntro.js), depois a luta
     const c0 = this.closets.slice().sort((a, b) => distXZ(a.pos, this.player.pos) - distXZ(b.pos, this.player.pos))[0];
     this.bossIntro = new EspreitadorIntro(this, c0);
@@ -824,6 +902,14 @@ export class Dungeon {
       this.bindHud();
       this.pveHud.hint('A barra azul é o ESCUDO DE MEDO: não quebra com golpes. Desvie das CAIXAS que ela arremessa: de uma delas sai uma PROVA');
       this.hintT = 9;
+      return;
+    }
+    if (this.D.boss === 'estrangeiro') {
+      this.pressure = new BossPressure(this, e, this.diff.counter ?? 7);
+      this.brain = new EstrangeiroBrain(this);
+      this.bindHud();
+      this.pveHud.hint('Os HOMENS DE TERNO saem da interferência; o NINHO verde solta Interflorados (quebre-o). Saia da LUZ VERDE que desce do céu');
+      this.hintT = 8;
       return;
     }
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
@@ -1474,6 +1560,7 @@ export class Dungeon {
     w.update(dt);
     if (this.coop) this.views[1].rig.update(dt, [this.player2]);
     this.players.forEach((q, i) => this.updateStairs(q, prev[i][0], prev[i][1]));
+    if (this.pillars) this.pillars.update(dt);
     this.applyGates(dt);
     this.updateExitDoor(dt);
     if (this.D.mist) this.updateMist(dt);
@@ -1749,6 +1836,7 @@ export class Dungeon {
     for (const d of this.drawers) d.dispose();
     for (const x of this.bossBoxes || []) x.dispose();
     this.world.groundAt = null;
+    if (this.pillars) { this.pillars.dispose(); this.pillars = null; }
     if (this.stairBlock) this.world.scene.remove(this.stairBlock);
     if (this.stairBox) { this.world.arena.boxes.push(this.stairBox); this.stairBox = null; }
     for (const g of this.gates) if (g.mesh) { this.world.scene.remove(g.mesh); g.mesh.geometry.dispose(); g.mesh.material.dispose(); }

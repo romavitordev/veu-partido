@@ -34,6 +34,27 @@ Cultista; o elevador volta com sete deles armados), **Rastropoda** (4º andar), 
 sonorizado no ep. 7; aparência e regras reveladas no Episódio Extra), o **Estrangeiro** (6º). Fora da Torre, na mesma
 temporada: Fummu, Memoflígico, Interflorado.
 
+### Levantamento de criaturas (wiki, 2026-11-13, a pedido do dono)
+
+Caixa "Monstros no episódio" da wiki: ep. 6 = **Doppelganger**; ep. 7 = **Bilu, Doppelganger, Estrangeiro,
+Rastropoda**. Nenhum outro Alheio aparece na Torre. O que dá para tirar disso para o jogo:
+
+| Criatura | Onde, na Torre | Uso no jogo (PROPOSTA) |
+|---|---|---|
+| Doppelganger **Civil** | andares 1–3 (funcionários, Produção) | inimigo comum: fraco, pistola de plasma |
+| Doppelganger **Combatente** | o elevador volta com sete armados | inimigo forte: mais vida, soco e pistola |
+| Doppelganger **Cultista** | Produção da TV | à distância, rituais de Conhecimento/Energia (únicos que usam rituais) |
+| Doppelganger em **forma monstruosa** | laboratório do 4º (de cabeça baixa nas paredes) | elite: alto, curvado, braços longos, boca costurada; dedos esticados que "conectam" (dano de sanidade) |
+| **William Bonantos** (âncora, Doppelganger) | 3º andar, sala do apresentador | 2º miniboss possível: sorriso que abre, 2 m, braços alongados ("Vocês. Vão. Entender.") |
+| **Rastropoda** | 4º andar | miniboss sorteado (seção 2) |
+| **Bilu** | quarto escuro dos Becos | ameaça que volta (seção 2) |
+| **Estrangeiro** | 6º, Sala do Sino | chefe (seção 5) |
+
+Fora da Torre, mas Alheios da mesma família (só se o dono quiser variedade, marcados como não canônicos AQUI):
+Interflorado (já tem modelo), Fummu, Memoflígico, Centomorfo, Fetilapo, Omatídeo, Macróbio, Reptilídio,
+Espectra, Limiantro, Solínico. Uma ideia que não fere o cânone: **casulos da sala dos casulos** soltando
+Interflorados (são larvas incubadas, e o Estrangeiro é a origem de todos os Alheios).
+
 ### O que os prints mostram (resumo visual)
 
 - **Andares 1–3** (ep. 6): escritório comum dos anos 90 na penumbra — piso de carpete, paredes bege, portas de madeira,
@@ -121,3 +142,7 @@ pilastras ou a das TVs) → corredor dos cabos → Sala do Sino. O elevador troc
 6. Bilu (modelo, perseguição e volta).
 7. O chefe Estrangeiro e a Sala do Sino.
 8. Bateria (`src/dev/pveBattery.js`) e economia (`tools/pve-economy.mjs`).
+
+**Andamento (2026-11-13):** feitos os passos 2, 3, 4 e uma 1ª versão do 7 (chefe sem cena de entrada; o cérebro em
+`src/pve/estrangeiro.js`). A dungeon tem id `estrangeiro` e fica `hidden` até o fim. Para jogar no dev:
+`const B = await import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')` (ou `newAttempt({ dungeon: 'estrangeiro' })`).

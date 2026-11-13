@@ -286,6 +286,120 @@ export const DUNGEONS = {
       ],
     },
   },
+  // TORRE DA TV VARMINHO (pedido do dono, 2026-11-13: "a nova fase do Outro Lado: Torre de Transmissão, onde o boss será
+  // o Estrangeiro"; estudo em docs/TORRE-TRANSMISSAO.md). EM PRODUÇÃO: `hidden` a deixa fora do sorteio e da ordem da
+  // história até ficar pronta (dev: B = await import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')).
+  // Inimigos (dono, 2026-11-13: "canônicas + Interflorados"): os Doppelgangers Civis (pistola de plasma), Combatentes
+  // (mais vida, no soco) e em forma monstruosa (o laboratório do 4º), e os Interflorados que saem dos casulos dos Becos.
+  // Ainda faltam (docs §7): o Rastropoda (miniboss sorteado) e o Bilu (quarto escuro).
+  estrangeiro: {
+    id: 'estrangeiro',
+    hidden: true,
+    storyOrder: 3, // Sinais do Outro Lado (2022): depois das outras duas
+    name: 'Território do Estrangeiro',
+    place: 'Torre da TV Varminho',
+    color: '#8acf4a',
+    arena: 'torre',
+    boss: 'estrangeiro',
+    bossName: 'O ESTRANGEIRO',
+    restricted: ['estrangeiro'],
+    bossTune: { hp: 0.85, dealt: 0.7 }, // PROPOSTA (sem bateria ainda)
+    mist: { from: { color: 0x050806, density: 0.04 }, to: { color: 0x1e3a22, density: 0.075 }, boss: { color: 0x2a4a2a, density: 0.07 }, wisps: 6 },
+    minDepth: 1,
+    minions: 'alheios', // pve/Dungeon.js startAlheioEncounter
+    models: ['doppel', 'interflorado'],
+    drops: { heal: { chance: 0.5, amount: 0.2 } },
+    xp: { zumbi: 18, zumbiForte: 42, boss: 160 },
+    exploreHint: 'Suba a torre →',
+    deathText: 'VOCÊ CAIU',
+    endTitle: ['VOCÊ CAIU NA TORRE', 'VOCÊS CAÍRAM NA TORRE'],
+    killsLabel: 'Alheios',
+    bossDownText: 'O ESTRANGEIRO SUMIU NA INTERFERÊNCIA',
+    bossCenter: 82,
+    route: { rooms: [3, 5], monsters: [2, 4], stalkWeight: 0.35 },
+    start: 'recepcao',
+    bossModule: 'sino',
+    modules: {
+      recepcao: {
+        kind: 'start', floor: 0, title: 'Recepção', objective: 'Escolha um caminho',
+        rects: [{ minX: -21.6, maxX: -0.3, minZ: -5.7, maxZ: 5.7 }],
+        entry: { x: -20.6, z: 0, yaw: Math.PI / 2 },
+        exits: {
+          left: { x: -4, z: -6.0, face: 0, w: 1.4 },
+          front: { x: -0.02, z: 0, face: -Math.PI / 2, w: 2.0 },
+          right: { x: -14, z: 6.0, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: -20.8, z: -2.2 }, { x: -1.2, z: 4.6 }],
+        drawers: [{ x: -9.5, y: 0.66, z: 1.0, face: Math.PI }], // a gaveta do balcão da Regina
+      },
+      seguranca: torreRoom(0, 30, 'Sala de segurança', { front: 38, foes: 'doppel' }),
+      editorial: torreRoom(20, 30, 'Escritório editorial', { foes: 'doppel' }),
+      estudio: torreRoom(40, 30, 'Estúdio do apresentador', { front: 38.8, foes: 'doppel' }),
+      laboratorio: torreRoom(0, 50, 'Laboratório de análises', { foes: 'monstro' }),
+      casulos: torreRoom(20, 50, 'Os Becos: sala dos casulos', { foes: 'casulos' }),
+      armarios: torreRoom(40, 50, 'Os Becos: sala dos armários', { foes: 'doppel' }),
+      becos: {
+        kind: 'stalk', floor: 0, title: 'Os Becos', objective: 'Escolha uma porta',
+        hint: 'Os Becos: corredores que não cabem no prédio… escolha uma porta',
+        rects: [{ minX: 60.3, maxX: 75.7, minZ: 31.3, maxZ: 38.7 }],
+        entry: { x: 61.0, z: 35, yaw: Math.PI / 2, door: { x: 60.02, z: 35, face: Math.PI / 2, w: 1.4 } },
+        exits: {
+          left: { x: 67, z: 31.02, face: 0, w: 1.4 },
+          front: { x: 75.98, z: 35, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 66, z: 38.98, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 75.1, z: 31.9 }],
+      },
+      fusca: {
+        kind: 'stalk', floor: 0, title: 'Os Becos: o Fusca Azul', objective: 'Escolha uma porta',
+        hint: 'Um Fusca Azul batido na parede, o alarme tocando… e uma vontade estranha de socar quem está do lado',
+        rects: [{ minX: 60.3, maxX: 71.7, minZ: 51.3, maxZ: 58.7 }],
+        entry: { x: 61.0, z: 55, yaw: Math.PI / 2, door: { x: 60.02, z: 55, face: Math.PI / 2, w: 1.4 } },
+        exits: {
+          left: { x: 66, z: 51.02, face: 0, w: 1.4 },
+          front: { x: 71.98, z: 57.8, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 64, z: 58.98, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 71.0, z: 51.9 }],
+      },
+      // a SALA DAS PILASTRAS (pedido do dono, 2026-11-13): o precipício; cair = voltar do céu na entrada com dano, e as
+      // pilastras mudam de lugar (pve/pillars.js). Sem monstros; o baú fica na borda da saída.
+      pilastras: {
+        kind: 'parkour', weight: 0.7, floor: 0, title: 'Os Becos: o precipício', objective: 'Atravesse pelas pilastras',
+        hint: 'PULE de pilastra em pilastra até o outro lado · quem cai volta do alto, machucado, e as pilastras mudam de lugar',
+        rects: [{ minX: 80.3, maxX: 103.7, minZ: 28.3, maxZ: 39.7 }],
+        entry: { x: 81.4, z: 34, yaw: Math.PI / 2, door: { x: 80.02, z: 34, face: Math.PI / 2, w: 1.4 } },
+        pillars: { ledgeIn: 83, ledgeOut: 100, minZ: 29.2, maxZ: 38.8, size: 1.6, gap: [1.5, 2.3], decoys: 4, fallDamage: 0.12 },
+        exits: {
+          left: { x: 102, z: 28.02, face: 0, w: 1.4 },
+          front: { x: 103.98, z: 34, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 102, z: 39.98, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 101.2, z: 30.4 }],
+      },
+      // a sala do chefe: o CORREDOR DE CABOS (calmo) → a porta verde → a SALA DO SINO (a luta começa ao entrar)
+      sino: {
+        kind: 'boss', floor: 0, title: 'Sala do Sino', objective: 'Siga até a porta verde',
+        hint: 'Os cabos levam à PORTA VERDE · o Estrangeiro espera na Sala do Sino',
+        rects: [
+          { minX: 70.3, maxX: 93.7, minZ: -10.7, maxZ: 10.7 }, // a Sala do Sino (o 1º: onde ele luta)
+          { minX: 38.3, maxX: 71.8, minZ: -1.5, maxZ: 1.5 }, // o corredor de cabos
+          { minX: 92.2, maxX: 103.6, minZ: -1.0, maxZ: 1.0 }, // a saída
+        ],
+        entry: { x: 39.3, z: 0, yaw: Math.PI / 2, door: { x: 38.02, z: 0, face: Math.PI / 2, w: 2.2 } },
+        spawn: { x: 87, z: 0 },
+        bossTrigger: { x: 71.5 },
+        exits: {},
+        chests: [{ x: 40.2, z: 1.0 }, { x: 92.6, z: -9.6 }],
+      },
+    },
+    exit: { door: { x: 94.6, z: 0 } },
+    locks: { chance: 0.4, vault: 0.5, luck: 0.6, drawerCoins: 0.35, coins: [4, 9] },
+    chests: {
+      chance: { start: 0.7, stalk: 0.9, parkour: 1, boss: 1, fight: [0, 0, 0.45, 0.65, 0.9] },
+      coinsBoss: 16,
+    },
+  },
 };
 
 // uma sala de aula da Escola Nostradamus (12 × 10, a partir de x0, z0): a porta de entrada no oeste, o quadro e a mesa do
@@ -303,6 +417,23 @@ function classroom(x0, z0, title) {
     },
     chests: [{ x: x0 + 1.1, z: z0 + 1.0 }, { x: x0 + 11.2, z: z0 + 3.6 }],
     drawers: [{ x: x0 + 2.12, y: 0.5, z: z0 + 6.5, face: Math.PI / 2 }, { x: x0 + 2.12, y: 0.5, z: z0 + 7.1, face: Math.PI / 2 }], // a mesa do professor
+  };
+}
+
+// uma sala de luta da Torre (12 × 10 a partir de x0, z0; tools/blender/arena_torre.py fight_room): a entrada no oeste;
+// `front` = o z da porta leste quando os móveis tampam o meio da parede; `foes` = quem aparece (startAlheioEncounter)
+function torreRoom(x0, z0, title, { front = z0 + 5, foes = 'doppel' } = {}) {
+  return {
+    kind: 'fight', floor: 0, title, foes,
+    rects: [{ minX: x0 + 0.3, maxX: x0 + 11.7, minZ: z0 + 0.3, maxZ: z0 + 9.7 }],
+    entry: { x: x0 + 1.0, z: z0 + 2.5, yaw: Math.PI / 2, door: { x: x0 + 0.02, z: z0 + 2.5, face: Math.PI / 2, w: 1.4 } },
+    spawn: { x: x0 + 8, z: z0 + 5 },
+    exits: {
+      left: { x: x0 + 6.6, z: z0 + 0.02, face: 0, w: 1.4 },
+      front: { x: x0 + 11.98, z: front, face: -Math.PI / 2, w: 1.4 },
+      right: { x: x0 + 5.4, z: z0 + 9.98, face: Math.PI, w: 1.4 },
+    },
+    chests: [{ x: x0 + 1.1, z: z0 + 9.0 }, { x: x0 + 10.9, z: z0 + 1.0 }],
   };
 }
 
@@ -344,7 +475,7 @@ export function rollExits(D, curId, { step = 0, total = 3, visited = [], prevCou
     const fresh = cand.filter((id) => !visited.includes(id));
     if (fresh.length) cand = fresh;
     // as salas de espreita saem menos (stalkWeight)
-    const wts = cand.map((id) => (D.modules[id].kind === 'stalk' ? D.route.stalkWeight : 1));
+    const wts = cand.map((id) => D.modules[id].weight ?? (D.modules[id].kind === 'stalk' ? D.route.stalkWeight : 1));
     let r = rng() * wts.reduce((a, b) => a + b, 0);
     let to = cand[cand.length - 1];
     for (let i = 0; i < cand.length; i++) { r -= wts[i]; if (r <= 0) { to = cand[i]; break; } }
@@ -393,7 +524,9 @@ export function chestChance(D, kind, count = 0) {
   return c[kind] ?? 0;
 }
 
+// `hidden`: em produção (fora da ordem da história e do sorteio)
 export const DUNGEON_ORDER = Object.values(DUNGEONS)
+  .filter((dungeon) => !dungeon.hidden)
   .sort((a, b) => a.storyOrder - b.storyOrder)
   .map((dungeon) => dungeon.id);
 

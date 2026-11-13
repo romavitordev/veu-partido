@@ -1,5 +1,27 @@
 # Registro administrativo de alterações
 
+## Não lançado
+
+- **Orfanato: escada da porta consertada (dono, 2026-11-13: "a escada dele está bugada na porta", nas duas versões):**
+  a `stairs-wide-stone` do kit do Kenney entrava girada, subia de lado pela fachada até a parede do 1º andar e tampava
+  metade da porta. Agora é uma escadinha de pedra de três degraus (0,12 / 0,24 / 0,36 m) de frente para o pátio, e um
+  painel de madeira escura tapa o buraco em ampulheta da porta do kit (dois triângulos faltando, antes escondidos pela
+  escada). O obstáculo da entrada acompanha a escadinha (x 20,15–22). Os kits não estão na máquina, então o .glb foi
+  corrigido direto por `tools/blender/fix_orfanato_escada.py` (Blender em segundo plano); o `arena_orfanato.py` já tem a
+  mesma escadinha para a próxima reconstrução. Conferido no jogo, de dia e de noite.
+- **Loja da Aghata:** retrato maior (`aghata_loja.webp`, 720 × 960). **Economia:** `tools/pve-economy.mjs` mede a renda
+  por dungeon e por tentativa (resultado no TODO). **Torre da TV Varminho:** estudo em `docs/TORRE-TRANSMISSAO.md`.
+- **Torre da TV Varminho, 3ª dungeon do Outro Lado (em produção, fora do sorteio):** pedido do dono (2026-11-13), chefe
+  o Estrangeiro. Arena em blocos `torre.glb` (`tools/blender/arena_torre.py`) com as salas do cânone dos ep. 6 e 7 de
+  Sinais do Outro Lado. Dungeon `estrangeiro` com `hidden: true` (`DUNGEON_ORDER` e a economia ignoram as escondidas).
+  Inimigos: Doppelgangers Civis (pistola de plasma), Combatentes e em forma monstruosa (laboratório), e Interflorados
+  saindo dos casulos (dono: "canônicas + Interflorados"). **Sala das pilastras** (`src/pve/pillars.js`): pular de
+  pilastra em pilastra sobre o precipício; quem cai volta do alto na entrada com 12% de dano (nunca mata), as pilastras
+  mudam de lugar e, no coop, os dois voltam (PROPOSTA). **Chefe:** o Estrangeiro com o kit jogável, sem especial e
+  despertar, e um cérebro que chama os Homens de Terno, o Ninho de Interflorados e a Abdução. Testado no jogo: rota,
+  pilastras (queda, dano, troca), salas de luta e chefe sem erros. Faltam Rastropoda, Bilu, a cena de entrada e a bateria.
+  Levantamento das criaturas da Torre no wiki em `docs/TORRE-TRANSMISSAO.md`.
+
 ## v4.41.0 — Amor e Sangue
 
 - **Cindy Lopes (PSIKOLERA) jogável (kit aprovado pelo dono, 2026-11-14):** a baixista da banda, de Sangue, pequena e

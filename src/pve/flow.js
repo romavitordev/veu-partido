@@ -7,6 +7,7 @@ import { seededRandom } from '../net/NetSession.js';
 import { ROSTER } from '../characters/index.js';
 import espreitadorDef from '../characters/bosses/espreitador.js';
 import degolificadaDef from '../characters/bosses/degolificada.js';
+import estrangeiroDef from '../characters/bosses/estrangeiro.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels, isModelLoaded } from '../models/index.js';
 import { renderPortraits } from '../ui/portraits.js';
@@ -28,7 +29,7 @@ import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, 
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = (id) => ROSTER.find((c) => c.id === id);
-const BOSS_DEFS = { espreitador: espreitadorDef, degolificada: degolificadaDef };
+const BOSS_DEFS = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroDef };
 
 export function createPveFlow(ctx) {
   const { game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect } = ctx;
@@ -231,7 +232,7 @@ export function createPveFlow(ctx) {
     loading.progress(0.1);
     try { await preloadPveArena(D.arena); } catch (e) { console.warn('Outro Lado: cenário', e); }
     loading.progress(0.5);
-    try { await ensureModels([D.boss]); } catch (e) { console.warn('Outro Lado: modelo do chefe', e); }
+    try { await ensureModels([D.boss, ...(D.models || [])]); } catch (e) { console.warn('Outro Lado: modelo do chefe', e); }
     if (!portraits[D.boss]) {
       try {
         const bossDef = BOSS_DEFS[D.boss];

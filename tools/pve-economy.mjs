@@ -55,7 +55,7 @@ function oneDungeon(D, depth, diff) {
   return { drops, boss };
 }
 
-const ids = Object.keys(DUNGEONS);
+const ids = Object.keys(DUNGEONS).filter((id) => !DUNGEONS[id].hidden); // sem as dungeons em produção
 const fmt = (n) => String(Math.round(n)).padStart(5);
 console.log(`Renda média em moedas (${RUNS} simulações; tentativa = ${PER_ATTEMPT} dungeons, profundidades 1..${PER_ATTEMPT})\n`);
 console.log('dificuldade     ' + ids.map((id) => `${id.slice(0, 11).padEnd(11)} drops chefe`).join('  ') + '   tentativa  giros  comum  lendário');
