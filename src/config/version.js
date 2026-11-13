@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.38.0';
+export const VERSION = '4.39.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.39.0',
+    date: '2026-11-13',
+    title: 'Eloy e Sabara',
+    items: [
+      'NOVOS PERSONAGENS: Eloy Furtado, baterista da PSIKOLERA, e Sabara, batedora dos Vampiros, cada um com armas e golpes próprios.',
+      'A página Sobre agora dá mais destaque ao Outro Lado: veja como funciona a descida, as masmorras, os chefes e o que fazer entre partidas.',
+      'Modelos e armas dos Escriptas receberam acabamento adicional.',
+    ],
+  },
   {
     v: '4.38.0',
     date: '2026-11-13',
