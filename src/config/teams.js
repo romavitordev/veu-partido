@@ -6,6 +6,7 @@ export const TEAM_COLORS = {
   'Os Cinco': '#3ec878',
   Mascarados: '#e83a42',
   Transtornados: '#d0702c',
+  PSIKOLERA: '#c6f03a', // a banda de Hexatombe (Eloy; Cindy, Franco... depois): verde-ácido de pôster de show (PROPOSTA)
   Vampiros: '#b01020', // os Vampiros de Hexatombe (Raziel e a ceia na Igreja Antiga): vermelho-sangue escuro // a equipe do Cristino em Hexatombe (ApÃ³stolos de Sangue): ferrugem/laranja do lampiÃ£o
   // (2026-10-27) PORTADORES â‰  RELÃQUIAS: quem CARREGA a RelÃ­quia (Juan / Sangue, Arnaldo / Energia, Ferreiro / Morte) fica
   // no branco-osso; quem Ã‰ a RelÃ­quia (O Diabo, O Deus da Morte, A Magistrada, O AnfitriÃ£o) no MAGENTA (o dourado de

@@ -8,6 +8,7 @@ import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose, orbi
 import { HoloCopy } from '../holo.js';
 import { groundMark, blindFighter } from '../abilities.js';
 import { buildOrpheu } from '../../models/orpheu.js';
+import { bateriaEloy } from '../../models/weapons.js';
 
 // h.bird: o pássaro sai do ombro e voa em volta da cabeça do alvo, mergulhando de tempos em tempos, até o fim da cena
 // (Beatrice — o Orpheu na Menina do Pássaro). Devolve { step(dt), dispose() } — o cleanup chama dispose e o pássaro some em penas.
@@ -66,6 +67,10 @@ function flyBird(world, f, opp) {
 // a Calabresa do Morato), burst { count, gap } (rajada: traçantes da boca da arma ao alvo), closeIn (quem bate vem
 // colado no alvo antes do golpe), smoke (granada de fumaça no alvo), mine (a mina de proximidade no pé do alvo) e boom
 // (a mina explode), props [[peça, visível], ...] (troca peças nesse passo; tudo volta no fim).
+
+// prep.kit: um cenário montado na frente de quem prepara o especial (a bateria do Eloy)
+const PREP_KITS = { drums: bateriaEloy };
+const DRUM_SOUND = { snare: 'drumSnare', tomL: 'drumTom', tomR: 'drumTom', floor: 'drumTom', kick: 'drumKick', crash: 'drumCrash', hihat: 'drumSnare' };
 
 const PREP_FX = {
   // Joui com a Shi no Kage: saca a Relíquia de Energia (relâmpago roxo na mão esquerda) e os sigilos dourados da Shi no
@@ -269,7 +274,18 @@ export const cinematicCombo = {
     let opp = f.opponent;
 
     f.vel.set(0, 0, 0);
-    f.anim.play(prep.anim, { restart: true, duration: prep.time });
+    f.anim.play(prep.anim, prep.loop ? { restart: true } : { restart: true, duration: prep.time });
+    // a bateria surge na frente dele (prep.kit) e voa longe quando ele chuta (step.smash)
+    let kit = null;
+    let kitFly = null;
+    if (prep.kit && PREP_KITS[prep.kit]) {
+      kit = PREP_KITS[prep.kit]();
+      kit.position.set(f.pos.x, f.pos.y, f.pos.z);
+      kit.rotation.y = f.opponent ? yawTo(f.pos, f.opponent.pos) : f.yaw;
+      world.scene.add(kit);
+      world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.6)), { count: 24, color: 0x2a2226, kind: 'smoke', speed: 1.6, life: 0.5, size: 0.6, grow: 1 });
+    }
+    const removeKit = () => { if (kit) { world.scene.remove(kit); kit = null; kitFly = null; } };
     world.audio.play(sp.sound || 'specialStart');
     if (prep.fx && PREP_FX[prep.fx]) emitters = PREP_FX[prep.fx](f, world, sp);
     if (!sp.physical) world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: sp.color, radius: 3, life: 0.5 });
@@ -289,6 +305,7 @@ export const cinematicCombo = {
     let propSwaps = []; // h.props: peças trocadas no meio da cena (a faca do Johnny no fim do especial do Rubens)
     const ownStrike = (i) => opp.def.melee?.strikes?.[i]?.anim || 'hit';
     const cleanup = () => {
+      removeKit();
       if (mine) { mine.stop(); mine = null; }
       if (sphere) { world.scene.remove(sphere.group); sphere = null; }
       if (trap) { trap.stop(); trap = null; }
@@ -299,7 +316,7 @@ export const cinematicCombo = {
       copies = [];
       emitters.forEach((e) => e.stop());
       emitters = [];
-      propSwaps.reverse().forEach(([p, v]) => f.rig.showProp(p, v));
+      propSwaps.reverse().forEach(([p, v]) => { if (!(p === 'maskOn' && !v && f.findBuff('mask'))) f.rig.showProp(p, v); });
       propSwaps = [];
       if (bird) { bird.dispose(); f.orpheuOut = false; if (f.state !== 'ko') f.rig.showProp(bird.props, true); bird = null; }
       // a peça some no fim — a não ser que um estado ativo a mantenha (ex.: máscara do Aguiar)
@@ -549,6 +566,17 @@ export const cinematicCombo = {
     return {
       update(dt) {
         if (sphere) sphere.update(dt);
+        if (kitFly) {
+          kitFly.t += dt;
+          for (const p of kitFly.parts) {
+            p.v.y -= 14 * dt;
+            p.o.position.addScaledVector(p.v, dt);
+            if (p.o.position.y < 0.05 && p.v.y < 0) { p.o.position.y = 0.05; p.v.multiplyScalar(0.4); p.v.y = Math.abs(p.v.y) * 0.5; }
+            p.o.rotation.x += p.spin.x * dt;
+            p.o.rotation.z += p.spin.z * dt;
+          }
+          if (kitFly.t > 1.6) removeKit();
+        }
         if (bird) bird.step(dt);
         if (trap) trap.update(dt);
         t += dt;
@@ -556,8 +584,38 @@ export const cinematicCombo = {
           opp = f.opponent;
           // batidas da preparação (prep.beats: segundos) — ex.: o CLANG das Manoplas
           for (const b of prep.beats || []) if (t - dt < b && t >= b) beatFx(f, world, prep, sp);
+          // prep.drums: [[t, peça]] — cada batida da baqueta na bateria (som da peça, lampejo e a peça tremendo)
+          if (kit && !kitFly) {
+            for (const [b, name] of prep.drums || []) {
+              if (!(t - dt < b && t >= b)) continue;
+              const pt = kit.userData.hit[name];
+              if (!pt) continue;
+              const p = pt.getWorldPosition(new THREE.Vector3());
+              world.audio.play(DRUM_SOUND[name] || 'drumSnare', { volume: 0.8 });
+              world.fx.flash(p, { color: name === 'crash' ? 0xffe08a : 0xfff0d0, size: name === 'crash' ? 1.4 : 0.7, life: 0.08 });
+              world.fx.burst(p, { count: name === 'crash' ? 18 : 6, color: name === 'crash' ? 0xffd27a : sp.color, speed: 3, up: 1.5, life: 0.3, size: 0.08, gravity: 6 });
+              const piece = pt.parent;
+              if (piece && piece !== kit) { piece.scale.setScalar(1.08); world.after(0.06, () => piece.scale.setScalar(1)); }
+              if (name === 'crash' || name === 'kick') world.cameraRig.shake(0.12, 0.08);
+            }
+          }
+          // prep.steps: a cena da preparação (anim, grito, raiva, chute na bateria)
+          for (const st of prep.steps || []) {
+            if (!(t - dt < st.t && t >= st.t)) continue;
+            stepFx(st);
+            if (st.anim) f.anim.play(st.anim, st.dur ? { restart: true, duration: st.dur } : { restart: true });
+            if (st.sound) world.audio.play(st.sound);
+            if (st.smash && kit && !kitFly) {
+              const F = forwardFromYaw(kit.rotation.y);
+              kitFly = { t: 0, parts: kit.userData.pieces.map((o) => ({ o, v: new THREE.Vector3(F.x * (5 + Math.random() * 4) + (Math.random() - 0.5) * 4, 3 + Math.random() * 4, F.z * (5 + Math.random() * 4) + (Math.random() - 0.5) * 4), spin: new THREE.Vector3((Math.random() - 0.5) * 16, 0, (Math.random() - 0.5) * 16) })) };
+              world.audio.play('drumCrash');
+              world.audio.play('heavyPunch', { volume: 0.8, pitch: 0.7 });
+              world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.5, 0.7)), { count: 30, color: 0x7a0e14, speed: 6, up: 3, life: 0.5, size: 0.12, gravity: 10 });
+              world.cameraRig.shake(0.4, 0.2);
+            }
+          }
           if (opp) f.yaw = yawTo(f.pos, opp.pos);
-          if (prep.showProp && !propShown && t >= prep.time * 0.55) {
+          if (prep.showProp && !propShown && t >= (prep.showAt ?? prep.time * 0.55)) {
             propShown = true;
             f.rig.showProp(prep.showProp, true);
             if (prep.hideProp) f.rig.showProp(prep.hideProp, false); // a peça nova ocupa o lugar da antiga

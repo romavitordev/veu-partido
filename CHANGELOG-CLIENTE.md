@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.39.0 — Eloy e Sabara
+- NOVOS PERSONAGENS: Eloy Furtado, baterista da PSIKOLERA, e Sabara, batedora dos Vampiros, cada um com armas e golpes próprios.
+- A página Sobre agora dá mais destaque ao Outro Lado: veja como funciona a descida, as masmorras, os chefes e o que fazer entre partidas.
+- Modelos e armas dos Escriptas receberam acabamento adicional.
+
 ## v4.38.0 — A loja da Aghata
 - OUTRO LADO REFORMULADO: menu novo do modo com as moedas, a tentativa em andamento e um botão para CONTINUAR ou COMEÇAR; as outras telas (local ou online, solo ou multiplayer, sozinho ou em equipe, dificuldade, dados) viraram cartões com explicação de cada opção.
 - A LOJA DA AGHATA: as melhorias permanentes agora são compradas no balcão dela, que comenta cada compra. As melhorias valem para TODOS os personagens. Os pontos antigos viraram moedas.

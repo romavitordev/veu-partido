@@ -7,8 +7,8 @@ export const UNLOCK_TIERS = [
   { price: 0, ids: ['chico', 'dara', 'guizo', 'lirio'] },
   { price: 60, ids: ['morato', 'xande', 'cristopher', 'balu'] },
   { price: 110, ids: ['verissimo', 'beatrice', 'carina', 'arthur', 'artemis'] }, // Artemis: comum (pedido do dono, 2026-11-12)
-  { price: 170, ids: ['erin', 'aghata', 'rubens', 'dante', 'nubi', 'fernando', 'tristan', 'ivete'] },
-  { price: 250, ids: ['joui', 'kaiser', 'kian', 'gal_sal', 'dalmo', 'aguiar', 'cristino', 'damir', 'boris'] },
+  { price: 170, ids: ['erin', 'aghata', 'rubens', 'dante', 'nubi', 'fernando', 'tristan', 'ivete', 'eloy'] }, // Eloy (PSIKOLERA, 2026-11-14)
+  { price: 250, ids: ['joui', 'kaiser', 'kian', 'gal_sal', 'dalmo', 'aguiar', 'cristino', 'damir', 'boris', 'sabara'] }, // Sabara (Vampiros, 2026-11-14)
   { price: 350, ids: ['jae', 'kemi', 'labirinto', 'juan', 'raziel', 'arnaldo', 'ferreiro', 'celestine'] },
   { price: 500, ids: ['gaius', 'amalia', 'juan_odio', 'magistrada'] },
   { price: 700, ids: ['o_diabo', 'deus_morte', 'anfitriao'] },

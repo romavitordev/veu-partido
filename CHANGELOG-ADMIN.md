@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v4.39.0 — Eloy, Sabara e a página Sobre
+
+- **Eloy Furtado (PSIKOLERA):** novo personagem jogável, com baquetas, combo no ritmo, Moeller Method, Do Alto, Focinheira
+  e Porrada Rítmica. Modelo, retrato, animações, armas, diálogos e voz de apresentação integrados.
+- **Sabara (Vampiros):** nova personagem jogável, com espada, adaga cerimonial e facas; Aparar e Revidar, Dança das
+  Lâminas, Mordida, Emboscada e De Joelhos!. Modelo, retrato, armas, diálogos e voz de apresentação integrados.
+- **Escriptas:** acabamento adicional nos modelos de Damir, Boris e Artemis e nas armas do grupo.
+- **Página Sobre:** o Outro Lado ganhou uma seção própria em destaque, com fundo carmesim, ciclo da descida em 4 passos,
+  masmorras com retratos dos chefes e o que fazer entre descidas (loja, gacha e dificuldades). O menu troca "Chefes" por
+  "Outro Lado"; a âncora `#chefes` continua válida. Conferido no desktop e em 375 px sem rolagem lateral.
+- **Validação:** `npm test` (86 testes), `npm run check`, `npm run build` e `npm run moves` concluídos. O build mantém
+  apenas o aviso conhecido do Vite sobre chunks acima de 650 kB.
+- **Auditoria de segredos:** varredura de padrões de credenciais nos arquivos de código e conteúdo sem correspondências.
+
 ## v4.38.0 — A loja da Aghata (Outro Lado reformulado)
 
 - **As outras telas do Outro Lado no visual novo** (pedido do dono, 2026-11-13): a entrada (LOCAL/ONLINE), SOLO ou

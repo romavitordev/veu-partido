@@ -209,6 +209,10 @@ export const GRAB_SCENES = {
   boris: scene({ ...S('body_blow', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.36), fx: { kind: 'slash' }, sound: 'bladeHit' }, { anim: 'hammer_finisher', fx: 'slam', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } }),
   // ARTEMIS: soqueira, a lâmina do Apache e o tiro colado (o Gambá morde no meio: o sangramento)
   artemis: scene({ ...S('jab'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'pointBlank', sound: 'shotgun', bleed: { dps: 4, duration: 2 } }),
+  // ELOY: o Moeller Method no agarrão — dois socos no tempo e a baqueta cravada de cima (sangra)
+  eloy: scene({ ...S('jab'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('hook_r'), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'dual_both', fx: 'slam', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } }),
+  // SABARA: a espada no pescoço, a adaga curva no lado e a mordida (cânone: o Aguiar no ep. 4)
+  sabara: scene({ ...S('dual_r'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('dual_l'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),
   // Cristino: segura pela gola, dois golpes de peixeira e a lâmina no pescoço ("Eu odeio gente barulhenta" — o Caíto)
   cristino: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),
   // Cristopher: soco no estômago, cabeçada e o suplex de dublê no chão

@@ -1679,6 +1679,53 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## ELOY FURTADO
+
+*O baterista e fundador da PSIKOLERA* · arma: As baquetas manchadas de sangue e os punhos enfaixados
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Caixa | 18 | 1.7 m |  |
+| ○ 2 | Contratempo | 18 | 1.7 m |  |
+| ○ 3 | Soco no tempo | 22 | 1.6 m |  |
+| ○ 4 | Rufo | 14 (3 acertos) | 1.7 m |  |
+| ○ 5 | Prato de ataque | 48 | 1.9 m | finalizador: lança |
+| Frente + ○ | Se joga | 30 | 1.9 m |  |
+| Trás + ○ | Recua e estoca | 28 | 1.7 m | invulnerável no começo |
+| Lado + ○ | Virada | 26 | 1.8 m |  |
+| No ar + ○ | Baqueta do alto | 32 | 1.8 m | desce com impacto |
+| ↑ + ○ (no combo) | Baqueta de baixo | 32 | 1.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pedal do bumbo | 36 | 1.7 m | finalizador: derruba |
+
+### Principal (□ / X): Mosh
+
+- Dano 30 · alcance 1.7 m · cooldown 3 s · custo 0
+
+### Habilidades
+
+- **Moeller Method** — △ + ○ / Y + B · custo 28 · cooldown 12 s · alcance 1.8 m
+  Pula em cima do adversário e soca como se tocasse bateria: seis socos no ritmo e a baqueta cravada no fim. Errou o pulo, fica exposto.
+- **Do Alto** — △ + □ / Y + X · custo 26 · cooldown 11 s · dano 64 · alcance 2.4 m
+  Agacha, salta por cima do adversário e desce cravando as duas baquetas: aguenta um golpe na preparação e faz sangrar. Se errar, fica exposto.
+- **Focinheira** — R2 + △ / RT + Y · custo 30 · cooldown 20 s
+  Tranca a focinheira de espinhos no cadeado da gola e ruge: por 9 s os olhos ficam brancos, ele fica curvado e agressivo, bate mais forte e mais rápido e aguenta golpes sem recuar, mas não consegue defender.
+- **Porrada Rítmica** — △ + L2 / Y + LT · custo 22 · cooldown 18 s
+  Puxa o ritmo do tambor de guerra: por 7 s os golpes físicos saem mais rápidos e mais fortes, e na batalha em equipe as assistências ficam prontas na hora.
+- **Bumbo Duplo** — R2 + × / RT + A · custo 18 · cooldown 10 s · dano 30
+  Pisa duas vezes no tempo do bumbo: a onda de choque derruba quem estiver perto no chão.
+
+### Especial: Solo de Bateria
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Show Não Para
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades, especial), +6% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 12% na hora.
+
+---
+
 ## RAZIEL
 
 *O líder dos Vampiros e anfitrião da Ceia na Igreja Antiga — por baixo das vestes, a verdadeira forma* · arma: Garras, a Mordida e os rituais de Sangue
@@ -1722,6 +1769,51 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Transformação: O Verdadeiro Raziel
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## SABARA
+
+*A batedora dos Vampiros, filha d'O Último Caçador* · arma: A espada longa, a adaga cerimonial curva e as facas dos cintos
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte de espada | 21 | 2.1 m |  |
+| ○ 2 | Adaga curva | 19 | 1.7 m |  |
+| ○ 3 | Cruzado | 17 (2 acertos) | 2 m |  |
+| ○ 4 | Estocada no peito | 50 | 2.4 m | finalizador: lança |
+| Frente + ○ | Bote da batedora | 28 | 2.1 m |  |
+| Trás + ○ | Aparar e Revidar | 0 | 0 m | contra-ataque (revida 52) |
+| Lado + ○ | Giro das lâminas | 26 | 2 m |  |
+| No ar + ○ | Lâminas do alto | 30 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte de baixo | 32 | 2.1 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira de lâmina | 34 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Facas dos Cintos
+
+- Dano 14 × 3 · alcance 24 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Dança das Lâminas** — △ + □ / Y + X · custo 22 · cooldown 10 s
+  Gira para trás, intocável no salto, e solta um leque de cinco adagas no adversário: cada uma faz sangrar.
+- **Mordida** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 24 · alcance 1.6 m
+  Dá o bote curto e, se alcança, segura pelo pescoço e morde: tira vida, faz sangrar e CURA a Sabara com o sangue que prova.
+- **Emboscada** — △ + L2 / Y + LT · custo 28 · cooldown 13 s · dano 54 · alcance 2.5 m
+  Salta por cima do adversário e cai em cima dele cravando as lâminas: o alvo fica PRESO NO CHÃO (atordoado) e sangra. Quem esquiva ainda toma metade.
+- **De Joelhos!** — R2 + △ / RT + Y · custo 24 · cooldown 15 s · dano 10 · alcance 6 m
+  Aponta a espada e ordena: o adversário perto cai de JOELHOS por um instante, aberto para o próximo golpe.
+- **Passiva — Afinidade com Sangue:** rituais de Sangue +10%; −15% de dano de rituais desse elemento
+
+### Especial: Valsa de Sangue
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Gosto de Sangue
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +14% de dano (físico, habilidades, especial), +8% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 10% na hora.
 
 ---
 

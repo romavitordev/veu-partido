@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1774,4 +1774,40 @@ export function addArtemisProps(rig) {
   sockets.handR.add(rifle);
   props.sniperHand = rifle;
   rig.muzzle = rifle.userData.muzzle; // o □ é o rifle (a Mira de Elite também)
+}
+
+// ELOY (PSIKOLERA): as duas BAQUETAS manchadas de sangue, seguradas PARA BAIXO como punhais (a arte conceitual dele). A
+// FOCINHEIRA é a peça prop_maskOn do modelo (tools/blender/char_eloy.py): só aparece na habilidade Focinheira
+export function addEloyProps(rig) {
+  const { sockets, props } = rig;
+  // empunhadura de baterista: a ponta para CIMA e um pouco à frente (medido na pose idle_dual: ~(0.39, 0.92, 0))
+  for (const side of ['R', 'L']) {
+    const st = baqueta();
+    st.scale.setScalar(1.3); // fina demais para ler na câmera da luta
+    inFist(st, side === 'R' ? -1.3 : -1.2);
+    st.rotation.z = side === 'R' ? -0.3 : 0.5;
+    sockets['hand' + side].add(st);
+    props['stick' + side] = st;
+  }
+  if (props.maskOn) rig.showProp('maskOn', false);
+}
+
+// SABARA (Vampiros): a ESPADA longa na direita e a ADAGA CERIMONIAL curva na esquerda (ela saca as duas juntas no ep. 4);
+// a faca pequena dos cintos aparece na esquerda só no arremesso
+export function addSabaraProps(rig) {
+  const { sockets, props } = rig;
+  const sword = espadaSabara();
+  inFist(sword);
+  sockets.handR.add(sword);
+  props.sword = sword;
+  const dagger = adagaSabara();
+  inFist(dagger);
+  sockets.handL.add(dagger);
+  props.dagger = dagger;
+  const tk = knife();
+  inFist(tk);
+  tk.scale.setScalar(0.8);
+  tk.visible = false;
+  sockets.handL.add(tk);
+  props.throwKnife = tk;
 }

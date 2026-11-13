@@ -68,3 +68,76 @@ Culto desorganizado que busca o pacto com o Diabo pela dor; arame farpado, costu
 - **Tarrafa** (magro, curvado, pele acinzentada, Símbolo do Pacto no peito, anzol): **Arpão do Pescador** (hoje com o
   Aguiar) e faca curva. Morto no ep. 3 (empalado pela moto da Chispa, finalizado por Jae).
 - **Cristino** (no jogo) e **Nando Salles** (sacrifício). Carrara morreu antes do tributo.
+
+## Pesquisa de combate: ELOY e SABARA (2026-11-13, para os personagens novos)
+Fontes: páginas "Eloy Furtado", "Sabara" e "Hexatombe - Episódio 4" da wiki, as artes do Arsenal e as artes de cena
+(links abaixo). Resumos com as nossas palavras; o que virar golpe no jogo e não estiver aqui é PROPOSTA.
+
+### ELOY FURTADO (PSIKOLERA, baterista e fundador; Sangue pela banda — a página não lista afinidade própria)
+- **Corpo e roupa** (arte conceitual de corpo inteiro): ~1,90 m, musculoso, cabelo castanho liso até os ombros com mechas
+  no rosto, olhos verdes; MACACÃO de camisa de força inteiro, bege-acinzentado, com as faixas CRUZADAS no peito e uma
+  faixa vertical presa na gola por um CADEADO; gola rasgada com pontas (espinhos) nos ombros; mangas rasgadas (no pôster,
+  um ombro de fora) e fivelas soltas penduradas nos braços; faixas nas mãos e antebraços; cicatrizes de corte nos braços;
+  calça larga e rasgada na barra; tênis tipo all star.
+- **A FOCINHEIRA**: máscara preta de espinhos que cobre a metade de baixo do rosto, presa à gola pelo cadeado; com ela
+  os olhos ficam TODOS BRANCOS e a personalidade muda: irritável, agressivo, com aversão a toque, "quase um animal
+  selvagem", balançando a cabeça e batendo o pé no ritmo, como se tocasse bateria o tempo todo. Sem ela: amigável,
+  mediador da banda, se autodeprecia. → base natural para uma TRANSFORMAÇÃO (PROPOSTA).
+- **Arma — Baquetas**: um par de baquetas de madeira MANCHADAS DE SANGUE (vermelho-escuro), usadas para ESTOCAR e para
+  tocar. Na arte conceitual ele segura as duas viradas para baixo, como punhais.
+- **Habilidade — Moeller Method**: pula em cima do alvo e o soca como se fosse uma bateria; continua até o alvo resistir
+  (Fortitude) ou ele se afastar. → agarrão/combo de socos ritmados (PROPOSTA: um golpe de agarrar).
+- **Bônus de aliado — Porrada Rítmica**: incentiva o aliado a bater no ritmo de um tambor de guerra (+ luta corpo a corpo).
+  → PROPOSTA: buff de equipe/assistência.
+- **Cenas de luta (Hexatombe)**:
+  - Invasão do Circo: põe a máscara e parte para cima de Cindy e Caio; Cindy atira e ele SE JOGA nela (interceptado
+    pelo Caio); depois vai para cima de Jae e o SOCA sem parar até o Labirinto empurrá-lo.
+  - Perseguição do Quibungo: segura o Labirinto para não cair do carro e mata alguns animais.
+  - Guerra de Intenções na igreja: ataca o Raziel para ajudar o Jasper e tem a garganta rasgada; no fim o Raziel MORDE a
+    máscara dele e ele revida com vários socos.
+  - Batalha final: põe a focinheira, AGARRA o Argano e dá vários socos; depois tenta QUEBRAR a corrente que prende o
+    Cristino… (Eloy é o personagem que mais vezes entrou em "Morrendo" — aguenta muito).
+  - Arte "Eloy e Escarlata" (Arquivos Secretos): ele DESCE DO ALTO, de joelho erguido, com a baqueta levantada para
+    cravar → golpe aéreo (PROPOSTA).
+  - Show no The Monica Club ("Portal"): bateria no palco, mosh pit violento, o portal se abre e ele se joga nele.
+    → especial da banda (PROPOSTA).
+- Curiosidades úteis para falas: escreve em CAPSLOCK; nome inspirado em Eloy Casagrande; não gosta dos Dragões Metálicos;
+  fundou a banda (a Cindy só lidera no Hexatombe); entrou no Hexatombe para tentar reviver o Andrei Colfas; desertor com
+  cortes no rosto (um corte horizontal e dois subindo das bochechas).
+- Artes: pôster mascarado `a/a2/PSIKOLERA_-_Eloy.jpg`; conceitual `e/eb/Arte_conceitual_de_Eloy.jpg`; baquetas
+  `b/b5/Arte_Baquetas_de_Eloy_em_Hexatombe.png`; com a Escarlata `d/d6/Arte_Eloy_e_Escarlata_em_Arquivos_Secretos.jpg`;
+  show `5/54/Arte_Show_Psikolera_em_Hexatombe.jpg` (todas em static.wikia.nocookie.net/ordemparanormal/images/…).
+
+### SABARA (Vampiros; batedora; afinidade com Sangue; trilha Monstruosa)
+- **Corpo e roupa** (arte de corpo inteiro): 1,60 m, pele negra; olhos ARRANCADOS (dois buracos), boca deformada cheia de
+  dentes pontiagudos, orelhas pontudas, cabelo escuro em TRANÇAS. Sobretudo VERMELHO com bordas brancas franzidas e
+  detalhes dourados, CORTADO em dois: a metade de baixo pende do cinto como saia longa aberta na frente; colete preto de
+  gola alta com fivelas douradas e um laço branco no peito; calça social preta; coturnos cerimoniais pretos com fivelas;
+  luvas pretas; vários CINTOS de couro cruzando o corpo, com FACAS PEQUENAS presas (várias na coxa); a espada na
+  bainha na cintura. Fora do combate: ÓCULOS DE CAÇA de lentes vermelhas e BANDANA vermelha cobrindo o rosto (capa dos
+  Arquivos Secretos ed. 7) — ela tira a bandana para revelar o rosto de vampira.
+- **Armas**: **Adaga Cerimonial** grande, de lâmina CURVA, escura de sangue, com um anel dourado no cabo; **Espada**
+  longa, lâmina manchada de sangue, guarda curva cor de cobre/dourado, pomo redondo, cabo marrom, bainha de couro
+  marrom — "mais letal contra quem está sangrando" (hoje está com o Aguiar). Mais as facas pequenas dos cintos.
+- **Habilidades**: **Dança das Lâminas** (gira para trás atirando várias adagas); **Aparar e Revidar** (uma vez por
+  rodada, ao sofrer um ataque corpo a corpo, apara e revida: se vencer, não toma dano e machuca o agressor);
+  afinidade de Sangue (rituais de Sangue sem ingrediente).
+- **Cenas de luta (Hexatombe)**:
+  - Ep. 1: abre o ataque ao acampamento dos Pássaros DERRUBANDO o Papagaio de surpresa e PRENDENDO-O NO CHÃO com várias
+    lâminas; mata a Coruja em seguida.
+  - Ep. 4 ("Máscara"): observa do alto das colinas, crava algo no chão e DESCE ARRANHANDO A PAREDE DE PEDRA COM UMA FACA,
+    pousando na frente de Aguiar e Henri. Saca ESPADA E FACA juntas; exige tudo, com Aguiar DE JOELHOS; guarda a faca,
+    tira a bandana (o rosto de vampira) e põe a espada no pescoço dele. Quando o Henri usa Perturbação, ela solta a
+    mochila e CORTA o pescoço do Aguiar; depois AVANÇA E O MORDE, saboreando o sangue. Contra o Mutilador Noturno, revida
+    com DIVERSAS FACAS, até ser derrubada e morta (a espada dela fica com o Aguiar).
+  - Personalidade: arrogante, exige gestos de humilhação; depois de provar sangue fica quase bestial, impulsiva, parte
+    para o corpo a corpo. Inspirada no Blade.
+- Artes: corpo inteiro `c/cb/Arte_Sabara_sem_M%C3%A1scara_em_Hexatombe.png`; adaga `4/49/Adaga_de_Sabara_em_Hexatombe.png`;
+  espada `6/68/Espada_de_Sabara_em_Hexatombe.png`; capa `7/76/Capa_Arquivos_Secretos_-_Edi%C3%A7%C3%A3o_07.png`;
+  finalização pelo Mutilador `5/5e/Arte_Cinematic_Finaliza%C3%A7%C3%A3o_Mutilador_Noturno.png`.
+- Ligações no jogo: Aguiar (a matou e usa a espada dela) e Raziel (Vampiros) já estão no elenco.
+
+## COURAÇAS (futuro, pedido do dono em 2026-11-13)
+- Os donos do Ferro Velho; o cenário "Base dos Couraças" já está no jogo.
+- A equipe entra depois do Eloy e da Sabara.
+- Pendente: ler na wiki a página da equipe e de cada membro (aparência, armas, cenas de Hexatombe) e anotar aqui.

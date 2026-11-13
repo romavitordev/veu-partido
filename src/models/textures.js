@@ -2496,6 +2496,57 @@ export const MATERIAL_TEXTURES = {
     brow: { angry: 0.3, thick: 3, color: '#2a2224' },
     mouth: { mouthW: 15, smile: 4, lip: 'rgba(120,60,64,0.6)' },
   }),
+  // ---------------- ELOY FURTADO (wiki: os olhos VERDES, o cabelo castanho caindo no rosto; o mediador gentil da banda
+  // sem a focinheira — com ela os olhos ficam brancos, a peça prop_maskOn do modelo)
+  face_eloy: face((g) => {
+    stubble(g, 'rgba(60,40,28,0.16)', 500, { y0: 160, y1: 224, w: 70 });
+    g.strokeStyle = 'rgba(80,40,30,0.3)'; g.lineWidth = 1.3;
+    for (const s of [-1, 1]) { g.beginPath(); g.moveTo(CX + s * 20, EYE_Y + 15); g.quadraticCurveTo(CX + s * 32, EYE_Y + 20, CX + s * 46, EYE_Y + 13); g.stroke(); } // o cansaço
+  }, {
+    skin: '#e0b898',
+    eye: { iris: '#3c7a46', irisLight: '#7ab878', w: 14, h: 7, tilt: -0.03, lid: 3.2 },
+    brow: { angry: -0.6, thick: 4, color: '#3a2618' },
+    mouth: { mouthW: 14, smile: 2, lip: 'rgba(140,80,70,0.4)' },
+  }),
+  // os braços de fora do Eloy: a pele com as CICATRIZES DE CORTE (wiki)
+  arm_eloy: () => canvasTex(256, 256, (g) => {
+    g.fillStyle = '#e0b898'; g.fillRect(0, 0, 256, 256);
+    g.lineCap = 'round';
+    const rnd = seeded(25);
+    for (let i = 0; i < 26; i++) {
+      const x = rnd() * 256, y = rnd() * 256, a = (rnd() - 0.5) * 0.6, l = 14 + rnd() * 22;
+      g.strokeStyle = 'rgba(170,90,80,0.65)'; g.lineWidth = 2.4;
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
+      g.strokeStyle = 'rgba(250,220,200,0.6)'; g.lineWidth = 0.9;
+      g.beginPath(); g.moveTo(x, y + 1); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l + 1); g.stroke();
+    }
+  }, { wrap: true }),
+  // ---------------- SABARA (wiki: os olhos ARRANCADOS — dois buracos escuros —, a boca deformada cheia de dentes
+  // pontiagudos; pele negra)
+  face_sabara: face((g) => {
+    for (const sx of [-1, 1]) {
+      const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 2, 2, CX + sx * 32, EYE_Y + 2, 20);
+      gr.addColorStop(0, 'rgba(6,2,2,1)'); gr.addColorStop(0.6, 'rgba(30,6,6,0.9)'); gr.addColorStop(1, 'rgba(40,12,10,0)');
+      g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 21, 14, sx * 0.1, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = 'rgba(120,20,20,0.6)'; g.lineWidth = 1.6; // sangue seco escorrendo das covas
+      g.beginPath(); g.moveTo(CX + sx * 30, EYE_Y + 14); g.lineTo(CX + sx * 33, EYE_Y + 34); g.stroke();
+    }
+    // a boca deformada: um rasgo largo com a fileira de dentes pontiagudos
+    g.fillStyle = '#1a0606';
+    g.beginPath(); g.moveTo(CX - 34, MOUTH_Y - 4); g.quadraticCurveTo(CX, MOUTH_Y + 18, CX + 34, MOUTH_Y - 4); g.quadraticCurveTo(CX, MOUTH_Y + 4, CX - 34, MOUTH_Y - 4); g.fill();
+    g.fillStyle = '#f2ece0';
+    for (let i = -6; i <= 6; i++) {
+      const x = CX + i * 5;
+      const y0 = MOUTH_Y - 3 + Math.abs(i) * 0.4;
+      g.beginPath(); g.moveTo(x - 2.4, y0); g.lineTo(x + 2.4, y0); g.lineTo(x, y0 + 7 - Math.abs(i) * 0.3); g.closePath(); g.fill();
+      const y1 = MOUTH_Y + 9 - Math.abs(i) * 0.6;
+      g.beginPath(); g.moveTo(x - 2.2, y1); g.lineTo(x + 2.2, y1); g.lineTo(x, y1 - 6); g.closePath(); g.fill();
+    }
+  }, {
+    skin: '#5a3828',
+    noEyes: true,
+    mouth: { mouthW: 0.1, smile: 0, lip: 'rgba(0,0,0,0)', lipLine: 'rgba(0,0,0,0)' },
+  }),
   face_rubens: face(() => {}, {
     skin: '#9a6a46',
     eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },

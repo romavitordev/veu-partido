@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.39.0 — Eloy e Sabara
+
+### Adicionado
+- Eloy Furtado, baterista da PSIKOLERA: baquetas, golpes no ritmo, o agarrão Moeller Method e a Focinheira.
+- Sabara, batedora dos Vampiros: espada e adaga, facas arremessadas, Aparar e Revidar e ataques vampíricos.
+- Página Sobre: seção do Outro Lado em destaque, com o ciclo da descida, masmorras, chefes, loja e gacha.
+
+### Alterado
+- Acabamento adicional nos modelos e armas dos Escriptas.
+
 ## v4.38.0 — A loja da Aghata
 
 ### Adicionado

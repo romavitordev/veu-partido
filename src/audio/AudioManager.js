@@ -285,6 +285,23 @@ const SYNTHS = {
     a.tone(t, 0.12, { vol: 0.6 * v, freq: 160, freqEnd: 50, type: 'sine' });
     a.noise(t, 0.08, { vol: 0.5 * v, freq: 1800, freqEnd: 300 });
   },
+  // BATERIA DO ELOY (Solo de Bateria): caixa, tom, bumbo e prato
+  drumSnare: (a, t, v) => {
+    a.tone(t, 0.1, { vol: 0.45 * v, freq: 230, freqEnd: 170, type: 'triangle' });
+    a.noise(t, 0.18, { vol: 0.55 * v, type: 'highpass', freq: 1800 });
+  },
+  drumTom: (a, t, v) => {
+    a.tone(t, 0.32, { vol: 0.7 * v, freq: 150, freqEnd: 85 });
+    a.noise(t, 0.05, { vol: 0.25 * v, freq: 1600, freqEnd: 400 });
+  },
+  drumKick: (a, t, v) => {
+    a.tone(t, 0.3, { vol: 0.95 * v, freq: 95, freqEnd: 38 });
+    a.noise(t, 0.03, { vol: 0.3 * v, freq: 2400, freqEnd: 600 });
+  },
+  drumCrash: (a, t, v) => {
+    a.noise(t, 1.3, { vol: 0.42 * v, type: 'highpass', freq: 4200, attack: 0.003 });
+    a.noise(t, 0.6, { vol: 0.22 * v, type: 'bandpass', freq: 7000, q: 0.7 });
+  },
   kick: (a, t, v) => {
     a.tone(t, 0.16, { vol: 0.7 * v, freq: 120, freqEnd: 40 });
     a.noise(t, 0.1, { vol: 0.45 * v, freq: 1200, freqEnd: 200 });

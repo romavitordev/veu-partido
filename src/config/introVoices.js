@@ -12,6 +12,7 @@ export const TEAM_REF = {
   'Os Cinco': { one: 'um dos Cinco', group: 'os Cinco' },
   Mascarados: { one: 'um Mascarado', group: 'os Mascarados' },
   Transtornados: { one: 'um Transtornado', group: 'os Transtornados' },
+  PSIKOLERA: { one: 'alguém da PSIKOLERA', group: 'a PSIKOLERA' },
   Vampiros: { one: 'um vampiro', group: 'os Vampiros' },
   Portadores: { one: 'quem carrega uma Relíquia', group: 'os Portadores' },
   'Ordo Calamitas': { one: 'alguém da Ordo Calamitas', group: 'a Ordo Calamitas' },
@@ -132,6 +133,32 @@ export const VOICES = {
     },
   },
   // ARTEMIS (cânone: a "Mamãe", o Gambá no bolso, "o homem" na cabeça)
+  // ELOY FURTADO (cânone: gentil e mediador sem a focinheira; com ela, irritável e com aversão a toque; escreve em CAPSLOCK)
+  eloy: {
+    open: {
+      ally: (o) => `${o.name}! Bora no mesmo ritmo? Só não encosta em mim.`,
+      rival: (o) => `${o.name}. Nada contra ${o.group}. Mas o show tem que continuar.`,
+      any: [(o) => `${o.name}, conta comigo no tempo: um, dois, três, quatro...`, (o) => `NÃO ENCOSTA EM MIM, ${o.name.toUpperCase()}.`],
+    },
+    reply: {
+      ally: (o) => `Tá bom, ${o.name}. Mas eu toco alto.`,
+      rival: (o) => `${o.group}? Sobe no palco então, ${o.name}.`,
+      any: [(o) => `Calma, ${o.name}. Respira. Depois a gente briga.`, (o) => `NO RITMO, ${o.name.toUpperCase()}.`],
+    },
+  },
+  // SABARA (cânone: arrogante, exige gestos de humilhação; tira a bandana para mostrar o rosto de vampira)
+  sabara: {
+    open: {
+      ally: (o) => `${o.name}. Do mesmo lado ou não, você ajoelha primeiro.`,
+      rival: (o) => `${o.name}. Eu caço ${o.group} há mais tempo do que você vive.`,
+      any: [(o) => `De joelhos, ${o.name}. Agora.`, (o) => `Eu não tenho olhos, ${o.name}. Ainda assim te acho.`],
+    },
+    reply: {
+      ally: (o) => `Cuidado, ${o.name}. O sangue de aliado também é doce.`,
+      rival: (o) => `${o.group}... presa conhecida. Vem, ${o.name}.`,
+      any: [(o) => `Hm. ${o.name} tem cheiro de sangue fresco.`, (o) => `Ajoelha e talvez eu seja rápida, ${o.name}.`],
+    },
+  },
   artemis: {
     open: {
       ally: (o) => `${o.name}, querido. Vem com a mamãe. Vai doer só um pouquinho.`,

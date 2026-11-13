@@ -1936,6 +1936,8 @@ Object.assign(ABILITY_TYPES, {
       f.vel.set(0, 0, 0);
       f.anim.play('concentrate', { restart: true, duration: 0.75 });
       world.audio.play('maskOn');
+      // a.wild (Eloy — Focinheira): depois de trancar a máscara ele RUGE e muda de postura (a.idleAnim) até ela sair
+      if (a.wild) tl.add(0.5, () => { f.anim.play(a.wild.anim || 'taunt_roar', { restart: true, duration: 0.25 }); world.audio.play('drain', { volume: 0.6, pitch: 0.55 }); if (a.wild.shout) f.notify(a.wild.shout, true); });
       const face = () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.15, 0));
       tl.add(0.45, () => {
         if (f.rig.props.maskOn) f.rig.showProp('maskOn', true);
@@ -1946,18 +1948,24 @@ Object.assign(ABILITY_TYPES, {
         f.buffTint = { color: a.color, base: 0.1 };
         f.armorHits = (f.armorHits || 0) + (a.armor || 0);
         const aura = world.fx.emitter({ rate: 14, follow: () => f.chestPos(), particle: { color: 0x5a0008, kind: 'smoke', speed: 0.3, up: 0.6, spread: 0.4, life: 0.8, size: 0.5 } });
+        // os olhos brancos brilhando e o vapor da raiva saindo da focinheira
+        const eyes = a.wild ? world.fx.emitter({ rate: 18, follow: () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()), particle: { color: a.wild.color ?? 0xd01a1a, speed: 0.5, up: 1.2, spread: 0.25, life: 0.45, size: 0.18 } }) : null;
+        const prevMap = f.anim.animMap;
+        if (a.idleAnim) f.anim.animMap = { ...prevMap, idle: a.idleAnim };
         f.addBuff({
-          type: 'mask', name: 'MUTILADOR NOTURNO', time: a.duration, duration: a.duration,
+          type: 'mask', name: a.label || 'MUTILADOR NOTURNO', time: a.duration, duration: a.duration,
           mult: a.damageMult, affects: ['melee', 'ranged'], speedMult: a.speedMult, noBlock: a.noBlock,
-          meleeBleed: a.bleed,
+          meleeBleed: a.bleed, atkSpeed: a.atkSpeed,
           onEnd() {
             aura.stop();
+            if (eyes) eyes.stop();
+            if (a.idleAnim) f.anim.animMap = prevMap;
             if (f.rig.props.maskOn) f.rig.showProp('maskOn', false);
             f.armorHits = 0;
             if (f.buffTint && f.buffTint.color === a.color) f.buffTint = prevTint || null;
           },
         });
-        f.notify('MUTILADOR NOTURNO', true);
+        f.notify(a.label || 'MUTILADOR NOTURNO', true);
       });
       tl.end(0.75);
       return seqFrom(tl);
@@ -2918,7 +2926,7 @@ Object.assign(ABILITY_TYPES, {
         f.notify(o, true);
         opp.notify(o, true);
         if (o === 'PARE!') opp.stun(a.stun, 'stagger');
-        else if (o === 'SENTA!') { opp.stun(a.stun, 'forced_kneel'); if (a.damage) applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: a.element || 'conhecimento', knockback: 0, hitstun: 0.1, sound: 'heavyPunch', color: a.color, scale: 0.8 }); }
+        else if (o === 'SENTA!' || o === 'DE JOELHOS!') { opp.stun(a.stun, 'forced_kneel'); if (a.damage) applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: a.element || 'conhecimento', knockback: 0, hitstun: 0.1, sound: 'heavyPunch', color: a.color, scale: 0.8 }); }
         else if (o === 'VENHA!') {
           const F = forwardFromYaw(f.yaw);
           opp.pullTo(new THREE.Vector3(f.pos.x + F.x * 1.4, opp.pos.y, f.pos.z + F.z * 1.4), { time: 0.25, after: 0.4 });
@@ -4787,6 +4795,47 @@ Object.assign(ABILITY_TYPES, {
       });
       tl.end(0.45);
       return seqFrom(tl);
+    },
+  },
+});
+
+// ------------------------------------------------------------------ SABARA (Vampiros, 2026-11-14)
+Object.assign(ABILITY_TYPES, {
+  // DANÇA DAS LÂMINAS (cânone: "gira para trás atirando várias adagas"): salta de costas — intocável no salto — e,
+  // no ar, solta um leque de facas dos cintos na direção do alvo
+  bladeDance: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      const tl = new Timeline();
+      if (opp) f.yaw = yawTo(f.pos, opp.pos);
+      const F = forwardFromYaw(f.yaw);
+      f.anim.play(a.anim || 'dual_spin', { restart: true, duration: a.duration });
+      world.audio.play('swing', { volume: 0.7, pitch: 1.2 });
+      f.invuln = Math.max(f.invuln || 0, a.iframes ?? 0.35);
+      if (a.showProp) f.rig.showProp(a.showProp, true);
+      tl.each((t) => {
+        if (t < (a.backTime ?? 0.3)) {
+          f.vel.x = -F.x * (a.back ?? 9);
+          f.vel.z = -F.z * (a.back ?? 9);
+        } else { f.vel.x = 0; f.vel.z = 0; }
+        if (opp && opp.state !== 'ko') f.yaw = yawTo(f.pos, opp.pos);
+      });
+      const n = a.count ?? 5;
+      for (let i = 0; i < n; i++) {
+        tl.add(a.throwAt + i * (a.interval ?? 0.05), () => {
+          const origin = f.chestPos().add(new THREE.Vector3(0, 0.15, 0));
+          const target = opp && opp.state !== 'ko' ? opp.chestPos() : origin.clone().add(forwardFromYaw(f.yaw).multiplyScalar(10));
+          const dir = target.sub(origin).normalize();
+          const ang = ((i - (n - 1) / 2) / Math.max(1, n - 1)) * (a.fan ?? 0.5);
+          dir.applyAxisAngle(new THREE.Vector3(0, 1, 0), ang);
+          world.projectiles.spawn(f, { ...a.projectile, element: a.element }, origin, dir);
+          world.audio.play('knifeThrow', { volume: 0.6, pitch: 1 + i * 0.05 });
+        });
+      }
+      const hide = () => a.showProp && f.rig.showProp(a.showProp, false);
+      tl.add(a.duration - 0.02, hide);
+      tl.end(a.duration);
+      return seqFrom(tl, { cancel: hide });
     },
   },
 });

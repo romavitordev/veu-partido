@@ -46,6 +46,13 @@ export const PASSIVES = {
       return victim.findBuff && victim.findBuff('burn') ? passive.mult ?? 1.15 : 1;
     },
   },
+  // Sabara — a Espada (cânone: "mais letal contra quem está sangrando"): os golpes físicos entram mais fundo em quem sangra
+  bleedingPrey: {
+    damageMod({ victim, kind, passive }) {
+      if (!(passive.kinds || ['melee']).includes(kind)) return 1;
+      return victim.findBuff && victim.findBuff('bleed') ? passive.mult ?? 1.2 : 1;
+    },
+  },
   // Joui: golpes vindos pelas costas do inimigo causam mais dano
   backstab: {
     damageMod({ attacker, victim, kind, passive }) {

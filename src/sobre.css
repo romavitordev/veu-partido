@@ -355,3 +355,79 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
   .element { padding-inline: 10px; }
   .element h3 { font-size: 20px; }
 }
+
+/* ---------------- OUTRO LADO (2026-11-13): o modo história ganha uma seção própria, em destaque ----------------
+   Fundo com o carmesim ao fundo (o único acento do site), números grandes, o ciclo da descida em 4 passos, as
+   masmorras com os chefes e o que se faz entre uma descida e outra. */
+.ol { position: relative; isolation: isolate; padding: 72px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: radial-gradient(ellipse 70% 55% at 85% 0%, rgba(200, 24, 58, 0.22), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(200, 24, 58, 0.10), transparent 70%), #0d0a0b; }
+@media (min-width: 1024px) { .ol { padding: var(--s5) 0 112px; } }
+.ol + .block { border-top: 0; }
+.ol h2 { font-size: clamp(56px, 10vw, 128px); line-height: 0.88; margin: 0; }
+.ol-head { display: grid; gap: var(--s4); align-items: end; }
+@media (min-width: 1024px) { .ol-head { grid-template-columns: 1.3fr 1fr; } }
+.ol-intro .lead { margin-top: var(--s2); }
+.ol-intro .cta { margin-top: var(--s3); }
+.ol-stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
+.ol-stats li { display: grid; gap: 2px; padding: var(--s2) 0; border-bottom: 1px solid var(--line); }
+.ol-stats li:nth-child(odd) { padding-right: var(--s2); border-right: 1px solid var(--line); }
+.ol-stats li:nth-child(even) { padding-left: var(--s2); }
+.ol-stats b { font: 400 clamp(40px, 5vw, 56px)/1 var(--display); color: var(--frost); }
+.ol-stats span { font-size: 14px; color: var(--graphite); }
+.ol-h { margin: 72px 0 var(--s3); font: 800 12px/1 var(--body); letter-spacing: .22em; text-transform: uppercase; color: var(--graphite);
+  display: flex; align-items: center; gap: var(--s2); }
+.ol-h::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.ol h4 { margin: 0 0 var(--s1); font: 400 32px/1 var(--display); letter-spacing: .02em; color: var(--frost); }
+.ol .card-k { margin-bottom: var(--s1); }
+.ol p { max-width: 62ch; }
+
+/* o ciclo de uma descida */
+.ol-loop { list-style: none; counter-reset: lp; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+@media (min-width: 640px) { .ol-loop { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .ol-loop { grid-template-columns: repeat(4, 1fr); gap: 0; } }
+.ol-loop li { counter-increment: lp; position: relative; display: grid; gap: 6px; align-content: start; padding: var(--s3) var(--s3) var(--s3) 0; }
+@media (min-width: 1024px) { .ol-loop li + li { padding-left: var(--s3); border-left: 1px solid var(--line); } }
+.ol-loop li::before { content: counter(lp, decimal-leading-zero); font: 400 44px/1 var(--display); color: var(--crimson); }
+.ol-loop b { font: 400 26px/1 var(--display); letter-spacing: .03em; color: var(--frost); }
+.ol-loop span { font-size: 15px; }
+
+/* masmorras: retrato do chefe + a ficha */
+.ol-dg { display: grid; gap: var(--s3); }
+@media (min-width: 1100px) { .ol-dg { grid-template-columns: 1fr 1fr; } }
+.dg { display: grid; grid-template-columns: 120px 1fr; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: rgba(10, 8, 9, 0.6); }
+@media (min-width: 640px) { .dg { grid-template-columns: 200px 1fr; } }
+.dg-pic { background: radial-gradient(ellipse at 50% 35%, rgba(200, 24, 58, 0.28), transparent 70%), var(--surface); border-right: 1px solid var(--line); }
+.dg-pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%; aspect-ratio: 3 / 4; }
+.dg-body { padding: var(--s3); min-width: 0; }
+.dg-body p { margin: 0; font-size: 15px; }
+.dg-body .ftag { margin: 0 0 var(--s2); }
+
+/* entre uma descida e outra: a loja em destaque e três cartões */
+.ol-feat { display: grid; gap: var(--s3); }
+@media (min-width: 900px) { .ol-feat { grid-template-columns: repeat(3, 1fr); } .of-shop { grid-column: 1 / -1; } }
+.of { padding: var(--s3); border: 1px solid var(--line); border-radius: 6px; background: rgba(10, 8, 9, 0.6); }
+.of p { margin: 0; font-size: 15px; }
+.of-shop { display: grid; gap: var(--s3); align-items: center; border-color: color-mix(in srgb, var(--crimson) 55%, var(--line)); }
+@media (min-width: 640px) { .of-shop { grid-template-columns: 180px 1fr; } }
+.of-shop img { width: 100%; max-width: 220px; border-radius: 6px; background: radial-gradient(ellipse at 50% 35%, rgba(200, 24, 58, 0.3), transparent 70%), var(--surface); }
+.of-shop h4 { font-size: 40px; }
+.ol-tags { list-style: none; margin: var(--s2) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ol-tags li { padding: 6px 12px; border: 1px solid var(--line); border-radius: 9999px; font-size: 13px; font-weight: 600; color: var(--frost); }
+.ol-tags li:nth-child(2) { border-color: var(--crimson); }
+.modes b a { color: inherit; }
+
+@media (max-width: 767px) {
+  .ol { padding: 56px 0; }
+  .ol-h { margin-top: 48px; }
+  .ol h4 { font-size: 26px; }
+  .of-shop h4 { font-size: 32px; }
+  .dg-body { padding: var(--s2); }
+  .of-shop img { max-width: 160px; }
+}
+@media (max-width: 639px) {
+  .dg { grid-template-columns: 1fr; }
+  .dg-pic { border-right: 0; border-bottom: 1px solid var(--line); }
+  .dg-pic img { aspect-ratio: 4 / 3; object-position: 50% 15%; }
+  .of-shop img { max-width: 140px; }
+}

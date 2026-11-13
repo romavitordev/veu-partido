@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.35.1 (2026-11-09: nome do especial na faixa com tempo de leitura e a frase em legenda; vitória do Luciano com olhos amarelos; sem volta ao Fernando abaixo de 30%). Antes: v4.35.0 (2026-11-09: Tristan Monteiro e Ivete Beicur, os especiais Mãe e Filho e Brasa, a tacada de sinuca, o Kian remodelado, o balanceamento dos novos e o Three.js 0.187). Antes: v4.34.0 (2026-11-08: Fernando Carvalho com a segunda ficha Luciano, o especial de dupla Balu + Rubens, a tela de título nova, golpes mais pesados e os ajustes do Outro Lado). Antes: v4.33.0 (2026-11-06: kits do cânone e especiais novos da Degolificada e do Espreitador, frestas teleportáveis, Mansão e Escola mais claras e a tela de cenários reorganizada). Antes: v4.32.0 (2026-11-06: a Degolificada e o Espreitador jogáveis, a Mansão e a Escola como arenas de luta, o Carniçal remodelado, habilidades do baú com limite por partida e moedas ou vida no Outro Lado). Antes: v4.31.2 (2026-11-06: o Outro Lado sem travamentos — barril sem hitTest, shaders fixos, laço que não congela — e a equipe Outro Lado fora do modo). Antes: v4.31.1 (2026-11-06: retratos dos chefes, tela de carregamento P1/P2 contra o chefe no coop local e correções de recursos gráficos). Base: v4.31.0 (a 2ª dungeon do Outro Lado — a Escola Nostradamus e a Degolificada —, baús com 1 a 3 itens, HUD minimalista e backup); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.39.0 (2026-11-13: Eloy Furtado e Sabara jogáveis, acabamento dos Escriptas e página Sobre do Outro Lado em destaque). Antes: v4.38.0 (a loja da Aghata, melhorias globais, gacha e reformulação do Outro Lado); versões anteriores: histórico completo nos changelogs.
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -159,16 +159,23 @@
       desgrenhado com franja (hoje em blocos), macacão dobrado na cintura com as mangas amarradas, bolsos, alças e
       placas. Depois, refazer os retratos `public/sobre/elenco/<id>.webp` e conferir no jogo. Dar uma olhada também no
       modelo do Gambá (`src/models/gamba.js`, procedural).
+- [x] **Eloy Furtado (PSIKOLERA)** — v4.39.0: personagem jogável com baquetas, Moeller Method, Focinheira, modelo,
+      retrato, animações, falas e voz de apresentação.
+- [x] **Sabara (Vampiros)** — v4.39.0: personagem jogável com espada, adaga, facas, Aparar e Revidar, modelo, retrato,
+      falas e voz de apresentação.
 - [x] **Outro Lado reformulado** (pedido do dono, 2026-11-12, não lançado): melhorias globais por moedas, poderes
       rebalanceados, Super Difícil e Aniquilação, anti-spam dos chefes (Repulsão), Degolificada com fúria e explosão
       quando encurralada, loja com gacha (vitrine de 6 que troca a cada 4 h, giro só ×1), roleta animada, 3 melhorias novas (Ressurreição a ● 15.000) e DEVOLVER TUDO, menu novo com DADOS escondido e a loja da Aghata nas
-      Melhorias. Detalhes no CHANGELOG-ADMIN ("Não lançado").
+      Melhorias. Lançado na v4.38.0; detalhes no CHANGELOG-ADMIN.
 - [ ] **Calibrar a economia do Outro Lado com a bateria** (PROPOSTA a medir): renda por dungeon em cada dificuldade
       contra os preços (giro 150, comum 250 … lendário 1600, melhorias 120–250 × grau).
 - [ ] **Render maior da Aghata para a loja** (o `sobre/elenco/aghata.webp` tem 240 × 320 e fica mole em tela grande).
-- [ ] **Próximo personagem: um dos PSIKOLERA** (pedido do dono, 2026-11-12), DEPOIS do polimento dos 3 Escriptas acima.
-      Os instrumentos musicais modificados são as ARMAS (como em Hexatombe). Anotações em `lore/EQUIPES-HEXATOMBE.md`
-      (ainda falta ler a página de cada membro dos Psikolera, Vampiros e Transtornados).
+- [ ] **Próximo personagem: um dos PSIKOLERA restantes** (pedido do dono, 2026-11-12), depois do Eloy (v4.39.0) e do
+      polimento dos 3 Escriptas acima. Os instrumentos musicais modificados são as ARMAS (como em Hexatombe). Anotações
+      em `lore/EQUIPES-HEXATOMBE.md` (ainda falta ler a página de cada membro dos Psikolera, Vampiros e Transtornados).
+- [ ] **Futuro: equipe dos COURAÇAS** (pedido do dono, 2026-11-13), os donos do Ferro Velho (o cenário "Base dos
+      Couraças" já existe). Eloy (PSIKOLERA) e Sabara (Vampiros) entraram na v4.39.0. Antes de modelar, ler na wiki a
+      página da equipe e de cada membro (aparência, armas, cenas de Hexatombe) e anotar em `lore/EQUIPES-HEXATOMBE.md`.
 - [x] **Regra: todo modelo novo pelo Blender MCP** (dono, 2026-11-09). `tools/blender/mcp_build.py` roda o `char_*.py`
       no Blender aberto (sem derrubar o servidor do addon) e recarrega todos os módulos da pasta. Kian, Fernando e
       Luciano (feitos só no headless) foram reconstruídos e conferidos em 4 vistas no MCP.

@@ -3501,3 +3501,203 @@ export function rifleArtemis() {
   g.userData.muzzle = muzzle;
   return g;
 }
+
+// BAQUETA DO ELOY (wiki, arte do Arsenal "Baquetas de Eloy"): a baqueta de madeira clara, grossa no cabo e afinando na
+// ponta oval, MANCHADA DE SANGUE vermelho-escuro da metade para a ponta (ele estoca com elas). Empunhadura na origem,
+// ponta para −Y. (PROPOSTA: a fita preta no cabo)
+export function baqueta() {
+  const g = new THREE.Group();
+  const WOOD = 0xc89a64, BLOOD = 0x6a0c10;
+  const L = 0.42;
+  const shaft = part(new THREE.CylinderGeometry(0.0085, 0.0125, L, 10), WOOD);
+  shaft.position.y = -L / 2 + 0.1;
+  g.add(shaft);
+  const tip = part(new THREE.SphereGeometry(0.012, 10, 8), WOOD);
+  tip.scale.set(1, 1.6, 1);
+  tip.position.y = -L + 0.09;
+  g.add(tip);
+  // o sangue: uma luva mais escura cobrindo a ponta e respingos subindo pela madeira
+  const stain = part(new THREE.CylinderGeometry(0.0095, 0.0112, L * 0.42, 10), BLOOD, { outline: false, mat: toon(BLOOD, { emissive: 0x1a0204 }) });
+  stain.position.y = -L + 0.09 + L * 0.21;
+  g.add(stain);
+  const tipBlood = part(new THREE.SphereGeometry(0.0135, 10, 8), BLOOD, { outline: false, mat: toon(BLOOD, { emissive: 0x1a0204 }) });
+  tipBlood.scale.set(1, 1.55, 1);
+  tipBlood.position.y = -L + 0.09;
+  g.add(tipBlood);
+  for (let i = 0; i < 5; i++) {
+    const d = part(new THREE.SphereGeometry(0.006, 6, 5), BLOOD, { outline: false });
+    const a = i * 2.3;
+    d.scale.set(1, 2.2, 0.6);
+    d.position.set(Math.cos(a) * 0.0105, -L * 0.42 + 0.09 + i * 0.03, Math.sin(a) * 0.0105);
+    g.add(d);
+  }
+  const tape = part(new THREE.CylinderGeometry(0.0135, 0.0135, 0.07, 10), 0x141416, { outline: false });
+  tape.position.y = 0.06;
+  g.add(tape);
+  g.userData.tipLength = L - 0.08;
+  return g;
+}
+
+// ESPADA DA SABARA (wiki, arte do Arsenal "Espada de Sabara"): a lâmina longa e reta MANCHADA DE SANGUE, a GUARDA
+// CURVA cor de cobre/dourado, o cabo marrom e o POMO REDONDO. "Mais letal contra quem está sangrando" (o jogo lê isso
+// no def). Empunhadura na origem, lâmina para −Y.
+export function espadaSabara() {
+  const g = new THREE.Group();
+  const COPPER = 0xc88a40, BLOOD = 0x7a0a10;
+  const grip = part(new THREE.CylinderGeometry(0.018, 0.02, 0.17, 10), 0x5a3420);
+  grip.position.y = 0.05;
+  g.add(grip);
+  for (let k = 0; k < 4; k++) {
+    const band = part(new THREE.TorusGeometry(0.02, 0.003, 4, 12), 0x3a2014, { outline: false });
+    band.rotation.set(Math.PI / 2 + 0.4, 0, 0);
+    band.position.y = 0.0 + k * 0.035;
+    g.add(band);
+  }
+  const pommel = part(new THREE.SphereGeometry(0.03, 12, 10), COPPER, { mat: toon(COPPER, { emissive: 0x2a1404 }) });
+  pommel.position.y = 0.155;
+  g.add(pommel);
+  // a guarda curva: um arco de tubo com as pontas viradas para a lâmina
+  const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(0, -0.06, -0.12), new THREE.Vector3(0, 0.02, 0), new THREE.Vector3(0, -0.06, 0.12));
+  const guard = part(new THREE.TubeGeometry(curve, 16, 0.011, 6), COPPER, { mat: toon(COPPER, { emissive: 0x2a1404 }) });
+  guard.position.y = -0.04;
+  g.add(guard);
+  for (const z of [-0.12, 0.12]) {
+    const end = part(new THREE.SphereGeometry(0.016, 8, 6), COPPER);
+    end.position.set(0, -0.1, z);
+    g.add(end);
+  }
+  const L = 0.86;
+  const sh = new THREE.Shape();
+  sh.moveTo(-0.024, 0);
+  sh.lineTo(-0.02, -L * 0.88);
+  sh.lineTo(0, -L);
+  sh.lineTo(0.02, -L * 0.88);
+  sh.lineTo(0.024, 0);
+  sh.lineTo(-0.024, 0);
+  const blade = part(extrude(sh, 0.008), 0xc8ccd2, { mat: toon(0xc8ccd2, { emissive: 0x141820 }) });
+  blade.rotation.y = Math.PI / 2;
+  blade.position.y = -0.04;
+  g.add(blade);
+  const fuller = part(new THREE.BoxGeometry(0.004, L * 0.6, 0.008), 0x8a9098, { outline: false });
+  fuller.position.y = -0.04 - L * 0.34;
+  g.add(fuller);
+  // o sangue espalhado pela lâmina (manchas dos dois lados, mais na metade de baixo)
+  for (let i = 0; i < 7; i++) {
+    const s = part(extrude(bladeShape(0.08 + (i % 3) * 0.04, 0.03, 0.004, 0.5), 0.0095), BLOOD, { outline: false, mat: toon(BLOOD, { emissive: 0x1a0204 }) });
+    s.rotation.y = Math.PI / 2;
+    s.position.y = -0.2 - i * 0.09;
+    s.position.x = (i % 2 ? 1 : -1) * 0.0005;
+    g.add(s);
+  }
+  g.userData.tipLength = L + 0.04;
+  return g;
+}
+
+// ADAGA CERIMONIAL DA SABARA (wiki, arte do Arsenal "Adaga de Sabara"): grande, de lâmina CURVA escura de sangue, com o
+// ANEL DOURADO no cabo. Empunhadura na origem, lâmina para −Y, curvando para +Z.
+export function adagaSabara() {
+  const g = new THREE.Group();
+  const GOLD = 0xd8a840;
+  const grip = part(new THREE.CylinderGeometry(0.017, 0.015, 0.12, 10), 0x2a1814);
+  grip.position.y = 0.03;
+  g.add(grip);
+  const ring = part(new THREE.TorusGeometry(0.03, 0.0065, 6, 16), GOLD, { mat: toon(GOLD, { emissive: 0x2a1c04 }) });
+  ring.position.y = 0.115;
+  ring.rotation.y = Math.PI / 2;
+  g.add(ring);
+  const guard = part(new THREE.BoxGeometry(0.03, 0.02, 0.08), GOLD);
+  guard.position.y = -0.035;
+  g.add(guard);
+  const blade = part(extrude(bladeShape(0.3, 0.05, 0.1, 0.1), 0.008), 0x5a1014, { mat: toon(0x5a1014, { emissive: 0x200204 }) });
+  blade.position.y = -0.04;
+  blade.rotation.y = Math.PI / 2;
+  g.add(blade);
+  const edge = part(extrude(bladeShape(0.28, 0.012, 0.1, 0.1), 0.0095), 0xb8bcc4, { outline: false });
+  edge.position.set(0, -0.05, -0.016);
+  edge.rotation.y = Math.PI / 2;
+  g.add(edge);
+  g.userData.tipLength = 0.34;
+  return g;
+}
+
+// A BATERIA DO ELOY (Solo de Bateria — PROPOSTA; cânone: o baterista da PSIKOLERA, o show no The Monica Club). Kit
+// simples de rock: bumbo com a pele da frente da banda, caixa, dois tons no bumbo, surdo, chimbal e o prato de ataque.
+// O baterista fica na origem olhando para +Z; as peças ficam à frente dele. userData.hit[nome] = o ponto de cada peça
+// (onde a baqueta bate), userData.pieces = as peças soltas (voam quando ele chuta a bateria).
+export function bateriaEloy() {
+  const g = new THREE.Group();
+  const SHELL = 0x7a0e14, HEAD = 0xece6d6, CHROME = 0xb8bcc4, BRASS = 0xd8b04a, LIME = 0xc6f03a, DARK = 0x18181a;
+  const hit = {};
+  const pieces = [];
+  const drum = (name, r, h, x, y, z, tilt = 0) => {
+    const d = new THREE.Group();
+    const shell = part(new THREE.CylinderGeometry(r, r, h, 20), SHELL);
+    d.add(shell);
+    const head = part(new THREE.CylinderGeometry(r * 1.01, r * 1.01, 0.012, 20), HEAD, { outline: false });
+    head.position.y = h / 2;
+    d.add(head);
+    for (const s of [1, -1]) {
+      const rim = part(new THREE.TorusGeometry(r * 1.02, 0.008, 6, 24), CHROME, { outline: false });
+      rim.rotation.x = Math.PI / 2;
+      rim.position.y = (s * h) / 2;
+      d.add(rim);
+    }
+    d.position.set(x, y, z);
+    d.rotation.x = tilt;
+    g.add(d);
+    pieces.push(d);
+    const p = new THREE.Object3D();
+    p.position.y = h / 2 + 0.02;
+    d.add(p);
+    hit[name] = p;
+    return d;
+  };
+  const stand = (x, z, top) => {
+    const s = part(new THREE.CylinderGeometry(0.012, 0.012, top, 8), CHROME, { outline: false });
+    s.position.set(x, top / 2, z);
+    g.add(s);
+    pieces.push(s);
+    const feet = part(new THREE.ConeGeometry(0.16, 0.12, 3, 1, true), CHROME, { outline: false });
+    feet.position.set(x, 0.06, z);
+    g.add(feet);
+    pieces.push(feet);
+  };
+  // o bumbo deitado, a pele da frente virada para o adversário: anel verde-limão da PSIKOLERA
+  const kick = drum('kick', 0.29, 0.4, 0, 0.3, 0.78, Math.PI / 2);
+  const logo = part(new THREE.RingGeometry(0.12, 0.2, 24), LIME, { outline: false, mat: new THREE.MeshBasicMaterial({ color: LIME, side: THREE.DoubleSide }) });
+  logo.position.y = 0.207;
+  logo.rotation.x = Math.PI / 2;
+  kick.add(logo);
+  const bar = part(new THREE.BoxGeometry(0.3, 0.06, 0.012), DARK, { outline: false, mat: new THREE.MeshBasicMaterial({ color: DARK, side: THREE.DoubleSide }) });
+  bar.position.y = 0.209;
+  bar.rotation.x = Math.PI / 2;
+  kick.add(bar);
+  drum('snare', 0.18, 0.13, 0.17, 0.66, 0.38, -0.12);
+  drum('tomL', 0.13, 0.17, 0.14, 0.86, 0.66, -0.35);
+  drum('tomR', 0.14, 0.18, -0.15, 0.86, 0.66, -0.35);
+  drum('floor', 0.2, 0.36, -0.45, 0.42, 0.46);
+  stand(0.17, 0.38, 0.6);
+  // o chimbal (dois pratos fechados) e o prato de ataque alto à esquerda
+  stand(0.46, 0.34, 0.86);
+  for (const dy of [0.86, 0.885]) {
+    const c = part(new THREE.CylinderGeometry(0.17, 0.17, 0.008, 22), BRASS, { outline: false });
+    c.position.set(0.46, dy, 0.34);
+    g.add(c);
+    pieces.push(c);
+  }
+  hit.hihat = new THREE.Object3D();
+  hit.hihat.position.set(0.46, 0.9, 0.34);
+  g.add(hit.hihat);
+  stand(0.42, 0.86, 1.22);
+  const crash = part(new THREE.ConeGeometry(0.24, 0.05, 24, 1, true), BRASS, { outline: false, mat: toon(BRASS, { side: THREE.DoubleSide }) });
+  crash.position.set(0.42, 1.24, 0.86);
+  crash.rotation.x = -0.35;
+  g.add(crash);
+  pieces.push(crash);
+  hit.crash = new THREE.Object3D();
+  hit.crash.position.set(0.42, 1.27, 0.84);
+  g.add(hit.crash);
+  g.userData.hit = hit;
+  g.userData.pieces = pieces;
+  return g;
+}
