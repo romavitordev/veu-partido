@@ -214,6 +214,28 @@ export class Chest {
     }
   }
 
+  // SEGURANDO o botão (0–1): o baú treme cada vez mais, a tampa estala e a luz vaza pela fresta; 0 = solta
+  charge(k) {
+    if (this.opened || this.anim || !this.group) return;
+    if (k <= 0) {
+      if (this.charging) {
+        this.charging = 0;
+        this.group.position.x = this.pos.x;
+        this.group.position.z = this.pos.z;
+        this.lid.rotation.x = 0;
+        this.inner.material.opacity = 0;
+      }
+      return;
+    }
+    this.charging = k;
+    const t = this.t;
+    this.group.position.x = this.pos.x + Math.sin(t * 55) * 0.02 * k;
+    this.group.position.z = this.pos.z + Math.cos(t * 47) * 0.016 * k;
+    this.lid.rotation.x = -0.07 * k + Math.sin(t * 38) * 0.03 * k;
+    this.inner.material.opacity = 0.7 * k;
+    this.glow.material.opacity = 0.15 + 0.3 * k;
+  }
+
   open(p) {
     if (this.opened) return;
     this.opened = true;

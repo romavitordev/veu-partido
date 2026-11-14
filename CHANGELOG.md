@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.44.3 — Segure o baú
+
+### Adicionado
+- Retorno visual ao segurar para abrir um baú: a tecla enche, uma barra de progresso corre e o baú treme com luz vazando.
+
+### Alterado
+- Mansão do Espreitador: 2 a 3 cópias por sala de luta (antes 2 a 4).
+
 ## v4.44.2 — Chiado da Torre
 
 ### Adicionado

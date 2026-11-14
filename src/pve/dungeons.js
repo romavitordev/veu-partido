@@ -29,7 +29,10 @@ export const DUNGEONS = {
     //   exits   as portas de saída: x/z na face da parede, face = para onde a porta olha (para dentro), w = largura;
     //           stairs = a escada (sem porta), que sempre leva ao outro andar
     //   floor   0 = térreo, 1 = 2º andar (a porta que troca de andar avisa ↑ / ↓)
-    route: { rooms: [5, 6], monsters: [2, 4], stalkWeight: 0.35 }, // FASES SEPARADAS (2026-11-14): mais salas (PROPOSTA)
+    // monsters [2, 3] (2026-11-14, bateria da fase inteira `dev/phaseBattery.js`, 6 personagens): com até 4 cópias a
+    // fase levava ~590 s (Escola ~300 s, Torre ~320 s) e a vida da CPU voltou 7× em média (dano 775%): cada cópia do
+    // Devorado é um lutador inteiro, 72 s por sala de luta contra 16–32 s nas outras fases
+    route: { rooms: [5, 6], monsters: [2, 3], stalkWeight: 0.35 }, // FASES SEPARADAS (2026-11-14): mais salas (PROPOSTA)
     start: 'hall',
     bossModule: 'quarto',
     modules: {

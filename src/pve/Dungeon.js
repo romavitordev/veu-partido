@@ -1623,7 +1623,10 @@ export class Dungeon {
       }
       for (const dr of this.drawers) consider(dr, dr.reach(p.pos), (dr.spot.y ?? 0.6) + 0.7, 'Abrir');
     }
+    // solta o baú que estava sendo segurado (o tremor e a luz param)
+    const releaseChest = () => { if (V.chestHoldTarget && V.chestHoldTarget.charge) V.chestHoldTarget.charge(0); };
     if (!best) {
+      releaseChest();
       V.chestHoldT = 0;
       V.chestHoldTarget = null;
       V.prompt.hide();
@@ -1631,6 +1634,7 @@ export class Dungeon {
     }
     const isChest = best.o instanceof Chest;
     if (!isChest) {
+      releaseChest();
       V.chestHoldT = 0;
       V.chestHoldTarget = null;
     }
@@ -1641,12 +1645,17 @@ export class Dungeon {
     const phys = inp.source === 'gamepad' ? '' : ` / ${actionLabel(V.i, 'physical', inp.source)}`;
     V.prompt.show(at, best.y, `${btn}${phys}|${isChest ? 'Segure para abrir' : best.verb}`);
     if (isChest) {
-      if (!interactionHeld) { V.chestHoldT = 0; V.chestHoldTarget = best.o; return; }
-      if (V.chestHoldTarget !== best.o) { V.chestHoldTarget = best.o; V.chestHoldT = 0; }
+      if (!interactionHeld) { releaseChest(); V.chestHoldT = 0; V.chestHoldTarget = best.o; V.prompt.progress?.(0); return; }
+      if (V.chestHoldTarget !== best.o) { releaseChest(); V.chestHoldTarget = best.o; V.chestHoldT = 0; }
+      if (V.chestHoldT === 0) this.audio?.play('creak', { volume: 0.35, pitch: 1.3 }); // o estalo de começar
       V.chestHoldT += dt;
       V.interactLatch = true;
       held.block = false; pr.block = false; pr.physical = false; pr.interact = false;
+      const k = Math.min(1, V.chestHoldT / CHEST_INTERACT_HOLD_TIME);
+      V.prompt.progress?.(k);
+      best.o.charge(k);
       if (V.chestHoldT < CHEST_INTERACT_HOLD_TIME) return;
+      V.prompt.progress?.(0);
     } else if (!pr.interact && !pr.physical) return;
     // usou: o aperto é do interagir
     V.interactLatch = true;

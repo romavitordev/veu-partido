@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -212,10 +212,18 @@
   - [x] Saco de farinha e baús com aviso e botão de bater.
 - [x] **Fases separadas (dono, 2026-11-14):** cada tentativa é uma fase (escolhida), do nível 1 ao chefe, com mais
       salas; cronômetro com recorde por fase e dificuldade.
-  - [ ] Bateria das fases mais longas (tempo e nível no fim de cada uma; ajustar `route.rooms` e o XP se preciso).
+  - [x] Bateria das fases mais longas (tempo e nível no fim de cada uma; ajustar `route.rooms` e o XP se preciso).
+    - [x] Bateria da fase inteira criada (`src/dev/phaseBattery.js`: a CPU Difícil joga todas as salas até o chefe).
+    - [x] 1ª rodada (2026-11-14, Cindy e Joui, normal): Espreitador 500–650 s, 8 salas, nível 5, ~20 moedas, a vida
+          voltou 5–7× (dano 650–735%) | Escola 300 s, 7–8 salas, nível 4–5, ~18 moedas, 3× | Torre 250–450 s,
+          11–12 salas, nível 5, ~30 moedas, 1–2×. O chefe caiu em todas.
+    - [x] 2ª rodada (6 personagens): Espreitador ~590 s e a vida voltou ~7× (sala de luta ~72 s, as cópias são
+          lutadores inteiros); Escola ~300 s; Torre ~320 s; nível 4–5 no chefe nas três. Ajuste (v4.44.3): Espreitador
+          com 2–3 cópias por sala (antes 2–4); salas e XP ficam.
 - [x] **Menus revistos:** Voltar à vida refeito; COMANDOS na pausa do Outro Lado consertado; tela do fim da fase (morte e vitória) com rota, blocos e recorde.
 - [x] Escudo da Degolificada furado pelo Vínculo de Sangue (dano direto agora respeita o escudo).
-  - [ ] Bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira (o dono).
+  - [x] Bateria da Torre e economia (v4.44.3, `phaseBattery`: ~320 s, 9–11 salas, ~25 moedas sem contar os baús).
+  - [ ] Jogar a rota inteira (o dono).
   - [x] Tirar o `hidden` (lançada na v4.42.0).
   - [ ] Polir os modelos da arena no Blender MCP (está em blocos).
 - [x] **Lista do dono (2026-11-14, 2ª):**

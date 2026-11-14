@@ -834,6 +834,9 @@ representa aprovação automática nem confirmação de fidelidade ao cânone.
   interação ou de golpe seja segurada por 0,45 segundo. Portas continuam
   abrindo com um toque, reduzindo o risco de sair pela porta ao tentar
   abrir um baú.
+- [x] **Retorno visual ao segurar o baú:** ao segurar o botão, a tecla do
+  aviso enche de dourado, uma barra de progresso corre embaixo e o baú
+  treme com a luz vazando pela fresta; soltar antes da hora zera (v4.44.3).
 - [ ] **Direção do especial no Outro Lado:** para acertar o especial, o
   personagem deve tentar ir na direção do inimigo. Não deve dar um
   avanço (rush) em qualquer direção.

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.44.2';
+export const VERSION = '4.44.3';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.44.3',
+    date: '2026-11-14',
+    title: 'Segure o baú',
+    items: [
+      'BAÚS: ao segurar o botão, a tecla do aviso enche de dourado, uma barra corre embaixo e o baú treme com a luz vazando pela fresta. Soltar antes da hora zera.',
+      'MANSÃO DO ESPREITADOR: as salas têm de 2 a 3 cópias (antes até 4). A fase durava quase o dobro das outras.',
+    ],
+  },
   {
     v: '4.44.2',
     date: '2026-11-14',

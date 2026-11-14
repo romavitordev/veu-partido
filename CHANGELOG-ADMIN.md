@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v4.44.3 — Segure o baú
+
+- **Baú: retorno ao segurar (dono, cap. 6 do TODO complementar: "precisa de um estímulo visual para saber se está
+  abrindo"):** `InteractPrompt.progress(k)` redesenha o aviso em 24 degraus (a tecla enche de dourado de baixo para
+  cima, uma barra corre embaixo do verbo, o aviso cresce 12%); `Chest.charge(k)` faz o baú tremer cada vez mais, a tampa
+  estalar e a luz vazar pela fresta; um estalo baixo ao começar. Soltar antes de 0,45 s zera tudo. Conferido no jogo.
+- **Bateria da fase inteira (`src/dev/phaseBattery.js`, novo):** a CPU Difícil joga todas as salas até o chefe (pega
+  o que cai, abre os baús, sobe na 1ª carta; a vida volta abaixo de 25%). 6 personagens (Cindy, Joui, Kian, Nubi, Balu,
+  Dante), normal:
+  - Espreitador: ~590 s, 7–8 salas, nível 5 no chefe, vida voltou ~7× (dano ~775%); sala de luta ~72 s, chefe ~210 s.
+  - Escola: ~300 s, 7–8 salas, nível 4–5, ~2,8×; sala ~16 s, chefe ~210 s.
+  - Torre: ~320 s, 9–11 salas, nível 4–5, ~1,7×; sala ~32 s, chefe ~125 s.
+  - Ajuste: Espreitador `route.monsters` [2, 4] → [2, 3] (cada cópia do Devorado é um lutador inteiro). As salas e o
+    XP ficam (nível 4–5 no chefe nas três).
+
 ## v4.44.2 — Chiado da Torre
 
 - **Chiado de TV durante toda a fase da Torre:** o filtro de transmissão agora permanece entre as salas e fica mais

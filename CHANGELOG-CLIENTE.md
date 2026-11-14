@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.44.3 — Segure o baú
+- BAÚS: ao segurar o botão, a tecla do aviso enche de dourado, uma barra corre embaixo e o baú treme com a luz vazando pela fresta. Soltar antes da hora zera.
+- MANSÃO DO ESPREITADOR: as salas têm de 2 a 3 cópias (antes até 4). A fase durava quase o dobro das outras.
+
 ## v4.44.2 — Chiado da Torre
 - A Torre agora tem o filtro de transmissão em todas as salas; na sala do chefe o chiado fica mais forte.
 

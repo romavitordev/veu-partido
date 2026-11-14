@@ -54,6 +54,22 @@ export function promptSprite(btn, verb) {
   const kw = Math.max(56, btn.length * 24 + 26);
   c.width = kw + 16 + vw + 16;
   c.height = H;
+  drawPrompt(g, c, btn, verb, kw, 0);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false, fog: false }));
+  const h = 0.26;
+  s.scale.set((h * c.width) / H, h, 1);
+  s.userData.redraw = (k) => { drawPrompt(g, c, btn, verb, kw, k); tex.needsUpdate = true; };
+  return s;
+}
+
+// desenha o aviso; `k` (0–1) = SEGURAR PARA ABRIR (dono, 2026-11-14: "ao segurar o botão para abrir o baú precisa de
+// um estímulo visual para saber se está abrindo"): a tecla enche de dourado de baixo para cima e uma barra corre embaixo
+function drawPrompt(g, c, btn, verb, kw, k) {
+  const vFont = '600 40px Inter, system-ui, sans-serif';
+  g.clearRect(0, 0, c.width, c.height);
+  g.save();
   g.shadowColor = 'rgba(0,0,0,0.85)';
   g.shadowBlur = 10;
   // a tecla
@@ -74,12 +90,34 @@ export function promptSprite(btn, verb) {
   g.font = vFont;
   g.fillStyle = 'rgba(255,255,255,0.95)';
   g.fillText(verb || '', kw + 12, 50);
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false, fog: false }));
-  const h = 0.26;
-  s.scale.set((h * c.width) / H, h, 1);
-  return s;
+  if (k > 0) {
+    g.shadowBlur = 0;
+    // a tecla enchendo (dourado, por dentro da borda)
+    g.save();
+    g.beginPath();
+    g.roundRect(4, 18, kw - 8, 60, 12);
+    g.clip();
+    g.fillStyle = 'rgba(255,200,64,0.55)';
+    g.fillRect(4, 78 - 60 * k, kw - 8, 60 * k);
+    g.restore();
+    g.strokeStyle = '#ffd84a';
+    g.lineWidth = 4;
+    g.beginPath();
+    g.roundRect(4, 18, kw - 8, 60, 12);
+    g.stroke();
+    g.fillStyle = '#fff';
+    g.textAlign = 'center';
+    g.font = `700 ${btn.length > 1 ? 26 : 34}px Inter, system-ui, sans-serif`;
+    g.fillText(btn, kw / 2, 49);
+    // a barra embaixo do verbo
+    const x0 = kw + 12;
+    const bw = c.width - x0 - 8;
+    g.fillStyle = 'rgba(10,10,12,0.6)';
+    g.fillRect(x0, 82, bw, 8);
+    g.fillStyle = '#ffd84a';
+    g.fillRect(x0, 82, bw * k, 8);
+  }
+  g.restore();
 }
 
 // a distância da porta ABERTA em que o jogador atravessa. Era 1,05 m: em salas onde a área andável acaba antes da parede
@@ -485,6 +523,18 @@ export class InteractPrompt {
       this.w.scene.add(this.sprite);
     }
     this.sprite.position.set(pos.x, y, pos.z);
+  }
+
+  // o progresso de SEGURAR (0 = vazio); redesenha só quando muda de degrau (24 degraus)
+  progress(k) {
+    if (!this.sprite || !this.sprite.userData.redraw) return;
+    const q = Math.round(Math.max(0, Math.min(1, k)) * 24);
+    if (q === this.sprite.userData.q) return;
+    this.sprite.userData.q = q;
+    this.sprite.userData.redraw(q / 24);
+    const s = 1 + 0.12 * (q / 24); // cresce um pouco enquanto enche
+    if (!this.sprite.userData.base) this.sprite.userData.base = this.sprite.scale.clone();
+    this.sprite.scale.copy(this.sprite.userData.base).multiplyScalar(s);
   }
 
   hide() {
