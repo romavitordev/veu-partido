@@ -276,6 +276,7 @@ export class Dungeon {
       this.stats.damage += dealt;
       if (o && o.crit) this.world.fx.burst(victim.chestPos ? victim.chestPos(v1).clone() : p.chestPos(v1).clone(), { count: 10, color: 0xffe08a, speed: 3.2, life: 0.3, size: 0.12 });
     };
+    m.onNpcDealt = (d) => { this.stats.damage += d; };
     // PELE DE ESPINHOS (baú): devolve parte do dano corpo a corpo a quem bateu
     m.onTaken = m.thorns > 0 ? (dealt, kind, attacker, o) => {
       if (kind !== 'melee' || o.thorns || !attacker || attacker === p || !attacker.takeDamage || attacker.state === 'ko') return;

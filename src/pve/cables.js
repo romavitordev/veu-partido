@@ -15,7 +15,7 @@ export function makeCable(from, to, { sag = 0.6, r = 0.035, kind = 'rubber', glo
   const mesh = new THREE.Mesh(geo, kind === 'conduit' ? CONDUIT : RUBBER);
   if (glow != null) {
     // o pulso de transmissão: um tubo fino aditivo por cima, a opacidade anima em Cables.update
-    const g2 = new THREE.Mesh(new THREE.TubeGeometry(curve, seg, r * 0.55, 5, false), new THREE.MeshBasicMaterial({ color: glow, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+    const g2 = new THREE.Mesh(new THREE.TubeGeometry(curve, seg, r * 1.15, 6, false), new THREE.MeshBasicMaterial({ color: glow, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
     g2.userData.pulse = Math.random() * 6;
     mesh.add(g2);
   }
@@ -26,7 +26,8 @@ export function makeCable(from, to, { sag = 0.6, r = 0.035, kind = 'rubber', glo
 export function pulseCables(root, t) {
   root.traverse((o) => {
     if (o.userData.pulse === undefined) return;
-    o.material.opacity = 0.25 + 0.35 * Math.max(0, Math.sin(t * 3 + o.userData.pulse));
+    // mais forte (testado 2026-11-14: no escuro da Torre o brilho quase não aparecia)
+    o.material.opacity = 0.35 + 0.5 * Math.max(0, Math.sin(t * 3 + o.userData.pulse));
   });
 }
 

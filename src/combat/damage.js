@@ -43,6 +43,7 @@ export function npcDamage(attacker, dmg, kind, abilityId = null) {
   if (!m || !dmg) return dmg;
   let k = m.dealt[kind] ?? 1;
   if (m.kitDmg) k *= m.kitDmg[kind === 'ability' ? (abilityId || attacker.lastAbilityId) : kind] ?? 1;
+  if (m.onNpcDealt) m.onNpcDealt(dmg * k); // o DANO da tela do fim conta os monstros também
   return dmg * k;
 }
 

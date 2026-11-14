@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.44.1 — Teste da Torre
+
+### Corrigido
+- Bilu rodeava para sempre quando o jogador ficava de costas para a parede; agora fecha e ataca de lado depois de alguns segundos.
+- Rastropoda empacava na parede ao fugir; agora foge para o canto mais longe da sala.
+- A dica do Outro Lado cobria a barra de vida em telas baixas.
+- O DANO da tela do fim da fase não contava os monstros das salas.
+
+### Alterado
+- Brilho de transmissão dos cabos da Torre mais forte.
+
 ## v4.44.0 — Fases e Kits
 
 ### Adicionado

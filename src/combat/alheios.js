@@ -84,6 +84,22 @@ export class Rastropoda extends Marionette {
     super.hitBy(attacker, dmg, info);
   }
 
+  // o canto (1 m para dentro) da sala atual mais longe de quem ele caça
+  fleeSpot() {
+    const tg = this.target;
+    const rects = this.world.arena && this.world.arena.bounds && this.world.arena.bounds.rects;
+    if (!tg || !rects || !rects.length) return null;
+    let best = null;
+    let bd = -1;
+    for (const r of rects) {
+      for (const [x, z] of [[r.minX + 1, r.minZ + 1], [r.maxX - 1, r.minZ + 1], [r.minX + 1, r.maxZ - 1], [r.maxX - 1, r.maxZ - 1]]) {
+        const d = Math.hypot(x - tg.pos.x, z - tg.pos.z);
+        if (d > bd) { bd = d; best = { x, z }; }
+      }
+    }
+    return best;
+  }
+
   // enfarinhado = a farinha ainda está nele (reveal longo)
   get floured() { return this.reveal > 1.5; }
 
@@ -95,6 +111,7 @@ export class Rastropoda extends Marionette {
     if (name === 'claw' || name === 'gas') {
       const [a, b] = this.cfg.flee;
       this.fleeT = a + Math.random() * (b - a);
+      this.fleeTo = this.fleeSpot();
       this.setState('flee');
     }
   }
@@ -190,7 +207,12 @@ export class Rastropoda extends Marionette {
       this.fleeT -= dt;
       const tg = this.target;
       if (tg && this.fleeT > 0 && !this.floured) {
-        const away = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z) + Math.sin(this.t * 1.3) * 0.6;
+        // para o canto da sala mais longe do alvo (testado 2026-11-14: fugindo reto "para longe", ele empacava na parede
+        // a 3 m do jogador); sem sala conhecida, reto para longe
+        const F = this.fleeTo;
+        const away = F && Math.hypot(F.x - this.pos.x, F.z - this.pos.z) > 0.6
+          ? Math.atan2(F.x - this.pos.x, F.z - this.pos.z) + Math.sin(this.t * 1.3) * 0.25
+          : Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z) + Math.sin(this.t * 1.3) * 0.6;
         this.pos.x += Math.sin(away) * this.cfg.fleeSpeed * dt;
         this.pos.z += Math.cos(away) * this.cfg.fleeSpeed * dt;
         this.yaw = away;
@@ -304,7 +326,8 @@ export class Bilu extends Marionette {
   pickAttack(d) {
     const tg = this.target;
     if (!tg) return null;
-    if (d < 3.2 && this.cds.backstab <= 0 && this.behind(tg)) return 'backstab';
+    // pelas costas; ou, se ele rodeou e não conseguiu (o alvo de costas para a parede), de lado mesmo (impaciente)
+    if (d < 3.2 && this.cds.backstab <= 0 && (this.behind(tg) || this.circleT > 3)) return 'backstab';
     // de frente só quando encurralado (muito perto) — senão ele rodeia
     return d < 1.6 && this.cds.swipe <= 0 ? 'swipe' : null;
   }
@@ -314,6 +337,7 @@ export class Bilu extends Marionette {
 
   endAttack() {
     super.endAttack();
+    this.circleT = 0;
     const [a, b] = this.cfg.flee;
     this.fleeT = a + Math.random() * (b - a);
     this.setState('flee');
@@ -338,7 +362,10 @@ export class Bilu extends Marionette {
         const cur = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
         let diff = Math.atan2(Math.sin(back - cur), Math.cos(back - cur));
         const step = Math.sign(diff || this.orbit) * Math.min(Math.abs(diff), 2.4 * dt);
-        const R = this.cds.backstab <= 0 && this.behind(tg) ? 1.8 : this.cfg.circle; // nas costas e pronto: fecha
+        // impaciente (2026-11-14, testado: com o jogador de costas para a parede ele rodeava para sempre): depois de 3 s
+        // rodeando sem chegar às costas, fecha e dá o bote de onde estiver
+        this.circleT = (this.circleT || 0) + dt;
+        const R = this.cds.backstab <= 0 && (this.behind(tg) || this.circleT > 3) ? 1.8 : this.cfg.circle; // nas costas (ou impaciente): fecha
         const na = cur + step;
         const tx = tg.pos.x + Math.sin(na) * R;
         const tz = tg.pos.z + Math.cos(na) * R;

@@ -1460,7 +1460,7 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #pvehud .pv-coins b { font-weight: 600; color: var(--pv-ink); }
 #pvehud .pv-coins span { color: var(--pv-mute); font-weight: 500; }
 /* a dica do momento: uma linha discreta, sem moldura */
-#pvehud .pv-hint { position: absolute; left: 50%; bottom: 22vh; transform: translateX(-50%); padding: 7px 14px; border-radius: 6px; background: var(--pv-glass); backdrop-filter: blur(4px); border: 1px solid var(--pv-line); color: var(--pv-ink); font-weight: 500; font-size: 13px; line-height: 1.4; opacity: 0; transition: opacity .25s; text-align: center; max-width: min(80vw, 620px); }
+#pvehud .pv-hint { position: absolute; left: 50%; bottom: max(22vh, 250px); /* acima do painel do jogador (em telas baixas a dica cobria a barra de vida) */ transform: translateX(-50%); padding: 7px 14px; border-radius: 6px; background: var(--pv-glass); backdrop-filter: blur(4px); border: 1px solid var(--pv-line); color: var(--pv-ink); font-weight: 500; font-size: 13px; line-height: 1.4; opacity: 0; transition: opacity .25s; text-align: center; max-width: min(80vw, 620px); }
 #pvehud .pv-hint.on { opacity: 1; }
 #pvehud .pv-fade { position: absolute; inset: 0; background: #000; opacity: 0; }
 #pvehud .pv-fade.on { opacity: 1; }

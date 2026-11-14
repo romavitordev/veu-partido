@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.44.0';
+export const VERSION = '4.44.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.44.1',
+    date: '2026-11-14',
+    title: 'Teste da Torre',
+    items: [
+      'BILU: com você de costas para a parede ele não fica mais rodeando para sempre; depois de uns segundos, fecha e dá o bote de lado.',
+      'RASTROPODA: depois de bater ele foge para o canto mais longe da sala (antes empacava na parede perto de você).',
+      'O brilho verde dos cabos da Torre ficou mais forte; a dica do Outro Lado não cobre mais a barra de vida em telas baixas.',
+      'O DANO da tela do fim da fase agora conta os monstros das salas, não só o chefe.',
+    ],
+  },
   {
     v: '4.44.0',
     date: '2026-11-14',

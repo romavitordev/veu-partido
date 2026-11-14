@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v4.44.1 — Teste da Torre
+
+- **Teste na aba separada (dono: "teste então"), Torre, Alheios e o kit numa fase:**
+  - Conferidos: cápsula de loot em pé (ovo) com cabos e os feixes no teto; Sino com conduítes e o tubo de vidro fechando
+    ("PROTEGIDO NA CÁPSULA", o corpo preso no centro); Rastropoda invisível (bate e foge, a câmera do tripé pisca,
+    farinha: ENFARINHADO com a vida real, lento, sem fugir; 9 s direta / 6 s respingo); Bilu rodeia, bote pelas costas
+    (22 de dano), foge e volta; cartas do kit numa fase da Escola (4 salas com a CPU, sem erro).
+  - **Bilu impaciente:** com o jogador de costas para a parede ele rodeava para sempre sem atacar. Agora, depois de 3 s
+    rodeando sem chegar às costas, fecha e dá o bote de onde estiver (`circleT`).
+  - **Rastropoda foge para o canto:** fugindo reto "para longe" empacava na parede a ~3 m. Agora corre para o canto da
+    sala mais longe do alvo (`fleeSpot`) e de lá arremessa e salta de volta.
+  - Cabos: o brilho de transmissão mais forte (quase não aparecia no escuro).
+  - Dica do Outro Lado (`.pv-hint`) a no mínimo 250 px do chão: em telas baixas cobria a barra de vida.
+  - DANO da tela do fim: os acertos nos monstros (npcDamage → `onNpcDealt`) agora somam; antes só o chefe contava.
+
 ## v4.44.0 — Fases e Kits
 
 - **Lista do dono (2026-11-14): menus, chefes, fases separadas:**
