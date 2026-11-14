@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.43.0';
+export const VERSION = '4.44.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,19 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.44.0',
+    date: '2026-11-14',
+    title: 'Fases e Kits',
+    items: [
+      'OUTRO LADO EM FASES: cada tentativa é uma fase escolhida (com a imagem dela), do nível 1 ao chefe, com cronômetro e recorde por fase e dificuldade.',
+      'CARTAS DO SEU KIT: ao subir de nível, as cartas reforçam as habilidades, o tiro, o combo e o especial do seu personagem, pelo nome. 6 do kit e 6 passivas.',
+      'LOJA DA AGHATA com 20 melhorias: Poções, Iniciação, Mais Opções, Especialista, Reflexos, Ritmo, Mente Clara e Ímã.',
+      'TORRE: cápsulas em pé cheias de cabos de transmissão; na cápsula do Sino um tubo de vidro fecha em volta de você. Rastropoda invisível que bate e foge (a farinha mostra a vida dele) e Bilu que ataca pelas costas.',
+      'TELA DE K.O. NOVA: clarão, onda de choque e as letras carimbando (e a faixa do especial não fica mais na frente).',
+      'CINDY mais forte; a PSIKOLERA só veste a máscara na transformação. Tela do fim da fase refeita e correções nas portas da Escola, no voltar à vida e no escudo da Degolificada.'
+    ],
+  },
   {
     v: '4.43.0',
     date: '2026-11-13',

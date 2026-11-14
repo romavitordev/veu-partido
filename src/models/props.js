@@ -1777,7 +1777,7 @@ export function addArtemisProps(rig) {
 }
 
 // ELOY (PSIKOLERA): as duas BAQUETAS manchadas de sangue, seguradas PARA BAIXO como punhais (a arte conceitual dele). A
-// FOCINHEIRA é a peça prop_maskOn do modelo (tools/blender/char_eloy.py): só aparece na habilidade Focinheira
+// FOCINHEIRA é a peça prop_maskOn do modelo (tools/blender/char_eloy.py): só aparece no despertar (dono, 2026-11-14: a máscara só na transformação)
 export function addEloyProps(rig) {
   const { sockets, props } = rig;
   // empunhadura de baterista: a ponta para CIMA e um pouco à frente (medido na pose idle_dual: ~(0.39, 0.92, 0))
@@ -1794,7 +1794,7 @@ export function addEloyProps(rig) {
 
 // CINDY (PSIKOLERA): o FUZIL BAIXO na direita, empunhado como fuzil (o punho de pistola na mão, o braço do baixo e o
 // cano para a frente). A MÁSCARA BRANCA é a peça prop_maskOn do modelo (tools/blender/char_cindy.py): só aparece na
-// habilidade Máscara PSIKOLERA e no despertar
+// transformação (o despertar), nunca nas habilidades (dono, 2026-11-14)
 export function addCindyProps(rig) {
   const { sockets, props } = rig;
   const gun = fuzilBaixo();

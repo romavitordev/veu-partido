@@ -4,7 +4,7 @@ import { ARENAS, ARENA_ORDER } from '../arena/index.js';
 // Gera imagens de preview dos cenários renderizando cada um uma vez (dataURL), como os retratos.
 // Câmera padrão: de lado, entre os pontos de nascimento; um cenário pode definir `thumbCamera`
 // no registro ({ pos: [x, y, z], look: [x, y, z] }) para um enquadramento próprio.
-export function renderArenaThumbs(renderer, { w = 960, h = 540, cameras = {}, only = null } = {}) {
+export function renderArenaThumbs(renderer, { w = 960, h = 540, cameras = {}, only = null, ids = null } = {}) {
   const target = new THREE.WebGLRenderTarget(w, h, { samples: 4 });
   target.texture.colorSpace = THREE.SRGBColorSpace;
   const canvas = document.createElement('canvas');
@@ -16,15 +16,17 @@ export function renderArenaThumbs(renderer, { w = 960, h = 540, cameras = {}, on
   const prevTarget = renderer.getRenderTarget();
   const cam = new THREE.PerspectiveCamera(48, w / h, 0.5, 400);
 
-  for (const id of ARENA_ORDER) {
+  for (const id of ids || ARENA_ORDER) { // ids: outra lista (as prévias das FASES do Outro Lado)
     const A = ARENAS[id];
     if (!A || !A.available || (only && !only.includes(id))) continue;
     try {
       const scene = new THREE.Scene();
       const arena = A.create();
       arena.build(scene);
-      if (arena.update) arena.update(0.016);
       const tc = cameras[id] || A.thumbCamera;
+      // tc.focus [x, z]: os cenários com pool de luzes (as dungeons do Outro Lado) só acendem as lâmpadas perto do foco
+      if (tc && tc.focus && arena.focus !== undefined) arena.focus = { x: tc.focus[0], z: tc.focus[1] };
+      if (arena.update) for (let i = 0; i < (tc && tc.focus ? 6 : 1); i++) arena.update(tc && tc.focus ? 0.3 : 0.016);
       if (tc) {
         cam.position.set(...tc.pos);
         cam.lookAt(new THREE.Vector3(...tc.look));

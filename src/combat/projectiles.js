@@ -1,6 +1,6 @@
 import { COMBAT } from '../config/combat.js';
 import * as THREE from 'three';
-import { applyHit } from './damage.js';
+import { applyHit, npcDamage } from './damage.js';
 import { inBounds } from './positioning.js';
 import { glowMat } from '../models/rig.js';
 import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, barBottle } from '../models/weapons.js';
@@ -761,7 +761,7 @@ export class Projectiles {
         if (a.visual === 'shadow') p.pos.y = 0.12;
         const npc = w.npcs.find((n) => n.alive && n.owner !== p.owner && n.hitTest(p.pos, p.r ?? a.radius));
         if (npc) {
-          npc.hitBy(p.owner, a.damage, { kind: 'ranged' });
+          npc.hitBy(p.owner, npcDamage(p.owner, a.damage, a.kind || 'ranged'), { kind: 'ranged' });
           w.fx.impact(p.pos.clone(), a.color ?? 0xffffff, 0.8);
           dead = true;
           break;
@@ -915,7 +915,7 @@ export class Projectiles {
         if (typeof res === 'number' && res >= 0) this.applyOnHit(p, target);
       }
     }
-    for (const n of w.npcs) if (n.alive && n.owner !== p.owner && n.hitTest(c, E.radius)) n.hitBy(p.owner, E.damage || 0, { kind: 'ranged' });
+    for (const n of w.npcs) if (n.alive && n.owner !== p.owner && n.hitTest(c, E.radius)) n.hitBy(p.owner, npcDamage(p.owner, E.damage || 0, a.kind || 'ranged'), { kind: 'ranged' });
   }
 
   // parede para o TIRO: os obstáculos do cenário e, nos cenários de retângulos andáveis, tudo fora deles SEM a folga de

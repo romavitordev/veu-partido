@@ -31,6 +31,7 @@ export class HUD {
       <div id="hostline"><b></b><span></span></div>
       <div id="banner"><div class="stripe"></div><div class="txt"></div></div>
       <div id="teamCut"></div>
+      <div id="koFx" aria-hidden="true"></div>
       <div id="flash"></div>`;
     this.panels = [root.querySelector('.panel.p1'), root.querySelector('.panel.p2')];
     this.timerEl = root.querySelector('#timer');
@@ -44,6 +45,7 @@ export class HUD {
     this.riddleEl = root.querySelector('#riddle');
     this.dmgState = [{ value: 0, hold: 0 }, { value: 0, hold: 0 }];
     this.bannerEl = root.querySelector('#banner');
+    this.koEl = root.querySelector('#koFx');
     this.letterbox = root.querySelector('#letterbox');
     this.flashEl = root.querySelector('#flash');
     this.subtitleState = null;
@@ -62,7 +64,8 @@ export class HUD {
   // nada da luta anterior pode aparecer na próxima.
   reset() {
     this.setIntro(false);
-    for (const el of [this.callEl, this.bannerEl]) { el.classList.remove('show'); }
+    for (const el of [this.callEl, this.bannerEl, this.koEl]) { el.classList.remove('show'); }
+    this.koEl.innerHTML = '';
     // a tela de equipe do especial também (antes ficava com .show e a animação voltava a tocar ao mostrar o HUD da luta seguinte)
     const tc = this.root.querySelector('#teamCut');
     if (tc) { tc.classList.remove('show', 'quick'); tc.innerHTML = ''; }
@@ -429,6 +432,22 @@ export class HUD {
     const el = this.callEl;
     el.textContent = text;
     el.style.color = color;
+    el.classList.remove('show');
+    void el.offsetWidth;
+    el.classList.add('show');
+  }
+
+  // a TELA DE K.O. (dono, 2026-11-14: "tela de K.O bugada... a faixa está na frente do K.O"): a faixa com o nome do
+  // especial (#banner) ficava por cima quando o golpe final era um especial. Agora o K.O. tem camada própria, acima de
+  // tudo, e apaga a faixa. A animação: clarão, onda de choque, dois riscos de luz cruzando atrás e as letras carimbando
+  // uma a uma, com um tranco no fim
+  ko(text = 'K.O.', color = '#ff3b2f') {
+    this.bannerEl.classList.remove('show');
+    this.callEl.classList.remove('show');
+    const el = this.koEl;
+    el.style.setProperty('--c', color);
+    const letters = [...text].map((ch, i) => `<span style="--i:${i}">${ch === ' ' ? '&nbsp;' : ch.replace(/[<&]/g, '')}</span>`).join('');
+    el.innerHTML = `<i class="ko-flash"></i><i class="ko-ring"></i><i class="ko-ring r2"></i><i class="ko-streak a"></i><i class="ko-streak b"></i><div class="ko-word">${letters}</div>`;
     el.classList.remove('show');
     void el.offsetWidth;
     el.classList.add('show');

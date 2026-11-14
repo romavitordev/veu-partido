@@ -9,6 +9,7 @@
 //    O SINO RESPONDE (as cápsulas são ligadas a ele): o Estrangeiro fica ATORDOADO e EXPOSTO (toma mais dano) — é assim
 //    que ele cai. Depois que ele some, a saída não é uma porta: é DEITAR numa cápsula (pedido do dono, 2026-11-13).
 import * as THREE from 'three';
+import { makeCable, pulseCables, disposeCables } from './cables.js';
 
 // as seis cápsulas da sala (tools/blender/arena_torre.py: x 76/82/88, z ±9,8); a 2 e a 4 têm gente (e a 4 está quebrada)
 export const SINO_CAPSULES = [
@@ -48,6 +49,23 @@ export class SinoMechanics {
     this.phase = 0;
     this.exitCap = null;
     this.beams = [];
+    this.t = 0;
+    this.dress();
+  }
+
+  // OS CABOS DO SINO (dono, 2026-11-14: "cheias de tubos e fios de energia/transmissão ligados", como na série): cada
+  // cápsula manda um conduíte de transmissão do topo até o sino e cabos pelo chão até a base dele. PROPOSTA: o desenho
+  dress() {
+    const g = new THREE.Group();
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    for (const c of SINO_CAPSULES) {
+      const s = Math.sign(c.z);
+      g.add(makeCable(V(c.x, 3.1, c.z - s * 0.2), V(BELL.x + (c.x - BELL.x) * 0.08, BELL.y + 0.9, BELL.z + s * 0.4), { sag: 1.1, r: 0.07, kind: 'conduit', glow: GREEN, seg: 28 }));
+      g.add(makeCable(V(c.x + 0.3, 2.9, c.z - s * 0.1), V(BELL.x + (c.x - BELL.x) * 0.1, BELL.y + 0.6, BELL.z + s * 0.6), { sag: 1.6, r: 0.035, seg: 28 }));
+      g.add(makeCable(V(c.x - 0.35, 0.05, c.z - s * 0.6), V(BELL.x + (c.x - BELL.x) * 0.15, 0.05, s * 1.2), { sag: 0.02, r: 0.05, seg: 24 }));
+    }
+    this.w.scene.add(g);
+    this.cables = g;
   }
 
   get phaseIdx() {
@@ -120,9 +138,30 @@ export class SinoMechanics {
     this.d.audio.play('fearGaze', { volume: 0.9, pitch: 0.45 });
   }
 
+  // o tubo de vidro que sobe do chão em volta de quem entrou na cápsula
+  closeShell(W, q) {
+    const sp = W.beam.spot;
+    const g = new THREE.Group();
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 2.6, 24, 1, true), new THREE.MeshBasicMaterial({ color: 0xbaffd0, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
+    glass.position.y = 1.3;
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.76, 0.05, 6, 32), new THREE.MeshBasicMaterial({ color: GREEN, toneMapped: false }));
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = 2.6;
+    g.add(glass, rim);
+    g.position.set(sp.x, 0, sp.z);
+    g.scale.y = 0.01;
+    this.w.scene.add(g);
+    W.shells = W.shells || [];
+    W.shells.push(g);
+    this.w.fx.burst(new THREE.Vector3(sp.x, 0.4, sp.z), { count: 18, color: GREEN, speed: 2.2, life: 0.5, size: 0.14, up: 2 });
+    this.d.audio.play('teleport', { volume: 0.5, pitch: 0.7 });
+    if (q === this.d.player || q === this.d.player2) this.d.hud.callout('PROTEGIDO NA CÁPSULA', '#7aff4a');
+  }
+
   endWave() {
     const W = this.wave;
     this.wave = null;
+    for (const g of W.shells || []) { this.w.scene.remove(g); g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); }
     for (const q of this.d.players) q.capsuleSafe = false;
     this.w.scene.remove(W.g);
     W.g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
@@ -182,6 +221,9 @@ export class SinoMechanics {
 
   update(dt) {
     const e = this.e;
+    this.t += dt;
+    if (this.cables) pulseCables(this.cables, this.t);
+    if (this.wave && this.wave.shells) for (const g of this.wave.shells) g.scale.y = Math.min(1, g.scale.y + dt * 3.5);
     if (e.state === 'ko') return;
     // a mudança de fase (pelo HP)
     const ph = this.phaseIdx;
@@ -214,7 +256,18 @@ export class SinoMechanics {
     W.beam.col.material.opacity = 0.2 + 0.12 * Math.sin(W.t * 8);
     for (const q of this.d.players) {
       if (q.state === 'ko' || W.caught.has(q)) continue;
-      if (this.inside(q, W.beam)) { W.safe.add(q); q.capsuleSafe = true; continue; }
+      if (W.safe.has(q) || this.inside(q, W.beam)) {
+        // DENTRO DA CÁPSULA (dono, 2026-11-14: melhorar o esconder): o vidro sobe e se fecha em volta e o corpo fica
+        // preso no meio dela até a onda passar (de fora, ele não te alcança)
+        if (!W.safe.has(q)) this.closeShell(W, q);
+        W.safe.add(q);
+        q.capsuleSafe = true;
+        const sp = W.beam.spot;
+        q.pos.x += (sp.x - q.pos.x) * Math.min(1, dt * 8);
+        q.pos.z += (sp.z - q.pos.z) * Math.min(1, dt * 8);
+        if (q.vel) q.vel.x = q.vel.z = 0;
+        continue;
+      }
       W.safe.delete(q);
       q.capsuleSafe = false;
       if (Math.hypot(q.pos.x - e.pos.x, q.pos.z - e.pos.z) <= W.r) {
@@ -301,6 +354,7 @@ export class SinoMechanics {
   dispose() {
     for (const q of this.d.players) q.capsuleSafe = false;
     if (this.wave) {
+      for (const g of this.wave.shells || []) { this.w.scene.remove(g); g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); }
       this.w.scene.remove(this.wave.g);
       this.wave.g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
       this.wave = null;
@@ -311,6 +365,7 @@ export class SinoMechanics {
 
   disposeAll() {
     this.dispose();
+    if (this.cables) { this.w.scene.remove(this.cables); disposeCables(this.cables); this.cables = null; }
     for (const b of this.beams.slice()) this.dropBeam(b);
     this.exitCap = null;
   }

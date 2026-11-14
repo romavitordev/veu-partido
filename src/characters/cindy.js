@@ -115,13 +115,14 @@ export default {
       projectile: { visual: 'sniper', color: 0xffe0d0, damage: 92, range: 60, speed: 150, radius: 0.32, knockback: 4, hitstun: 0.5, impactScale: 1.6, hitSound: 'heavyPunch' },
     },
     {
-      // R2 + △ A MÁSCARA PSIKOLERA (cânone: com a máscara ela dança e cantarola até lutando; as máscaras feitas pelo Alê
-      // mudam o humor de quem usa)
+      // R2 + △ A DANÇA (cânone: com a máscara ela dança e cantarola até lutando). Pedido do dono (2026-11-14): a
+      // PSIKOLERA só VESTE a máscara na transformação (o despertar), não nas habilidades — aqui ela só entra no ritmo
       id: 'mascaraPsikolera',
-      name: 'Máscara PSIKOLERA',
+      name: 'Dança da PSIKOLERA',
       input: 'block+carga',
       type: 'maskForm',
-      description: 'Põe a máscara branca dos triângulos vermelhos e começa a dançar: por 9 s ela fica mais rápida, os golpes e os tiros saem mais rápidos e mais fortes, e os Tiros de Aviso saem mais vezes.',
+      noMask: true,
+      description: 'Entra no ritmo e começa a dançar, cantarolando: por 9 s ela fica mais rápida, os golpes e os tiros saem mais rápidos e mais fortes, e os Tiros de Aviso saem mais vezes.',
       energyCost: 28,
       cooldown: 20,
       duration: 9,
@@ -130,7 +131,7 @@ export default {
       atkSpeed: 1.2,
       idleAnim: 'idle_dance',
       wild: { anim: 'blade_waltz', shout: 'Lá-lá-lá...' },
-      label: 'MÁSCARA PSIKOLERA',
+      label: 'DANÇA DA PSIKOLERA',
       color: WHITE,
     },
     {
@@ -178,7 +179,7 @@ export default {
   ],
 
   // SHOW NO MONICA CLUB (PROPOSTA; base canônica: o último show da turnê "Pegadas de Sangue" no The Monica Club — o mosh
-  // pit e o tiro de cima do palco). Ela toca a linha de baixo, põe a MÁSCARA no meio da música e desce dançando no mosh:
+  // pit e o tiro de cima do palco). Ela toca a linha de baixo e desce dançando no mosh (a máscara só no despertar):
   // coronhadas no ritmo, a pirueta, a estocada do salto alto, a rajada e o tiro final colado
   special: {
     name: 'Show no Monica Club',
@@ -193,9 +194,8 @@ export default {
       anim: 'bass_play', loop: true, time: 2.1, shots: 'bassSolo',
       // a linha de baixo (Lá, Lá, Dó, Ré... e o grave final)
       notes: [[0.1, 55], [0.34, 55], [0.58, 65], [0.82, 73], [1.06, 55], [1.18, 55], [1.3, 82], [1.78, 49], [1.9, 41]],
-      showProp: 'maskOn', showAt: 1.45, keepIfBuff: 'mask',
       steps: [
-        { t: 1.4, anim: 'concentrate', dur: 0.2, sound: 'maskOn' },
+        { t: 1.4, anim: 'concentrate', dur: 0.2 },
         { t: 1.55, anim: 'blade_waltz', dur: 0.4, shout: 'Lá-lá-lá...' },
         { t: 1.75, anim: 'bass_play' },
       ],

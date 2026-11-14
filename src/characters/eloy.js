@@ -126,11 +126,13 @@ export default {
     {
       // R2 + △ A FOCINHEIRA (cânone): os olhos brancos, a aversão a toque — bate mais forte e mais rápido, aguenta golpes,
       // mas NÃO DEFENDE (não deixa ninguém chegar perto do jeito certo)
+      // pedido do dono (2026-11-14): a PSIKOLERA só VESTE a máscara na transformação (o despertar), não nas habilidades
       id: 'focinheira',
-      name: 'Focinheira',
+      name: 'Aversão ao Toque',
       input: 'block+carga',
       type: 'maskForm',
-      description: 'Tranca a focinheira de espinhos no cadeado da gola e ruge: por 9 s os olhos ficam brancos, ele fica curvado e agressivo, bate mais forte e mais rápido e aguenta golpes sem recuar, mas não consegue defender.',
+      noMask: true,
+      description: 'A aversão a toque toma conta e ele ruge: por 9 s os olhos ficam brancos, ele fica curvado e agressivo, bate mais forte e mais rápido e aguenta golpes sem recuar, mas não consegue defender.',
       energyCost: 30,
       cooldown: 20,
       duration: 9,
@@ -141,7 +143,7 @@ export default {
       atkSpeed: 1.15,
       idleAnim: 'idle_wild', // curvado, batendo a cabeça e o pé no ritmo
       wild: { anim: 'taunt_roar', shout: 'NÃO ENCOSTA EM MIM!' },
-      label: 'FOCINHEIRA',
+      label: 'AVERSÃO AO TOQUE',
       color: WILD,
     },
     {
@@ -205,10 +207,9 @@ export default {
         // a raiva da focinheira: espanca a caixa cada vez mais rápido
         [1.72, 'snare'], [1.78, 'snare'], [1.84, 'snare'], [1.89, 'snare'], [1.94, 'snare'], [1.98, 'crash'],
       ],
-      showProp: 'maskOn', showAt: 1.42, keepIfBuff: 'mask',
       steps: [
         { t: 1.38, anim: 'concentrate', dur: 0.2 },
-        { t: 1.46, anim: 'taunt_roar', dur: 0.3, rage: true, shout: 'NÃO ENCOSTA EM MIM!', sound: 'maskOn' },
+        { t: 1.46, anim: 'taunt_roar', dur: 0.3, rage: true, shout: 'NÃO ENCOSTA EM MIM!' },
         { t: 1.68, anim: 'drum_play' },
         { t: 2.02, anim: 'kick_front', dur: 0.3, smash: true },
       ],

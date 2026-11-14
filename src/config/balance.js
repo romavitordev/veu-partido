@@ -68,6 +68,9 @@ export const BALANCE = {
   boris: { dealt: 1.25, taken: 0.86 }, // 10% (sem ajuste) → 32% (1.2/0.88) → 51%
   damir: { dealt: 1.22, taken: 0.87 }, // 5% (sem ajuste; + Força Paranormal 1.08 no físico) → 40%
   eloy: { dealt: 1.28, taken: 0.85 }, // 3% (sem ajuste) → 42%
+  // 2026-11-14 — Cindy focada (125 lutas, sem ajuste): 18%; dano feito/recebido 0,73. O kit sai inteiro (a rajada, o
+  // sangramento do salto alto e a queimadura da Última Nota são o grosso), só bate pouco
+  cindy: { dealt: 1.15, taken: 0.92 }, // 18% (sem ajuste) → 50% (78 lutas)
 };
 
 // o coeficiente de um lutador (transformado: o do personagem de origem). As formas selecionáveis (o Portador, o Anfitrião

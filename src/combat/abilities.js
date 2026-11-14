@@ -1945,12 +1945,12 @@ Object.assign(ABILITY_TYPES, {
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
       f.anim.play('concentrate', { restart: true, duration: 0.75 });
-      world.audio.play('maskOn');
+      if (!a.noMask) world.audio.play('maskOn');
       // a.wild (Eloy — Focinheira): depois de trancar a máscara ele RUGE e muda de postura (a.idleAnim) até ela sair
       if (a.wild) tl.add(0.5, () => { f.anim.play(a.wild.anim || 'taunt_roar', { restart: true, duration: 0.25 }); world.audio.play('drain', { volume: 0.6, pitch: 0.55 }); if (a.wild.shout) f.notify(a.wild.shout, true); });
       const face = () => f.rig.joints.hd.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.15, 0));
       tl.add(0.45, () => {
-        if (f.rig.props.maskOn) f.rig.showProp('maskOn', true);
+        if (f.rig.props.maskOn && !a.noMask) f.rig.showProp('maskOn', true);
         world.fx.burst(face(), { count: 30, color: a.color, speed: 3, life: 0.6, size: 0.2, gravity: 5 });
         world.fx.flash(face(), { color: a.color, size: 1.6, life: 0.15 });
         world.cameraRig.shake(0.2, 0.2);
@@ -1972,7 +1972,7 @@ Object.assign(ABILITY_TYPES, {
             // o despertar que veste a mesma máscara (Eloy — O Show Não Para) segura a máscara e a postura
             const aw = f.findBuff('awakened');
             if (a.idleAnim) f.anim.animMap = { ...f.anim.animMap, idle: aw?.idleAnim || prevMap.idle };
-            if (f.rig.props.maskOn && !aw?.keepProps?.includes('maskOn')) f.rig.showProp('maskOn', false);
+            if (f.rig.props.maskOn && !a.noMask && !aw?.keepProps?.includes('maskOn')) f.rig.showProp('maskOn', false);
             f.armorHits = 0;
             if (f.buffTint && f.buffTint.color === a.color) f.buffTint = prevTint || null;
           },

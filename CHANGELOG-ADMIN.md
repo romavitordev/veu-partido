@@ -1,25 +1,21 @@
 # Registro administrativo de alterações
 
-## v4.43.0 — A Torre continua
+## v4.44.0 — Fases e Kits
 
-- **Torre: teste do labirinto e da tela dividida (dono, 2026-11-14):**
-  - Especial em tela dividida: a cena ocupa a TELA TODA (sai a divisão) e volta dividida no fim. Vale também para as
-    cenas de entrada, a saída e o fim da tentativa.
-  - Trava de mira com linha de visão: não escolhe nem mantém alvo atrás de parede (o labirinto puxava a câmera).
-  - Cápsulas de loot maiores, com brilho no chão, a 1,4 m dos cantos; a seta azul também aponta para a cápsula fechada.
-  - Labirinto: objetivo "Ache a saída", portas e entrada no centro das células, Alheios surgem a 3–5 passos dos
-    jogadores; as entradas das salas da Torre ficam 2,2 m para dentro (a câmera prendia na parede).
-  - O "Joui cinza parado" do labirinto era o Devorado escondido da sala (a cópia cinza do personagem que fica
-    `lurking`): um especial/habilidade que mira "o oponente" o acertava e o `cancelAction` o deixava visível. Agora
-    quem está `lurking` não é alvo (`applyHit`), não reaparece no `cancelAction`, e o Dungeon o esconde de novo.
 - **Lista do dono (2026-11-14): menus, chefes, fases separadas:**
-  - **Fases separadas, como no Vampire Survivors:** cada tentativa é UMA fase escolhida depois da dificuldade (tela
-    ESCOLHA A FASE). Começa no nível 1, tem mais salas (Escola e Mansão 5–6, Torre 7–9; PROPOSTA) e termina no chefe.
+  - **Fases separadas, como no Vampire Survivors:** cada tentativa é UMA fase. Primeiro ESCOLHA A FASE (o cartão diz
+    em quais dificuldades ela já foi vencida, ★ n/5), depois a DIFICULDADE (★ e o recorde em cada uma já vencida; o
+    cursor começa na mais fácil ainda não vencida). Começa no nível 1, tem mais salas (Escola e Mansão 5–6, Torre 7–9; PROPOSTA) e termina no chefe.
     Não leva mais da Escola para a Mansão. A fase seguinte abre ao vencer a anterior; cada fase usa a profundidade
     para que foi ajustada (Escola 1, Mansão 2, Torre 3). Fim: FASE CONCLUÍDA com PRÓXIMA FASE / JOGAR DE NOVO.
   - **Cronômetro de recorde:** o recorde da fase (por dificuldade) aparece embaixo do cronômetro e ele fica vermelho
     ao passar dele. Na morte há TENTAR DE NOVO. (O cronômetro contava; o que parecia parado era ele zerar a cada
     dungeon da tentativa encadeada.)
+  - **Tela do fim da fase refeita (morte e vitória):** a ROTA em barra (as salas vencidas, a sala onde caiu pulsando
+    e o ☠ do chefe), os números em blocos (TEMPO grande com o recorde da fase/dificuldade, abatidos, baús, moedas,
+    dano, nível alcançado), selos NOVO RECORDE / FASE NOVA ABERTA na vitória. Ação principal larga e já selecionada
+    (TENTAR DE NOVO / PRÓXIMA FASE), as outras duas lado a lado e MENU PRINCIPAL pequeno no rodapé (o cartão
+    sobrava sozinho numa linha). O subtítulo diz lugar · dificuldade · personagem.
   - **Voltar à vida refeito:** dois cartões (VOLTAR com o preço / DESISTIR), a barra do tempo esvaziando, as
     teclas reais, quem tem moedas; escolhe com a direção, o mouse ou o dedo.
   - **COMANDOS na pausa do Outro Lado:** quebrava (a ficha do Devorado não tem lista de golpes), a tela ficava presa
@@ -41,7 +37,55 @@
     preciso. Depois, o chefe.
   - Testado numa aba separada: voltar à vida, comandos, escolha de fase, fim da fase e próxima fase, agenda dos
     minibosses numa rota inteira, leito da saída, cápsulas deitadas, sacos e as habilidades do Joui no labirinto.
+- **Lista do dono (2026-11-14, 2ª): kit do personagem, Torre, Alheios, menus:**
+  - **Cartas de nível ligadas ao personagem:** saíram as ativas automáticas (Lâminas de Sangue, Raio de Energia etc.:
+    misturavam elementos, sem ligação com a lore). As cartas do KIT reforçam os golpes que o próprio personagem já tem,
+    pelo nome: cada habilidade, o tiro, o combo e o especial (recarga menor, menos Sanidade, mais dano; PROPOSTA:
+    números). Geradas da ficha (`kitUpgrades`), valem para o elenco inteiro. Limite: 6 do kit + 6 passivas. No co-op
+    cada um escolhe na sua vez e a carta mostra o dono. Passivas novas: Reflexos (esquiva) e Ritmo (recargas);
+    sinergia Esquivo.
+  - **Dano nos monstros das salas:** os golpes, tiros e habilidades do jogador nos npcs (zumbis, clones, Alheios)
+    passam agora pelas melhorias (Fúria, Foco, Mira e o kit). Antes só o chefe sentia as melhorias.
+  - **Loja da Aghata 4 × 5:** Poções (a 20ª). Iniciação (um golpe do kit no nível 1), Mais Opções (4 cartas),
+    Especialista (o kit vale 30% a mais), Reflexos, Ritmo, Mente Clara e Ímã. Ids antigos mantidos: quem comprou
+    não perde.
+  - **Ordem das telas do Outro Lado:** a loja/hub vem primeiro; QUEM VAI JOGAR? (só você / dois neste PC / online)
+    vem depois, ao começar a tentativa.
+  - **ESCOLHA A FASE com imagem** de cada fase (como no escolher mapa).
+  - **Máscara só na transformação:** a Dança da PSIKOLERA (Cindy) e a Aversão ao Toque (Eloy) não vestem mais a
+    máscara; o especial também não. Só os despertares.
+  - **Cindy andando para trás ao bater:** o "Recua atirando" disparava porque o Devorado escondido contava como o
+    oponente. A direção do golpe ignora quem está escondido, invisível ou caído.
+  - **Portas da Escola que abriam mas não deixavam entrar:** a passagem só valia perto demais (1,05 m). Agora vale a
+    1,75 m.
+  - **Torre:** cápsulas de loot em pé (ovo ou tubo) com cabos e conduítes de transmissão ligados ao teto. Feixes de
+    cabos pendurados no teto das salas. No Sino, conduítes das seis cápsulas até o sino. Ao entrar na cápsula durante
+    a Presença, um tubo de vidro sobe e fecha em volta ("PROTEGIDO NA CÁPSULA") e o corpo fica preso no centro. Só o
+    leito da saída é deitado.
+  - **Rastropoda:** invisível de verdade (nem o contorno), um tremor só ao preparar o golpe. Bate e foge (recua 2–3 s
+    depois da garra ou do gás) e deixa o rastro de gosma mais espaçado. Enfarinhado: aparece inteiro, a barra mostra a
+    vida de verdade, anda mais devagar e demora mais para atacar, sem fugir. Não é um atordoamento: ainda bate.
+  - **Bilu (PROPOSTA):** rodeia fora do alcance com os olhos piscando e dá o bote PELAS COSTAS (mais forte). Depois
+    foge para o escuro. Virar-se para ele o faz hesitar.
+- **Balanceamento da Cindy:** rodada focada contra o elenco inteiro (125 lutas, sem ajuste): 18%, dano feito/recebido
+  0,73 (o kit sai inteiro, só bate pouco). `balance.js` cindy dealt 1,15 / taken 0,92 → 50% na confirmação (78 lutas).
+- **Tela de K.O. refeita (dono: "a faixa está na frente do K.O"):** quando o golpe final era um especial, a faixa com o
+  nome dele (`#banner`) ficava por cima do K.O. Agora o K.O. tem camada própria (`#koFx`, `HUD.ko`) acima de tudo e
+  apaga a faixa. Animação nova: clarão, duas ondas de choque, riscos de luz cruzando atrás, letras carimbando uma a uma
+  com um tranco no fim e vinheta escura (sem as ondas e o tranco com "reduzir movimento").
 
+## v4.43.0 — A Torre continua
+
+- **Torre: teste do labirinto e da tela dividida (dono, 2026-11-14):**
+  - Especial em tela dividida: a cena ocupa a TELA TODA (sai a divisão) e volta dividida no fim. Vale também para as
+    cenas de entrada, a saída e o fim da tentativa.
+  - Trava de mira com linha de visão: não escolhe nem mantém alvo atrás de parede (o labirinto puxava a câmera).
+  - Cápsulas de loot maiores, com brilho no chão, a 1,4 m dos cantos; a seta azul também aponta para a cápsula fechada.
+  - Labirinto: objetivo "Ache a saída", portas e entrada no centro das células, Alheios surgem a 3–5 passos dos
+    jogadores; as entradas das salas da Torre ficam 2,2 m para dentro (a câmera prendia na parede).
+  - O "Joui cinza parado" do labirinto era o Devorado escondido da sala (a cópia cinza do personagem que fica
+    `lurking`): um especial/habilidade que mira "o oponente" o acertava e o `cancelAction` o deixava visível. Agora
+    quem está `lurking` não é alvo (`applyHit`), não reaparece no `cancelAction`, e o Dungeon o esconde de novo.
 ## v4.42.0 — Sinais da Torre
 
 - **Orfanato: escada da porta consertada (dono, 2026-11-13: "a escada dele está bugada na porta", nas duas versões):**

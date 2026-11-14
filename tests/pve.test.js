@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KINDS, kindsOf, rewardChoices } from '../src/pve/upgrades.js';
+import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KIT, MAX_PASSIVE, slotsOf, rewardChoices, kitUpgrades, kitId, KIT_STEP } from '../src/pve/upgrades.js';
+import cindy from '../src/characters/cindy.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, treeCoinCost, migrateTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
@@ -13,8 +14,8 @@ test('melhorias: somam, as sinergias ligam com as duas peças e a árvore entra 
   const m0 = computeMods([]);
   assert.equal(m0.hpMult, 1);
   const m = computeMods(['furia', 'foco', 'vigor'], { dano: 2 });
-  assert.ok(Math.abs(m.dealt.melee - (1 + 0.08 + 0.06)) < 1e-9);
-  assert.ok(Math.abs(m.dealt.ability - (1 + 0.09 + 0.06 + 0.06)) < 1e-9); // Ritual Furioso
+  assert.ok(Math.abs(m.dealt.melee - (1 + 0.1 + 0.06)) < 1e-9);
+  assert.ok(Math.abs(m.dealt.ability - (1 + 0.1 + 0.06 + 0.06)) < 1e-9); // Ritual Furioso
   assert.deepEqual(activeSynergies(['furia', 'foco']).map((s) => s.id), ['ritualFurioso']);
   assert.equal(activeSynergies(['furia']).length, 0);
   const s = computeMods(['sanguessuga', 'furia']);
@@ -24,15 +25,17 @@ test('melhorias: somam, as sinergias ligam com as duas peças e a árvore entra 
 });
 
 test('melhorias: o sorteio não repete e respeita o máximo de cada uma', () => {
-  const picks = ['vigor', 'vigor', 'vigor'];
+  const picks = ['agilidade', 'agilidade', 'agilidade'];
   for (let i = 0; i < 50; i++) {
-    const c = rollChoices(picks, Math.random);
+    const c = rollChoices(picks, Math.random, 3, cindy);
     assert.equal(c.length, 3);
     assert.equal(new Set(c.map((u) => u.id)).size, 3);
-    assert.ok(!c.some((u) => u.id === 'vigor'));
+    assert.ok(!c.some((u) => u.id === 'agilidade'));
+    assert.equal(c[0].kind, 'kit', 'sem nenhum golpe do kit, a primeira carta é do kit');
   }
-  const all = UPGRADES.flatMap((u) => Array(u.max).fill(u.id));
-  assert.equal(rollChoices(all).length, 0);
+  assert.equal(rollChoices([], Math.random, 4, cindy).length, 4); // Mais Opções
+  const all = [...UPGRADES, ...kitUpgrades(cindy)].flatMap((u) => Array(u.max).fill(u.id));
+  assert.equal(rollChoices(all, Math.random, 3, cindy).length, 0);
 });
 
 test('experiência: sobe de nível e guarda a sobra', () => {
@@ -168,36 +171,61 @@ test('baú: 1 item é o comum, 3 é raro; sobe só melhorias que você já tem',
   const lucky = { 1: 0, 2: 0, 3: 0 };
   for (let i = 0; i < 5000; i++) lucky[chestCount(rng, 1)]++;
   assert.ok(lucky[3] > n[3]);
-  const ups = chestUpgrades(['furia', 'vigor', 'vigor', 'vigor'], rng, 3);
-  // o Vigor já está no máximo; das que você não tem, só as HABILIDADES DO BAÚ (há vaga no limite)
+  const vig = Array(5).fill('vigor');
+  const ups = chestUpgrades(['furia', ...vig], rng, 3);
+  // o Vigor já está no máximo; das que você não tem, só as do BAÚ (há vaga)
   assert.ok(ups.includes('furia') && !ups.includes('vigor'));
   assert.ok(ups.every((id) => id === 'furia' || UPGRADES.find((u) => u.id === id).chest));
 });
 
-test('baú: habilidades novas só do baú, limite de habilidades e depois só moedas ou vida', () => {
-  const chestOnly = UPGRADES.filter((u) => u.chest).map((u) => u.id);
-  assert.ok(chestOnly.length >= 4);
-  // as cartas de nível nunca oferecem as do baú
-  for (let i = 0; i < 50; i++) assert.ok(!rollChoices([], Math.random).some((u) => u.chest));
-  // limite cheio (MAX_KINDS diferentes): cartas e baú só sobem as que já tem
-  const base = UPGRADES.filter((u) => !u.chest).slice(0, MAX_KINDS).map((u) => u.id);
-  assert.equal(kindsOf(base), MAX_KINDS);
+test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o seu limite; depois só moedas ou vida', () => {
+  // as cartas do kit vêm da ficha: cada habilidade pelo nome, o tiro, o combo e o especial (dono, 2026-11-14: "haver com
+  // cada um dos personagens")
+  const kit = kitUpgrades(cindy);
+  const names = kit.map((u) => u.name);
+  for (const a of cindy.abilities) assert.ok(names.includes(a.name), a.name);
+  assert.ok(names.includes(cindy.ranged.name) && names.includes(cindy.melee.name) && names.includes(cindy.special.name));
+  assert.ok(kit.length > MAX_KIT, 'mais golpes do que vagas: precisa escolher');
+  assert.ok(UPGRADES.every((u) => u.kind === 'passive'), 'sem as ativas automáticas fora da lore');
+  const pass = UPGRADES.filter((u) => !u.chest);
+  assert.ok(pass.length >= 14);
+  // as do baú nunca nas cartas
+  for (let i = 0; i < 50; i++) assert.ok(!rollChoices([], Math.random, 3, cindy).some((u) => u.chest));
+  // as 6 vagas do KIT cheias: as cartas só trazem golpes que já tem (passivas novas continuam)
+  const six = kit.slice(0, MAX_KIT).map((u) => u.id);
+  assert.equal(slotsOf(six, 'kit', 'cindy'), MAX_KIT);
+  for (let i = 0; i < 30; i++) assert.ok(rollChoices(six, Math.random, 3, cindy).every((u) => u.kind === 'passive' || six.includes(u.id)));
+  // as duas vagas cheias: cartas e baú só sobem o que já tem
+  const base = [...six, ...pass.slice(0, MAX_PASSIVE).map((u) => u.id)];
   for (let i = 0; i < 30; i++) {
-    assert.ok(rollChoices(base, Math.random).every((u) => base.includes(u.id)));
+    assert.ok(rollChoices(base, Math.random, 3, cindy).every((u) => base.includes(u.id)));
     assert.ok(chestUpgrades(base, Math.random, 3).every((id) => base.includes(id)));
   }
   // tudo no máximo: o baú não tem o que dar -> recompensa (moedas ou vida)
-  const maxed = base.flatMap((id) => Array(UPGRADES.find((u) => u.id === id).max).fill(id));
+  const maxed = base.flatMap((id) => Array(5).fill(id)).filter((id, i, arr) => arr.slice(0, i).filter((x) => x === id).length < ([...UPGRADES, ...kit].find((u) => u.id === id).max));
   assert.deepEqual(chestUpgrades(maxed, Math.random, 3), []);
-  assert.equal(rollChoices(maxed).length, 0);
+  assert.equal(rollChoices(maxed, Math.random, 3, cindy).length, 0);
   const r = rewardChoices(30, 0.3);
   assert.deepEqual(r.map((x) => x.id), ['reward:coins', 'reward:heal']);
-  // os efeitos
-  const m = computeMods(['pulsoMedo', 'espinhos', 'espinhos', 'certeiro', 'folego']);
-  assert.equal(m.pulse, 1);
+  // os efeitos do kit: só valem para quem é dono do golpe
+  const sil = kitId('cindy', 'silenciar');
+  const picks = [sil, sil, kitId('cindy', 'special'), 'espinhos', 'espinhos', 'certeiro', 'folego', 'frequencia', 'reflexos'];
+  const m = computeMods(picks, {}, 'cindy');
+  assert.deepEqual(m.kit, { silenciar: 2, special: 1 });
+  assert.ok(Math.abs(m.kitDmg.silenciar - (1 + 2 * KIT_STEP.ability.dmg)) < 1e-9);
+  assert.ok(Math.abs(m.kitCd.silenciar - (1 - 2 * KIT_STEP.ability.cd)) < 1e-9);
+  assert.ok(Math.abs(m.kitCost.special - (1 - KIT_STEP.special.cost)) < 1e-9);
+  assert.deepEqual(computeMods(picks, {}, 'eloy').kit, {}, 'a carta da Cindy não vale para o Eloy (co-op)');
   assert.ok(Math.abs(m.thorns - 0.25) < 1e-9);
   assert.ok(Math.abs(m.crit - 0.1) < 1e-9);
   assert.equal(m.secondWind, true);
+  assert.ok(Math.abs(m.cdMult - 0.94) < 1e-9 && Math.abs(m.dodgeMult - 0.88) < 1e-9);
+  // a loja: Mais Opções, Iniciação, Especialista
+  const t = computeMods([sil], { opcoes: 1, iniciacao: 1, duplicacao: 1, area: 3, ritmo: 3 }, 'cindy');
+  assert.equal(t.choices, 4);
+  assert.ok(t.startKit);
+  assert.ok(Math.abs(t.kitDmg.silenciar - (1 + 1.3 * KIT_STEP.ability.dmg)) < 1e-9, 'Especialista: o kit vale 30% a mais');
+  assert.ok(Math.abs(t.dodgeMult - 0.85) < 1e-9);
 });
 
 test('os olhos do Espreitador somem das frestas depois da derrota', () => {

@@ -11,6 +11,7 @@ import estrangeiroDef from '../characters/bosses/estrangeiro.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels, isModelLoaded } from '../models/index.js';
 import { renderPortraits } from '../ui/portraits.js';
+import { renderArenaThumbs } from '../ui/arenaThumbs.js';
 import { Dungeon } from './Dungeon.js';
 import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord } from './dungeons.js';
 
@@ -63,32 +64,29 @@ export function createPveFlow(ctx) {
 
   // as telas locais do modo usam o visual do menu do Outro Lado (cartões); a sala e as telas ONLINE seguem no MenuScreen
   // (toque em rede e dono do menu)
-  function menu(state, title, options, { subtitle = '', extra = '', cols = 0, coins = true } = {}) {
+  function menu(state, title, options, { subtitle = '', extra = '', panel = '', cols = 0, coins = true } = {}) {
     endMatch();
     setOverlay(null, null);
     if (online() || state === 'pveonline') setScreen(state, new MenuScreen(screens, { title, subtitle, options, audio, extra, clear: false }));
-    else setScreen(state, new PveChoiceScreen(screens, { title, subtitle, options, audio, extra, cols, coins: coins ? data.coins || 0 : null }));
+    else setScreen(state, new PveChoiceScreen(screens, { title, subtitle, options, audio, extra, panel, cols, coins: coins ? data.coins || 0 : null }));
   }
 
-  // ------------------------------------------------ ENTRADA (pedido do dono, 2026-11-06): LOCAL ou ONLINE
+  // ------------------------------------------------ A ORDEM DAS TELAS (pedido do dono, 2026-11-14: "a opção Online ou
+  // Local deveria vir depois"): Menu → OUTRO LADO (o hub: jogar, loja, melhorias, dados) → JOGAR → QUEM VAI JOGAR?
+  // (sozinho, dois na tela dividida ou ONLINE) → sozinho/em equipe → personagem → fase → dificuldade. A antiga primeira
+  // tela LOCAL/ONLINE saiu: o hub é a entrada (toEntry continua existindo para quem chamava)
   function toEntry() {
-    data = loadPve();
-    game.mode = { kind: 'pve', cpu: true, team: false };
-    const a = data.attempt;
-    menu('pveentry', 'OUTRO LADO', [
-      { id: 'local', label: 'LOCAL', icon: '⌂', desc: 'Neste computador: sozinho ou com mais um jogador em tela dividida. Aqui ficam a sua tentativa, a loja e as melhorias.', tag: a ? 'TENTATIVA SALVA' : '' },
+    toHub();
+  }
+
+  // ------------------------------------------------ quem vai jogar
+  function toPlayers() {
+    menu('pveplayers', 'QUEM VAI JOGAR?', [
+      { id: 'solo', label: 'SÓ VOCÊ', icon: '①', desc: 'Neste computador, com a tela inteira.' },
+      { id: 'multi', label: 'DOIS NESTE PC', icon: '②', desc: 'Tela dividida: cada um com a própria câmera. O P2 usa o 2º controle ou o lado direito do teclado.' },
       { id: 'online', label: 'ONLINE', icon: '⇄', desc: 'Crie uma sala ou entre na de um amigo. Cada um joga na própria tela, com o próprio personagem.' },
       { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'Desça pelo Outro Lado, derrote os chefes e junte moedas para liberar personagens e melhorias.' });
-  }
-
-  // ------------------------------------------------ quantos jogadores (local)
-  function toPlayers() {
-    menu('pveplayers', 'QUANTOS JOGADORES?', [
-      { id: 'solo', label: 'SOLO', icon: '①', desc: 'Só você, com a tela inteira.' },
-      { id: 'multi', label: 'MULTIPLAYER', icon: '②', desc: '2 jogadores neste computador, tela dividida: cada um com a própria câmera. O P2 usa o 2º controle ou o lado direito do teclado.', tag: 'TELA DIVIDIDA' },
-      { id: 'back', label: 'VOLTAR' },
-    ], { subtitle: 'A tentativa, o nível e as melhorias são do grupo.' });
+    ], { subtitle: 'Neste computador, a tentativa, o nível e as melhorias são do grupo. Online, cada um usa o próprio progresso.', cols: 3 });
   }
 
   // ------------------------------------------------ HUB
@@ -172,10 +170,83 @@ export function createPveFlow(ctx) {
     game.pveChar = def.id;
     game.pveTeam = team;
     game.pveCoopPick = coop;
-    toDifficulty();
+    toPhase();
   }
 
-  function toDifficulty() {
+  // ------------------------------------------------ A FASE (dono, 2026-11-14: fases separadas, como no Vampire Survivors)
+  // PRIMEIRO a fase, DEPOIS a dificuldade (dono, 2026-11-14: "pra saber em quais dificuldades você já ganhou essa
+  // fase"): o cartão da fase mostra em quais dificuldades ela já foi vencida; a seguinte abre quando a anterior é vencida
+  const DIFF_IDS = () => Object.keys(PVE_DIFFICULTIES);
+  const wonIn = (camp, id) => DIFF_IDS().filter((d) => phaseRecord(camp, id, d));
+  // a PRÉVIA de cada fase (pedido do dono, 2026-11-14: "como no escolher mapa"): Escola e Mansão usam a imagem das
+  // arenas de luta (já prontas para a escolha de mapa); a Torre é gerada na primeira vez (carrega o cenário e renderiza
+  // a sala do Sino) e o cartão troca a imagem quando fica pronta
+  const phaseThumbs = {};
+  function phaseThumb(id) {
+    const T = DUNGEONS[id].thumb || {};
+    if (T.from) {
+      const src = (game.arenaThumbs || {})[T.from];
+      if (src) return src;
+      // as prévias das arenas ainda estão sendo geradas (logo depois de abrir o jogo): o cartão pega quando ficar pronta
+      let tries = 0;
+      const poll = () => {
+        const s2 = (game.arenaThumbs || {})[T.from];
+        if (s2) { if (game.state === 'pvephase' && game.screen && game.screen.setPic) game.screen.setPic(id, s2); return; }
+        if (++tries < 30 && game.state === 'pvephase') setTimeout(poll, 700);
+      };
+      setTimeout(poll, 700);
+      return '';
+    }
+    if (phaseThumbs[id] !== undefined) return phaseThumbs[id];
+    phaseThumbs[id] = '';
+    preloadPveArena(T.arena).then(() => {
+      const out = renderArenaThumbs(renderer, { w: 640, h: 360, ids: [T.arena], cameras: { [T.arena]: T } });
+      phaseThumbs[id] = out[T.arena] || '';
+      if (game.state === 'pvephase' && game.screen && game.screen.setPic) game.screen.setPic(id, phaseThumbs[id]);
+    }).catch(() => {});
+    return '';
+  }
+
+  function toPhase() {
+    const camp = online() ? { bestTimes: {}, phases: DUNGEON_ORDER } : data.campaign;
+    const opts = DUNGEON_ORDER.map((id, i) => {
+      const D = DUNGEONS[id];
+      const open = online() || phaseUnlocked(camp, id);
+      const won = wonIn(camp, id);
+      const recAll = phaseRecord(camp, id);
+      const done = phaseCleared(camp, id);
+      let desc = `Vença ${i > 0 ? DUNGEONS[DUNGEON_ORDER[i - 1]].place : 'a anterior'} para abrir.`;
+      if (open) {
+        desc = `Chefe: ${D.bossName}`;
+        if (won.length) desc += ` · vencida no ${won.map((d) => PVE_DIFFICULTIES[d].label).join(', ')}`;
+        else if (!done) desc += ' · ainda não vencida';
+        if (recAll) desc += ` · recorde ${fmtTime(recAll)}`;
+      }
+      return {
+        id: `phase:${id}`,
+        label: `${i + 1}. ${D.place.toUpperCase()}`,
+        icon: open ? (done ? '★' : '▶') : '🔒',
+        desc,
+        tag: open ? (done ? `★ ${won.length || 1}/${DIFF_IDS().length}` : 'NOVA') : 'TRANCADA',
+        tone: open && !done ? 'gold' : '',
+        disabled: !open,
+        pic: { key: id, src: phaseThumb(id) },
+      };
+    });
+    menu('pvephase', 'ESCOLHA A FASE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
+      cols: 3,
+      subtitle: 'Cada fase é uma tentativa inteira: começa no nível 1, passa por várias salas e termina no chefe. Depois você escolhe a dificuldade; a estrela marca em quantas já venceu.',
+    });
+    const last = game.pvePhase ? opts.findIndex((o) => o.id === `phase:${game.pvePhase}` && !o.disabled) : -1;
+    const first = opts.findIndex((o) => !o.disabled && o.tone === 'gold');
+    game.screen.index = last >= 0 ? last : first >= 0 ? first : Math.max(0, opts.filter((o) => !o.disabled).length - 1);
+    game.screen.render();
+  }
+
+  function toDifficulty(phaseId = game.pvePhase) {
+    game.pvePhase = phaseId;
+    const D = DUNGEONS[phaseId];
+    const camp = online() ? { bestTimes: {} } : data.campaign;
     const DIFF_DESC = {
       easy: 'Para conhecer o modo. Inimigos mais fracos e mais cura.',
       normal: 'O equilíbrio pensado para o modo.',
@@ -184,45 +255,26 @@ export function createPveFlow(ctx) {
       annihilation: 'O limite. Para quem já tem a loja da Aghata quase toda.',
     };
     const fmt = (n) => String(n).replace('.', ',');
-    const order = Object.keys(PVE_DIFFICULTIES);
-    menu('pvediff', 'DIFICULDADE', Object.entries(PVE_DIFFICULTIES).map(([id, d]) => ({ id: `diff:${id}`, label: d.label.toUpperCase(), icon: '☠'.repeat(order.indexOf(id) + 1), desc: DIFF_DESC[id] || '', tag: `● ×${fmt(d.coin)}`, tone: d.rage ? 'danger' : id === 'normal' ? 'gold' : '' })).concat([{ id: 'back', label: 'VOLTAR' }]), {
-      cols: 1,
-      subtitle: 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. No Super Difícil e na Aniquilação o chefe entra em fúria mais cedo e pune quem só aperta botão.',
-    });
-    game.screen.index = 1;
-    game.screen.render();
-  }
-
-  // ------------------------------------------------ A FASE (dono, 2026-11-14: fases separadas, como no Vampire Survivors)
-  // depois da dificuldade: qual território jogar. A seguinte abre quando a anterior é vencida; o recorde aparece no cartão
-  function toPhase(difficulty) {
-    game.pveDiff = difficulty;
-    const camp = online() ? { bestTimes: {}, phases: DUNGEON_ORDER } : data.campaign;
-    const opts = DUNGEON_ORDER.map((id, i) => {
-      const D = DUNGEONS[id];
-      const open = online() || phaseUnlocked(camp, id);
-      const rec = phaseRecord(camp, id, difficulty);
-      const recAll = phaseRecord(camp, id);
-      const done = phaseCleared(camp, id);
-      let desc = `Vença ${i > 0 ? DUNGEONS[DUNGEON_ORDER[i - 1]].place : 'a anterior'} para abrir.`;
-      if (open) desc = `Chefe: ${D.bossName}${rec ? ` · recorde neste nível: ${fmtTime(rec)}` : recAll ? ` · recorde: ${fmtTime(recAll)}` : done ? '' : ' · ainda não vencida'}`;
+    const order = DIFF_IDS();
+    const opts = Object.entries(PVE_DIFFICULTIES).map(([id, d]) => {
+      const rec = phaseRecord(camp, phaseId, id);
       return {
-        id: `phase:${id}`,
-        label: `${i + 1}. ${D.place.toUpperCase()}`,
-        icon: open ? (done ? '★' : '▶') : '🔒',
-        desc,
-        tag: open ? (done ? 'VENCIDA' : 'NOVA') : 'TRANCADA',
-        tone: open && !done ? 'gold' : '',
-        disabled: !open,
-        wide: true,
+        id: `diff:${id}`,
+        label: d.label.toUpperCase(),
+        icon: rec ? '★' : '☠'.repeat(order.indexOf(id) + 1),
+        desc: `${rec ? `VENCIDA · recorde ${fmtTime(rec)} · ` : ''}${DIFF_DESC[id] || ''}`,
+        tag: `${rec ? '★ ' : ''}● ×${fmt(d.coin)}`,
+        tone: d.rage ? 'danger' : rec ? '' : id === 'normal' ? 'gold' : '',
       };
     });
-    menu('pvephase', 'ESCOLHA A FASE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
+    menu('pvediff', 'DIFICULDADE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
       cols: 1,
-      subtitle: 'Cada fase é uma tentativa inteira: começa no nível 1, passa por várias salas e termina no chefe. O cronômetro marca o seu recorde.',
+      subtitle: `<b>${D ? esc(D.place) : ''}</b> · ` + 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. ★ = já venceu esta fase nessa dificuldade (com o recorde).',
     });
-    const first = opts.findIndex((o) => !o.disabled && o.tone === 'gold');
-    game.screen.index = first >= 0 ? first : Math.max(0, opts.filter((o) => !o.disabled).length - 1);
+    // começa na última usada; senão, na mais fácil que ainda não venceu (senão, no Normal)
+    const prev = game.pveDiff ? order.indexOf(game.pveDiff) : -1;
+    const todo = order.findIndex((id) => !phaseRecord(camp, phaseId, id));
+    game.screen.index = prev >= 0 ? prev : todo >= 0 ? todo : 1;
     game.screen.render();
   }
 
@@ -366,6 +418,40 @@ export function createPveFlow(ctx) {
     begin();
   }
 
+  // a tela do FIM da fase (morte ou vitória; dono, 2026-11-14 "melhore essa tela"): a rota até o chefe com onde parou,
+  // os números em blocos e o tempo comparado com o recorde. `badges` = selos (NOVO RECORDE, FASE NOVA ABERTA)
+  function resultPanel(s, D, { won, record, recordNew, badges = [], note = '' }) {
+    const rooms = Math.max(1, s.rooms || 1, s.room || 0);
+    const room = s.room || 0;
+    const segs = [];
+    for (let i = 1; i <= rooms; i++) {
+      const cls = won || i < room || (s.boss && i <= room) ? 'done' : i === room ? 'here' : '';
+      segs.push(`<i class="${cls}"></i>`);
+    }
+    const bossCls = won ? 'done' : s.boss ? 'here' : '';
+    segs.push(`<i class="boss ${bossCls}" title="${esc(D.bossName || 'Chefe')}">☠</i>`);
+    const where = won ? `${esc(D.bossName || 'O chefe')} caiu` : s.boss ? `Caiu diante de ${esc(D.bossName || 'o chefe')}` : room ? `Caiu na sala ${room} de ${rooms}` : 'Caiu na entrada';
+    let recTxt = 'sem recorde ainda';
+    if (recordNew) recTxt = record ? `antes ${fmtTime(record)}` : 'primeira vitória';
+    else if (record) recTxt = `recorde ${fmtTime(record)}`;
+    const tile = (k, v, cls = '', sub = '') => `<div class="pr-tile ${cls}"><small>${k}</small><b>${v}</b>${sub ? `<em>${sub}</em>` : ''}</div>`;
+    const tiles = [
+      tile('TEMPO', fmtTime(s.time), `time ${recordNew ? 'rec' : ''}`, recTxt),
+      tile(esc((D.killsLabel || 'Devorados').toUpperCase()), s.kills || 0),
+      ...(D.killsLabel ? [] : [tile('CÓPIAS', s.copias || 0)]),
+      tile('BAÚS', s.chests || 0),
+      tile('MOEDAS', `+${s.coins || 0}`, 'coin'),
+      tile('DANO', Math.round(s.damage || 0)),
+      tile('NÍVEL', s.level || 1),
+    ];
+    return `<section class="pr-res ${won ? 'won' : 'lost'}">
+      <div class="pr-route"><div class="pr-rh"><span>ROTA</span><b>${where}</b></div><div class="pr-track">${segs.join('')}</div></div>
+      ${badges.length ? `<div class="pr-badges">${badges.map((b) => `<span>${b}</span>`).join('')}</div>` : ''}
+      <div class="pr-tiles">${tiles.join('')}</div>
+      ${note ? `<p class="pr-note">${note}</p>` : ''}
+    </section>`;
+  }
+
   function onDungeonEnd(dungeon, { result, stats }) {
     if (game.match !== dungeon) return;
     const a = attempt();
@@ -376,13 +462,19 @@ export function createPveFlow(ctx) {
     const statLine = `Tempo ${time} · ${D.killsLabel || 'Devorados'} ${s.kills || 0}${D.killsLabel ? '' : ` · cópias ${s.copias || 0}`} · baús ${s.chests || 0} · moedas +${s.coins || 0} · dano causado ${Math.round(s.damage || 0)}`;
     if (online()) { onlineEnd(result, a, statLine, titles[1]); return; }
     if (result === 'death') {
-      const depth = a ? a.depth : 1;
       endAttemptByDeath(data);
       save();
       game.pveAgain = a ? { char: a.charId, team: a.team, coop: a.coop, difficulty: a.difficulty } : null;
-      menu('pveresult', titles[0], [...(a ? [{ id: `again:${a.dungeon}`, label: 'TENTAR DE NOVO', icon: '↻', desc: 'A mesma fase, com o mesmo personagem e a mesma dificuldade.', tone: 'gold' }] : []), { id: 'new', label: 'NOVA TENTATIVA', icon: '✚', desc: 'Escolher o personagem, a dificuldade e a fase.' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.' }, { id: 'main', label: 'MENU PRINCIPAL', icon: '✕', desc: 'Sair do modo.' }], {
-        subtitle: `A tentativa acabou em ${esc((DUNGEONS[a?.dungeon] || {}).place || 'Outro Lado')}. As melhorias da tentativa se perderam; o nível e os pontos do personagem ficam.`,
-        extra: extraBox(statLine),
+      const who = a ? esc(byId(a.charId)?.name || a.charId) : '';
+      menu('pveresult', titles[0], [
+        ...(a ? [{ id: `again:${a.dungeon}`, label: 'TENTAR DE NOVO', icon: '↻', desc: `${esc(D.place)} de novo, com ${who} e a mesma dificuldade.`, tone: 'gold', wide: true }] : []),
+        { id: 'new', label: 'NOVA TENTATIVA', icon: '✚', desc: 'Outro personagem, fase ou dificuldade.' },
+        { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.' },
+        { id: 'main', label: 'MENU PRINCIPAL', foot: true },
+      ], {
+        cols: 2,
+        subtitle: a ? `<b>${esc(D.place)}</b> · ${esc(diffLabel(a))} · ${who}` : '',
+        panel: resultPanel(s, D, { won: false, record: a ? phaseRecord(data.campaign, a.dungeon, a.difficulty) : null, note: 'As melhorias da tentativa se perderam; o nível e os pontos do personagem ficam.' }),
       });
       return;
     }
@@ -404,16 +496,19 @@ export function createPveFlow(ctx) {
       data.attempt = null;
       save();
       const p = profileOf(data, done.charId);
-      const recordLine = record ? `<br><b>NOVO RECORDE: ${fmtTime(s.time)}</b>${prev ? ` (antes ${fmtTime(prev)})` : ''}` : `<br>Recorde (${esc(diffLabel(done))}): ${fmtTime(prev)}`;
-      const unlockLine = firstClear && nextId ? `<br><b>FASE NOVA ABERTA: ${esc(DUNGEONS[nextId].place)}</b>` : '';
+      const badges = [];
+      if (record) badges.push('★ NOVO RECORDE');
+      if (firstClear && nextId) badges.push(`FASE NOVA ABERTA: ${esc(DUNGEONS[nextId].place.toUpperCase())}`);
       game.pveAgain = { char: done.charId, team: done.team, coop: done.coop, difficulty: done.difficulty };
       const opts = [];
       if (nextId) opts.push({ id: `again:${nextId}`, label: `PRÓXIMA FASE · ${DUNGEONS[nextId].place.toUpperCase()}`, icon: '▶', desc: 'Uma tentativa nova, do nível 1, com o mesmo personagem e a mesma dificuldade.', tone: 'gold', wide: true });
-      opts.push({ id: `again:${done.dungeon}`, label: 'JOGAR DE NOVO', icon: '↻', desc: 'A mesma fase, para bater o recorde.', tone: nextId ? '' : 'gold', wide: true });
-      opts.push({ id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.', wide: true });
+      opts.push({ id: `again:${done.dungeon}`, label: 'JOGAR DE NOVO', icon: '↻', desc: 'A mesma fase, para bater o recorde.', tone: nextId ? '' : 'gold', wide: !nextId });
+      opts.push({ id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: `Gastar as moedas: ${data.coins} no total.`, wide: !nextId });
+      opts.push({ id: 'main', label: 'MENU PRINCIPAL', foot: true });
       menu('pveresult', 'FASE CONCLUÍDA', opts, {
-        subtitle: `${esc(DUNGEONS[done.dungeon].bossName)} caiu em ${fmtTime(s.time)}. ${esc(byId(done.charId)?.name || done.charId)}: nível ${p.level} do Outro Lado.`,
-        extra: extraBox(`${statLine}${recordLine}${unlockLine}<br>Moedas: +${s.coins || 0} nesta fase · ${data.coins} no total`),
+        cols: 2,
+        subtitle: `<b>${esc(DUNGEONS[done.dungeon].place)}</b> · ${esc(diffLabel(done))} · ${esc(byId(done.charId)?.name || done.charId)}, nível ${p.level} do Outro Lado`,
+        panel: resultPanel(s, D, { won: true, record: record ? prev : times[kd], recordNew: record, badges }),
       });
       return;
     }
@@ -434,11 +529,12 @@ export function createPveFlow(ctx) {
     } else if (state === 'pveplayers') {
       if (c === 'solo') { game.pveCoop = false; toFormat(); }
       else if (c === 'multi') { game.pveCoop = true; toFormat(); }
+      else if (c === 'online') { game.pveCoop = false; ctx.openOnline && ctx.openOnline('pve'); }
       else toHub();
     } else if (state === 'pveonline') {
       if (c === 'start' && game.pveNet && game.pveNet.peerData) startOnline(true);
       else if (c === 'start') audio.play('denied');
-      else { ctx.leaveOnlinePve && ctx.leaveOnlinePve(); toEntry(); }
+      else { ctx.leaveOnlinePve && ctx.leaveOnlinePve(); toPlayers(); }
     } else if (state === 'pvehub') {
       if (c === 'continue') startDungeon();
       else if (c === 'new') {
@@ -447,7 +543,7 @@ export function createPveFlow(ctx) {
       } else if (c === 'tree') toTree();
       else if (c === 'unlock') toUnlock();
       else if (c === 'data') toData();
-      else if (c === 'back') toEntry();
+      else if (c === 'back') toMainMenu();
     } else if (state === 'pvedata') {
       if (c === 'backup') toBackup();
       else if (c === 'restart') confirmBox('pverestart', 'REINICIAR CAMPANHA?', 'Zera a campanha (profundidade, chefes, mortes) e a tentativa atual. As moedas, os personagens comprados e as melhorias ficam.', 'SIM, REINICIAR');
@@ -483,12 +579,12 @@ export function createPveFlow(ctx) {
     } else if (state === 'pvewipe') {
       if (c === 'yes') { clearPve(); data = loadPve(); audio.play('ko', { volume: 0.5 }); toHub(); }
       else toData();
-    } else if (state === 'pvediff') {
-      if (c === 'back') toFormat();
-      else if (c.startsWith('diff:')) toPhase(c.slice(5));
     } else if (state === 'pvephase') {
-      if (c === 'back') toDifficulty();
-      else if (c.startsWith('phase:')) beginPhase(c.slice(6));
+      if (c === 'back') toFormat();
+      else if (c.startsWith('phase:')) toDifficulty(c.slice(6));
+    } else if (state === 'pvediff') {
+      if (c === 'back') toPhase();
+      else if (c.startsWith('diff:')) { game.pveDiff = c.slice(5); beginPhase(game.pvePhase); }
     } else if (state === 'pvetree') {
       if (c === 'back') toHub();
       else if (c === 'refundAsk') game.screen.say(pickLine(AGHATA_LINES.refundAsk));
@@ -686,5 +782,5 @@ export function createPveFlow(ctx) {
   // online: os bloqueados de cada lado (P1 pelos dados do anfitrião, P2 pelos do convidado)
   const lockedChars = () => (online() ? [lockedMap(net.data[0], ROSTER), lockedMap(net.data[1], ROSTER)] : lockedMap(data, ROSTER));
 
-  return { toHub, toEntry, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS[(DUNGEONS[attempt()?.dungeon] || DUNGEONS.espreitador).arena]?.name };
+  return { toHub, toEntry, toPlayers, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS[(DUNGEONS[attempt()?.dungeon] || DUNGEONS.espreitador).arena]?.name };
 }

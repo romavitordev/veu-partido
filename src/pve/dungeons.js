@@ -12,6 +12,7 @@ export const DUNGEONS = {
     storyOrder: 2,
     name: 'Território do Espreitador',
     place: 'Mansão Endiabrada',
+    thumb: { from: 'mansao_luta' }, // a prévia na ESCOLHA A FASE
     color: '#f2c230',
     arena: 'mansao',
     boss: 'espreitador',
@@ -162,6 +163,7 @@ export const DUNGEONS = {
     storyOrder: 1,
     name: 'Território da Degolificada',
     place: 'Escola Nostradamus',
+    thumb: { from: 'escola_luta' }, // a prévia na ESCOLHA A FASE (o bunker, já renderizado para a escolha de mapa)
     color: '#c8d0c0',
     arena: 'escola',
     boss: 'degolificada',
@@ -297,6 +299,7 @@ export const DUNGEONS = {
     storyOrder: 3, // Sinais do Outro Lado (2022): depois das outras duas
     name: 'Território do Estrangeiro',
     place: 'Torre da TV Varminho',
+    thumb: { arena: 'torre', pos: [73, 3.2, 9], look: [88, 1.6, -3], focus: [82, 0] }, // a prévia na ESCOLHA A FASE
     color: '#8acf4a',
     arena: 'torre',
     boss: 'estrangeiro',

@@ -942,7 +942,7 @@ function updateLan() {
   };
   if (c === 'move') audio.play('select');
   else if (c === 'refresh') { audio.play('select'); if (game.lobby) game.lobby.refresh(); }
-  else if (c === 'back') { leaveOnline(); audio.play('select'); if (scr.mode === 'pve') pve.toEntry(); else toMainMenu(); }
+  else if (c === 'back') { leaveOnline(); audio.play('select'); if (scr.mode === 'pve') pve.toPlayers(); else toMainMenu(); } // voltar da sala online: QUEM VAI JOGAR?
   else if (c === 'cancel') { cancelPending(); audio.play('select'); }
   else if (c && (c.act === 'host' || c.act === 'join' || c.act === 'watch')) {
     audio.play('confirm');

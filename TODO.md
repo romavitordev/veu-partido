@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.41.0 (2026-11-13: Cindy Lopes jogável, especial Amor e Sangue, Eloy e Artemis polidos). Antes: v4.38.0 (a loja da Aghata, melhorias globais, gacha e reformulação do Outro Lado); versões anteriores: histórico completo nos changelogs.
+**Versão de referência atual:** v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -212,15 +212,31 @@
 - [x] **Fases separadas (dono, 2026-11-14):** cada tentativa é uma fase (escolhida), do nível 1 ao chefe, com mais
       salas; cronômetro com recorde por fase e dificuldade.
   - [ ] Bateria das fases mais longas (tempo e nível no fim de cada uma; ajustar `route.rooms` e o XP se preciso).
-- [x] **Menus revistos:** Voltar à vida refeito; COMANDOS na pausa do Outro Lado consertado.
+- [x] **Menus revistos:** Voltar à vida refeito; COMANDOS na pausa do Outro Lado consertado; tela do fim da fase (morte e vitória) com rota, blocos e recorde.
 - [x] Escudo da Degolificada furado pelo Vínculo de Sangue (dano direto agora respeita o escudo).
   - [ ] Bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira (o dono).
   - [x] Tirar o `hidden` (lançada na v4.42.0).
   - [ ] Polir os modelos da arena no Blender MCP (está em blocos).
+- [x] **Lista do dono (2026-11-14, 2ª):**
+  - [x] Cartas de nível do KIT do personagem (cada habilidade, tiro, combo e especial) no lugar das ativas sem lore;
+        6 do kit + 6 passivas.
+  - [x] Dano do jogador nos monstros das salas passa pelas melhorias.
+  - [x] Loja da Aghata 4 × 5 (Poções, Iniciação, Mais Opções, Especialista, Reflexos, Ritmo, Mente Clara, Ímã).
+  - [x] Ordem das telas: hub primeiro, QUEM VAI JOGAR? (local/online) depois.
+  - [x] ESCOLHA A FASE com imagem.
+  - [x] PSIKOLERA: máscara só na transformação (Cindy e Eloy).
+  - [x] Cindy recuando ao bater (Devorado escondido contava como oponente).
+  - [x] Portas da Escola que abriam sem deixar entrar.
+  - [x] Torre: cápsulas em pé (ovo/tubo) com cabos, cabos no teto, conduítes do Sino, tubo de vidro ao se esconder.
+  - [x] Rastropoda invisível de verdade, bate e foge, enfarinhado com vida visível e lento.
+  - [x] Bilu: rodeia e ataca pelas costas, foge depois.
+  - [x] Balanço da Cindy contra o elenco: 18% → 50% (dealt 1,15 / taken 0,92).
+  - [x] Tela de K.O. refeita (a faixa do especial ficava na frente).
+  - [ ] Números das cartas do kit numa tentativa inteira (o dono jogar).
 - [ ] **Lançar o especial HORA DO SHOW! (PSIKOLERA)** (dono, 2026-11-13: só sai com a PSIKOLERA completa). A
       coreografia já existe (`CHOREO.psikolera`); a ligação está com `unreleased: true` em `src/config/teamLinks.js`.
       Quando Franco, Caio e Alê entrarem: incluir os três na coreografia, subir `min` para 3, tirar o `unreleased`.
-- [ ] **Telemetria de balanço da Cindy** (entrou sem rodada de bateria; ver `balance.js`).
+- [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [ ] **Futuro: equipe dos COURAÇAS** (pedido do dono, 2026-11-13), os donos do Ferro Velho (o cenário "Base dos
       Couraças" já existe). Eloy (PSIKOLERA) e Sabara (Vampiros) entraram na v4.39.0. Antes de modelar, ler na wiki a
       página da equipe e de cada membro (aparência, armas, cenas de Hexatombe) e anotar em `lore/EQUIPES-HEXATOMBE.md`.

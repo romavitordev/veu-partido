@@ -21,7 +21,8 @@ import { distXZ } from '../core/util.js';
 import { applyHit } from '../combat/damage.js';
 import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune } from './dungeons.js';
 import { RoomDoor, Drawer, InteractPrompt, makeArrow, aimArrow } from './roomDoors.js';
-import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices } from './upgrades.js';
+import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices, kitUpgrades, slotsOf } from './upgrades.js';
+import { torreRoomCables, pulseCables, disposeCables } from './cables.js';
 import { devoradoDef, restyleDevorado, copiaOpts } from './devorado.js';
 import { Pickup, Chest } from './pickups.js';
 import { rollLoot } from './unlocks.js';
@@ -146,6 +147,13 @@ export class Dungeon {
       const baseOpp = w.opponentOf.bind(w);
       w.opponentOf = (f) => (f === this.enemy ? this.enemyTarget() : f === this.player || f === this.player2 ? this.enemy : baseOpp(f));
     }
+    // o KIT de cada jogador (as cartas que reforçam os golpes dele): registra as cartas para o HUD e o baú as acharem
+    for (const p of this.players) { p.kitChar = p.def.id; kitUpgrades(p.def); }
+    // INICIAÇÃO (loja da Aghata): a fase começa com um golpe do KIT sorteado no nível 1
+    if (run.level === 1 && profile && profile.tree && profile.tree.iniciacao && !slotsOf(run.picks, 'kit', this.player.def.id)) {
+      const kit = kitUpgrades(this.player.def);
+      if (kit.length) run.picks.push(kit[Math.floor(Math.random() * kit.length)].id);
+    }
     this.applyPlayerMods(true);
     for (const [p, defs] of [[this.player, this.teamDefs], [this.player2, this.coopTeam]]) {
       if (!p || !defs.length) continue;
@@ -249,7 +257,7 @@ export class Dungeon {
   }
 
   modsFor(p, profile, fill, keepRatio) {
-    const m = computeMods(this.run.picks, profile.tree);
+    const m = computeMods(this.run.picks, profile.tree, p.kitChar || p.def.id);
     const tune = charTune(p.def.id); // o ajuste do personagem no modo (PVE_CHAR_TUNE)
     if (tune) {
       for (const k in m.dealt) m.dealt[k] *= tune.dealt ?? 1;
@@ -375,6 +383,9 @@ export class Dungeon {
     if (this.bilu) { this.bilu.dispose(); this.bilu = null; }
     if (this.maze) { this.maze.dispose(); this.maze = null; }
     if (M.maze) this.maze = new MazeRoom(this, M);
+    // TORRE: os feixes de cabos no teto de cada sala (dono, 2026-11-14: "cheias de tubos e fios ligados")
+    if (this.roomCables) { w.scene.remove(this.roomCables); disposeCables(this.roomCables); this.roomCables = null; }
+    if (this.D.id === 'estrangeiro' && !M.maze && M.kind !== 'boss') this.roomCables = torreRoomCables(w, M.rects);
     for (const d of this.doors) d.dispose();
     this.doors = [];
     for (const d of this.drawers) d.dispose();
@@ -704,7 +715,7 @@ export class Dungeon {
       if (M.kind === 'stalk' && this.miniHere('bilu')) {
         this.met.bilu = true;
         this.bilu = new BiluStalker(this, M);
-        this.pveHud.hint('Um barulho de bicho no escuro… o BILU é rápido mas fraco: ele VOLTA depois de cair');
+        this.pveHud.hint('Um barulho de bicho no escuro… o BILU RODEIA e ataca pelas COSTAS: vire-se para ele (os olhos verdes piscam). Fraco, mas VOLTA depois de cair');
         this.hintT = 7;
       }
     }
@@ -1242,7 +1253,6 @@ export class Dungeon {
   openReward(r) {
     this.audio.play('levelUp', { volume: 0.8, pitch: 1.1 });
     this.choosing = true;
-    const who = this.coop ? this.chooser : 0;
     if (this.coop) this.chooser = 1 - this.chooser;
     const choices = rewardChoices(r.coins, r.heal);
     this.pveHud.openChoice(choices, this.run, (id) => {
@@ -1259,11 +1269,12 @@ export class Dungeon {
   // abre as cartas de melhoria (o jogo para enquanto escolhe)
   openLevelUp() {
     this.pendingUps--;
-    const choices = rollChoices(this.run.picks);
+    const who = this.coop ? this.chooser : 0;
+    const chooserP = who === 1 && this.player2 ? this.player2 : this.player;
+    const choices = rollChoices(this.run.picks, Math.random, (this.mods && this.mods.choices) || 3, chooserP.def); // Mais Opções: 4 cartas; o kit de quem escolhe
     if (!choices.length) { this.openReward({ coins: Math.round(4 * (1 + 0.25 * Math.max(0, this.run.depth - 1))), heal: 0.3 }); return; }
     this.audio.play('levelUp', { volume: 1 });
     this.choosing = true;
-    const who = this.coop ? this.chooser : 0;
     if (this.coop) this.chooser = 1 - this.chooser;
     this.pveHud.openChoice(choices, this.run, (id) => {
       this.run.picks.push(id);
@@ -1791,20 +1802,9 @@ export class Dungeon {
     // a goteira (o som da Mansão)
     this.drip -= dt;
     if (this.drip <= 0 && this.ambience) { this.drip = 1.6 + Math.random() * 2.6; this.audio.play('drip', { volume: 0.35 + Math.random() * 0.25, pitch: 0.9 + Math.random() * 0.25 }); }
+    // o brilho dos cabos da Torre
+    if (this.roomCables) pulseCables(this.roomCables, this.stats.time);
     // as melhorias de regeneração (Carne Dura)
-    // PULSO DE MEDO (baú): a cada 4,5 s, uma onda em volta de quem tem (dano 30/45/60, escala com o dano das habilidades)
-    for (const q of this.players) {
-      const pm = q.pveMods;
-      if (!pm || !pm.pulse || q.state === 'ko' || this.phase !== 'explore' || this.world.cinematic) continue;
-      q.pulseT = (q.pulseT ?? 4.5) - dt;
-      if (q.pulseT > 0) continue;
-      q.pulseT = 4.5;
-      const dmg = Math.round((15 + 15 * pm.pulse) * (pm.dealt.ability || 1));
-      this.world.fx.ring(new THREE.Vector3(q.pos.x, 0.1, q.pos.z), { color: 0x8aa4c8, radius: 3, life: 0.4 });
-      const e = this.enemy;
-      if (e && e.visible && !e.lurking && e.state !== 'ko' && e.state !== 'intro' && distXZ(e.pos, q.pos) <= 3 + e.radius) applyHit(this.world, q, e, { damage: dmg, kind: 'ability', unblockable: true, reaction: false, knockback: 0, hitstun: 0, sound: 'impact', color: 0x8aa4c8, scale: 0.7 });
-      for (const n of this.world.hostileNpcs(q)) if (!n.isCloset && n.pos && n.hitBy && !this.players.includes(n.owner) && distXZ(n.pos, q.pos) <= 3 + (n.radius || 0.5)) n.hitBy(q, dmg, { kind: 'ability' });
-    }
     for (const q of this.players) if (q.pveMods && q.pveMods.regenHp > 0 && q.state !== 'ko' && !['hitstun', 'downed', 'stun', 'grabbed'].includes(q.state)) q.health = Math.min(q.maxHealth, q.health + q.maxHealth * q.pveMods.regenHp * dt);
 
     switch (this.phase) {
@@ -2027,6 +2027,8 @@ export class Dungeon {
   finish(result) {
     if (this.phase === 'over') return;
     this.phase = 'over';
+    // onde a tentativa parou (a tela do fim mostra a rota até o chefe) e o nível alcançado
+    Object.assign(this.stats, { room: this.step, rooms: this.routeLen, boss: !!(this.mod && this.mod.kind === 'boss'), level: this.run.level || 1 });
     // online: no próximo quadro da simulação (igual nos dois computadores); local: fora do quadro atual
     if (this.net) { this.endQueued = { result, stats: this.stats, run: this.run }; return; }
     setTimeout(() => { if (!this.disposed) this.onEnd && this.onEnd({ result, stats: this.stats, run: this.run }); }, 0);
@@ -2107,6 +2109,7 @@ export class Dungeon {
     if (this.player) this.player.aimYaw = null;
     if (document.pointerLockElement) document.exitPointerLock();
     this.bossIntro && this.bossIntro.dispose();
+    if (this.roomCables) { disposeCables(this.roomCables); this.roomCables = null; }
     this.ambience && this.ambience.dispose();
     this.brain && this.brain.dispose();
     this.pressure && this.pressure.dispose();

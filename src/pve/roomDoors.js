@@ -4,6 +4,7 @@
 // afasta. A porta por onde ele entrou se fecha atrás dele. A escada do hall não tem porta: um círculo no chão.
 // As setas no chão em volta do jogador: AMARELAS para as portas (e a recompensa / a saída), AZUL para o baú (opcional).
 import * as THREE from 'three';
+import { makeCable } from './cables.js';
 
 const WOOD = 0x8a5e3a;
 const FRAME = 0x5a3a22;
@@ -80,6 +81,11 @@ export function promptSprite(btn, verb) {
   s.scale.set((h * c.width) / H, h, 1);
   return s;
 }
+
+// a distância da porta ABERTA em que o jogador atravessa. Era 1,05 m: em salas onde a área andável acaba antes da parede
+// (a Sala de Arquivos da Escola, com os arquivos de aço na parede: o corpo para a ~1,3 m) a porta abria e não deixava
+// entrar (pedido do dono, 2026-11-14). A porta só abre pelo botão, então atravessar de um pouco mais longe é seguro
+const PASS_Z = 1.75;
 
 export class RoomDoor {
   // spot: { x, z, face, w, stairs } (face = para onde a porta olha, para DENTRO da sala)
@@ -212,14 +218,14 @@ export class RoomDoor {
     if (this.glow) this.glow.material.opacity += ((this.locked ? 0 : 0.1 + 0.05 * Math.sin(this.t * 2.5)) - this.glow.material.opacity) * Math.min(1, dt * 3);
     if (this.locked) return false;
     if (this.stairs) return false; // a escada: o botão leva direto (Dungeon.interact)
-    return this.open > 0.6 && Math.abs(l.x) < this.half + 0.25 && l.z < 1.05;
+    return this.open > 0.6 && Math.abs(l.x) < this.half + 0.25 && l.z < PASS_Z;
   }
 
   // alguém atravessa a porta aberta? (o coop local testa cada jogador)
   passes(p) {
     if (this.locked || this.stairs || this.open <= 0.6) return false;
     const l = this.local(p);
-    return Math.abs(l.x) < this.half + 0.25 && l.z < 1.05;
+    return Math.abs(l.x) < this.half + 0.25 && l.z < PASS_Z;
   }
 
   // o ponto para onde a seta aponta (na frente da porta)
@@ -352,9 +358,14 @@ export class Drawer {
     const steel = new THREE.MeshToonMaterial({ color: 0x4a5048, emissive: 0x080a08 });
     const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.18, 16), steel);
     base.position.y = 0.09;
-    const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.8, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xbaffd0, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide }));
-    glass.position.y = 0.58;
-    const liquid = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.78, 16), new THREE.MeshBasicMaterial({ color: 0x3aff4a, transparent: true, opacity: 0.55, toneMapped: false }));
+    // TUBO ou OVO (dono, 2026-11-14: "as de ovo e as de tubo deveriam ser em pé"): spot.shape força; sem ele, sorteado
+    const egg = (this.spot.shape ?? (Math.random() < 0.4 ? 'egg' : 'tube')) === 'egg';
+    const glassMat = new THREE.MeshBasicMaterial({ color: 0xbaffd0, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide });
+    const glass = new THREE.Mesh(egg ? new THREE.SphereGeometry(0.34, 18, 14) : new THREE.CylinderGeometry(0.26, 0.26, 0.8, 16, 1, true), glassMat);
+    if (egg) glass.scale.set(1, 1.35, 1);
+    glass.position.y = egg ? 0.62 : 0.58;
+    const liquid = new THREE.Mesh(egg ? new THREE.SphereGeometry(0.31, 16, 12) : new THREE.CylinderGeometry(0.24, 0.24, 0.78, 16), new THREE.MeshBasicMaterial({ color: 0x3aff4a, transparent: true, opacity: 0.55, toneMapped: false }));
+    if (egg) liquid.scale.set(1, 1.3, 1);
     liquid.position.y = 0.58;
     const lid = new THREE.Group();
     const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.32, 0.12, 16), steel);
@@ -366,11 +377,11 @@ export class Drawer {
     const glow = new THREE.Mesh(new THREE.CircleGeometry(0.95, 24), new THREE.MeshBasicMaterial({ color: 0x5aff6a, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false }));
     glow.rotation.x = -Math.PI / 2;
     glow.position.y = 0.03;
-    // EM PÉ ou DEITADA (dono, 2026-11-14: "algumas cápsulas têm que ficar em pé e outras deitadas"): a deitada fica
-    // sobre dois pés, e a tampa desliza de lado. spot.lying força; sem ele, metade sorteada
+    // EM PÉ (dono, 2026-11-14, revisto: "a maioria das cápsulas, as de ovo e as de tubo, deveriam ser em pé; apenas
+    // aquelas que os players deitam na última sala são deitadas"). spot.lying ainda força a deitada
     const body = new THREE.Group();
     body.add(base, glass, liquid, lid);
-    const lying = this.spot.lying ?? Math.random() < 0.5;
+    const lying = !!this.spot.lying;
     if (lying) {
       body.rotation.z = Math.PI / 2;
       body.position.set(0.55, 0.42, 0);
@@ -382,6 +393,18 @@ export class Drawer {
       glow.scale.set(1.25, 0.8, 1);
     }
     g.add(body, glow);
+    // os CABOS ligados (como na série): da tampa sobem até o forro, atrás; do pé, correm pelo chão até a parede; um deles
+    // é o conduíte de transmissão com o brilho verde
+    if (!lying) {
+      const V = (x, y, z) => new THREE.Vector3(x, y, z);
+      const cab = new THREE.Group();
+      cab.add(makeCable(V(0.08, 1.12, -0.05), V(0.25, 2.5, -1.1), { sag: -0.25, r: 0.03 }));
+      cab.add(makeCable(V(-0.1, 1.12, 0), V(-0.35, 2.5, -1.0), { sag: -0.15, r: 0.045, kind: 'conduit', glow: 0x5aff4a }));
+      cab.add(makeCable(V(0.2, 0.06, -0.2), V(0.6, 0.02, -1.4), { sag: 0.02, r: 0.03 }));
+      cab.add(makeCable(V(-0.18, 0.06, -0.24), V(-0.5, 0.4, -1.45), { sag: 0.2, r: 0.025 }));
+      g.add(cab);
+      this.cables = cab;
+    }
     g.scale.setScalar(1.4); // da altura do peito (1,5 m): visível por cima dos móveis
     this.podGlow = glow;
     this.podBody = body;

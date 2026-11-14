@@ -8,7 +8,7 @@ import { Animator } from '../anim/Animator.js';
 import { LOCO_KICKS } from '../anim/locomotionClips.js';
 import { styleFor } from '../anim/animStyles.js';
 import { clamp, yawTo, turnTowards, forwardFromYaw, distXZ, angleDiff, DEG } from '../core/util.js';
-import { applyHit } from './damage.js';
+import { applyHit, npcDamage } from './damage.js';
 import { findSubstitutionSpot, resolveBody } from './positioning.js';
 import { startChargeFx } from './chargeFx.js';
 import { ABILITY_TYPES, rejectMistFor, conjureSeq } from './abilities.js';
@@ -54,6 +54,9 @@ const v3 = new THREE.Vector3();
  * Estados: idle | charging | attack | ranged | ability | special | block | dodge |
  *          hitstun | stun | pulled | grabbed | ko | intro
  */
+// recargas que o Ritmo e o kit do Outro Lado não mexem (movimento e sistema, não golpes)
+const NO_PVE_CD = { dash: true, grab: true, switch: true, substitution: true };
+
 export class Fighter {
   constructor(def, index, world, input) {
     this.def = def;
@@ -211,7 +214,8 @@ export class Fighter {
   }
 
   specialCost() {
-    return this.def.special?.energyCost ?? COMBAT.specialEnergyCost;
+    const c = this.def.special?.energyCost ?? COMBAT.specialEnergyCost;
+    return this.pveMods ? Math.round(c * (this.pveMods.kitCost.special ?? 1)) : c; // OUTRO LADO: a carta do especial
   }
 
   specialUsedUp() {
@@ -730,9 +734,12 @@ export class Fighter {
     // cooldowns individuais (cdRate: estados que aceleram as recargas, ex.: Despertar)
     let cdRate = 1;
     for (const b of this.buffs) if (b.cdRate) cdRate *= b.cdRate;
+    const pm = this.pveMods; // OUTRO LADO: Ritmo, Reflexos e as cartas do KIT (recarga menor)
     for (const k in this.cooldowns) {
       if (this.cooldowns[k] > 0) {
-        this.cooldowns[k] -= dt * (k === 'dodge' ? 1 : cdRate);
+        let rate = k === 'dodge' ? 1 : cdRate;
+        if (pm) rate /= k === 'dodge' ? pm.dodgeMult : NO_PVE_CD[k] ? 1 : pm.cdMult * (pm.kitCd[k] ?? 1);
+        this.cooldowns[k] -= dt * rate;
         if (this.cooldowns[k] <= 0) {
           this.cooldowns[k] = 0;
           if (k === 'ranged' || k === 'special') this.world.audio.play(k === 'ranged' && this.def.ranged?.visual === 'bullet' ? 'reload' : 'ready', { volume: 0.6 });
@@ -1395,8 +1402,13 @@ export class Fighter {
     const mag = dir.length();
     if (mag < 0.35) return { kind: 'neutral' };
     dir.normalize();
-    const opp = this.opponent;
-    const fwd = opp && distXZ(opp.pos, this.pos) > 0.01 ? new THREE.Vector3().subVectors(opp.pos, this.pos).setY(0).normalize() : forwardFromYaw(this.yaw);
+    // OUTRO LADO (mira pela câmera): "frente" é quem está na mira, ou para onde a câmera aponta. Antes valia o
+    // "oponente" da luta, que no labirinto é o Devorado ESCONDIDO longe dali: correndo para um zumbi, o comando saía
+    // "para trás" e a Cindy (Recua atirando) andava para trás ao bater (pedido do dono, 2026-11-14)
+    let opp = this.opponent;
+    if (this.aimYaw != null) opp = this.aimTarget(8);
+    else if (opp && (opp.lurking || opp.visible === false || opp.state === 'ko')) opp = null;
+    const fwd = opp && distXZ(opp.pos, this.pos) > 0.01 ? new THREE.Vector3().subVectors(opp.pos, this.pos).setY(0).normalize() : forwardFromYaw(this.aimYaw != null ? this.aimYaw : this.yaw);
     const d = dir.dot(fwd);
     if (d > 0.5) return { kind: 'forward' };
     if (d < -0.5) return { kind: 'back' };
@@ -2176,7 +2188,7 @@ export class Fighter {
       if (Math.abs(angleDiff(this.yaw, yawTo(this.pos, n.pos))) > (s.arc * DEG) / 2) continue;
       if (Math.abs(n.pos.y - this.pos.y) > (s.vertical ?? 2.2)) continue;
       c.npcHits[key(n)] = true;
-      n.hitBy(this, s.damage / (s.actives ? s.actives.length : 1), { kind: 'melee' });
+      n.hitBy(this, npcDamage(this, s.damage / (s.actives ? s.actives.length : 1), 'melee'), { kind: 'melee' });
       this.world.hitstop(0.035);
     }
   }
@@ -2948,7 +2960,7 @@ export class Fighter {
     // usar de novo dentro da janela de "spam" fica mais caro (ex.: Teleporte das Sombras)
     const last = this.lastAbilityUse && this.lastAbilityUse[a.id];
     if (a.spamWindow && last !== undefined && this.world.time - last < a.spamWindow) cost *= a.spamMult || 1.6;
-    if (this.pveMods) cost *= this.pveMods.costMult; // OUTRO LADO: Calma / árvore de Sanidade
+    if (this.pveMods) cost *= this.pveMods.costMult * (this.pveMods.kitCost[a.id] ?? 1); // OUTRO LADO: Calma / árvore de Sanidade / kit
     return Math.round(cost);
   }
 
@@ -2979,6 +2991,7 @@ export class Fighter {
     if (mist) {
       this.payCost(cost, blood);
       (this.lastAbilityUse || (this.lastAbilityUse = {}))[a.id] = this.world.time;
+      this.lastAbilityId = a.id;
       this.cooldowns[a.id] = a.cooldown;
       this.setState('ability');
       this.seq = conjureSeq(this, mist, () => impl.start(this, a, this.world));
@@ -2988,6 +3001,7 @@ export class Fighter {
     if (!seq) return; // falhou (ex.: sem posição/alvo válido) — não gasta nada
     this.payCost(cost, blood);
     (this.lastAbilityUse || (this.lastAbilityUse = {}))[a.id] = this.world.time;
+    this.lastAbilityId = a.id; // OUTRO LADO: o dano da habilidade conta para a carta do kit dela (damage.js)
     // TURNO EXTRA (Raziel): a habilidade usada dentro da janela é a ação extra — gasta a janela, não a recarga
     const xt = a.cooldown > 0 && this.findBuff('extraTurn');
     if (xt) { xt.done = true; this.cooldowns[a.id] = 0; } else this.cooldowns[a.id] = a.cooldown;

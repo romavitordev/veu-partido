@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Timeline, yawTo, distXZ, forwardFromYaw } from '../core/util.js';
-import { applyHit } from './damage.js';
+import { applyHit, npcDamage } from './damage.js';
 import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { chooseButtonWinner } from './hostButtonRace.js';
 import { buildModel } from '../models/index.js';
@@ -677,7 +677,7 @@ Object.assign(ABILITY_TYPES, {
         if (alive(opp) && distXZ(f.pos, opp.pos) <= a.radius + opp.radius && Math.abs(opp.pos.y - f.pos.y) < 2.5) {
           applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: 'energia', knockback: a.knockback ?? 7, hitstun: 0.6, launch: true, dir: opp.pos.clone().sub(f.pos).setY(0).normalize(), color: PURPLE, sound: 'explosion', scale: 1.8 });
         }
-        for (const n of world.hostileNpcs(f)) if (distXZ(f.pos, n.pos) <= a.radius) n.hitBy(f, a.damage, { kind: 'ability' });
+        for (const n of world.hostileNpcs(f)) if (distXZ(f.pos, n.pos) <= a.radius) n.hitBy(f, npcDamage(f, a.damage, 'ability', a.id), { kind: 'ability' });
       });
       tl.end(a.windup + a.recovery);
       return seqFrom(tl, { cancel: () => gather.stop() });

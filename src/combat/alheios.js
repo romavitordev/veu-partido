@@ -37,7 +37,13 @@ export const RASTROPODA = {
     throw: { windup: 0.95, active: 0.1, recovery: 0.8, range: 0, arc: 0, damage: 0, cd: 6.5, knockback: 0, flight: 0.5, hit: 22, splash: 1.4 },
   },
   firstCd: { claw: 0.6, leap: 2.5, gas: 4, throw: 3.5 },
-  ghost: 0.06, // a opacidade invisível (só o tremor)
+  ghost: 0, // INVISÍVEL de verdade (dono, 2026-11-14: "deveria ser realmente difícil de vê-lo"); antes 0,06
+  tremor: 0.12, // preparando um golpe: só um tremor no ar (antes 0,32)
+  // BATE E FOGE (dono, 2026-11-14: "traiçoeiro, bater e fugir"): depois da garra ou do gás ele recua invisível
+  flee: [2.2, 3.4], fleeSpeed: 5.2,
+  // ENFARINHADO (a farinha pegou): aparece inteiro, a barra mostra a vida de verdade e ele fica meio tonto — anda
+  // devagar, demora mais para atacar e não consegue fugir (não é um atordoamento: ainda bate)
+  floured: { speed: 0.45, cd: 1.8 },
 };
 
 export class Rastropoda extends Marionette {
@@ -74,8 +80,23 @@ export class Rastropoda extends Marionette {
   }
 
   hitBy(attacker, dmg, info) {
-    this.dust(1.2);
+    this.dust(0.5); // apanhar mostra só um lampejo (antes 1,2 s)
     super.hitBy(attacker, dmg, info);
+  }
+
+  // enfarinhado = a farinha ainda está nele (reveal longo)
+  get floured() { return this.reveal > 1.5; }
+
+  // BATE E FOGE: depois da garra/do gás, recua para longe (não quando enfarinhado)
+  endAttack() {
+    const name = this.atk && this.atk.name;
+    super.endAttack();
+    if (this.floured) { for (const k in this.cds) this.cds[k] = Math.max(this.cds[k], 0); return; }
+    if (name === 'claw' || name === 'gas') {
+      const [a, b] = this.cfg.flee;
+      this.fleeT = a + Math.random() * (b - a);
+      this.setState('flee');
+    }
   }
 
   pickAttack(d) {
@@ -134,7 +155,7 @@ export class Rastropoda extends Marionette {
     this.rock = null;
     if (a && a.rock === R) a.rock = null;
   }
-  stepSpeed(d) { return this.cfg.speed * (d > 6 ? 1.4 : 1); }
+  stepSpeed(d) { return this.cfg.speed * (d > 6 ? 1.4 : 1) * (this.floured ? this.cfg.floured.speed : 1); }
   riseTime() { return 0.6; }
   risePose(k) { this.model.root.position.set(this.pos.x, 0, this.pos.z); this.model.root.scale.setScalar(Math.max(0.05, k)); }
 
@@ -164,11 +185,28 @@ export class Rastropoda extends Marionette {
     }
     this.reveal = Math.max(0, this.reveal - dt);
     this.updateThrow(dt);
+    // FUGINDO (bate e foge): corre para longe do alvo, contornando; depois volta a caçar
+    if (this.state === 'flee') {
+      this.fleeT -= dt;
+      const tg = this.target;
+      if (tg && this.fleeT > 0 && !this.floured) {
+        const away = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z) + Math.sin(this.t * 1.3) * 0.6;
+        this.pos.x += Math.sin(away) * this.cfg.fleeSpeed * dt;
+        this.pos.z += Math.cos(away) * this.cfg.fleeSpeed * dt;
+        this.yaw = away;
+      } else this.setState('chase');
+    }
+    // ENFARINHADO: os ataques recarregam mais devagar (meio tonto)
+    if (this.floured) for (const k in this.cds) this.cds[k] += dt * (1 - 1 / this.cfg.floured.cd);
     super.update(dt);
     if (!this.alive) return;
-    // a opacidade: revelado (farinha/golpe) → inteiro; preparando um golpe → um tremor; no resto, quase nada
+    // a barra: SINAL PERDIDO (ruído) enquanto invisível; enfarinhado, a vida de verdade
+    this.barLost = !this.floured;
+    this.barOwner = this.floured ? 'ENFARINHADO' : 'SINAL PERDIDO';
+    // a opacidade: revelado (farinha/golpe) → inteiro; preparando um golpe → um tremor; no resto, nada
     const winding = this.state === 'attack' && this.atk && this.stateT < this.atk.windup;
-    const op = this.state === 'die' ? 1 : this.reveal > 0 ? Math.min(1, 0.4 + this.reveal) : winding ? 0.32 : this.cfg.ghost;
+    const op = this.state === 'die' ? 1 : this.reveal > 0 ? Math.min(1, 0.4 + this.reveal) : winding ? this.cfg.tremor : this.cfg.ghost;
+    this.model.root.visible = op > 0.005; // sem nem o contorno
     for (const x of this.mats) x.m.opacity = x.outline ? op * 0.6 : op;
     if (this.reveal > 0 && Math.random() < 0.3) this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.9, this.pos.z), { count: 1, color: 0xf0ece0, speed: 0.4, life: 0.6, size: 0.12 });
   }
@@ -183,7 +221,7 @@ export class Rastropoda extends Marionette {
   // o rastro de gosma verde: o jeito de seguir o invisível
   scytheTrail(px, pz) {
     this.trail += Math.hypot(this.pos.x - px, this.pos.z - pz);
-    if (this.trail < 0.7) return;
+    if (this.trail < 1.3) return; // mais espaçado (2026-11-14): é a única pista, e não pode entregar demais
     this.trail = 0;
     this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.05, this.pos.z), { count: 3, color: 0x4aaa20, speed: 0.2, up: 0, life: 2.5, size: 0.22, gravity: 0 });
   }
@@ -225,13 +263,21 @@ export class Rastropoda extends Marionette {
 }
 
 // ================================================================== BILU
+// A MECÂNICA DO BILU (dono, 2026-11-14: "o Bilu não tem nenhuma mecânica diferente"; PROPOSTA): ele não vem de frente.
+// RODEIA o jogador fora do alcance, os olhos verdes piscando, e ATACA PELAS COSTAS — um bote rápido por trás (o golpe
+// pelas costas dói mais). Depois do bote ele FOGE para o escuro. Quem se vira para ele a tempo (ele fica na frente) o
+// faz hesitar: ele recua de novo. Fraco e rápido; volta depois de cair (o Dungeon cuida).
 export const BILU = {
   name: 'BILU', hp: 70, duration: Infinity, speed: 7.4, radius: 0.45, height: 2.7, restY: 0,
   element: 'transmissao', fxColor: 0x5aff6a, poolColor: 0x0a120a, noPool: true,
   attacks: {
-    swipe: { windup: 0.28, active: 0.12, recovery: 0.4, range: 2.4, arc: 130, damage: 14, cd: 1.0, knockback: 2 },
+    swipe: { windup: 0.32, active: 0.12, recovery: 0.35, range: 2.4, arc: 130, damage: 14, cd: 1.0, knockback: 2 },
+    // o bote pelas costas: avança rasgando (dash) e dói mais
+    backstab: { windup: 0.36, active: 0.16, recovery: 0.3, range: 2.6, arc: 120, damage: 24, cd: 3.2, knockback: 3.2, dash: 9 },
   },
-  firstCd: { swipe: 0.5 },
+  firstCd: { swipe: 0.5, backstab: 1.2 },
+  circle: 4.6, // o raio em que ele rodeia
+  flee: [1.4, 2.2], fleeSpeed: 9,
 };
 
 export class Bilu extends Marionette {
@@ -247,9 +293,71 @@ export class Bilu extends Marionette {
   }
 
   chooseTarget() { this.target = this.owner.opponent; }
-  pickAttack(d) { return d < 2.2 && this.cds.swipe <= 0 ? 'swipe' : null; }
-  attackSound() { return 'swing'; }
-  stepSpeed() { return this.cfg.speed; }
+
+  // está nas costas do alvo? (o ângulo entre para onde ele olha e onde o Bilu está)
+  behind(tg) {
+    const a = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
+    const d = Math.atan2(Math.sin(a - tg.yaw), Math.cos(a - tg.yaw));
+    return Math.abs(d) > 1.9;
+  }
+
+  pickAttack(d) {
+    const tg = this.target;
+    if (!tg) return null;
+    if (d < 3.2 && this.cds.backstab <= 0 && this.behind(tg)) return 'backstab';
+    // de frente só quando encurralado (muito perto) — senão ele rodeia
+    return d < 1.6 && this.cds.swipe <= 0 ? 'swipe' : null;
+  }
+  attackSound(n) { return n === 'backstab' ? 'teleport' : 'swing'; }
+  // a andada normal fica parada: quem move o Bilu é o rodeio (update)
+  stepSpeed() { return 0; }
+
+  endAttack() {
+    super.endAttack();
+    const [a, b] = this.cfg.flee;
+    this.fleeT = a + Math.random() * (b - a);
+    this.setState('flee');
+  }
+
+  update(dt) {
+    const tg = this.target;
+    if (tg && this.alive && !this.held) {
+      const d = Math.hypot(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
+      if (this.state === 'flee') {
+        this.fleeT -= dt;
+        const away = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
+        if (this.fleeT > 0) {
+          this.pos.x += Math.sin(away) * this.cfg.fleeSpeed * dt;
+          this.pos.z += Math.cos(away) * this.cfg.fleeSpeed * dt;
+          this.yaw = away;
+        } else this.setState('chase');
+      } else if (this.state === 'chase') {
+        // RODEIA: anda em volta do alvo no raio `circle`, indo para as costas dele
+        this.orbit = this.orbit ?? (Math.random() < 0.5 ? 1 : -1);
+        const back = tg.yaw + Math.PI; // o ângulo das costas
+        const cur = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
+        let diff = Math.atan2(Math.sin(back - cur), Math.cos(back - cur));
+        const step = Math.sign(diff || this.orbit) * Math.min(Math.abs(diff), 2.4 * dt);
+        const R = this.cds.backstab <= 0 && this.behind(tg) ? 1.8 : this.cfg.circle; // nas costas e pronto: fecha
+        const na = cur + step;
+        const tx = tg.pos.x + Math.sin(na) * R;
+        const tz = tg.pos.z + Math.cos(na) * R;
+        const dx = tx - this.pos.x;
+        const dz = tz - this.pos.z;
+        const dl = Math.hypot(dx, dz);
+        if (dl > 0.05) {
+          const sp = Math.min(dl / dt, this.cfg.speed);
+          this.pos.x += (dx / dl) * sp * dt;
+          this.pos.z += (dz / dl) * sp * dt;
+        }
+        // o alvo se virou para ele bem de perto: hesita e recua
+        if (d < 2.6 && !this.behind(tg) && this.cds.backstab > 0.5 && Math.random() < dt * 1.5) { this.fleeT = 0.8; this.setState('flee'); }
+        // os olhos piscam enquanto ele rodeia (a única pista no escuro)
+        if (Math.random() < dt * 2.5) this.world.fx.burst(new THREE.Vector3(this.pos.x, 2.45, this.pos.z), { count: 2, color: 0x7aff4a, speed: 0.05, life: 0.35, size: 0.1 });
+      }
+    }
+    super.update(dt);
+  }
   riseTime() { return 0.5; }
   risePose(k) { this.model.root.position.set(this.pos.x, 0, this.pos.z); this.model.root.scale.set(1, Math.max(0.05, k), 1); }
   bob() { return Math.abs(Math.sin(this.gait * 2.6)) * 0.05; }

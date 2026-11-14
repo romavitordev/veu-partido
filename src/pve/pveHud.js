@@ -4,7 +4,7 @@
 //  · nível e barra de experiência, as melhorias da tentativa (e as sinergias), o objetivo da sala, a dica do momento;
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
 import { actionLabel } from '../ui/labels.js';
-import { UPGRADES, SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KINDS, kindsOf } from './upgrades.js';
+import { SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KIT, MAX_PASSIVE, slotsOf, getUpgrade } from './upgrades.js';
 
 // os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
 const pipsHtml = (n, max, was = n) => Array.from({ length: max }, (_, i) => `<b class="${i < was ? 'on' : i < n ? 'new' : ''}"></b>`).join('');
@@ -15,6 +15,12 @@ export function fmtTime(t) {
   const m = Math.floor(cs / 6000);
   const s = Math.floor(cs / 100) % 60;
   return `${m}:${String(s).padStart(2, '0')}.${String(cs % 100).padStart(2, '0')}`;
+}
+
+// os ids da build sem repetir: os do KIT primeiro, depois as passivas (ids que a ficha ainda não registrou ficam de fora)
+function buildIds(picks) {
+  const ids = [...new Set(picks)].filter((id) => getUpgrade(id));
+  return ids.sort((a, b) => (getUpgrade(b).kind === 'kit') - (getUpgrade(a).kind === 'kit'));
 }
 
 export class PveHud {
@@ -170,12 +176,13 @@ export class PveHud {
     const key = run.picks.join(',');
     if (key === this.lastUps) return;
     this.lastUps = key;
-    const ids = [...new Set(run.picks)];
+    // os golpes do KIT primeiro (com a borda roxa), depois as passivas
+    const ids = buildIds(run.picks);
     const syn = activeSynergies(run.picks);
     this.q('.pv-ups').innerHTML = ids.map((id) => {
-      const u = UPGRADES.find((x) => x.id === id);
+      const u = getUpgrade(id);
       const n = countOf(run.picks, id);
-      return `<span class="pv-up" title="${esc(u.name)}: ${esc(u.desc)}"><i>${u.icon}</i><s>${pipsHtml(n, u.max)}</s></span>`;
+      return `<span class="pv-up ${u.kind === 'kit' ? 'act' : ''}" title="${esc(u.name)}: ${esc(u.desc)}"><i>${u.icon}</i><s>${pipsHtml(n, u.max)}</s></span>`;
     }).join('') + syn.map((s) => `<span class="pv-syn" title="${esc(s.desc)}">${esc(s.name)}</span>`).join('');
   }
 
@@ -199,12 +206,14 @@ export class PveHud {
       const syn = SYNERGIES.filter((s) => s.needs.includes(u.id));
       const ready = syn.filter((s) => s.needs.every((x) => x === u.id || picks.includes(x)));
       const tag = n ? `nv ${n + 1}` : u.chest ? 'NOVA DO BAÚ!' : 'NOVO!';
-      return `<div class="pv-card" data-i="${i}"><i>${u.icon}</i><div><b>${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}</div></div>`;
+      const kind = u.kind === 'kit' ? `<u class="act">${coop ? esc(u.who) : 'SEU KIT'}</u>` : '<u>PASSIVA</u>';
+      return `<div class="pv-card ${u.kind === 'kit' ? 'act' : ''}" data-i="${i}"><i>${u.icon}</i><div><b>${kind}${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}</div></div>`;
     }).join('');
-    const ids = [...new Set(picks)];
-    this.q('.pv-build').innerHTML = `<span>Build (nv ${run.level}) · habilidades ${kindsOf(picks)}/${MAX_KINDS}</span>` + (ids.length ? ids.map((id) => {
-      const u = UPGRADES.find((x) => x.id === id);
-      return `<span class="pv-up" title="${esc(u.name)}"><i>${u.icon}</i><s>${pipsHtml(countOf(picks, id), u.max)}</s></span>`;
+    const ids = buildIds(picks);
+    const kitChar = choices.find((u) => u.kind === 'kit')?.char;
+    this.q('.pv-build').innerHTML = `<span>Build (nv ${run.level}) · kit ${slotsOf(picks, 'kit', kitChar)}/${MAX_KIT} · passivas ${slotsOf(picks, 'passive')}/${MAX_PASSIVE}</span>` + (ids.length ? ids.map((id) => {
+      const u = getUpgrade(id);
+      return `<span class="pv-up ${u.kind === 'kit' ? 'act' : ''}" title="${esc(u.name)}"><i>${u.icon}</i><s>${pipsHtml(countOf(picks, id), u.max)}</s></span>`;
     }).join('') : '<em>nenhuma melhoria ainda</em>');
     box.hidden = false;
     if (!noClick) box.querySelectorAll('.pv-card').forEach((c) => c.addEventListener('click', () => { if (!this.choice) return; this.choice.index = Number(c.dataset.i); this.pick(); }));

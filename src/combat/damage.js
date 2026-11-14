@@ -36,6 +36,16 @@ const src = new THREE.Vector3();
  *      unblockable, guardBreak, scale, applyMeleePassives }
  * Retorna o dano causado (número) ou 'blocked' | 'parried' | 'countered'.
  */
+// OUTRO LADO: o dano do jogador nos MONSTROS das salas (npcs: zumbis, clones, Alheios) passa pelas melhorias como no
+// chefe — as passivas (Fúria, Foco, Mira) e as cartas do KIT do golpe. Antes o npc levava o dano cru (2026-11-14)
+export function npcDamage(attacker, dmg, kind, abilityId = null) {
+  const m = attacker && attacker.pveMods;
+  if (!m || !dmg) return dmg;
+  let k = m.dealt[kind] ?? 1;
+  if (m.kitDmg) k *= m.kitDmg[kind === 'ability' ? (abilityId || attacker.lastAbilityId) : kind] ?? 1;
+  return dmg * k;
+}
+
 export function applyHit(world, attacker, victim, o) {
   if (!victim || victim.state === 'ko') return 0;
   // Outro Lado: o inimigo ESCONDIDO da sala (o Devorado `lurking`) não é alvo — um especial que mira "o oponente" o
@@ -137,6 +147,9 @@ export function applyHit(world, attacker, victim, o) {
   // OUTRO LADO (PvE): as melhorias da tentativa e da árvore permanente (pve/upgrades.js → computeMods)
   if (attacker.pveMods) {
     mult *= attacker.pveMods.dealt[o.kind] ?? 1;
+    // as cartas do KIT: o golpe que causou (a habilidade pelo id; senão o tiro, o combo ou o especial)
+    const kd = attacker.pveMods.kitDmg;
+    if (kd) mult *= kd[o.kind === 'ability' ? (o.ability || attacker.lastAbilityId) : o.kind] ?? 1;
     // OUTRO LADO: Golpe Certeiro (habilidade do baú) — chance de dano dobrado (Math.random é a semente no online)
     if (attacker.pveMods.crit > 0 && o.kind !== 'status' && Math.random() < attacker.pveMods.crit) { mult *= 2; o.crit = true; }
   }

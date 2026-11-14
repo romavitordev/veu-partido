@@ -1,5 +1,29 @@
 # Changelog
 
+## v4.44.0 — Fases e Kits
+
+### Adicionado
+- Outro Lado em fases separadas: cada tentativa é uma fase escolhida (Escola, Mansão ou Torre), do nível 1 ao chefe, com cronômetro e recorde por fase e dificuldade.
+- Cartas de nível do kit do personagem: cada habilidade, o tiro, o combo e o especial dele, pelo nome (menos recarga, menos Sanidade, mais dano). Limite de 6 do kit e 6 passivas.
+- Loja da Aghata com 20 melhorias (grade 4 × 5): Poções, Iniciação, Mais Opções, Especialista, Reflexos, Ritmo, Mente Clara e Ímã.
+- Escolha de fase com a imagem de cada fase.
+- Torre: cápsulas em pé (ovo ou tubo) cheias de cabos e conduítes de transmissão, cabos no teto e um tubo de vidro que fecha em volta de quem se esconde na cápsula do Sino.
+
+### Alterado
+- Rastropoda invisível de verdade, bate e foge; com a farinha aparece, mostra a vida e fica lento.
+- Bilu rodeia o jogador e ataca pelas costas, depois foge para o escuro.
+- PSIKOLERA: a máscara só aparece na transformação (Cindy e Eloy).
+- Tela do fim da fase refeita (rota, números, recorde) e telas do Outro Lado reordenadas: a loja primeiro, local ou online depois.
+- As melhorias agora valem também contra os monstros das salas.
+- Cindy balanceada contra o elenco (estava fraca).
+- Tela de K.O. nova, com clarão, onda de choque e letras carimbando.
+
+### Corrigido
+- A faixa do especial ficava na frente do K.O.
+- Cindy andava para trás ao bater no Outro Lado.
+- Portas da Escola que abriam mas não deixavam passar.
+- Voltar à vida, COMANDOS na pausa, escudo da Degolificada e cápsulas do Sino.
+
 ## v4.43.0 — A Torre continua
 
 ### Adicionado

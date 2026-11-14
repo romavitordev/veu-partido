@@ -66,6 +66,16 @@ export class Pickup {
     if (this.t < 0.5) return; // não coleta no mesmo quadro em que nasceu
     for (const p of players) {
       if (!p || p.state === 'ko') continue;
+      // ÍMÃ (melhoria da tentativa e da loja): os itens pequenos voam até quem está perto
+      const mag = small(this.kind) ? (p.pveMods && p.pveMods.magnet) || 1 : 1;
+      const dd = Math.hypot(p.pos.x - this.pos.x, p.pos.z - this.pos.z);
+      if (mag > 1 && dd < 1.8 * mag && dd > 0.01) {
+        const k = Math.min(1, (9 * dt) / dd);
+        this.pos.x += (p.pos.x - this.pos.x) * k;
+        this.pos.z += (p.pos.z - this.pos.z) * k;
+        this.group.position.x = this.pos.x;
+        this.group.position.z = this.pos.z;
+      }
       if (Math.hypot(p.pos.x - this.pos.x, p.pos.z - this.pos.z) <= this.radius + p.radius) {
         this.take(p);
         return;
@@ -78,7 +88,7 @@ export class Pickup {
     const w = this.world;
     const at = new THREE.Vector3(this.pos.x, 1, this.pos.z);
     if (this.kind === 'heal') {
-      const n = Math.round(p.maxHealth * this.amount);
+      const n = Math.round(p.maxHealth * this.amount * ((p.pveMods && p.pveMods.healMult) || 1)); // + Poções (loja)
       p.heal(n);
       w.audio.play('pickup', { volume: 0.8 });
       w.ui && w.ui.popup(p.index, `+${n} VIDA`, '#7dffb0');

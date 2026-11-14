@@ -1709,8 +1709,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Pula em cima do adversário e soca como se tocasse bateria: seis socos no ritmo e a baqueta cravada no fim. Errou o pulo, fica exposto.
 - **Do Alto** — △ + □ / Y + X · custo 26 · cooldown 11 s · dano 64 · alcance 2.4 m
   Agacha, salta por cima do adversário e desce cravando as duas baquetas: aguenta um golpe na preparação e faz sangrar. Se errar, fica exposto.
-- **Focinheira** — R2 + △ / RT + Y · custo 30 · cooldown 20 s
-  Tranca a focinheira de espinhos no cadeado da gola e ruge: por 9 s os olhos ficam brancos, ele fica curvado e agressivo, bate mais forte e mais rápido e aguenta golpes sem recuar, mas não consegue defender.
+- **Aversão ao Toque** — R2 + △ / RT + Y · custo 30 · cooldown 20 s
+  A aversão a toque toma conta e ele ruge: por 9 s os olhos ficam brancos, ele fica curvado e agressivo, bate mais forte e mais rápido e aguenta golpes sem recuar, mas não consegue defender.
 - **Porrada Rítmica** — △ + L2 / Y + LT · custo 22 · cooldown 18 s
   Puxa o ritmo do tambor de guerra: por 7 s os golpes físicos saem mais rápidos e mais fortes, e na batalha em equipe as assistências ficam prontas na hora.
 - **Bumbo Duplo** — R2 + × / RT + A · custo 18 · cooldown 10 s · dano 30
@@ -1756,8 +1756,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   Grita para o adversário calar a boca: na frente dela, ele treme por um instante e, por 5 s, fica SILENCIADO: não usa habilidades, bate mais fraco e anda mais devagar.
 - **Tiro do Palco** — △ + □ / Y + X · custo 26 · cooldown 14 s
   Apoia o Fuzil Baixo no ombro como no fim do show e mira com calma: um tiro só, longo e pesado.
-- **Máscara PSIKOLERA** — R2 + △ / RT + Y · custo 28 · cooldown 20 s
-  Põe a máscara branca dos triângulos vermelhos e começa a dançar: por 9 s ela fica mais rápida, os golpes e os tiros saem mais rápidos e mais fortes, e os Tiros de Aviso saem mais vezes.
+- **Dança da PSIKOLERA** — R2 + △ / RT + Y · custo 28 · cooldown 20 s
+  Entra no ritmo e começa a dançar, cantarolando: por 9 s ela fica mais rápida, os golpes e os tiros saem mais rápidos e mais fortes, e os Tiros de Aviso saem mais vezes.
 - **Pirueta no Cânion** — △ + L2 / Y + LT · custo 20 · cooldown 10 s
   Gira para trás numa pirueta, sem tomar dano no começo, e solta um leque de tiros no meio do giro.
 - **Última Nota** — R2 + × / RT + A · custo 22 · cooldown 12 s · dano 34 · alcance 5 m

@@ -267,7 +267,8 @@ export class Match {
     }
     if (winner >= 0) this.wins[winner]++;
     else { this.wins[0]++; this.wins[1]++; } // empate: ponto para os dois
-    this.hud.callout(t(reason === 'ko' ? 'combat.ko' : 'combat.time_up'), reason === 'ko' ? '#ff4a3a' : '#ffd84a');
+    if (reason === 'ko') this.hud.ko(t('combat.ko'), '#ff3b2f');
+    else this.hud.callout(t('combat.time_up'), '#ffd84a');
     for (const f of this.fighters) {
       f.stopCharging();
       if (f.state !== 'ko') {
