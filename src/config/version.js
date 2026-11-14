@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.44.3';
+export const VERSION = '4.45.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.45.0',
+    date: '2026-11-14',
+    title: 'A Vigília',
+    items: [
+      'NOVO CENÁRIO: VILAREJO DE TREB CIACH (A Vigília), em duas versões. Na noite do SAMHAIN: a praça entre as casas de palha, a grande fogueira da chama de proteção, as tendas do festival, os nabos acesos e a cruz celta, na neblina.',
+      'TREB CIACH PÓS-TEMPESTADE: o amanhecer depois da tempestade, com a fogueira apagada, a fumaça azulada saindo de tudo, as tendas derrubadas e os rastros de lama dos Afogados.',
+      'OUTRO LADO: a Sala do Sino não tem mais porta no fundo; no lugar ficou um painel de transmissão com tubos (a saída continua sendo a cápsula).',
+    ],
+  },
   {
     v: '4.44.3',
     date: '2026-11-14',

@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.45.0 — A Vigília
+
+### Adicionado
+- Cenário Vilarejo de Treb Ciach (A Vigília) em duas versões: noite do Samhain e pós-tempestade.
+
+### Alterado
+- Outro Lado: a Sala do Sino ficou sem a porta do fundo; no lugar, um painel de transmissão com tubos.
+
 ## v4.44.3 — Segure o baú
 
 ### Adicionado

@@ -709,3 +709,58 @@ export const ESCOLA_LUTA = {
     ],
   },
 };
+
+// VILAREJO DE TREB CIACH (A Vigília; pedido do dono, 2026-11-14: "duas versões, uma normal do vilarejo e uma dele em
+// forma pós tempestade"). tools/blender/arena_treb_ciach.py; docs/REFERENCIAS-MAPAS.md §8.
+// A noite do SAMHAIN: neblina cinza e o fogo laranja da grande fogueira (a chama de proteção) como a única cor
+export const TREB_CIACH = {
+  id: 'treb_ciach',
+  name: 'Vilarejo de Treb Ciach (Samhain)',
+  glb: 'arenas/treb_ciach.glb',
+  materials: { tent_fallen: { hide: true }, mud_trail: { hide: true } }, // o que é só de depois da tempestade
+  bounds: { radius: 17 },
+  spawns: [{ x: 0, z: -7 }, { x: 0, z: 7 }],
+  sky: 0x2a2e34,
+  skyGradient: [[0, '#0c0e12'], [0.5, '#1e2228'], [0.82, '#3a3e44'], [1, '#5a5a58']],
+  fog: { color: 0x3a3e42, density: 0.013 },
+  lights: [
+    { type: 'hemi', sky: 0x7a8494, ground: 0x2a261e, intensity: 0.8 },
+    { type: 'ambient', color: 0x3a3a40, intensity: 0.4 },
+    { type: 'dir', color: 0xa8b0c0, intensity: 0.7, pos: [-16, 28, -12], shadow: true, area: 28 }, // a lua velada pela neblina
+    { type: 'point', color: 0xff8a2a, intensity: 46, distance: 26, decay: 1.4, pos: [0, 2.6, 0], flicker: true }, // a fogueira
+  ],
+  stars: null,
+  particles: [
+    { color: 0xffa040, count: 60, area: 1.6, height: 7, rise: 2.2, drift: 0.5, size: 0.07, opacity: 0.9, center: [0, 1.5, 0] }, // as fagulhas
+  ],
+  // a NEBLINA cinza baixa entre as casas (AV ep. 1 5h08) e mais densa na borda do pântano (oeste, −x)
+  mist: { color: 0xb8bcc0, count: 30, inner: 7, radius: 22, height: 1.4, size: 6, opacity: 0.16, swirl: 0.02, banks: [{ at: [-26, 0], radius: 10, count: 14, y: 1, height: 4, size: 10, opacity: 0.45 }] },
+  camera: { radius: 21, maxY: 14 },
+};
+
+// DEPOIS DA TEMPESTADE (AV ep. 2, "A Torre"): o amanhecer cinza-azulado; a fogueira APAGADA, sem resquício da chama;
+// tudo exala a FUMAÇA AZULADA espectral; as tendas derrubadas e os rastros de lama dos Afogados vindos do pântano
+export const TREB_CIACH_TEMPESTADE = {
+  ...TREB_CIACH,
+  id: 'treb_ciach_tempestade',
+  name: 'Vilarejo de Treb Ciach (Pós-Tempestade)',
+  materials: {
+    fire_flame: { hide: true }, tent_cloth: { hide: true }, tent_cloth_red: { hide: true },
+    turnip_glow: { emissiveIntensity: 0 }, ember_bed: { emissiveIntensity: 0.05 }, window_glow: { emissiveIntensity: 0.1 },
+  },
+  sky: 0x6a7a84,
+  skyGradient: [[0, '#2a3a48'], [0.5, '#4a5e6a'], [0.82, '#7a909a'], [1, '#a0b0b4']],
+  fog: { color: 0x6a8088, density: 0.016 },
+  lights: [
+    { type: 'hemi', sky: 0x9ab4c8, ground: 0x3a4a50, intensity: 1.5 },
+    { type: 'ambient', color: 0x6a8a9a, intensity: 0.6 },
+    { type: 'dir', color: 0xc8d8e8, intensity: 1.4, pos: [18, 22, 20], shadow: true, area: 28 }, // o dia nascendo atrás das nuvens
+    { type: 'point', color: 0x4ad8ff, intensity: 10, distance: 16, decay: 1.6, pos: [0, 1.5, 0], flicker: true }, // a fumaça sobre a fogueira morta
+  ],
+  particles: [
+    { color: 0x6ae0ff, count: 260, area: 36, height: 5, rise: 0.35, drift: 0.4, size: 0.12, opacity: 0.45 }, // a fumaça azulada de tudo
+    { color: 0x9adcff, count: 50, area: 1.8, height: 6, rise: 0.8, drift: 0.3, size: 0.16, opacity: 0.5, center: [0, 0.8, 0] }, // a fogueira apagada
+  ],
+  // a névoa ESPECTRAL azul que ficou depois da tempestade (ep. 2: ela "permanece até certa parte do pântano")
+  mist: { color: 0x6ad8ff, count: 46, inner: 4, radius: 22, height: 2.2, size: 7, opacity: 0.3, swirl: 0.03, banks: [{ at: [-26, 0], radius: 12, count: 18, y: 1, height: 5, size: 11, opacity: 0.4 }] },
+};

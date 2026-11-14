@@ -405,7 +405,9 @@ box('cabos_greendoor_r', (70.7, 1.3, 2.2), (1.0, 2.6, 0.12), M['logo'])
 floor_number('cabos_n6', 38.13, 0, 6, math.pi / 2)
 
 # a SALA DO SINO (x 70…94, z −11…11): o sino ornamentado sobre o fosso, os dois terminais, as seis cápsulas
-closed_room('sino', 70, 94, -11, 11, floor='concrete', wmat=M['lab'], gaps=(('L', 1.6), ('R', 1.2)))
+# SEM PORTA NO FUNDO (dono, 2026-11-14: "devia ser uma sala sem portas além da porta do corredor onde entra"): a saída
+# depois do Estrangeiro é deitar numa cápsula; o vão leste e o corredor da saída (x 94…104) saíram
+closed_room('sino', 70, 94, -11, 11, floor='concrete', wmat=M['lab'], gaps=(('L', 1.6),))
 # o fosso circular e o sino pendurado (só o anel do fosso tem colisão: o meio é a arena)
 cyl('sino_pit_rim', (82, 0, 0), 3.0, 0.12, M['steel'], seg=32)
 cyl('sino_pit', (82, 0.01, 0), 2.7, 0.12, M['pit'], seg=32)
@@ -434,11 +436,13 @@ for k in range(20):
 for k in range(8):
     box(f'DECAL_sino_slime{k}', (random.uniform(72, 92), 0.006, random.uniform(-9, 9)), (random.uniform(0.6, 1.5), 0.01, random.uniform(0.5, 1.2)), M['slime'], rot_y=random.uniform(0, TAU))
 
-# a saída (x 94…104)
-box('FLOOR_saida', (99, -0.05, 0), (10, 0.1, 2.6), M['concrete'])
-wall('saida_back', 94, 104, -1.3 - T / 2, -1.3 - T / 2, M['lab'])
-wall('saida_front', 94, 104, 1.3 + T / 2, 1.3 + T / 2, M['lab'])
-wall('saida_end', 104.1, 104.1, -1.4, 1.4, M['lab'])
-box('saida_exitsign', (103.9, 2.85, 0), (0.06, 0.2, 0.6), M['exit'])
+# onde era a saída: o painel de TRANSMISSÃO na parede do fundo (os tubos sobem do chão ao teto e os cabos descem para o
+# fosso do sino)
+box('sino_txpanel', (93.7, 1.6, 0), (0.5, 3.2, 3.2), M['crt'])
+col_box('sino_txpanel', (93.7, 1.6, 0), (0.6, 3.2, 3.4))
+for j in range(4):
+    crt(f'sino_tx_s{j}', 93.3, 1.1 + (j // 2) * 0.8, -0.5 + (j % 2) * 1.0, -math.pi / 2, 0.55, M['screen'])
+for k, z in enumerate((-1.45, -0.95, 0.95, 1.45)):
+    cyl(f'sino_txtube{k}', (93.75, 0, z), 0.11, 3.2, M['cable'], seg=8)
 
 finalize(OUT)

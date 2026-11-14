@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -292,6 +292,12 @@
       - **Base dos Couraças** (Hexatombe);
       - **Circo dos Psikolera**;
       - **Acampamento dos Pássaros** (meio destruído, como em Hexatombe).
+- [x] **Vilarejo de Treb Ciach em duas versões** (pedido do dono, 2026-11-14; v4.45.0): noite do Samhain e
+      pós-tempestade (AV ep. 2), no mesmo .glb (`arena_treb_ciach.py`). Versão básica; refinar com o tempo.
+  - [ ] Afogados vagando na borda do pântano na versão pós-tempestade (como os Existidos do Orfanato), quando houver
+        modelo.
+- [ ] **Mapas que ainda faltam do repertório:** Acampamento dos Pássaros e Sertão (Hexatombe, já com dia e noite),
+      Lua da Benquerença, Granja Abobrinha e Mansão Leone.
 - [x] **Mapas de Hexatombe em duas versões, dia e noite de lua de sangue** (pedido do dono, 2026-11-12): Ferro Velho,
       Circo dos Psikolera e Igreja Antiga, cada um com "(Dia)" e "(Noite)" na seleção (mesmo .glb, `cfg.materials`).
       Os próximos mapas de Hexatombe (Acampamento dos Pássaros, sertão) já nascem com as duas versões.

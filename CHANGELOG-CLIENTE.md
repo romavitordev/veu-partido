@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.45.0 — A Vigília
+- NOVO CENÁRIO: VILAREJO DE TREB CIACH (A Vigília), em duas versões. Na noite do SAMHAIN: a praça entre as casas de palha, a grande fogueira da chama de proteção, as tendas do festival, os nabos acesos e a cruz celta, na neblina.
+- TREB CIACH PÓS-TEMPESTADE: o amanhecer depois da tempestade, com a fogueira apagada, a fumaça azulada saindo de tudo, as tendas derrubadas e os rastros de lama dos Afogados.
+- OUTRO LADO: a Sala do Sino não tem mais porta no fundo; no lugar ficou um painel de transmissão com tubos (a saída continua sendo a cápsula).
+
 ## v4.44.3 — Segure o baú
 - BAÚS: ao segurar o botão, a tecla do aviso enche de dourado, uma barra corre embaixo e o baú treme com a luz vazando pela fresta. Soltar antes da hora zera.
 - MANSÃO DO ESPREITADOR: as salas têm de 2 a 3 cópias (antes até 4). A fase durava quase o dobro das outras.

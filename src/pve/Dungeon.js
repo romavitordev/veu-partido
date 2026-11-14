@@ -1726,6 +1726,7 @@ export class Dungeon {
     pivot.add(door, eye);
     g.add(pivot, glow);
     g.position.set(spot.x - 0.4, 0, spot.z);
+    g.visible = !spot.hidden; // a Torre: sem porta no fundo da Sala do Sino
     this.world.scene.add(g);
     return { group: g, pivot, eye, glow, open: 0, unlocked: false, gate: this.addGate(spot.x - 0.3, 'max', { visual: false, band: { z: spot.z, half: 4 } }) };
   }

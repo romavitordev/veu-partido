@@ -428,7 +428,6 @@ export const DUNGEONS = {
         rects: [
           { minX: 70.3, maxX: 93.7, minZ: -10.7, maxZ: 10.7 }, // a Sala do Sino (o 1º: onde ele luta)
           { minX: 38.3, maxX: 71.8, minZ: -1.5, maxZ: 1.5 }, // o corredor de cabos
-          { minX: 92.2, maxX: 103.6, minZ: -1.0, maxZ: 1.0 }, // a saída
         ],
         entry: { x: 39.3, z: 0, yaw: Math.PI / 2, door: { x: 38.02, z: 0, face: Math.PI / 2, w: 2.2 } },
         spawn: { x: 87, z: 0 },
@@ -437,7 +436,8 @@ export const DUNGEONS = {
         chests: [{ x: 40.2, z: 1.0 }, { x: 92.6, z: -9.6 }],
       },
     },
-    exit: { door: { x: 94.6, z: 0 } },
+    // a Sala do Sino não tem porta de saída (a saída é a cápsula): a porta fica escondida e trancada atrás da parede
+    exit: { door: { x: 94.6, z: 0, hidden: true } },
     locks: { chance: 0.4, vault: 0.5, luck: 0.6, drawerCoins: 0.35, coins: [4, 9] },
     chests: {
       chance: { start: 0.7, stalk: 0.9, parkour: 1, boss: 1, fight: [0, 0, 0.45, 0.65, 0.9] },

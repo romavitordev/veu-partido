@@ -1,5 +1,24 @@
 # Registro administrativo de alterações
 
+## v4.45.0 — A Vigília
+
+- **Mapas pendentes (levantamento):** dos 8 lugares do repertório (`docs/REFERENCIAS-MAPAS.md`), faltavam 6: Acampamento
+  dos Pássaros, Sertão, Lua da Benquerença, Granja Abobrinha, Mansão Leone e Treb Ciach. Entrou o Treb Ciach.
+- **Vilarejo de Treb Ciach em duas versões (dono: "uma normal do vilarejo e uma dele em forma pós tempestade"):**
+  `tools/blender/arena_treb_ciach.py` → `arenas/treb_ciach.glb`; `TREB_CIACH` e `TREB_CIACH_TEMPESTADE` (o mesmo .glb,
+  `cfg.materials` esconde o que é só de uma versão).
+  - Canon (wiki "Treb Ciach" e "A Vigília - Episódio 2"; prints novos do ep. 2 em `Referencias visuais/Mapas/treb-ciach/episodios/AV02_*`):
+    casas de barro, madeira e palha com chaminé de pedra, a grande fogueira da chama de proteção, os nabos de proteção,
+    a cruz celta no muro de pedra, floresta e montanhas. A tempestade: a nuvem azul engole a vila; ao amanhecer a
+    fogueira está apagada, tudo exala fumaça azulada, os Afogados sobem do pântano e as tendas são derrubadas.
+  - PROPOSTA: a praça em volta da fogueira é a arena (r 17); a disposição das casas, as tendas do festival, a carroça e
+    os rastros de lama vindo do oeste (o lado do pântano).
+  - Samhain: neblina cinza, fogo laranja como única cor, janelas acesas. Pós-tempestade: amanhecer cinza-azulado,
+    chama escondida, nabos e janelas apagados, tendas caídas, névoa e partículas azuis.
+- **Sala do Sino sem porta no fundo (dono: "devia ser uma sala sem portas além da porta do corredor onde entra"):** o
+  vão leste e o corredor da saída (x 94…104) saíram do `torre.glb`; no lugar, um painel de transmissão com tubos. A
+  porta de saída do Dungeon fica escondida na Torre (`exit.door.hidden`); a saída continua sendo a cápsula.
+
 ## v4.44.3 — Segure o baú
 
 - **Baú: retorno ao segurar (dono, cap. 6 do TODO complementar: "precisa de um estímulo visual para saber se está

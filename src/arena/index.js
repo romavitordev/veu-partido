@@ -1,10 +1,10 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE, TREB_CIACH, TREB_CIACH_TEMPESTADE } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO, treb_ciach: TREB_CIACH };
 // variantes de horário (mesmo .glb, outra luz): não carregam de novo, só seguem a disponibilidade do original
-const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'] };
+const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'], treb_ciach: ['treb_ciach_tempestade'] };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -131,6 +131,22 @@ export const ARENAS = {
     thumbCamera: { pos: [2, 3, 14], look: [0, 6, -30] },
     create: () => createGLBArena(CIRCO_NOITE),
   },
+  treb_ciach: {
+    name: 'Vilarejo de Treb Ciach (Samhain)',
+    description: 'O vilarejo irlandês de A Vigília na noite do Samhain: a praça de terra entre as casas de palha, a grande fogueira da chama de proteção no centro, as tendas do festival, os nabos acesos e a cruz celta no muro de pedra, tudo afogado na neblina.',
+    colors: ['#1e2228', '#4a3e30', '#ff8a2a'],
+    available: true,
+    thumbCamera: { pos: [9, 3.6, 15], look: [-3, 2.6, -20] }, // a fogueira de lado, a cruz celta e as casas atrás
+    create: () => createGLBArena(TREB_CIACH),
+  },
+  treb_ciach_tempestade: {
+    name: 'Vilarejo de Treb Ciach (Pós-Tempestade)',
+    description: 'O amanhecer depois da tempestade de A Vigília: a fogueira apagada sem a chama de proteção, a fumaça azulada saindo de tudo, as tendas derrubadas e os rastros de lama dos Afogados que subiram do pântano.',
+    colors: ['#4a5e6a', '#4a3e30', '#6ae0ff'],
+    available: true,
+    thumbCamera: { pos: [9, 3.6, 15], look: [-3, 2.6, -20] },
+    create: () => createGLBArena(TREB_CIACH_TEMPESTADE),
+  },
 };
 
 // mapas do OUTRO LADO (PvE): fora da seleção (não entram em ARENA_ORDER) e carregados só ao entrar no modo
@@ -180,5 +196,5 @@ export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'mansao_luta', 'escola_luta'];
+export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'treb_ciach', 'treb_ciach_tempestade', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ferro_velho';
