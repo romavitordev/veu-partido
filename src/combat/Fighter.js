@@ -41,6 +41,7 @@ const BUFFER_ACTIONS = ['physical', 'ranged', 'carga', 'dodge'];
 
 // especiais que GRUDAM no alvo (prendem o adversário numa cena): erram contra quem está sem rastro (Fighter.untrackable)
 const STICKY_SPECIALS = new Set(['abyssMaze', 'ageGrab', 'cinematicCombo', 'devilDeal', 'erase', 'hostGame', 'inkRequiem', 'kamikaze', 'mindTorture', 'ritual', 'spiralSnipe', 'supernova', 'teleportStrike']);
+const STATIONARY_COMBO_STRIKES = 3;
 const v1 = new THREE.Vector3();
 const v2 = new THREE.Vector3();
 const v3 = new THREE.Vector3();
@@ -2027,7 +2028,8 @@ export class Fighter {
     this.superArmor = A ? { from: now + A.from, to: now + A.to, max: A.max ?? 40, hits: A.hits ?? 1 } : null;
     // segmentos de movimento (avanço, recuo, passo lateral)
     const lastActive = c.windows[c.windows.length - 1][1];
-    c.motion = strike.motion || (strike.lunge ? [{ t: [0, lastActive], fwd: strike.lunge, stopClose: true }] : []);
+    const motion = strike.motion || (strike.lunge ? [{ t: [0, lastActive], fwd: strike.lunge, stopClose: true }] : []);
+    c.motion = motion.map((seg) => index !== null && index < STATIONARY_COMBO_STRIKES && seg.fwd != null ? { ...seg, fwd: 0 } : seg);
   }
 
   updateAttack(dt) {

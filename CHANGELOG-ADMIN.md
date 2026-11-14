@@ -5,6 +5,11 @@
 - **Chiado de TV durante toda a fase da Torre:** o filtro de transmissão agora permanece entre as salas e fica mais
   intenso na sala do chefe; os cortes de sinal são mais frequentes durante a luta final. O efeito é removido ao sair
   da dungeon e respeita a preferência por movimento reduzido.
+- **Feedback de golpes e baús (2026-11-14):**
+  - Os três primeiros golpes da sequência comum B/L não avançam mais; o quarto golpe em diante mantém o movimento
+    definido pelo personagem. Golpes direcionais continuam com o avanço próprio.
+  - Baús do Outro Lado agora abrem ao segurar a tecla de interação ou de golpe por 0,45 s. Portas continuam abrindo
+    com um toque.
 
 ## v4.44.1 — Teste da Torre
 

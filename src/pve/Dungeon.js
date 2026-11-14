@@ -44,6 +44,8 @@ import { MazeRoom } from './maze.js';
 import { actionLabel } from '../ui/labels.js';
 import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
 
+const CHEST_INTERACT_HOLD_TIME = 0.45;
+
 // AS ROUPAS dos Alheios da Torre (PROPOSTA: gente comum de Varminho que virou hospedeiro; os Homens de Terno com ternos
 // de cores diferentes). Cada peça é achada pelo nome do material do .glb e TINGIDA (a textura continua por baixo).
 const INTERFLORADO_OUTFITS = [
@@ -1322,7 +1324,7 @@ export class Dungeon {
   makeView(i, p, inp, rig) {
     const w = this.world;
     const layer = this.coop ? i + 1 : 0;
-    const V = { i, p, inp, rig, layer, lockOn: true, lockT: null, lockBtnPrev: false, flick: 0, flickCd: 0, interactLatch: false };
+    const V = { i, p, inp, rig, layer, lockOn: true, lockT: null, lockBtnPrev: false, flick: 0, flickCd: 0, interactLatch: false, chestHoldT: 0, chestHoldTarget: null };
     V.prompt = new InteractPrompt(w);
     V.prompt.layer = layer;
     V.arrowChest = makeArrow(w.scene, 0x4aa8ff);
@@ -1592,15 +1594,16 @@ export class Dungeon {
 
   // ------------------------------------------------ INTERAGIR (pedido do dono, 2026-11-06): portas, escada, baús e gavetas
   // abrem pelo botão — E no teclado, B no controle. Só fora da luta (na luta o E é a defesa e o B o golpe físico).
-  updateInteract(V = this.views[0]) {
+  updateInteract(V = this.views[0], dt = this.lastDt || 0) {
     const p = V.p;
     const inp = V.inp;
     const pr = inp.pressed || {};
     const held = inp.held || {};
+    const interactionHeld = !!held.interact || !!held.physical;
     // o botão apertado para interagir não vira defesa nem golpe até ser solto
     if (V.interactLatch) {
-      if (!held.interact) V.interactLatch = false;
-      else { held.block = false; pr.block = false; pr.physical = false; }
+      if (!interactionHeld) V.interactLatch = false;
+      else { held.block = false; pr.block = false; pr.physical = false; pr.interact = false; }
     }
     const enc = this.encounter;
     const calm = !this.transit && !this.choosing && !this.bossIntro && (!enc || enc.done) && ['explore', 'fight', 'bossDown'].includes(this.phase) && !['ko', 'intro', 'hitstun', 'stun', 'grabbed', 'downed'].includes(p.state);
@@ -1620,14 +1623,31 @@ export class Dungeon {
       }
       for (const dr of this.drawers) consider(dr, dr.reach(p.pos), (dr.spot.y ?? 0.6) + 0.7, 'Abrir');
     }
-    if (!best) { V.prompt.hide(); return; }
+    if (!best) {
+      V.chestHoldT = 0;
+      V.chestHoldTarget = null;
+      V.prompt.hide();
+      return;
+    }
+    const isChest = best.o instanceof Chest;
+    if (!isChest) {
+      V.chestHoldT = 0;
+      V.chestHoldTarget = null;
+    }
     const btn = inp.source === 'gamepad' ? 'B' : V.i ? 'DEF' : 'E';
     const at = best.o instanceof RoomDoor ? best.o.target(v3) : best.o.pos;
     // o botão de BATER também abre (dono, 2026-11-14: "fico apertando o botão de bater e ele fica batendo no ar"): só
     // com a sala calma (sem luta) e com algo ao alcance — não rouba golpe de ninguém
     const phys = inp.source === 'gamepad' ? '' : ` / ${actionLabel(V.i, 'physical', inp.source)}`;
-    V.prompt.show(at, best.y, `${btn}${phys}|${best.verb}`);
-    if (!pr.interact && !pr.physical) return;
+    V.prompt.show(at, best.y, `${btn}${phys}|${isChest ? 'Segure para abrir' : best.verb}`);
+    if (isChest) {
+      if (!interactionHeld) { V.chestHoldT = 0; V.chestHoldTarget = best.o; return; }
+      if (V.chestHoldTarget !== best.o) { V.chestHoldTarget = best.o; V.chestHoldT = 0; }
+      V.chestHoldT += dt;
+      V.interactLatch = true;
+      held.block = false; pr.block = false; pr.physical = false; pr.interact = false;
+      if (V.chestHoldT < CHEST_INTERACT_HOLD_TIME) return;
+    } else if (!pr.interact && !pr.physical) return;
     // usou: o aperto é do interagir
     V.interactLatch = true;
     held.block = false; pr.block = false; pr.physical = false;
@@ -1783,7 +1803,7 @@ export class Dungeon {
       // travado: o corpo mira direto no alvo (não espera a câmera terminar de virar)
       if (q.aimYaw !== null && V.lockT && V.lockT.pos) q.aimYaw = Math.atan2(V.lockT.pos.x - q.pos.x, V.lockT.pos.z - q.pos.z);
       // um erro na interação (porta, gaveta, baú) não pode impedir o mundo de andar logo abaixo (travamentos, 2026-11-07)
-      try { this.updateInteract(V); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
+      try { this.updateInteract(V, dt); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
       if (this.minis && this.minis.input) this.minis.input(V); // os sacos de farinha do Rastropoda (pega/arremessa)
     }
     const prev = this.players.map((q) => [q.pos.x, q.pos.z]);

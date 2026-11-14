@@ -809,3 +809,47 @@ Para cada personagem, o Claude deve produzir a tabela detalhada `habilidade atua
 RZ-06 e RZ-07 → testes RZ-09 → auditoria de Kian/Joui e dos demais
 grupos. Não começar a auditoria inteira do elenco com uma alteração
 global ou uma reescrita dos personagens.
+
+## 6. Feedback de gameplay para triagem
+
+Registro dos feedbacks recebidos, mantendo a descrição e as alternativas
+apontadas. Os itens marcados `[x]` foram atendidos; os marcados `[ ]`
+continuam pendentes para investigação e implementação. O registro não
+representa aprovação automática nem confirmação de fidelidade ao cânone.
+
+- [ ] **Câmera da fase de parkour da Torre de Transmissão:** rever a sala
+  do parkour no episódio como referência. Depois do hall, o teto é bem
+  alto, como se fosse infinito para cima, e a queda também é muito
+  profunda. Avaliar reproduzir esse espaço no jogo, pois isso resolveria
+  o problema atual de a câmera bugar ao chegar ao teto.
+- [ ] **Morte no Coop do Outro Lado:** quando um jogador morrer, os dois
+  não precisam cair juntos; somente o jogador que morreu deve cair. Ele
+  fica caído no chão enquanto começa um temporizador de 60 segundos para
+  voltar. Se o amigo permanecer perto dele, o temporizador deve acelerar
+  um pouco.
+- [x] **Movimento dos bonecos ao bater:** os três primeiros golpes
+  consecutivos de B/L não avançam mais; o quarto golpe em diante preserva
+  o movimento configurado para cada personagem.
+- [x] **Tecla para portas e baús:** o baú agora exige que a tecla de
+  interação ou de golpe seja segurada por 0,45 segundo. Portas continuam
+  abrindo com um toque, reduzindo o risco de sair pela porta ao tentar
+  abrir um baú.
+- [ ] **Direção do especial no Outro Lado:** para acertar o especial, o
+  personagem deve tentar ir na direção do inimigo. Não deve dar um
+  avanço (rush) em qualquer direção.
+- [ ] **Bilu:** está fraco demais e não tem poderes do cânone; rever seu
+  conjunto de poderes para corrigir esses dois pontos.
+- [ ] **Estrangeiro no modo de luta:** precisa ter poderes mais fiéis,
+  assim como no modo Outro Lado. Ao se transformar, ele pode ficar com os
+  poderes do modo Outro Lado. A habilidade dos Interflorados também não
+  está funcionando e precisa ser investigada.
+- [ ] **Portas trancadas e chaves:** pode haver mais de uma porta trancada
+  na mesma sala, mas o jogador recebe apenas uma chave. Deve poder
+  escolher qual porta destrancar e, assim, decidir para qual caminho
+  seguir.
+- [ ] **Paredes transparentes entre salas:** em algumas salas é possível
+  enxergar outras salas através de paredes que ficam meio transparentes.
+  Investigar e corrigir essa transparência/oclusão indevida.
+- [ ] **Auditoria do Claude:** depois de implementar os ajustes, auditar
+  no jogo se cada um funciona corretamente. A validação automatizada não
+  substitui a conferência prática do comportamento durante a partida.
