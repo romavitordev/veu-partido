@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.45.1 — O símbolo do cervo
+
+### Alterado
+- Treb Ciach refeito: Samhain de dia nublado e pós-tempestade à noite azul, ambos com névoa em toda parte.
+- A fogueira ficou bem maior, com ossos, a chama de proteção amarela com sigilos subindo e o símbolo de ossos com o crânio de cervo no topo.
+- A aura ciano da noite pós-tempestade (flores e mato brilhando), bétulas e nabos-lanterna. As barracas saíram.
+- Símbolo dourado do ritual no chão; à noite a fogueira fica acesa e caem raios.
+
+### Corrigido
+- Entrada da luta: os lutadores param antes de um obstáculo no meio (não entram mais na fogueira).
+- Página Sobre: o elemento Intenção (Hexatombe) no quadro dos elementos.
+- Sem poças de lodo no Treb Ciach e na Mansão do Espreitador.
+- Casas de enxaimel, ruas de pedra, riacho com ponte e texturas próprias do vilarejo.
+
 ## v4.45.0 — A Vigília
 
 ### Adicionado

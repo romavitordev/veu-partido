@@ -2,6 +2,16 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.45.1 — O símbolo do cervo
+- TREB CIACH REFEITO: a versão do Samhain agora é de DIA, sob o céu cinza nublado, sem sol, com névoa por todos os lados. A versão pós-tempestade agora é de NOITE, com a aura azul fantasmagórica e a névoa em toda parte.
+- A GRANDE FOGUEIRA ficou bem maior: uma torre de toras sobre um monte de ossos e crânios, coberta de peles, com a CHAMA DE PROTEÇÃO AMARELA soltando SIGILOS DE ENERGIA como brasa, tochas e crânios espetados em volta e, no topo, o SÍMBOLO DE OSSOS: a roda com chifres curvos e o crânio de cervo com a galhada. Os lutadores começam longe dela.
+- A AURA DA NOITE pós-tempestade: as flores e o mato brilham em ciano no escuro, as bétulas brancas no fundo e os nabos-lanterna com rosto pendurados nas forcas de madeira. Sem barracas: a vila é a Irlanda medieval de 890.
+- O SÍMBOLO DO RITUAL da chama de proteção, em dourado brilhante, no chão em volta da fogueira. Na noite pós-tempestade a fogueira continua acesa e caem RAIOS no céu.
+- ENTRADA DA LUTA: no "3, 2, 1", os lutadores param antes de um obstáculo no meio do caminho (antes entravam na fogueira do Treb Ciach).
+- SEM POÇAS DE LODO: saíram as poças do Treb Ciach e as da Mansão do Espreitador (a do quarto aparecia embaixo do tapete).
+- PÁGINA SOBRE: entrou o elemento INTENÇÃO (a União Impossível de Sangue e Conhecimento, da Coroa de Espinhos de Hexatombe), com quem foi tomado por ele.
+- O VILAREJO: casas compridas de enxaimel com base de pedra, telhado de palha com musgo e galhos cruzados, ruas de pedra, poças, cercas de varas, a horta, o quadro de avisos, lanternas, árvores velhas e o riacho com a ponte. Grama, lama, pedra, reboco e palha com textura.
+
 ## v4.45.0 — A Vigília
 - NOVO CENÁRIO: VILAREJO DE TREB CIACH (A Vigília), em duas versões. Na noite do SAMHAIN: a praça entre as casas de palha, a grande fogueira da chama de proteção, as tendas do festival, os nabos acesos e a cruz celta, na neblina.
 - TREB CIACH PÓS-TEMPESTADE: o amanhecer depois da tempestade, com a fogueira apagada, a fumaça azulada saindo de tudo, as tendas derrubadas e os rastros de lama dos Afogados.

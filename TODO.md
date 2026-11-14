@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -294,6 +294,13 @@
       - **Acampamento dos Pássaros** (meio destruído, como em Hexatombe).
 - [x] **Vilarejo de Treb Ciach em duas versões** (pedido do dono, 2026-11-14; v4.45.0): noite do Samhain e
       pós-tempestade (AV ep. 2), no mesmo .glb (`arena_treb_ciach.py`). Versão básica; refinar com o tempo.
+  - [x] Refeito (v4.45.1): Samhain de dia nublado e pós-tempestade à noite azul, névoa em toda parte; a fogueira com
+        o símbolo da roda de chifres e do crânio de cervo; casas de enxaimel, ruas de pedra, riacho e texturas.
+  - [ ] Conferir o ep. 3 de A Vigília (ao vivo em 2026-11-14) quando sair a gravação e ajustar o que mudar.
+  - [ ] **Outros mapas de Treb Ciach** (dono, 2026-11-14: "um pro pântano, um pro vilarejo, um pra outros lugares"):
+        os lugares do mapa da wiki (`Referencias visuais/Mapas/treb-ciach/wiki/`) — Pântano dos Afogados (a porta de
+        pedra na ilha), Árvore Anciã (campo florido, apiário), Igreja abandonada com o cemitério sem nomes, Lago com a
+        casa do Druida, Fazenda e Tenda Militar. Ver `docs/RECURSOS-MODELAGEM.md` para kits prontos.
   - [ ] Afogados vagando na borda do pântano na versão pós-tempestade (como os Existidos do Orfanato), quando houver
         modelo.
 - [ ] **Mapas que ainda faltam do repertório:** Acampamento dos Pássaros e Sertão (Hexatombe, já com dia e noite),

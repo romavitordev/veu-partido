@@ -133,18 +133,18 @@ export const ARENAS = {
   },
   treb_ciach: {
     name: 'Vilarejo de Treb Ciach (Samhain)',
-    description: 'O vilarejo irlandês de A Vigília na noite do Samhain: a praça de terra entre as casas de palha, a grande fogueira da chama de proteção no centro, as tendas do festival, os nabos acesos e a cruz celta no muro de pedra, tudo afogado na neblina.',
-    colors: ['#1e2228', '#4a3e30', '#ff8a2a'],
+    description: 'O vilarejo irlandês de A Vigília no dia do Samhain, sob o céu cinza e na névoa: a praça entre as casas compridas de enxaimel e palha, as ruas de pedra, o riacho com a ponte e, no centro, a grande fogueira de toras e ossos com a chama de proteção amarela e o símbolo de ossos com o crânio de cervo no topo.',
+    colors: ['#8a8e90', '#4a3e30', '#ff8a2a'],
     available: true,
-    thumbCamera: { pos: [9, 3.6, 15], look: [-3, 2.6, -20] }, // a fogueira de lado, a cruz celta e as casas atrás
+    thumbCamera: { pos: [-1.2, 2.2, 28], look: [0, 9, 0] }, // a fogueira com o símbolo, as casas e a cruz atrás
     create: () => createGLBArena(TREB_CIACH),
   },
   treb_ciach_tempestade: {
     name: 'Vilarejo de Treb Ciach (Pós-Tempestade)',
-    description: 'O amanhecer depois da tempestade de A Vigília: a fogueira apagada sem a chama de proteção, a fumaça azulada saindo de tudo, as tendas derrubadas e os rastros de lama dos Afogados que subiram do pântano.',
-    colors: ['#4a5e6a', '#4a3e30', '#6ae0ff'],
+    description: 'A noite depois da tempestade de A Vigília: tudo na aura azul fantasmagórica e na névoa, a fogueira apagada sem a chama de proteção, a fumaça azulada saindo de tudo e os rastros de lama dos Afogados que subiram do pântano.',
+    colors: ['#081824', '#2a4a5a', '#6ae0ff'],
     available: true,
-    thumbCamera: { pos: [9, 3.6, 15], look: [-3, 2.6, -20] },
+    thumbCamera: { pos: [-1.2, 2.2, 28], look: [0, 9, 0] },
     create: () => createGLBArena(TREB_CIACH_TEMPESTADE),
   },
 };

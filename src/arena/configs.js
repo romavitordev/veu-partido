@@ -679,8 +679,7 @@ export const MANSAO_LUTA = {
       ...portrait(61.94, 4.6, 5.5, -Math.PI / 2, 1.3, 1.0),
     ],
   },
-  // a poça da goteira molha o tapete (o material de água ficava um buraco preto em cima do tapete vermelho)
-  materials: { water_stain_mansao: { color: 0x3a1410 } },
+  // (as poças da goteira saíram do .glb: dono, 2026-11-14, "tem embaixo do tapete da sala do Espreitador, não devia ter")
 };
 // o bunker (o círculo do ritual e as velas)
 export const ESCOLA_LUTA = {
@@ -712,55 +711,93 @@ export const ESCOLA_LUTA = {
 
 // VILAREJO DE TREB CIACH (A Vigília; pedido do dono, 2026-11-14: "duas versões, uma normal do vilarejo e uma dele em
 // forma pós tempestade"). tools/blender/arena_treb_ciach.py; docs/REFERENCIAS-MAPAS.md §8.
-// A noite do SAMHAIN: neblina cinza e o fogo laranja da grande fogueira (a chama de proteção) como a única cor
+// O dia do SAMHAIN, nublado e na névoa, com a grande fogueira (a chama de proteção e o símbolo do crânio de cervo).
 export const TREB_CIACH = {
   id: 'treb_ciach',
   name: 'Vilarejo de Treb Ciach (Samhain)',
   glb: 'arenas/treb_ciach.glb',
-  materials: { tent_fallen: { hide: true }, mud_trail: { hide: true } }, // o que é só de depois da tempestade
-  bounds: { radius: 17 },
-  spawns: [{ x: 0, z: -7 }, { x: 0, z: 7 }],
-  sky: 0x2a2e34,
-  skyGradient: [[0, '#0c0e12'], [0.5, '#1e2228'], [0.82, '#3a3e44'], [1, '#5a5a58']],
-  fog: { color: 0x3a3e42, density: 0.013 },
+  // o que é só de depois da tempestade; de dia as janelas e os nabos brilham pouco
+  materials: {
+    mud_trail: { hide: true },
+    window_glow: { emissiveIntensity: 0.55 }, turnip_glow: { emissiveIntensity: 0.9 },
+    fire_flame: { color: 0xffe070, emissive: 0xffc020, emissiveIntensity: 1.6 }, // a chama de proteção é AMARELA
+    ghost_flower: { emissiveIntensity: 0 }, // de dia as flores do campo são brancas e não brilham
+  },
+  bounds: { radius: 18.5 }, // a fogueira (r ≈ 4,8) ocupa o meio: a luta é em volta dela
+  spawns: [{ x: 0, z: -10.5 }, { x: 0, z: 10.5 }],
+  // o DIA do Samhain (dono: "de dia, mas lembre do céu ser cinza. não dá pra ver o sol, apenas um dia todo nublado e
+  // névoa por todos os lugares"): céu cinza chapado, luz difusa sem sombra dura, a névoa clara em toda parte
+  sky: 0x8a8e90,
+  skyGradient: [[0, '#5e6266'], [0.5, '#7e8286'], [0.82, '#9a9c9c'], [1, '#aeaeaa']],
+  fog: { color: 0x949896, density: 0.026 },
   lights: [
-    { type: 'hemi', sky: 0x7a8494, ground: 0x2a261e, intensity: 0.8 },
-    { type: 'ambient', color: 0x3a3a40, intensity: 0.4 },
-    { type: 'dir', color: 0xa8b0c0, intensity: 0.7, pos: [-16, 28, -12], shadow: true, area: 28 }, // a lua velada pela neblina
-    { type: 'point', color: 0xff8a2a, intensity: 46, distance: 26, decay: 1.4, pos: [0, 2.6, 0], flicker: true }, // a fogueira
+    { type: 'hemi', sky: 0xc4c8cc, ground: 0x4a4a3e, intensity: 1.7 },
+    { type: 'ambient', color: 0x8a9096, intensity: 0.45 },
+    { type: 'dir', color: 0xd0d4d6, intensity: 0.7, pos: [-8, 40, -6], shadow: true, area: 28 }, // o sol escondido atrás das nuvens: de cima, fraco
+    { type: 'point', color: 0xffd84a, intensity: 60, distance: 26, decay: 1.4, pos: [0, 3, 0], flicker: true }, // a chama de proteção (amarela)
   ],
   stars: null,
   particles: [
-    { color: 0xffa040, count: 60, area: 1.6, height: 7, rise: 2.2, drift: 0.5, size: 0.07, opacity: 0.9, center: [0, 1.5, 0] }, // as fagulhas
+    { color: 0xffe060, count: 90, area: 4.5, height: 10, rise: 2.2, drift: 0.5, size: 0.07, opacity: 0.9, center: [0, 1.2, 0] }, // as fagulhas
+    // os SIGILOS DE ENERGIA subindo da chama como brasa (dono: "a chama de proteção é amarela e com sigilos de energia saindo como brasa")
+    { color: 0xffd84a, glyphs: true, count: 40, area: 5, height: 14, rise: 1.1, drift: 0.35, size: 0.6, opacity: 0.95, center: [0, 1.4, 0] },
+    { color: 0x6a6660, count: 50, area: 3, height: 20, rise: 1.2, drift: 0.8, size: 0.4, opacity: 0.25, center: [0, 6, 0] }, // a fumaça subindo
   ],
-  // a NEBLINA cinza baixa entre as casas (AV ep. 1 5h08) e mais densa na borda do pântano (oeste, −x)
-  mist: { color: 0xb8bcc0, count: 30, inner: 7, radius: 22, height: 1.4, size: 6, opacity: 0.16, swirl: 0.02, banks: [{ at: [-26, 0], radius: 10, count: 14, y: 1, height: 4, size: 10, opacity: 0.45 }] },
-  camera: { radius: 21, maxY: 14 },
+  // a NÉVOA em toda parte (AV ep. 1 5h08): baixa entre as casas, bancos grossos nas bordas, mais densa no pântano (−x)
+  mist: {
+    color: 0xc8ccce, count: 56, inner: 3, radius: 26, height: 1.8, size: 8, opacity: 0.24, swirl: 0.02,
+    banks: [
+      { at: [-26, 0], radius: 12, count: 18, y: 1, height: 4, size: 11, opacity: 0.5 },
+      { at: [0, -30], radius: 14, count: 14, y: 1.5, height: 5, size: 12, opacity: 0.4 },
+      { at: [30, 10], radius: 12, count: 12, y: 1, height: 4, size: 11, opacity: 0.4 },
+      { at: [-14, 26], radius: 10, count: 10, y: 1, height: 4, size: 10, opacity: 0.35 },
+    ],
+  },
+  camera: { radius: 24, maxY: 18 },
 };
 
-// DEPOIS DA TEMPESTADE (AV ep. 2, "A Torre"): o amanhecer cinza-azulado; a fogueira APAGADA, sem resquício da chama;
-// tudo exala a FUMAÇA AZULADA espectral; as tendas derrubadas e os rastros de lama dos Afogados vindos do pântano
+// DEPOIS DA TEMPESTADE (AV ep. 2, "A Torre"; dono: "pode ser de noite, tudo fica com aquela aura azul fantasmagórica.
+// a névoa ainda está por todos os lados"): tudo exala a FUMAÇA AZULADA espectral, os raios no céu, os rastros de lama
+// dos Afogados vindos do pântano; a fogueira continua acesa (pedido do dono; no ep. 2 ela amanhece apagada). PROPOSTA: as janelas, as
+// lanternas e os nabos com um brilho azul fraco (a aura da tempestade que ficou em tudo).
 export const TREB_CIACH_TEMPESTADE = {
   ...TREB_CIACH,
   id: 'treb_ciach_tempestade',
   name: 'Vilarejo de Treb Ciach (Pós-Tempestade)',
   materials: {
-    fire_flame: { hide: true }, tent_cloth: { hide: true }, tent_cloth_red: { hide: true },
-    turnip_glow: { emissiveIntensity: 0 }, ember_bed: { emissiveIntensity: 0.05 }, window_glow: { emissiveIntensity: 0.1 },
+    // a fogueira continua ACESA à noite, amarela (dono: "devia estar acesa mesmo no mapa de noite com chamas amarelas e
+    // sigilos de conhecimento")
+    fire_flame: { color: 0xffe070, emissive: 0xffc020, emissiveIntensity: 1.6 },
+    turnip_glow: { emissive: 0x4ad0ff, emissiveIntensity: 0.7 }, window_glow: { emissive: 0x3ab8ff, emissiveIntensity: 0.8 },
+    // a AURA (print do ep. mandado pelo dono): as flores e o mato brilham em ciano, o chão com um reflexo azul
+    ghost_flower: { emissiveIntensity: 2.2 }, grass_tuft: { emissive: 0x1a9ab8, emissiveIntensity: 0.55 },
+    irish_grass: { emissive: 0x06303c, emissiveIntensity: 0.6 }, birch_bark: { emissive: 0x2a6a80, emissiveIntensity: 0.35 },
   },
-  sky: 0x6a7a84,
-  skyGradient: [[0, '#2a3a48'], [0.5, '#4a5e6a'], [0.82, '#7a909a'], [1, '#a0b0b4']],
-  fog: { color: 0x6a8088, density: 0.016 },
+  // os RAIOS da tempestade no céu (dono: "pode fazer o efeito de raios de tempestade nesse mapa de Treb Ciach à noite")
+  lightning: { interval: [4, 9], distance: 110, top: 80, bottom: 18, arc: [0, Math.PI * 2], intensity: 2.6, skyOpacity: 0.35 },
+  sky: 0x0e1e2a,
+  skyGradient: [[0, '#02060c'], [0.5, '#081824'], [0.82, '#14303e'], [1, '#22485a']],
+  fog: { color: 0x0a1a24, density: 0.028 },
   lights: [
-    { type: 'hemi', sky: 0x9ab4c8, ground: 0x3a4a50, intensity: 1.5 },
-    { type: 'ambient', color: 0x6a8a9a, intensity: 0.6 },
-    { type: 'dir', color: 0xc8d8e8, intensity: 1.4, pos: [18, 22, 20], shadow: true, area: 28 }, // o dia nascendo atrás das nuvens
-    { type: 'point', color: 0x4ad8ff, intensity: 10, distance: 16, decay: 1.6, pos: [0, 1.5, 0], flicker: true }, // a fumaça sobre a fogueira morta
+    { type: 'hemi', sky: 0x4a8ab0, ground: 0x060e12, intensity: 0.75 },
+    { type: 'ambient', color: 0x1a3a50, intensity: 0.35 },
+    { type: 'dir', color: 0x8ad0ff, intensity: 0.9, pos: [16, 30, 18], shadow: true, area: 28 }, // a lua atrás da névoa azul
+    { type: 'point', color: 0xffd84a, intensity: 55, distance: 24, decay: 1.5, pos: [0, 3, 0], flicker: true }, // a chama de proteção, amarela no meio do azul
   ],
   particles: [
-    { color: 0x6ae0ff, count: 260, area: 36, height: 5, rise: 0.35, drift: 0.4, size: 0.12, opacity: 0.45 }, // a fumaça azulada de tudo
-    { color: 0x9adcff, count: 50, area: 1.8, height: 6, rise: 0.8, drift: 0.3, size: 0.16, opacity: 0.5, center: [0, 0.8, 0] }, // a fogueira apagada
+    { color: 0x6ae0ff, count: 320, area: 40, height: 6, rise: 0.35, drift: 0.4, size: 0.12, opacity: 0.5 }, // a fumaça azulada de tudo
+    { color: 0xffe060, count: 90, area: 4.5, height: 10, rise: 2.2, drift: 0.5, size: 0.07, opacity: 0.9, center: [0, 1.2, 0] }, // as fagulhas
+    { color: 0xffd84a, glyphs: true, count: 40, area: 5, height: 14, rise: 1.1, drift: 0.35, size: 0.6, opacity: 0.95, center: [0, 1.4, 0] }, // os sigilos de conhecimento
   ],
-  // a névoa ESPECTRAL azul que ficou depois da tempestade (ep. 2: ela "permanece até certa parte do pântano")
-  mist: { color: 0x6ad8ff, count: 46, inner: 4, radius: 22, height: 2.2, size: 7, opacity: 0.3, swirl: 0.03, banks: [{ at: [-26, 0], radius: 12, count: 18, y: 1, height: 5, size: 11, opacity: 0.4 }] },
+  // a névoa ESPECTRAL azul que ficou depois da tempestade, por todos os lados (ep. 2: ela "permanece até certa parte do
+  // pântano")
+  mist: {
+    color: 0x4ac0ee, count: 64, inner: 3, radius: 26, height: 2.2, size: 8, opacity: 0.2, swirl: 0.03,
+    banks: [
+      { at: [-26, 0], radius: 13, count: 20, y: 1, height: 5, size: 12, opacity: 0.45 },
+      { at: [0, -30], radius: 14, count: 14, y: 1.5, height: 5, size: 12, opacity: 0.35 },
+      { at: [30, 10], radius: 12, count: 12, y: 1, height: 4, size: 11, opacity: 0.35 },
+      { at: [-14, 26], radius: 10, count: 10, y: 1, height: 4, size: 10, opacity: 0.3 },
+    ],
+  },
 };

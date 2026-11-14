@@ -311,6 +311,10 @@ Levantamento de 2026-11-09 para a seção "Cenários de luta" do TODO. Pedido do
   - [AV ep. 1, 2h20](https://youtu.be/AWb-Y9nXZkE?t=8400): interior de madeira.
   - [4h26](https://youtu.be/AWb-Y9nXZkE?t=15960): ruína de pedra.
   - [5h08](https://youtu.be/AWb-Y9nXZkE?t=18480): casas de palha.
+  - [5h20](https://youtu.be/AWb-Y9nXZkE?t=19200): a vila no festival; [5h39](https://youtu.be/AWb-Y9nXZkE?t=20390): a
+    rua de pedra com lanterna; [5h40](https://youtu.be/AWb-Y9nXZkE?t=20450): o SÍMBOLO (roda de madeira com chifres
+    curvos e crânio de cervo com galhada); [5h41–5h43](https://youtu.be/AWb-Y9nXZkE?t=20500): a torre da fogueira.
+  - [AV ep. 2](https://youtu.be/dvcQhatskMg): a tempestade azul, a fumaça espectral, a vila depois (`AV02_*`).
 
 **Canon**
 - Província no noroeste da Irlanda.

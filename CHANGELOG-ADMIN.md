@@ -1,5 +1,50 @@
 # Registro administrativo de alterações
 
+## v4.45.1 — O símbolo do cervo
+
+- **Treb Ciach refeito (dono: "a versão do vilarejo normal pode ser de dia, mas lembre do céu ser cinza. não dá pra ver
+  o sol apenas um dia todo nublado e névoa por todos os lugares. Já a versão pós tempestade, pode ser de noite, tudo
+  fica com aquela aura azul fantasmagórica"; "lembre-se da fogueira com a chama de proteção e com o símbolo com o osso
+  de cervo no topo"):**
+  - Referências novas em `Referencias visuais/Mapas/treb-ciach/episodios/AV01_5h20…5h43_*` (a vila no festival, a rua
+    de pedra com lanterna, a estrutura da fogueira e o símbolo de perto) e o mapa da wiki (`wiki/Mapa_de_Treb_Ciach.png`).
+  - Fogueira (canon, AV ep. 1 5h40–5h43; dono: "a fogueira é bem maior, com ossos, um símbolo de ossos no topo com um
+    crânio de cervo"; "a chama de proteção é amarela e com sigilos de energia saindo como brasa"): base r 4,4 (colisão
+    r 4,8), 14 camadas de toras em grade sobre um monte de ossos e crânios, varões em pirâmide até 12 m com peles,
+    ossos amarrados e crânios pendurados; no topo (y 14,2) a roda r 2,6 com 8 raios de fêmur, costelas e 14 chifres,
+    e o crânio de cervo com a galhada (×1,6). Chama AMARELA; os SIGILOS são partículas novas (`glyphs: true` em
+    `cfg.particles`, `sigilTexture` em `glbArena.js`: 4 desenhos em canvas, mistura aditiva; PROPOSTA o desenho).
+    10 estacas em volta, alternando tocha e escudo de couro com crânio espetado. A arena abriu: bounds r 18,5, spawns
+    z ±10,5 (antes os lutadores nasciam colados na fogueira), casas e muro 2 m mais longe, câmera r 24.
+  - Sem barracas (dono: "não tem barracas de acampamento em Treb Ciach"); tochas acesas também de dia.
+  - A aura da noite (print do ep. mandado pelo dono: flores e mato ciano no escuro, bétulas, nabos-lanterna com
+    rosto): `ghost_flower` (110 canteiros), `grass_tuft`/`irish_grass`/`birch_bark` com brilho ciano só na
+    pós-tempestade, 18 bétulas, 6 forcas com nabo-lanterna entalhado.
+  - Vila (o mapa da wiki e AV ep. 1 5h08/5h39): 8 casas compridas de enxaimel (base de pedra, esteios, travessas e
+    mãos-francesas, palha íngreme com cumeeira de musgo e galhos cruzados, chaminé, portadas, lenha); ruas de pedra,
+    calçamento em volta da fogueira, poças, mato alto; cercas de pau a pique, a horta cercada, o quadro de avisos,
+    lanternas de ferro, árvores velhas. PROPOSTA: o riacho com cerca e ponte a leste (no mapa ele corta a vila).
+  - Texturas novas em `arenaTextures.js` (pelo nome do material): irish_grass, village_mud, cobble_street, wattle_daub,
+    thatch_straw, thatch_old, thatch_moss, oak_timber, rough_wood, field_stone(_dark), bone_skull, hide_drape.
+  - `TREB_CIACH`: dia nublado (céu cinza chapado, luz de cima e difusa, névoa clara com 4 bancos em volta, fumaça da
+    fogueira). `TREB_CIACH_TEMPESTADE`: noite azul (fogo e tochas escondidos; janelas, lanternas, nabos e brasas com
+    brilho azul — PROPOSTA; flores e mato ciano; névoa azul e fumaça azulada em toda parte). A fogueira continua ACESA
+    e amarela à noite, com os sigilos (dono: "devia estar acesa mesmo no mapa de noite com chamas amarelas e sigilos de
+    conhecimento"; no ep. 2 ela amanhece apagada) e os RAIOS da tempestade (`lightning`, como no Orfanato).
+  - O SÍMBOLO DO RITUAL dourado no chão (dono: "faltou o símbolo do ritual da chama de proteção em dourado no chão em
+    volta da fogueira"): `DECAL_protectionSigil` 17,6 m com a textura `protection_sigil` (anéis r 5–8,3 m, 12 raios,
+    12 sigilos, nós; brilha). PROPOSTA o desenho.
+  - Sem poças (dono: "por que tem poças de lodo no mapa? não era pra ter"): saíram as poças do Treb Ciach e as 3 da
+    Mansão (`arena_mansao.py`: corredor e quarto — a do quarto aparecia embaixo do tapete), e o `materials` da
+    MANSAO_LUTA que tingia a poça.
+- **Página Sobre, elemento Intenção (dono: "está faltando o elemento de Intenção, o elemento de alguns personagens de
+  Hexatombe"):** card novo (wiki "Intenção"): União Impossível de Sangue e Conhecimento, da Coroa de Espinhos. Poderes
+  de Intenção em Hexatombe: Juan/Henri (Desejo Diabólico), Jasper (Filho da Dor), Remi (Novo Caminho), Maria (Sabor do
+  Silêncio) e Lena (Sede de Vingança); as máscaras dos Mascarados foram influenciadas (Elmo do Colosso, Máscara de
+  Alê). No jogo nenhum lutador tem `element: 'intencao'` (o Henri segue Sangue): o texto do card é fixo.
+- **Entrada da luta (`Match.js`):** no "3, 2, 1" os dois andavam até 1,1 m do meio — no Treb Ciach o meio é a fogueira e
+  eles entravam nela. Agora o alvo recua 0,25 m por vez enquanto `arena.blocksPoint(alvo, 0,9)`.
+
 ## v4.45.0 — A Vigília
 
 - **Mapas pendentes (levantamento):** dos 8 lugares do repertório (`docs/REFERENCIAS-MAPAS.md`), faltavam 6: Acampamento

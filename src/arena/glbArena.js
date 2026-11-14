@@ -400,7 +400,39 @@ function makeMist(group, o) {
 }
 
 // Partículas do ambiente (poeira, folhas, cinzas, mosquitos na luz)
+// SIGILOS DE ENERGIA (o.glyphs): em vez de pontinhos, cada partícula é um sigilo brilhante desenhado em canvas
+// (4 desenhos, um grupo para cada), subindo como brasa — a chama de proteção do Treb Ciach (dono: "a chama de proteção é
+// amarela e com sigilos de energia saindo como brasa"). PROPOSTA: o desenho dos sigilos (traços e círculos simples).
+function sigilTexture(k, color) {
+  const s = 64;
+  const c = document.createElement('canvas');
+  c.width = c.height = s;
+  const g = c.getContext('2d');
+  const col = new THREE.Color(color);
+  const css = `rgb(${(col.r * 255) | 0},${(col.g * 255) | 0},${(col.b * 255) | 0})`;
+  g.strokeStyle = css;
+  g.shadowColor = css;
+  g.shadowBlur = 8;
+  g.lineWidth = 4;
+  g.lineCap = 'round';
+  g.translate(s / 2, s / 2);
+  g.beginPath();
+  if (k === 0) { g.arc(0, 0, 14, 0, Math.PI * 2); g.moveTo(0, -22); g.lineTo(0, 22); g.moveTo(-10, 8); g.lineTo(10, -8); }
+  else if (k === 1) { g.moveTo(-14, 18); g.lineTo(0, -20); g.lineTo(14, 18); g.moveTo(-8, 4); g.lineTo(8, 4); g.moveTo(0, -20); g.lineTo(0, -26); }
+  else if (k === 2) { g.arc(0, -6, 9, Math.PI * 0.2, Math.PI * 1.8); g.moveTo(0, 3); g.lineTo(0, 22); g.moveTo(-12, 14); g.lineTo(12, 14); }
+  else { g.moveTo(-16, -16); g.lineTo(16, 16); g.moveTo(16, -16); g.lineTo(-16, 16); g.moveTo(0, 0); g.arc(0, 0, 7, 0, Math.PI * 2); }
+  g.stroke();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
 function makeParticles(group, o) {
+  if (o.glyphs) {
+    // 4 grupos, cada um com um sigilo; a cor vai na textura (o material fica branco)
+    const parts = [0, 1, 2, 3].map((k) => makeParticles(group, { ...o, glyphs: false, count: Math.ceil((o.count ?? 40) / 4), map: sigilTexture(k, o.color), color: 0xffffff }));
+    return { update(dt) { for (const p of parts) p.update(dt); } };
+  }
   const n = o.count ?? 300;
   const pos = new Float32Array(n * 3);
   const vel = new Float32Array(n * 3);
@@ -415,7 +447,10 @@ function makeParticles(group, o) {
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const pts = new THREE.Points(g, new THREE.PointsMaterial({ color: o.color, size: o.size ?? 0.08, transparent: true, opacity: o.opacity ?? 0.6, depthWrite: false }));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({
+    color: o.color, size: o.size ?? 0.08, transparent: true, opacity: o.opacity ?? 0.6, depthWrite: false,
+    ...(o.map ? { map: o.map, blending: THREE.AdditiveBlending, fog: false } : {}),
+  }));
   group.add(pts);
   return {
     update(dt) {

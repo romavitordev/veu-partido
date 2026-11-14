@@ -96,10 +96,15 @@ export class Match {
     const dz = b.z - a.z;
     const distance = Math.hypot(dx, dz) || 1;
     const midpoint = { x: (a.x + b.x) / 2, z: (a.z + b.z) / 2 };
-    this.entranceTargets = [
-      { x: midpoint.x - (dx / distance) * 1.1, z: midpoint.z - (dz / distance) * 1.1 },
-      { x: midpoint.x + (dx / distance) * 1.1, z: midpoint.z + (dz / distance) * 1.1 },
-    ];
+    // os dois andam um até o outro e param a 1,1 m do meio — ou ANTES do obstáculo que estiver no meio (a fogueira do
+    // Treb Ciach: o dono viu os lutadores entrando nela durante o "3, 2, 1")
+    const arena = this.world.arena;
+    const blocked = (p) => (arena && arena.blocksPoint ? arena.blocksPoint(p, 0.9) : false);
+    let gap = 1.1;
+    const at = (sign) => ({ y: 0, x: midpoint.x + sign * (dx / distance) * gap, z: midpoint.z + sign * (dz / distance) * gap });
+    while (gap < distance / 2 && (blocked(at(-1)) || blocked(at(1)))) gap += 0.25;
+    gap = Math.min(gap, distance / 2);
+    this.entranceTargets = [at(-1), at(1)];
     this.entranceReadyAt = nextLineAt + POST_DIALOGUE_PAUSE;
     this.entranceReadyShown = false;
     for (const f of this.fighters) {

@@ -279,8 +279,6 @@ table('corrB_side', (8.6, 0, 1.45), (0.9, 0.42))
 candle('corrB_side_candle', (8.6, 0.79, 1.45))
 frame('corrB_portrait', (14.6, 1.9, -1.88), (0.7, 0.9))
 sconce('corrB_sconce', (10, 1.9, 1.87), math.pi)
-# a goteira: mancha no chão
-cyl('corrB_puddle', (13.6, 0.004, 0.6), 0.45, 0.008, M['water'], seg=16)
 
 # =============================================================== BIBLIOTECA (x 16…30): 2º encontro
 room('biblio', 16, 30, -6.5, 6.5)
@@ -345,9 +343,6 @@ for s in (-1, 1):
 armchair('quarto_arm', (40.4, 0, 7.6), math.pi * 0.75)
 table('quarto_table', (42.0, 0, 8.6), (0.8, 0.8), round_=True, h=0.7)
 candle('quarto_t_candle', (42.0, 0.71, 8.6))
-# a goteira do teto: a poça grande no meio do quarto
-cyl('quarto_puddle', (49, 0.004, 1.5), 1.1, 0.008, M['water'], seg=20)
-cyl('quarto_puddle2', (50.3, 0.004, 2.3), 0.6, 0.008, M['water'], seg=16)
 chandelier('FLICKER_quarto_chand1', (45, 2.5, 0))
 chandelier('FLICKER_quarto_chand2', (55, 2.5, 0))
 sconce('quarto_sconce1', (38.12, 1.9, 6.0), math.pi / 2)

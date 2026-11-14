@@ -858,7 +858,152 @@ export const ARENA_TEXTURES = {
     }
     noise(g, s, ['#3a1a10', '#b06a50'], 2000, [1, 3], 0.35);
   }, { roughness: 0.9 }),
+
+  // ---------------- Treb Ciach (A Vigília; o mapa da wiki e AV ep. 1 5h08/5h39)
+  // a grama irlandesa: verde escuro e úmido, trevos e talos
+  irish_grass: () => tex(256, 3, (g, s) => {
+    g.fillStyle = '#3e5030'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#2e4024', '#4a5e36', '#566a3e', '#34442a'], 7000, [1, 3], 0.55);
+    g.strokeStyle = 'rgba(26,40,18,0.5)';
+    for (let i = 0; i < 700; i++) { const x = Math.random() * s, y = Math.random() * s; g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-2, 2), y - rnd(3, 8)); g.stroke(); }
+    for (let i = 0; i < 30; i++) { g.fillStyle = 'rgba(70,58,40,0.35)'; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(6, 16), rnd(4, 10), rnd(0, 3), 0, Math.PI * 2); g.fill(); } // terra aparecendo
+  }, { roughness: 1 }),
+  // a lama batida da praça: terra molhada, marcas de roda e de pé, pedrinhas
+  village_mud: () => tex(512, 5, (g, s) => {
+    g.fillStyle = '#4a3c2e'; g.fillRect(0, 0, s, s);
+    for (let i = 0; i < 60; i++) { g.fillStyle = `rgba(${rnd(30, 50) | 0},${rnd(24, 38) | 0},${rnd(18, 28) | 0},0.4)`; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(10, 50), rnd(6, 28), rnd(0, 3), 0, Math.PI * 2); g.fill(); }
+    noise(g, s, ['#2e241a', '#5e4e3c', '#6a5a46'], 9000, [1, 3], 0.45);
+    g.strokeStyle = 'rgba(28,20,14,0.45)'; g.lineWidth = 4;
+    for (let i = 0; i < 4; i++) { const y = rnd(0, s); g.beginPath(); g.moveTo(0, y); for (let x = 0; x <= s; x += 32) g.lineTo(x, y + Math.sin(x / 60 + i) * 10); g.stroke(); } // as marcas de roda
+    for (let i = 0; i < 160; i++) { g.fillStyle = ['#7a7468', '#5e5a52', '#8a8478'][i % 3]; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(1.5, 4), rnd(1, 3), rnd(0, 3), 0, Math.PI * 2); g.fill(); }
+  }, { roughness: 0.92 }),
+  // a rua de PEDRA (AV ep. 1 5h39): seixos arredondados e desiguais, com lama e musgo nas juntas
+  cobble_street: () => tex(512, 2.2, (g, s) => {
+    g.fillStyle = '#2e2820'; g.fillRect(0, 0, s, s);
+    const n = 9;
+    const cw = s / n;
+    for (let r = 0; r < n + 1; r++) for (let c = -1; c < n + 1; c++) {
+      const x = c * cw + (r % 2) * cw / 2 + rnd(-5, 5), y = r * cw + rnd(-5, 5);
+      const v = rnd(0.75, 1.15);
+      g.fillStyle = `rgb(${110 * v | 0},${104 * v | 0},${94 * v | 0})`;
+      g.beginPath(); g.ellipse(x, y, cw * rnd(0.36, 0.46), cw * rnd(0.32, 0.42), rnd(0, 3), 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.08)'; g.beginPath(); g.ellipse(x - 4, y - 5, cw * 0.2, cw * 0.14, 0, 0, Math.PI * 2); g.fill(); // o brilho gasto
+    }
+    noise(g, s, ['#4a5a30', '#3a3226'], 1600, [2, 5], 0.35); // musgo e lama nas juntas
+    noise(g, s, ['#000', '#fff'], 3000, [1, 2], 0.12);
+  }, { roughness: 0.85 }),
+  // o reboco de barro claro entre as vigas: manchado, rachado, sujo de lama embaixo
+  wattle_daub: () => tex(256, 2, (g, s) => {
+    g.fillStyle = '#c4b89c'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#a89a7c', '#d6ccb2', '#8e826a'], 6000, [1, 5], 0.4);
+    g.strokeStyle = 'rgba(70,60,44,0.4)'; g.lineWidth = 1;
+    for (let i = 0; i < 14; i++) { let x = rnd(0, s), y = rnd(0, s); g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 5; k++) { x += rnd(-12, 12); y += rnd(4, 14); g.lineTo(x, y); } g.stroke(); }
+    const grd = g.createLinearGradient(0, s * 0.6, 0, s);
+    grd.addColorStop(0, 'rgba(70,56,40,0)'); grd.addColorStop(1, 'rgba(70,56,40,0.35)');
+    g.fillStyle = grd; g.fillRect(0, 0, s, s);
+  }, { roughness: 1 }),
+  // a PALHA grossa: feixes de colmo, fios claros e escuros; a velha tem musgo
+  thatch_straw: () => tex(256, 1.4, (g, s) => thatch(g, s, [150, 124, 76], 0)),
+  thatch_old: () => tex(256, 1.4, (g, s) => thatch(g, s, [112, 94, 60], 0.35)),
+  thatch_moss: () => tex(128, 1, (g, s) => {
+    g.fillStyle = '#4a5230'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#3a4224', '#5e6a3a', '#6a6440', '#2e3420'], 3000, [1, 4], 0.6);
+  }, { roughness: 1 }),
+  // o carvalho escuro do enxaimel e a madeira bruta das portas, cercas e lenha
+  oak_timber: () => tex(256, 1.2, (g, s) => woodGrain(g, s, [66, 46, 30])),
+  rough_wood: () => tex(256, 1.2, (g, s) => woodGrain(g, s, [98, 74, 50])),
+  // a pedra de campo das bases, chaminés e do muro: pedras irregulares assentadas
+  field_stone: () => tex(256, 1.6, (g, s) => fieldStone(g, s, [112, 108, 100])),
+  field_stone_dark: () => tex(256, 1.6, (g, s) => fieldStone(g, s, [80, 78, 72])),
+  // o OSSO do crânio e dos chifres do símbolo: marfim encardido com rachaduras
+  bone_skull: () => tex(128, 0.6, (g, s) => {
+    g.fillStyle = '#d6cab0'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#b8a888', '#ece2c8', '#9a8a6a'], 2200, [1, 4], 0.4);
+    g.strokeStyle = 'rgba(80,66,44,0.5)';
+    for (let i = 0; i < 8; i++) { let x = rnd(0, s), y = rnd(0, s); g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 4; k++) { x += rnd(-10, 10); y += rnd(-10, 10); g.lineTo(x, y); } g.stroke(); }
+  }, { roughness: 0.7 }),
+  // o SÍMBOLO DO RITUAL da chama de proteção (dono: "o símbolo do ritual da chama de proteção em dourado no chão em
+  // volta da fogueira"), num quadrado de 17,6 m centrado na fogueira: dois anéis largos, os sigilos entre eles, os raios
+  // ligando ao anel de dentro (r ≈ 5 m, logo depois da fogueira) e os nós. PROPOSTA o desenho. Fundo transparente; brilha.
+  protection_sigil: () => tex(1024, 1, (g, s) => {
+    const c = s / 2;
+    const m = s / 17.6; // pixels por metro
+    g.clearRect(0, 0, s, s);
+    g.strokeStyle = '#f2c040'; g.fillStyle = '#f2c040';
+    g.shadowColor = '#ffd860'; g.shadowBlur = 14; g.lineCap = 'round';
+    const ring = (r, w) => { g.lineWidth = w; g.beginPath(); g.arc(c, c, r * m, 0, Math.PI * 2); g.stroke(); };
+    ring(8.3, 10); ring(7.7, 4); ring(5.3, 8); ring(5.0, 3);
+    // os raios entre os anéis, com um losango no meio
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      const cs = Math.cos(a), sn = Math.sin(a);
+      g.lineWidth = 4;
+      g.beginPath(); g.moveTo(c + cs * 5.3 * m, c + sn * 5.3 * m); g.lineTo(c + cs * 7.7 * m, c + sn * 7.7 * m); g.stroke();
+    }
+    // os sigilos entre os raios (traços simples: círculo cortado, flecha, olho, cruz em anel)
+    for (let i = 0; i < 12; i++) {
+      const a = ((i + 0.5) / 12) * Math.PI * 2;
+      g.save();
+      g.translate(c + Math.cos(a) * 6.5 * m, c + Math.sin(a) * 6.5 * m);
+      g.rotate(a + Math.PI / 2);
+      g.lineWidth = 5;
+      const k = 0.55 * m;
+      g.beginPath();
+      switch (i % 4) {
+        case 0: g.arc(0, 0, k, 0, Math.PI * 2); g.moveTo(0, -k * 1.5); g.lineTo(0, k * 1.5); break;
+        case 1: g.moveTo(-k, k); g.lineTo(0, -k * 1.2); g.lineTo(k, k); g.moveTo(-k * 0.5, k * 0.2); g.lineTo(k * 0.5, k * 0.2); break;
+        case 2: g.ellipse(0, 0, k * 1.2, k * 0.6, 0, 0, Math.PI * 2); g.moveTo(k * 0.25, 0); g.arc(0, 0, k * 0.25, 0, Math.PI * 2); break;
+        default: g.arc(0, 0, k * 0.8, 0, Math.PI * 2); g.moveTo(-k * 1.2, 0); g.lineTo(k * 1.2, 0); g.moveTo(0, -k * 1.2); g.lineTo(0, k * 1.2);
+      }
+      g.stroke();
+      g.restore();
+    }
+    // os nós no anel de fora
+    for (let i = 0; i < 24; i++) {
+      const a = (i / 24) * Math.PI * 2;
+      g.beginPath(); g.arc(c + Math.cos(a) * 8.3 * m, c + Math.sin(a) * 8.3 * m, i % 2 ? 6 : 10, 0, Math.PI * 2); g.fill();
+    }
+  }, { glow: 1.4 }),
+  // os panos e as peles da fogueira: couro escuro com dobras
+  hide_drape: () => tex(256, 1.5, (g, s) => {
+    g.fillStyle = '#3a2c22'; g.fillRect(0, 0, s, s);
+    for (let x = 0; x < s; x += rnd(10, 22)) { g.fillStyle = `rgba(${rnd(10, 30) | 0},${rnd(8, 20) | 0},6,0.4)`; g.fillRect(x, 0, rnd(3, 8), s); } // as dobras caindo
+    noise(g, s, ['#2a1e16', '#5a4632', '#4a3a2a'], 3000, [1, 4], 0.45);
+  }, { roughness: 0.95 }),
 };
+
+// a palha do telhado: fios inclinados em camadas; `moss` (0–1) põe manchas de musgo
+function thatch(g, s, [R, G, B], moss) {
+  g.fillStyle = `rgb(${R * 0.7 | 0},${G * 0.7 | 0},${B * 0.7 | 0})`; g.fillRect(0, 0, s, s);
+  for (let i = 0; i < 1600; i++) {
+    const k = rnd(0.6, 1.25);
+    g.strokeStyle = `rgba(${R * k | 0},${G * k | 0},${B * k | 0},0.75)`;
+    g.lineWidth = rnd(1, 2);
+    const x = rnd(0, s), y = rnd(-10, s);
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-3, 3), y + rnd(14, 30)); g.stroke();
+  }
+  for (let y = 0; y < s; y += 32) { g.fillStyle = 'rgba(30,22,12,0.35)'; g.fillRect(0, y, s, 3); } // as fiadas de colmo
+  if (moss) for (let i = 0; i < 26; i++) { g.fillStyle = `rgba(70,84,44,${moss})`; g.beginPath(); g.ellipse(rnd(0, s), rnd(0, s), rnd(8, 26), rnd(5, 14), 0, 0, Math.PI * 2); g.fill(); }
+}
+
+// pedra de campo assentada: blocos irregulares com junta de barro
+function fieldStone(g, s, [R, G, B]) {
+  g.fillStyle = '#3a342c'; g.fillRect(0, 0, s, s);
+  let y = 0;
+  while (y < s) {
+    const h = rnd(22, 40);
+    let x = rnd(-20, 0);
+    while (x < s) {
+      const w = rnd(28, 60);
+      const v = rnd(0.78, 1.15);
+      g.fillStyle = `rgb(${R * v | 0},${G * v | 0},${B * v | 0})`;
+      g.beginPath(); g.roundRect(x + 2, y + 2, w - 4, h - 4, rnd(4, 10)); g.fill();
+      x += w;
+    }
+    y += h;
+  }
+  noise(g, s, ['#000', '#fff', '#4a5a30'], 3000, [1, 3], 0.18);
+}
 
 // tábuas pintadas e gastas (o circo): faixas horizontais, junta escura e a madeira aparecendo onde a tinta caiu
 function planks(paint, wood, meters) {
