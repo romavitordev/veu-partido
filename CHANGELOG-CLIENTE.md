@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.44.2 — Chiado da Torre
+- A Torre agora tem o filtro de transmissão em todas as salas; na sala do chefe o chiado fica mais forte.
+
 ## v4.42.0 — Sinais da Torre
 - NOVA MASMORRA DO OUTRO LADO: a TORRE DA TV VARMINHO, o território do Estrangeiro (Sinais do Outro Lado). Recepção, redação, estúdio, laboratório, os Becos e a Sala do Sino, com Doppelgangers e Interflorados de roupas variadas.
 - CHEFE: O ESTRANGEIRO. Ninguém lembrava dele. Ele solta A PRESENÇA, uma onda que paralisa e dá ORDENS. Corra para a CÁPSULA que se abrir: lá dentro você fica protegido e o SINO o deixa EXPOSTO. Vencido, a saída é deitar numa cápsula.

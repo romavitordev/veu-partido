@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.44.1';
+export const VERSION = '4.44.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.44.2',
+    date: '2026-11-14',
+    title: 'Chiado da Torre',
+    items: [
+      'A Torre agora tem o filtro de transmissão em todas as salas; na sala do chefe o chiado fica mais forte.',
+    ],
+  },
   {
     v: '4.44.1',
     date: '2026-11-14',

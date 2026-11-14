@@ -1,5 +1,11 @@
 # Registro administrativo de alterações
 
+## v4.44.2 — Chiado da Torre
+
+- **Chiado de TV durante toda a fase da Torre:** o filtro de transmissão agora permanece entre as salas e fica mais
+  intenso na sala do chefe; os cortes de sinal são mais frequentes durante a luta final. O efeito é removido ao sair
+  da dungeon e respeita a preferência por movimento reduzido.
+
 ## v4.44.1 — Teste da Torre
 
 - **Teste na aba separada (dono: "teste então"), Torre, Alheios e o kit numa fase:**

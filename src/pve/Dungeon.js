@@ -387,6 +387,18 @@ export class Dungeon {
     // TORRE: os feixes de cabos no teto de cada sala (dono, 2026-11-14: "cheias de tubos e fios ligados")
     if (this.roomCables) { w.scene.remove(this.roomCables); disposeCables(this.roomCables); this.roomCables = null; }
     if (this.D.id === 'estrangeiro' && !M.maze && M.kind !== 'boss') this.roomCables = torreRoomCables(w, M.rects);
+    // o CHIADO DE TV na fase toda da Torre (dono, 2026-11-14: "esse filtro da cutscene poderia ter em toda a fase, todas
+    // as salas, mas um pouco mais fraco, e na última sala do boss fica mais forte"); styles.css #sigamb
+    if (this.D.id === 'estrangeiro') {
+      if (!this.sigAmb) {
+        this.sigAmb = document.createElement('div');
+        this.sigAmb.id = 'sigamb';
+        this.sigAmb.innerHTML = '<i class="snow"></i><i class="lines"></i><i class="band"></i>';
+        this.hud.root.insertBefore(this.sigAmb, this.hud.root.firstChild); // embaixo do HUD (não cobre as barras)
+      }
+      this.sigAmb.classList.toggle('boss', M.kind === 'boss');
+      this.sigAmbHitAt = this.stats.time + 2;
+    }
     for (const d of this.doors) d.dispose();
     this.doors = [];
     for (const d of this.drawers) d.dispose();
@@ -1805,6 +1817,14 @@ export class Dungeon {
     if (this.drip <= 0 && this.ambience) { this.drip = 1.6 + Math.random() * 2.6; this.audio.play('drip', { volume: 0.35 + Math.random() * 0.25, pitch: 0.9 + Math.random() * 0.25 }); }
     // o brilho dos cabos da Torre
     if (this.roomCables) pulseCables(this.roomCables, this.stats.time);
+    // o chiado da Torre: de vez em quando um corte de sinal (mais seguido na sala do chefe)
+    if (this.sigAmb && this.stats.time > this.sigAmbHitAt) {
+      const boss = this.sigAmb.classList.contains('boss');
+      this.sigAmbHitAt = this.stats.time + (boss ? 2.5 + Math.random() * 4 : 6 + Math.random() * 9);
+      this.sigAmb.classList.remove('hit');
+      void this.sigAmb.offsetWidth;
+      this.sigAmb.classList.add('hit');
+    }
     // as melhorias de regeneração (Carne Dura)
     for (const q of this.players) if (q.pveMods && q.pveMods.regenHp > 0 && q.state !== 'ko' && !['hitstun', 'downed', 'stun', 'grabbed'].includes(q.state)) q.health = Math.min(q.maxHealth, q.health + q.maxHealth * q.pveMods.regenHp * dt);
 
@@ -2111,6 +2131,7 @@ export class Dungeon {
     if (document.pointerLockElement) document.exitPointerLock();
     this.bossIntro && this.bossIntro.dispose();
     if (this.roomCables) { disposeCables(this.roomCables); this.roomCables = null; }
+    if (this.sigAmb) { this.sigAmb.remove(); this.sigAmb = null; }
     this.ambience && this.ambience.dispose();
     this.brain && this.brain.dispose();
     this.pressure && this.pressure.dispose();

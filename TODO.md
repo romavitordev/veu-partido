@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.44.1 (teste da Torre: Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -202,6 +202,7 @@
         quarto escuro).
   - [x] LABIRINTO dos Becos (`pve/maze.js`): paredes sorteadas a cada visita, Alheios surgindo nos corredores.
   - [x] Barras de vida da Torre com chiado/transmissão (chefe trava em interferência durante a Presença).
+  - [x] Chiado de TV em toda a fase, com interferência mais forte na sala do chefe (v4.44.2).
   - [x] Cenas de entrada (`pve/torreIntros.js`): o Estrangeiro (o sino toca, ele se forma), o Rastropoda (pela lente
         da câmera, REC) e o Bilu (os olhos no escuro, o clarão).
   - [x] Tela dividida: especiais e cenas em tela cheia; trava de mira com linha de visão; cápsulas de loot visíveis.

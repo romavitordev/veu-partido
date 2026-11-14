@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.44.2 — Chiado da Torre
+
+### Adicionado
+- Filtro de transmissão em todas as salas da Torre, mais forte na sala do chefe.
+
 ## v4.44.1 — Teste da Torre
 
 ### Corrigido

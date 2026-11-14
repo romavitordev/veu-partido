@@ -1858,3 +1858,21 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
   #koFx.show .ko-ring, #koFx.show .ko-streak.a, #koFx.show .ko-streak.b, #koFx.show .ko-word { animation: none; }
   #koFx.show .ko-word span { animation: koFlash .01s reverse forwards; opacity: 1; }
 }
+
+/* O CHIADO DA TORRE na fase toda (2026-11-14, pedido do dono): o mesmo véu das cenas (#sigfx), mais fraco nas salas e
+   mais forte na sala do chefe (.boss); .hit = um corte de sinal de vez em quando; embaixo do HUD */
+#sigamb { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+#sigamb i { position: absolute; inset: 0; }
+#sigamb .lines { background: repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px); animation: sigRoll 7s linear infinite; }
+#sigamb .snow { opacity: .035; background: repeating-radial-gradient(circle at 17% 31%, rgba(255,255,255,.9) 0 1px, transparent 1px 3px), repeating-radial-gradient(circle at 71% 63%, rgba(200,255,200,.8) 0 1px, transparent 1px 4px); background-size: 7px 9px, 11px 6px; animation: sigSnow .12s steps(2) infinite; mix-blend-mode: screen; }
+#sigamb .band { top: -12%; bottom: auto; height: 10%; background: linear-gradient(180deg, transparent, rgba(190,255,190,.05) 45%, rgba(190,255,190,.08) 50%, transparent); animation: sigBand 9s linear infinite; }
+#sigamb.boss .lines { background: repeating-linear-gradient(0deg, rgba(0,0,0,.26) 0 1px, transparent 1px 3px); animation-duration: 4.5s; }
+#sigamb.boss .snow { opacity: .075; }
+#sigamb.boss .band { animation-duration: 5s; height: 14%; }
+#sigamb.boss::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(10,40,14,.35)); }
+#sigamb.hit .snow { animation: sigSnow .12s steps(2) infinite, sigAmbHit .5s ease-out; }
+#sigamb.boss.hit .snow { animation: sigSnow .12s steps(2) infinite, sigAmbHitBoss .6s ease-out; }
+@keyframes sigBand { from { transform: translateY(0); } to { transform: translateY(1300%); } }
+@keyframes sigAmbHit { 0% { opacity: .16; } 100% { opacity: .035; } }
+@keyframes sigAmbHitBoss { 0% { opacity: .3; } 100% { opacity: .075; } }
+@media (prefers-reduced-motion: reduce) { #sigamb .lines, #sigamb .band { animation: none; } #sigamb .snow { animation: none; } }
