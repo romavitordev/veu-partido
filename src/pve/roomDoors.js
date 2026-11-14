@@ -366,9 +366,25 @@ export class Drawer {
     const glow = new THREE.Mesh(new THREE.CircleGeometry(0.95, 24), new THREE.MeshBasicMaterial({ color: 0x5aff6a, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false }));
     glow.rotation.x = -Math.PI / 2;
     glow.position.y = 0.03;
-    g.add(base, glass, liquid, lid, glow);
+    // EM PÉ ou DEITADA (dono, 2026-11-14: "algumas cápsulas têm que ficar em pé e outras deitadas"): a deitada fica
+    // sobre dois pés, e a tampa desliza de lado. spot.lying força; sem ele, metade sorteada
+    const body = new THREE.Group();
+    body.add(base, glass, liquid, lid);
+    const lying = this.spot.lying ?? Math.random() < 0.5;
+    if (lying) {
+      body.rotation.z = Math.PI / 2;
+      body.position.set(0.55, 0.42, 0);
+      for (const lx of [-0.32, 0.32]) {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.12, 0.42), steel);
+        leg.position.set(lx, 0.06, 0);
+        g.add(leg);
+      }
+      glow.scale.set(1.25, 0.8, 1);
+    }
+    g.add(body, glow);
     g.scale.setScalar(1.4); // da altura do peito (1,5 m): visível por cima dos móveis
     this.podGlow = glow;
+    this.podBody = body;
     if (content && content.kind === 'key') {
       const km = new THREE.MeshBasicMaterial({ color: 0xe8c050, toneMapped: false });
       const key = new THREE.Group();
@@ -377,7 +393,7 @@ export class Drawer {
       stem.position.y = -0.06;
       key.add(ring, stem);
       key.position.y = 0.6; // boiando no líquido
-      g.add(key);
+      body.add(key);
       this.keyMesh = key;
     }
     this.w.scene.add(g);

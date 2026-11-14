@@ -28,7 +28,7 @@ export const DUNGEONS = {
     //   exits   as portas de saída: x/z na face da parede, face = para onde a porta olha (para dentro), w = largura;
     //           stairs = a escada (sem porta), que sempre leva ao outro andar
     //   floor   0 = térreo, 1 = 2º andar (a porta que troca de andar avisa ↑ / ↓)
-    route: { rooms: [3, 5], monsters: [2, 4], stalkWeight: 0.35 },
+    route: { rooms: [5, 6], monsters: [2, 4], stalkWeight: 0.35 }, // FASES SEPARADAS (2026-11-14): mais salas (PROPOSTA)
     start: 'hall',
     bossModule: 'quarto',
     modules: {
@@ -184,7 +184,7 @@ export const DUNGEONS = {
     killsLabel: 'Zumbis',
     bossDownText: 'A DEGOLIFICADA SE DISSIPOU',
     bossCenter: 81,
-    route: { rooms: [3, 5], monsters: [2, 4], stalkWeight: 0.35 },
+    route: { rooms: [5, 6], monsters: [2, 4], stalkWeight: 0.35 }, // FASES SEPARADAS (2026-11-14): mais salas (PROPOSTA)
     start: 'corredor',
     bossModule: 'biblioteca',
     modules: {
@@ -315,10 +315,14 @@ export const DUNGEONS = {
     killsLabel: 'Alheios',
     bossDownText: 'O ESTRANGEIRO SUMIU NA INTERFERÊNCIA',
     bossCenter: 82,
-    route: { rooms: [3, 5], monsters: [2, 4], stalkWeight: 0.35 },
+    route: { rooms: [7, 9], monsters: [2, 4], stalkWeight: 0.35 }, // FASES SEPARADAS (2026-11-14): mais salas (PROPOSTA)
     // os MINIBOSSES sorteados (pedido do dono, 2026-11-13: "aparecem em salas diferentes e têm chance de aparecer, não é
     // sempre"; pve/alheioMinis.js): a chance de cada sala, no máximo uma vez por tentativa. PROPOSTA: os números.
+    // SEMPRE (dono, 2026-11-14: "sempre acontecer 1x cada mini boss na fase do Estrangeiro e no final o Boss, mas ser
+    // aleatório quando vai vir"): `always` sorteia em que sala da rota cada um vem (Dungeon.scheduleMinis); `rooms` diz
+    // onde cada um pode aparecer
     minibosses: {
+      always: true,
       rastropoda: { rooms: { analise: 0.65, laboratorio: 0.3, casulos: 0.2, armarios: 0.25 } },
       bilu: { rooms: { escuro: 0.75, becos: 0.35, fusca: 0.3 } },
     },
@@ -636,6 +640,27 @@ export function advanceAfterClear(run, cleared) {
 // profundidade (a mesma dungeon de novo, mais funda): +12% de vida e dano por nível
 export function depthScale(depth) {
   return 1 + 0.12 * Math.max(0, depth - 1);
+}
+
+// ------------------------------------------------ FASES SEPARADAS (dono, 2026-11-14: "separar as fases assim como no
+// vampire survivors… várias salas até o boss, mas únicas e com final, sem levar da escola Nostradamus pra mansão")
+// Cada tentativa é UMA fase, escolhida no começo; ela começa no nível 1 e acaba no chefe. A fase seguinte da história
+// abre quando a anterior é vencida. A profundidade da fase é a da ordem da história (Escola 1, Mansão 2, Torre 3): os
+// inimigos ficam com a força para que cada uma foi ajustada.
+export function phaseDepth(id) {
+  return (DUNGEONS[id] && DUNGEONS[id].minDepth) || 1;
+}
+export function phaseCleared(campaign, id) {
+  return !!((campaign.phases || []).includes(id) || (campaign.bestTimes && campaign.bestTimes[id]));
+}
+export function phaseUnlocked(campaign, id) {
+  const i = DUNGEON_ORDER.indexOf(id);
+  return i === 0 || (i > 0 && phaseCleared(campaign, DUNGEON_ORDER[i - 1]));
+}
+// o recorde da fase (por dificuldade; `bestTimes[id]` é o melhor de todas)
+export function phaseRecord(campaign, id, difficulty = null) {
+  const t = campaign.bestTimes || {};
+  return difficulty ? t[`${id}:${difficulty}`] ?? null : t[id] ?? null;
 }
 
 // dungeons que podem vir agora

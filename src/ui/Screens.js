@@ -1721,7 +1721,9 @@ export class CommandsScreen {
     this.render();
   }
   pages() {
-    return [...this.defs.map((d, i) => ({ title: `P${i + 1}: ${d.name}`, html: moveListHTML(d) })), { title: t('cmd.controls'), html: controlsTable() }];
+    // uma ficha que não sabe se listar (um chefe/Devorado) não pode derrubar a tela inteira
+    const safe = (d) => { try { return moveListHTML(d); } catch (e) { console.warn('moveListHTML', d && d.id, e); return '<p>—</p>'; } };
+    return [...this.defs.map((d, i) => ({ title: `P${i + 1}: ${d.name}`, html: safe(d) })), { title: t('cmd.controls'), html: controlsTable() }];
   }
   render() {
     const pages = this.pages();

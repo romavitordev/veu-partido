@@ -40,6 +40,7 @@ import { EstrangeiroBrain } from './estrangeiro.js';
 import { SinoMechanics } from './sino.js';
 import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
+import { actionLabel } from '../ui/labels.js';
 import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
 
 // AS ROUPAS dos Alheios da Torre (PROPOSTA: gente comum de Varminho que virou hospedeiro; os Homens de Terno com ternos
@@ -189,6 +190,7 @@ export class Dungeon {
     this.routeLen = rollRouteLength(this.D, run.depth);
     this.step = 0;
     this.visited = [];
+    this.scheduleMinis();
     this.lurk(null);
     this.ambience = this.D.arena === 'mansao' ? new MansionAmbience(this) : null; // as espiadas e a goteira são da Mansão
     w.cameraRig.distance = 4.4;
@@ -332,6 +334,7 @@ export class Dungeon {
     this.pveHud.setRun(this.run, this.run.depth);
     this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : 0);
     this.pveHud.setKeys(this.keys);
+    if (this.phaseRecord !== undefined) this.pveHud.setRecord(this.phaseRecord);
     this.pveHud.setClues(this.clues, this.cluesNeeded);
     this.pveHud.fade(true, 0);
     requestAnimationFrame(() => this.pveHud && this.pveHud.fade(false, 1.2));
@@ -407,7 +410,11 @@ export class Dungeon {
       this.doors.push(d);
     }
     // as saídas: cada uma com a sala sorteada e quantos monstros tem (o número aparece na porta)
+    // os minibosses que SEMPRE vêm (a Torre): se a rota ia acabar antes deles, ela cresce uma sala
+    const owed = this.minisOwed();
+    if (owed.length && M.kind !== 'boss' && this.step >= this.routeLen) this.routeLen = this.step + 1;
     this.exits = rollExits(this.D, id, { step: this.step, total: this.routeLen, visited: this.visited, prevCount: via ? via.count : 0 });
+    this.forceMiniRooms(this.exits, M);
     const padded = rollLock(this.D, id, this.exits);
     for (const slot of Object.keys(M.exits)) {
       const spot = M.exits[slot];
@@ -522,6 +529,60 @@ export class Dungeon {
     return Math.round(40 * (1 + 0.5 * Math.max(0, this.run.depth - 1)) * (1 + (this.revives || 0)));
   }
 
+  // ------------------------------------------------ MINIBOSSES QUE SEMPRE VÊM (D.minibosses.always; a Torre)
+  // Cada um ganha uma sala da rota (sorteada, diferente da do outro); o jogador não sabe qual. Na vez dele, TODAS as
+  // portas levam a uma sala onde ele pode aparecer (D.minibosses[k].rooms).
+  scheduleMinis() {
+    const MB = this.D.minibosses;
+    this.miniAt = {};
+    if (!MB || !MB.always) return;
+    const kinds = Object.keys(MB).filter((k) => k !== 'always');
+    const slots = [];
+    for (let s = 1; s <= this.routeLen; s++) slots.push(s);
+    for (const k of kinds) {
+      const i = Math.floor(Math.random() * slots.length);
+      this.miniAt[k] = slots.splice(i, 1)[0] ?? this.routeLen;
+    }
+  }
+
+  // os que ainda faltam e já estão na vez (a sala seguinte é a deles ou passou dela)
+  minisOwed(next = this.step + 1) {
+    const MB = this.D.minibosses;
+    if (!MB || !MB.always || !this.miniAt) return [];
+    return Object.keys(this.miniAt).filter((k) => !this.met[k] && next >= this.miniAt[k]).sort((a, b) => this.miniAt[a] - this.miniAt[b]);
+  }
+
+  forceMiniRooms(exits, cur) {
+    const owed = this.minisOwed();
+    if (!owed.length) return;
+    const k = owed[0];
+    const rooms = Object.keys(this.D.minibosses[k].rooms || {}).filter((id) => this.D.modules[id]);
+    const used = new Set();
+    for (const e of exits) {
+      if (e.kind === 'boss') continue;
+      if (rooms.includes(e.to) && !used.has(e.to)) { used.add(e.to); continue; }
+      const ex = cur.exits[e.slot];
+      const cand = rooms.filter((id) => id !== this.modId && !used.has(id) && (!ex.stairs || this.D.modules[id].floor !== cur.floor));
+      if (!cand.length) continue;
+      const fresh = cand.filter((id) => !this.visited.includes(id));
+      const to = (fresh.length ? fresh : cand)[Math.floor(Math.random() * (fresh.length ? fresh : cand).length)];
+      used.add(to);
+      const m = this.D.modules[to];
+      e.to = to;
+      e.kind = m.kind;
+      e.count = m.kind === 'fight' ? Math.max(e.count || 0, this.D.route.monsters[0]) : 0;
+    }
+  }
+
+  // este miniboss vem nesta sala? (sempre: na vez dele; senão, a chance da sala)
+  miniHere(kind) {
+    const MB = this.D.minibosses;
+    if (MB && MB.always && this.miniAt && this.miniAt[kind] != null) {
+      return !this.met[kind] && this.step >= this.miniAt[kind] && !!(MB[kind].rooms || {})[this.modId];
+    }
+    return rollMiniboss(this.D, kind, this.modId, this.met);
+  }
+
   coinsOf(i) {
     return this.wallet ? this.wallet.coins(i) : 0;
   }
@@ -533,7 +594,7 @@ export class Dungeon {
 
   openRevive() {
     const price = this.revivePrice();
-    this.reviveOffer = { price, t: 12 };
+    this.reviveOffer = { price, t: 12, t0: 12, sel: this.canAffordRevive() ? 0 : 1 };
     this.audio.play('select', { volume: 0.8, pitch: 0.7 });
     this.pveHud.showRevive(this.reviveLines());
   }
@@ -542,7 +603,7 @@ export class Dungeon {
     const o = this.reviveOffer;
     const names = this.hud.names || [];
     const who = this.players.map((q, i) => ({ name: (this.coop && names[i]) || (this.coop ? `P${i + 1}` : 'Você'), coins: this.coinsOf(i), ok: this.coinsOf(i) >= o.price }));
-    return { price: o.price, t: Math.ceil(o.t), who, coop: this.coop };
+    return { price: o.price, t: o.t, left: o.t / o.t0, sel: o.sel, who, coop: this.coop };
   }
 
   updateRevive(dt) {
@@ -552,9 +613,26 @@ export class Dungeon {
     let quit = o.t <= 0;
     this.views.forEach((V, i) => {
       const pr = V.inp.pressed || {};
-      if (pr.jump && this.coinsOf(i) >= o.price && payer < 0) payer = i;
+      const mn = V.inp.menu || {};
+      // ◀ ▶ (▲ ▼) troca o cartão; A confirma o cartão marcado; B desiste direto
+      const to = mn.up || mn.left ? 0 : mn.down || mn.right ? 1 : o.sel;
+      if (to !== o.sel) { o.sel = to; this.audio.play('select'); }
+      if (pr.jump) {
+        if (o.sel === 1) quit = true;
+        else if (this.coinsOf(i) >= o.price && payer < 0) payer = i;
+        else this.audio.play('denied');
+      }
       if (pr.physical) quit = true;
     });
+    // clique/toque num cartão (só vale no aparelho local: online, a escolha viaja pelo controle)
+    const ck = this.pveHud.reviveClick;
+    if (ck !== undefined && ck !== null) {
+      this.pveHud.reviveClick = null;
+      if (!this.net) {
+        if (ck === 1) quit = true;
+        else { const i = this.players.findIndex((q, k) => this.coinsOf(k) >= o.price); if (i >= 0) payer = i; else this.audio.play('denied'); }
+      }
+    }
     if (payer >= 0) {
       this.wallet.spend(payer, o.price);
       this.reviveOffer = null;
@@ -623,7 +701,7 @@ export class Dungeon {
       this.encounter = null;
       this.unlockExits(M.kind === 'stalk' ? (M.hint || 'Uma fresta… NÃO OLHE para ela (defenda para desviar o olhar) · escolha uma porta') : null);
       // o BILU (miniboss sorteado por sala): rápido e fraco, morre e volta noutro canto
-      if (M.kind === 'stalk' && rollMiniboss(this.D, 'bilu', this.modId, this.met)) {
+      if (M.kind === 'stalk' && this.miniHere('bilu')) {
         this.met.bilu = true;
         this.bilu = new BiluStalker(this, M);
         this.pveHud.hint('Um barulho de bicho no escuro… o BILU é rápido mas fraco: ele VOLTA depois de cair');
@@ -777,7 +855,7 @@ export class Dungeon {
   startAlheioEncounter(r, count = 2) {
     const e = this.enemy;
     // o RASTROPODA (miniboss sorteado por sala: D.minibosses): sozinho, invisível, com a câmera e os sacos de farinha
-    if (rollMiniboss(this.D, 'rastropoda', this.modId, this.met)) {
+    if (this.miniHere('rastropoda')) {
       this.met.rastropoda = true;
       this.encounter = { room: r, done: false, koAt: this.world.time, zombies: true, miniboss: true };
       e.pos.set(r.spawn.x, 0, r.spawn.z);
@@ -1521,8 +1599,11 @@ export class Dungeon {
     if (!best) { V.prompt.hide(); return; }
     const btn = inp.source === 'gamepad' ? 'B' : V.i ? 'DEF' : 'E';
     const at = best.o instanceof RoomDoor ? best.o.target(v3) : best.o.pos;
-    V.prompt.show(at, best.y, `${btn}|${best.verb}`);
-    if (!pr.interact) return;
+    // o botão de BATER também abre (dono, 2026-11-14: "fico apertando o botão de bater e ele fica batendo no ar"): só
+    // com a sala calma (sem luta) e com algo ao alcance — não rouba golpe de ninguém
+    const phys = inp.source === 'gamepad' ? '' : ` / ${actionLabel(V.i, 'physical', inp.source)}`;
+    V.prompt.show(at, best.y, `${btn}${phys}|${best.verb}`);
+    if (!pr.interact && !pr.physical) return;
     // usou: o aperto é do interagir
     V.interactLatch = true;
     held.block = false; pr.block = false; pr.physical = false;
@@ -1604,9 +1685,9 @@ export class Dungeon {
     if (this.sino && !this.sino.exitCap) {
       this.sino.openExit(this.player.pos);
       this.audio.play('teleport', { volume: 0.7, pitch: 0.6 });
-      this.hud.callout('UMA CÁPSULA SE ABRIU', '#7aff4a');
+      this.hud.callout('UM LEITO SUBIU DO CHÃO', '#7aff4a');
       this.pveHud.setObjective('Deite na cápsula');
-      this.pveHud.hint('Entre no FEIXE VERDE da cápsula aberta para atravessar');
+      this.pveHud.hint('Vá até a CÁPSULA DEITADA (o anel verde) e deite nela para atravessar');
       this.hintT = 6;
       return;
     }
@@ -1812,11 +1893,16 @@ export class Dungeon {
     if (this.brain && enc && enc.boss && !enc.done) this.brain.update(this.lastDt);
     if (this.pressure && enc && enc.boss && !enc.done) this.pressure.update(this.lastDt);
     if (this.sino && enc && enc.boss && !enc.done) this.sino.update(this.lastDt);
+    // o Devorado escondido nunca aparece enquanto espreita (rede de segurança contra habilidades que o revelam)
+    if (this.enemy && this.enemy.lurking && this.enemy.visible) this.enemy.setVisible(false);
     if (this.minis) this.minis.update(this.lastDt);
     if (this.bilu) this.bilu.update(this.lastDt);
     if (this.maze && this.phase === 'explore' && !this.transit) this.maze.update(this.lastDt);
     // a Torre: a saída é DEITAR numa cápsula (pve/sino.js)
-    if (this.sino && this.sino.exitCap && this.phase !== 'exit' && this.sino.exitReached(this.players)) this.startCapsuleExit();
+    if (this.sino && this.sino.exitCap && this.phase !== 'exit') {
+      this.sino.exitIdle(this.lastDt);
+      if (this.sino.exitReached(this.players)) this.startCapsuleExit();
+    }
     // a sala do chefe com gatilho (o bunker da escola): a luta começa quando alguém passa dele
     const B = this.pendingBoss;
     if (B && this.mod === B && !this.transit && this.players.some((q) => q.state !== 'ko' && q.pos.x > B.bossTrigger.x)) {
@@ -1865,19 +1951,20 @@ export class Dungeon {
     const b = this.sino.exitCap;
     this.phase = 'exit';
     this.phaseTime = 0;
-    this.capsuleExit = { from: p.pos.clone(), to: { x: b.spot.x, z: b.spot.z + Math.sign(b.spot.z) * 0.6 } };
+    this.capsuleExit = { from: p.pos.clone(), to: { x: b.spot.x, z: b.spot.z }, bed: !!b.bed };
     this.pveHud.hint(null);
     for (const q of this.players) { q.cancelAction && q.cancelAction(); q.setState('intro'); }
     p.anim.play('walk', { restart: true });
     this.audio.play('teleport', { volume: 0.8, pitch: 0.5 });
     const cam = this.world.cameraRig;
     const from = cam.pos.clone();
-    const out = -Math.sign(b.spot.z);
+    const out = b.bed ? 1 : -Math.sign(b.spot.z);
     cam.playShots([{
       dur: 3.6,
       fov: 45,
-      pos: (k) => v1.set(b.spot.x + 1.6, 2.2 - 0.3 * k, b.spot.z + out * 4.2).lerp(from, Math.max(0, 1 - k * 3)),
-      look: () => new THREE.Vector3(b.spot.x, 1.0, b.spot.z - out * 0.6),
+      // o leito: a câmera de lado e um pouco de cima, vendo a tampa fechar
+      pos: (k) => (b.bed ? v1.set(b.spot.x + 0.4, 2.6 - 0.4 * k, b.spot.z + Math.sign(b.spot.z || 1) * 3.6) : v1.set(b.spot.x + 1.6, 2.2 - 0.3 * k, b.spot.z + out * 4.2)).lerp(from, Math.max(0, 1 - k * 3)),
+      look: () => new THREE.Vector3(b.spot.x, b.bed ? 0.5 : 1.0, b.bed ? b.spot.z : b.spot.z - out * 0.6),
     }]);
   }
 
@@ -1885,6 +1972,7 @@ export class Dungeon {
     const X = this.capsuleExit;
     const t = this.phaseTime;
     const k = Math.min(1, t / 0.9);
+    if (X.bed) { this.bedExit(X, t, k); return; }
     this.players.forEach((q, i) => {
       if (q.state === 'ko') return;
       q.pos.x = X.from.x + (X.to.x + i * 0.5 - X.from.x) * k;
@@ -1897,6 +1985,29 @@ export class Dungeon {
     this.sino.exitTick(Math.max(0, t - 0.9));
     if (t > 2.0 && !this.fading) { this.fading = true; this.pveHud.fade(true, 1.2); }
     if (t > 3.4 && !this.ended) { this.ended = true; for (const q of this.players) q.lying = false; this.finish('clear'); }
+  }
+
+  // o LEITO (a cápsula deitada da saída da Torre): quem pegou anda até ele e DEITA dentro; a tampa fecha e o líquido
+  // enche. No coop, o outro fica de pé ao lado, com a mão no vidro
+  bedExit(X, t, k) {
+    const b = this.sino.exitCap;
+    this.players.forEach((q, i) => {
+      if (q.state === 'ko') return;
+      q.vel.set(0, 0, 0);
+      if (i === 0) {
+        q.pos.x = X.from.x + (X.to.x - X.from.x) * k;
+        q.pos.z = X.from.z + (X.to.z - X.from.z) * k;
+        q.pos.y = k >= 1 ? 0.5 : 0;
+        q.yaw = k < 1 ? Math.atan2(X.to.x - X.from.x, X.to.z - X.from.z) : -Math.PI / 2; // deitado ao comprido do leito
+        if (k >= 1 && !q.lying) { q.lying = true; q.anim.play('downed', { restart: true }); }
+      } else {
+        q.pos.set(b.spot.x, 0, b.spot.z + (b.spot.z < 0 ? 1.0 : -1.0));
+        q.yaw = Math.atan2(b.spot.x - q.pos.x, b.spot.z - q.pos.z);
+      }
+    });
+    this.sino.exitTick(Math.max(0, t - 0.9));
+    if (t > 2.2 && !this.fading) { this.fading = true; this.pveHud.fade(true, 1.2); }
+    if (t > 3.6 && !this.ended) { this.ended = true; for (const q of this.players) { q.lying = false; q.pos.y = 0; } this.finish('clear'); }
   }
 
   updateExit(dt) {

@@ -26,7 +26,7 @@ const PHASES = [
   { hp: 0.33, every: 13, grow: 4.6 },
 ];
 const MAX_R = 17; // o raio final da onda: cobre a sala inteira (24 × 21 m)
-const SPOT_R = 1.15; // o quanto se pode estar longe do meio da frente da cápsula e ainda estar dentro
+const SPOT_R = 1.35; // o quanto se pode estar longe do meio da frente da cápsula e ainda estar dentro
 const EXPOSED = { stun: 3.4, time: 7, taken: 1.7 };
 const COMMAND = { freeze: 1.4, selfHit: 0.12, kneel: 1.6 };
 
@@ -104,6 +104,13 @@ export class SinoMechanics {
     g.position.set(e.pos.x, 0, e.pos.z);
     this.w.scene.add(g);
     this.wave = { t: 0, grow: P.grow, r: 0, g, dome, edge, beam, caught: new Set(), safe: new Set() };
+    // a onda começa: solta quem ele ainda controla (Comandar, Abdução/Esquecido: movimento invertido) — o caminho até
+    // a cápsula tem que ser do jogador
+    for (const q of this.d.players) {
+      if (!q.buffs) continue;
+      for (const bf of q.buffs.filter((x) => x.walkTo || x.invertMove)) { bf.time = 0; bf.onEnd && bf.onEnd(); }
+      q.buffs = q.buffs.filter((x) => !(x.walkTo || x.invertMove));
+    }
     // ele para de lutar e avança devagar, irradiando (o ep. 7: ele só anda)
     e.cancelAction && e.cancelAction();
     e.stun(P.grow + 0.4, 'breath');
@@ -116,6 +123,7 @@ export class SinoMechanics {
   endWave() {
     const W = this.wave;
     this.wave = null;
+    for (const q of this.d.players) q.capsuleSafe = false;
     this.w.scene.remove(W.g);
     W.g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
     this.dropBeam(W.beam);
@@ -189,7 +197,9 @@ export class SinoMechanics {
     const W = this.wave;
     if (!W) {
       this.next -= dt;
-      if (this.next <= 0 && !['stun', 'hitstun', 'grabbed', 'downed', 'launched'].includes(e.state)) {
+      // não abre a onda com alguém ainda preso num poder dele (abduzido no ar, agarrado)
+      const held = this.d.players.some((q) => q.state !== 'ko' && (q.state === 'grabbed' || q.pos.y > 0.6));
+      if (this.next <= 0 && !held && !['stun', 'hitstun', 'grabbed', 'downed', 'launched'].includes(e.state)) {
         this.startWave();
         this.next = PHASES[this.phaseIdx].every;
       }
@@ -204,8 +214,9 @@ export class SinoMechanics {
     W.beam.col.material.opacity = 0.2 + 0.12 * Math.sin(W.t * 8);
     for (const q of this.d.players) {
       if (q.state === 'ko' || W.caught.has(q)) continue;
-      if (this.inside(q, W.beam)) { W.safe.add(q); continue; }
+      if (this.inside(q, W.beam)) { W.safe.add(q); q.capsuleSafe = true; continue; }
       W.safe.delete(q);
+      q.capsuleSafe = false;
       if (Math.hypot(q.pos.x - e.pos.x, q.pos.z - e.pos.z) <= W.r) {
         W.caught.add(q);
         this.command(q);
@@ -215,27 +226,80 @@ export class SinoMechanics {
   }
 
   // ------------------------------------------------ a SAÍDA: deitar numa cápsula (depois que ele some)
+  // a saída é DEITAR numa cápsula (dono, 2026-11-14: "algumas cápsulas têm que ficar em pé e outras deitadas; a que você
+  // dorme tem que ser deitada"): as seis da sala ficam EM PÉ (as do sino, que protegem); a da saída é um LEITO que sobe
+  // do chão no meio da sala, deitado, com a tampa de vidro aberta. PROPOSTA: o desenho do leito
   openExit(from) {
-    // a cápsula vazia mais perto de quem pegou a recompensa
-    const k = FREE.slice().sort((a, b) => Math.hypot(capsuleSpot(a).x - from.x, capsuleSpot(a).z - from.z) - Math.hypot(capsuleSpot(b).x - from.x, capsuleSpot(b).z - from.z))[0];
-    this.exitCap = this.makeBeam(k);
-    return this.exitCap;
+    const x = from.x < 82 ? 76.5 : 87.5;
+    const z = from.z < 0 ? -3.2 : 3.2;
+    const g = new THREE.Group();
+    const steel = new THREE.MeshToonMaterial({ color: 0x4a5048, emissive: 0x080a08 });
+    const dark = new THREE.MeshToonMaterial({ color: 0x1a1e1a });
+    const L = 2.3;
+    const base = new THREE.Mesh(new THREE.BoxGeometry(L, 0.42, 0.95), steel);
+    base.position.y = 0.21;
+    const tub = new THREE.Mesh(new THREE.BoxGeometry(L - 0.16, 0.06, 0.8), dark);
+    tub.position.y = 0.44;
+    const liquid = new THREE.Mesh(new THREE.BoxGeometry(L - 0.2, 0.3, 0.74), new THREE.MeshBasicMaterial({ color: 0x3aff4a, transparent: true, opacity: 0.45, toneMapped: false, depthWrite: false }));
+    liquid.position.y = 0.47;
+    liquid.scale.y = 0.05;
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.7, 0.95), steel);
+    head.position.set(-L / 2 + 0.06, 0.55, 0);
+    const light = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), new THREE.MeshBasicMaterial({ color: 0x7aff4a, toneMapped: false }));
+    light.position.set(-L / 2 + 0.06, 0.95, 0);
+    // a tampa: meio cilindro de vidro na dobradiça de trás (aberta para cima e para trás)
+    const hinge = new THREE.Group();
+    hinge.position.set(0, 0.46, -0.45);
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.46, L - 0.16, 20, 1, true, 0, Math.PI), new THREE.MeshBasicMaterial({ color: 0xbaffd0, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide }));
+    glass.rotation.z = Math.PI / 2;
+    glass.rotation.y = 0;
+    glass.position.z = 0.45;
+    hinge.add(glass);
+    hinge.rotation.x = -1.9; // aberta
+    const ring = new THREE.Mesh(new THREE.RingGeometry(1.45, 1.6, 40), new THREE.MeshBasicMaterial({ color: GREEN, transparent: true, opacity: 0.8, toneMapped: false, depthWrite: false }));
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.04;
+    ring.scale.set(1, 0.62, 1);
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.0, 3.2, 20, 1, true), new THREE.MeshBasicMaterial({ color: GREEN, transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+    col.position.y = 1.6;
+    g.add(base, tub, liquid, head, light, hinge, ring, col);
+    g.position.set(x, -0.9, z); // sobe do chão
+    this.w.scene.add(g);
+    this.w.fx.distort(new THREE.Vector3(x, 0.8, z), { color: GREEN, radius: 2, life: 0.6 });
+    const b = { g, col, ring, k: -1, spot: { x, z }, bed: true, hinge, liquid, rise: 0, len: L };
+    this.beams.push(b);
+    this.exitCap = b;
+    return b;
   }
 
   exitReached(players) {
     const b = this.exitCap;
-    return b && players.some((q) => q.state !== 'ko' && this.inside(q, b));
+    return b && b.rise >= 1 && players.some((q) => q.state !== 'ko' && Math.hypot(q.pos.x - b.spot.x, q.pos.z - b.spot.z) <= 1.5);
   }
 
-  // durante a cena: o feixe sobe e enche
+  // o leito sobe do chão (chamado a cada quadro pelo Dungeon enquanto ele espera)
+  exitIdle(dt) {
+    const b = this.exitCap;
+    if (!b || !b.bed) return;
+    b.rise = Math.min(1, b.rise + dt / 0.8);
+    b.g.position.y = -0.9 * (1 - b.rise);
+    b.col.material.opacity = 0.1 + 0.06 * Math.sin(performance.now() / 260);
+  }
+
+  // durante a cena: a tampa fecha e o líquido enche
   exitTick(t) {
     const b = this.exitCap;
     if (!b) return;
-    b.col.material.opacity = Math.min(0.85, 0.25 + t * 0.4);
-    b.col.scale.set(1 - t * 0.25, 1, 1 - t * 0.25);
+    if (!b.bed) { b.col.material.opacity = Math.min(0.85, 0.25 + t * 0.4); return; }
+    const k = Math.min(1, t / 0.9);
+    b.hinge.rotation.x = -1.9 * (1 - k * k);
+    b.liquid.scale.y = 0.05 + Math.min(1, Math.max(0, (t - 0.6) / 1.2)) * 0.95;
+    b.liquid.position.y = 0.45 + 0.15 * b.liquid.scale.y;
+    b.col.material.opacity = Math.max(0, 0.12 - t * 0.1);
   }
 
   dispose() {
+    for (const q of this.d.players) q.capsuleSafe = false;
     if (this.wave) {
       this.w.scene.remove(this.wave.g);
       this.wave.g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });

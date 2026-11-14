@@ -205,6 +205,15 @@
   - [x] Cenas de entrada (`pve/torreIntros.js`): o Estrangeiro (o sino toca, ele se forma), o Rastropoda (pela lente
         da câmera, REC) e o Bilu (os olhos no escuro, o clarão).
   - [x] Tela dividida: especiais e cenas em tela cheia; trava de mira com linha de visão; cápsulas de loot visíveis.
+  - [x] O Joui cinza do labirinto (o Devorado escondido revelado por habilidades) não aparece mais.
+  - [x] Cápsulas do Sino utilizáveis com os poderes dele; leito deitado na saída; cápsulas de loot em pé e deitadas.
+  - [x] Minibosses da Torre sempre (1× cada, sala sorteada) e depois o chefe.
+  - [x] Saco de farinha e baús com aviso e botão de bater.
+- [x] **Fases separadas (dono, 2026-11-14):** cada tentativa é uma fase (escolhida), do nível 1 ao chefe, com mais
+      salas; cronômetro com recorde por fase e dificuldade.
+  - [ ] Bateria das fases mais longas (tempo e nível no fim de cada uma; ajustar `route.rooms` e o XP se preciso).
+- [x] **Menus revistos:** Voltar à vida refeito; COMANDOS na pausa do Outro Lado consertado.
+- [x] Escudo da Degolificada furado pelo Vínculo de Sangue (dano direto agora respeita o escudo).
   - [ ] Bateria (`pveBattery` com 'estrangeiro') e economia; jogar a rota inteira (o dono).
   - [x] Tirar o `hidden` (lançada na v4.42.0).
   - [ ] Polir os modelos da arena no Blender MCP (está em blocos).

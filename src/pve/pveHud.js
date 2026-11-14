@@ -3,6 +3,7 @@
 //    (classe .pve no #hud; ver styles.css);
 //  · nível e barra de experiência, as melhorias da tentativa (e as sinergias), o objetivo da sala, a dica do momento;
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
+import { actionLabel } from '../ui/labels.js';
 import { UPGRADES, SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KINDS, kindsOf } from './upgrades.js';
 
 // os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
@@ -30,7 +31,7 @@ export class PveHud {
       <div class="pv-time" title="Cronômetro da dungeon (para speedrun)"><b>0:00</b><small>.00</small></div>
       <div class="pv-coins" title="Moedas: compram os personagens bloqueados">● <b>0</b></div>
       <div class="pv-hint"></div>
-      <div class="pv-choose" hidden><div class="pv-panel"><h3>SUBIU DE NÍVEL!</h3><p>Escolha uma melhoria para esta tentativa</p><div class="pv-cards"></div><div class="pv-build"></div><small>▲ ▼ escolhe · A/× ou Enter confirma</small></div></div>
+      <div class="pv-choose" hidden><div class="pv-panel"><h3>SUBIU DE NÍVEL!</h3><p>Escolha uma melhoria para esta tentativa</p><div class="pv-cards"></div><div class="pv-build"></div><small class="pv-choose-hint">▲ ▼ escolhe · A/× ou Enter confirma · clique/toque também</small></div></div>
       <div class="pv-fade"></div>`;
     this.root.appendChild(el);
     this.el = el;
@@ -48,11 +49,21 @@ export class PveHud {
     this.q('.pv-obj').textContent = text || '';
   }
 
+  // o recorde da fase (embaixo do cronômetro; null = ainda não tem)
+  setRecord(t) {
+    this.record = t || null;
+    let el = this.q('.pv-rec');
+    if (!el) { el = document.createElement('div'); el.className = 'pv-rec'; this.q('.pv-time').after(el); }
+    el.textContent = t ? `RECORDE ${fmtTime(t)}` : 'SEM RECORDE';
+  }
+
   // cronômetro de speedrun (mm:ss.cc); pausa com o jogo (cartas, pausa)
   setTime(t) {
     const [m, c] = fmtTime(t).split('.');
     if (m !== this.lastT) { this.lastT = m; this.q('.pv-time b').textContent = m; }
     this.q('.pv-time small').textContent = `.${c}`;
+    // passou do recorde: o cronômetro fica vermelho; abaixo dele, dourado
+    if (this.record) this.q('.pv-time').classList.toggle('over', t > this.record);
     if (this.shield) this.ensureShield();
   }
 
@@ -155,7 +166,7 @@ export class PveHud {
   setRun(run, depth) {
     this.q('.pv-lv').textContent = `NV ${run.level}`;
     this.q('.pv-bar i').style.width = `${Math.min(100, (run.xp / xpForLevel(run.level)) * 100)}%`;
-    this.q('.pv-depth').textContent = depth > 1 ? `PROFUNDIDADE ${depth}` : '';
+    this.q('.pv-depth').textContent = ''; // fases separadas (2026-11-14): a profundidade é a da fase, não aparece
     const key = run.picks.join(',');
     if (key === this.lastUps) return;
     this.lastUps = key;
@@ -271,13 +282,35 @@ export class PveHud {
 
   // VOLTAR À VIDA: a oferta (null esconde). o = { price, t, who: [{ name, coins, ok }], coop }
   showRevive(o) {
+    // VOLTAR À VIDA (refeito: pedido do dono, 2026-11-14 — "não tem nenhum botão, indicação visual"): dois CARTÕES
+    // (pagar / desistir) que se escolhem com a direção, o mouse ou o dedo; a barra do tempo esvazia; as teclas reais
     let el = this.q('.pv-revive');
-    if (!o) { if (el) el.hidden = true; return; }
+    if (!o) { if (el) el.hidden = true; this.reviveKey = null; return; }
     if (!el) { el = document.createElement('div'); el.className = 'pv-revive'; this.el.appendChild(el); }
     el.hidden = false;
-    const rows = o.who.map((w) => `<li class="${w.ok ? 'ok' : ''}">${esc(w.name)}: ● ${w.coins}${w.ok ? '' : ' (não dá)'}</li>`).join('');
-    const html = `<div class="pv-panel"><h3>VOLTAR À VIDA?</h3><p>Pague <b>● ${o.price}</b> moedas e ${o.coop ? 'os dois voltam' : 'você volta'} com metade da vida.</p><ul>${rows}</ul><small>A/× (Espaço / K) paga${o.coop ? ' — quem apertar primeiro' : ''} · B/○ (L) desiste · ${o.t}s</small></div>`;
-    if (el.innerHTML !== html) el.innerHTML = html;
+    const ok = o.who.some((w) => w.ok);
+    const key = JSON.stringify([o.price, o.who, o.coop, o.sel]);
+    if (this.reviveKey !== key) {
+      this.reviveKey = key;
+      const a = actionLabel(0, 'jump');
+      const b = actionLabel(0, 'physical');
+      const rows = o.who.map((w) => `<span class="${w.ok ? 'ok' : 'no'}">${esc(w.name)} <b>● ${w.coins}</b></span>`).join('');
+      el.innerHTML = `<div class="pv-panel">
+        <small class="rv-k">VOCÊ CAIU</small>
+        <h3>VOLTAR À VIDA?</h3>
+        <div class="rv-time"><i></i></div>
+        <div class="pv-cards rv-cards">
+          <div class="pv-card rv-yes ${o.sel === 0 ? 'on' : ''} ${ok ? '' : 'off'}" data-rv="0"><i>✚</i><div><b>VOLTAR <em class="new">● ${o.price}</em></b><p>${o.coop ? 'Os dois voltam' : 'Você volta'} de pé com metade da vida${o.coop ? ' (paga quem confirmar)' : ''}.</p></div><kbd>${esc(a)} / A</kbd></div>
+          <div class="pv-card rv-no ${o.sel === 1 ? 'on' : ''}" data-rv="1"><i>✕</i><div><b>DESISTIR</b><p>A tentativa acaba aqui e você vê o resultado.</p></div><kbd>${esc(b)} / B</kbd></div>
+        </div>
+        <div class="rv-who">${rows}</div>
+        <small class="rv-hint">▲ ▼ escolhe · ${esc(a)} / A confirma · ${esc(b)} / B desiste</small>
+      </div>`;
+      el.querySelectorAll('[data-rv]').forEach((c) => c.addEventListener('click', () => { this.reviveClick = Number(c.dataset.rv); }));
+    }
+    const bar = el.querySelector('.rv-time i');
+    if (bar) bar.style.width = `${Math.max(0, Math.min(1, o.left)) * 100}%`;
+    el.classList.toggle('urgent', o.t <= 4);
   }
 
   setSplit(on) {

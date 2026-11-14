@@ -1385,7 +1385,7 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 /* EXPEDIÇÃO ONLINE: tela cheia (cada um no próprio monitor): o P1 no pé à esquerda, o P2 no pé à direita */
 #hud.pve.pve-coop.pve-online .panel.p1 { bottom: 14px; }
 #pvehud .pv-mate { position: fixed; left: 0; top: 0; pointer-events: none; font-weight: 600; font-size: 11px; letter-spacing: .1em; text-shadow: 0 1px 4px rgba(0,0,0,.9); white-space: nowrap; z-index: 3; }
-#pvehud .pv-revive { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(30,0,0,.55), rgba(0,0,0,.82)); z-index: 6; pointer-events: none; }
+#pvehud .pv-revive { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(30,0,0,.55), rgba(0,0,0,.82)); z-index: 6; pointer-events: auto; }
 #pvehud .pv-revive[hidden] { display: none; }
 #pvehud .pv-revive .pv-panel { text-align: center; max-width: min(92vw, 520px); }
 #pvehud .pv-revive h3 { color: #ff7a6a; }
@@ -1456,7 +1456,7 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #pvehud .pv-syn { height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 11px; background: rgba(242,194,48,.12); border: 1px solid rgba(242,194,48,.35); color: #ffe8a0; font-size: 10px; font-weight: 600; letter-spacing: .04em; }
 #pvehud .pv-time { position: absolute; right: 18px; top: 14px; font-size: 18px; font-weight: 600; color: var(--pv-ink); text-shadow: 0 1px 6px rgba(0,0,0,.8); font-variant-numeric: tabular-nums; }
 #pvehud .pv-time small { font-size: 12px; color: var(--pv-mute); }
-#pvehud .pv-coins { position: absolute; right: 18px; top: 42px; font-size: 12px; font-weight: 600; color: #ffc040; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+#pvehud .pv-coins { position: absolute; right: 18px; top: 56px; font-size: 12px; font-weight: 600; color: #ffc040; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
 #pvehud .pv-coins b { font-weight: 600; color: var(--pv-ink); }
 #pvehud .pv-coins span { color: var(--pv-mute); font-weight: 500; }
 /* a dica do momento: uma linha discreta, sem moldura */
@@ -1756,3 +1756,26 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 @keyframes sigHit { 0% { opacity: calc(.18 + .3 * var(--snow)); } 100% { opacity: .07; } }
 #hud.pve-cine #npcbar { visibility: hidden; }
 #hud.pve.pve-coop.pve-solo .panel.p1 { bottom: 14px; } /* tela dividida desfeita (especial, cena): o P1 volta para baixo */
+
+/* VOLTAR À VIDA (2026-11-14): cartões pagar/desistir, a barra do tempo e quem tem moedas */
+#pvehud .pv-revive .pv-panel { width: min(460px, calc(100% - 24px)); border-color: rgba(255,106,90,.45); box-shadow: 0 0 0 1px rgba(255,106,90,.15), 0 24px 70px rgba(0,0,0,.7); }
+#pvehud .pv-revive .rv-k { font-size: 10px; letter-spacing: .35em; color: #ff8a7a; }
+#pvehud .pv-revive h3 { font-size: 20px; letter-spacing: .18em; }
+#pvehud .pv-revive .rv-time { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); overflow: hidden; }
+#pvehud .pv-revive .rv-time i { display: block; height: 100%; background: linear-gradient(90deg, #ff4a3a, #ffb070); transition: width .1s linear; }
+#pvehud .pv-revive.urgent .rv-time i { animation: hbFlicker .5s steps(1) infinite; }
+#pvehud .pv-revive .rv-cards .pv-card { position: relative; }
+#pvehud .pv-revive .rv-cards .pv-card.on { border-color: #ff8a7a; background: rgba(255,106,90,.12); box-shadow: 0 0 0 1px #ff8a7a inset; }
+#pvehud .pv-revive .rv-yes > i { color: #7dffb0; }
+#pvehud .pv-revive .rv-no > i { color: #ff7a6a; }
+#pvehud .pv-revive .pv-card.off { opacity: .45; }
+#pvehud .pv-revive .pv-card.off p::after { content: ' Moedas insuficientes.'; color: #ff7a6a; }
+#pvehud .pv-revive .pv-card kbd { flex: none; font: 600 11px/1 inherit; padding: 5px 7px; border-radius: 5px; border: 1px solid var(--pv-line); background: rgba(0,0,0,.4); color: var(--pv-ink); }
+#pvehud .pv-revive .rv-who { display: flex; justify-content: center; gap: 14px; font-size: 12px; color: var(--pv-mute); }
+#pvehud .pv-revive .rv-who .ok b { color: #ffc040; }
+#pvehud .pv-revive .rv-who .no b { color: #ff7a6a; }
+#pvehud .pv-revive .rv-hint { font-size: 11px; color: var(--pv-mute); }
+
+/* o recorde da fase embaixo do cronômetro (fases separadas, 2026-11-14) */
+#pvehud .pv-rec { position: absolute; right: 18px; top: 39px; font-size: 10px; letter-spacing: .14em; color: #ffc040; opacity: .85; text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+#pvehud .pv-time.over b, #pvehud .pv-time.over small { color: #ff7a6a; }

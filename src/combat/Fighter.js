@@ -240,6 +240,9 @@ export class Fighter {
 
   // ---------------------------------------------------------------- vida / energia
   takeDamage(n) {
+    // ESCUDO que zera o dano (a Degolificada com o Escudo de Medo: cpuEdge.taken = 0): vale também para o dano que chega
+    // direto, sem passar pelo applyHit (Vínculo de Sangue do Henri/Juan, sangramento…) — dono, 2026-11-14
+    if (this.cpuEdge && this.cpuEdge.taken === 0) n = 0;
     // treino: ninguém morre (fica com 1 de vida)
     const cap = this.immortal ? Math.max(0, this.health - 1) : this.health;
     const dealt = Math.min(cap, Math.max(0, n));
@@ -527,7 +530,7 @@ export class Fighter {
     this.hideRangedProps();
     if (this.seq && this.seq.cancel) this.seq.cancel();
     this.seq = null;
-    if (!this.visible) this.setVisible(true);
+    if (!this.visible && !this.lurking) this.setVisible(true);
   }
 
   hideRangedProps() {

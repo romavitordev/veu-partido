@@ -1209,7 +1209,9 @@ function tick(dt) {
         if (choice === 'tr_reset') { game.match.resetTraining(); restorePauseController(); setOverlay('fight', null); }
         else { audio.play('select'); game.overlay.render(); }
       } else if (choice === 'commands') {
-        const defs = game.match.fighters.map((f) => f.def);
+        // Outro Lado: só os JOGADORES (o inimigo da masmorra é um Devorado/chefe sem lista de golpes; a tela quebrava e
+        // ficava presa por cima da luta — dono, 2026-11-14)
+        const defs = (game.match.isDungeon && game.match.players ? game.match.players : game.match.fighters).map((f) => f.def);
         setOverlay('commands', new CommandsScreen(screens, { defs, owner: game.pausedBy }));
       } else if (choice === 'tut_skip') {
         if (game.tutorial) game.tutorial.skip();

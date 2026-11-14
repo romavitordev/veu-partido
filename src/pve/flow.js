@@ -12,7 +12,7 @@ import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels, isModelLoaded } from '../models/index.js';
 import { renderPortraits } from '../ui/portraits.js';
 import { Dungeon } from './Dungeon.js';
-import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, pickNextDungeon, isAllowed, advanceAfterClear, diffLabel } from './dungeons.js';
+import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord } from './dungeons.js';
 
 // o personagem pode entrar em TODAS as dungeons (nenhum chefe contra ele mesmo)
 const allowedEverywhere = (id) => !pveBanned(byId(id)) && DUNGEON_ORDER.every((d) => isAllowed(d, id));
@@ -51,9 +51,9 @@ export function createPveFlow(ctx) {
     if (a) {
       const d = byId(a.charId);
       const d2 = a.coop ? byId(a.coop.charId) : null;
-      lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)}${a.team && a.team.length ? ` + ${a.team.map((id) => esc(byId(id)?.name || id)).join(' e ')} (assistências)` : ''}${d2 ? ` · <b>P2:</b> ${esc(d2.name)}` : ''} · profundidade ${a.depth} · nível ${a.level} · ${esc(diffLabel(a))}`);
+      lines.push(`<b>Tentativa atual:</b> ${esc(d ? d.name : a.charId)}${a.team && a.team.length ? ` + ${a.team.map((id) => esc(byId(id)?.name || id)).join(' e ')} (assistências)` : ''}${d2 ? ` · <b>P2:</b> ${esc(d2.name)}` : ''} · ${esc((DUNGEONS[a.dungeon] || {}).place || a.dungeon)} · nível ${a.level} · ${esc(diffLabel(a))}`);
     } else lines.push('Nenhuma tentativa em andamento.');
-    lines.push(`Maior profundidade: ${c.bestDepth} · chefes derrotados: ${c.bossKills} · mortes: ${c.deaths}`);
+    lines.push(`Fases vencidas: ${DUNGEON_ORDER.filter((id) => phaseCleared(c, id)).length}/${DUNGEON_ORDER.length} · chefes derrotados: ${c.bossKills} · mortes: ${c.deaths}`);
     const free = ROSTER.length - lockedMap(data, ROSTER).size;
     lines.push(`Moedas: <b>● ${data.coins || 0}</b> · personagens liberados: <b>${free}/${ROSTER.length}</b> (as moedas saem dos baús do mapa)`);
     if (data.loadedFrom === 'prev') lines.push('<b>⚠ O save do Outro Lado estava corrompido: o jogo voltou para a cópia automática (o save de antes da última gravação). O arquivo quebrado ficou guardado.</b>');
@@ -193,6 +193,56 @@ export function createPveFlow(ctx) {
     game.screen.render();
   }
 
+  // ------------------------------------------------ A FASE (dono, 2026-11-14: fases separadas, como no Vampire Survivors)
+  // depois da dificuldade: qual território jogar. A seguinte abre quando a anterior é vencida; o recorde aparece no cartão
+  function toPhase(difficulty) {
+    game.pveDiff = difficulty;
+    const camp = online() ? { bestTimes: {}, phases: DUNGEON_ORDER } : data.campaign;
+    const opts = DUNGEON_ORDER.map((id, i) => {
+      const D = DUNGEONS[id];
+      const open = online() || phaseUnlocked(camp, id);
+      const rec = phaseRecord(camp, id, difficulty);
+      const recAll = phaseRecord(camp, id);
+      const done = phaseCleared(camp, id);
+      let desc = `Vença ${i > 0 ? DUNGEONS[DUNGEON_ORDER[i - 1]].place : 'a anterior'} para abrir.`;
+      if (open) desc = `Chefe: ${D.bossName}${rec ? ` · recorde neste nível: ${fmtTime(rec)}` : recAll ? ` · recorde: ${fmtTime(recAll)}` : done ? '' : ' · ainda não vencida'}`;
+      return {
+        id: `phase:${id}`,
+        label: `${i + 1}. ${D.place.toUpperCase()}`,
+        icon: open ? (done ? '★' : '▶') : '🔒',
+        desc,
+        tag: open ? (done ? 'VENCIDA' : 'NOVA') : 'TRANCADA',
+        tone: open && !done ? 'gold' : '',
+        disabled: !open,
+        wide: true,
+      };
+    });
+    menu('pvephase', 'ESCOLHA A FASE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
+      cols: 1,
+      subtitle: 'Cada fase é uma tentativa inteira: começa no nível 1, passa por várias salas e termina no chefe. O cronômetro marca o seu recorde.',
+    });
+    const first = opts.findIndex((o) => !o.disabled && o.tone === 'gold');
+    game.screen.index = first >= 0 ? first : Math.max(0, opts.filter((o) => !o.disabled).length - 1);
+    game.screen.render();
+  }
+
+  function beginPhase(id) {
+    const difficulty = game.pveDiff || 'normal';
+    if (online()) {
+      net.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoopPick, difficulty, dungeon: id });
+      net.attempt.depth = phaseDepth(id);
+      net.attempt.startedAt = game.net.seed + net.runs;
+      net.runs++;
+      startDungeon();
+      return;
+    }
+    data.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoop ? game.pveCoopPick : null, difficulty, dungeon: id });
+    data.attempt.depth = phaseDepth(id);
+    data.campaign.runs++;
+    save();
+    startDungeon();
+  }
+
   // ------------------------------------------------ melhorias permanentes (GLOBAIS: valem para todos, só moedas)
   function toTree(index = 0) {
     endMatch();
@@ -224,7 +274,7 @@ export function createPveFlow(ctx) {
       p1: def,
       p2: { id: D.boss, name: D.bossName || 'O ESPREITADOR', color: D.color },
       pvePlayers: coopDef ? [{ def, slot: 'P1' }, { def: coopDef, slot: 'P2' }] : null,
-      arena: { name: `${D.name} — profundidade ${a.depth}` },
+      arena: { name: `${D.name} — ${D.place}` },
       cpu: true, mode: 'pve', portraits,
     });
     loading.el.classList.add('pve-loading');
@@ -297,6 +347,8 @@ export function createPveFlow(ctx) {
       // no mesmo computador as moedas são uma bolsa só
       dungeon.wallet = { coins: () => data.coins || 0, spend: (i, n) => { data.coins = Math.max(0, (data.coins || 0) - n); save(); } };
     }
+    // o RECORDE da fase embaixo do cronômetro (fases separadas, 2026-11-14)
+    if (!net0) dungeon.phaseRecord = phaseRecord(data.campaign, a.dungeon, a.difficulty);
     renderer.compile(dungeon.world.scene, dungeon.world.camera);
     loading.progress(1);
     await new Promise((r) => setTimeout(r, 350));
@@ -327,31 +379,41 @@ export function createPveFlow(ctx) {
       const depth = a ? a.depth : 1;
       endAttemptByDeath(data);
       save();
-      menu('pveresult', titles[0], [{ id: 'new', label: 'NOVA TENTATIVA', icon: '↻', desc: 'Escolher o personagem e descer de novo.', tone: 'gold' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.' }, { id: 'main', label: 'MENU PRINCIPAL', icon: '✕', desc: 'Sair do modo.' }], {
-        subtitle: `A tentativa acabou na profundidade ${depth}. As melhorias da tentativa se perderam; o nível e os pontos do personagem ficam.`,
+      game.pveAgain = a ? { char: a.charId, team: a.team, coop: a.coop, difficulty: a.difficulty } : null;
+      menu('pveresult', titles[0], [...(a ? [{ id: `again:${a.dungeon}`, label: 'TENTAR DE NOVO', icon: '↻', desc: 'A mesma fase, com o mesmo personagem e a mesma dificuldade.', tone: 'gold' }] : []), { id: 'new', label: 'NOVA TENTATIVA', icon: '✚', desc: 'Escolher o personagem, a dificuldade e a fase.' }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.' }, { id: 'main', label: 'MENU PRINCIPAL', icon: '✕', desc: 'Sair do modo.' }], {
+        subtitle: `A tentativa acabou em ${esc((DUNGEONS[a?.dungeon] || {}).place || 'Outro Lado')}. As melhorias da tentativa se perderam; o nível e os pontos do personagem ficam.`,
         extra: extraBox(statLine),
       });
       return;
     }
     if (result === 'clear' && a) {
-      // SPEEDRUN: o melhor tempo de cada dungeon (da entrada até a porta de saída)
+      // FASE VENCIDA (fases separadas, 2026-11-14): a tentativa ACABA aqui; o tempo vira recorde da fase (o geral e o da
+      // dificuldade) e a fase seguinte da história abre
       const times = data.campaign.bestTimes || (data.campaign.bestTimes = {});
-      const prev = times[a.dungeon];
+      const kd = `${a.dungeon}:${a.difficulty}`;
+      const prev = times[kd];
       const record = !prev || s.time < prev;
-      if (record) times[a.dungeon] = s.time;
-      const recordLine = record ? `<br><b>NOVO RECORDE: ${fmtTime(s.time)}</b>${prev ? ` (antes ${fmtTime(prev)})` : ''}` : `<br>Recorde: ${fmtTime(prev)}`;
-      a.cleared++;
+      if (record) times[kd] = s.time;
+      if (!times[a.dungeon] || s.time < times[a.dungeon]) times[a.dungeon] = s.time;
+      const firstClear = !(data.campaign.phases || []).includes(a.dungeon);
+      data.campaign.phases = [...new Set([...(data.campaign.phases || []), a.dungeon])];
       data.campaign.bestDepth = Math.max(data.campaign.bestDepth, a.depth);
-      a.depth++;
-      const adv = advanceAfterClear(a, a.dungeon);
-      a.dungeon = adv.dungeon;
+      const idx = DUNGEON_ORDER.indexOf(a.dungeon);
+      const nextId = DUNGEON_ORDER[idx + 1] || null;
+      const done = a;
+      data.attempt = null;
       save();
-      const p = profileOf(data, a.charId);
-      const tree = Object.values(data.tree || {}).reduce((x, y) => x + y, 0);
-      const unlockLine = `<br>Moedas: +${s.coins || 0} nesta dungeon · ${data.coins} no total`;
-      menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER · PROFUNDIDADE ${a.depth}`, icon: '▼', desc: 'Seguir com a tentativa. A próxima dungeon é mais forte.', tone: 'gold', wide: true }, { id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'A tentativa fica salva aqui: compre e continue depois.', wide: true }], {
-        subtitle: `O chefe caiu. ${esc(byId(a.charId)?.name || a.charId)}: nível ${p.level} do Outro Lado · melhorias permanentes: ${tree} grau(s) (compre mais em MELHORIAS com as moedas).`,
-        extra: extraBox(`${statLine}${recordLine}${unlockLine}${adv.looped ? `<br><b>Não há território novo: você volta ao primeiro, agora no ${esc(diffLabel(a))}.</b>` : ''}<br>A próxima dungeon é mais forte (+12% de vida e dano dos inimigos por profundidade). As melhorias da tentativa continuam.`),
+      const p = profileOf(data, done.charId);
+      const recordLine = record ? `<br><b>NOVO RECORDE: ${fmtTime(s.time)}</b>${prev ? ` (antes ${fmtTime(prev)})` : ''}` : `<br>Recorde (${esc(diffLabel(done))}): ${fmtTime(prev)}`;
+      const unlockLine = firstClear && nextId ? `<br><b>FASE NOVA ABERTA: ${esc(DUNGEONS[nextId].place)}</b>` : '';
+      game.pveAgain = { char: done.charId, team: done.team, coop: done.coop, difficulty: done.difficulty };
+      const opts = [];
+      if (nextId) opts.push({ id: `again:${nextId}`, label: `PRÓXIMA FASE · ${DUNGEONS[nextId].place.toUpperCase()}`, icon: '▶', desc: 'Uma tentativa nova, do nível 1, com o mesmo personagem e a mesma dificuldade.', tone: 'gold', wide: true });
+      opts.push({ id: `again:${done.dungeon}`, label: 'JOGAR DE NOVO', icon: '↻', desc: 'A mesma fase, para bater o recorde.', tone: nextId ? '' : 'gold', wide: true });
+      opts.push({ id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: 'Gastar as moedas na loja e nas melhorias.', wide: true });
+      menu('pveresult', 'FASE CONCLUÍDA', opts, {
+        subtitle: `${esc(DUNGEONS[done.dungeon].bossName)} caiu em ${fmtTime(s.time)}. ${esc(byId(done.charId)?.name || done.charId)}: nível ${p.level} do Outro Lado.`,
+        extra: extraBox(`${statLine}${recordLine}${unlockLine}<br>Moedas: +${s.coins || 0} nesta fase · ${data.coins} no total`),
       });
       return;
     }
@@ -423,19 +485,10 @@ export function createPveFlow(ctx) {
       else toData();
     } else if (state === 'pvediff') {
       if (c === 'back') toFormat();
-      else if (c.startsWith('diff:') && online()) {
-        // online: a tentativa é da expedição (na memória); o save local de cada um não muda
-        net.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoopPick, difficulty: c.slice(5), dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
-        net.attempt.startedAt = game.net.seed + net.runs;
-        net.runs++;
-        startDungeon();
-      } else if (c.startsWith('diff:')) {
-        const difficulty = c.slice(5);
-        data.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoop ? game.pveCoopPick : null, difficulty, dungeon: pickNextDungeon({ depth: 1 }) || 'espreitador' });
-        data.campaign.runs++;
-        save();
-        startDungeon();
-      }
+      else if (c.startsWith('diff:')) toPhase(c.slice(5));
+    } else if (state === 'pvephase') {
+      if (c === 'back') toDifficulty();
+      else if (c.startsWith('phase:')) beginPhase(c.slice(6));
     } else if (state === 'pvetree') {
       if (c === 'back') toHub();
       else if (c === 'refundAsk') game.screen.say(pickLine(AGHATA_LINES.refundAsk));
@@ -476,7 +529,15 @@ export function createPveFlow(ctx) {
       else if (c === 'new') toFormat();
       else toMainMenu();
     } else if (state === 'pveresult') {
-      if (c === 'next') startDungeon();
+      if (c.startsWith('again:') && game.pveAgain) {
+        const g2 = game.pveAgain;
+        game.pveChar = g2.char;
+        game.pveTeam = g2.team || [];
+        game.pveCoopPick = g2.coop;
+        game.pveCoop = !!g2.coop;
+        game.pveDiff = g2.difficulty;
+        beginPhase(c.slice(6));
+      } else if (c === 'next') startDungeon();
       else if (c === 'new') toPlayers();
       else if (c === 'main') toMainMenu();
       else toHub();
@@ -603,13 +664,10 @@ export function createPveFlow(ctx) {
       return;
     }
     if (result === 'clear' && a) {
-      a.cleared++;
-      a.depth++;
-      const adv = advanceAfterClear(a, a.dungeon);
-      a.dungeon = adv.dungeon;
-      menu('pveresult', 'TERRITÓRIO LIMPO', [{ id: 'next', label: `DESCER (PROFUNDIDADE ${a.depth})` }, { id: 'main', label: 'SAIR DA SALA' }], {
-        subtitle: 'O Espreitador caiu. Cada um ganhou nível e ponto no próprio personagem.',
-        extra: extraBox(`${statLine}<br>A próxima dungeon é mais forte. As melhorias da expedição continuam.`),
+      net.attempt = null;
+      menu('pveresult', 'FASE CONCLUÍDA', [{ id: 'new', label: 'NOVA EXPEDIÇÃO' }, { id: 'main', label: 'SAIR DA SALA' }], {
+        subtitle: `${DUNGEONS[a.dungeon] ? DUNGEONS[a.dungeon].bossName : 'O chefe'} caiu. Cada um ganhou nível no próprio personagem.`,
+        extra: extraBox(statLine),
       });
       return;
     }

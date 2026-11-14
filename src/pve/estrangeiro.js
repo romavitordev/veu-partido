@@ -67,6 +67,10 @@ export class EstrangeiroBrain {
     }
     this.next -= dt;
     if (this.next > 0 || !free) return;
+    // a CALMA antes da Presença (dono, 2026-11-14: "quando o estrangeiro usa poder não dá pra entrar nas cápsulas"): o
+    // Comandar (2,5 s andando até ele) e a Abdução (~3,6 s no ar + 1,8 s com o movimento invertido) roubavam o tempo de
+    // correr até a cápsula. Nos 7 s antes da onda ele não lança nada
+    if (this.sino && this.sino.next < 7) return;
     const w = this.d.world;
     const mine = (pred) => w.npcs.some((n) => n.alive && n.owner === e && pred(n));
     const ph = this.phase();

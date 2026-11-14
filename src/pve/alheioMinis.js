@@ -118,32 +118,63 @@ export class RastropodaRoom {
   }
 
   // antes do mundo andar (Dungeon.update): pegar encostando, arremessar no botão de TIRO (que não vira tiro)
+  // os SACOS (refeito: dono, 2026-11-14 — "melhorar o jeito de pegar o saco de farinha"): perto de um saco aparece o
+  // aviso; pega com INTERAGIR (E / B) ou com o botão de BATER; encostar também pega. Com o saco nas mãos, qualquer
+  // botão de ataque (○ / □) ou o interagir ARREMESSA — e o arremesso puxa para o Rastropoda se ele estiver à frente
   input(V) {
     const p = V.p;
     if (!this.boss || !this.boss.alive || p.state === 'ko') return;
     const pr = V.inp.pressed || {};
+    const btn = V.inp.source === 'gamepad' ? 'B' : V.i ? 'DEF' : 'E';
     const held = this.sacks.find((k) => k.holder === p);
+    const busy = ['hitstun', 'stun', 'grabbed', 'downed', 'launched'].includes(p.state);
     if (held) {
-      if (pr.ranged && !['hitstun', 'stun', 'grabbed', 'downed'].includes(p.state)) {
-        pr.ranged = false;
+      V.prompt && V.prompt.show(p.pos, 2.6, `${actionLabel(V.i, 'physical', V.inp.source)}|Arremessar`);
+      if ((pr.ranged || pr.physical || pr.interact) && !busy) {
+        pr.ranged = false; pr.physical = false; pr.interact = false;
         this.throwSack(held, p);
       }
       return;
     }
-    if (!['idle', 'run', 'walk', 'jump'].includes(p.state)) return;
-    const k = this.sacks.find((s) => !s.holder && Math.hypot(s.x - p.pos.x, s.z - p.pos.z) < 1.0);
+    if (busy || p.state === 'intro') return;
+    let k = null;
+    let bd = 1.8;
+    for (const s2 of this.sacks) {
+      if (s2.holder) continue;
+      const d = Math.hypot(s2.x - p.pos.x, s2.z - p.pos.z);
+      if (d < bd) { bd = d; k = s2; }
+    }
     if (!k) return;
+    const phys = V.inp.source === 'gamepad' ? '' : ` / ${actionLabel(V.i, 'physical', V.inp.source)}`;
+    V.prompt && V.prompt.show({ x: k.x, z: k.z }, 1.1, `${btn}${phys}|Pegar farinha`);
+    if (!(bd < 0.8 || pr.interact || pr.physical)) return;
+    pr.physical = false; pr.interact = false;
     k.holder = p;
     k.halo.visible = false;
     this.d.audio.play('pickup', { volume: 0.6, pitch: 0.8 });
-    this.d.popup(V.i, `FARINHA — ${actionLabel(V.i, 'ranged', V.inp.source)} ARREMESSA`, '#f4f0e4');
+    this.d.popup(V.i, 'FARINHA NAS MÃOS — ATAQUE PARA ARREMESSAR', '#f4f0e4');
   }
 
   throwSack(k, p) {
     this.sacks.splice(this.sacks.indexOf(k), 1);
-    const yaw = p.aimYaw ?? p.yaw;
-    const v = new THREE.Vector3(Math.sin(yaw) * 13, 4.2, Math.cos(yaw) * 13);
-    k.g.position.set(p.pos.x + Math.sin(yaw) * 0.5, p.pos.y + 2.0, p.pos.z + Math.cos(yaw) * 0.5);
+    let yaw = p.aimYaw ?? p.yaw;
+    const from = new THREE.Vector3(p.pos.x + Math.sin(yaw) * 0.5, p.pos.y + 2.0, p.pos.z + Math.cos(yaw) * 0.5);
+    // a mira ajuda: o Rastropoda até 14 m e num cone de 70° à frente → o saco vai nele (ele é invisível; seguir a gosma
+    // e virar para o lado certo basta)
+    const b = this.boss;
+    let dist = 0;
+    if (b && b.alive) {
+      const ty = Math.atan2(b.pos.x - p.pos.x, b.pos.z - p.pos.z);
+      let dy = ty - yaw;
+      dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+      const d = Math.hypot(b.pos.x - p.pos.x, b.pos.z - p.pos.z);
+      if (d < 14 && Math.abs(dy) < 1.22) { yaw = ty; dist = d; }
+    }
+    const H = 13;
+    let vy = 4.2;
+    if (dist > 0.8) { const t = dist / H; vy = (1.0 - from.y + 0.5 * 16 * t * t) / t; }
+    const v = new THREE.Vector3(Math.sin(yaw) * H, vy, Math.cos(yaw) * H);
+    k.g.position.copy(from);
     this.flying.push({ k, v, t: 0 });
     this.d.audio.play('swing', { volume: 0.8, pitch: 0.7 });
   }

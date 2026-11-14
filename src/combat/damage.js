@@ -38,6 +38,11 @@ const src = new THREE.Vector3();
  */
 export function applyHit(world, attacker, victim, o) {
   if (!victim || victim.state === 'ko') return 0;
+  // Outro Lado: o inimigo ESCONDIDO da sala (o Devorado `lurking`) não é alvo — um especial que mira "o oponente" o
+  // acertava e o fazia aparecer: o "Joui cinza parado" do labirinto (dono, 2026-11-14)
+  if (victim.lurking) return 0;
+  // dentro da CÁPSULA aberta durante a Presença (pve/sino.js): ninguém o ataca — nem os Homens de Terno
+  if (victim.capsuleSafe) return 0;
   // golpe contra o chão (o.otg): acerta quem está CAÍDO, uma vez por queda (não vale na invulnerabilidade de levantar)
   const otg = !!o.otg && victim.state === 'downed' && !victim.otgTaken && victim.invuln <= 0 && victim.visible;
   if (otg) o = { ...o, reaction: false, ignoreInvuln: true };

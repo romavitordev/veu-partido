@@ -9,6 +9,38 @@
   - Cápsulas de loot maiores, com brilho no chão, a 1,4 m dos cantos; a seta azul também aponta para a cápsula fechada.
   - Labirinto: objetivo "Ache a saída", portas e entrada no centro das células, Alheios surgem a 3–5 passos dos
     jogadores; as entradas das salas da Torre ficam 2,2 m para dentro (a câmera prendia na parede).
+  - O "Joui cinza parado" do labirinto era o Devorado escondido da sala (a cópia cinza do personagem que fica
+    `lurking`): um especial/habilidade que mira "o oponente" o acertava e o `cancelAction` o deixava visível. Agora
+    quem está `lurking` não é alvo (`applyHit`), não reaparece no `cancelAction`, e o Dungeon o esconde de novo.
+- **Lista do dono (2026-11-14): menus, chefes, fases separadas:**
+  - **Fases separadas, como no Vampire Survivors:** cada tentativa é UMA fase escolhida depois da dificuldade (tela
+    ESCOLHA A FASE). Começa no nível 1, tem mais salas (Escola e Mansão 5–6, Torre 7–9; PROPOSTA) e termina no chefe.
+    Não leva mais da Escola para a Mansão. A fase seguinte abre ao vencer a anterior; cada fase usa a profundidade
+    para que foi ajustada (Escola 1, Mansão 2, Torre 3). Fim: FASE CONCLUÍDA com PRÓXIMA FASE / JOGAR DE NOVO.
+  - **Cronômetro de recorde:** o recorde da fase (por dificuldade) aparece embaixo do cronômetro e ele fica vermelho
+    ao passar dele. Na morte há TENTAR DE NOVO. (O cronômetro contava; o que parecia parado era ele zerar a cada
+    dungeon da tentativa encadeada.)
+  - **Voltar à vida refeito:** dois cartões (VOLTAR com o preço / DESISTIR), a barra do tempo esvaziando, as
+    teclas reais, quem tem moedas; escolhe com a direção, o mouse ou o dedo.
+  - **COMANDOS na pausa do Outro Lado:** quebrava (a ficha do Devorado não tem lista de golpes), a tela ficava presa
+    por cima da luta. Agora lista só os jogadores, e uma ficha que falhe não derruba a tela.
+  - **Escudo da Degolificada:** o Vínculo de Sangue (Henri/Juan) chamava `takeDamage` direto e furava o escudo. O
+    `takeDamage` agora respeita `cpuEdge.taken = 0` (vale para sangramento e outros danos diretos também).
+  - **Cápsulas do Sino:** o Comandar (2,5 s andando até ele) e a Abdução (~3,6 s no ar + 1,8 s com o movimento
+    invertido) roubavam o tempo de chegar à cápsula. Agora ele não lança nada nos 7 s antes da Presença, a onda não
+    começa com alguém no ar/agarrado, ela solta quem ele controla, quem está dentro da cápsula não toma dano de
+    ninguém (nem dos Homens de Terno) e a área de entrada cresceu (1,15 → 1,35 m).
+  - **Cápsulas em pé e deitadas:** as seis do Sino ficam em pé; a da SAÍDA virou um LEITO deitado que sobe do chão:
+    o jogador deita dentro, a tampa de vidro fecha e o líquido enche. As cápsulas de loot saem em pé ou deitadas.
+  - **Saco de farinha:** aviso em cima do saco; pega com E/B ou com o botão de bater (ou encostando); com ele nas
+    mãos, qualquer ataque arremessa, e o arremesso puxa para o Rastropoda quando ele está à frente (cone de 70°, 14 m).
+  - **Baús e gavetas:** o botão de bater também abre quando há algo ao alcance e a sala está calma (o aviso mostra as
+    duas teclas).
+  - **Minibosses da Torre sempre vêm:** o Rastropoda e o Bilu aparecem uma vez cada, numa sala sorteada da rota (o
+    jogador não sabe qual); na vez deles todas as portas levam a uma sala onde podem aparecer, e a rota cresce se
+    preciso. Depois, o chefe.
+  - Testado numa aba separada: voltar à vida, comandos, escolha de fase, fim da fase e próxima fase, agenda dos
+    minibosses numa rota inteira, leito da saída, cápsulas deitadas, sacos e as habilidades do Joui no labirinto.
 
 ## v4.42.0 — Sinais da Torre
 
