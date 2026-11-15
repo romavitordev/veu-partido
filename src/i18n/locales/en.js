@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "The LAN match ended.",
   "net.waiting": "ONLINE · WAITING FOR THE OTHER PLAYER…",
   "net.resynced": "resynced",
+  "net.delay": "delay",
   "net.cant_connect": "Could not connect.",
   "net.no_answer": "Nobody answered on that code.",
   "net.incomplete": "The connection did not complete.",

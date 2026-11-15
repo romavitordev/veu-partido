@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.47.1';
+export const VERSION = '4.47.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.47.2',
+    date: '2026-11-15',
+    title: 'Sem Engasgo',
+    items: [
+      'ONLINE SEM ENGASGO: o atraso dos comandos agora se ajusta ao ping. Na mesma rede fica no mínimo (resposta mais rápida); com ping alto sobe só o necessário, e o jogo não fica mais lento nem travando. O selo ONLINE mostra o atraso atual.',
+      'ONLINE: os dois computadores andam no mesmo ritmo — quem estiver à frente desacelera um pouco até o outro alcançar, em vez de correr e parar.',
+    ],
+  },
   {
     v: '4.47.1',
     date: '2026-11-15',

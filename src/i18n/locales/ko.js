@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "LAN 대전이 끝났습니다.",
   "net.waiting": "온라인 · 상대 플레이어 대기 중…",
   "net.resynced": "재동기화됨",
+  "net.delay": "지연",
   "net.cant_connect": "연결할 수 없습니다.",
   "net.no_answer": "그 코드에 아무도 응답하지 않았습니다.",
   "net.incomplete": "연결이 완료되지 않았습니다.",

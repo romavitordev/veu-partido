@@ -1,5 +1,26 @@
 # Registro administrativo de alterações
 
+## v4.47.2 — Sem Engasgo
+
+- Versão: `VERSION` 4.47.1 → **4.47.2** (`package.json`/lock junto). Data: 2026-11-15.
+- **Online (dono escolheu "Netcode rollback" e depois "Atraso adaptativo agora"):** o rollback completo precisa salvar e
+  restaurar o estado inteiro da luta a cada quadro, e hoje 126 habilidades e 165 `Timeline` guardam estado em closures
+  (não serializáveis) — fica como projeto no TODO. Feito agora, em `src/net/NetSession.js`:
+  - **Atraso adaptativo:** `this.delay` no lugar do `DELAY` fixo (4 vira só o valor inicial). Ping a cada 0,5 s;
+    `onRtt()` faz média e variação (EMA 0,25) e `targetDelay(rtt, jitter)` = ⌈(rtt/2 + 2·jitter + ½ quadro)/quadro⌉
+    entre `DELAY_MIN` 2 e `DELAY_MAX` 10. Sobe na hora; desce 1 quadro por vez após 3 s com folga. Cada lado cuida do
+    próprio atraso (os quadros são numerados): `fill()` repete o comando do momento quando o atraso sobe e não registra
+    nada quando desce até alcançar.
+  - **Sincronia de relógio:** o ping leva o quadro de quem mandou (`f`); `onRemoteFrame()` estima a vantagem em
+    quadros (`adv`) e `pace()` devolve 0,94 para quem está mais de 1,5 quadro à frente; `netPump` (main.js) multiplica
+    o tempo por `pace()`.
+  - Selo ONLINE mostra `atraso N` (chave `net.delay` nos 13 idiomas).
+- `tests/net-delay.test.js` (6 testes): o alvo por ping, subir/descer, `fill` com o atraso mudando e um simulador de dois
+  computadores com latência e variação. Resultado do simulador em 30 s: ping ~140 ms — fixo rodava a 81% da velocidade
+  (1461 de 1800 quadros), adaptativo 100% com atraso 7; ping ~240 ms — fixo 48%, adaptativo ~100% com atraso 10; rede
+  local — atraso 2 (antes 4: dois quadros a menos de resposta).
+- NÃO testado: uma partida online real entre dois computadores (só o simulador e o carregamento no jogo).
+
 ## v4.47.1 — Mais Leve
 
 - Versão: `VERSION` 4.47.0 → **4.47.1** (`package.json`/lock junto). Data: 2026-11-15.

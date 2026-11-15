@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "LAN対戦が終了しました。",
   "net.waiting": "オンライン · 相手を待っています…",
   "net.resynced": "再同期済み",
+  "net.delay": "遅延",
   "net.cant_connect": "接続できませんでした。",
   "net.no_answer": "そのコードには誰も応答しませんでした。",
   "net.incomplete": "接続が完了しませんでした。",

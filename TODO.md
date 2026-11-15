@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.47.1 (modelos e cenários comprimidos com meshopt: o jogo baixa 61% menos). Antes: v4.47.0 (coop com retorno acelerado, poço das pilastras ampliado, portas trancadas com escolha de caminho, visibilidade entre salas corrigida, ajustes do Estrangeiro, Bilu e especiais no Outro Lado; Dissolver do Amigo; transformação de Raziel; despertar da Sabara). Antes: v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.47.2 (online com atraso adaptativo ao ping e sincronia de relógio). Antes: v4.47.1 (modelos e cenários comprimidos com meshopt: o jogo baixa 61% menos). Antes: v4.47.0 (coop com retorno acelerado, poço das pilastras ampliado, portas trancadas com escolha de caminho, visibilidade entre salas corrigida, ajustes do Estrangeiro, Bilu e especiais no Outro Lado; Dissolver do Amigo; transformação de Raziel; despertar da Sabara). Antes: v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -9,7 +9,11 @@
 Detalhes, motivo e cuidados de cada uma em `GUIA_TECNOLOGIAS_GAME_DEV.txt`, seção 10. PROPOSTA: nada é instalado ou
 baixado sem o OK do dono.
 - [x] Comprimir os .glb com glTF-Transform + meshopt (v4.47.1): 166 MB → 65 MB; `npm run optimize`, e o `build.mjs` já comprime. (Os .glb não têm texturas embutidas, então WebP/KTX2 não se aplica hoje.)
-- [ ] Netcode rollback no online (hoje lockstep com atraso fixo).
+- [x] Online sem engasgo (v4.47.2): atraso de entrada adaptativo ao ping (2–10 quadros) e sincronia de relógio.
+- [ ] Netcode ROLLBACK completo (decisão do dono, 2026-11-15: depois). Precisa de estado da luta serializável: hoje 126
+      habilidades e 165 `Timeline` guardam estado em closures. Caminho: estado das ações em dados (fase, tempo, alvo) e
+      efeitos visuais/sonoros fora da simulação, para refazer quadros sem repetir som e partícula.
+- [ ] Jogar uma partida online real entre dois computadores com o atraso adaptativo (o dono).
 - [ ] Servidor próprio de sinalização (PeerServer) e TURN para quem está atrás de NAT restrito.
 - [ ] Pós-processamento (bloom, aberração, vinheta) com opção de qualidade baixa.
 - [ ] three-mesh-bvh para câmera contra parede e linha de visão no Outro Lado.

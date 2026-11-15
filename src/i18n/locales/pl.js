@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "Mecz LAN się zakończył.",
   "net.waiting": "ONLINE · CZEKAM NA DRUGIEGO GRACZA…",
   "net.resynced": "zsynchronizowano",
+  "net.delay": "opóźnienie",
   "net.cant_connect": "Nie udało się połączyć.",
   "net.no_answer": "Nikt nie odpowiedział na ten kod.",
   "net.incomplete": "Połączenie nie zostało nawiązane.",

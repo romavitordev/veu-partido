@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "局域网对战已结束。",
   "net.waiting": "在线 · 等待另一位玩家…",
   "net.resynced": "已重新同步",
+  "net.delay": "延迟",
   "net.cant_connect": "无法连接。",
   "net.no_answer": "该代码无人响应。",
   "net.incomplete": "连接未完成。",

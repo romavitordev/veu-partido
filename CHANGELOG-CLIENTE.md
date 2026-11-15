@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.47.2 — Sem Engasgo
+- ONLINE SEM ENGASGO: o atraso dos comandos agora se ajusta ao ping. Na mesma rede fica no mínimo (resposta mais rápida); com ping alto sobe só o necessário, e o jogo não fica mais lento nem travando. O selo ONLINE mostra o atraso atual.
+- ONLINE: os dois computadores andam no mesmo ritmo — quem estiver à frente desacelera um pouco até o outro alcançar, em vez de correr e parar.
+
 ## v4.47.1 — Mais Leve
 - MAIS LEVE: os modelos dos personagens, dos cenários e das criaturas agora vêm comprimidos. O jogo baixa 61% menos (de 166 MB para 65 MB de modelos) e abre mais rápido na web, no celular e no PC, com a mesma aparência.
 

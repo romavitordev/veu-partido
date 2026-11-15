@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "Das LAN-Match ist vorbei.",
   "net.waiting": "ONLINE · WARTE AUF DEN ANDEREN SPIELER…",
   "net.resynced": "neu synchronisiert",
+  "net.delay": "Verzögerung",
   "net.cant_connect": "Verbindung fehlgeschlagen.",
   "net.no_answer": "Unter diesem Code hat niemand geantwortet.",
   "net.incomplete": "Die Verbindung kam nicht zustande.",

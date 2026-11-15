@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.47.2 — Sem Engasgo
+
+### Alterado
+- Online: atraso de entrada adaptativo ao ping (2 a 10 quadros) e sincronia de relógio entre os dois jogadores.
+
 ## v4.47.1 — Mais Leve
 
 ### Alterado

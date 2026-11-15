@@ -803,7 +803,8 @@ function netApplyFix(snap) {
 function netPump(realDt) {
   const net = game.net;
   if (net.closed) { endNet(net.closeReason || 'A partida LAN terminou.'); return; }
-  net.acc = Math.min(net.acc + realDt, 0.2);
+  // quem está à frente do outro anda um pouco mais devagar (sincronia de relógio; ver NetSession.pace)
+  net.acc = Math.min(net.acc + realDt * net.pace(), 0.2);
   // quem ASSISTE e está atrás (acabou de entrar: refaz a sessão desde o começo) anda até 40 quadros por desenho
   const watch = net.role === 'watch';
   const catchUp = watch && net.behind() > 20;
@@ -832,7 +833,7 @@ function netPump(realDt) {
     const eyes = net.watchers.length ? ` · 👁 ${net.watchers.length}` : '';
     netBadge.textContent = watch
       ? `👁 ${t('net.watching')} · ${net.names[0]} × ${net.names[1]} · ${net.behind() > 60 ? t('net.syncing') : t('net.leave_watch')}`
-      : wait ? t('net.waiting') : `ONLINE · ${net.names[0]} × ${net.names[1]} · ${net.ping} ms${eyes}${net.desyncs ? ` · ${t('net.resynced')}` : ''}`;
+      : wait ? t('net.waiting') : `ONLINE · ${net.names[0]} × ${net.names[1]} · ${net.ping} ms · ${t('net.delay')} ${net.delay}${eyes}${net.desyncs ? ` · ${t('net.resynced')}` : ''}`;
   }
 }
 

@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "LAN maçı bitti.",
   "net.waiting": "ÇEVRİM İÇİ · DİĞER OYUNCU BEKLENİYOR…",
   "net.resynced": "yeniden eşitlendi",
+  "net.delay": "gecikme",
   "net.cant_connect": "Bağlanılamadı.",
   "net.no_answer": "Bu kodda kimse yanıt vermedi.",
   "net.incomplete": "Bağlantı tamamlanmadı.",

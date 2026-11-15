@@ -7,7 +7,14 @@
 //
 // Sincronia (lockstep): os dois rodam a MESMA simulação, quadro a quadro (60 por segundo, passo fixo). Por quadro só
 // viajam os comandos de cada jogador; um quadro só é simulado quando os comandos dos dois para ele já chegaram. Os
-// comandos locais valem DELAY quadros depois (atraso de entrada), o que esconde a latência da rede.
+// comandos locais valem `delay` quadros depois (atraso de entrada), o que esconde a latência da rede.
+// ATRASO ADAPTATIVO (v4.47.2): o atraso não é mais fixo. A cada meio segundo cada lado mede o ping (média e variação)
+// e escolhe o menor atraso que cobre a ida do comando com folga (DELAY_MIN na rede local, até DELAY_MAX com ping alto).
+// Sobe na hora quando o ping piora; desce um quadro por vez só depois de 3 s com folga (sem ficar oscilando). Cada lado
+// cuida do PRÓPRIO atraso — os quadros são numerados, então os dois não precisam combinar o valor.
+// SINCRONIA DE RELÓGIO: o ping leva o quadro atual de quem mandou. Quem estiver À FRENTE do outro (simulou mais
+// quadros) anda um pouco mais devagar (pace) até os dois ficarem juntos — em vez de correr e parar esperando os
+// comandos do outro, que é o "engasgo" do lockstep.
 // A cada CHECK quadros os dois comparam um resumo do estado; se divergirem, o anfitrião manda os números da luta e o
 // convidado corrige.
 //
@@ -23,7 +30,20 @@ const ID_PREFIX = 'arena-paranormal-v1-';
 const LOBBY_ID = ID_PREFIX + 'lobby';
 const ICE = [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }];
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sem 0/O e 1/I, para não confundir ao ditar
-export const DELAY = 4;
+export const DELAY = 4; // atraso inicial, antes da primeira medida de ping
+export const DELAY_MIN = 2;
+export const DELAY_MAX = 10;
+const FRAME_MS = 1000 / 60;
+const PING_EVERY = 500; // ms
+const SHRINK_AFTER = 3000; // ms com folga antes de descer um quadro
+const PACE_SLOW = 0.94; // quem está à frente anda a 94% até o outro alcançar
+const PACE_AHEAD = 1.5; // quadros de vantagem que já pedem para ir mais devagar
+
+// O menor atraso (em quadros) que cobre a ida do comando: metade do ping + 2× a variação + uma folga de meio quadro.
+export function targetDelay(rtt, jitter = 0) {
+  const ms = rtt / 2 + 2 * jitter + FRAME_MS / 2;
+  return Math.max(DELAY_MIN, Math.min(DELAY_MAX, Math.ceil(ms / FRAME_MS)));
+}
 export const CHECK = 120;
 export const NAME_MAX = 16;
 export const MAX_WATCHERS = 8;
@@ -212,6 +232,11 @@ export class NetSession {
     this.closed = false;
     this.closeReason = '';
     this.ping = 0;
+    this.delay = DELAY; // atraso de entrada atual (quadros), ajustado pelo ping
+    this.rtt = null; // ping médio (ms)
+    this.jitter = 0; // variação média do ping (ms)
+    this.lowSince = 0; // desde quando o atraso alvo está abaixo do atual
+    this.adv = 0; // quantos quadros este lado está à frente do outro (média)
     this.waiting = 0; // tempo parado esperando o outro
     this.desyncs = 0;
     this.fixes = [];
@@ -368,7 +393,7 @@ export class NetSession {
     if (this.role !== 'host') this.broker.close();
     link.onmessage = (m) => this.onMessage(m);
     link.onclose = () => this.close(this.role === 'watch' ? 'A partida terminou.' : 'O outro jogador saiu da partida.');
-    if (this.role !== 'watch') this.pingTimer = setInterval(() => this.send({ t: 'ping', k: performance.now() }), 1000);
+    if (this.role !== 'watch') this.pingTimer = setInterval(() => this.send({ t: 'ping', k: performance.now(), f: this.frame }), PING_EVERY);
   }
 
   send(m) {
@@ -389,8 +414,8 @@ export class NetSession {
     // OUTRO LADO online: os dados de cada um (personagens liberados e a árvore) e o "começar" do anfitrião
     else if (m.t === 'pd') { this.peerData = m.d; if (this.onPeerData) this.onPeerData(m.d); }
     else if (m.t === 'pgo') { this.go = true; if (this.onGo) this.onGo(); }
-    else if (m.t === 'ping') this.send({ t: 'pong', k: m.k });
-    else if (m.t === 'pong') this.ping = Math.round(performance.now() - m.k);
+    else if (m.t === 'ping') { this.send({ t: 'pong', k: m.k }); this.onRemoteFrame(m.f); }
+    else if (m.t === 'pong') this.onRtt(performance.now() - m.k, performance.now());
     else if (m.t === 'bye') this.close('O outro jogador saiu da partida.');
   }
 
@@ -412,11 +437,43 @@ export class NetSession {
     setTimeout(() => this.close(), 100);
   }
 
+  // ---------------------------------------------------------------- atraso adaptativo e sincronia
+  // uma medida de ida e volta (ms): atualiza a média, a variação e o atraso de entrada
+  onRtt(sample, now = performance.now()) {
+    if (!(sample >= 0)) return;
+    if (this.rtt === null) { this.rtt = sample; this.jitter = 0; }
+    else {
+      this.jitter += (Math.abs(sample - this.rtt) - this.jitter) * 0.25;
+      this.rtt += (sample - this.rtt) * 0.25;
+    }
+    this.ping = Math.round(this.rtt);
+    const want = targetDelay(this.rtt, this.jitter);
+    if (want > this.delay) { this.delay = want; this.lowSince = 0; } // piorou: sobe na hora
+    else if (want < this.delay) {
+      if (!this.lowSince) this.lowSince = now;
+      else if (now - this.lowSince >= SHRINK_AFTER) { this.delay--; this.lowSince = now; } // melhorou: desce aos poucos
+    } else this.lowSince = 0;
+  }
+
+  // o quadro em que o outro estava quando mandou o ping: estima quantos quadros este lado está à frente
+  onRemoteFrame(f) {
+    if (typeof f !== 'number' || this.rtt === null) return;
+    const theirsNow = f + this.rtt / 2 / FRAME_MS;
+    this.adv += (this.frame - theirsNow - this.adv) * 0.3;
+  }
+
+  // ritmo do relógio deste lado: 1 normal, menos quando está à frente do outro
+  pace() {
+    if (this.role === 'watch') return 1;
+    return this.adv > PACE_AHEAD ? PACE_SLOW : 1;
+  }
+
   // ---------------------------------------------------------------- lockstep
-  // registra (e envia) os comandos locais até DELAY quadros à frente do quadro atual
+  // registra (e envia) os comandos locais até `delay` quadros à frente do quadro atual. Se o atraso subiu, os quadros
+  // novos repetem o comando do momento; se desceu, não registra nada até o quadro atual alcançar os já enviados.
   fill(read) {
     if (this.role === 'watch') return; // quem assiste não manda comandos
-    while (this.localNext < this.frame + DELAY) {
+    while (this.localNext < this.frame + this.delay) {
       const d = read();
       this.local.set(this.localNext, d);
       this.send({ t: 'i', f: this.localNext, d });

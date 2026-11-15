@@ -329,6 +329,7 @@ export default {
   "net.lan_ended": "La partida LAN terminó.",
   "net.waiting": "EN LÍNEA · ESPERANDO AL OTRO JUGADOR…",
   "net.resynced": "resincronizado",
+  "net.delay": "retardo",
   "net.cant_connect": "No se pudo conectar.",
   "net.no_answer": "Nadie respondió con ese código.",
   "net.incomplete": "La conexión no se completó.",
