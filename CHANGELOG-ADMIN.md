@@ -1,5 +1,26 @@
 # Registro administrativo de alterações
 
+## v4.51.3 — Animações e Queda
+
+- Versão: `VERSION` 4.51.2 → **4.51.3** (`package.json`/lock junto). Data: 2026-11-15.
+- **Falas (dono: "veja falas, vá polindo essas coisas que nos últimos personagens fizemos meio por cima"):** o
+  inventário mostrou as falas de vitória completas (49 adversários para todos), mas 19 personagens sem NENHUMA fala de
+  combate — e o `battleLines()` exige fala dos dois lados, então a luta inteira ficava muda. Novo
+  `config/battleRecent.js` (`BATTLE_RECENT` / `BATTLE_REPLIES_RECENT`, mesclados como o `BATTLE_EXTRA`): Carina, Rubens,
+  Beatrice, Fernando, Luciano, Tristan, Ivete, Damir, Boris, Artemis, Dara, Chico, Morato, Eloy, Cindy, Sabara, Amalia,
+  Carniçal, Degolificada e Espreitador. Fala de transformação para carina_leone, luciano, fernando (a volta),
+  beatrice_existida, erin_caos, aguiar_mutilador, labirinto_elmo, joui_shinokage, raziel_verdadeiro e
+  celestine_magistrada. Citações literais do cânone marcadas; o resto é PROPOSTA.
+- `battleLines()`: a forma sem fala própria cai na ficha base (`DIALOGUE_BASE_IDS` → `BASE_CHARACTER` → `FORM_BASE`
+  para beatrice_existida e joui_shinokage). Antes Erin em nome do Caos, o Mutilador etc. ficavam mudos.
+- **Relações (dono: "polir relações entre personagens"):** 29 pares novos em `INTRO_EXCHANGES` (antes caíam na fala
+  genérica de rival — a Ivete chamava o filho de "alguém da Ordem"): arthur/kaiser/joui + ivete; tristan + veríssimo,
+  erin, beatrice, fernando; fernando + erin, arthur, joui, dante, aghata, kian, arnaldo, rubens, beatrice; beatrice +
+  dante, arnaldo; balu/carina/rubens; Os Cinco (morato + chico, dara, lirio, xande, estrangeiro; chico + dara, guizo;
+  dara + xande).
+- `tests/battle-lines.test.js`: todo par do ROSTER com troca de vida baixa e de especial; as formas falam ao transformar.
+  Conferido no jogo (Ivete × Arthur: a cena de entrada da mãe e a troca no especial).
+
 ## v4.51.2 — Animações e Queda
 
 - Versão: `VERSION` 4.51.1 → **4.51.2** (`package.json`/lock junto). Data: 2026-11-15.

@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.51.3 — Animações e Queda
+
+### Adicionado
+- Falas de combate (vida baixa, especial, respostas) para 19 personagens que não tinham nenhuma, e falas de transformação para 10 formas.
+- 29 cenas de entrada entre personagens que se conhecem no cânone.
+- Teste que exige fala de combate em todo par do elenco.
+
+### Corrigido
+- Lutas com um personagem recente ficavam sem nenhum diálogo; formas sem fala própria agora usam a da ficha base.
+
 ## v4.51.2 — Animações e Queda
 
 ### Alterado

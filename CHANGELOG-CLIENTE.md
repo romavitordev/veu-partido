@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.51.3 — Animações e Queda
+- FALAS DE LUTA para quem estava mudo: Carina, Rubens, Beatrice, Fernando e Luciano, Tristan, Ivete, Damir, Boris, Artemis, Dara, Chico, Morato, Eloy, Cindy, Sabara, Amalia e as criaturas do Outro Lado agora falam na vida baixa, no especial e respondem ao adversário — antes qualquer luta com um deles ficava sem diálogo.
+- TRANSFORMAÇÕES com fala: "Todos os Leone vivem dentro de mim!", "Saber tudo é perder tudo.", a troca Fernando ⇄ Luciano, Erin em nome do Caos, o Mutilador, o Labirinto de elmo, o Shi no Kage, o Verdadeiro Raziel e a Magistrada.
+- RELAÇÕES: 29 cenas de entrada novas entre quem se conhece — a Ivete com o filho Arthur e os "sobrinhos" Kaiser e Joui, o Tristan com o Veríssimo, a Erin e a Beatrice, o Fernando com os amigos (e o Kian), a Beatrice com o "irmão" Dante e o "avô" Arnaldo, os Abutres e Os Cinco com o Morato.
+
 ## v4.51.2 — Animações e Queda
 - AMOR E SANGUE refeito (Eloy + Kemi): o Eloy põe a focinheira e conta o tempo no pé, a Kemi chega em Fantasma ("Respira, amor. No meu tempo."), ele salta e bate o Método Moeller em 8 batidas que aceleram com a Kemi atirando no tempo, o soco final joga o alvo para o alto e o Disparo da Morte atravessa a arena em espiral enquanto o Eloy cai de cima no PRATO.
 - Câmera nova no especial: de lado, seguindo a bala da Kemi até o alvo no ar.

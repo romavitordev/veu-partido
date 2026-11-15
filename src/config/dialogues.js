@@ -1,6 +1,7 @@
 // Falas de introducao pre-luta; independentes do resultado.
 import { VOICES, TEAM_REF } from './introVoices.js';
 import { HOST_VICTORY, VICTORY_VS_HOST, BATTLE_EXTRA, BATTLE_REPLIES_EXTRA } from './hostLines.js';
+import { BATTLE_RECENT, BATTLE_REPLIES_RECENT } from './battleRecent.js';
 import { defTeams } from './teams.js';
 import { ROSTER } from '../characters/index.js';
 export const CHARACTER_NAMES = {
@@ -98,6 +99,125 @@ export function voiceScenes(first, second) {
 }
 
 const INTRO_EXCHANGES = {
+  // RELAÇÕES DO CÂNONE (pedido do dono, 2026-11-15: "polir relações entre personagens"). Antes estes pares caíam na
+  // fala genérica de rival (a Ivete chamava o Arthur, o filho dela, de "alguém da Ordem"). Fatos dos cabeçalhos de
+  // cânone de cada characters/<id>.js; o texto é PROPOSTA.
+  'arthur+ivete': [
+    { starter: 'ivete', line: 'Arthur. Arruma essa postura, guri. Tua mãe tá olhando.', response: 'arthur', responseLine: 'Mãe... não aqui na frente de todo mundo.' },
+    { starter: 'arthur', line: 'A gente fez o mesmo juramento, mãe. Proteger quem a gente ama.', response: 'ivete', responseLine: 'Então protege essa cara, que eu não vou pegar leve.' },
+  ],
+  'ivete+kaiser': [
+    { starter: 'ivete', line: 'Kaiser, meu filho. Comeu direito hoje?', response: 'kaiser', responseLine: 'Comi, tia. Agora levanta essa espingarda.' },
+    { starter: 'kaiser', line: 'Tia Ivete. Promete que não vai atirar na minha cara?', response: 'ivete', responseLine: 'Prometo mirar no joelho, querido.' },
+  ],
+  'ivete+joui': [
+    { starter: 'ivete', line: 'Joui. Tu tá magro demais, guri.', response: 'joui', responseLine: 'Tia... a gente vai brigar ou a senhora vai me dar comida?' },
+    { starter: 'joui', line: 'Desculpa desde já, tia Ivete.', response: 'ivete', responseLine: 'Desculpa nada. Vem com tudo que eu aguento.' },
+  ],
+  'tristan+verissimo': [
+    { starter: 'verissimo', line: 'Monteiro. Postura.', response: 'tristan', responseLine: 'Sim, senhor. ...Pode deixar, senhor.' },
+    { starter: 'tristan', line: 'O senhor me deu esse casaco. Hoje eu mostro que mereço.', response: 'verissimo', responseLine: 'Mostra com a guarda alta, Tristan.' },
+  ],
+  'erin+tristan': [
+    { starter: 'tristan', line: 'Erin! Minha pupila favorita! Trouxe fogo?', response: 'erin', responseLine: 'Trouxe explosivo, Tristan. É melhor.' },
+    { starter: 'erin', line: 'Tristan, eu fiz um teste com o seu lança-chamas.', response: 'tristan', responseLine: 'Você O QUÊ?! ...E deu certo?' },
+  ],
+  'beatrice+tristan': [
+    { starter: 'beatrice', line: 'Foi você que me ensinou a balestra, Tristan.', response: 'tristan', responseLine: 'E agora a aluna quer o professor. Que orgulho!' },
+    { starter: 'tristan', line: 'Lembra: respira, mira, e não fecha o olho!', response: 'beatrice', responseLine: 'Eu lembro. Só não esperava mirar em você.' },
+  ],
+  'fernando+tristan': [
+    { starter: 'tristan', line: 'Fernando! E aí, o Luciano tá aí dentro também?', response: 'fernando', responseLine: 'Tá sim... e ele mandou dizer que você deve dinheiro pra ele.' },
+    { starter: 'fernando', line: 'Tristan, você vai mesmo usar isso contra mim?', response: 'tristan', responseLine: 'O Luciano aguentou a Guerra dos Dez Dias do meu lado. Ele aguenta.' },
+  ],
+  'erin+fernando': [
+    { starter: 'erin', line: 'Fernando! Melhor amigo! Promete que não fica bravo se explodir?', response: 'fernando', responseLine: 'Erin... eu já tomei o calmante. Pode vir.' },
+    { starter: 'fernando', line: 'Erin, por favor, sem bomba perto do rosto.', response: 'erin', responseLine: 'Anotado! ...Perto do resto pode?' },
+  ],
+  'arthur+fernando': [
+    { starter: 'arthur', line: 'Depois disso a gente toca aquele violão, Fernando?', response: 'fernando', responseLine: 'Combinado. Se sobrar dedo.' },
+    { starter: 'fernando', line: 'Arthur, você não precisa pegar leve comigo.', response: 'arthur', responseLine: 'Eu sei. Mas o Luciano vai ficar de olho, né?' },
+  ],
+  'fernando+joui': [
+    { starter: 'fernando', line: 'Joui... o Luciano tá dizendo "capitão".', response: 'joui', responseLine: 'Fala pra ele que hoje não tem capitão.' },
+    { starter: 'joui', line: 'Fernando. Se ele vier, eu tô pronto.', response: 'fernando', responseLine: 'Eu também tô... acho. Tô sim.' },
+  ],
+  'dante+fernando': [
+    { starter: 'fernando', line: 'Dante... eu ainda tenho pesadelo com aquele ritual.', response: 'dante', responseLine: 'E mesmo assim confiou em mim. Isso vale mais.' },
+    { starter: 'dante', line: 'Carvalho. Os dois aí dentro, prestando atenção?', response: 'fernando', responseLine: 'Os dois. Infelizmente pra você.' },
+  ],
+  'aghata+fernando': [
+    { starter: 'aghata', line: 'Você ainda treme, Fernando.', response: 'fernando', responseLine: 'Tremo. Mas você já esteve no meu corpo e sabe que eu fico.' },
+    { starter: 'fernando', line: 'Agatha, você me achou covarde, lembra?', response: 'aghata', responseLine: 'Achei. E errei. Agora prova de novo.' },
+  ],
+  'fernando+kian': [
+    { starter: 'kian', line: 'Eu já vesti o corpo do seu marido, Fernando.', response: 'fernando', responseLine: 'E ele ainda é dele. O Luciano não esquece.' },
+    { starter: 'fernando', line: 'Você me matou, Kian. Eu continuo aqui.', response: 'kian', responseLine: 'Teimosia não é sobrevivência.' },
+  ],
+  'arnaldo+fernando': [
+    { starter: 'arnaldo', line: 'Luciano! O velho parceiro da Varredura!', response: 'fernando', responseLine: 'É o Fernando agora, Arnaldo. Mas ele mandou um oi.' },
+    { starter: 'fernando', line: 'Arnaldo, o Luciano diz que você fala demais em missão.', response: 'arnaldo', responseLine: 'E ele de menos! Formávamos o par perfeito.' },
+  ],
+  'fernando+rubens': [
+    { starter: 'rubens', line: 'Fernando. Produção. Cela. Lembra.', response: 'fernando', responseLine: 'Lembro, Rubens. Você me acalmou lá dentro.' },
+    { starter: 'fernando', line: 'Rubens, a gente saiu daquela prisão junto.', response: 'rubens', responseLine: 'Saímos. Agora: luta. Sem rancor.' },
+  ],
+  'beatrice+fernando': [
+    { starter: 'beatrice', line: 'Fernando! Trouxe flores pra depois. Pra quem precisar.', response: 'fernando', responseLine: 'Que gentil... espero não ser eu.' },
+    { starter: 'fernando', line: 'Beatrice, o Orpheu não vai me bicar, né?', response: 'beatrice', responseLine: 'Só se você for grosso. Você nunca é.' },
+  ],
+  'beatrice+dante': [
+    { starter: 'beatrice', line: 'Dante. Irmão. Eu lembro do orfanato.', response: 'dante', responseLine: 'Eu queria que você não lembrasse, Lilian.' },
+    { starter: 'dante', line: 'Você cresceu, pequena.', response: 'beatrice', responseLine: 'Cresci. E aprendi a atirar.' },
+  ],
+  'arnaldo+beatrice': [
+    { starter: 'arnaldo', line: 'Minha netinha! Que espetáculo de mulher você virou!', response: 'beatrice', responseLine: 'Vovô... o senhor vai me deixar envergonhada.' },
+    { starter: 'beatrice', line: 'Vô, depois a gente toma um café?', response: 'arnaldo', responseLine: 'Depois do número, querida. O público espera!' },
+  ],
+  'balu+rubens': [
+    { starter: 'balu', line: 'Rubens! O homem que me trouxe de volta!', response: 'rubens', responseLine: 'Trouxe. Não me faz arrepender.' },
+    { starter: 'rubens', line: 'Balu. Sem machado na cabeça.', response: 'balu', responseLine: 'Hahaha! Tá bom, tá bom. Só no resto.' },
+  ],
+  'carina+rubens': [
+    { starter: 'carina', line: 'Rubens. Mão firme hoje?', response: 'rubens', responseLine: 'Sempre. Mira. Respira. Atira.' },
+    { starter: 'rubens', line: 'Carina. Leone. Cuidado.', response: 'carina', responseLine: 'Eu sempre vejo o golpe antes, Rubens.' },
+  ],
+  'balu+carina': [
+    { starter: 'balu', line: 'Carina! Os Abutres brigando entre si? Que delícia!', response: 'carina', responseLine: 'Abaixa o machado, Balu. Eu sou mais rápida.' },
+    { starter: 'carina', line: 'Balu. Hoje sem piada.', response: 'balu', responseLine: 'Sem piada? Então o tio Balu vai ficar mudo!' },
+  ],
+  'chico+morato': [
+    { starter: 'morato', line: 'Chico. Desliga esse scanner e presta atenção.', response: 'chico', responseLine: 'Tá desligado, chefe! ...Quase desligado.' },
+    { starter: 'chico', line: 'Chefe, eu medi: você vai doer.', response: 'morato', responseLine: 'Ótimo. Anota isso também.' },
+  ],
+  'dara+morato': [
+    { starter: 'dara', line: 'Morato, se você se machucar eu mesma te costuro.', response: 'morato', responseLine: 'Então não vou deixar você ter trabalho.' },
+    { starter: 'morato', line: 'Dara. Não precisa me poupar.', response: 'dara', responseLine: 'Eu nunca poupo. Eu só remendo depois.' },
+  ],
+  'chico+dara': [
+    { starter: 'chico', line: 'Dara, se eu me machucar você me cura, né?', response: 'dara', responseLine: 'Curo. E depois eu brigo com você.' },
+    { starter: 'dara', line: 'Chico, larga esse teclado e levanta a guarda.', response: 'chico', responseLine: 'Tô levantando! Tô levantando!' },
+  ],
+  'lirio+morato': [
+    { starter: 'lirio', line: 'Chefe! Trouxe a Calabresa?', response: 'morato', responseLine: 'Calabresa fica no bolso, Lírio. As Magras eu já te dei.' },
+    { starter: 'morato', line: 'Lírio. Mostra o que a Leonora aprendeu.', response: 'lirio', responseLine: 'Ela aprendeu com o senhor, chefe!' },
+  ],
+  'morato+xande': [
+    { starter: 'morato', line: 'Xande. Os Cinco são você agora.', response: 'xande', responseLine: 'São a gente, chefe. Sempre foram.' },
+    { starter: 'xande', line: 'Chefe... eu não queria brigar com o senhor.', response: 'morato', responseLine: 'Então briga direito. É assim que eu te ensinei.' },
+  ],
+  'dara+xande': [
+    { starter: 'dara', line: 'Xande, tira a mão do rosto. Deixa eu ver esse corte.', response: 'xande', responseLine: 'Depois, Dara. Agora é você e eu.' },
+    { starter: 'xande', line: 'Dara, pega leve. Eu sou o seu paciente favorito.', response: 'dara', responseLine: 'Sou eu que decido isso.' },
+  ],
+  'chico+guizo': [
+    { starter: 'guizo', line: 'Chico! Liga a câmera pra mim? A bateria morreu!', response: 'chico', responseLine: 'Eu sou técnico, Guizo, não eletricista de selfie!' },
+    { starter: 'chico', line: 'Guizo, desliga essa câmera.', response: 'guizo', responseLine: 'Nunca! Isso aqui vai pro Registro!' },
+  ],
+  'estrangeiro+morato': [
+    { starter: 'morato', line: 'Você. Foi você que derreteu a gente.', response: 'estrangeiro', responseLine: 'Eu lembro de você. Você tem gosto de coragem.' },
+    { starter: 'estrangeiro', line: 'Ainda inteiro. Curioso.', response: 'morato', responseLine: 'Pelos Cinco. Eu entro na frente quantas vezes precisar.' },
+  ],
   // NUBI (falas originais do jogo): o líder dela, o tiro que ela desviou na Mansão Leone, o machado do Balu e a outra
   // órfã do Santa Menefreda
   // OS LUKIC E A ARTEMIS (cânone: os Marcados do Kian; o Damir manda e o Boris obedece; o Juan é o primo; o Boris quer
@@ -3568,17 +3688,24 @@ VICTORY_LINES.anfitriao = { ...HOST_VICTORY, default: [...HOST_VICTORY.default, 
 for (const k of ['critical', 'special', 'transform']) {
   Object.assign(BATTLE_DIALOGUES[k], BATTLE_EXTRA[k]);
   Object.assign(BATTLE_REPLIES[k], BATTLE_REPLIES_EXTRA[k]);
+  Object.assign(BATTLE_DIALOGUES[k], BATTLE_RECENT[k]);
+  Object.assign(BATTLE_REPLIES[k], BATTLE_REPLIES_RECENT[k]);
 }
 
 const DIALOGUE_BASE_IDS = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina' };
+
+// formas que não estão no BASE_CHARACTER (ele só lista as que têm cena de entrada própria)
+const FORM_BASE = { beatrice_existida: 'beatrice', joui_shinokage: 'joui' };
 
 export function battleLines(speakerId, opponentId, event) {
   const lines = BATTLE_DIALOGUES[event];
   const replies = BATTLE_REPLIES[event];
   if (!lines || !replies) return null;
 
-  const speaker = lines[speakerId] ? speakerId : DIALOGUE_BASE_IDS[speakerId] || speakerId;
-  const opponent = replies[opponentId] ? opponentId : DIALOGUE_BASE_IDS[opponentId] || opponentId;
+  // a forma sem fala própria usa a da ficha base (Erin em nome do Caos fala como a Erin, a Existida como a Beatrice)
+  const baseOf = (id) => DIALOGUE_BASE_IDS[id] || BASE_CHARACTER[id] || FORM_BASE[id] || id;
+  const speaker = lines[speakerId] ? speakerId : baseOf(speakerId);
+  const opponent = replies[opponentId] ? opponentId : baseOf(opponentId);
   const opening = lines[speaker];
   const response = replies[opponent];
   if (!opening || !response) return null;
