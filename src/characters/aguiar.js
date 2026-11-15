@@ -8,7 +8,7 @@ export default {
   model: 'aguiar',
   color: '#c4241c',
   origin: 'Mascarados',
-  element: 'sangue', // assassinos dos sacrifícios de Sangue do Hexatombe; "Predador de Sangue"
+  element: 'intencao', // tocou a Coroa de Espinhos em Hexatombe (antes: sangue; os golpes e rituais seguem do elemento deles)
   energyColor: 0xc4241c,
   info: {
     weapon: 'Machado do Mutilador (com corda para arremessar e puxar)',

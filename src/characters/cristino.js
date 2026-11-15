@@ -182,7 +182,7 @@ export default {
   model: 'cristino',
   color: '#d0702c',
   origin: 'Transtornados', // Hexatombe (os Apóstolos de Sangue)
-  element: 'sangue', // o Símbolo de Sangue nas costas; o sacrifício para abrir a porta de Tenebris
+  element: 'intencao', // tocou a Coroa de Espinhos em Hexatombe (antes: sangue; os golpes e rituais seguem do elemento deles)
   energyColor: RUST,
   info: {
     weapon: 'Peixeira, Espingarda Socadeira e Lampiões Explosivos',

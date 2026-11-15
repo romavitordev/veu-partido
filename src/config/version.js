@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.45.1';
+export const VERSION = '4.45.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.45.2',
+    date: '2026-11-14',
+    title: 'A Coroa de Espinhos',
+    items: [
+      'ELEMENTO INTENÇÃO NO JOGO: quem tocou a Coroa de Espinhos em Hexatombe agora é de Intenção (laranja, fora do ciclo, neutro contra todos): CRISTINO, JAE, KEMI, HENRI/JUAN, AGUIAR e LABIRINTO. Os golpes e rituais de cada um continuam do elemento deles.',
+      'PÁGINA SOBRE: cada elemento ganhou o SÍMBOLO OFICIAL na cor dele. Intenção mostra o Estigma do Desejo; Transmissão e Tinta, que não têm símbolo próprio, mostram os seus Sinos.',
+    ],
+  },
   {
     v: '4.45.1',
     date: '2026-11-14',

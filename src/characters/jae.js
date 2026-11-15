@@ -175,7 +175,7 @@ export default {
   model: 'jae',
   color: '#c81e2e',
   origin: 'Mascarados', // Hexatombe (associação: Assassinos)
-  element: 'sangue',
+  element: 'intencao', // tocou a Coroa de Espinhos em Hexatombe (antes: sangue; os golpes e rituais seguem do elemento deles)
   energyColor: RED,
   info: {
     weapon: 'Punhal X (adaga) e punhais de arremesso',

@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.45.2 — A Coroa de Espinhos
+
+### Alterado
+- Elemento Intenção no jogo: Cristino, Jae, Kemi, Henri/Juan, Aguiar e Labirinto (quem tocou a Coroa de Espinhos em Hexatombe).
+- Página Sobre: o símbolo oficial de cada elemento na cor dele; Transmissão e Tinta com os seus Sinos.
+
 ## v4.45.1 — O símbolo do cervo
 
 ### Alterado

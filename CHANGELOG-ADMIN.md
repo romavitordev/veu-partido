@@ -1,5 +1,24 @@
 # Registro administrativo de alterações
 
+## v4.45.2 — A Coroa de Espinhos
+
+- **Elemento Intenção (dono: "falta transformar os personagens de intenção que hoje estão como sangue, alguns apenas,
+  analise com base na lore, quais tocaram no sino"):** `intencao` em `src/config/elements.js` (#ff5a1f, fora do ciclo:
+  `elementMultiplier` já devolve 1 para chaves fora de `BEATS`). Pela wiki (páginas Intenção, Cristino, Juan, Remi,
+  Jasper, Maria Helena Rodrigues, Lena Viegas): depois do sacrifício do Caíto, Cristino abre a porta e TOCA a Coroa de
+  Espinhos; em seguida Labirinto (Remi), Jae (Maria) e Aguiar (Jasper) tocam, Kemi (Lena) abraça o sino e Henri, por
+  último, toca e vira Juan. Os seis passam a `element: 'intencao'` (antes: Cristino, Jae, Juan e Aguiar Sangue; Kemi
+  Morte; Labirinto Energia). Os `element` dos golpes, rituais e projéteis continuam os do cânone (Sangue, Morte,
+  Energia, Conhecimento); as formas (jae_x, juan_odio, labirinto_elmo, aguiar_mutilador, cristino_desertor) herdam do
+  base. Arma amaldiçoada de Intenção usa a textura de Sangue (o fallback de `elementCoat`). Dalmo não tocou (o Elmo do
+  Colosso só foi influenciado): segue Sangue. `tools/check-roster.mjs` atualizado.
+- **Página Sobre, símbolos dos elementos (dono: "era pra baixar as imagens dos símbolos originais"; "faltou o símbolo
+  de transmissão"):** imagens da Ordem Paranormal Wiki (`Sangue.png`, `Morte.png`, `Conhecimento.png`, `Energia.png`,
+  `Medo.png`, `Símbolo Estigma do Desejo.png`, `Sino de Transmissão (concept).png`, `Sino de Tipora (sem fundo).png`)
+  recortadas e salvas em 256 px em `public/sobre/elementos/*.webp`. As brancas viram máscara CSS pintada com
+  `var(--c)`; os dois Sinos aparecem em cor (`.el-obj`). O card de Intenção agora lista o elenco pelo roster
+  (`sobre.js`), sem o texto fixo que citava personagens de fora do jogo.
+
 ## v4.45.1 — O símbolo do cervo
 
 - **Treb Ciach refeito (dono: "a versão do vilarejo normal pode ser de dia, mas lembre do céu ser cinza. não dá pra ver

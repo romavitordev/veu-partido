@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.45.2 — A Coroa de Espinhos
+- ELEMENTO INTENÇÃO NO JOGO: quem tocou a Coroa de Espinhos em Hexatombe agora é de Intenção (laranja, fora do ciclo, neutro contra todos): CRISTINO, JAE, KEMI, HENRI/JUAN, AGUIAR e LABIRINTO. Os golpes e rituais de cada um continuam do elemento deles.
+- PÁGINA SOBRE: cada elemento ganhou o SÍMBOLO OFICIAL na cor dele. Intenção mostra o Estigma do Desejo; Transmissão e Tinta, que não têm símbolo próprio, mostram os seus Sinos.
+
 ## v4.45.1 — O símbolo do cervo
 - TREB CIACH REFEITO: a versão do Samhain agora é de DIA, sob o céu cinza nublado, sem sol, com névoa por todos os lados. A versão pós-tempestade agora é de NOITE, com a aura azul fantasmagórica e a névoa em toda parte.
 - A GRANDE FOGUEIRA ficou bem maior: uma torre de toras sobre um monte de ossos e crânios, coberta de peles, com a CHAMA DE PROTEÇÃO AMARELA soltando SIGILOS DE ENERGIA como brasa, tochas e crânios espetados em volta e, no topo, o SÍMBOLO DE OSSOS: a roda com chifres curvos e o crânio de cervo com a galhada. Os lutadores começam longe dela.

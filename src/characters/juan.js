@@ -12,7 +12,7 @@ export default {
   color: '#c01828',
   origin: 'Mascarados', // o grupo do Estigma do Desejo em Hexatombe (com Labirinto e Aguiar)
   teams: ['Escriptas'], // o Henri era Escripta da Desconjuração antes do pacto
-  element: 'sangue',
+  element: 'intencao', // tocou a Coroa de Espinhos em Hexatombe (antes: sangue; os golpes e rituais seguem do elemento deles)
   energyColor: 0xc01828,
   info: {
     weapon: 'Faca Predadora (lâmina ondulada que absorve sangue)',

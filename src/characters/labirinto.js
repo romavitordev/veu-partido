@@ -9,7 +9,7 @@ export default {
   model: 'labirinto',
   color: '#8aa05a',
   origin: 'Mascarados',
-  element: 'energia', // Rajada/Tempestade Caótica; todos os rituais dele têm o mesmo padrão de labirinto
+  element: 'intencao', // tocou a Coroa de Espinhos em Hexatombe (antes: energia; os golpes e rituais seguem do elemento deles)
   energyColor: 0x9a6aff,
   info: {
     weapon: 'A Antena (lança com parabólica)',

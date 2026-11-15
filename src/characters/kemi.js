@@ -10,7 +10,7 @@ export default {
   model: 'kemi',
   color: '#d8c890',
   origin: 'Mascarados', // Hexatombe (associação: Assassinos)
-  element: 'morte',
+  element: 'intencao', // tocou a Coroa de Espinhos em Hexatombe (antes: morte; os golpes e rituais seguem do elemento deles)
   energyColor: 0xa7a3ad,
   info: {
     weapon: 'Sniper Fantasma (rifle de Morte), faca e revólver .38',
