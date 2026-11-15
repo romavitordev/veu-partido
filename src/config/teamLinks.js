@@ -158,8 +158,9 @@ export const TEAM_LINKS = {
     color: 0xf2c230,
     choreo: 'irmaos_lukic',
   },
-  // ELOY + KEMI (pedido do dono, 2026-11-14; cânone: o casal — ela segura o Eloy quando a focinheira pesa): o Eloy conta
-  // o tempo na bateria e a Kemi atira nas batidas (combat/teamSpecials.js CHOREO.eloy_kemi; os golpes são PROPOSTA)
+  // ELOY + KEMI (pedido do dono, 2026-11-14; refeito 2026-11-15; cânone: o casal — ela segura o Eloy quando a focinheira
+  // pesa): a focinheira, o Moeller Method no ritmo com os tiros dela, o Disparo da Morte e a baqueta do alto
+  // (combat/teamSpecials.js CHOREO.eloy_kemi; a cena é PROPOSTA)
   eloy_kemi: {
     id: 'eloy_kemi',
     kind: 'duo',
@@ -170,6 +171,7 @@ export const TEAM_LINKS = {
     color: 0xff5a8a,
     choreo: 'eloy_kemi',
     sceneProps: { kemi: { show: ['sniperHand'], hide: ['stowed'] } },
+    sceneForms: { kemi: 'fantasma' }, // ela veste as faixas para o Disparo da Morte (cânone: a Fantasma)
   },
   // PSIKOLERA (pedido do dono, 2026-11-14): a banda de Hexatombe. Hoje o Eloy (bateria) e a Cindy (baixo); Franco, Caio e
   // Alê entram no grupo quando estiverem no elenco (aí o mínimo sobe para 3, como os outros grupos). Os dois de máscara

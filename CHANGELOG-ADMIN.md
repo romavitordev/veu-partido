@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.51.2 — Animações e Queda
+
+- Versão: `VERSION` 4.51.1 → **4.51.2** (`package.json`/lock junto). Data: 2026-11-15.
+- **Amor e Sangue (dono: "alguns especiais em equipe como o da Kemi e Eloy que está bem simples"):** `CHOREO.eloy_kemi`
+  em `combat/teamSpecials.js` reescrito. Duração S + 6,2 s, 11 golpes repartidos pelo `splitDamage` (o total segue o
+  `teamSpecial.damage`). Roteiro (detalhes PROPOSTA a partir do cânone: focinheira, Método Moeller, Sniper/Disparo da
+  Morte da Kemi): focinheira + "NÃO ENCOSTA EM MIM!" → Kemi ajoelhada "Respira, amor. No meu tempo." → salto do Eloy
+  → 8 batidas aceleradas com tiros da Kemi nas batidas 4 e 8 → uppercut que ergue o alvo → "Disparo da Morte." com
+  a bala em espiral de fumaça e câmera lateral seguindo a bala → "PRATO!" com o Eloy caindo de cima no impacto →
+  "No tempo, amor. Eu tô aqui.".
+- `config/teamLinks.js` eloy_kemi: `sceneForms: { kemi: 'fantasma' }`.
+- Conferido no jogo quadro a quadro (câmeras do salto, da bala e do impacto ajustadas para o alvo não tapar o quadro).
+
 ## v4.51.1 — Animações e Queda
 
 - Versão: `VERSION` 4.51.0 → **4.51.1** (`package.json`/lock junto). Data: 2026-11-15. A v4.51.0 foi renomeada de

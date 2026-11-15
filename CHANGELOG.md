@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.51.2 — Animações e Queda
+
+### Alterado
+- Especial em equipe Amor e Sangue (Eloy + Kemi) refeito: 6,2 s, 11 golpes, Kemi em Fantasma, Método Moeller, Disparo da Morte em espiral e câmeras novas.
+
 ## v4.51.1 — Animações e Queda
 
 ### Adicionado

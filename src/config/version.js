@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.51.1';
+export const VERSION = '4.51.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.51.2',
+    date: '2026-11-15',
+    title: 'Animações e Queda',
+    items: [
+      'AMOR E SANGUE refeito (Eloy + Kemi): o Eloy põe a focinheira e conta o tempo no pé, a Kemi chega em Fantasma ("Respira, amor. No meu tempo."), ele salta e bate o Método Moeller em 8 batidas que aceleram com a Kemi atirando no tempo, o soco final joga o alvo para o alto e o Disparo da Morte atravessa a arena em espiral enquanto o Eloy cai de cima no PRATO.',
+      'Câmera nova no especial: de lado, seguindo a bala da Kemi até o alvo no ar.',
+    ],
+  },
   {
     v: '4.51.1',
     date: '2026-11-15',

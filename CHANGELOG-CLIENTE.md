@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.51.2 — Animações e Queda
+- AMOR E SANGUE refeito (Eloy + Kemi): o Eloy põe a focinheira e conta o tempo no pé, a Kemi chega em Fantasma ("Respira, amor. No meu tempo."), ele salta e bate o Método Moeller em 8 batidas que aceleram com a Kemi atirando no tempo, o soco final joga o alvo para o alto e o Disparo da Morte atravessa a arena em espiral enquanto o Eloy cai de cima no PRATO.
+- Câmera nova no especial: de lado, seguindo a bala da Kemi até o alvo no ar.
+
 ## v4.51.1 — Animações e Queda
 - POSES DE VITÓRIA PRÓPRIAS: Artemis, Beatrice, Carina, Cindy, Damir, Eloy, Fernando, Luciano, Ivete, Rubens, Sabara, Tristan, Amalia, Gaius, Celestine, Chico, Morato, Dara, Boris e Lírio deixaram a pose genérica (ou a emprestada de outro) e ganharam a sua — a Cindy toca o Fuzil Baixo, o Rubens confere o Relógio de Arnaldo, o Luciano bate continência, a Amalia mira o céu, o Lírio ergue a Leonora, o Eloy levanta as baquetas e mais.
 - Na vitória o Tristan aparece com o lança-chamas, a Ivete com a espingarda na mão e o Chico com a Mac-10.

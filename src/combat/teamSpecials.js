@@ -1073,100 +1073,211 @@ const CHOREO = {
     return END;
   },
 
-  // AMOR E SANGUE (nome do dono; pedido de 2026-11-14: "Eloy precisa ter especial em conjunto com Kemi"). Cânone: os dois são um
-  // casal e ela é quem segura o Eloy quando a focinheira pesa; a Kemi é a atiradora dos Mascarados. PROPOSTA dos golpes: o
-  // Eloy conta o tempo na bateria e a Kemi atira NAS BATIDAS, de joelhos com a sniper; no fim ele veste a focinheira,
-  // chuta a bateria e fecha com o prato de ataque no MESMO tempo do último tiro dela
+  // AMOR E SANGUE (nome do dono; pedido de 2026-11-14: "Eloy precisa ter especial em conjunto com Kemi"; refeito em
+  // 2026-11-15: "alguns especiais em equipe como o da Kemi e Eloy que está bem simples"). Cânone usado:
+  //   - os dois são um casal e ela é quem segura o Eloy quando a focinheira pesa (dono);
+  //   - Eloy: a FOCINHEIRA (olhos brancos, aversão a toque, bate o pé no ritmo), o MOELLER METHOD (pula no alvo e soca
+  //     como se tocasse bateria), o bônus de aliado PORRADA RÍTMICA (o aliado bate no ritmo de um tambor de guerra), a
+  //     arte com a Escarlata (desce do alto de joelho erguido, a baqueta levantada para cravar) e o CAPSLOCK;
+  //   - Kemi: VESTE AS FAIXAS e vira a FANTASMA (o rifle pinga lodo preto), o DISPARO DA MORTE (o tempo desacelera em
+  //     volta dela no tiro) e a SNIPER DA MORTE (uma espiral de Morte se forma do tiro); silenciosa.
+  // PROPOSTA (a ordem, os tempos e as falas): ele veste a focinheira e ela o acalma; ele se joga no alvo e o Moeller vira
+  // a bateria — ela atira nas batidas fortes (a Porrada Rítmica ao contrário: o aliado no ritmo DELE); a baqueta de baixo
+  // joga o alvo no ar, o tempo desacelera, a bala dela atravessa devagar deixando a espiral, e ele desce do alto cravando
+  // a baqueta no MESMO instante em que a bala chega.
   eloy_kemi({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 5.4;
+    const END = S + 6.2;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const eloy = tools.get('eloy'), kemi = tools.get('kemi');
-    const hits = splitDamage(crewTotal, 6);
+    const hits = splitDamage(crewTotal, 11);
     const ROSE = 0xff5a8a;
+    const DEATH = 0x2a2a30; // a espiral de Morte (cinza-chumbo) e o lodo preto do rifle da Fantasma
     const say = sayer(world);
     const prop = propSwapper();
-    const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
-    let kit = null;
-    // 1. a bateria aparece na frente do Eloy (de lado para o alvo); a Kemi ajoelha longe com a sniper
+    const muzzle = (actor) => (actor && actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor ? actor.chest() : opp.chestPos());
+    const hitter = eloy || kemi;
+    const BEAT = ['drumKick', 'drumSnare', 'drumKick', 'drumSnare'];
+    // movimento vertical de quem está na cena (o alvo no ar, o Eloy caindo do alto): curva por tempo
+    const lifts = [];
+    const lift = (body, t0, t1, curve) => lifts.push({ body, t0, t1, curve });
+    tl.each((time) => {
+      for (const l of lifts) {
+        if (time < l.t0 || time > l.t1 + 0.05 || !live()) continue;
+        const k = Math.min(1, (time - l.t0) / (l.t1 - l.t0));
+        l.body.pos.y = Math.max(0, l.curve(k));
+        if (l.body === opp) opp.onGround = false;
+      }
+    });
+    const tapFoot = (t) => tl.add(t, () => { if (live() && eloy) { world.audio.play('drumKick', { volume: 0.55 }); world.fx.burst(eloy.pos.clone().setY(0.05), { count: 5, color: 0x8a7a66, kind: 'smoke', speed: 0.8, life: 0.3, size: 0.25 }); } });
+
+    // 1. A FOCINHEIRA — o Eloy veste, os olhos ficam brancos e ele bate o pé no ritmo; a Kemi veste as faixas, longe
     tl.add(S, () => {
       if (!live()) return;
       if (eloy) {
-        tools.enter(eloy, -0.9, 4.6);
-        kit = bateriaEloy();
-        kit.position.set(eloy.pos.x, 0, eloy.pos.z);
-        kit.rotation.y = eloy.yaw;
-        world.scene.add(kit);
-        world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.6)), { count: 20, color: 0x2a2226, kind: 'smoke', speed: 1.4, life: 0.5, size: 0.6, grow: 1 });
-        eloy.play('drum_play', 2.2);
-        say(eloy, 'Kemi! Conta comigo: um, dois, três, quatro!', 0);
-        world.cameraRig.playShots([{ ...overShoulder(eloy, opp, { dur: 1.2, back: 2.2, side: -0.9, height: 1.6, fov: 46 }), cut: true }]);
+        tools.enter(eloy, -0.5, 3.6);
+        prop(eloy, 'maskOn', true);
+        eloy.play('taunt_roar', 0.9);
+        world.audio.play('maskOn');
+        say(eloy, 'NÃO ENCOSTA EM MIM!', 0);
+        world.cameraRig.playShots([{ ...faceClose(eloy, { dur: 0.9, from: 2.6, to: 1.4, height: 1.6, fov: 36 }), cut: true }]);
       }
       if (kemi) {
-        tools.enter(kemi, 0.85, 7.5);
-        kemi.play('sniper_kneel', 2.4);
+        tools.enter(kemi, 0.9, 8.5);
+        kemi.play('sniper_kneel', 6);
       }
     });
-    // 2. quatro batidas, quatro tiros: o bumbo e o tiro saem juntos
-    for (let i = 0; i < 4; i++) {
-      const t = S + 0.75 + i * 0.36;
-      tl.add(t, () => {
-        if (!live()) return;
-        world.audio.play(i % 2 ? 'drumSnare' : 'drumKick', { volume: 0.9 });
-        if (kit) world.fx.ring(kit.localToWorld(new THREE.Vector3(0, 0.5, 0.4)), { color: ROSE, radius: 0.6 + i * 0.15, life: 0.25 });
-        if (!kemi) return tools.impact(eloy, hits[i], { sound: 'punch', color: ROSE });
-        if (i === 1) world.cameraRig.playShots([{ ...overShoulder(kemi, opp, { dur: 1.1, back: 1.6, side: 0.7, height: 1.1, fov: 38 }), cut: true }]);
-        kemi.face(opp);
-        const from = muzzle(kemi);
-        world.fx.flash(from, { color: 0xffe08a, size: 1.1, life: 0.08 });
-        world.fx.tracer(from, opp.chestPos(), { color: 0xffe08a, life: 0.18, width: 0.05 });
-        world.audio.play('sniper', { volume: 0.7, pitch: 1 + i * 0.04 });
-        tools.impact(kemi, hits[i], { sound: 'clawHit', color: ROSE });
+    for (let i = 0; i < 3; i++) tapFoot(S + 0.35 + i * 0.22);
+    tl.add(S + 0.95, () => {
+      if (!live() || !kemi) return;
+      say(kemi, 'Respira, amor. No meu tempo.', 1);
+      world.fx.burst(muzzle(kemi), { count: 10, color: DEATH, kind: 'smoke', speed: 0.6, up: -1.2, life: 0.6, size: 0.3 }); // o lodo pinga
+      world.cameraRig.playShots([{ ...overShoulder(kemi, opp, { dur: 0.75, back: 1.4, side: 0.6, height: 1.05, fov: 34 }), cut: true }]);
+    });
+
+    // 2. SE JOGA — ele pula em cima do alvo (o começo do Moeller Method)
+    tl.add(S + 1.7, () => {
+      if (!live() || !eloy) return;
+      eloy.face(opp);
+      eloy.play('raziel_pounce', 0.45);
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.5, radius: 4.6, height: 1.6, a0: 1.5, a1: 1.25, lookH: 1.1 }), cut: true }]);
+    });
+    if (eloy) {
+      let from = null, to = null;
+      tl.add(S + 1.7, () => { if (!live()) return; from = eloy.pos.clone(); to = tools.around(eloy, -0.15, 0.95); });
+      tl.each((time) => {
+        if (!from || time < S + 1.7 || time > S + 2.05 || !live()) return;
+        const k = smooth((time - (S + 1.7)) / 0.35);
+        eloy.pos.set(from.x + (to.x - from.x) * k, Math.sin(Math.PI * k) * 1.1, from.z + (to.z - from.z) * k);
+        eloy.face(opp);
       });
     }
-    tl.add(S + 1.55, () => live() && kemi && say(kemi, 'No tempo, amor. Eu tô aqui.', 1));
-    // 3. a focinheira: o Eloy veste, grita e chuta a bateria em cima do alvo
-    tl.add(S + 2.35, () => {
-      if (!live() || !eloy) return;
-      prop(eloy, 'maskOn', true);
-      eloy.play('taunt_roar', 0.5);
-      world.audio.play('maskOn');
-      say(eloy, 'NÃO ENCOSTA EM MIM!', 0);
-      world.cameraRig.playShots([{ ...faceClose(eloy, { dur: 0.7, from: 2.4, to: 1.3, height: 1.6, fov: 36 }), cut: true }]);
+    tl.add(S + 2.05, () => { if (eloy) eloy.pos.y = 0; tools.impact(hitter, hits[0], { sound: 'heavyPunch', color: ROSE }); });
+
+    // 3. MOELLER METHOD — oito batidas aceleradas; nas fortes (4ª e 8ª) a Kemi atira junto (a Porrada Rítmica)
+    const moeller = [0, 0.2, 0.38, 0.54, 0.68, 0.8, 0.91, 1.0];
+    const punch = ['hook_r', 'hook_l', 'dual_r', 'dual_l', 'jab', 'hook_r', 'dual_l', 'flurry'];
+    tl.add(S + 2.15, () => {
+      if (!live()) return;
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.25, radius: 2.8, height: 1.4, a0: -0.7, a1: 0.5 }), cut: true }]);
+      if (eloy) say(eloy, 'UM, DOIS, TRÊS, QUATRO!', 0);
     });
-    tl.add(S + 2.95, () => {
-      if (!live() || !eloy) return;
-      eloy.play('kick_front', 0.35);
-      world.audio.play('drumCrash', { volume: 1 });
-      if (kit) { world.fx.burst(kit.localToWorld(new THREE.Vector3(0, 0.6, 0.5)), { count: 26, color: 0xd8d0c0, speed: 5, life: 0.45, size: 0.2 }); world.scene.remove(kit); kit = null; }
-      world.cameraRig.shake(0.3, 0.2);
+    moeller.forEach((dt, i) => {
+      const t = S + 2.2 + dt;
+      tl.add(t, () => {
+        if (!live()) return;
+        if (eloy) { eloy.face(opp); eloy.play(punch[i], 0.18); }
+        world.audio.play(BEAT[i % 4], { volume: 0.95 });
+        world.fx.ring(opp.chestPos(), { color: ROSE, radius: 0.5 + (i % 4) * 0.12, life: 0.2, vertical: true, yaw: hitter.yaw });
+        const strong = i === 3 || i === 7;
+        if (strong && kemi) {
+          kemi.face(opp);
+          const from = muzzle(kemi);
+          world.fx.flash(from, { color: 0xffe08a, size: 1, life: 0.08 });
+          world.fx.tracer(from, opp.chestPos(), { color: 0xd8d4dc, life: 0.16, width: 0.05 });
+          world.audio.play('sniper', { volume: 0.75, pitch: 1.05 });
+          world.audio.play('drumCrash', { volume: 0.6 });
+        }
+        if (i < 7) tools.impact(strong && kemi ? kemi : hitter, hits[1 + i], { sound: strong ? 'clawHit' : 'punch', color: ROSE });
+      });
     });
-    // 4. corre e fecha: o prato de ataque e o último tiro dela no MESMO tempo
-    tl.add(S + 3.3, () => {
+
+    // 4. BAQUETA DE BAIXO — o alvo vai para o ar
+    tl.add(S + 3.35, () => {
+      if (!live()) return;
+      if (eloy) { eloy.face(opp); eloy.play('uppercut', 0.4); }
+      tools.impact(hitter, hits[8], { sound: 'heavyPunch', color: ROSE });
+      opp.anim.play('launched', { restart: true, blend: 0.04 });
+      world.cameraRig.playShots([{ ...lowAngle(opp, { dur: 0.6, dist: 3.2, fov: 50 }), cut: true }]);
+    });
+    // sobe rápido e, no Disparo da Morte, quase para no alto (o tempo desacelera)
+    lift(opp, S + 3.4, S + 5.3, (k) => (k < 0.25 ? smooth(k / 0.25) * 2.6 : 2.6 + Math.sin((k - 0.25) / 0.75 * Math.PI) * 0.25 - Math.max(0, k - 0.9) * 8));
+
+    // 5. DISPARO DA MORTE — o tempo desacelera em volta da Kemi; a bala sai devagar e deixa a espiral de Morte
+    let bullet = null, b0 = null;
+    const T0 = S + 4.0, T1 = S + 5.05; // a bala viaja devagar
+    tl.add(S + 3.75, () => {
+      if (!live() || !kemi) return;
+      kemi.face(opp);
+      kemi.play('sniper_fire', 1.4);
+      say(kemi, 'Disparo da Morte.', 1);
+      world.audio.play('chargeHum', { volume: 0.6, pitch: 0.5 }); // o tempo arrastado
+      world.cameraRig.playShots([{ ...overShoulder(kemi, opp, { dur: 0.9, back: 0.9, side: 0.45, height: 1.0, fov: 22 }), cut: true }]);
+    });
+    tl.add(T0, () => {
+      if (!live()) return;
+      b0 = muzzle(kemi || hitter);
+      world.fx.flash(b0, { color: 0xd8d4dc, size: 1.6, life: 0.2 });
+      world.audio.play('sniper', { volume: 1, pitch: 0.6 });
+      bullet = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), new THREE.MeshBasicMaterial({ color: 0xf2eef6 }));
+      bullet.position.copy(b0);
+      world.scene.add(bullet);
+      // de lado, no meio do caminho: a câmera acompanha a bala da Kemi até o alvo no ar (a espiral fica para trás)
+      const from = kemi || hitter;
+      world.cameraRig.playShots([{
+        dur: T1 - T0, fov: 46, cut: true,
+        pos: (t) => {
+          const dir = new THREE.Vector3(opp.pos.x - from.pos.x, 0, opp.pos.z - from.pos.z);
+          const len = dir.length() || 1;
+          dir.multiplyScalar(1 / len);
+          return new THREE.Vector3(from.pos.x, 0, from.pos.z).addScaledVector(dir, len * (0.35 + t * 0.45)).addScaledVector(new THREE.Vector3(-dir.z, 0, dir.x), 3.4).setY(1.6 + t * 1.2);
+        },
+        look: () => (bullet ? bullet.position.clone() : from.chest()),
+      }]);
+    });
+    tl.each((time) => {
+      if (!bullet) return;
+      if (time > T1 || !live()) { world.scene.remove(bullet); bullet.geometry.dispose(); bullet.material.dispose(); bullet = null; return; }
+      const k = Math.max(0, (time - T0) / (T1 - T0));
+      const target = opp.chestPos();
+      bullet.position.lerpVectors(b0, target, k);
+      // SNIPER DA MORTE: a espiral nasce do tiro e fica no ar atrás da bala
+      const dir = target.clone().sub(b0).normalize();
+      const side = new THREE.Vector3(0, 1, 0).cross(dir).normalize();
+      const up = dir.clone().cross(side);
+      for (let j = 0; j < 2; j++) {
+        const a = time * 26 + j * Math.PI;
+        const r = 0.22 + 0.1 * Math.sin(time * 9);
+        const p = bullet.position.clone().addScaledVector(side, Math.cos(a) * r).addScaledVector(up, Math.sin(a) * r);
+        world.fx.burst(p, { count: 1, color: j ? DEATH : 0x6a6670, kind: 'smoke', speed: 0.05, life: 0.9, size: 0.16 });
+      }
+    });
+    tl.add(END, () => { if (bullet) { world.scene.remove(bullet); bullet = null; } });
+
+    // 6. A BAQUETA DO ALTO — ele salta e desce de joelho erguido, cravando no instante em que a bala chega
+    tl.add(S + 4.25, () => {
       if (!live() || !eloy) return;
-      const at = tools.around(eloy, -0.2, 1.4);
-      eloy.pos.set(at.x, 0, at.z);
       eloy.face(opp);
-      world.fx.burst(eloy.chest(), { count: 10, color: 0x2a2226, kind: 'smoke', speed: 1.4, life: 0.35, size: 0.4 });
-      eloy.play('flurry', 0.45);
-      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.2, radius: 3.4, height: 1.5, a0: -0.5, a1: 0.4 }), cut: true }]);
+      eloy.play('air_dual', 0.9);
+      say(eloy, 'PRATO!', 0);
     });
-    tl.add(S + 3.5, () => tools.impact(eloy || kemi, hits[4], { sound: 'heavyPunch', color: ROSE }));
-    tl.add(S + 3.95, () => {
+    if (eloy) {
+      let a0 = null;
+      tl.add(S + 4.25, () => { if (live()) a0 = eloy.pos.clone(); });
+      tl.each((time) => {
+        if (!a0 || time < S + 4.25 || time > T1 || !live()) return;
+        const k = (time - (S + 4.25)) / (T1 - (S + 4.25));
+        const at = opp.pos;
+        eloy.pos.set(a0.x + (at.x - a0.x) * k * 0.8, k < 0.6 ? smooth(k / 0.6) * 4.2 : 4.2 - smooth((k - 0.6) / 0.4) * (4.2 - Math.max(0.6, opp.pos.y - 0.2)), a0.z + (at.z - a0.z) * k * 0.8);
+        eloy.face(opp);
+      });
+    }
+    tl.add(T1, () => {
       if (!live()) return;
-      if (eloy) { eloy.face(opp); eloy.play('dual_both', 0.55); }
-      if (kemi) kemi.play('shoot_sniper', 0.5);
-      world.cameraRig.playShots([{ ...lowAngle(eloy || kemi, { dur: 1.1, dist: 3, fov: 46 }), cut: true }]);
-    });
-    tl.add(S + 4.2, () => {
-      if (!live()) return;
-      if (kemi) world.fx.tracer(muzzle(kemi), opp.chestPos(), { color: ROSE, life: 0.3, width: 0.08 });
-      world.audio.play('drumCrash', { volume: 1.1 });
+      world.audio.play('drumCrash', { volume: 1.2 });
       world.audio.play('sniper', { volume: 1 });
-      tools.impact(eloy || kemi, hits[5], { sound: 'slashFinal', color: ROSE });
-      world.fx.ring(opp.chestPos(), { color: ROSE, radius: 1.8, life: 0.4, vertical: true, yaw: (eloy || kemi).yaw });
-      world.cameraRig.shake(0.45, 0.3);
+      tools.impact(hitter, hits[9] + hits[10], { sound: 'slashFinal', color: ROSE });
+      world.fx.ring(opp.chestPos(), { color: ROSE, radius: 2.2, life: 0.45, vertical: true, yaw: hitter.yaw });
+      world.fx.burst(opp.chestPos(), { count: 36, color: DEATH, kind: 'smoke', speed: 3, life: 0.8, size: 0.4 });
+      // de longe e de baixo: o Eloy cravando no alto e a fumaça da espiral (o close do impacto cortaria os dois)
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.2, radius: 5, height: 1.2, a0: 0.3, a1: 0.7, lookH: 1.8 }), cut: true }]);
+      world.cameraRig.shake(0.5, 0.3);
+      world.hitstop(0.12);
     });
-    tl.add(END, () => { if (kit) world.scene.remove(kit); kit = null; prop.undo(); world.ui && world.ui.subtitle && world.ui.subtitle(null); });
+    // o alvo cai, o Eloy pousa; a última fala é dela
+    lift(opp, T1, S + 5.6, (k) => (1 - k) * Math.max(0, 2.4));
+    if (eloy) lift(eloy, T1, S + 5.35, (k) => (1 - smooth(k)) * 1.6);
+    tl.add(S + 5.5, () => { if (live() && kemi) say(kemi, 'No tempo, amor. Eu tô aqui.', 1); });
+    tl.add(END, () => { opp.pos.y = Math.max(0, opp.pos.y); if (eloy) eloy.pos.y = 0; prop.undo(); world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return END;
   },
 
