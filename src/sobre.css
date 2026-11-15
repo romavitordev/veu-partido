@@ -144,9 +144,15 @@ details p { margin: 0 0 var(--s1); font-size: 15px; }
 .rules b { color: var(--frost); font-weight: 600; }
 .elements { display: grid; gap: var(--s2); margin-top: var(--s4); }
 @media (min-width: 640px) { .elements { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1024px) { .elements { grid-template-columns: repeat(5, 1fr); } }
+@media (min-width: 1024px) { .elements { grid-template-columns: repeat(4, 1fr); } }
 .element { display: flex; flex-direction: column; gap: var(--s1); padding: var(--s2) var(--s2) var(--s3); border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 6px; }
 .element h3 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 26px; }
+/* o símbolo de cada elemento: a imagem oficial (branca, fundo transparente) vira máscara pintada com a cor do elemento */
+.element .el-sym { display: block; width: 72px; height: 72px; margin-bottom: var(--s1);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 55%, transparent)); }
+.element span.el-sym { background: var(--c); -webkit-mask: var(--img) center / contain no-repeat; mask: var(--img) center / contain no-repeat; }
+.element span.el-obj { background: var(--img) center / contain no-repeat; -webkit-mask: none; mask: none; }
+.element:has(.el-sym) h3::before { display: none; }
 .element h3::before { content: ''; }
 .element p { margin: 0; font-size: 14px; line-height: 1.5; }
 .element .el-rel { margin-top: auto; padding-top: var(--s1); color: var(--graphite); font-size: 13px; }
