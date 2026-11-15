@@ -1,0 +1,266 @@
+================================================================================
+GUIA DEFINITIVO DE TECNOLOGIAS, BIBLIOTECAS, SKILLS E MCPs PARA GAME DEV 3D
+Projeto de Referência: Véu Partido / Arena Paranormal (v4.47.0)
+Autor: Vitor Roma & Antigravity AI
+================================================================================
+
+Este guia foi elaborado para documentar e expandir toda a base técnica utilizada
+para construir o jogo "Véu Partido" e fornecer o caminho das pedras para qualquer
+amigo ou desenvolvedor que queira criar seu próprio jogo 3D de alta performance
+(rodando na Web, PC e Android com a mesma base de código).
+
+--------------------------------------------------------------------------------
+SUMÁRIO
+--------------------------------------------------------------------------------
+1. Arquitetura Central do Jogo (Web, PC e Mobile com uma única base)
+2. As Melhores Bibliotecas JavaScript/TypeScript para Jogos 3D
+3. Ferramentas e Pipeline 3D (Blender, Animação e Otimização)
+4. Servidores MCP (Model Context Protocol) para Auxílio com IA
+5. Skills Essenciais para o Claude / Antigravity
+6. Áudio, Efeitos Sonoros e Game Feel (Juice)
+7. Multiplayer, Redes e Netcode de Baixa Latência
+8. Sites, Ferramentas Gratuitas e Bancos de Recursos
+9. Passo a Passo Recomendado para Iniciar um Novo Projeto
+
+================================================================================
+1. ARQUITETURA CENTRAL DO JOGO
+================================================================================
+
+O segredo da fluidez e leveza do jogo é a combinação de uma engine gráfica moderna
+com código nativo ultraleve, evitando a sobrecarga de frameworks pesados:
+
+* RENDERIZADOR 3D: Three.js (WebGL 2.0 / WebGPU)
+  - Responsável por renderizar a cena, iluminação Cel-Shading/Toon, malhas,
+    esqueletos e partículas.
+  - O loop de jogo roda diretamente em requestAnimationFrame nativo a 60+ FPS.
+
+* INTERFACE & HUD: HTML5 + CSS3 Nativo
+  - Em jogos de ação rápida, frameworks como React/Vue podem causar micro-travamentos
+    (garbage collection). O HUD (vida, sanidade, combos, retratos) utiliza DOM
+    acelerado por hardware via CSS transforms, resultando em latência zero.
+
+* COMPILADOR & BUNDLER: Vite
+  - Substituto moderno do Webpack. Fornece HMR (Hot Module Replacement) instantâneo
+    durante o desenvolvimento e minificação otimizada para produção.
+
+* DISTRIBUIÇÃO MULTIPLATAFORMA:
+  - PC (Windows): Electron + electron-builder (Gera instalador .exe e versão portátil).
+  - Mobile (Android): Capacitor (@capacitor/android) — Empacota o app web em APK nativo
+    com suporte completo a touch controls (stick analógico virtual) e gamepad Bluetooth.
+  - Web: Publicação direta no GitHub Pages / Netlify / Vercel.
+
+================================================================================
+2. AS MELHORES BIBLIOTECAS MODERNAS PARA THREE.JS & GAME DEV
+================================================================================
+
+Se você ou seu amigo forem criar um novo jogo ou expandir o atual, estas são as
+bibliotecas de padrão ouro da indústria:
+
+--- A. FÍSICA 3D & COLISÕES ---
+1. Rapier.js (@dimforge/rapier3d) [ALTAMENTE RECOMENDADO]:
+   - Motor de física ultrarrápido escrito em Rust e compilado para WebAssembly (WASM).
+   - Sucessor definitivo do Cannon.js e Ammo.js.
+   - Perfeito para jogos de luta, plataforma 3D e ação: física determinística,
+     raycasting veloz e suporte nativo a Character Controllers (movimentação de lutadores).
+   - Link: https://rapier.rs/
+
+2. Havok Physics for Web:
+   - A lendária engine de física Havok (usada em jogos AAA de console) agora possui
+     versão WASM para Web (com suporte direto no Babylon.js e adaptável para Three.js).
+
+--- B. PÓS-PROCESSAMENTO & EFEITOS VISUAIS ---
+1. postprocessing (mantido pelo coletivo Pmndrs):
+   - Biblioteca de pós-processamento de altíssima performance para Three.js.
+   - Muito mais rápida e modular que o EffectComposer padrão do Three.js.
+   - Efeitos prontos: Bloom paranormal, Aberração Cromática, Vignette, Shockwave
+     (ondas de choque nos golpes fortes), Depth of Field (DoF) e LUTs de cores.
+   - Link: https://github.com/pmndrs/postprocessing
+
+--- C. INTELIGÊNCIA ARTIFICIAL PARA INIMIGOS E CHEFES ---
+1. Yuka (yuka):
+   - Motor de IA para jogos em JavaScript criado por um dos principais mantenedores
+     do Three.js (Mugen87).
+   - Recursos inclusos:
+     * Steering Behaviors (perseguir, fugir, desviar de obstáculos em bando).
+     * NavMesh (malhas de navegação para inimigos andarem pelo cenário sem atravessar paredes).
+     * Finite State Machines (Máquinas de Estado para IA de chefes e combos da CPU).
+     * Decision Trees e Goal-Driven Behavior.
+   - Link: https://mugen87.github.io/yuka/
+
+--- D. ANIMAÇÃO, TRANSIÇÕES E GAME FEEL ---
+1. GSAP (GreenSock Animation Platform):
+   - O melhor motor de interpolação (tweens) do mundo.
+   - Perfeito para fazer a barra de vida esvaziar com amortecimento, números de dano
+     saltarem na tela ("damage popups"), banners de especiais deslizarem com impacto
+     e efeitos de "squash & stretch" na UI.
+   - Link: https://gsap.com/
+
+2. Three.js SkeletonUtils:
+   - Utilitário nativo do Three.js para clonar modelos com rigging esquelético
+     de forma independente sem corromper as matrizes dos ossos.
+
+--- E. OTIMIZAÇÃO DE ASSETS 3D ---
+1. glTF-Transform (@gltf-transform/core / CLI):
+   - Ferramenta indispensável para transformar modelos pesados de 50 MB em arquivos
+     leves de 2 a 4 MB.
+   - Aplica compressão Draco, Meshopt e converte texturas PNG/JPG para KTX2 (Basis Universal),
+     que são descompactadas diretamente pela GPU sem ocupar memória RAM.
+   - Link: https://gltf-transform.donmccurdy.com/
+
+================================================================================
+3. FERRAMENTAS E PIPELINE 3D (BLENDER + PYTHON)
+================================================================================
+
+No desenvolvimento de "Véu Partido", o Blender é utilizado tanto manualmente
+quanto via scripts autônomos em Python:
+
+* Blender 4.2+ / 5.2:
+  - Uso de geometria limpa (Low/Mid-poly) com foco em silhueta expressiva.
+  - Rigging padronizado com os ossos obrigatórios da hierarquia humana:
+    root, hips, sp (coluna), chest (peito), neck, hd (cabeça), ombros (sL/sR),
+    cotovelos (eL/eR), mãos (handL/handR), pernas (lL/lR), joelhos (kL/kR) e pés (footL/footR).
+
+* Addons Essenciais para Blender:
+  1. Mixamo Rig / Mixamo Auto-Control: Converte animações gratuitas do Mixamo para rigs editáveis.
+  2. Rigify (Nativo do Blender): Sistema de armaduras modulares avançadas.
+  3. glTF 2.0 Exporter (Nativo): Exporta diretamente em .glb com animações e skins.
+
+* Orçamento de Polígonos Recomendado:
+  - Personagens principais: até 40.000 triângulos (40k tris).
+  - Cenários e Arenas completas: até 150.000 triângulos (150k tris).
+  - Máximo de 4 influências de osso por vértice (para compatibilidade móvel).
+
+================================================================================
+4. SERVIDORES MCP (MODEL CONTEXT PROTOCOL) PARA GAME DEV
+================================================================================
+
+O MCP conecta o Claude e o Antigravity diretamente às ferramentas de criação:
+
+1. BLENDER MCP (blender-mcp):
+   - Permite que a IA crie malhas, aplique materiais, inspecione a câmera, organize
+     hierarquias de objetos e exporte .glb automaticamente.
+   - Comando de execução: uvx blender-mcp
+   - Configuração no .claude.json:
+     {
+       "mcpServers": {
+         "blender": {
+           "type": "stdio",
+           "command": "uvx",
+           "args": ["blender-mcp"]
+         }
+       }
+     }
+
+2. GODOT MCP (se o seu amigo optar por criar na engine Godot):
+   - Permite que a IA crie nós, scripts GDScript, cenas e configure colisores no Godot.
+   - Repositório popular: https://github.com/mario-dn/godot-mcp
+
+3. UNITY MCP (Plugin oficial parceiro Antigravity):
+   - Curadoria de skills para criação em Unity, C# e otimização de performance.
+
+4. PLAYWRIGHT / CHROME DEVTOOLS MCP:
+   - Permite que o agente abra o jogo no navegador, tire capturas de tela do gameplay,
+     teste controles, inspecione logs de erro e audite a taxa de quadros (FPS).
+
+================================================================================
+5. SKILLS ESSENCIAIS PARA O CLAUDE / ANTIGRAVITY
+================================================================================
+
+Skills são conjuntos de instruções especializadas que transformam a IA em um
+designer de jogos profissional. As mais importantes utilizadas no projeto:
+
+* blender-image-to-3d:
+  - Pipeline guiado que recebe imagens de referência de personagens/armas e gera o
+    modelo 3D calibrado pela silhueta exata da arte conceitual.
+
+* game-feel (O segredo do combate satisfatório):
+  - Ensina a IA a aplicar a "fórmula do impacto" em cada golpe:
+    1. Hit-Stop (congelar o atacante e a vítima por 0.08 a 0.12 segundos).
+    2. Screen Shake (tremor direcional na câmera proporcional ao dano).
+    3. Flash de Dano (a malha pisca em branco ou na cor do elemento por 0.1s).
+    4. Partículas direcionais e onda de choque de ar.
+    5. Recuo físico (Knockback) e som de impacto pesado.
+
+* level-design:
+  - Ensina o fluxo de Greybox/Whitebox: criar a sala primeiro com blocos simples,
+    medir alcance do pulo e corrida do personagem, testar a navegação e só depois
+    aplicar a arte final.
+
+================================================================================
+6. ÁUDIO, PAISAGEM SONORA E EFEITOS
+================================================================================
+
+O áudio representa 50% da imersão em um jogo de luta e suspense:
+
+1. Howler.js (howler):
+   - A biblioteca de áudio padrão para Web e Electron.
+   - Suporte nativo a Sound Sprites (um único arquivo de áudio contendo dezenas de SFX,
+     economizando requisições HTTP e memória).
+   - Suporte a áudio espacial 3D (o som da pancada ou do tiro vem do lado esquerdo/direito).
+
+2. Tone.js:
+   - Framework de síntese de áudio interativo. Ótimo para gerar ruídos paranormais,
+     frequências graves e sons dinâmicos baseados no estado do jogo.
+
+================================================================================
+7. MULTIPLAYER E NETCODE DE BAIXA LATÊNCIA
+================================================================================
+
+Se o jogo for ter partidas online:
+
+1. Geckos.io:
+   - Biblioteca cliente/servidor que roda sobre WebRTC DataChannels (protocolo UDP).
+   - Permite enviar dados de posição e inputs com latência ultrabaixa, essencial para
+     jogos de luta onde o TCP/WebSocket é lento demais por causa do reenvio de pacotes.
+   - Link: https://github.com/geckosio/geckos.io
+
+2. Colyseus:
+   - Framework multijogador em Node.js com sincronização de salas e emparelhamento
+     (matchmaking) pronto para Three.js e WebGL.
+   - Link: https://colyseus.io/
+
+================================================================================
+8. SOFTWARES GRATUITOS E BANCOS DE RECURSOS (CC0)
+================================================================================
+
+* ANIMAÇÃO E MODELOS:
+  - Mixamo (https://www.mixamo.com/): Biblioteca gratuita da Adobe com centenas de
+    animações de combate, corrida, pulos e golpes de artes marciais.
+  - Kenney.nl (https://kenney.nl/): O "padrinho dos jogos indie", com milhares de
+    modelos 3D, texturas, ícones e sons totalmente gratuitos sob domínio público (CC0).
+  - Poly Pizza (https://poly.pizza/): Modelos 3D low-poly gratuitos.
+
+* CRIAÇÃO DE ÁUDIO & SFX:
+  - Bfxr / ChipTone: Geradores online instantâneos de efeitos sonoros de socos, lasers,
+    pulos, explosões e magias.
+  - Audacity: Gravador e editor de áudio gratuito para mixar camadas de som.
+
+* TEXTURAS & 2D:
+  - AmbientCG (https://ambientcg.com/): Texturas PBR gratuitas (pedra, madeira, sangue, metal).
+  - Krita: Software open-source de pintura digital para concept art e texturização manual.
+
+================================================================================
+9. PASSO A PASSO PARA SEU AMIGO INICIAR UM JOGO DO ZERO
+================================================================================
+
+1. Estruturação do Projeto:
+   - Iniciar com Vite: `npm create vite@latest meu-jogo -- --template vanilla`
+   - Instalar Three.js: `npm install three`
+   - Configurar o loop de animação com câmera em terceira pessoa e controle de chão.
+
+2. Movimentação e Física:
+   - Adicionar o modelo dummy (ex: cubo ou modelo simples do Mixamo).
+   - Integrar Rapier.js ou sistema de caixa de colisão AABB simples para movimentação.
+
+3. Combate e Frame Data:
+   - Criar uma máquina de estados: 'idle' -> 'attack' -> 'recovery' -> 'hitstun'.
+   - Aplicar o conceito da skill `game-feel`: cada acerto precisa ter screen shake,
+     som de impacto e partículas.
+
+4. Exportação:
+   - Adicionar Electron para gerar versão Desktop PC.
+   - Adicionar Capacitor para gerar versão Android para jogar no celular.
+
+================================================================================
+Fim do Guia — Véu Partido Engine
+================================================================================

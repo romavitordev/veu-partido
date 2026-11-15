@@ -11,6 +11,7 @@
   - Amigo: habilidade Dissolver aprimorada com tentáculos prendendo os pés, tragando o alvo para o interior do manto e expelindo-o impregnado de tinta.
   - Raziel: cena cinematográfica personalizada para a transformação em O Verdadeiro Raziel com animação de desenrolar da língua e rasgo das vestes.
   - Sabara: despertar Gosto de Sangue com persistência visual de ferimentos e sangue na face até o término do round.
+- **Seleção de Cenários (StageSelectScreen):** Paginação em grade de 16 mapas (8 colunas × 2 linhas) sem overflow vertical. Navegação contínua lateral (ao cruzar a borda direita/esquerda muda de página), setas laterais com pulsação dourada quando há páginas adicionais e indicador visual central `◀ PÁGINA X / Y ▶` com dots.
 
 ## v4.46.0 — O Acampamento dos Pássaros
 

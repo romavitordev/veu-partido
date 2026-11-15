@@ -845,28 +845,49 @@ export class VictoryScreen {
   dispose() { this.el.remove(); }
 }
 
+const STAGE_PAGE_SIZE = 16;
+const STAGE_COLS = 8;
+
 export class StageSelectScreen {
   constructor(root, { audio, prev, thumbs = {} }) {
     this.audio = audio;
     this.list = ARENA_ORDER.map((id) => ({ id, ...ARENAS[id] }));
     const prevIdx = prev ? this.list.findIndex((a) => a.id === prev) : -1;
     this.index = prevIdx >= 0 ? prevIdx : Math.max(0, this.list.findIndex((a) => a.available));
+    this.pageCount = Math.ceil(this.list.length / STAGE_PAGE_SIZE);
+
     // tela cheia: o cenário escolhido ocupa o fundo (duas camadas que se cruzam ao trocar, com um zoom lento), o nome
-    // numa faixa no meio e a bandeja de miniaturas em duas fileiras embaixo
+    // numa faixa no meio e a bandeja de miniaturas com paginação (máx 16 mapas por página: 8 × 2)
     this.el = el(root, 'screen', 'stage', `
       <div class="sbg"><div class="sbg-l"></div><div class="sbg-l"></div></div>
       <div class="sshade"></div>
       <h2 class="stitle">${t('stage.title')}</h2>
       <div class="sband"><div class="sname"></div><div class="sdesc"></div></div>
-      <div class="stray"><div class="stages">${this.list.map((a, i) => `
-        <div class="stagecard ${a.available ? '' : 'locked'}" data-i="${i}" style="--sky:${a.colors[0]};--ground:${a.colors[1]};--accent:${a.colors[2]}">
-          ${thumbs[a.id] ? `<img src="${thumbs[a.id]}" alt="">` : '<div class="paint"></div>'}
-          <div class="sn">${a.name}</div>
-          ${a.available ? '' : `<div class="soon">${t('stage.soon')}</div>`}
-        </div>`).join('')}
-      </div></div>
+      <div class="stray">
+        <div class="stage-nav-bar${this.pageCount < 2 ? ' single' : ''}">
+          <button class="stage-pbtn p-prev" type="button" aria-label="Página anterior">◀</button>
+          <div class="stage-page-info">
+            <span class="sp-text"></span>
+            <div class="sp-dots">
+              ${Array.from({ length: this.pageCount }, (_, pi) => `<i class="sp-dot${pi === 0 ? ' on' : ''}"></i>`).join('')}
+            </div>
+          </div>
+          <button class="stage-pbtn p-next" type="button" aria-label="Próxima página">▶</button>
+        </div>
+        <div class="stage-grid-wrap">
+          <button class="stage-side-arrow left${this.pageCount < 2 ? ' single' : ''}" type="button" aria-label="Página anterior" title="Página anterior (◀)">◀</button>
+          <div class="stages">${this.list.map((a, i) => `
+            <div class="stagecard ${a.available ? '' : 'locked'}" data-i="${i}" style="--sky:${a.colors[0]};--ground:${a.colors[1]};--accent:${a.colors[2]}">
+              ${thumbs[a.id] ? `<img src="${thumbs[a.id]}" alt="">` : '<div class="paint"></div>'}
+              <div class="sn">${a.name}</div>
+              ${a.available ? '' : `<div class="soon">${t('stage.soon')}</div>`}
+            </div>`).join('')}
+          </div>
+          <button class="stage-side-arrow right${this.pageCount < 2 ? ' single' : ''}" type="button" aria-label="Próxima página" title="Próxima página (▶)">▶</button>
+        </div>
+      </div>
       <button class="stage-confirm" type="button">${t('stage.confirm')}</button>
-      <div class="hint">${t('stage.hint', { ok: OK, jump: actionLabel(0, 'jump'), rand: RAND, carga: actionLabel(0, 'carga'), back: BACK, phys: actionLabel(0, 'physical') })}</div>`);
+      <div class="hint">${t('stage.hint', { ok: OK, jump: actionLabel(0, 'jump'), rand: RAND, carga: actionLabel(0, 'carga'), back: BACK, phys: actionLabel(0, 'physical') })} · <kbd>◀</kbd>/<kbd>▶</kbd> páginas</div>`);
     this.cards = [...this.el.querySelectorAll('.stagecard')];
     this.nameEl = this.el.querySelector('.sname');
     this.descEl = this.el.querySelector('.sdesc');
@@ -875,8 +896,21 @@ export class StageSelectScreen {
     this.shownBg = null;
     this.confirmEl = this.el.querySelector('.stage-confirm');
     this.thumbs = thumbs;
+
+    this.arrowLeft = this.el.querySelector('.stage-side-arrow.left');
+    this.arrowRight = this.el.querySelector('.stage-side-arrow.right');
+    this.btnPrev = this.el.querySelector('.stage-pbtn.p-prev');
+    this.btnNext = this.el.querySelector('.stage-pbtn.p-next');
+    this.spText = this.el.querySelector('.sp-text');
+    this.spDots = [...this.el.querySelectorAll('.sp-dot')];
+
     this.cards.forEach((c, i) => onTap(this, c, 1 + i, () => { this.index = i; this.render(); }));
     onTap(this, this.confirmEl, 250, () => { this.confirmClicked = true; });
+    if (this.btnPrev) onTap(this, this.btnPrev, 251, () => { this.turnPage(-1); });
+    if (this.btnNext) onTap(this, this.btnNext, 252, () => { this.turnPage(1); });
+    if (this.arrowLeft) onTap(this, this.arrowLeft, 253, () => { this.turnPage(-1); });
+    if (this.arrowRight) onTap(this, this.arrowRight, 254, () => { this.turnPage(1); });
+
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
     this.render();
@@ -897,7 +931,32 @@ export class StageSelectScreen {
 
   render() {
     this.thumbsDone = this.refreshThumbs();
-    this.cards.forEach((c, i) => c.classList.toggle('on', i === this.index));
+    const curPage = Math.floor(this.index / STAGE_PAGE_SIZE);
+
+    this.cards.forEach((c, i) => {
+      const cardPage = Math.floor(i / STAGE_PAGE_SIZE);
+      c.classList.toggle('off', cardPage !== curPage);
+      c.classList.toggle('on', i === this.index);
+    });
+
+    if (this.spText) {
+      this.spText.textContent = t('sel.page', { n: curPage + 1, t: this.pageCount });
+    }
+    this.spDots.forEach((dot, pi) => {
+      dot.classList.toggle('on', pi === curPage);
+    });
+
+    if (this.arrowLeft) {
+      this.arrowLeft.classList.toggle('has-more', curPage > 0);
+      this.arrowLeft.disabled = curPage === 0;
+    }
+    if (this.arrowRight) {
+      this.arrowRight.classList.toggle('has-more', curPage < this.pageCount - 1);
+      this.arrowRight.disabled = curPage >= this.pageCount - 1;
+    }
+    if (this.btnPrev) this.btnPrev.disabled = curPage === 0;
+    if (this.btnNext) this.btnNext.disabled = curPage >= this.pageCount - 1;
+
     const a = this.list[this.index];
     this.nameEl.textContent = a.name;
     this.descEl.textContent = a.description;
@@ -915,8 +974,20 @@ export class StageSelectScreen {
       L.classList.add('show');
       this.bgLayers[1 - this.bgFront].classList.remove('show');
     }
-    this.cards[this.index].scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
   }
+
+  turnPage(dir) {
+    if (this.pageCount < 2) return;
+    const curPage = Math.floor(this.index / STAGE_PAGE_SIZE);
+    const nextPage = (curPage + dir + this.pageCount) % this.pageCount;
+    const nextStart = nextPage * STAGE_PAGE_SIZE;
+    const nextCount = Math.min(STAGE_PAGE_SIZE, this.list.length - nextStart);
+    const inPage = this.index % STAGE_PAGE_SIZE;
+    this.index = nextStart + Math.min(inPage, nextCount - 1);
+    this.audio?.play('select');
+    this.render();
+  }
+
   update(input) {
     if (!this.thumbsDone) this.render();
     if (this.confirmClicked) {
@@ -925,11 +996,75 @@ export class StageSelectScreen {
     }
     for (const p of input.players) {
       const n = this.list.length;
-      if (p.menu.left) this.move(this.index % this.cols() === 0 ? Math.min(n - 1, this.index + this.cols() - 1) : this.index - 1);
-      if (p.menu.right) this.move(this.index % this.cols() === this.cols() - 1 || this.index === n - 1 ? this.index - (this.index % this.cols()) : this.index + 1);
-      // cima / baixo trocam de LINHA (mesma coluna); passando da borda, volta pelo outro lado
-      if (p.menu.up) this.move(this.index - this.cols() >= 0 ? this.index - this.cols() : this.lastInColumn(this.index % this.cols()));
-      if (p.menu.down) this.move(this.index + this.cols() < n ? this.index + this.cols() : this.index % this.cols());
+      const cols = STAGE_COLS;
+      const page = Math.floor(this.index / STAGE_PAGE_SIZE);
+      const pageStart = page * STAGE_PAGE_SIZE;
+      const pageCount = Math.min(STAGE_PAGE_SIZE, n - pageStart);
+      const inPage = this.index - pageStart;
+      const row = Math.floor(inPage / cols);
+      const col = inPage % cols;
+
+      if (p.pressed.pageL || p.pressed.pageR) {
+        this.turnPage(p.pressed.pageR ? 1 : -1);
+      }
+
+      if (p.menu.left) {
+        if (col > 0) {
+          this.move(this.index - 1);
+        } else if (this.pageCount > 1) {
+          const prevPage = (page - 1 + this.pageCount) % this.pageCount;
+          const prevStart = prevPage * STAGE_PAGE_SIZE;
+          const prevCount = Math.min(STAGE_PAGE_SIZE, n - prevStart);
+          let targetInPage = row * cols + (cols - 1);
+          if (targetInPage >= prevCount) targetInPage = prevCount - 1;
+          this.move(prevStart + targetInPage);
+        } else {
+          const targetInPage = Math.min(pageCount - 1, row * cols + (cols - 1));
+          this.move(pageStart + targetInPage);
+        }
+      }
+
+      if (p.menu.right) {
+        if (col < cols - 1 && inPage + 1 < pageCount) {
+          this.move(this.index + 1);
+        } else if (this.pageCount > 1) {
+          const nextPage = (page + 1) % this.pageCount;
+          const nextStart = nextPage * STAGE_PAGE_SIZE;
+          const nextCount = Math.min(STAGE_PAGE_SIZE, n - nextStart);
+          let targetInPage = row * cols;
+          if (targetInPage >= nextCount) targetInPage = nextCount - 1;
+          this.move(nextStart + targetInPage);
+        } else {
+          this.move(pageStart + row * cols);
+        }
+      }
+
+      if (p.menu.up) {
+        if (row > 0) {
+          this.move(this.index - cols);
+        } else {
+          let targetInPage = cols + col;
+          if (targetInPage < pageCount) {
+            this.move(pageStart + targetInPage);
+          } else {
+            this.move(pageStart + Math.max(0, pageCount - 1));
+          }
+        }
+      }
+
+      if (p.menu.down) {
+        if (row === 0) {
+          let targetInPage = cols + col;
+          if (targetInPage < pageCount) {
+            this.move(pageStart + targetInPage);
+          } else {
+            this.move(pageStart + col);
+          }
+        } else {
+          this.move(pageStart + col);
+        }
+      }
+
       if (confirm(p)) return this.choose();
       if (random(p)) {
         this.index = pickRandom(this.list.length, this.index, (i) => this.list[i].available);
@@ -943,19 +1078,11 @@ export class StageSelectScreen {
     if (input.keyPressedOnce('Escape')) return 'back';
     return null;
   }
-  // colunas da grade como estão na tela (muda no celular): cartões na mesma altura do primeiro
   cols() {
-    const top = this.cards[0].offsetTop;
-    return Math.max(1, this.cards.filter((c) => c.offsetTop === top).length);
-  }
-  lastInColumn(col) {
-    const c = this.cols();
-    let i = col;
-    while (i + c < this.list.length) i += c;
-    return i;
+    return STAGE_COLS;
   }
   move(i) {
-    if (i === this.index) return;
+    if (i === this.index || i < 0 || i >= this.list.length) return;
     this.index = i;
     this.audio.play('select');
     this.render();

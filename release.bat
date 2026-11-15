@@ -3,26 +3,21 @@ chcp 65001 >nul
 cd /d "E:\arena paranormal"
 
 echo ========================================================
-echo   Lançando Versão 4.47.0 (Véu Partido / Arena Paranormal)
+echo   Enviando atualizações para o GitHub
 echo ========================================================
 echo.
 
-echo [1/4] Adicionando arquivos modificados...
+echo [1/3] Adicionando arquivos modificados...
 git add -A
 
-echo [2/4] Gravando commit v4.47.0...
-git commit -m "v4.47.0 — O Outro Lado responde"
+echo [2/3] Criando commit...
+git commit -m "feat(stages): paginacao em grade de 16 mapas com navegacao lateral e indicadores"
 
-echo [3/4] Criando tag v4.47.0...
-git tag -a v4.47.0 -m "v4.47.0"
-
-echo [4/4] Enviando commit e tag para o GitHub...
+echo [3/3] Enviando para o repositorio remoto (git push)...
 git push origin main
-git push origin v4.47.0
 
 echo.
 echo ========================================================
-echo   Sucesso! A versão 4.47.0 e a tag v4.47.0 foram enviadas.
-echo   O GitHub Actions iniciará a geração da release.
+echo   Sucesso! Commit e push realizados com sucesso.
 echo ========================================================
 pause
