@@ -14,7 +14,8 @@ import { viewSize } from '../core/viewport.js';
 export const EXPLORE = {
   radius: 0.35, // o "corpo" da câmera: a distância mínima até qualquer superfície
   speed: 6, // m/s
-  fast: 2.6, // multiplicador com Shift / L3
+  fast: 2.6, // multiplicador correndo (W W / L3)
+  doubleTap: 0.3, // s entre os dois toques no W para correr
   lookMouse: 0.0024, // rad por pixel
   lookPad: 2.4, // rad/s no analógico direito
   maxStep: 0.25, // passo máximo por raio (m): nada de pular uma parede fina num quadro lento
@@ -130,15 +131,22 @@ export class Explorer {
     this.el = document.createElement('div');
     this.el.className = 'explore-hud';
     this.el.innerHTML = `<div class="ex-name">${A.name}</div>
-      <div class="ex-help"><b>Mouse</b> olha · <b>WASD</b> anda · <b>Espaço</b> sobe · <b>Ctrl</b> desce · <b>Shift</b> corre · <b>Esc</b> sai<br>
+      <div class="ex-help"><b>Mouse</b> olha · <b>WASD</b> anda · <b>Espaço</b> sobe · <b>Shift</b> desce · <b>W W</b> (dois toques) corre · <b>Esc</b> sai<br>
       Controle: analógico esquerdo anda · <b>direito olha</b> · <b>R2</b>/<b>L2</b> sobe/desce · <b>L3</b> corre · <b>B</b> sai</div>`;
     root.appendChild(this.el);
     // o mouse já olha ao entrar (o clique/tecla que escolheu o cenário ainda vale como gesto); se o navegador recusar,
     // um clique na tela trava o ponteiro (InputManager)
     const cv = renderer.domElement;
     if (cv && cv.requestPointerLock && !document.pointerLockElement) { try { const r = cv.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch { /* sem trava */ } }
-    // Ctrl desce: os atalhos do navegador com Ctrl (salvar, favoritos...) não abrem no meio do voo
-    this.onKey = (e) => { if (e.ctrlKey && e.code !== 'KeyR') e.preventDefault(); };
+    // CORRER com dois toques no W (como no Minecraft): o segundo toque em até EXPLORE.doubleTap liga; soltar o W desliga
+    this.sprint = false;
+    this.lastW = -1;
+    this.clock = 0;
+    this.onKey = (e) => {
+      if (e.code !== 'KeyW' || e.repeat) return;
+      if (this.clock - this.lastW < EXPLORE.doubleTap) this.sprint = true;
+      this.lastW = this.clock;
+    };
     window.addEventListener('keydown', this.onKey);
     this.helpTimer = 6;
     this.prevPad = {};
@@ -169,12 +177,14 @@ export class Explorer {
     const k = input.keys;
     const fwd = new THREE.Vector3(-Math.sin(this.yaw) * Math.cos(this.pitch), Math.sin(this.pitch), -Math.cos(this.yaw) * Math.cos(this.pitch));
     const right = new THREE.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
-    // pedido do dono: Espaço sobe, Ctrl desce (no controle, R2/L2)
-    const up = (k.has('Space') ? 1 : 0) - (k.has('ControlLeft') || k.has('ControlRight') ? 1 : 0) + val(7) - val(6);
+    // pedido do dono: Espaço sobe, Shift desce (no controle, R2/L2). Ctrl não: Ctrl + W fecha a aba do navegador
+    const up = (k.has('Space') ? 1 : 0) - (k.has('ShiftLeft') || k.has('ShiftRight') ? 1 : 0) + val(7) - val(6);
     const move = new THREE.Vector3().addScaledVector(fwd, p.moveY || 0).addScaledVector(right, p.moveX || 0);
     move.y += Math.max(-1, Math.min(1, up));
     if (move.lengthSq() > 1) move.normalize();
-    const fast = k.has('ShiftLeft') || k.has('ShiftRight') || btn(10);
+    this.clock += dt;
+    if (!k.has('KeyW')) this.sprint = false;
+    const fast = this.sprint || btn(10);
     move.multiplyScalar(EXPLORE.speed * (fast ? EXPLORE.fast : 1) * dt);
     moveWithCollision(this.pos, move, this.solids);
     // fora do cenário: teto, chão de reserva e um raio máximo em volta do centro

@@ -8,7 +8,7 @@
 
 > "um botão meio escondido, não no menu, que leva ao menu de mapas e ele pode escolher um mapa para explorar, tipo o
 > modo espectador do Minecraft, só que com colisão nas paredes e chão" + "descer seja Ctrl, subir seja Espaço e a câmera
-> seja pelo mouse ou segundo analógico do controle".
+> seja pelo mouse ou segundo analógico do controle". + "o Ctrl atrapalha? então muda pro Shift e deixa duplo clique no W pra andar mais rápido".
 
 - [x] v4.52.0: o olho no canto da tela inicial (L3 + R3 no controle) → seleção de cenários → voo livre com colisão
   (`game/Explorer.js`, `tests/explorer.test.js`).

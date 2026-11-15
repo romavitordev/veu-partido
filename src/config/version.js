@@ -17,7 +17,7 @@ export const CHANGELOG = [
     title: 'Explorador',
     items: [
       'MODO EXPLORAR (segredo): um olho quase apagado no canto de cima da tela inicial (ou L3 + R3 juntos no controle) abre a seleção de cenários; escolha um e voe por ele como espectador para ver o mapa inteiro — sem atravessar parede nem chão.',
-      'Controles: o mouse ou o analógico direito olham; WASD ou o analógico esquerdo andam para onde você olha; Espaço sobe, Ctrl desce (R2/L2 no controle); Shift ou L3 corre; Esc ou B sai.',
+      'Controles: o mouse ou o analógico direito olham; WASD ou o analógico esquerdo andam para onde você olha; Espaço sobe, Shift desce (R2/L2 no controle); dois toques no W (ou L3) correm; Esc ou B sai.',
     ],
   },
   {

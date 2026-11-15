@@ -9,8 +9,9 @@
   o aleatório sorteia um cenário) → estado `explore` com `game/Explorer.js`. Esc/B volta à seleção; de lá, ao menu.
 - `Explorer`: um `World` só com o cenário (sem lutadores), câmera de voo para onde olha (yaw/pitch, ordem YXZ), o
   `input.freeLook` do Outro Lado para o mouse (trava o ponteiro já ao entrar; clique trava se o navegador recusar) e o
-  analógico direito. Teclas pedidas pelo dono: Espaço sobe, Ctrl desce (R2/L2 no controle); Shift/L3 corre. Os atalhos
-  do navegador com Ctrl são bloqueados enquanto explora (o Ctrl+W do Chrome não dá para bloquear — avisar).
+  analógico direito. Teclas pedidas pelo dono: Espaço sobe, Shift desce (R2/L2 no controle); dois toques no W correm
+  (`EXPLORE.doubleTap` 0,3 s; soltar o W para) e L3 no controle. Primeiro foi Ctrl para descer, mas Ctrl + W fecha a
+  aba do navegador — o dono trocou para Shift no mesmo dia (sem versão nova).
 - Colisão: `moveWithCollision` anda em passos de 0,25 m; cada passo é um raio (BVH) contra `solidMeshes` (tudo visível
   do cenário menos céu de lado de dentro, transparências e névoa); ao bater fica a 0,35 m e desliza pela superfície
   (até 3 por passo), depois empurra para fora pelos seis eixos. Teto 70 m, raio 3× o da arena. Conferido no Coliseu:

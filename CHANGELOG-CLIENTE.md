@@ -4,7 +4,7 @@ Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
 ## v4.52.0 — Explorador
 - MODO EXPLORAR (segredo): um olho quase apagado no canto de cima da tela inicial (ou L3 + R3 juntos no controle) abre a seleção de cenários; escolha um e voe por ele como espectador para ver o mapa inteiro — sem atravessar parede nem chão.
-- Controles: o mouse ou o analógico direito olham; WASD ou o analógico esquerdo andam para onde você olha; Espaço sobe, Ctrl desce (R2/L2 no controle); Shift ou L3 corre; Esc ou B sai.
+- Controles: o mouse ou o analógico direito olham; WASD ou o analógico esquerdo andam para onde você olha; Espaço sobe, Shift desce (R2/L2 no controle); dois toques no W (ou L3) correm; Esc ou B sai.
 
 ## v4.51.3 — Animações e Queda
 - FALAS DE LUTA para quem estava mudo: Carina, Rubens, Beatrice, Fernando e Luciano, Tristan, Ivete, Damir, Boris, Artemis, Dara, Chico, Morato, Eloy, Cindy, Sabara, Amalia e as criaturas do Outro Lado agora falam na vida baixa, no especial e respondem ao adversário — antes qualquer luta com um deles ficava sem diálogo.
