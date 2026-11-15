@@ -10,7 +10,7 @@ export const ELEMENTS = {
   transmissao: { name: 'Transmissão', color: '#5aff6a' }, // Dara, o Estrangeiro e os Alheios (Sinais do Outro Lado)
   tinta: { name: 'Tinta', color: '#8a5a2a' }, // o Amigo Imaginário (O Segredo na Ilha)
   // a Coroa de Espinhos (Hexatombe): quem ENCOSTOU no Sino de Intenção foi tomado pelos rabiscos vermelhos — Cristino,
-  // Jae (Maria), Kemi (Lena), Henri/Juan, Aguiar (Jasper) e Labirinto (Remi) (wiki: páginas de cada um e Intenção)
+  // Jae (Maria), Kemi (Lena), Juan (a forma; o Henri segue de Sangue), Aguiar (Jasper) e Labirinto (Remi) (wiki: páginas de cada um e Intenção)
   intencao: { name: 'Intenção', color: '#ff5a1f' },
 };
 

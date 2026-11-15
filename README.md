@@ -13,7 +13,7 @@ Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível,
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v4.45.2**.
+Versão atual do jogo: **v4.46.0**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 
@@ -233,7 +233,7 @@ modelos procedurais provisórios: se um `.glb` não carregar, o jogo tenta de no
 
 ### Cenários (Blender + modelos prontos)
 Os cenários (Orfanato, Bar Suvaco Seco, Coliseu, Santo Berço, Acampamento, Igreja, o Palco do Anfitrião, a Ilha de
-Tipora, Ferro Velho e Circo dos Psikolera) são montados no Blender por
+Tipora, Ferro Velho, Circo dos Psikolera, Treb Ciach e Acampamento dos Pássaros) são montados no Blender por
 `tools/blender/arena_<id>.py` com **peças prontas e gratuitas dos kits do Kenney** (CC0) — casas, árvores, muralhas,
 lápides, móveis, ruas, carros — posicionadas por `tools/blender/kenney.py` (`put`, `house`, `tower`). Só os
 elementos únicos de cada lugar são feitos à mão (Símbolo Espiral, estátuas, placas). Os kits ficam em

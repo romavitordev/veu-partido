@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -276,8 +276,8 @@
 ## Elementos (pedido do dono, 2026-11-14)
 - [x] **Símbolos oficiais dos elementos na página Sobre** — v4.45.2: imagens da wiki na cor de cada elemento; Transmissão
       e Tinta com os seus Sinos.
-- [x] **Elemento Intenção no jogo** — v4.45.2: Cristino, Jae, Kemi, Henri/Juan, Aguiar e Labirinto (quem tocou a Coroa de
-      Espinhos em Hexatombe, pela wiki).
+- [x] **Elemento Intenção no jogo** — v4.45.2: Cristino, Jae, Kemi, Aguiar, Labirinto e o Juan (quem tocou a Coroa de
+      Espinhos em Hexatombe, pela wiki); v4.46.0: o Henri volta a Sangue, só a forma Juan é de Intenção.
 
 ## Cenários de luta (pedido do dono, 2026-11-09)
 - [x] **Melhorar a Mansão Endiabrada e a Escola Nostradamus no modo de luta** (feito 2026-11-12: paredes altas, teto com
@@ -309,8 +309,9 @@
         casa do Druida, Fazenda e Tenda Militar. Ver `docs/RECURSOS-MODELAGEM.md` para kits prontos.
   - [ ] Afogados vagando na borda do pântano na versão pós-tempestade (como os Existidos do Orfanato), quando houver
         modelo.
-- [ ] **Mapas que ainda faltam do repertório:** Acampamento dos Pássaros e Sertão (Hexatombe, já com dia e noite),
-      Lua da Benquerença, Granja Abobrinha e Mansão Leone.
+- [x] **Acampamento dos Pássaros** — v4.46.0: dia (manhã com névoa) e noite de lua de sangue.
+- [ ] **Mapas que ainda faltam do repertório:** Sertão (Hexatombe, já com dia e noite), Lua da Benquerença, Granja
+      Abobrinha e Mansão Leone.
 - [x] **Mapas de Hexatombe em duas versões, dia e noite de lua de sangue** (pedido do dono, 2026-11-12): Ferro Velho,
       Circo dos Psikolera e Igreja Antiga, cada um com "(Dia)" e "(Noite)" na seleção (mesmo .glb, `cfg.materials`).
       Os próximos mapas de Hexatombe (Acampamento dos Pássaros, sertão) já nascem com as duas versões.

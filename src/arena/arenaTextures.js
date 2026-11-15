@@ -801,6 +801,42 @@ export const ARENA_TEXTURES = {
   }, { roughness: 0.85 }),
 
   // ---- CIRCO DOS PSIKOLERA (Hexatombe): terra clara de sol, tábuas pintadas e gastas, a lona listrada
+  // ---------------- Acampamento dos Pássaros (Hexatombe)
+  // o pano das barracas: vermelho escuro TRANÇADO (o modelo 3D da wiki), com manchas de sangue e de chuva
+  bird_tent_red: () => tex(256, 1.2, (g, s) => {
+    g.fillStyle = '#7a2218'; g.fillRect(0, 0, s, s);
+    const n = 16; const c = s / n;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      g.fillStyle = (i + j) % 2 ? 'rgba(140,46,34,0.28)' : 'rgba(70,16,12,0.25)';
+      if ((i + j) % 2) g.fillRect(i * c + 1, j * c + c * 0.2, c - 2, c * 0.6); else g.fillRect(i * c + c * 0.2, j * c + 1, c * 0.6, c - 2);
+    }
+    for (let i = 0; i < 6; i++) { // losangos do padrão
+      const x = rnd(0, s), y = rnd(0, s), r = rnd(10, 22);
+      g.strokeStyle = 'rgba(200,120,80,0.35)'; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(x, y - r); g.lineTo(x + r, y); g.lineTo(x, y + r); g.lineTo(x - r, y); g.closePath(); g.stroke();
+    }
+    for (let i = 0; i < 5; i++) { const x = rnd(0, s), y = rnd(0, s), r = rnd(14, 40); const grd = g.createRadialGradient(x, y, 0, x, y, r); grd.addColorStop(0, 'rgba(40,4,4,0.6)'); grd.addColorStop(1, 'rgba(40,4,4,0)'); g.fillStyle = grd; g.fillRect(x - r, y - r, r * 2, r * 2); }
+    noise(g, s, ['#000', '#a0402a'], 3000, [1, 2], 0.3);
+  }, { roughness: 0.95 }),
+  // a lona cinza da barraca do Pomba (a única limpa)
+  bird_tent_grey: () => tex(256, 1.2, (g, s) => {
+    g.fillStyle = '#4a4440'; g.fillRect(0, 0, s, s);
+    g.strokeStyle = 'rgba(30,28,26,0.35)'; g.lineWidth = 1;
+    for (let i = 0; i < s; i += 4) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i, s); g.stroke(); g.beginPath(); g.moveTo(0, i); g.lineTo(s, i); g.stroke(); }
+    noise(g, s, ['#2a2622', '#6a625a'], 2500, [1, 3], 0.35);
+  }, { roughness: 0.95 }),
+  // a terra do acampamento: barro seco avermelhado, pegadas e capim ralo
+  bird_earth: () => tex(512, 6, (g, s) => {
+    g.fillStyle = '#5a4030'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#3e2a1e', '#6e5038', '#4a2a1e', '#7a5a3e', '#5a2a1c'], 14000, [1, 4], 0.45);
+    for (let i = 0; i < 40; i++) { // pegadas (descalças e calçadas)
+      const x = rnd(0, s), y = rnd(0, s), a = rnd(0, Math.PI * 2);
+      g.save(); g.translate(x, y); g.rotate(a); g.fillStyle = 'rgba(30,18,12,0.35)';
+      g.beginPath(); g.ellipse(0, 0, 3, 7, 0, 0, Math.PI * 2); g.fill(); g.restore();
+    }
+    g.strokeStyle = 'rgba(110,90,50,0.4)'; g.lineWidth = 1;
+    for (let i = 0; i < 900; i++) { const x = rnd(0, s), y = rnd(0, s); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-2, 2), y - rnd(3, 8)); g.stroke(); }
+  }, { roughness: 1 }),
   circus_sand: () => tex(512, 6, (g, s) => {
     g.fillStyle = '#c8a878'; g.fillRect(0, 0, s, s);
     noise(g, s, ['#b09060', '#d8bc8c', '#a8885a', '#e0c8a0'], 14000, [1, 4], 0.4);

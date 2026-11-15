@@ -1,5 +1,25 @@
 # Registro administrativo de alterações
 
+## v4.46.0 — O Acampamento dos Pássaros
+
+- **Acampamento dos Pássaros (dono: "Faça o acampamento dos pássaros"; TODO "Mapas que ainda faltam"):**
+  `tools/blender/arena_passaros.py` → `public/arenas/passaros.glb` (feito à mão, ~10 s de build). Referências em
+  `Referencias visuais/Mapas/acampamento-dos-passaros/` (os 8 renders do modelo 3D do RPG, as 5 barracas, HEX ep. 4
+  4h14–4h23) e o texto da wiki. Canon: a fogueira central de troncos e pedaços de corpos com o caldeirão e os bancos
+  (colisor r 2,05; o caldeirão também colide); as barracas de cada Pássaro (pano vermelho trançado sobre a cumeeira
+  apoiada em varas em X, a entrada virada para a fogueira) com a cabeça na estaca na frente: Corvo (o símbolo de Sangue
+  de madeira e as anotações), Coruja (barris com o Serafim Vermelho e a lamparina), Harpia (o braço cravado na garra, a
+  cabeça da Suellen e o caixote com os papéis), Papagaio (a maior, duas camas e os panfletos da PSIKOLERA) e Pomba (a
+  mais distante da porteira, lona cinza, sem sangue: a mesinha com a garrafa térmica e a lamparina); o lago no fundo
+  (-z) com juncos; a porteira e a cerca na entrada (+z); árvores secas e capim alto (avermelhado perto das barracas).
+  PROPOSTA: a disposição das barracas, as estruturas de cano de ferro com panos, a pilha de mantimentos (−10,5; 6,5) e
+  a carroça tombada (11; −6,5) como obstáculos do pátio (r 18). Texturas novas: `bird_tent_red`, `bird_tent_grey`,
+  `bird_earth`. Configs `PASSAROS` (manhã: céu e névoa bege-avermelhados, `mist` com bancos no lago, fogueira animada)
+  e `PASSAROS_NOITE` (lua de sangue, névoa vermelha, lanternas acesas); variantes `passaros`/`passaros_noite` em
+  `index.js`.
+- **Henri × Juan (dono: "Henri era pra ser de sangue e Juan de Intenção"):** `juan.js` volta a `sangue`; a forma
+  `juan_odio` (JUAN) ganhou `element: 'intencao'`. `check-roster` confere os dois.
+
 ## v4.45.2 — A Coroa de Espinhos
 
 - **Elemento Intenção (dono: "falta transformar os personagens de intenção que hoje estão como sangue, alguns apenas,

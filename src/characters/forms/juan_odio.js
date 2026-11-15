@@ -25,6 +25,7 @@ export default {
   form: true,
   baseId: 'juan',
   name: 'JUAN',
+  element: 'intencao', // o Juan nasce ao tocar a Coroa de Espinhos em Hexatombe (o Henri, base, segue de Sangue)
   model: 'juan_odio',
   energyColor: RED,
   info: {

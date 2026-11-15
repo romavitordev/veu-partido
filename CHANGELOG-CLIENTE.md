@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.46.0 — O Acampamento dos Pássaros
+- NOVO CENÁRIO: ACAMPAMENTO DOS PÁSSAROS (Hexatombe), em duas versões. De DIA, a manhã depois do massacre sob a névoa espessa: a fogueira central com o caldeirão e os bancos, as barracas de pano vermelho de cada Pássaro com as cabeças nas estacas, a mesinha do Pomba, o lago no fundo e a porteira na entrada.
+- ACAMPAMENTO DOS PÁSSAROS (NOITE): a lua de sangue sobre o lago, a névoa vermelha e só a fogueira e as lanternas acesas.
+- HENRI E JUAN: o Henri volta a ser de SANGUE; o JUAN (a transformação, depois de tocar a Coroa de Espinhos) é de INTENÇÃO.
+
 ## v4.45.2 — A Coroa de Espinhos
 - ELEMENTO INTENÇÃO NO JOGO: quem tocou a Coroa de Espinhos em Hexatombe agora é de Intenção (laranja, fora do ciclo, neutro contra todos): CRISTINO, JAE, KEMI, HENRI/JUAN, AGUIAR e LABIRINTO. Os golpes e rituais de cada um continuam do elemento deles.
 - PÁGINA SOBRE: cada elemento ganhou o SÍMBOLO OFICIAL na cor dele. Intenção mostra o Estigma do Desejo; Transmissão e Tinta, que não têm símbolo próprio, mostram os seus Sinos.

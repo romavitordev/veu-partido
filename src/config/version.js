@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.45.2';
+export const VERSION = '4.46.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.46.0',
+    date: '2026-11-14',
+    title: 'O Acampamento dos Pássaros',
+    items: [
+      'NOVO CENÁRIO: ACAMPAMENTO DOS PÁSSAROS (Hexatombe), em duas versões. De DIA, a manhã depois do massacre sob a névoa espessa: a fogueira central com o caldeirão e os bancos, as barracas de pano vermelho de cada Pássaro com as cabeças nas estacas, a mesinha do Pomba, o lago no fundo e a porteira na entrada.',
+      'ACAMPAMENTO DOS PÁSSAROS (NOITE): a lua de sangue sobre o lago, a névoa vermelha e só a fogueira e as lanternas acesas.',
+      'HENRI E JUAN: o Henri volta a ser de SANGUE; o JUAN (a transformação, depois de tocar a Coroa de Espinhos) é de INTENÇÃO.',
+    ],
+  },
   {
     v: '4.45.2',
     date: '2026-11-14',

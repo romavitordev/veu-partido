@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.46.0 — O Acampamento dos Pássaros
+
+### Adicionado
+- Cenário Acampamento dos Pássaros (Hexatombe) em duas versões: manhã com névoa e noite de lua de sangue.
+
+### Corrigido
+- Henri volta a ser de Sangue; o Juan (a transformação) é de Intenção.
+
 ## v4.45.2 — A Coroa de Espinhos
 
 ### Alterado

@@ -1,10 +1,10 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE, TREB_CIACH, TREB_CIACH_TEMPESTADE } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE, TREB_CIACH, TREB_CIACH_TEMPESTADE, PASSAROS, PASSAROS_NOITE } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO, treb_ciach: TREB_CIACH };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO, treb_ciach: TREB_CIACH, passaros: PASSAROS };
 // variantes de horário (mesmo .glb, outra luz): não carregam de novo, só seguem a disponibilidade do original
-const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'], treb_ciach: ['treb_ciach_tempestade'] };
+const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'], treb_ciach: ['treb_ciach_tempestade'], passaros: ['passaros_noite'] };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -131,6 +131,22 @@ export const ARENAS = {
     thumbCamera: { pos: [2, 3, 14], look: [0, 6, -30] },
     create: () => createGLBArena(CIRCO_NOITE),
   },
+  passaros: {
+    name: 'Acampamento dos Pássaros (Dia)',
+    description: 'O abrigo dos Pássaros na beira do lago, em Hexatombe, na manhã depois do massacre: a fogueira com o caldeirão, as barracas de pano vermelho e as cabeças nas estacas, sob a névoa espessa.',
+    colors: ['#c8a890', '#5a4030', '#8a2a20'],
+    available: true,
+    thumbCamera: { pos: [1.5, 2.6, 17], look: [0, 2, -20] },
+    create: () => createGLBArena(PASSAROS),
+  },
+  passaros_noite: {
+    name: 'Acampamento dos Pássaros (Noite)',
+    description: 'O Acampamento dos Pássaros sob a lua de sangue: só a fogueira e as lanternas acesas, a névoa vermelha sobre o lago e as barracas no escuro.',
+    colors: ['#22080c', '#3a1a10', '#ff8a3a'],
+    available: true,
+    thumbCamera: { pos: [1.5, 2.6, 17], look: [0, 2, -20] },
+    create: () => createGLBArena(PASSAROS_NOITE),
+  },
   treb_ciach: {
     name: 'Vilarejo de Treb Ciach (Samhain)',
     description: 'O vilarejo irlandês de A Vigília no dia do Samhain, sob o céu cinza e na névoa: a praça entre as casas compridas de enxaimel e palha, as ruas de pedra, o riacho com a ponte e, no centro, a grande fogueira de toras e ossos com a chama de proteção amarela e o símbolo de ossos com o crânio de cervo no topo.',
@@ -196,5 +212,5 @@ export async function preloadPveArena(id) {
   return preloadArena(PVE_ARENAS[id]);
 }
 
-export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'treb_ciach', 'treb_ciach_tempestade', 'mansao_luta', 'escola_luta'];
+export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'passaros', 'passaros_noite', 'treb_ciach', 'treb_ciach_tempestade', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ferro_velho';

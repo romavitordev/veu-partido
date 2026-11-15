@@ -801,3 +801,62 @@ export const TREB_CIACH_TEMPESTADE = {
     ],
   },
 };
+
+// ACAMPAMENTO DOS PÁSSAROS (Hexatombe, ep. 3 e 4): o abrigo da equipe Pássaros na beira do lago, depois do massacre dos
+// Vampiros — a fogueira central com o caldeirão, as barracas de cada Pássaro com as cabeças nas estacas, a névoa
+// espessa. De DIA: a manhã com névoa (a galeria da wiki, "Acampamento pela manhã com névoa"; HEX ep. 4, 4h14–4h23);
+// a NOITE é a da lua de sangue (PASSAROS_NOITE). Referências: Referencias visuais/Mapas/acampamento-dos-passaros/.
+export const PASSAROS = {
+  id: 'passaros',
+  name: 'Acampamento dos Pássaros (Dia)',
+  glb: 'arenas/passaros.glb',
+  materials: { moon_blood: { hide: true }, lantern_glow: { emissiveIntensity: 0.6 }, ember_bed: { emissiveIntensity: 1.4 } },
+  bounds: { radius: 18 },
+  spawns: [{ x: 0, z: -8 }, { x: 0, z: 8 }],
+  sky: 0xc8a890,
+  skyGradient: [[0, '#b89a86'], [0.5, '#c8a890'], [0.85, '#d8b8a0'], [1, '#c89a84']],
+  fog: { color: 0xb8948a, density: 0.03 },
+  lights: [
+    { type: 'hemi', sky: 0xf0d8c8, ground: 0x6a3a2a, intensity: 1.5 },
+    { type: 'ambient', color: 0xffe0d0, intensity: 0.35 },
+    // o sol baixo da manhã atrás da névoa, difuso
+    { type: 'dir', color: 0xffd8c0, intensity: 1.6, pos: [14, 22, -26], shadow: true, area: 28 },
+    { type: 'point', color: 0xff8a3a, intensity: 45, distance: 18, decay: 1.5, pos: [0, 1.8, 0], flicker: true }, // a fogueira
+  ],
+  fires: [{ pos: [0, 0.2, 0], scale: 1.35 }],
+  particles: [
+    { color: 0xffa040, count: 60, area: 1.8, height: 6, rise: 1.5, drift: 0.45, size: 0.07, opacity: 0.85, center: [0, 1, 0] }, // brasas
+    { color: 0x8a2a20, count: 120, area: 34, height: 4, rise: 0.02, drift: 0.5, size: 0.05, opacity: 0.35 }, // poeira avermelhada
+  ],
+  // a NÉVOA espessa que cobre o acampamento (wiki: "uma espessa névoa cobre todo o acampamento"), mais densa no lago
+  mist: {
+    color: 0xc8988a, count: 60, inner: 3, radius: 26, height: 1.6, size: 8, opacity: 0.3, swirl: 0.02,
+    banks: [
+      { at: [4, -40], radius: 18, count: 22, y: 1, height: 4, size: 13, opacity: 0.55 },
+      { at: [-28, 4], radius: 12, count: 12, y: 1, height: 4, size: 11, opacity: 0.4 },
+      { at: [28, -6], radius: 12, count: 12, y: 1, height: 4, size: 11, opacity: 0.4 },
+    ],
+  },
+  camera: { radius: 23, maxY: 15 },
+};
+
+// o Acampamento à noite: a lua de sangue sobre o lago, a fogueira e as lanternas são a única luz, névoa vermelha
+export const PASSAROS_NOITE = {
+  ...PASSAROS,
+  id: 'passaros_noite',
+  name: 'Acampamento dos Pássaros (Noite)',
+  materials: { lantern_glow: { emissiveIntensity: 3 }, ember_bed: { emissiveIntensity: 2.6 } },
+  sky: 0x1a0608,
+  skyGradient: [[0, '#070204'], [0.5, '#22080c'], [0.8, '#421218'], [1, '#62201c']],
+  fog: { color: 0x2a0a0c, density: 0.026 },
+  lights: [
+    { type: 'hemi', sky: 0x9a5060, ground: 0x2a1410, intensity: 0.9 },
+    { type: 'ambient', color: 0x452630, intensity: 0.45 },
+    { type: 'dir', color: 0xff7a66, intensity: 1.6, pos: [-14, 30, -40], shadow: true, area: 28 }, // a lua de sangue sobre o lago
+    { type: 'point', color: 0xff8a3a, intensity: 75, distance: 24, decay: 1.5, pos: [0, 1.8, 0], flicker: true }, // a fogueira
+    { type: 'point', color: 0xffb060, intensity: 5, distance: 7, pos: [13.5, 0.6, 9.5], flicker: true },
+    { type: 'point', color: 0xffb060, intensity: 5, distance: 7, pos: [-15, 0.6, 7.7], flicker: true },
+  ],
+  stars: { count: 600, radius: 170, size: 0.8 },
+  mist: { ...PASSAROS.mist, color: 0x6a1a18, opacity: 0.22 },
+};
