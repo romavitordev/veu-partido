@@ -21,7 +21,7 @@ import { validatePassives } from './combat/passives.js';
 import { Match } from './game/Match.js';
 import { CpuController } from './ai/CpuController.js';
 import { ARENAS, ARENA_ORDER, DEFAULT_ARENA, preloadArenas } from './arena/index.js';
-import { SETTINGS, cycleSetting, saveSettings, TIMER_OPTIONS, timerLabel, cpuLabel, LANGUAGE_OPTIONS, languageLabel, FX_OPTIONS, LINES_OPTIONS, GFX_OPTIONS, gfxLabel, gfxProfile, autoGraphics } from './config/settings.js';
+import { SETTINGS, cycleSetting, saveSettings, TIMER_OPTIONS, timerLabel, cpuLabel, LANGUAGE_OPTIONS, languageLabel, FX_OPTIONS, RUMBLE_OPTIONS, LINES_OPTIONS, GFX_OPTIONS, gfxLabel, gfxProfile, autoGraphics } from './config/settings.js';
 import { TutorialMode } from './ui/Tutorial.js';
 import { VERSION } from './config/version.js';
 import { t, tAlert, setLanguage } from './i18n/index.js';
@@ -166,6 +166,7 @@ function toOptions(index = 0) {
     vol('volume', 'master'), vol('volSfx', 'sfx'), vol('volUi', 'ui'), vol('volHum', 'hum'),
     { ...pick('graphics', 'opt.gfx.label', GFX_OPTIONS, (v) => t('opt.gfx.' + v)), section: t('opt.sec.video'), desc: t('opt.desc.gfx', { auto: t('opt.gfx.' + autoGraphics()) }) },
     { ...pick('reduceFx', 'opt.fx.label', FX_OPTIONS, (v) => t(v ? 'opt.fx.reduced' : 'opt.fx.normal')), section: t('opt.sec.video'), desc: t('opt.desc.fx') },
+    { ...pick('rumble', 'opt.rumble.label', RUMBLE_OPTIONS, (v) => t(v ? 'opt.rumble.on' : 'opt.rumble.off')), section: t('opt.sec.video'), desc: t('opt.desc.rumble') },
     { ...pick('timer', 'opt.time.label', TIMER_OPTIONS, (v) => timerLabel(v)), section: t('opt.sec.match'), desc: t('opt.desc.time') },
     { ...pick('fightLines', 'opt.lines.label', LINES_OPTIONS, (v) => t(v ? 'opt.lines.on' : 'opt.lines.off')), section: t('opt.sec.match'), desc: t('opt.desc.lines') },
     { ...pick('language', 'opt.lang.label', LANGUAGE_OPTIONS.map((l) => l.id), (v) => languageLabel(v)), section: t('opt.sec.lang'), desc: t('opt.desc.lang') },

@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.49.0 — O Peso do Golpe
+
+- Versão: `VERSION` 4.48.1 → **4.49.0** (`package.json`/lock junto). Data: 2026-11-15.
+- **Vibração (dono: "sem vibração no cll, só no controle"):** `src/input/rumble.js` com a Gamepad API
+  (`vibrationActuator.playEffect('dual-rumble')`), sem dependência e sem `navigator.vibrate`/@capacitor/haptics.
+  Tabela `RUMBLE` [motor forte, fraco, ms]: defesa, golpe leve, pesado (lançou, 60+ de dano, quebra de defesa), agarrão,
+  especial, nocaute, e o retorno de quem acertou (leve/pesado). Só quem joga com o controle (`input.source ===
+  'gamepad'`); CPU, teclado, toque não vibram; online, só o lado deste computador (`viewSlot`) pelo aparelho do P1. Um
+  tremor fraco não corta um forte no meio. Ganchos em `combat/damage.js` (`rumble` na defesa, `rumbleHit` no golpe).
+- Opção `SETTINGS.rumble` (padrão ligada) em OPÇÕES › vídeo, `opt.rumble.*`/`opt.desc.rumble` nos 13 idiomas.
+- `tests/rumble.test.js` (3 testes). Testado no jogo com um controle simulado: golpe leve [0,15; 0,35; 90 ms], pesado
+  [0,7; 0,5; 170 ms], acerto [0; 0,25; 55 ms], a CPU não vibra. NÃO testado com um controle físico.
+
 ## v4.48.1 — Raios Rápidos
 
 - Versão: `VERSION` 4.48.0 → **4.48.1** (`package.json`/lock junto). Data: 2026-11-15.

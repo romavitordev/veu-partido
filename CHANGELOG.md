@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.49.0 — O Peso do Golpe
+
+### Adicionado
+- Vibração do controle pelo peso do golpe (só controle; o celular não vibra), com opção para desligar.
+
 ## v4.48.1 — Raios Rápidos
 
 ### Alterado

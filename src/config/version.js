@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.48.1';
+export const VERSION = '4.49.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.49.0',
+    date: '2026-11-15',
+    title: 'O Peso do Golpe',
+    items: [
+      'VIBRAÇÃO DO CONTROLE: o controle treme pelo peso do golpe — forte ao levar um golpe pesado, um agarrão ou um especial, bem forte no nocaute, leve ao acertar ou defender. Só para quem joga com controle; o celular não vibra.',
+      'OPÇÕES: nova linha "Vibração do controle" (ligada ou desligada).',
+    ],
+  },
   {
     v: '4.48.1',
     date: '2026-11-15',

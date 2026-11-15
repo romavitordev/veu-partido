@@ -5,6 +5,7 @@ import { angleDiff, yawTo, DEG, distXZ } from '../core/util.js';
 import { elementMultiplier } from '../config/elements.js';
 import { weaknessMult } from './forms.js';
 import { balanceOf } from '../config/balance.js';
+import { rumble, rumbleHit } from '../input/rumble.js';
 
 // Pausa no impacto conforme o peso do golpe
 function hitstopFor(o, dealt) {
@@ -214,6 +215,7 @@ export function applyHit(world, attacker, victim, o) {
       // bloqueio pesado: quem tem animação própria finca os pés e absorve o impacto com o corpo
       if (victim.state === 'block' && (o.guardCrush || attempted >= 40) && victim.heavyBlockReact) victim.heavyBlockReact(attacker);
       world.hitstop(COMBAT.hitstop * 0.6);
+      rumble(victim, world, 'block'); // vibração do controle (input/rumble.js)
       if (o.kind === 'melee') runMeleePassives(world, attacker, victim, o, dealt, attempted);
       world.onHit && world.onHit(attacker, victim, dealt, { ...o, blocked: true });
       return 'blocked';
@@ -321,6 +323,7 @@ export function applyHit(world, attacker, victim, o) {
   world.audio.play(o.sound || 'impact', { volume: launch ? 1.1 : 0.9 });
   world.hitstop(hitstopFor({ ...o, launch }, dealt));
   world.cameraRig.shake(launch ? 0.35 : 0.15, 0.2);
+  rumbleHit(world, attacker, victim, dealt, o, launch); // vibração do controle pelo peso do golpe (input/rumble.js)
 
   if (o.kind === 'melee' || o.applyMeleePassives) runMeleePassives(world, attacker, victim, o, dealt, attempted);
 

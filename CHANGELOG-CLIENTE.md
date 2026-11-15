@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.49.0 — O Peso do Golpe
+- VIBRAÇÃO DO CONTROLE: o controle treme pelo peso do golpe — forte ao levar um golpe pesado, um agarrão ou um especial, bem forte no nocaute, leve ao acertar ou defender. Só para quem joga com controle; o celular não vibra.
+- OPÇÕES: nova linha "Vibração do controle" (ligada ou desligada).
+
 ## v4.48.1 — Raios Rápidos
 - CÂMERA MAIS LEVE: o teste que impede a câmera de entrar nas casas e muralhas ficou cerca de 200 vezes mais rápido (no Santo Berço e na Igreja pesava em todo especial).
 - CORRIGIDO: com a qualidade gráfica alta ou média, os mapas com névoa densa (como o Santo Berço) ficavam lavados e claros demais. Agora a imagem é a mesma de antes, só com o brilho e a borda por cima.
