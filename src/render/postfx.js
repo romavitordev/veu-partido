@@ -1,0 +1,129 @@
+import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { gfxProfile, SETTINGS } from '../config/settings.js';
+
+// PÓS-PROCESSAMENTO DA LUTA (seção 10 do GUIA_TECNOLOGIAS_GAME_DEV.txt). Só o EffectComposer do próprio Three.js:
+//   1) a cena  2) BLOOM — só o que é mais claro que a luz comum brilha (olhos, runas, sigilos, chamas, emissivos)
+//   3) TELA — vinheta e aberração cromática, com força conforme o momento (MOOD)  4) saída (tom ACES + sRGB).
+// Qualidade (OPÇÕES › gráficos): alta = tudo; média = bloom em meia resolução; baixa = desligado (desenha direto).
+// EFEITOS DE TELA REDUZIDOS (SETTINGS.reduceFx) corta a aberração e os pulsos.
+
+const ScreenShader = {
+  uniforms: {
+    tDiffuse: { value: null },
+    vignette: { value: 0.25 }, // força da vinheta (0 = nada)
+    tint: { value: new THREE.Color(0, 0, 0) }, // cor que a borda puxa (vermelho no despertar, roxo no Outro Lado)
+    aberration: { value: 0 }, // deslocamento das cores (fração da tela)
+  },
+  vertexShader: /* glsl */ `
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: /* glsl */ `
+    uniform sampler2D tDiffuse;
+    uniform float vignette;
+    uniform vec3 tint;
+    uniform float aberration;
+    varying vec2 vUv;
+    void main() {
+      vec2 d = vUv - 0.5;
+      float r2 = dot(d, d);
+      vec4 c = texture2D(tDiffuse, vUv);
+      if (aberration > 0.0) {
+        // mais forte na borda, nada no centro (o lutador continua nítido)
+        vec2 off = d * aberration * r2 * 4.0;
+        c.r = texture2D(tDiffuse, vUv + off).r;
+        c.b = texture2D(tDiffuse, vUv - off).b;
+      }
+      float v = smoothstep(0.12, 0.62, r2 * 1.6) * vignette;
+      // a borda escurece e puxa para a cor do clima (vermelho no despertar, roxo no Outro Lado)
+      c.rgb = c.rgb * (1.0 - v * 0.7) + tint * v * 0.9;
+      gl_FragColor = c;
+    }`,
+};
+
+// O CLIMA da tela em cada situação (o mais forte vence; muda suave)
+export const MOOD = {
+  base: { vignette: 0.22, aberration: 0, tint: 0x000000, bloom: 0.32 },
+  lowHealth: { vignette: 0.55, aberration: 0.002, tint: 0x9a0a0a, bloom: 0.32 },
+  awakened: { vignette: 0.6, aberration: 0.0025, tint: 0x8a0c22, bloom: 0.5 },
+  outroLado: { vignette: 0.5, aberration: 0.0015, tint: 0x40146a, bloom: 0.42 },
+  cinematic: { vignette: 0.55, aberration: 0.004, tint: 0x000000, bloom: 0.55 },
+};
+
+const TMP = new THREE.Color();
+
+export class PostFX {
+  constructor(renderer) {
+    this.renderer = renderer;
+    this.composer = null;
+    this.level = null;
+    this.cur = { vignette: MOOD.base.vignette, aberration: 0, bloom: MOOD.base.bloom, tint: new THREE.Color(0) };
+  }
+
+  // liga/desliga e ajusta à qualidade atual; devolve se está ativo
+  sync() {
+    const G = gfxProfile();
+    const level = G.post || 'off';
+    if (level === this.level && this.composer) return level !== 'off';
+    this.dispose();
+    this.level = level;
+    if (level === 'off') return false;
+    const r = this.renderer;
+    const size = r.getSize(new THREE.Vector2());
+    // alvo em ponto flutuante: o bloom precisa enxergar o que passa de 1 (os emissivos fortes)
+    const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: G.antialias ? 4 : 0 });
+    this.composer = new EffectComposer(r, rt);
+    this.renderPass = new RenderPass(null, null);
+    const res = level === 'full' ? size.clone() : size.clone().multiplyScalar(0.5);
+    this.bloom = new UnrealBloomPass(res, MOOD.base.bloom, 0.45, 0.92);
+    this.screen = new ShaderPass(ScreenShader);
+    this.composer.addPass(this.renderPass);
+    this.composer.addPass(this.bloom);
+    this.composer.addPass(this.screen);
+    this.composer.addPass(new OutputPass());
+    this.setSize(size.x, size.y);
+    return true;
+  }
+
+  setSize(w, h) {
+    if (!this.composer) return;
+    this.composer.setPixelRatio(this.renderer.getPixelRatio());
+    this.composer.setSize(w, h);
+    if (this.level === 'light') this.bloom.setSize(w * 0.5, h * 0.5);
+  }
+
+  // mood: um dos MOOD (ou mistura já calculada); kick: 0..1 de pulso de impacto (o tremor da câmera)
+  render(scene, camera, dt, mood = MOOD.base, kick = 0) {
+    if (!this.sync()) { this.renderer.render(scene, camera); return; }
+    const k = Math.min(1, dt * 4);
+    const reduce = SETTINGS.reduceFx;
+    const c = this.cur;
+    c.vignette += (mood.vignette - c.vignette) * k;
+    c.bloom += (mood.bloom - c.bloom) * k;
+    c.aberration += ((reduce ? 0 : mood.aberration) - c.aberration) * k;
+    c.tint.lerp(TMP.set(mood.tint), k);
+    this.renderPass.scene = scene;
+    this.renderPass.camera = camera;
+    this.bloom.strength = c.bloom;
+    const u = this.screen.uniforms;
+    u.vignette.value = c.vignette;
+    u.tint.value.copy(c.tint);
+    u.aberration.value = c.aberration + (reduce ? 0 : Math.min(kick, 1) * 0.006);
+    this.composer.render(dt);
+  }
+
+  dispose() {
+    if (!this.composer) return;
+    this.bloom.dispose();
+    this.composer.renderTarget1.dispose();
+    this.composer.renderTarget2.dispose();
+    this.composer = null;
+  }
+}
+
+let shared = null;
+export const postFX = (renderer) => shared || (shared = new PostFX(renderer));

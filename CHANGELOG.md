@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.48.0 — A Luz do Outro Lado
+
+### Adicionado
+- Pós-processamento na luta: bloom, vinheta com a cor do momento (despertar, especial, Outro Lado, pouca vida) e aberração cromática nos impactos; por qualidade gráfica (desligado na baixa).
+
 ## v4.47.2 — Sem Engasgo
 
 ### Alterado

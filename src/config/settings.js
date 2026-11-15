@@ -35,9 +35,9 @@ export const GFX_OPTIONS = ['auto', 'high', 'medium', 'low'];
 // que mude a luta ou o sorteio dos efeitos (o online depende de os dois lados sortearem igual).
 const GFX_PROFILES = {
   // maxFps: celular de 90/120 Hz desenhava o dobro de quadros, esquentava e o sistema derrubava o desempenho
-  high: { pixelRatio: 2, antialias: true, shadows: true, softShadows: true, shadowSize: 2048, pointLights: 8, maxFps: 0, rimLights: 8 },
-  medium: { pixelRatio: 1.5, antialias: false, shadows: true, softShadows: false, shadowSize: 1024, pointLights: 2, maxFps: 60, rimLights: 2 },
-  low: { pixelRatio: 1, antialias: false, shadows: false, softShadows: false, shadowSize: 512, pointLights: 1, maxFps: 60, rimLights: 0 },
+  high: { post: 'full', pixelRatio: 2, antialias: true, shadows: true, softShadows: true, shadowSize: 2048, pointLights: 8, maxFps: 0, rimLights: 8 },
+  medium: { post: 'light', pixelRatio: 1.5, antialias: false, shadows: true, softShadows: false, shadowSize: 1024, pointLights: 2, maxFps: 60, rimLights: 2 },
+  low: { post: 'off', pixelRatio: 1, antialias: false, shadows: false, softShadows: false, shadowSize: 512, pointLights: 1, maxFps: 60, rimLights: 0 },
 };
 // celular / tablet (toque como ponteiro principal) ou pouca memória → baixa; o resto → alta
 let _auto = null; // o aparelho não muda durante a sessão: decide uma vez (o laço de quadros pergunta sempre)

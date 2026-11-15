@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v4.48.0 — A Luz do Outro Lado
+
+- Versão: `VERSION` 4.47.2 → **4.48.0** (`package.json`/lock junto). Data: 2026-11-15.
+- **Pós-processamento (dono: "siga o todo"; item da seção "Tecnologias novas do guia"):** `src/render/postfx.js`, só
+  com o EffectComposer do Three.js (nenhuma dependência nova): `RenderPass` → `UnrealBloomPass` (força 0,32, raio
+  0,45, limiar 0,92: só o que passa da luz comum) → `ShaderPass` próprio (vinheta com cor + aberração cromática mais
+  forte na borda) → `OutputPass` (ACES + sRGB, os mesmos do renderer). Alvo HalfFloat com MSAA 4× quando o antialias
+  está ligado. `MOOD` (o mais forte vence, transição suave): `cinematic` (`world.cinematic`) > `awakened` (buff
+  `awakened` em alguém) > `outroLado` (`world.cameraFocus`) > `lowHealth` (lutador do `viewSlot` < 25%) > `base`.
+  Pulso de aberração pelo tremor da câmera (`cameraRig.shakeAmt`). `SETTINGS.reduceFx` zera aberração e pulsos.
+- Qualidade: `GFX_PROFILES.post` — alta `full`, média `light` (bloom em meia resolução), baixa `off` (desenha direto, como
+  antes). `World.render()` passa pelo `postFX`; `main.js` ajusta em `applyGraphics()` e no redimensionar.
+- Testado no jogo: Igreja (velas e tochas com brilho), Coliseu de dia (sem estourar o céu), despertar forçado (borda
+  vermelha). Custo medido a 1024×768 na alta: 2,0 → 3,3 ms por quadro.
+
 ## v4.47.2 — Sem Engasgo
 
 - Versão: `VERSION` 4.47.1 → **4.47.2** (`package.json`/lock junto). Data: 2026-11-15.

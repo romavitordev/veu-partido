@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.48.0 — A Luz do Outro Lado
+- BRILHO: velas, tochas, chamas, olhos, runas e sigilos agora brilham de verdade na luta (bloom).
+- CLIMA NA TELA: a borda da tela fica vermelha quando alguém desperta, escurece e treme as cores no especial, puxa para o roxo no Outro Lado e avermelha quando a sua vida está no fim. Golpes fortes dão um pulso nas cores.
+- OPÇÕES: na qualidade gráfica ALTA tudo ligado; na MÉDIA o brilho é mais leve; na BAIXA (e no celular, no automático) fica desligado. "Efeitos de tela reduzidos" corta o tremor das cores.
+
 ## v4.47.2 — Sem Engasgo
 - ONLINE SEM ENGASGO: o atraso dos comandos agora se ajusta ao ping. Na mesma rede fica no mínimo (resposta mais rápida); com ping alto sobe só o necessário, e o jogo não fica mais lento nem travando. O selo ONLINE mostra o atraso atual.
 - ONLINE: os dois computadores andam no mesmo ritmo — quem estiver à frente desacelera um pouco até o outro alcançar, em vez de correr e parar.

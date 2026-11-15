@@ -12,6 +12,7 @@ import { ARENAS } from '../arena/index.js';
 import { yawTo } from '../core/util.js';
 import { SETTINGS } from '../config/settings.js';
 import { updateRiddle, cancelRiddle } from '../combat/riddle.js';
+import { postFX, MOOD } from '../render/postfx.js';
 
 const RAY = new THREE.Raycaster();
 
@@ -472,6 +473,22 @@ export class World {
   }
 
   render() {
-    this.renderer.render(this.scene, this.camera);
+    const now = performance.now();
+    const dt = this.lastRender ? Math.min(0.1, (now - this.lastRender) / 1000) : 0.016;
+    this.lastRender = now;
+    const kick = this.cameraRig && this.cameraRig.shakeTime > 0 ? this.cameraRig.shakeAmt * 1.5 : 0;
+    this.post = postFX(this.renderer);
+    this.post.render(this.scene, this.camera, dt, this.screenMood(), kick);
+  }
+
+  // o clima da tela (render/postfx.js): especial > despertar > Outro Lado > pouca vida > normal
+  screenMood() {
+    if (this.cinematic) return MOOD.cinematic;
+    const fs = this.fighters || [];
+    if (fs.some((f) => f.findBuff && f.findBuff('awakened'))) return MOOD.awakened;
+    if (this.cameraFocus) return MOOD.outroLado;
+    const me = fs[this.viewSlot ?? 0];
+    if (me && me.maxHealth && me.health > 0 && me.health / me.maxHealth < 0.25) return MOOD.lowHealth;
+    return MOOD.base;
   }
 }

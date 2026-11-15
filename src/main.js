@@ -1,3 +1,4 @@
+import { postFX } from './render/postfx.js';
 import { viewSize, watchViewport } from './core/viewport.js';
 import * as THREE from 'three';
 import { InputManager } from './input/InputManager.js';
@@ -52,6 +53,8 @@ function applyGraphics() {
   renderer.shadowMap.enabled = G.shadows;
   renderer.shadowMap.type = THREE.PCFShadowMap; // desde a r182 o PCF já é suave (o PCFSoftShadowMap foi descontinuado)
   renderer.shadowMap.needsUpdate = true;
+  postFX(renderer).sync(); // pós-processamento conforme a qualidade (render/postfx.js)
+  postFX(renderer).setSize(viewSize().w, viewSize().h);
 }
 applyGraphics();
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -676,6 +679,7 @@ window.addEventListener('keydown', () => audio.unlock());
 watchViewport(() => {
   const { w, h } = viewSize();
   renderer.setSize(w, h);
+  postFX(renderer).setSize(w, h);
   for (const cam of [game.match && game.match.world.camera]) {
     if (!cam) continue;
     cam.aspect = w / h;

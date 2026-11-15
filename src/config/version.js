@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.47.2';
+export const VERSION = '4.48.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.48.0',
+    date: '2026-11-15',
+    title: 'A Luz do Outro Lado',
+    items: [
+      'BRILHO: velas, tochas, chamas, olhos, runas e sigilos agora brilham de verdade na luta (bloom).',
+      'CLIMA NA TELA: a borda da tela fica vermelha quando alguém desperta, escurece e treme as cores no especial, puxa para o roxo no Outro Lado e avermelha quando a sua vida está no fim. Golpes fortes dão um pulso nas cores.',
+      'OPÇÕES: na qualidade gráfica ALTA tudo ligado; na MÉDIA o brilho é mais leve; na BAIXA (e no celular, no automático) fica desligado. "Efeitos de tela reduzidos" corta o tremor das cores.',
+    ],
+  },
   {
     v: '4.47.2',
     date: '2026-11-15',
