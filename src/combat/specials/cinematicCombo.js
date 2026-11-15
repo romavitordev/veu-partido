@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Timeline, yawTo, distXZ, forwardFromYaw } from '../../core/util.js';
 import { COMBAT } from '../../config/combat.js';
-import { applyHit } from '../damage.js';
+import { applyHit, npcDamage } from '../damage.js';
 import { splitDamage, specialHitFx, trySpecialBlock } from './common.js';
 import { TELEGRAPH } from './telegraph.js';
 import { faceClose, twoShot, overShoulder, lowAngle, pullBack, socketClose, orbit } from '../../camera/shots.js';
@@ -288,6 +288,7 @@ export const cinematicCombo = {
     let emitters = [];
     let propShown = false;
     let opp = f.opponent;
+    let npcFoe = null; // Outro Lado: o bicho que a investida persegue quando o adversário está escondido
 
     f.vel.set(0, 0, 0);
     f.anim.play(prep.anim, prep.loop ? { restart: true } : { restart: true, duration: prep.time });
@@ -723,6 +724,39 @@ export const cinematicCombo = {
         }
         if (phase === 'dash') {
           if (!opp || opp.state === 'ko') { cleanup(); return true; }
+          // OUTRO LADO (feedback do dono, 2026-11-14: "o especial deve tentar ir na direção do inimigo, não dar um avanço
+          // em qualquer direção"): nas salas de bichos o "adversário" fica escondido (lurking) — a investida ia atrás
+          // dele, para um canto qualquer. Agora vai no bicho mais perto e o golpe acerta ele (e quem estiver colado)
+          if (opp.lurking || opp.visible === false) {
+            const mob = npcFoe || (npcFoe = world.hostileNpcs(f).filter((n) => n.alive !== false && !n.isCloset && n.pos && distXZ(f.pos, n.pos) < 16).sort((a, b) => distXZ(f.pos, a.pos) - distXZ(f.pos, b.pos))[0]);
+            if (!mob || mob.alive === false) { f.vel.set(0, 0, 0); phase = 'whiff'; t = 0; f.anim.play('idle', { restart: true }); return false; }
+            f.yaw = yawTo(f.pos, mob.pos);
+            const F = forwardFromYaw(f.yaw);
+            f.vel.x = F.x * dash.speed;
+            f.vel.z = F.z * dash.speed;
+            world.fx.burst(f.chestPos(), { count: 2, color: sp.color, speed: 1, life: 0.3, size: 0.4 });
+            if (distXZ(f.pos, mob.pos) - (mob.radius || 0.5) <= dash.contact) {
+              f.vel.set(0, 0, 0);
+              f.anim.play((sp.hits && sp.hits[sp.hits.length - 1] && sp.hits[sp.hits.length - 1].anim) || 'heavy', { restart: true, duration: 0.45 });
+              const dmg = sp.damage ?? COMBAT.specialDamage;
+              for (const n of world.hostileNpcs(f)) {
+                if (n.alive === false || n.isCloset || !n.pos || distXZ(n.pos, mob.pos) > 2.6) continue;
+                n.hitBy(f, npcDamage(f, n === mob ? dmg : dmg * 0.5, 'special'), { kind: 'special' });
+              }
+              const p = mob.pos.clone().setY(1.1);
+              world.fx.flash(p, { color: sp.color, size: 2.6, life: 0.2 });
+              world.fx.burst(p, { count: 50, color: sp.color, speed: 7, life: 0.6, size: 0.28 });
+              world.fx.ring(new THREE.Vector3(mob.pos.x, 0.06, mob.pos.z), { color: sp.color, radius: 2.6, life: 0.4 });
+              world.cameraRig.shake(0.4, 0.3);
+              world.hitstop && world.hitstop(0.12);
+              world.audio.play('heavyPunch', { volume: 0.9 });
+              phase = 'whiff';
+              t = 0;
+              return false;
+            }
+            if (t >= dash.maxTime) { f.vel.set(0, 0, 0); phase = 'whiff'; t = 0; f.anim.play('idle', { restart: true }); }
+            return false;
+          }
           f.yaw = yawTo(f.pos, opp.pos);
           const F = forwardFromYaw(f.yaw);
           f.vel.x = F.x * dash.speed;

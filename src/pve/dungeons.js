@@ -556,17 +556,26 @@ export function rollExits(D, curId, { step = 0, total = 3, visited = [], prevCou
 // chance de baú numa sala (opcional: pegar ou não é escolha do jogador)
 // sorteia se uma das saídas desta sala vem com CADEADO: só com 2+ saídas (nunca a única), nunca a escada nem a do chefe,
 // e só se a sala tem gaveta para esconder a chave. Marca a saída: e.padlock = 'vault' | 'fight'. Devolve a saída ou null.
+// os CADEADOS de uma sala: devolve a lista das saídas trancadas (vazia = nenhuma). A chave é UMA só (numa gaveta).
+// (feedback do dono, 2026-11-14: "pode haver mais de uma porta trancada na mesma sala, mas o jogador recebe apenas uma
+// chave: deve poder escolher qual destrancar") com 3+ saídas, às vezes (L.double) DUAS levam cadeado — a chave abre uma
+// e o jogador escolhe o caminho; sempre sobra uma saída sem cadeado (nunca prende ninguém)
 export function rollLock(D, curId, exits, rng = Math.random) {
   const L = D.locks;
   const cur = D.modules[curId];
-  if (!L || !cur.drawers || !cur.drawers.length || exits.length < 2 || rng() >= L.chance) return null;
+  if (!L || !cur.drawers || !cur.drawers.length || exits.length < 2 || rng() >= L.chance) return [];
   const ok = exits.filter((e) => e.kind !== 'boss' && !cur.exits[e.slot].stairs);
-  if (!ok.length) return null;
-  const e = ok[Math.floor(rng() * ok.length)];
-  // atrás de um corredor de espreita não cabe luta: vira sala de baús
-  e.padlock = e.kind === 'fight' && rng() >= L.vault ? 'fight' : 'vault';
-  if (e.padlock === 'vault') e.count = 0;
-  return e;
+  if (!ok.length) return [];
+  const n = Math.min(ok.length, exits.length - 1, exits.length >= 3 && rng() < (L.double ?? 0.5) ? 2 : 1);
+  const out = [];
+  while (out.length < n) {
+    const e = ok.splice(Math.floor(rng() * ok.length), 1)[0];
+    // atrás de um corredor de espreita não cabe luta: vira sala de baús
+    e.padlock = e.kind === 'fight' && rng() >= L.vault ? 'fight' : 'vault';
+    if (e.padlock === 'vault') e.count = 0;
+    out.push(e);
+  }
+  return out;
 }
 
 export function chestChance(D, kind, count = 0) {

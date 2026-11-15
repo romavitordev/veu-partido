@@ -160,71 +160,116 @@ export const AMIGO_TYPES = {
   },
 
   // DISSOLVER (wiki: "pega o corpo de alguém e o absorve para si, o derretendo completamente, recuperando Pontos de
-  // Vida"; no livro, "uma quantidade de PV igual ao dano causado à vítima"): agarra quem está colado à frente, a tinta
-  // cobre a vítima e a criatura a ABSORVE em pulsos — cada pulso cura o mesmo tanto que tirou. Errou: nada.
+  // Vida"; no livro, "uma quantidade de PV igual ao dano causado à vítima"). (Pedido do dono, 2026-11-14, pelas cenas de
+  // O Segredo na Ilha: "usa os tentáculos de forma rápida e puxa os personagens pelos pés os trazendo para dentro da
+  // roupa dele, consumindo-os com a tinta") — os tentáculos disparam RENTE AO CHÃO, laçam a vítima PELOS PÉS de longe,
+  // ela cai e é ARRASTADA de costas até a criatura e SOME para dentro do manto; lá dentro a tinta a consome em pulsos
+  // (cada pulso cura o mesmo tanto que tirou) e a criatura a CUSPE coberta de tinta, o rosto derretendo. Errou: nada.
   inkDissolve: {
     start(f, a, world) {
       const opp = f.opponent;
       const tl = new Timeline();
-      const hold = a.hold ?? 1.2;
+      const hold = a.hold ?? 1.1;
+      const reach = a.reach ?? 7.5;
       f.vel.set(0, 0, 0);
-      if (opp && distXZ(f.pos, opp.pos) < 5) f.yaw = yawTo(f.pos, opp.pos);
-      f.anim.play('ai_dissolve', { restart: true, duration: a.windup + hold + a.recovery });
-      world.audio.play('inkPour', { volume: 0.7, pitch: 0.7 });
-      let held = false;
-      let drip = null;
+      if (opp && distXZ(f.pos, opp.pos) < reach + 2) f.yaw = yawTo(f.pos, opp.pos);
+      const F = forwardFromYaw(f.yaw);
+      f.anim.play('ai_fling', { restart: true, duration: 0.5 });
+      world.audio.play('whip', { volume: 0.8, pitch: 0.55 });
+      let phase = null; // 'drag' → 'inside' → null
+      let dragFrom = null;
+      let dragT = 0;
+      let dragDur = 0.4;
+      let trail = null;
+      let gulp = null;
+      const hem = () => f.pos.clone().addScaledVector(F, 0.35).setY(0.15);
       const release = () => {
-        held = false;
-        if (drip) { drip.stop(); drip = null; }
-        if (opp && opp.rig) opp.rig.root.scale.set(1, 1, 1);
+        phase = null;
+        if (trail) { trail.stop(); trail = null; }
+        if (gulp) { gulp.stop(); gulp = null; }
+        if (opp && opp.rig) { opp.rig.root.visible = true; opp.rig.root.scale.set(1, 1, 1); }
+        if (f.rig) f.rig.root.scale.set(1, 1, 1);
       };
-      tl.each((t) => {
+      tl.each((t, dt) => {
         f.vel.set(0, 0, 0);
-        if (!held) return;
-        // a vítima presa à frente, afundando na tinta (encolhe e alarga) enquanto é absorvida
-        const F = forwardFromYaw(f.yaw);
-        opp.pos.set(f.pos.x + F.x * 1.1, opp.pos.y, f.pos.z + F.z * 1.1);
-        opp.vel.set(0, 0, 0);
-        const k = Math.min(1, Math.max(0, (t - a.windup) / hold));
-        opp.rig.root.scale.set(1 + k * 0.12, 1 - k * 0.3, 1 + k * 0.12);
-      });
-      tl.add(a.windup, () => {
-        if (!opp || opp.state === 'ko' || opp.isInvulnerable() || distXZ(f.pos, opp.pos) - opp.radius > a.range || !inFront(f, opp, 120)) {
-          f.notify('DISSOLVER (ERROU)', true);
+        if (!phase || !opp) return;
+        if (opp.state === 'ko') { release(); return; }
+        if (phase === 'drag') {
+          // arrastada de costas pelos pés, cada vez mais rápido, até a barra do manto
+          dragT += dt;
+          const k = Math.min(1, dragT / dragDur);
+          const e = k * k;
+          const to = f.pos.clone().addScaledVector(F, 0.7);
+          opp.pos.set(dragFrom.x + (to.x - dragFrom.x) * e, opp.pos.y, dragFrom.z + (to.z - dragFrom.z) * e);
+          opp.vel.set(0, 0, 0);
+          opp.yaw = yawTo(opp.pos, f.pos); // os pés na frente, para a criatura
           return;
         }
-        held = true;
+        // dentro do manto: a vítima fica escondida na criatura, que se contorce enquanto a tinta a consome
+        opp.pos.set(f.pos.x + F.x * 0.2, opp.pos.y, f.pos.z + F.z * 0.2);
+        opp.vel.set(0, 0, 0);
+        const w = Math.sin(t * 26) * 0.05;
+        f.rig.root.scale.set(1.08 + w, 0.96 - w * 0.5, 1.08 + w);
+      });
+      tl.add(a.windup, () => {
+        const caught = opp && opp.state !== 'ko' && !opp.isInvulnerable() && Math.abs(opp.pos.y - f.pos.y) < 1.2 && distXZ(f.pos, opp.pos) <= reach && inFront(f, opp, a.arc ?? 80);
+        // três tentáculos rápidos saindo da barra do manto, rente ao chão
+        for (let i = 0; i < 3; i++) {
+          const o = hem().add(new THREE.Vector3((i - 1) * 0.3 * F.z, 0, (i - 1) * -0.3 * F.x));
+          const end = caught ? () => opp.pos.clone().setY(0.12 + i * 0.06) : o.clone().addScaledVector(F, reach * 0.85).setY(0.1);
+          inkTentacle(world, o, end, { grow: 0.08, hold: caught ? 0.45 : 0.1, retract: 0.15, coil: caught, radius: 0.07, arc: 0.12, wiggle: 0.18 });
+        }
+        if (!caught) { f.notify('DISSOLVER (ERROU)', true); return; }
+        applyHit(world, f, opp, { damage: a.grabDamage ?? 8, kind: 'ability', ability: a.id, element: 'tinta', unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: INK, sound: 'whip', scale: 0.6, pos: opp.pos.clone().setY(0.2) });
+        if (opp.state === 'ko') return;
         opp.cancelAction && opp.cancelAction();
-        opp.stun(hold + 0.2, 'stagger');
-        opp.notify('A TINTA ABSORVE O CORPO', true);
-        inkSplash(world, opp.pos.clone().setY(0.05), { size: 1.4, life: hold + 0.5 });
-        // a tinta escorrendo da vítima para a criatura (o corpo sendo absorvido)
-        drip = world.fx.emitter({
-          rate: 60,
-          follow: () => opp.chestPos().lerp(f.chestPos(), Math.random()),
-          particle: { color: INK, speed: 0.3, up: 0.2, spread: 0.1, life: 0.35, size: 0.12, gravity: 1 },
+        dragDur = Math.min(0.55, Math.max(0.22, distXZ(f.pos, opp.pos) / 14));
+        opp.stun(dragDur + hold + 0.6, 'stagger');
+        opp.anim.play('downed', { restart: true, duration: 0.25 });
+        opp.notify('PUXADO PELOS PÉS', true);
+        world.audio.play('chainPull', { volume: 0.9, pitch: 0.6 });
+        dragFrom = opp.pos.clone();
+        dragT = 0;
+        phase = 'drag';
+        f.anim.play('ai_dissolve', { restart: true, duration: dragDur + hold + a.recovery });
+        // o rastro de tinta no chão por onde ela é arrastada
+        trail = world.fx.emitter({ rate: 70, follow: () => opp.pos.clone().setY(0.06), particle: { color: INK, speed: 0.2, up: 0.1, spread: 0.25, life: 0.9, size: 0.2, gravity: 0 } });
+        const t0 = a.windup + dragDur;
+        // PARA DENTRO DA ROUPA
+        tl.add(t0, () => {
+          if (phase !== 'drag' || opp.state === 'ko') return;
+          if (trail) { trail.stop(); trail = null; }
+          phase = 'inside';
+          opp.rig.root.visible = false;
+          inkSplash(world, f.pos.clone().setY(0.05), { size: 1.6, life: hold + 0.6 });
+          world.audio.play('inkPour', { volume: 1, pitch: 0.6 });
+          if (world.cameraRig.shake) world.cameraRig.shake(0.2, 0.2);
+          opp.notify('DENTRO DO MANTO — A TINTA CONSOME', true);
+          gulp = world.fx.emitter({ rate: 40, follow: () => f.pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.1, 0.2 + Math.random() * 0.6, (Math.random() - 0.5) * 1.1)), particle: { color: INK, speed: 0.6, up: 0.4, spread: 0.2, life: 0.4, size: 0.14, gravity: 4 } });
+        });
+        const parts = splitDamage(a.damage, [0.25, 0.25, 0.25, 0.25]);
+        parts.forEach((d, i) => tl.add(t0 + 0.12 + (i * hold) / 4, () => {
+          if (phase !== 'inside' || opp.state === 'ko') return;
+          const before = opp.health;
+          applyHit(world, f, opp, { damage: d, kind: 'ability', ability: a.id, element: 'tinta', unblockable: true, reaction: false, knockback: 0, hitstun: 0, ignoreInvuln: true, color: INK, sound: 'clawHit', scale: 0.6, pos: f.chestPos() });
+          const took = Math.max(0, before - opp.health);
+          f.health = Math.min(f.maxHealth, f.health + took); // cura o mesmo que tirou
+          world.fx.burst(f.chestPos(), { count: 14, color: INK, speed: 1.6, up: 0.6, life: 0.45, size: 0.15 });
+        }));
+        // CUSPIDA coberta de tinta, o rosto derretendo
+        tl.add(t0 + hold, () => {
+          if (phase !== 'inside') return;
+          release();
+          if (opp.state === 'ko') return;
+          opp.pos.set(f.pos.x + F.x * 1.2, opp.pos.y, f.pos.z + F.z * 1.2);
+          opp.react({ dir: F, knockback: 6, hitstun: 0.6, launch: true, lowLaunch: true });
+          world.audio.play('heavyPunch', { volume: 0.7, pitch: 0.6 });
+          inkSplash(world, opp.pos.clone().setY(0.4), { size: 1.4, puddle: false });
+          if (a.melt) meltFace(world, opp, a.melt);
+          opp.notify('CUSPIDO NA TINTA', true);
         });
       });
-      const parts = splitDamage(a.damage, [0.25, 0.25, 0.25, 0.25]);
-      parts.forEach((d, i) => tl.add(a.windup + 0.15 + (i * hold) / 4, () => {
-        if (!held || opp.state === 'ko') return;
-        const before = opp.health;
-        applyHit(world, f, opp, { damage: d, kind: 'ability', ability: a.id, element: 'tinta', unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: INK, sound: 'clawHit', scale: 0.6 });
-        const took = Math.max(0, before - opp.health);
-        f.health = Math.min(f.maxHealth, f.health + took); // cura o mesmo que tirou
-        world.fx.burst(f.chestPos(), { count: 10, color: INK, speed: 1.2, up: 0.6, life: 0.4, size: 0.14 });
-      }));
-      tl.add(a.windup + hold, () => {
-        if (!held) return;
-        release();
-        if (opp.state === 'ko') return;
-        const F = forwardFromYaw(f.yaw);
-        opp.vel.x = F.x * 4;
-        opp.vel.z = F.z * 4;
-        world.audio.play('heavyPunch', { volume: 0.6, pitch: 0.6 });
-        inkSplash(world, opp.pos.clone().setY(0.4), { size: 1.2, puddle: false });
-      });
-      tl.end(a.windup + hold + a.recovery);
+      tl.end(a.windup + 0.6 + hold + a.recovery);
       return { update: (dt) => tl.update(dt), cancel: release };
     },
   },

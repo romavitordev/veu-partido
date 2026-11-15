@@ -2,6 +2,17 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.47.0 — O Outro Lado responde
+- OUTRO LADO EM COOP: quem cai fica no chão e volta após 60 segundos. Se o aliado ficar por perto, a volta acelera.
+- TORRE: o poço das pilastras agora sobe muito mais alto e desce mais fundo; a câmera acompanha a queda sem bater no teto.
+- CAMINHOS: algumas salas têm duas portas trancadas, mas há uma chave só — escolha qual abrir. As paredes não deixam mais ver salas vizinhas.
+- ESTRANGEIRO: o Ninho de Interflorados abre aos pés do adversário, e os monstros começam a brotar quando ele fica no anel. No despertar, o Estrangeiro chama sozinho os poderes do Outro Lado.
+- BILU: corre para atacar quem está longe; no escuro, o barulho e os olhos aparecem na frente enquanto ele some e volta pelas costas. Os golpes ficaram mais fortes.
+- ESPECIAIS NO OUTRO LADO: com o adversário escondido, a investida vai atrás de um Alheio próximo.
+- AMIGO: Dissolver agora agarra pelos pés com tentáculos, arrasta a vítima para dentro do manto e a cospe coberta de tinta.
+- RAZIEL: a transformação em O Verdadeiro Raziel ganhou uma cena própria, com a língua se desenrolando e as vestes sendo rasgadas.
+- SABARA: ao despertar com Gosto de Sangue, fica com o rosto ensanguentado e machucado até o fim do round.
+
 ## v4.46.0 — O Acampamento dos Pássaros
 - NOVO CENÁRIO: ACAMPAMENTO DOS PÁSSAROS (Hexatombe), em duas versões. De DIA, a manhã depois do massacre sob a névoa espessa: a fogueira central com o caldeirão e os bancos, as barracas de pano vermelho de cada Pássaro com as cabeças nas estacas, a mesinha do Pomba, o lago no fundo e a porteira na entrada.
 - ACAMPAMENTO DOS PÁSSAROS (NOITE): a lua de sangue sobre o lago, a névoa vermelha e só a fogueira e as lanternas acesas.

@@ -95,6 +95,9 @@ const v3 = new THREE.Vector3();
 // coop local: um objeto só aparece na câmera de um jogador (layer 1 = P1, 2 = P2); 0 = nas duas
 const onLayer = (o, layer) => { if (layer) o.traverse((c) => c.layers.set(layer)); };
 
+// COOP: quem cai volta sozinho em `time` s; com o amigo a até `radius` m, o tempo corre `near` vezes mais rápido
+const REVIVE = { time: 60, radius: 2.8, near: 3 };
+
 export class Dungeon {
   constructor({ renderer, audio, input, hud, playerDef, teamDefs = [], run, profile, dungeonId = 'espreitador', onEnd, coopDef = null, coopTeam = [], coopProfile = null, net = null }) {
     this.isDungeon = true;
@@ -379,6 +382,7 @@ export class Dungeon {
     if (M.kind !== 'start') this.step++;
     this.visited.push(id);
     w.arena.bounds.rects = M.rects;
+    this.cullRooms(M.rects);
     this.setupStairs(M);
     if (this.pillars) { this.pillars.dispose(); this.pillars = null; }
     if (M.pillars) this.pillars = new PillarRoom(this, M);
@@ -388,7 +392,8 @@ export class Dungeon {
     if (M.maze) this.maze = new MazeRoom(this, M);
     // TORRE: os feixes de cabos no teto de cada sala (dono, 2026-11-14: "cheias de tubos e fios ligados")
     if (this.roomCables) { w.scene.remove(this.roomCables); disposeCables(this.roomCables); this.roomCables = null; }
-    if (this.D.id === 'estrangeiro' && !M.maze && M.kind !== 'boss') this.roomCables = torreRoomCables(w, M.rects);
+    // (o poço das pilastras não tem teto: sem os cabos lá em cima)
+    if (this.D.id === 'estrangeiro' && !M.maze && !M.pillars && M.kind !== 'boss') this.roomCables = torreRoomCables(w, M.rects);
     // o CHIADO DE TV na fase toda da Torre (dono, 2026-11-14: "esse filtro da cutscene poderia ter em toda a fase, todas
     // as salas, mas um pouco mais fraco, e na última sala do boss fica mais forte"); styles.css #sigamb
     if (this.D.id === 'estrangeiro') {
@@ -442,18 +447,19 @@ export class Dungeon {
     this.exits = rollExits(this.D, id, { step: this.step, total: this.routeLen, visited: this.visited, prevCount: via ? via.count : 0 });
     this.forceMiniRooms(this.exits, M);
     const padded = rollLock(this.D, id, this.exits);
+    this.twoLocks = padded.length > 1;
     for (const slot of Object.keys(M.exits)) {
       const spot = M.exits[slot];
       const e = this.exits.find((x) => x.slot === slot);
       // sem placa (pedido do dono, 2026-11-06): atrás da porta é surpresa — nem o nome da sala, nem quantos monstros
-      const d = new RoomDoor(w, spot, { locked: true, padlock: !!(e && e === padded) });
+      const d = new RoomDoor(w, spot, { locked: true, padlock: !!(e && padded.includes(e)) });
       d.exit = e || null;
       this.doors.push(d);
     }
     // as GAVETAS: a chave do cadeado (se houver) numa delas, ao acaso; nas outras, moedas ou nada
     if (M.drawers) {
       const L = this.D.locks || {};
-      const keyAt = padded ? Math.floor(Math.random() * M.drawers.length) : -1;
+      const keyAt = padded.length ? Math.floor(Math.random() * M.drawers.length) : -1; // UMA chave, mesmo com dois cadeados
       M.drawers.forEach((s, i) => {
         let c = null;
         if (i === keyAt) c = { kind: 'key' };
@@ -689,15 +695,61 @@ export class Dungeon {
     this.pveHud.showRevive(this.reviveLines());
   }
 
+  // PAREDES TRANSPARENTES (feedback do dono, 2026-11-14: "em algumas salas é possível enxergar outras salas através de
+  // paredes que ficam meio transparentes"): a parede entre a câmera e o jogador fica transparente (CameraRig) — e atrás
+  // dela aparecia a sala vizinha, montada no mesmo cenário. Agora só a sala atual (e o que encosta nela) fica visível;
+  // atrás da parede transparente fica o escuro. As peças que cobrem várias salas (o chão inteiro) continuam.
+  cullRooms(rects) {
+    const g = this.world.arena && this.world.arena.group;
+    if (!g || !rects || !rects.length) return;
+    if (!this.roomCull) {
+      this.roomCull = [];
+      g.updateMatrixWorld(true);
+      g.traverse((o) => {
+        if (!o.isMesh) return;
+        this.roomCull.push({ o, bb: new THREE.Box3().setFromObject(o), vis: o.visible });
+      });
+    }
+    const pad = 1.0;
+    for (const c of this.roomCull) {
+      const b = c.bb;
+      const inside = rects.some((r) => b.max.x >= r.minX - pad && b.min.x <= r.maxX + pad && b.max.z >= r.minZ - pad && b.min.z <= r.maxZ + pad);
+      c.o.visible = c.vis && inside;
+    }
+  }
+
   revivePlayers() {
     if (!this.coop) return;
+    for (const pl of this.players) if (pl.state === 'ko') this.revivePlayer(pl);
+  }
+
+  revivePlayer(pl) {
+    pl.reviveT = null;
+    pl.health = Math.round(pl.maxHealth * 0.35);
+    pl.vel.set(0, 0, 0);
+    pl.setState('idle');
+    pl.anim.play('idle', { restart: true });
+    pl.invuln = Math.max(pl.invuln || 0, 1.5);
+    this.world.fx.burst(pl.chestPos(), { count: 30, color: 0x7dffb0, speed: 3, up: 2, life: 0.6, size: 0.2 });
+    this.popup(pl === this.player ? 0 : 1, 'DE PÉ DE NOVO', '#7dffb0');
+  }
+
+  // o tempo de quem caiu no coop: anda sozinho; com o amigo de pé perto, anda REVIVE.near vezes mais rápido
+  tickRevive(dt) {
+    if (!this.coop || this.phase === 'dead') return;
     for (const pl of this.players) {
-      if (pl.state !== 'ko') continue;
-      pl.health = Math.round(pl.maxHealth * 0.35);
-      pl.vel.set(0, 0, 0);
-      pl.setState('idle');
-      pl.anim.play('idle', { restart: true });
-      this.popup(pl === this.player ? 0 : 1, 'DE PÉ DE NOVO', '#7dffb0');
+      if (pl.state !== 'ko' || pl.reviveT == null) continue;
+      const mate = this.players.find((q) => q !== pl && q.state !== 'ko');
+      if (!mate) continue;
+      const near = distXZ(mate.pos, pl.pos) <= REVIVE.radius;
+      pl.reviveT -= dt * (near ? REVIVE.near : 1);
+      const sec = Math.max(0, Math.ceil(pl.reviveT));
+      if (sec !== pl.reviveShown) {
+        pl.reviveShown = sec;
+        this.popup(pl === this.player ? 0 : 1, near ? `VOLTA EM ${sec} s (ACELERANDO)` : `VOLTA EM ${sec} s`, near ? '#7dffb0' : '#ffd84a');
+        this.world.fx.ring(new THREE.Vector3(pl.pos.x, 0.06, pl.pos.z), { color: near ? 0x7dffb0 : 0xffd84a, radius: REVIVE.radius, life: 0.9, inner: 0.94 });
+      }
+      if (pl.reviveT <= 0) this.revivePlayer(pl);
     }
   }
 
@@ -730,7 +782,7 @@ export class Dungeon {
       if (M.kind === 'stalk' && this.miniHere('bilu')) {
         this.met.bilu = true;
         this.bilu = new BiluStalker(this, M);
-        this.pveHud.hint('Um barulho de bicho no escuro… o BILU RODEIA e ataca pelas COSTAS: vire-se para ele (os olhos verdes piscam). Fraco, mas VOLTA depois de cair');
+        this.pveHud.hint('Um barulho de bicho no escuro… o BILU RODEIA e ataca pelas COSTAS, CORRE em cima de quem está longe e tosse de um lado para voltar pelo outro (os olhos verdes piscam). Fraco, mas VOLTA depois de cair');
         this.hintT = 7;
       }
     }
@@ -1186,7 +1238,11 @@ export class Dungeon {
       if (this.coop && this.players.some((p) => p !== f && p.state !== 'ko')) {
         this.hud.callout(`${f === this.player ? 'P1' : 'P2'} CAIU`, '#ff4a3a');
         this.audio.play('ko', { volume: 0.8 });
-        this.hint('Quem caiu volta de pé na próxima sala (ou quando a sala ficar limpa)');
+        // (feedback do dono, 2026-11-14) só quem morreu cai: fica no chão e volta em 60 s — mais rápido com o amigo
+        // PERTO (o anel no chão); a sala limpa ou a próxima sala também o põem de pé
+        f.reviveT = REVIVE.time;
+        f.reviveShown = -1;
+        this.hint(`Quem caiu volta em ${REVIVE.time} s — fique perto dele para acelerar`);
         this.hintT = 4;
         return;
       }
@@ -1691,6 +1747,7 @@ export class Dungeon {
       if (c.kind === 'key') {
         this.keys++;
         this.pveHud.setKeys(this.keys);
+        if (this.twoLocks && this.doors.filter((d) => d.padlock).length > 1) { this.hint('UMA CHAVE, DUAS PORTAS COM CADEADO — escolha qual caminho abrir'); this.hintT = 5; }
         this.audio.play('pickup', { volume: 1, pitch: 1.1 });
         this.popup(V.i, '+1 CHAVE', '#e8c050');
       } else if (c.kind === 'coins') {
@@ -1767,6 +1824,7 @@ export class Dungeon {
     this.lastDt = dt;
     if (this.endQueued) { this.flushEnd(); return; }
     if (this.phase === 'loading' || this.phase === 'over' || this.disposed) return;
+    this.tickRevive(dt);
     // a cena de entrada do Espreitador: o mundo anda (animações, câmera), mas ninguém luta
     if (this.bossIntro) {
       for (const q of this.players) q.aimYaw = null;

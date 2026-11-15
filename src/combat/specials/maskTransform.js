@@ -25,6 +25,8 @@ import { MATERIAL_TEXTURES } from '../../models/textures.js';
 //             'leone' (Carina → Todos os Leone: concentra, a mecha e os olhos acendem dourados)
 //             'watch' (Arnaldo → O Anfitrião: tira o relógio de bolso, abre a tampa, a Relíquia de Energia brilha lá
 //             dentro e ele ergue o relógio; a Energia toma o corpo em roxo, rosa e azul)
+//             'beast' (Raziel → O Verdadeiro Raziel: dobra-se com as garras no peito, joga a cabeça para trás e a LÍNGUA
+//             desenrola da boca; agarra a gola e RASGA as vestes — sp.swap mostra o corpo descarnado — e urra)
 //             omitido: concentra e o acessório aparece
 //   sp.prop   acessório do modelo base que entra no rosto (helmetOn / maskOn)
 //   sp.anim   animação da cena padrão (padrão 'concentrate')
@@ -75,6 +77,39 @@ export function swapFace(rig, from, to) {
     o.material.needsUpdate = true;
   });
   return () => changed.forEach((c) => { c.m.map = c.map; c.m.needsUpdate = true; });
+}
+
+// a LÍNGUA da fera (cena 'beast'): um tubo afinando até a ponta, preso na boca, que desenrola para fora e cai pelo
+// queixo; grow(k) revela de 0 a 1 do comprimento. Some quando o modelo da forma (que tem a língua dele) entra.
+function beastTongue(len) {
+  const pts = [[0, 0, 0], [0, -0.03, 0.09], [0.01, -0.12, 0.16], [-0.01, -0.26, 0.19], [0.015, -0.4, 0.15], [0, -0.5, 0.1]]
+    .map(([x, y, z]) => new THREE.Vector3(x * len, y * len, z * len));
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const TS = 40, RS = 10;
+  const geo = new THREE.TubeGeometry(curve, TS, 0.065 * len, RS, false);
+  // afina até a ponta (achata um pouco: a língua é larga e fina)
+  const pos = geo.attributes.position;
+  const c = new THREE.Vector3();
+  for (let i = 0; i <= TS; i++) {
+    curve.getPointAt(i / TS, c);
+    const t = i / TS;
+    const r = 1 - 0.85 * t * t;
+    for (let j = 0; j <= RS; j++) {
+      const n = i * (RS + 1) + j;
+      pos.setXYZ(n, c.x + (pos.getX(n) - c.x) * r * 1.35, c.y + (pos.getY(n) - c.y) * r * 0.7, c.z + (pos.getZ(n) - c.z) * r * 0.7);
+    }
+  }
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x9a2030, roughness: 0.3, metalness: 0.05, emissive: 0x2a0008 });
+  const mesh = new THREE.Mesh(geo, mat);
+  const per = RS * 6;
+  geo.setDrawRange(0, 0);
+  return {
+    mesh,
+    tip() { const k = mesh.userData.k || 0; return mesh.localToWorld(curve.getPointAt(Math.max(0.02, k)).clone()); },
+    grow(k) { mesh.userData.k = k; geo.setDrawRange(0, Math.round(Math.max(0, Math.min(1, k)) * TS) * per); },
+    dispose() { if (mesh.parent) mesh.parent.remove(mesh); geo.dispose(); mat.dispose(); },
+  };
 }
 
 export const maskTransform = {
@@ -537,6 +572,62 @@ export const maskTransform = {
         world.cameraRig.playShots([faceClose(f, { dur: 1.2, from: 2.2, to: 1.6, side: 0.4, height: hy, fov: 40 })]);
       };
       total = 5.3;
+    } else if (scene === 'beast') {
+      // RAZIEL → O VERDADEIRO RAZIEL (ep. 9, depois do tiro da Lena): 1) dobra-se, as garras cravadas no peito, o corpo
+      // tremendo · 2) joga a cabeça para trás, a boca escancara e a LÍNGUA comprida desenrola para fora, babando sangue ·
+      // 3) agarra a gola com as garras cruzadas e RASGA as vestes — os trapos voam e aparece o corpo descarnado ·
+      // 4) o urro, tudo vermelho
+      f.anim.play('raziel_hunch', { restart: true, duration: 1.0 });
+      lightTo = 2;
+      world.cameraRig.playShots([
+        orbit(f, { dur: 1.0, radius: 3.0, height: 1.0, a0: -0.75, a1: -0.25, lookH: 1.2, fov: 42 }),
+        faceClose(f, { dur: 1.15, from: 1.55, to: 1.1, side: 0.45, height: hy - 0.05, fov: 34 }),
+        lowAngle(f, { dur: 1.55, dist: 3.3, side: -0.55 }),
+      ]);
+      world.audio.play('heartbeat', { volume: 0.8, pitch: 0.8 });
+      world.audio.play(sp.startSound || 'fearGaze', { volume: 0.5, pitch: 0.5 });
+      tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
+      // 2: a cabeça vai para trás e a língua sai
+      const tongue = f.rig.sockets.mouth ? beastTongue(sp.tongueLen ?? 0.5) : null;
+      let tongueT = -1;
+      let drool = null;
+      if (tongue) {
+        tongue.mesh.position.set(0, sp.tongueY ?? -0.085, sp.tongueZ ?? -0.03);
+        f.rig.sockets.mouth.add(tongue.mesh);
+        scrap.push(() => tongue.dispose());
+      }
+      tl.add(1.0, () => {
+        f.anim.play('raziel_tongue', { restart: true, duration: 0.7 });
+        world.audio.play('fearGaze', { volume: 0.8, pitch: 0.75 });
+        lightColor = new THREE.Color(0xc01020);
+        lightTo = 5;
+        tongueT = 0;
+        if (tongue) {
+          drool = world.fx.emitter({ rate: 26, follow: () => tongue.tip(), particle: { color: 0x8a0010, speed: 0.2, up: -1.5, spread: 0.05, life: 0.6, size: 0.06, gravity: 6 } });
+          scrap.push(() => drool && drool.stop());
+        }
+      });
+      tl.each((time, dt) => {
+        if (!tongue || tongueT < 0 || tongueT >= 1) return;
+        tongueT = Math.min(1, tongueT + dt / 0.55);
+        const e = 1 - Math.pow(1 - tongueT, 3);
+        tongue.grow(e);
+        tongue.mesh.rotation.x = Math.sin(time * 18) * 0.06 * (1 - e * 0.5); // a ponta se debatendo
+      });
+      // 3: agarra a gola e rasga
+      tl.add(2.15, () => f.anim.play('raziel_rip', { restart: true, duration: 0.8 }));
+      tl.add(2.6, () => {
+        world.audio.play('slashFinal', { volume: 0.9, pitch: 0.7 });
+        const chest = f.chestPos();
+        // os trapos do casaco, do colete e da camisa voando para os lados
+        world.fx.burst(chest, { count: 40, color: 0x1a0a0e, speed: 6, up: 2.5, life: 1.0, size: 0.2, gravity: 7 });
+        world.fx.burst(chest, { count: 18, color: 0x7a0c18, speed: 5, up: 2, life: 0.9, size: 0.16, gravity: 7 });
+        world.fx.burst(chest, { count: 8, color: 0xd8b040, speed: 4, up: 2, life: 0.8, size: 0.08, gravity: 8 }); // as correntes
+        if (drool) { drool.stop(); drool = null; }
+        if (tongue) tongue.mesh.visible = false; // o corpo da forma mostra a língua dele
+        maskOn(true);
+      });
+      total = 3.7;
     } else {
       f.anim.play(sp.anim || 'concentrate', { restart: true, duration: 1.5 });
       world.cameraRig.playShots([

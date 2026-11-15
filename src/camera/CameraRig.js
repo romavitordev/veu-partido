@@ -430,7 +430,8 @@ export class CameraRig {
     // perto da parede: desce um pouco para o ombro (de cima, perto, ela só via o chão e o topo da cabeça)
     if (f < 0.7) { const k = 1 - f / 0.7; this.pos.y += (p.pos.y + 1.75 - this.pos.y) * k; this.target.y += (p.pos.y + 1.35 - this.target.y) * k * 0.6; }
     const gy2 = p.groundY || 0;
-    this.pos.y = Math.min(K.ceiling + gy2, Math.max(0.5 + gy2 * 0.8, this.pos.y));
+    // world.camCeiling: a sala sem teto (o poço das pilastras da Torre) solta a câmera para cima
+    this.pos.y = Math.min((this.world.camCeiling ?? K.ceiling) + gy2, Math.max(0.5 + gy2 * 0.8, this.pos.y));
     // bem perto: o personagem fica translúcido para não tampar a vista
     const near = Math.hypot(this.pos.x - ox, this.pos.y - (p.pos.y + 1.4), this.pos.z - oz);
     p.camFade = clamp((near - 0.55) / 0.75, 0.3, 1);

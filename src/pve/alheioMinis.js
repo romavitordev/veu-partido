@@ -10,7 +10,7 @@
 //  · BILU (wiki): o quarto escuro; RÁPIDO e FRACO, morre fácil e VOLTA em outro lugar da sala; os barulhos de bicho e o
 //    sangue no chão anunciam (cânone). PROPOSTA: volta 2 vezes (3 vidas) e o prêmio ao sumir de vez.
 import * as THREE from 'three';
-import { Rastropoda, Bilu } from '../combat/alheios.js';
+import { Rastropoda, Bilu, BILU } from '../combat/alheios.js';
 import { actionLabel } from '../ui/labels.js';
 import { BiluIntro } from './torreIntros.js';
 
@@ -324,7 +324,7 @@ export class BiluStalker {
       this.w.fx.burst(new THREE.Vector3(this.at.x, 2.4, this.at.z), { count: 2, color: GREEN, speed: 0.1, life: 0.9, size: 0.12 });
     }
     if (this.wait > 0) return;
-    const b = new Bilu(this.d.enemy, this.w, this.at || this.spot(), { hp: Math.round(70 * this.d.scale.hp) });
+    const b = new Bilu(this.d.enemy, this.w, this.at || this.spot(), { hp: Math.round(BILU.hp * this.d.scale.hp) });
     b.onDestroyed = () => this.onSlain(b);
     b.bossBar = true;
     b.barStyle = 'signal';

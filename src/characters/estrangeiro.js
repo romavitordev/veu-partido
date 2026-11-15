@@ -183,13 +183,13 @@ export default {
       name: 'Ninho de Interflorados',
       input: 'ranged+back', // ← + □
       type: 'interfloradoNest',
-      description: 'Planta no chão um NINHO de Interflorados (o limo verde com raízes e olhos). Por 40 s, sempre que o adversário chega perto, um INTERFLORADO aflorado brota dele — corpo de gente comum, a cabeça estourada em dedos verdes cheios de olhos: fraco e com pouca vida, mas atrapalha. Até 3 em campo; o ninho pode ser destruído.',
+      description: 'Abre aos pés do adversário um NINHO de Interflorados (o limo verde com raízes e olhos). Por 40 s, enquanto ele estiver dentro do anel, um INTERFLORADO aflorado brota dele — corpo de gente comum, a cabeça estourada em dedos verdes cheios de olhos: fraco e com pouca vida, mas atrapalha. Até 3 em campo; o ninho pode ser destruído.',
       energyCost: 30,
       cooldown: 30,
       range: 9,
       ahead: 3,
       life: 40,
-      near: 3.2, // o raio de "perto" (o anel verde no chão)
+      near: 4, // o raio de "perto" (o anel verde no chão): o ninho abre aos pés do adversário
       every: 3.5, // intervalo entre os que brotam
       max: 3,
       nestHp: 60,
@@ -248,6 +248,9 @@ export default {
     banner: 'Incubar',
     type: 'awakenMode',
     mult: 1.08, cdRate: 1.2, aura: 'smoke', color: GREEN, heal: 0.1,
+    // os PODERES DO OUTRO LADO (feedback do dono): transformado, ele age como o chefe da Torre — chama sozinho os Homens
+    // de Terno, abre o Ninho de Interflorados aos pés do adversário e manda a Abdução, em rodízio (PROPOSTA: os tempos)
+    bossPowers: { order: ['homensDeTerno', 'ninhoInterflorados', 'abducao_luz'], gap: [7, 10], first: 2 },
     larva: {
       drain: 3, // sanidade por segundo
       takenMult: 1.12,

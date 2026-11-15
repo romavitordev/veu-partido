@@ -6,6 +6,10 @@
 //   raziel_bite    o bote curto da MORDIDA: avança curvado, a cabeça na frente, as garras puxando a vítima
 //   raziel_pounce  o BOTE RETALHADOR: agacha, salta e desce com as duas garras rasgando de cima
 //   raziel_feast   o BANQUETE: segura com as duas mãos e crava os dentes, puxando a cabeça para trás
+//   O VERDADEIRO RAZIEL (cena 'beast' de maskTransform.js):
+//   raziel_hunch   dobra-se para a frente, as garras cravadas no peito, tremendo (a fera querendo sair)
+//   raziel_tongue  joga a cabeça para trás com a boca escancarada — a língua desenrola para fora
+//   raziel_rip     agarra a gola com as duas garras cruzadas no peito e RASGA as vestes para os lados
 
 export function addRazielClips(CLIPS, k) {
   const LEGS = { lL: [-0.2, 0, 0.1], kL: [0.25, 0, 0], lR: [0.18, 0, -0.1], kR: [0.22, 0, 0] };
@@ -35,6 +39,23 @@ export function addRazielClips(CLIPS, k) {
       k(0, { h: -0.1, ...LEGS, sp: [0.45, 0, 0], hd: [0.4, 0, 0], sL: [-1.5, -0.4, 0.1], eL: [-1.4, 0, 0], sR: [-1.5, 0.4, -0.1], eR: [-1.4, 0, 0] }),
       k(0.5, { h: -0.12, ...LEGS, sp: [0.3, 0, 0], hd: [-0.25, 0.1, 0], sL: [-1.4, -0.5, 0.1], eL: [-1.6, 0, 0], sR: [-1.4, 0.5, -0.1], eR: [-1.6, 0, 0] }),
       k(1, { h: -0.1, ...LEGS, sp: [0.45, 0, 0], hd: [0.4, 0, 0], sL: [-1.5, -0.4, 0.1], eL: [-1.4, 0, 0], sR: [-1.5, 0.4, -0.1], eR: [-1.4, 0, 0] }),
+    ] },
+    raziel_hunch: { dur: 0.9, keys: [
+      k(0, IDLE),
+      k(0.5, { h: -0.2, lL: [-0.5, 0, 0.14], kL: [0.7, 0, 0], lR: [0.3, 0, -0.14], kR: [0.6, 0, 0], sp: [0.7, 0, 0], hd: [0.35, 0, 0], sL: [-1.25, -0.6, 0.25], eL: [-2.1, 0, 0], sR: [-1.25, 0.6, -0.25], eR: [-2.1, 0, 0] }),
+      k(0.75, { h: -0.22, lL: [-0.5, 0, 0.14], kL: [0.72, 0, 0], lR: [0.3, 0, -0.14], kR: [0.62, 0, 0], sp: [0.78, 0.06, 0.04], hd: [0.42, -0.08, 0], sL: [-1.3, -0.62, 0.22], eL: [-2.15, 0, 0], sR: [-1.2, 0.6, -0.28], eR: [-2.05, 0, 0] }),
+      k(1, { h: -0.22, lL: [-0.5, 0, 0.14], kL: [0.72, 0, 0], lR: [0.3, 0, -0.14], kR: [0.62, 0, 0], sp: [0.74, -0.05, -0.04], hd: [0.38, 0.08, 0], sL: [-1.22, -0.6, 0.28], eL: [-2.05, 0, 0], sR: [-1.3, 0.62, -0.22], eR: [-2.15, 0, 0] }),
+    ] },
+    raziel_tongue: { dur: 0.7, keys: [
+      k(0, { h: -0.22, lL: [-0.5, 0, 0.14], kL: [0.72, 0, 0], lR: [0.3, 0, -0.14], kR: [0.62, 0, 0], sp: [0.74, 0, 0], hd: [0.38, 0, 0], sL: [-1.22, -0.6, 0.28], eL: [-2.05, 0, 0], sR: [-1.3, 0.62, -0.22], eR: [-2.15, 0, 0] }),
+      k(0.5, { h: -0.1, ...LEGS, sp: [-0.2, 0, 0], hd: [-0.55, 0, 0], sL: [-0.25, 0, 0.75], eL: [-0.9, 0, 0], sR: [-0.25, 0, -0.75], eR: [-0.9, 0, 0] }),
+      k(1, { h: -0.1, ...LEGS, sp: [-0.24, 0, 0], hd: [-0.42, 0, 0], sL: [-0.3, 0, 0.8], eL: [-1.0, 0, 0], sR: [-0.3, 0, -0.8], eR: [-1.0, 0, 0] }),
+    ] },
+    raziel_rip: { dur: 0.8, keys: [
+      k(0, { h: -0.1, ...LEGS, sp: [-0.24, 0, 0], hd: [-0.42, 0, 0], sL: [-0.3, 0, 0.8], eL: [-1.0, 0, 0], sR: [-0.3, 0, -0.8], eR: [-1.0, 0, 0] }),
+      k(0.4, { h: -0.14, ...LEGS, sp: [0.15, 0, 0], hd: [0.1, 0, 0], sL: [-1.75, -0.75, 0.15], eL: [-2.2, 0, 0], sR: [-1.75, 0.75, -0.15], eR: [-2.2, 0, 0] }),
+      k(0.6, { h: -0.18, ...LEGS, sp: [-0.3, 0, 0], hd: [-0.35, 0, 0], sL: [-1.1, 0.35, 1.45], eL: [-0.25, 0, 0], sR: [-1.1, -0.35, -1.45], eR: [-0.25, 0, 0] }),
+      k(1, { h: -0.2, ...LEGS, sp: [-0.34, 0, 0], hd: [-0.45, 0, 0], sL: [-0.95, 0.4, 1.5], eL: [-0.2, 0, 0], sR: [-0.95, -0.4, -1.5], eR: [-0.2, 0, 0] }),
     ] },
   });
 }

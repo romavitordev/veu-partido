@@ -286,20 +286,28 @@ export class Rastropoda extends Marionette {
 
 // ================================================================== BILU
 // A MECÂNICA DO BILU (dono, 2026-11-14: "o Bilu não tem nenhuma mecânica diferente"; PROPOSTA): ele não vem de frente.
+// (feedback do dono, 2026-11-14: "está fraco demais e não tem poderes do cânone") + a CORRIDA de longe, o "QUEM
+// TOSSIU?" (o barulho de um lado, ele volta pelo outro) e mais dano; o corpo continua fraco (cânone) e ele continua voltando.
 // RODEIA o jogador fora do alcance, os olhos verdes piscando, e ATACA PELAS COSTAS — um bote rápido por trás (o golpe
 // pelas costas dói mais). Depois do bote ele FOGE para o escuro. Quem se vira para ele a tempo (ele fica na frente) o
 // faz hesitar: ele recua de novo. Fraco e rápido; volta depois de cair (o Dungeon cuida).
 export const BILU = {
-  name: 'BILU', hp: 70, duration: Infinity, speed: 7.4, radius: 0.45, height: 2.7, restY: 0,
+  name: 'BILU', hp: 90, duration: Infinity, speed: 7.4, radius: 0.45, height: 2.7, restY: 0,
   element: 'transmissao', fxColor: 0x5aff6a, poolColor: 0x0a120a, noPool: true,
   attacks: {
-    swipe: { windup: 0.32, active: 0.12, recovery: 0.35, range: 2.4, arc: 130, damage: 14, cd: 1.0, knockback: 2 },
+    swipe: { windup: 0.3, active: 0.12, recovery: 0.32, range: 2.4, arc: 130, damage: 18, cd: 0.9, knockback: 2 },
     // o bote pelas costas: avança rasgando (dash) e dói mais
-    backstab: { windup: 0.36, active: 0.16, recovery: 0.3, range: 2.6, arc: 120, damage: 24, cd: 3.2, knockback: 3.2, dash: 9 },
+    backstab: { windup: 0.34, active: 0.16, recovery: 0.3, range: 2.6, arc: 120, damage: 32, cd: 3.0, knockback: 3.2, dash: 9 },
+    // A CORRIDA (wiki: "bastante rápido, ele corre atrás das vítimas para atacá-las"): de longe, guincha e dispara
+    // reto em cima do alvo com os braços compridos na frente — derruba
+    sprint: { windup: 0.45, active: 0.34, recovery: 0.5, range: 2.6, arc: 110, damage: 24, cd: 5.5, knockback: 3.8, dash: 15, knockdown: true },
   },
-  firstCd: { swipe: 0.5, backstab: 1.2 },
+  firstCd: { swipe: 0.5, backstab: 1.2, sprint: 1.5 },
   circle: 4.6, // o raio em que ele rodeia
   flee: [1.4, 2.2], fleeSpeed: 9,
+  // "QUEM TOSSIU?" (wiki: no quarto escuro ele faz barulhos de bicho): o barulho e os olhos verdes acendem NA FRENTE do
+  // alvo — e o Bilu de verdade some no escuro e volta pelas COSTAS dando o bote. PROPOSTA: os tempos
+  lure: { every: [7, 10], hide: 1.3 },
 };
 
 export class Bilu extends Marionette {
@@ -328,10 +336,43 @@ export class Bilu extends Marionette {
     if (!tg) return null;
     // pelas costas; ou, se ele rodeou e não conseguiu (o alvo de costas para a parede), de lado mesmo (impaciente)
     if (d < 3.2 && this.cds.backstab <= 0 && (this.behind(tg) || this.circleT > 3)) return 'backstab';
+    // longe: CORRE em cima do alvo
+    if (d > 4.8 && d < 9.5 && this.cds.sprint <= 0) return 'sprint';
     // de frente só quando encurralado (muito perto) — senão ele rodeia
     return d < 1.6 && this.cds.swipe <= 0 ? 'swipe' : null;
   }
-  attackSound(n) { return n === 'backstab' ? 'teleport' : 'swing'; }
+  attackSound(n) { return n === 'backstab' ? 'teleport' : n === 'sprint' ? 'fearGaze' : 'swing'; }
+
+  // "QUEM TOSSIU?": o barulho de bicho e o par de olhos verdes acendem na FRENTE do alvo; o Bilu some no escuro
+  lure(tg) {
+    const w = this.world;
+    const fx = Math.sin(tg.yaw), fz = Math.cos(tg.yaw);
+    const p = new THREE.Vector3(tg.pos.x + fx * 4.5, 2.45, tg.pos.z + fz * 4.5);
+    w.audio.play('fearGaze', { volume: 0.55, pitch: 1.9 });
+    w.after(0.25, () => w.audio.play('fearGaze', { volume: 0.45, pitch: 2.2 }));
+    for (const sd of [-1, 1]) {
+      const e = p.clone().add(new THREE.Vector3(Math.cos(tg.yaw) * sd * 0.12, 0, -Math.sin(tg.yaw) * sd * 0.12));
+      w.fx.flash(e, { color: GREEN, size: 0.35, life: 0.6 });
+      w.fx.burst(e, { count: 3, color: GREEN, speed: 0.05, life: 0.6, size: 0.1 });
+    }
+    w.fx.burst(new THREE.Vector3(this.pos.x, 1.2, this.pos.z), { count: 14, color: 0x050805, kind: 'smoke', speed: 0.8, up: 0.5, life: 0.6, size: 0.6 });
+    this.model.root.visible = false;
+    this.lurkT = this.cfg.lure.hide;
+    this.setState('lurk');
+  }
+
+  // volta das sombras pelas COSTAS, já dando o bote
+  unlurk(tg) {
+    const fx = Math.sin(tg.yaw), fz = Math.cos(tg.yaw);
+    this.pos.x = tg.pos.x - fx * 1.9;
+    this.pos.z = tg.pos.z - fz * 1.9;
+    this.yaw = Math.atan2(tg.pos.x - this.pos.x, tg.pos.z - this.pos.z);
+    this.model.root.visible = true;
+    this.world.fx.burst(new THREE.Vector3(this.pos.x, 1.2, this.pos.z), { count: 12, color: 0x050805, kind: 'smoke', speed: 0.8, up: 0.5, life: 0.5, size: 0.6 });
+    this.cds.backstab = 0;
+    this.circleT = 4;
+    this.setState('chase');
+  }
   // a andada normal fica parada: quem move o Bilu é o rodeio (update)
   stepSpeed() { return 0; }
 
@@ -347,7 +388,14 @@ export class Bilu extends Marionette {
     const tg = this.target;
     if (tg && this.alive && !this.held) {
       const d = Math.hypot(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
-      if (this.state === 'flee') {
+      if (this.state === 'lurk') {
+        this.lurkT -= dt;
+        if (this.lurkT <= 0 || tg.state === 'ko') this.unlurk(tg);
+      } else if (this.state === 'chase' && (this.lureT = (this.lureT ?? 4 + Math.random() * 3) - dt) <= 0 && d > 2.4 && !this.world.cinematic) {
+        const [a, b] = this.cfg.lure.every;
+        this.lureT = a + Math.random() * (b - a);
+        this.lure(tg);
+      } else if (this.state === 'flee') {
         this.fleeT -= dt;
         const away = Math.atan2(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);
         if (this.fleeT > 0) {

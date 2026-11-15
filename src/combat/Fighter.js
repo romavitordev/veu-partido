@@ -1672,7 +1672,10 @@ export class Fighter {
       this.setState('idle');
       return;
     }
-    this.addEnergy(COMBAT.chargeRate * (moving ? COMBAT.chargeMoveRate : 1) * dt);
+    // chargeMult nos buffs: a Larva do Incubar come quase tudo o que a concentração junta (senão ela nunca eclodia)
+    let chMult = 1;
+    for (const b of this.buffs) if (typeof b.chargeMult === 'number') chMult *= b.chargeMult;
+    this.addEnergy(COMBAT.chargeRate * (moving ? COMBAT.chargeMoveRate : 1) * chMult * dt);
     // Barra de Transformação cheia e vida baixa: com a sanidade cheia, continuar segurando passa do limite e transforma
     if (this.canTransform() && this.energy >= this.maxEnergy) {
       this.overcharge = Math.min(1, this.overcharge + dt / COMBAT.storm.overcharge);

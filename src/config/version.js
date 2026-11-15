@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.46.0';
+export const VERSION = '4.47.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,21 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.47.0',
+    date: '2026-11-14',
+    title: 'O Outro Lado responde',
+    items: [
+      'OUTRO LADO EM COOP: quem cai fica no chão e volta após 60 s; o aliado pode acelerar a volta ficando por perto. A câmera agora sobe pelo poço alto das pilastras, que também ficou mais profundo.',
+      'SALAS E CAMINHOS: paredes não mostram mais salas vizinhas através da transparência da câmera. Algumas salas podem ter duas portas trancadas; uma chave abre a porta escolhida.',
+      'ESTRANGEIRO: o Ninho de Interflorados agora abre aos pés do adversário e os Interflorados começam a surgir enquanto ele estiver no anel. No despertar, o Estrangeiro usa sozinho os poderes do Outro Lado.',
+      'BILU: mais resistente e perigoso, corre para atacar de longe e usa sons e olhos falsos para sumir e voltar pelas costas.',
+      'ESPECIAIS NO OUTRO LADO: quando o adversário está escondido, a investida agora persegue um Alheio próximo em vez de avançar sem alvo.',
+      'AMIGO: Dissolver agora laça os pés com tentáculos, arrasta a vítima para dentro do manto, consome-a e a cospe coberta de tinta.',
+      'RAZIEL: a transformação em O Verdadeiro Raziel ganhou uma cena própria, com a língua se desenrolando e ele rasgando as vestes.',
+      'SABARA: o despertar Gosto de Sangue mantém o rosto ensanguentado e machucado até o fim do round.',
+    ],
+  },
   {
     v: '4.46.0',
     date: '2026-11-14',

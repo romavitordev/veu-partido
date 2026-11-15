@@ -2368,7 +2368,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Homens de Terno** — R2 + × / RT + A · custo 35 · cooldown 24 s
   Três DOPPELGANGERS (os Homens de Terno: Alheios de terno e chapéu, a cara rachada ao meio) aparecem numa interferência de sinal em volta do adversário por 10 s: dois ficam longe atirando o plasma verde do Fuzil Alheio e o terceiro chega perto e bate. "Somos Todos Um": quando um cai, os outros atiram mais rápido.
 - **Ninho de Interflorados** — Trás + □ / Trás + X · custo 30 · cooldown 30 s · alcance 9 m
-  Planta no chão um NINHO de Interflorados (o limo verde com raízes e olhos). Por 40 s, sempre que o adversário chega perto, um INTERFLORADO aflorado brota dele — corpo de gente comum, a cabeça estourada em dedos verdes cheios de olhos: fraco e com pouca vida, mas atrapalha. Até 3 em campo; o ninho pode ser destruído.
+  Abre aos pés do adversário um NINHO de Interflorados (o limo verde com raízes e olhos). Por 40 s, enquanto ele estiver dentro do anel, um INTERFLORADO aflorado brota dele — corpo de gente comum, a cabeça estourada em dedos verdes cheios de olhos: fraco e com pouca vida, mas atrapalha. Até 3 em campo; o ninho pode ser destruído.
 - **Toque Sutil** — △ + L2 / Y + LT · custo 35 · cooldown 30 s · dano 40 · alcance 1.6 m
   Um toque de um dedo: o sangue do alvo borbulha e ele derrete por dentro — dano contínuo, lento e mais fraco por alguns segundos. Curtíssimo alcance; dá para esquivar.
 
@@ -2417,8 +2417,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
   O SINO toca dentro da criatura: três badaladas, cada uma uma onda de som em volta (qualquer direção) que machuca um pouco. Quem ainda estiver perto na ÚLTIMA fica paralisado e VULNERÁVEL (leva mais dano) por alguns segundos. No FRENESI DE SANGUE o sino soa distorcido e a vítima MORDE A SI MESMA (dano e sangramento).
 - **Bichos da Ilha** — R2 + × / RT + A · custo 30 · cooldown 22 s
   O Sino chama os animais da ilha INFECTADOS PELA TINTA: saem de poças em volta do adversário e atacam por 12 s — um JAVALI (presas e investida que derruba) e/ou CÃES SELVAGENS (mordidas e o salto). Cadáveres de carne derretida: morrem e viram poça.
-- **Dissolver** — △ + L2 / Y + LT · custo 30 · cooldown 20 s · dano 60 · alcance 2 m
-  AGARRA quem estiver colado à frente e o ABSORVE: a tinta cobre a vítima, que afunda nela, e cada pulso RECUPERA A MESMA VIDA que tirou. Curto alcance; errou, não acontece nada.
+- **Dissolver** — △ + L2 / Y + LT · custo 30 · cooldown 20 s · dano 60 · alcance 7.5 m
+  Os TENTÁCULOS disparam rente ao chão e laçam a vítima PELOS PÉS (até 7,5 m à frente): ela cai, é ARRASTADA de costas e some PARA DENTRO DO MANTO. Lá dentro a tinta a CONSOME — cada pulso RECUPERA A MESMA VIDA que tirou — e a criatura a cospe coberta de tinta, o rosto derretendo. Errou: nada.
 
 ### Especial: Todo Mundo Vai Morrer
 

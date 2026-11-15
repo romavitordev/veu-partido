@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.47.0 — O Outro Lado responde
+
+### Adicionado
+- No coop do Outro Lado, quem cai volta após 60 s; ficar perto do aliado acelera o retorno.
+- O poço das pilastras da Torre ficou mais alto e profundo, liberando a câmera durante a queda.
+- Despertar do Estrangeiro com uso automático, em rodízio, dos poderes do Outro Lado.
+- Transformação de Raziel em O Verdadeiro Raziel com cena própria.
+
+### Alterado
+- Uma chave pode abrir uma entre duas portas trancadas; salas vizinhas deixam de aparecer através das paredes.
+- Ninho de Interflorados abre aos pés do adversário e começa a gerar criaturas enquanto ele estiver no anel.
+- Bilu corre para atacar de longe, usa sons e olhos falsos para voltar pelas costas, e seus ataques ficaram mais fortes.
+- Especiais no Outro Lado perseguem um Alheio próximo quando o adversário está escondido.
+- Dissolver, do Amigo, laça a vítima pelos pés, arrasta-a para dentro do manto e a cospe coberta de tinta.
+- O despertar Gosto de Sangue da Sabara mantém o rosto ensanguentado e machucado.
+
 ## v4.46.0 — O Acampamento dos Pássaros
 
 ### Adicionado

@@ -207,7 +207,11 @@ export default {
     type: 'maskTransform',
     form: 'raziel_verdadeiro',
     formBanner: 'O VERDADEIRO RAZIEL',
-    anim: 'taunt_roar',
+    // a cena 'beast': curva-se, a LÍNGUA desenrola da boca, rasga as vestes (some prop_up, aparece prop_true) e urra
+    scene: 'beast',
+    swap: [['up', false], ['true', true]],
+    finalAnim: 'taunt_roar',
+    redAura: false, // a aura vermelha é a Intenção de Assassino dos Mascarados; a fera fica só com o próprio sangue
     startSound: 'fearGaze',
     sound: 'powerUp',
     tint: 0xff1a2a,

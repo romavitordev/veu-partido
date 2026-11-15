@@ -1,6 +1,6 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.47.0 (coop com retorno acelerado, poço das pilastras ampliado, portas trancadas com escolha de caminho, visibilidade entre salas corrigida, ajustes do Estrangeiro, Bilu e especiais no Outro Lado; Dissolver do Amigo; transformação de Raziel; despertar da Sabara). Antes: v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
@@ -212,6 +212,12 @@
   - [x] Saco de farinha e baús com aviso e botão de bater.
 - [x] **Fases separadas (dono, 2026-11-14):** cada tentativa é uma fase (escolhida), do nível 1 ao chefe, com mais
       salas; cronômetro com recorde por fase e dificuldade.
+  - [x] **Feedback do Outro Lado (v4.47.0):** no coop, só quem morreu cai e volta em 60 s (3× mais rápido com o aliado
+        por perto); a câmera acompanha a queda no poço alto e profundo das pilastras; salas vizinhas não aparecem por
+        paredes transparentes; com duas portas trancadas, uma chave permite escolher qual abrir.
+  - [x] **Outros ajustes do Outro Lado (v4.47.0):** especiais perseguem um Alheio quando o adversário está escondido;
+        Bilu ganhou corrida, isca de olhos/sons e ataques mais fortes; o despertar do Estrangeiro usa automaticamente
+        os poderes da Torre; o Ninho de Interflorados abre aos pés do alvo.
   - [x] Bateria das fases mais longas (tempo e nível no fim de cada uma; ajustar `route.rooms` e o XP se preciso).
     - [x] Bateria da fase inteira criada (`src/dev/phaseBattery.js`: a CPU Difícil joga todas as salas até o chefe).
     - [x] 1ª rodada (2026-11-14, Cindy e Joui, normal): Espreitador 500–650 s, 8 salas, nível 5, ~20 moedas, a vida

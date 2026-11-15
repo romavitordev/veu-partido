@@ -205,6 +205,8 @@ export default {
     banner: 'Gosto de sangue.',
     type: 'awakenMode',
     mult: 1.14, affects: ['melee', 'ability', 'special'], cdRate: 1.3, regen: 2, heal: 0.1, speedMult: 1.08, aura: 'flame', color: CRIMSON,
+    // o rosto machucado e lavado de sangue (a boca de quem acabou de morder) até o fim do round
+    face: ['face_sabara', 'face_sabara_blood'], eyeDrip: 0x8a0010,
   },
 
   passives: [

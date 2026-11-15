@@ -39,6 +39,8 @@ import { DanteClone } from '../npcs.js';
 //   props               [[peça, visível], ...]: troca peças do modelo no close e mantém até o fim do round (a Jaqueta de
 //                       Veríssimo); a habilidade que veste a mesma peça não a tira enquanto durar (buff.keepProps)
 //   idleAnim            a postura parada muda até o fim do round (o Eloy de focinheira: curvado, batendo a cabeça)
+//   bossPowers          { order: [ids], gap: [min, max] }: os PODERES DO OUTRO LADO — enquanto durar, ele lança sozinho,
+//                       de graça e sem mexer nas recargas, as habilidades da lista em rodízio (como o chefe da Torre)
 export const awakenMode = {
   canStart: (f) => !f.findBuff('awakened'),
   blockMsg: 'JÁ DESPERTOU',
@@ -133,6 +135,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
   let regenAcc = 0;
   let drainAcc = 0;
   let drainT = 0;
+  const boss = { next: sp.bossPowers ? sp.bossPowers.first ?? 2.5 : 0, k: 0 };
   f.addBuff({
     type: 'awakened', name: (sp.label || sp.name).toUpperCase(), time: Infinity, duration: Infinity,
     mult: sp.lowHealth ? sp.lowHealth.min : sp.mult, affects: sp.affects || ['melee', 'ranged', 'ability'], takenMult: sp.takenMult, speedMult: sp.speedMult,
@@ -163,6 +166,7 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
           if (Math.random() < 0.15) world.fx.burst(f.chestPos(), { count: 2, color: 0x9a0010, speed: 0.6, up: -0.4, life: 0.5, size: 0.1, gravity: 4 });
         }
       }
+      if (sp.bossPowers) bossTick(f, sp.bossPowers, world, dt, boss);
       if (sp.armorEvery) {
         armorClock += dt;
         if (armorClock >= sp.armorEvery && (f.armorHits || 0) < (sp.armorMax ?? 1)) { armorClock = 0; f.armorHits = (f.armorHits || 0) + 1; }
@@ -175,6 +179,34 @@ function applyAwakening(f, sp, world, col, undoFace, glow, undoProps) {
   if (src) { f.cooldowns.ranged = 0; f.notify(`□: ${(src.name || 'ATAQUE').toUpperCase()} (${f.opponent.def.name})`, true); }
   if (sp.larva) incubate(f, sp.larva, world, col);
   f.notify(`${(sp.label || sp.name).toUpperCase()}!`, true);
+}
+
+// OS PODERES DO OUTRO LADO (feedback do dono, 2026-11-14: "ao se transformar, ele pode ficar com os poderes do modo Outro
+// Lado"): como o cérebro do chefe da Torre (pve/estrangeiro.js), a cada poucos segundos ele lança sozinho a próxima
+// habilidade da lista — sem custo e sem gastar a recarga que o jogador usa; quem já está em campo (os Homens de Terno, o
+// ninho) não é chamado de novo
+function bossTick(f, B, world, dt, st) {
+  st.next -= dt;
+  if (st.next > 0) return;
+  if (!['idle', 'run', 'walk'].includes(f.state) || world.cinematic || !f.opponent || f.opponent.state === 'ko') return;
+  const mine = (pred) => world.npcs.some((n) => n.alive && n.owner === f && pred(n));
+  for (let tries = 0; tries < B.order.length; tries++) {
+    const id = B.order[st.k++ % B.order.length];
+    if (id === 'homensDeTerno' && mine((n) => n.isDoppel)) continue;
+    if (id === 'ninhoInterflorados' && mine((n) => n.isNest)) continue;
+    const a = f.def.abilities.find((x) => x.id === id);
+    if (!a) continue;
+    const cd = f.cooldowns[id] || 0;
+    const en = f.energy;
+    f.cooldowns[id] = 0;
+    f.energy = f.maxEnergy;
+    f.useAbility(a);
+    const cast = f.state === 'ability';
+    f.energy = en;
+    f.cooldowns[id] = cd;
+    if (cast) { f.notify('O OUTRO LADO: ' + a.name.toUpperCase(), true); break; }
+  }
+  st.next = B.gap[0] + Math.random() * (B.gap[1] - B.gap[0]);
 }
 
 // INCUBAR (wiki "Estrangeiro"): "enquanto estiver com uma larva incubada, o ser fica completamente exposto à criatura
@@ -190,6 +222,8 @@ function incubate(f, L, world, col) {
     let hatched = false;
     opp.addBuff({
       type: 'larva', name: 'LARVA', debuff: true, time: Infinity, duration: Infinity, takenMult: L.takenMult, energyRegenMult: 0,
+      // concentrar ainda junta um pouco (8%: menos do que a larva come) — parado concentrando ele só ATRASA a eclosão
+      chargeMult: L.chargeMult ?? 0.08,
       onTick(dt) {
         if (hatched || opp.state === 'ko') return;
         if (f.state === 'ko') { this.time = 0; return; }

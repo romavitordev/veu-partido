@@ -272,6 +272,73 @@ function calamitasSymbol(g, cx, cy, k = 1) {
   g.restore();
 }
 
+// SABARA: as covas dos olhos e a boca de dentes; `blood` = o Gosto de Sangue (machucada e coberta de sangue)
+const SABARA_FACE = {
+  skin: '#5a3828',
+  noEyes: true,
+  mouth: { mouthW: 0.1, smile: 0, lip: 'rgba(0,0,0,0)', lipLine: 'rgba(0,0,0,0)' },
+};
+function sabaraFace(g, blood) {
+  for (const sx of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 2, 2, CX + sx * 32, EYE_Y + 2, 20);
+    gr.addColorStop(0, 'rgba(6,2,2,1)'); gr.addColorStop(0.6, 'rgba(30,6,6,0.9)'); gr.addColorStop(1, 'rgba(40,12,10,0)');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 21, 14, sx * 0.1, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(120,20,20,0.6)'; g.lineWidth = 1.6; // sangue seco escorrendo das covas
+    g.beginPath(); g.moveTo(CX + sx * 30, EYE_Y + 14); g.lineTo(CX + sx * 33, EYE_Y + 34); g.stroke();
+  }
+  if (blood) { // a boca e o queixo encharcados (por baixo dos dentes, que ficam manchados)
+    g.fillStyle = 'rgba(120,6,10,0.85)';
+    g.beginPath(); g.ellipse(CX, MOUTH_Y + 14, 46, 20, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(150,10,14,0.9)';
+    g.beginPath(); g.ellipse(CX + 4, MOUTH_Y + 6, 40, 13, 0.05, 0, Math.PI * 2); g.fill();
+  }
+  // a boca deformada: um rasgo largo com a fileira de dentes pontiagudos
+  g.fillStyle = '#1a0606';
+  g.beginPath(); g.moveTo(CX - 34, MOUTH_Y - 4); g.quadraticCurveTo(CX, MOUTH_Y + 18, CX + 34, MOUTH_Y - 4); g.quadraticCurveTo(CX, MOUTH_Y + 4, CX - 34, MOUTH_Y - 4); g.fill();
+  g.fillStyle = blood ? '#d8aaa0' : '#f2ece0';
+  for (let i = -6; i <= 6; i++) {
+    const x = CX + i * 5;
+    const y0 = MOUTH_Y - 3 + Math.abs(i) * 0.4;
+    g.beginPath(); g.moveTo(x - 2.4, y0); g.lineTo(x + 2.4, y0); g.lineTo(x, y0 + 7 - Math.abs(i) * 0.3); g.closePath(); g.fill();
+    const y1 = MOUTH_Y + 9 - Math.abs(i) * 0.6;
+    g.beginPath(); g.moveTo(x - 2.2, y1); g.lineTo(x + 2.2, y1); g.lineTo(x, y1 - 6); g.closePath(); g.fill();
+  }
+  if (!blood) return;
+  const rnd = seeded(77);
+  // roxo de pancada na maçã do rosto esquerda e inchaço sob o olho direito
+  for (const [x, y, r, a] of [[CX + 44, EYE_Y + 26, 26, 0.55], [CX - 40, EYE_Y + 18, 18, 0.4]]) {
+    const gr = g.createRadialGradient(x, y, 2, x, y, r);
+    gr.addColorStop(0, `rgba(48,10,40,${a})`); gr.addColorStop(1, 'rgba(48,10,40,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+  // filetes escorrendo do queixo até o pescoço
+  for (let i = 0; i < 9; i++) {
+    const x = CX - 38 + i * 9.5 + (rnd() - 0.5) * 4, y = MOUTH_Y + 18 + rnd() * 8, l = 22 + rnd() * 50, w = 2.5 + rnd() * 3.5;
+    g.strokeStyle = `rgba(${110 + rnd() * 40 | 0},6,10,0.9)`; g.lineWidth = w; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + (rnd() - 0.5) * 6, y + l * 0.5, x + (rnd() - 0.5) * 4, y + l); g.stroke();
+    g.fillStyle = g.strokeStyle; g.beginPath(); g.arc(x, y + l, w * 0.75, 0, Math.PI * 2); g.fill();
+  }
+  // as covas dos olhos sangrando fresco (escorre mais do que o sangue seco de sempre)
+  for (const sx of [-1, 1]) {
+    g.strokeStyle = 'rgba(150,8,12,0.9)'; g.lineWidth = 3.2;
+    g.beginPath(); g.moveTo(CX + sx * 28, EYE_Y + 10); g.quadraticCurveTo(CX + sx * 31, EYE_Y + 40, CX + sx * 29, EYE_Y + 62); g.stroke();
+    g.lineWidth = 2;
+    g.beginPath(); g.moveTo(CX + sx * 38, EYE_Y + 10); g.lineTo(CX + sx * 40, EYE_Y + 44); g.stroke();
+  }
+  // corte aberto numa sobrancelha e o sangue descendo pela têmpora
+  g.strokeStyle = 'rgba(70,0,4,0.95)'; g.lineWidth = 3;
+  g.beginPath(); g.moveTo(CX - 52, EYE_Y - 22); g.lineTo(CX - 30, EYE_Y - 14); g.stroke();
+  g.strokeStyle = 'rgba(140,8,12,0.85)'; g.lineWidth = 2.6;
+  g.beginPath(); g.moveTo(CX - 48, EYE_Y - 18); g.quadraticCurveTo(CX - 58, EYE_Y + 10, CX - 56, EYE_Y + 40); g.stroke();
+  // respingos pela testa e bochechas
+  for (let i = 0; i < 46; i++) {
+    const a = rnd() * Math.PI * 2, d = 40 + rnd() * 70;
+    const x = CX + Math.cos(a) * d * 1.1, y = EYE_Y + 20 + Math.sin(a) * d * 0.8, r = 0.8 + rnd() * rnd() * 4;
+    g.fillStyle = `rgba(${100 + rnd() * 60 | 0},6,10,${0.6 + rnd() * 0.35})`;
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+}
+
 function face(paintExtras, o) {
   return () => canvasTex(W, HT, (g) => {
     baseSkin(g, o.skin);
@@ -2539,30 +2606,10 @@ export const MATERIAL_TEXTURES = {
   }, { wrap: true }),
   // ---------------- SABARA (wiki: os olhos ARRANCADOS — dois buracos escuros —, a boca deformada cheia de dentes
   // pontiagudos; pele negra)
-  face_sabara: face((g) => {
-    for (const sx of [-1, 1]) {
-      const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 2, 2, CX + sx * 32, EYE_Y + 2, 20);
-      gr.addColorStop(0, 'rgba(6,2,2,1)'); gr.addColorStop(0.6, 'rgba(30,6,6,0.9)'); gr.addColorStop(1, 'rgba(40,12,10,0)');
-      g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 21, 14, sx * 0.1, 0, Math.PI * 2); g.fill();
-      g.strokeStyle = 'rgba(120,20,20,0.6)'; g.lineWidth = 1.6; // sangue seco escorrendo das covas
-      g.beginPath(); g.moveTo(CX + sx * 30, EYE_Y + 14); g.lineTo(CX + sx * 33, EYE_Y + 34); g.stroke();
-    }
-    // a boca deformada: um rasgo largo com a fileira de dentes pontiagudos
-    g.fillStyle = '#1a0606';
-    g.beginPath(); g.moveTo(CX - 34, MOUTH_Y - 4); g.quadraticCurveTo(CX, MOUTH_Y + 18, CX + 34, MOUTH_Y - 4); g.quadraticCurveTo(CX, MOUTH_Y + 4, CX - 34, MOUTH_Y - 4); g.fill();
-    g.fillStyle = '#f2ece0';
-    for (let i = -6; i <= 6; i++) {
-      const x = CX + i * 5;
-      const y0 = MOUTH_Y - 3 + Math.abs(i) * 0.4;
-      g.beginPath(); g.moveTo(x - 2.4, y0); g.lineTo(x + 2.4, y0); g.lineTo(x, y0 + 7 - Math.abs(i) * 0.3); g.closePath(); g.fill();
-      const y1 = MOUTH_Y + 9 - Math.abs(i) * 0.6;
-      g.beginPath(); g.moveTo(x - 2.2, y1); g.lineTo(x + 2.2, y1); g.lineTo(x, y1 - 6); g.closePath(); g.fill();
-    }
-  }, {
-    skin: '#5a3828',
-    noEyes: true,
-    mouth: { mouthW: 0.1, smile: 0, lip: 'rgba(0,0,0,0)', lipLine: 'rgba(0,0,0,0)' },
-  }),
+  face_sabara: face((g) => sabaraFace(g, false), SABARA_FACE),
+  // GOSTO DE SANGUE (o Despertar): o rosto lavado de sangue — a boca e o queixo encharcados de quem acabou de morder,
+  // respingos pelas bochechas e testa, um corte aberto na sobrancelha e o roxo de pancada na maçã do rosto
+  face_sabara_blood: face((g) => sabaraFace(g, true), SABARA_FACE),
   face_rubens: face(() => {}, {
     skin: '#9a6a46',
     eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },

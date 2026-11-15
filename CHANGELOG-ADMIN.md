@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v4.47.0 — O Outro Lado responde
+
+- Versão: `VERSION` 4.46.0 → **4.47.0** (`package.json`/lock junto). Data: 2026-11-14.
+- **Outro Lado Coop:** Mecânica de retorno após 60 segundos com aceleração por proximidade do aliado. Ajuste na altura e profundidade do poço das pilastras com controle suave de câmera.
+- **Salas e Navegação:** Correção da oclusão e transparência de paredes que deixavam vazar salas adjacentes. Lógica de portas trancadas com chave única exigindo escolha de rota pelo jogador.
+- **Estrangeiro & Criaturas:** Ninho de Interflorados conjurado sob o adversário e ativação solo de poderes do Outro Lado durante o despertar. Bilu retrabalhado com maior agressividade, aproximação em corrida, fintas auditivas e visuais no escuro.
+- **Combate no Outro Lado:** Retargeting de especiais de investida contra Alheios próximos caso o adversário principal esteja oculto.
+- **Golpes e Transformações:**
+  - Amigo: habilidade Dissolver aprimorada com tentáculos prendendo os pés, tragando o alvo para o interior do manto e expelindo-o impregnado de tinta.
+  - Raziel: cena cinematográfica personalizada para a transformação em O Verdadeiro Raziel com animação de desenrolar da língua e rasgo das vestes.
+  - Sabara: despertar Gosto de Sangue com persistência visual de ferimentos e sangue na face até o término do round.
+
 ## v4.46.0 — O Acampamento dos Pássaros
 
 - **Acampamento dos Pássaros (dono: "Faça o acampamento dos pássaros"; TODO "Mapas que ainda faltam"):**

@@ -11,6 +11,13 @@ import * as THREE from 'three';
 const DEPTH = 14; // o quanto a pilastra desce no fosso
 const VOID = -40; // o "chão" fora das pilastras: cai sem parar
 const SKY = 9; // de onde se cai de volta na entrada
+// O POÇO (feedback do dono, 2026-11-14: "depois do hall o teto é bem alto, como se fosse infinito para cima, e a queda
+// também é muito profunda — resolveria a câmera bugar ao chegar ao teto"): as paredes da sala continuam subindo até
+// sumir no escuro e descem bem fundo; a câmera fica livre para subir nesta sala (world.camCeiling)
+const SHAFT_UP = 46;
+const SHAFT_DOWN = -70;
+const WALL_TOP = 3.2; // a altura das paredes do .glb (tools/blender/arena_torre.py HH)
+const PIT_FLOOR = -14; // onde o .glb para (o fundo escuro, pil_pit)
 
 export class PillarRoom {
   constructor(dg, M) {
@@ -34,6 +41,43 @@ export class PillarRoom {
     this.falls = 0;
     this.layout();
     this.place();
+    this.buildShaft();
+    this.world.camCeiling = SHAFT_UP - 6;
+  }
+
+  // as quatro paredes continuando para cima (até sumir no escuro) e para baixo (o fundo some lá embaixo)
+  buildShaft() {
+    const x0 = 80, x1 = 104, z0 = 28, z1 = 40; // as faces de dentro das paredes do .glb (arena_torre.py PX0..PZ1)
+    const wallCol = new THREE.Color(0x6e6a3a);
+    const dark = new THREE.Color(0x020202);
+    const strip = (y0, y1, fade) => {
+      const g = new THREE.BufferGeometry();
+      const pos = [];
+      const col = [];
+      const quads = [
+        [[x0, z0], [x1, z0]], [[x1, z1], [x0, z1]], [[x0, z1], [x0, z0]], [[x1, z0], [x1, z1]],
+      ];
+      for (const [[ax, az], [bx, bz]] of quads) {
+        const v = [[ax, y0, az], [bx, y0, bz], [bx, y1, bz], [ax, y1, az]];
+        for (const i of [0, 1, 2, 0, 2, 3]) {
+          pos.push(...v[i]);
+          const top = v[i][1] === y1;
+          const c = (fade === 'up' ? (top ? dark : wallCol) : (top ? wallCol : dark));
+          col.push(c.r, c.g, c.b);
+        }
+      }
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+      return g;
+    };
+    this.shaftMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, fog: true });
+    this.shaftGeos = [strip(WALL_TOP - 0.02, SHAFT_UP, 'up'), strip(SHAFT_DOWN, PIT_FLOOR + 0.5, 'down')];
+    for (const g of this.shaftGeos) this.group.add(new THREE.Mesh(g, this.shaftMat));
+    // o fundo do .glb (a -14 m) desce para o fim do poço: a queda parece não acabar
+    this.pit = null;
+    const arena = this.world.arena && this.world.arena.group;
+    if (arena) arena.traverse((o) => { if (!this.pit && o.isMesh && /pil_pit/.test(o.name || (o.parent && o.parent.name) || '')) this.pit = o; });
+    if (this.pit) { this.pitY = this.pit.position.y; this.pit.position.y += SHAFT_DOWN - PIT_FLOOR; }
   }
 
   // um caminho novo, sempre possível: da borda da entrada até a da saída, vãos folgados; e as pilastras falsas (sem saída)
@@ -144,6 +188,10 @@ export class PillarRoom {
 
   dispose() {
     this.world.scene.remove(this.group);
+    this.world.camCeiling = null;
+    if (this.pit) this.pit.position.y = this.pitY;
+    for (const g of this.shaftGeos || []) g.dispose();
+    if (this.shaftMat) this.shaftMat.dispose();
     this.geo.dispose();
     this.capGeo.dispose();
     this.mat.dispose();

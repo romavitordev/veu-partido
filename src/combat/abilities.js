@@ -3320,7 +3320,14 @@ Object.assign(ABILITY_TYPES, {
         const opp = f.opponent;
         const fw = forwardFromYaw(f.yaw);
         let want = { x: f.pos.x + fw.x * a.ahead, z: f.pos.z + fw.z * a.ahead };
-        if (opp && distXZ(f.pos, opp.pos) < a.ahead * 2) want = { x: (f.pos.x + opp.pos.x) / 2, z: (f.pos.z + opp.pos.z) / 2 };
+        // (feedback do dono, 2026-11-14: "os Interflorados não funcionam") antes o ninho ia 3 m à frente DELE e só
+        // brotava se o adversário chegasse perto — quase nunca. Agora o limo se abre AOS PÉS do adversário (até a.range;
+        // um pouco para o lado do Estrangeiro), ele já começa dentro do anel e o primeiro Interflorado brota logo
+        if (opp && opp.state !== 'ko') {
+          const d = distXZ(f.pos, opp.pos);
+          const k = Math.max(0, Math.min(a.range, d - 0.9)) / Math.max(d, 0.01);
+          want = { x: f.pos.x + (opp.pos.x - f.pos.x) * k, z: f.pos.z + (opp.pos.z - f.pos.z) * k };
+        }
         const spot = findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.7, others: [] }) || want;
         const p = new THREE.Vector3(spot.x, 0, spot.z);
         world.fx.burst(p.clone().setY(0.3), { count: 26, color: 0x5a9a2a, speed: 2.2, up: 1.5, life: 0.6, size: 0.16 });

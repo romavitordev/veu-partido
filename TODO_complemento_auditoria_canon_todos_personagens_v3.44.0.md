@@ -817,16 +817,28 @@ apontadas. Os itens marcados `[x]` foram atendidos; os marcados `[ ]`
 continuam pendentes para investigação e implementação. O registro não
 representa aprovação automática nem confirmação de fidelidade ao cânone.
 
-- [ ] **Câmera da fase de parkour da Torre de Transmissão:** rever a sala
-  do parkour no episódio como referência. Depois do hall, o teto é bem
-  alto, como se fosse infinito para cima, e a queda também é muito
-  profunda. Avaliar reproduzir esse espaço no jogo, pois isso resolveria
-  o problema atual de a câmera bugar ao chegar ao teto.
-- [ ] **Morte no Coop do Outro Lado:** quando um jogador morrer, os dois
-  não precisam cair juntos; somente o jogador que morreu deve cair. Ele
-  fica caído no chão enquanto começa um temporizador de 60 segundos para
-  voltar. Se o amigo permanecer perto dele, o temporizador deve acelerar
-  um pouco.
+- [x] **Câmera da fase de parkour da Torre de Transmissão (v4.47.0):**
+  o poço das pilastras ganhou paredes que continuam até 46 m de altura e
+  um fundo mais profundo; a câmera pode subir junto com o jogador.
+- [x] **Morte no Coop do Outro Lado (v4.47.0):** somente quem morreu cai;
+  fica no chão e volta em 60 s, acelerando 3× se o aliado permanecer a
+  até 2,8 m. A sala limpa ou a próxima sala também o põem de pé.
+- [x] **Direção do especial no Outro Lado (v4.47.0):** se o adversário
+  está escondido, a investida busca o Alheio vivo mais próximo e acerta
+  os inimigos próximos; sem alvo, não avança aleatoriamente.
+- [x] **Bilu (v4.47.0):** corrida contra alvos distantes, isca de sons e
+  olhos que o faz sumir e reaparecer pelas costas, e ataques reforçados.
+- [x] **Estrangeiro no modo de luta (v4.47.0):** o despertar alterna
+  automaticamente os poderes do Outro Lado; o Ninho nasce aos pés do
+  adversário e já pode gerar Interflorados dentro do anel.
+- [x] **Portas trancadas e chaves (v4.47.0):** quando há duas portas com
+  cadeado, a única chave permite escolher qual caminho abrir.
+- [x] **Paredes transparentes entre salas (v4.47.0):** as peças da arena
+  fora da sala atual deixam de ser renderizadas, evitando ver outra sala
+  através da parede.
+- [ ] **Auditoria do Claude:** depois de implementar os ajustes, auditar
+  no jogo se cada um funciona corretamente. A validação automatizada não
+  substitui a conferência prática do comportamento durante a partida.
 - [x] **Movimento dos bonecos ao bater:** os três primeiros golpes
   consecutivos de B/L não avançam mais; o quarto golpe em diante preserva
   o movimento configurado para cada personagem.
@@ -837,22 +849,6 @@ representa aprovação automática nem confirmação de fidelidade ao cânone.
 - [x] **Retorno visual ao segurar o baú:** ao segurar o botão, a tecla do
   aviso enche de dourado, uma barra de progresso corre embaixo e o baú
   treme com a luz vazando pela fresta; soltar antes da hora zera (v4.44.3).
-- [ ] **Direção do especial no Outro Lado:** para acertar o especial, o
-  personagem deve tentar ir na direção do inimigo. Não deve dar um
-  avanço (rush) em qualquer direção.
-- [ ] **Bilu:** está fraco demais e não tem poderes do cânone; rever seu
-  conjunto de poderes para corrigir esses dois pontos.
-- [ ] **Estrangeiro no modo de luta:** precisa ter poderes mais fiéis,
-  assim como no modo Outro Lado. Ao se transformar, ele pode ficar com os
-  poderes do modo Outro Lado. A habilidade dos Interflorados também não
-  está funcionando e precisa ser investigada.
-- [ ] **Portas trancadas e chaves:** pode haver mais de uma porta trancada
-  na mesma sala, mas o jogador recebe apenas uma chave. Deve poder
-  escolher qual porta destrancar e, assim, decidir para qual caminho
-  seguir.
-- [ ] **Paredes transparentes entre salas:** em algumas salas é possível
-  enxergar outras salas através de paredes que ficam meio transparentes.
-  Investigar e corrigir essa transparência/oclusão indevida.
 - [ ] **Auditoria do Claude:** depois de implementar os ajustes, auditar
   no jogo se cada um funciona corretamente. A validação automatizada não
   substitui a conferência prática do comportamento durante a partida.
