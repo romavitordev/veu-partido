@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.51.0 — Boneco de Pano
+
+### Adicionado
+- Ragdoll no nocaute com o Rapier determinístico (@dimforge/rapier3d-deterministic-compat 0.21.0, Apache-2.0): só visual, joelhos e cotovelos com limite; o pacote carrega na primeira luta.
+
 ## v4.50.0 — Ecos da Sala
 
 ### Adicionado

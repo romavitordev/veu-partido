@@ -1,5 +1,27 @@
 # Registro administrativo de alterações
 
+## v4.51.0 — Boneco de Pano
+
+- Versão: `VERSION` 4.50.0 → **4.51.0** (`package.json`/lock junto). Data: 2026-11-15.
+- **@dimforge/rapier3d-deterministic-compat 0.21.0 (Apache-2.0, dependência; dono: "Sim, próximo item"):** a versão
+  DETERMINÍSTICA que o guia pede (item 9), com o WebAssembly embutido. Carregada por `import()` em
+  `preloadRagdoll()` (chamado em `World.setup`): vira um pedaço próprio no build (`assets/rapier-*.js`, 4,37 MB, 1,65 MB
+  gzip), fora do carregamento inicial. Se não chegou a tempo do nocaute, cai com a animação `ko` de antes.
+- **`src/physics/ragdoll.js`:** só VISUAL — escreve nos ossos do modelo, nunca em `pos`/`health`/estado (o `netHash`
+  do online lê esses; nada de `Math.random`). 11 cápsulas pelo esqueleto padrão (`hips, sp, hd, sL, eL, sR, eR, lL, kL,
+  lR, kR`; pontas pelas mãos/pés extras). Corpos começam sem rotação (a cápsula vai inclinada dentro), então a
+  dobradiça usa o mesmo eixo nos dois lados: joelho e cotovelo `revolute` no eixo X do personagem levado pelo osso de
+  cima (`rig.rest[n].A`, exposto em `glbRig.js`), limite 0–2,5/2,6 rad a partir da dobra do momento (o Rapier mede
+  positivo pela regra da mão direita — conferido no Node); coluna e pescoço `revolute` ±0,7/±0,6; ombros e quadris
+  `spherical` com amortecimento. As peças só batem no chão (grupos de colisão), com contato entre peças ligadas
+  desligado. Empurrão = `fighter.vel` (o golpe) + tombo do alto do corpo; sem empurrão, para trás. Gravidade 18,
+  passo fixo 1/60 (até 4 por quadro).
+- `Fighter.updateVisuals`: no `ko` começa o ragdoll uma vez e pula o `anim.update`; sai do `ko`, troca de modelo ou
+  some → `dispose` (a pose volta no quadro seguinte). `World.dispose` libera o mundo físico.
+- `tests/ragdoll.test.js`: cai e assenta (quadril < 0,35 m), nenhum osso abaixo do chão, joelho entre 0 e o limite,
+  `pos`/`health` intactos e duas quedas iguais dão o mesmo resultado. Testado no jogo (Coliseu, Sabara e Amigo): cai e
+  assenta em ~1 s, cotovelos 22°/40°, joelhos retos, 0,06 ms por quadro.
+
 ## v4.50.0 — Ecos da Sala
 
 - Versão: `VERSION` 4.49.0 → **4.50.0** (`package.json`/lock junto). Data: 2026-11-15. Sem dependência nova.

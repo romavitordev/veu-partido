@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.50.0';
+export const VERSION = '4.51.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.51.0',
+    date: '2026-11-15',
+    title: 'Boneco de Pano',
+    items: [
+      'NOCAUTE COM FÍSICA: quem é nocauteado agora cai de verdade — o corpo voa para o lado do golpe, tomba e fica largado no chão, com joelhos e cotovelos dobrando do jeito certo. Cada queda é diferente, conforme o golpe.',
+      'ONLINE: a queda é só visual, então os dois computadores continuam sincronizados. Na primeira luta o jogo baixa a física (cerca de 1,6 MB); até chegar, o nocaute usa a animação de antes.',
+    ],
+  },
   {
     v: '4.50.0',
     date: '2026-11-15',

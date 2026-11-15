@@ -15,6 +15,7 @@ import { updateRiddle, cancelRiddle } from '../combat/riddle.js';
 import { postFX, MOOD } from '../render/postfx.js';
 import { accelerate } from '../render/bvh.js';
 import { acousticsFor } from '../audio/acoustics.js';
+import { preloadRagdoll } from '../physics/ragdoll.js';
 
 const RAY = new THREE.Raycaster();
 
@@ -79,6 +80,7 @@ export class World {
     accelerate(this.arena.group); // raios rápidos no cenário (render/bvh.js): câmera, paredes, linha de visão
     // SOM 3D + ECO DO CENÁRIO (audio/acoustics.js): a câmera ouve; a sala dá o eco
     this.audio.listener = this.camera;
+    preloadRagdoll(); // o Rapier do nocaute (physics/ragdoll.js) chega enquanto a luta começa
     if (this.audio.setAcoustics) this.audio.setAcoustics(acousticsFor(arenaId));
     // as salas do Outro Lado como arena de luta: portas, armários, gavetas e caixas (arena/fightDressing.js)
     this.dressing = this.arena.dressing ? dressFightRoom(this, this.arena.dressing) : null;
@@ -469,6 +471,7 @@ export class World {
     this.clearNpcs();
     if (this.dressing) { this.dressing.dispose(); this.dressing = null; }
     for (const f of this.fighters || []) { if (f.assists) for (const a of f.assists) a.reset(); if (f.teamGuests) { for (const a of f.teamGuests) a.reset(); f.teamGuests = null; } }
+    for (const f of this.fighters || []) if (f.ragdoll) { f.ragdoll.dispose(); f.ragdoll = null; }
     this.endCinematic();
     this.audio.stopAllLoops();
     if (this.audio.setAcoustics) this.audio.setAcoustics(null); // menus: sem eco

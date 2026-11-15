@@ -331,6 +331,7 @@ export function rigFromGLB(gltf, { scale = 1, outline = 0.012 } = {}) {
   }
   const rig = {
     root, body, joints, sockets, props, bones: extra,
+    rest, // repouso dos ossos (o ragdoll do nocaute acha o eixo do joelho/cotovelo: physics/ragdoll.js)
     autoSecondary: true, // pescoço/tornozelos automáticos (false = ossos extras parados)
     groundLock: false, // o Fighter liga quando está no chão: pés não afundam no piso
     hipHeight: rest.hips.pos.y,

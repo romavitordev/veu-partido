@@ -33,6 +33,7 @@ import { splitDamage, specialHitFx } from './specials/common.js';
 import { GRAB_SCENES, FINISHERS } from './grabScenes.js';
 import { rollChaosShot, tickHostQuirks } from './chaos.js';
 import { inscribe } from './kianPowers.js';
+import { startRagdoll } from '../physics/ragdoll.js';
 
 // estados em que o alvo continua "dentro do combo" (contadores de escala não zeram)
 const COMBO_STATES = new Set(['hitstun', 'stun', 'pulled', 'grabbed', 'ko', 'downed']);
@@ -967,7 +968,15 @@ export class Fighter {
     this.rig.groundLock = this.onGround && !['launched', 'ko', 'downed', 'grabbed', 'pulled', 'special'].includes(this.state);
     // POSE SEGURADA (especiais cinemáticos, docs/REFERENCIAS-ANIMACAO.md §2): a pose do impacto fica parada alguns
     // quadros, como na animação limitada; o tempo segurado não se perde, a animação só atrasa
-    if (this.poseHold > 0) this.poseHold -= dt;
+    // RAGDOLL NO NOCAUTE (physics/ragdoll.js): só visual — os ossos seguem a física, o lutador não muda
+    if (this.ragdoll && (this.state !== 'ko' || this.ragdoll.rig !== this.rig || !this.visible)) { this.ragdoll.dispose(); this.ragdoll = null; }
+    if (this.state !== 'ko') this.ragdollTried = false;
+    else if (!this.ragdoll && !this.ragdollTried && this.visible) {
+      this.ragdollTried = true;
+      this.ragdoll = startRagdoll(this);
+    }
+    if (this.ragdoll) this.ragdoll.update(dt);
+    else if (this.poseHold > 0) this.poseHold -= dt;
     else this.anim.update(dt);
     // peças com movimento próprio (a corrente do mangual e do nunchaku da Carina: models/weapons.js → ropeChain)
     if (this.rig.tickers) for (const t of this.rig.tickers) t(dt, this);

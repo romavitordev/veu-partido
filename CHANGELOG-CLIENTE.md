@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.51.0 — Boneco de Pano
+- NOCAUTE COM FÍSICA: quem é nocauteado agora cai de verdade — o corpo voa para o lado do golpe, tomba e fica largado no chão, com joelhos e cotovelos dobrando do jeito certo. Cada queda é diferente, conforme o golpe.
+- ONLINE: a queda é só visual, então os dois computadores continuam sincronizados. Na primeira luta o jogo baixa a física (cerca de 1,6 MB); até chegar, o nocaute usa a animação de antes.
+
 ## v4.50.0 — Ecos da Sala
 - SOM DE QUE LADO VEM: o golpe, o impacto e o projétil saem do lado da tela onde acontecem (esquerda ou direita), e o que está longe da câmera soa mais baixo — no Outro Lado dá para ouvir o monstro antes de vê-lo.
 - ECO DE CADA CENÁRIO: a Igreja ecoa longo como uma nave de pedra, a Torre e a Mansão têm eco de sala fechada, o Bar é curto e abafado, e ao ar livre quase não há eco. Os sons de menu continuam secos.
