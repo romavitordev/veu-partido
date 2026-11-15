@@ -12,6 +12,7 @@
   - Raziel: cena cinematográfica personalizada para a transformação em O Verdadeiro Raziel com animação de desenrolar da língua e rasgo das vestes.
   - Sabara: despertar Gosto de Sangue com persistência visual de ferimentos e sangue na face até o término do round.
 - **Seleção de Cenários (StageSelectScreen):** Paginação em grade de 16 mapas (8 colunas × 2 linhas) sem overflow vertical. Navegação contínua lateral (ao cruzar a borda direita/esquerda muda de página), setas laterais com pulsação dourada quando há páginas adicionais e indicador visual central `◀ PÁGINA X / Y ▶` com dots.
+- **Guia de tecnologias (2026-11-15):** `GUIA_TECNOLOGIAS_GAME_DEV.txt` ganhou a seção 0, conferida no código: o que o jogo usa de verdade (Three.js, Vite, Web Audio, WebRTC/PeerJS, Electron, Capacitor, pipeline do Blender, recursos CC0, MCPs e skills). As bibliotecas das seções 2, 6 e 7 ficam marcadas como recomendação.
 
 ## v4.46.0 — O Acampamento dos Pássaros
 

@@ -9,6 +9,81 @@ para construir o jogo "Véu Partido" e fornecer o caminho das pedras para qualqu
 amigo ou desenvolvedor que queira criar seu próprio jogo 3D de alta performance
 (rodando na Web, PC e Android com a mesma base de código).
 
+================================================================================
+0. O QUE O VÉU PARTIDO USA DE VERDADE (conferido no código em 2026-11-15)
+================================================================================
+
+Atenção: as seções 2, 6 e 7 mais abaixo são RECOMENDAÇÕES para um jogo novo.
+Rapier, Havok, postprocessing, Yuka, GSAP, Howler, Tone.js, Geckos.io e Colyseus
+NÃO estão no Véu Partido. A lista real é esta:
+
+--- CÓDIGO DO JOGO ---
+* Three.js 0.187 (única dependência de produção): cena, luz, materiais, GLTFLoader
+  e SkeletonUtils. Física, colisão, IA, câmera e partículas foram escritas à mão.
+* JavaScript puro (ES modules), sem framework; HUD e menus em HTML + CSS.
+* Vite 5: servidor de desenvolvimento (HMR) e build.
+* Web Audio API (src/audio/AudioManager.js): sons em arquivo e sons sintetizados.
+* Canvas 2D: texturas pintadas por código (rostos, paredes, chão).
+* WebRTC (DataChannel) + PeerJS (corretor público wss://0.peerjs.com) + STUN do
+  Google: o coop e o versus online, de computador para computador. Funciona
+  também em rede virtual (Radmin VPN).
+* localStorage: saves, opções e o backup do modo Outro Lado.
+* Node.js: testes com `node --test` e scripts em tools/ (check-roster, gen-moves,
+  fetch-lore, export-dialogues, release-notes, pve-economy).
+
+--- EMPACOTAMENTO ---
+* Electron 33 + electron-builder 25 (instalador NSIS para Windows).
+* Capacitor 6 (@capacitor/android) para o APK de Android (Android Studio/Gradle).
+* GitHub Pages para a versão web (romavitordev.github.io/veu-partido).
+* Git + GitHub (tags por versão), npm.
+
+--- 3D E ANIMAÇÃO ---
+* Blender 4.x/5.x em linha de comando: cada personagem e cada arena é um script
+  Python (bpy) em tools/blender/ (char_*.py, arena_*.py, com sculpt_lib.py e
+  arena_lib.py), gerado em .glb por `node tools/blender/build.mjs`.
+* Esqueleto padrão próprio (root, hips, sp, chest, neck, hd, ombros, cotovelos,
+  mãos, pernas, joelhos, pés). As animações são em grande parte clipes feitos em
+  código (src/anim/*Clips.js); a corrida, a caminhada e a queda vêm da Universal
+  Animation Library da Quaternius, reaproveitada por tools/anim/retarget-ual.mjs.
+* Python + ffmpeg: importar sons (tools/import-sounds.py), texturas de efeito
+  (tools/import-fx.py) e gerar ícones (tools/make-icons.py).
+
+--- RECURSOS GRATUITOS USADOS (todos CC0, guardados em assets_src/, fora do git) ---
+* Kenney (kenney.nl): kits de cenário, Particle Pack (fumaça, fogo, faíscas) e sons.
+* Quaternius (quaternius.com): Universal Animation Library.
+* Blender Studio: Human Base Meshes (base do corpo do Carniçal).
+* OpenGameArt (opengameart.org): pacotes de socos, espadas, tiros e outros sons.
+* Poly Haven e ambientCG: catalogados em docs/RECURSOS-MODELAGEM.md para usar depois.
+
+--- PESQUISA E REFERÊNCIA ---
+* Ordem Paranormal Wiki (ordemparanormal.fandom.com), pela API do MediaWiki:
+  `npm run lore` baixa os dados dos personagens para lore/.
+* Vídeos, artes e livros do universo, guardados em "Referencias visuais/".
+
+--- IA USADA NO DESENVOLVIMENTO ---
+* Claude Code (app desktop do Claude, aba Code), com os modelos Claude Opus.
+* Antigravity e GitHub Copilot (prompt-copilot.md) em algumas tarefas.
+
+--- SERVIDORES MCP USADOS ---
+* Blender MCP oficial ("Blender"): executa Python no Blender aberto, tira prints da
+  janela, consulta a documentação da API do Blender.
+* blender-mcp (comunidade, `uvx blender-mcp`): executa Python, `look` para ver a
+  cena e busca/importação na Poly Haven, Sketchfab e Poly Pizza.
+* Navegador embutido do app do Claude (Claude Browser / preview): abre o `vite`
+  pelo .claude/launch.json, roda JavaScript no jogo, tira prints e lê o console.
+  É assim que cada mudança é testada no jogo.
+* Claude in Chrome e computer-use: usados em poucas tarefas.
+
+--- SKILLS DO CLAUDE USADAS ---
+* modelos-3d-blender-mcp: modelar do zero no Blender pelo MCP e conferir em 4 vistas.
+* blender-image-to-3d: modelo a partir de imagens de referência, com fases e
+  comparação de silhueta.
+* game-feel: hit-stop, tremor de câmera, flashes e camadas de impacto.
+* level-design: blocagem das salas do Outro Lado, ritmo e portas trancadas.
+* padrao-qualidade-sites: a página Sobre/Baixar (sobre.html).
+* Disponíveis e úteis para Three.js: threejs-animation, threejs-gltf-loading,
+  threejs-performance, threejs-particles, threejs-debugging, three-best-practices.
+
 --------------------------------------------------------------------------------
 SUMÁRIO
 --------------------------------------------------------------------------------
