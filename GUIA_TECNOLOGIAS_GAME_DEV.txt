@@ -96,6 +96,7 @@ SUMÁRIO
 7. Multiplayer, Redes e Netcode de Baixa Latência
 8. Sites, Ferramentas Gratuitas e Bancos de Recursos
 9. Passo a Passo Recomendado para Iniciar um Novo Projeto
+10. Tecnologias Novas para o Próprio Véu Partido (PROPOSTA)
 
 ================================================================================
 1. ARQUITETURA CENTRAL DO JOGO
@@ -335,6 +336,83 @@ Se o jogo for ter partidas online:
 4. Exportação:
    - Adicionar Electron para gerar versão Desktop PC.
    - Adicionar Capacitor para gerar versão Android para jogar no celular.
+
+================================================================================
+10. TECNOLOGIAS NOVAS PARA O PRÓPRIO VÉU PARTIDO (PROPOSTA, 2026-11-15)
+================================================================================
+
+O que o jogo ainda não usa e resolveria um problema real dele. Ordem = prioridade.
+Tudo é PROPOSTA: nada é baixado nem instalado sem o OK do dono, e cada item entra
+no TODO como tarefa ("Tecnologias novas do guia").
+
+--- A. PESO DO DOWNLOAD (o maior ganho) ---
+1. glTF-Transform (MIT) + MeshoptDecoder e KTX2Loader (já vêm no Three.js).
+   Hoje: public/models tem 121 MB e public/arenas 38 MB de .glb sem compressão;
+   o dist passa de 170 MB (pesa no APK, no instalador e no GitHub Pages).
+   Uso: um passo no fim do tools/blender/build.mjs com `gltf-transform optimize`
+   (meshopt na malha e nas animações; texturas em WebP ou KTX2/Basis). Esperado:
+   3 a 5 vezes menor. Cuidado: conferir os rostos trocados por textura (swapFace)
+   e os nomes dos materiais que o código procura depois da otimização.
+
+--- B. ONLINE ---
+2. Netcode ROLLBACK (o modelo do GGPO, padrão dos jogos de luta).
+   Hoje: lockstep com atraso de entrada fixo (src/net/NetSession.js); com ping
+   alto o controle fica "pesado". Rollback prevê o comando do outro, simula na hora
+   e, quando o comando real chega diferente, volta e refaz os quadros. O jogo já
+   tem passo fixo, comandos por quadro e resumo de estado, que é a base disso.
+   Falta: salvar/restaurar o estado da luta inteira por quadro (lutadores,
+   projéteis, buffs, timelines dos especiais). Referência de código: NetplayJS.
+3. Servidor próprio de sinalização (PeerServer, MIT) e um servidor TURN (coturn
+   ou um TURN gerenciado). Hoje: depende do corretor público do PeerJS e só de
+   STUN; atrás de NAT restrito (4G, rede de faculdade) a conexão falha.
+
+--- C. VISUAL ---
+4. Pós-processamento: `postprocessing` (pmndrs) ou o EffectComposer do próprio
+   Three.js (UnrealBloomPass, OutputPass). Hoje não há nenhum. Uso: bloom nos
+   olhos, runas e sigilos dos elementos; aberração cromática e vinheta no
+   despertar e no Outro Lado; onda de choque nos especiais. Precisa de opção
+   "efeitos: baixo" para celular fraco.
+5. three-mesh-bvh (MIT): raycast rápido para a câmera não atravessar parede, linha
+   de visão dos Alheios e o esconderijo do Bilu nas salas do Outro Lado.
+6. WebGPURenderer + TSL (já dentro do Three.js, cai para WebGL 2 sozinho). Mais
+   para frente: partículas na GPU (milhares de gotas de sangue e tinta) e fogo
+   volumétrico. Risco: os materiais com shader próprio precisam ser portados.
+
+--- D. SENSAÇÃO DE GOLPE (game feel) ---
+7. Vibração: no controle, gamepad.vibrationActuator.playEffect("dual-rumble")
+   (API do navegador, sem biblioteca); no Android, o plugin @capacitor/haptics.
+   Forte no golpe pesado e no agarrão, fraca no soco leve.
+8. Som 3D e eco por cenário com a própria Web Audio API: PannerNode (ou o
+   PositionalAudio do Three.js) para o som vir do lado certo, e ConvolverNode
+   com reverberação diferente na Igreja, no Orfanato, na Torre e no Outro Lado.
+9. Rapier (@dimforge/rapier3d-deterministic, Apache-2.0): ragdoll no nocaute,
+   destroços e objetos de cenário que quebram. Usar a versão DETERMINÍSTICA, senão
+   o online em lockstep/rollback desincroniza.
+
+--- E. FERRAMENTAS DE DESENVOLVIMENTO ---
+10. Bateria de balanceamento sem navegador: rodar a simulação da luta no Node (ou
+    em Web Workers) sem desenhar nada. Hoje são 6 abas abertas e o HMR do Vite
+    derruba a rodada. Alternativa mais rápida de montar: Playwright (Apache-2.0)
+    abrindo o jogo sem janela e também tirando prints de comparação a cada versão.
+11. lil-gui (MIT): painel de desenvolvedor para mexer nos números do
+    src/config/balance.js e nos tempos das cenas ao vivo. stats-gl ou o Stats do
+    Three.js para FPS e chamadas de desenho; Spector.js para depurar a GPU.
+
+--- F. DISTRIBUIÇÃO ---
+12. electron-updater (vem com o electron-builder): o jogo de PC se atualiza
+    sozinho a partir das releases do GitHub.
+13. itch.io com o butler (envio de versões por linha de comando) e, se um dia
+    for para a Steam, steamworks.js (conquistas, save na nuvem). Antes: conferir
+    as regras de jogo de fã com a marca Ordem Paranormal.
+
+--- G. CRIAÇÃO DE CONTEÚDO COM IA ---
+14. Geração de modelo pelo blender-mcp (generate_3d: Hyper3D Rodin ou Hunyuan3D)
+    como base de adereços e criaturas, depois retopologia e esqueleto do jogo.
+    Gasta créditos e precisa do OK do dono a cada uso. Personagens do cânone
+    continuam modelados do zero com as referências.
+15. Mixamo (grátis com conta Adobe; usar dentro do jogo é permitido, redistribuir
+    os arquivos crus não): golpes e esquivas capturados, convertidos para o
+    esqueleto do jogo pelo mesmo caminho do tools/anim/retarget-ual.mjs.
 
 ================================================================================
 Fim do Guia — Véu Partido Engine

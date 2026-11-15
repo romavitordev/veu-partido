@@ -4,6 +4,23 @@
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
+## Tecnologias novas do guia (pedido do dono, 2026-11-15)
+
+Detalhes, motivo e cuidados de cada uma em `GUIA_TECNOLOGIAS_GAME_DEV.txt`, seção 10. PROPOSTA: nada é instalado ou
+baixado sem o OK do dono.
+- [ ] Comprimir os .glb no `build.mjs` com glTF-Transform (meshopt + WebP/KTX2): hoje 121 MB de modelos e 38 MB de arenas.
+- [ ] Netcode rollback no online (hoje lockstep com atraso fixo).
+- [ ] Servidor próprio de sinalização (PeerServer) e TURN para quem está atrás de NAT restrito.
+- [ ] Pós-processamento (bloom, aberração, vinheta) com opção de qualidade baixa.
+- [ ] three-mesh-bvh para câmera contra parede e linha de visão no Outro Lado.
+- [ ] Vibração do controle e do celular (@capacitor/haptics) pelo peso do golpe.
+- [ ] Som 3D (PannerNode) e reverberação por cenário (ConvolverNode).
+- [ ] Ragdoll no nocaute com Rapier determinístico.
+- [ ] Bateria de balanceamento sem navegador (Node/Workers ou Playwright).
+- [ ] Painel de desenvolvedor com lil-gui para o `balance.js`.
+- [ ] Atualização automática do jogo de PC (electron-updater).
+- [ ] Mais para frente: WebGPURenderer, itch.io/butler, Steam, geração de adereços por IA, Mixamo.
+
 ## Fila de personagens novos (pedido do dono, 2026-11-02)
 - [x] **Rubens Naluti** (Equipe Abutres, Calamidade) — v4.18.0: fecha os Abutres. Kit pelo cânone (Martelo, Glock
       Silenciada, faca do Johnny; Salto Fantasma, Tratar Ferimentos, Queima-Roupa, Mira de Elite, Coração Pulsante),
