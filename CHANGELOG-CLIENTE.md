@@ -2,7 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
-## v4.51.0 — Boneco de Pano
+## v4.51.1 — Animações e Queda
+- POSES DE VITÓRIA PRÓPRIAS: Artemis, Beatrice, Carina, Cindy, Damir, Eloy, Fernando, Luciano, Ivete, Rubens, Sabara, Tristan, Amalia, Gaius, Celestine, Chico, Morato, Dara, Boris e Lírio deixaram a pose genérica (ou a emprestada de outro) e ganharam a sua — a Cindy toca o Fuzil Baixo, o Rubens confere o Relógio de Arnaldo, o Luciano bate continência, a Amalia mira o céu, o Lírio ergue a Leonora, o Eloy levanta as baquetas e mais.
+- Na vitória o Tristan aparece com o lança-chamas, a Ivete com a espingarda na mão e o Chico com a Mac-10.
+
+## v4.51.0 — Animações e Queda
 - NOCAUTE COM FÍSICA: quem é nocauteado agora cai de verdade — o corpo voa para o lado do golpe, tomba e fica largado no chão, com joelhos e cotovelos dobrando do jeito certo. Cada queda é diferente, conforme o golpe.
 - ONLINE: a queda é só visual, então os dois computadores continuam sincronizados. Na primeira luta o jogo baixa a física (cerca de 1,6 MB); até chegar, o nocaute usa a animação de antes.
 

@@ -22,7 +22,7 @@ export default {
     tagline: "Hoje 'cê vai conhecer a Leonora!",
   },
   stats: { moveSpeed: 6.9 },
-  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'victory_hammer', block: 'block_hammer', blockHeavy: 'block_heavy', dash: 'dash_heavy' },
+  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'vic_lirio', block: 'block_hammer', blockHeavy: 'block_heavy', dash: 'dash_heavy' },
   // Leonora de duas mãos: a esquerda segura o cabo; andando/correndo leva a marreta no ombro
   grip: {
     twoHand: true,

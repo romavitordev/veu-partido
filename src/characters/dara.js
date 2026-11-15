@@ -32,7 +32,7 @@ export default {
     tagline: 'Fica parado que eu já te remendo.',
   },
   stats: { moveSpeed: 7.9, attackSpeed: 1.08 }, // leve e rápida (1,57 m)
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_guizo', block: 'block' },
+  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_dara', block: 'block' },
 
   melee: {
     name: 'Punhos',

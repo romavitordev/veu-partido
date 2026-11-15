@@ -26,7 +26,7 @@ export default {
     tagline: 'NO RITMO, CARALHO!',
   },
   stats: { moveSpeed: 7.7, attackSpeed: 1.12 },
-  anims: { idle: 'idle_dual', run: 'run', charge: 'charge_dual', victory: 'victory', block: 'block' },
+  anims: { idle: 'idle_dual', run: 'run', charge: 'charge_dual', victory: 'vic_eloy', block: 'block' },
   chargeFx: { style: 'default', color: BLOOD },
   dodge: { style: 'default', distance: 5 },
 

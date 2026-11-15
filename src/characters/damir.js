@@ -28,7 +28,7 @@ export default {
     tagline: 'Senta.',
   },
   stats: { moveSpeed: 7.5, attackSpeed: 1.05 },
-  anims: { idle: 'idle_nubi', run: 'run', charge: 'charge', victory: 'victory', block: 'block_weapon' },
+  anims: { idle: 'idle_nubi', run: 'run', charge: 'charge', victory: 'vic_damir', block: 'block_weapon' },
   chargeFx: { style: 'default', color: GOLD },
   dodge: { style: 'default', distance: 4.6 },
 

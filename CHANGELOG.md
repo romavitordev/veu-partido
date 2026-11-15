@@ -1,6 +1,12 @@
 # Changelog
 
-## v4.51.0 — Boneco de Pano
+## v4.51.1 — Animações e Queda
+
+### Adicionado
+- Poses de vitória próprias para 20 personagens que usavam a genérica ou a de outro; o Tristan, a Ivete e o Chico mostram a arma na vitória.
+- Teste que barra pose de vitória genérica ou emprestada.
+
+## v4.51.0 — Animações e Queda
 
 ### Adicionado
 - Ragdoll no nocaute com o Rapier determinístico (@dimforge/rapier3d-deterministic-compat 0.21.0, Apache-2.0): só visual, joelhos e cotovelos com limite; o pacote carrega na primeira luta.

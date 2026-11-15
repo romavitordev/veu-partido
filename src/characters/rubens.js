@@ -29,7 +29,7 @@ export default {
     tagline: 'Ainda bem que eu voltei. E vou continuar voltando.',
   },
   stats: { moveSpeed: 8.4, attackSpeed: 1.12 }, // pequeno e rápido (PROPOSTA)
-  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'victory', block: 'block_hammer', blockHeavy: 'block_heavy' },
+  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'vic_rubens', block: 'block_hammer', blockHeavy: 'block_heavy' },
   // martelo de duas mãos (a pegada do Balu): andando leva no ombro
   grip: {
     twoHand: true,

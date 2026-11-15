@@ -73,5 +73,52 @@ export function addVictoryClips(CLIPS, k) {
     vic_verissimo: pose({ sp: [-0.05, 0, 0], hd: [-0.12, 0, 0], sR: [-0.75, 0.3, 0], eR: [-0.7, 0, 0], sL: [-0.75, -0.3, 0], eL: [-0.7, 0, 0], lL: [-0.08, 0, 0.18], lR: [0.08, 0, -0.18] }),
     // O Anfitrião: braços abertos para a plateia invisível, a cabeça tombada (o relógio no braço esquerdo erguido)
     vic_anfitriao: pose({ sp: [-0.12, 0, 0.05], hd: [0.05, 0, 0.5], sL: [-2.3, 0, 0.9], eL: [-0.35, 0, 0], sR: [-0.9, 0, -1.2], eR: [-0.3, 0, 0], lL: [-0.1, 0, 0.18], lR: [0.1, 0, -0.18] }),
+    // ---- poses próprias (2026-11-15, pedido do dono: "personagens que ainda não têm uma pose de vitória própria").
+    // Todas PROPOSTA, cada uma tirada do jeito e da arma do cânone (o cabeçalho de cada characters/<id>.js).
+    // Artemis: o revólver Apache erguido ao lado do rosto, a outra mão na cintura e a cabeça de lado — "Gostou do que a
+    // mamãe fez?" (o Gambá fica no ombro: combat/companion.js)
+    vic_artemis: pose({ hip: [0, 0.2, 0.06], sp: [-0.05, 0.1, 0], hd: [-0.08, -0.15, 0.22], sR: [-2.45, 0.35, -0.3], eR: [-2.3, 0, 0], sL: [0.3, 0, 0.42], eL: [-1.5, 0, 0], lL: [-0.12, 0, 0.1], kL: [0.25, 0, 0] }),
+    // Beatrice: o braço esquerdo estendido de lado para o Orpheu pousar, a balestra baixa na direita e o rosto virado
+    // para o pássaro (gentil, curiosa)
+    vic_beatrice: pose({ sp: [0, 0.15, 0], hd: [-0.05, 0.5, 0.05], sL: [-1.35, -0.25, 0.65], eL: [-0.35, 0, 0], sR: [-0.3, 0, -0.2], eR: [-0.6, 0, 0], lR: [0.05, 0, -0.08], lL: [-0.05, 0, 0.08] }),
+    // Carina: a guarda de artista marcial — um punho à frente, o outro no peito, base larga e baixa (a leoa pronta)
+    vic_carina: pose({ h: -0.12, hip: [0, -0.35, 0], sp: [0.1, -0.25, 0], hd: [-0.05, 0.3, 0], sL: [-1.5, 0, 0.2], eL: [-0.25, 0, 0], sR: [-0.85, 0.6, -0.1], eR: [-2.0, 0, 0], lL: [-0.45, 0, 0.22], kL: [0.5, 0, 0], lR: [0.3, 0, -0.25], kR: [0.45, 0, 0] }),
+    // Cindy: toca o Fuzil Baixo como um baixo — a mão esquerda no braço do instrumento, a direita no corpo, o quadril
+    // de lado e a cabeça para trás cantando (com a máscara "não consegue parar de dançar")
+    vic_cindy: pose({ hip: [0, 0.25, 0.12], sp: [-0.12, -0.15, 0], hd: [-0.32, 0, 0.15], sL: [-1.3, -0.5, 0.3], eL: [-0.6, 0, 0], sR: [-0.5, 0.6, -0.1], eR: [-1.6, 0, 0], lR: [-0.2, 0, -0.06], kR: [0.4, 0, 0], lL: [0.08, 0, 0.1] }),
+    // Damir: a bengala fincada à frente na direita, a esquerda na aba do fedora e o queixo erguido (arrogante)
+    vic_damir: pose({ sp: [-0.08, 0, 0], hd: [-0.22, 0.1, 0], sR: [-0.55, 0, -0.2], eR: [-0.5, 0, 0], sL: [-1.95, -0.3, 0.5], eL: [-2.4, 0, 0], lL: [-0.06, 0, 0.12], lR: [0.06, 0, -0.12] }),
+    // Eloy: as baquetas erguidas no alto depois do solo, a cabeça baixa batendo no ritmo e as pernas abertas
+    vic_eloy: pose({ h: -0.05, sp: [0.05, 0, 0], hd: [0.42, 0, 0], sL: [-2.8, 0, 0.5], eL: [-0.35, 0, 0], sR: [-2.8, 0, -0.5], eR: [-0.35, 0, 0], lL: [-0.1, 0, 0.22], kL: [0.15, 0, 0], lR: [0.1, 0, -0.22], kR: [0.15, 0, 0] }),
+    // Fernando: a mão no peito, a outra solta, a cabeça inclinada e um alívio tímido (gentil, ansioso)
+    vic_fernando: pose({ sp: [0.08, 0, 0], hd: [0.15, 0, 0.2], sR: [-0.3, 0.75, 0], eR: [-1.45, 0, 0], sL: [0.05, 0, 0.25], eL: [-0.2, 0, 0], lL: [-0.04, 0, 0.06], lR: [0.04, 0, -0.06] }),
+    // Luciano: a continência do ex-militar, pés juntos e o olhar firme
+    vic_luciano: pose({ sp: [-0.05, 0, 0], hd: [-0.06, 0, 0], sR: [-0.55, 0, -1.35], eR: [-2.45, 0, 0], sL: [0.02, 0, 0.12], eL: [-0.1, 0, 0], lL: [0, 0, 0.03], kL: [0, 0, 0], lR: [0, 0, -0.03], kR: [0, 0, 0] }),
+    // Ivete: a espingarda solta na direita, a esquerda levando o charuto à boca, o peso numa perna (bruta e fria)
+    vic_ivete: pose({ hip: [0, 0.15, 0.04], hd: [-0.1, 0.12, 0], sL: [-1.6, 0.6, 0.3], eL: [-2.4, 0, 0], sR: [-0.2, 0, -0.25], eR: [-0.3, 0, 0], lL: [-0.12, 0, 0.1], kL: [0.22, 0, 0] }),
+    // Rubens: confere o Relógio de Arnaldo no pulso esquerdo, a cabeça baixa nele, o martelo solto na direita —
+    // "Ainda bem que eu voltei"
+    vic_rubens: pose({ sp: [0.06, 0.15, 0], hd: [0.38, 0.32, 0], sL: [-1.5, -0.7, 0.2], eL: [-1.9, 0, 0], sR: [-0.25, 0, -0.2], eR: [-0.3, 0, 0], lL: [-0.05, 0, 0.1], lR: [0.06, 0, -0.1] }),
+    // Sabara: espada e adaga abertas para baixo dos dois lados, agachada de leve, a cabeça tombada (sem olhos, só os dentes)
+    vic_sabara: pose({ h: -0.1, sp: [0.2, 0, 0], hd: [-0.15, 0, 0.28], sR: [-0.6, 0.3, -0.45], eR: [-0.35, 0, 0], sL: [-0.6, -0.3, 0.45], eL: [-0.35, 0, 0], lL: [-0.3, 0, 0.2], kL: [0.45, 0, 0], lR: [0.2, 0, -0.2], kR: [0.35, 0, 0] }),
+    // Tristan: o lança-chamas apontado para o céu, o outro punho fechado e o sorrisão (barulhento, piromaníaco)
+    vic_tristan: pose({ sp: [-0.12, 0, 0], hd: [-0.22, 0.15, 0], sR: [-1.9, 0.25, -0.55], eR: [-1.0, 0, 0], sL: [-1.0, 0.4, 0.6], eL: [-1.6, 0, 0], lL: [-0.1, 0, 0.18], lR: [0.1, 0, -0.18] }),
+    // Amalia: mira o céu com o arco (esquerda), a corda puxada junto do rosto — a flecha flamejante de sinal
+    vic_amalia: pose({ sp: [-0.2, 0, 0], hd: [-0.35, 0.1, 0], sL: [-2.4, -0.2, 0.45], eL: [-0.1, 0, 0], sR: [-2.2, 0.6, -0.1], eR: [-2.2, 0, 0], lL: [-0.1, 0, 0.16], lR: [0.1, 0, -0.16] }),
+    // Gaius: a mão nas costas doloridas e a maça pendurada na outra — cansado, mas confiante
+    vic_gaius: pose({ sp: [0.18, 0, 0], hd: [-0.05, 0, 0.1], sL: [0.35, 0, 0.35], eL: [-1.9, 0, 0], sR: [-0.25, 0, -0.3], eR: [-0.4, 0, 0], lL: [-0.05, 0, 0.1], kL: [0.12, 0, 0] }),
+    // Celestine: uma machadinha atrás da cabeça, a outra pendurada na corrente, o quadril de lado e a cabeça tombada
+    // (debochada)
+    vic_celestine: pose({ hip: [0, -0.2, 0.08], sp: [-0.05, 0.1, 0], hd: [-0.1, -0.25, -0.15], sR: [-2.5, 0.3, -0.7], eR: [-2.0, 0, 0], sL: [-0.4, 0, 0.7], eL: [-0.3, 0, 0], lL: [-0.15, 0, 0.12], kL: [0.25, 0, 0] }),
+    // Chico: o scanner estendido na esquerda e a cabeça nele, a Mac-10 de pé junto do ombro direito (o técnico)
+    vic_chico: pose({ sp: [0.05, -0.15, 0], hd: [0.15, -0.28, 0], sL: [-1.4, -0.2, 0.15], eL: [-0.4, 0, 0], sR: [-1.9, 0.4, -0.3], eR: [-2.2, 0, 0], lL: [-0.06, 0, 0.12], lR: [0.06, 0, -0.12] }),
+    // Morato: o punho erguido chamando o grupo ("Tamo com ele"), a outra mão na cintura
+    vic_morato: pose({ sp: [-0.06, 0, 0], hd: [-0.15, 0.1, 0], sR: [-2.7, 0, -0.3], eR: [-1.4, 0, 0], sL: [0.25, 0, 0.6], eL: [-1.6, 0, 0], lL: [-0.1, 0, 0.18], lR: [0.1, 0, -0.18] }),
+    // Dara: segura a alça da bolsa enorme e faz um joinha com a outra, a cabeça de lado (o suporte do grupo)
+    vic_dara: pose({ hip: [0, 0.1, 0], hd: [0.05, 0, -0.18], sL: [-0.3, 0, 0.1], eL: [-1.6, 0, 0], sR: [-0.65, 0.4, -0.5], eR: [-1.15, 0, 0], lL: [-0.05, 0, 0.1], lR: [0.06, 0, -0.1] }),
+    // Boris: a gadanha de pé ao lado, a mão no cabo, e o sorriso meigo de cabeça inclinada (sereno)
+    vic_boris: pose({ sp: [0.04, 0, 0], hd: [0.15, 0, 0.16], sR: [-0.5, 0, -0.45], eR: [-1.4, 0, 0], sL: [0.05, 0, 0.2], eL: [-0.15, 0, 0], lL: [-0.04, 0, 0.1], lR: [0.04, 0, -0.1] }),
+    // Lírio: a Leonora erguida acima da cabeça com as duas mãos, base larga e o grito (a parede)
+    vic_lirio: pose({ h: -0.1, sp: [-0.1, 0, 0], hd: [-0.4, 0, 0], sR: [-2.9, 0, -0.3], eR: [-0.6, 0, 0], sL: [-2.9, 0, 0.3], eL: [-0.6, 0, 0], lL: [-0.15, 0, 0.3], kL: [0.25, 0, 0], lR: [0.15, 0, -0.3], kR: [0.25, 0, 0] }),
   });
 }

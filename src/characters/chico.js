@@ -32,7 +32,8 @@ export default {
     tagline: 'Calma, eu conserto isso. Com fita.',
   },
   stats: { moveSpeed: 7.9, attackSpeed: 1.1 },
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_xande', block: 'block' },
+  victoryProp: 'smg', // a Mac-10 de pé junto do ombro na vitória
+  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_chico', block: 'block' },
 
   melee: {
     name: 'Punhos e chave inglesa',

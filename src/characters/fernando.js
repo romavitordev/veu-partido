@@ -32,7 +32,7 @@ export default {
     tagline: 'Você nunca perde tudo se tiver algum motivo pra lutar.',
   },
   stats: { moveSpeed: 8.5, attackSpeed: 1.06 },
-  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'victory', block: 'block_weapon' },
+  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'vic_fernando', block: 'block_weapon' },
   chargeFx: { style: 'default', color: PINK },
   dodge: { style: 'default', distance: 5.6 }, // ele foge do perigo: a esquiva vai mais longe
 

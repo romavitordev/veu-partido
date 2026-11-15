@@ -28,7 +28,7 @@ export default {
     tagline: 'Meu objetivo é matar o Diabo. Seja do lado de quem for.',
   },
   stats: { moveSpeed: 7.2, attackSpeed: 0.96 }, // grande e pesado (PROPOSTA; a vida é a mesma do elenco)
-  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'victory_hammer', block: 'block_hammer', blockHeavy: 'block_heavy', dash: 'dash_heavy' },
+  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'vic_boris', block: 'block_hammer', blockHeavy: 'block_heavy', dash: 'dash_heavy' },
   // a gadanha nas duas mãos (a pegada do machado do Balu); andando leva no ombro
   grip: {
     twoHand: true,

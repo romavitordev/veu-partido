@@ -25,7 +25,7 @@ export default {
     tagline: 'Aproveita e reza pra deixar de ser chato... Chato!', // a fala dela em Calamidade (ep. 5)
   },
   stats: { moveSpeed: 8.3, attackSpeed: 1.1 },
-  anims: { idle: 'idle_dual', run: 'run', charge: 'charge_dual', victory: 'vic_gal', block: 'block_weapon' },
+  anims: { idle: 'idle_dual', run: 'run', charge: 'charge_dual', victory: 'vic_celestine', block: 'block_weapon' },
   chargeFx: { style: 'blades', color: BLUE },
   dodge: { style: 'default' },
 

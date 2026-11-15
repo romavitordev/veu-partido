@@ -26,7 +26,7 @@ export default {
   },
   stats: { moveSpeed: 8.0, attackSpeed: 1.05 },
   ai: { style: 'zoner' }, // a CPU luta de longe com ela (kitProfile): é arqueira, não perseguidora
-  anims: { idle: 'bow_idle', run: 'run', charge: 'charge', victory: 'vic_magistrada', block: 'block_weapon' },
+  anims: { idle: 'bow_idle', run: 'run', charge: 'charge', victory: 'vic_amalia', block: 'block_weapon' },
   chargeFx: { style: 'default', color: CYAN },
   dodge: { style: 'default', distance: 5 },
 

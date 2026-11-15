@@ -1,6 +1,23 @@
 # Registro administrativo de alterações
 
-## v4.51.0 — Boneco de Pano
+## v4.51.1 — Animações e Queda
+
+- Versão: `VERSION` 4.51.0 → **4.51.1** (`package.json`/lock junto). Data: 2026-11-15. A v4.51.0 foi renomeada de
+  "Boneco de Pano" para "**Animações e Queda**" (pedido do dono) nos changelogs e no menu; a tag e a mensagem do
+  commit da v4.51.0 ficam como estavam.
+- **Poses de vitória (dono: "veja os personagens que ainda não têm uma pose de vitória própria"):** 20 clipes novos
+  em `anim/victoryClips.js` (todos PROPOSTA a partir do cabeçalho de cânone de cada personagem): `vic_artemis,
+  vic_beatrice, vic_carina, vic_cindy, vic_damir, vic_eloy, vic_fernando, vic_luciano, vic_ivete, vic_rubens,
+  vic_sabara, vic_tristan, vic_amalia, vic_gaius, vic_celestine, vic_chico, vic_morato, vic_dara, vic_boris,
+  vic_lirio`. Antes: 12 usavam a genérica `victory`, Amalia e Gaius a da Magistrada, Celestine a do Gal, Chico e
+  Morato a do Xande, Dara a do Guizo, Boris e Lírio dividiam `victory_hammer`.
+- `World.showVictoryLineup`: `def.victoryProp` aceita `'a+b'` e o novo `def.victoryHide` esconde uma peça. Tristan
+  `flameLance+flameTanks`, Ivete `shotgun` (esconde `shotgunBack`), Chico `smg`.
+- `tests/victory-poses.test.js`: todo personagem do ROSTER com pose própria (versões do mesmo `baseId` podem dividir;
+  as três criaturas do Outro Lado rugem). Conferido no jogo, retrato por retrato; ajustados a mão do Fernando, as
+  lâminas da Sabara, o joinha da Dara, a cintura da Artemis e o braço do Tristan.
+
+## v4.51.0 — Animações e Queda
 
 - Versão: `VERSION` 4.50.0 → **4.51.0** (`package.json`/lock junto). Data: 2026-11-15.
 - **@dimforge/rapier3d-deterministic-compat 0.21.0 (Apache-2.0, dependência; dono: "Sim, próximo item"):** a versão

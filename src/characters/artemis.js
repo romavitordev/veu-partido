@@ -29,7 +29,7 @@ export default {
     tagline: 'Gostou do que a mamãe fez?',
   },
   stats: { moveSpeed: 7.6, attackSpeed: 1.08 },
-  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'victory', block: 'block' },
+  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'vic_artemis', block: 'block' },
   chargeFx: { style: 'default', color: BLOOD },
   dodge: { style: 'default', distance: 5 },
   // o companheiro: o Gambá anda com ela (combat/companion.js); a passiva companionAttack faz ele dar o bote às vezes

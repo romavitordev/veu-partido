@@ -26,7 +26,8 @@ export default {
     tagline: 'Se for pra se jogar na frente de alguém, que seja na frente de todos.',
   },
   stats: { moveSpeed: 8.3, attackSpeed: 1.0 },
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'victory', block: 'block' },
+  victoryProp: 'flameLance+flameTanks', // o lança-chamas à mostra na vitória (no resto do tempo só no jato)
+  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_tristan', block: 'block' },
   chargeFx: { style: 'default', color: FIRE },
   dodge: { style: 'default', distance: 5.0 },
 

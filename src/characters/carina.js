@@ -34,7 +34,7 @@ export default {
     tagline: 'Todos os Leone vivem dentro de mim.',
   },
   stats: { moveSpeed: 8.1, attackSpeed: 1.1 }, // Agilidade (cânone)
-  anims: { idle: 'idle_flail', run: 'run', charge: 'charge_fists', victory: 'victory', block: 'block' },
+  anims: { idle: 'idle_flail', run: 'run', charge: 'charge_fists', victory: 'vic_carina', block: 'block' },
   chargeFx: { style: 'default', color: GOLD },
   dodge: { style: 'default', distance: 5.4 },
 

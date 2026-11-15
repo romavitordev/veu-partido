@@ -33,7 +33,7 @@ export default {
     tagline: 'Ninguém toca nele.',
   },
   stats: { moveSpeed: 8.9, attackSpeed: 1.16 },
-  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'victory', block: 'block_weapon' },
+  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'vic_luciano', block: 'block_weapon' },
   chargeFx: { style: 'aura', color: YELLOW, smoke: 0x1a1608 },
   dodge: { style: 'default' },
 

@@ -30,7 +30,7 @@ export default {
     tagline: 'Saber tudo é perder tudo.',
   },
   stats: { moveSpeed: 8.3, attackSpeed: 1.1 },
-  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'victory', block: 'block_weapon' },
+  anims: { idle: 'idle_knife', run: 'run', charge: 'charge', victory: 'vic_beatrice', block: 'block_weapon' },
   chargeFx: { style: 'default', color: GOLD },
   dodge: { style: 'default', distance: 5.2 },
 

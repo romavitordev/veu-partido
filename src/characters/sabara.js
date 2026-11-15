@@ -26,7 +26,7 @@ export default {
     tagline: 'De joelhos.',
   },
   stats: { moveSpeed: 8.3, attackSpeed: 1.12 }, // pequena e rápida
-  anims: { idle: 'idle_dual', run: 'run', charge: 'charge_dual', victory: 'victory', block: 'block_weapon' },
+  anims: { idle: 'idle_dual', run: 'run', charge: 'charge_dual', victory: 'vic_sabara', block: 'block_weapon' },
   chargeFx: { style: 'default', color: BLOOD },
   dodge: { style: 'default', distance: 5.4 },
 

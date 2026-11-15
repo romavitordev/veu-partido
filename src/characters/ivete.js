@@ -27,7 +27,9 @@ export default {
     tagline: 'Busca um motivo e se agarra nele com toda força.',
   },
   stats: { moveSpeed: 7.9, attackSpeed: 0.97 },
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'victory', block: 'block' },
+  victoryProp: 'shotgun', // a espingarda na mão na vitória
+  victoryHide: 'shotgunBack',
+  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_ivete', block: 'block' },
   chargeFx: { style: 'default', color: SHELL },
   dodge: { style: 'default', distance: 4.6 },
 

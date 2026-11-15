@@ -26,7 +26,7 @@ export default {
     tagline: 'Ah, a juventude... Senta aí, que o velho vai te mostrar.',
   },
   stats: { moveSpeed: 7.2, attackSpeed: 0.95 },
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge', victory: 'vic_magistrada', block: 'block_weapon' },
+  anims: { idle: 'idle_fist', run: 'run', charge: 'charge', victory: 'vic_gaius', block: 'block_weapon' },
   chargeFx: { style: 'default', color: PURPLE },
   dodge: { style: 'default' },
 

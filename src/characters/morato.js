@@ -32,7 +32,7 @@ export default {
     tagline: 'Tamo com ele.',
   },
   stats: { moveSpeed: 7.5, attackSpeed: 1.0 },
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_xande', block: 'block' },
+  anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_morato', block: 'block' },
 
   melee: {
     name: 'Punhos de agente',

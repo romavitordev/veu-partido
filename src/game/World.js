@@ -151,7 +151,8 @@ export class World {
       const anim = new Animator(rig, def.anims);
       const actor = { def, rig, anim, index };
       // arma que só aparece em uso (ex.: a sniper do Arthur) pode ficar à mostra na pose de vitória
-      if (def.victoryProp && rig.props && rig.props[def.victoryProp]) rig.showProp(def.victoryProp, true);
+      if (def.victoryProp && rig.props) rig.showProp(def.victoryProp, true); // 'a+b' mostra as duas peças
+      if (def.victoryHide && rig.props) rig.showProp(def.victoryHide, false); // a cópia da arma nas costas some
       if (index === 0 && altFace) swapPaintedTexture(rig.root, altFace[0], altFace[1]);
       this.scene.add(rig.root);
       anim.play('victory', { blend: 0 });

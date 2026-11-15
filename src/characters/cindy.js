@@ -28,7 +28,7 @@ export default {
     tagline: 'Para, Caio! Eu sou baixinha!',
   },
   stats: { moveSpeed: 8.1, attackSpeed: 1.06 },
-  anims: { idle: 'idle_bass', run: 'run', charge: 'charge', victory: 'victory', block: 'block' },
+  anims: { idle: 'idle_bass', run: 'run', charge: 'charge', victory: 'vic_cindy', block: 'block' },
   chargeFx: { style: 'default', color: PINK },
   dodge: { style: 'default', distance: 5.4 },
   passives: [
