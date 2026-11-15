@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.52.0 — Explorador
+
+### Adicionado
+- Modo Explorar escondido na tela inicial: voo livre pelo cenário escolhido, com colisão em paredes e chão (Espaço sobe, Ctrl desce, mouse ou analógico direito olha).
+- Teste da colisão do modo Explorar.
+
 ## v4.51.3 — Animações e Queda
 
 ### Adicionado

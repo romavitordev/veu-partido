@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v4.52.0 — Explorador
+
+- Versão: `VERSION` 4.51.3 → **4.52.0** (`package.json`/lock junto). Data: 2026-11-15.
+- **Modo Explorar (dono: "um botão meio escondido, não no menu ... tipo o modo espectador do Minecraft, só que com
+  colisão nas paredes e chão"):** `HomeScreen` ganhou o botão `.hexplore` (◉, opacidade 0,14, canto de cima à
+  direita; L3 + R3 juntos no controle) → estado `explorestage` (a `StageSelectScreen` com `title`/`confirmLabel` novos;
+  o aleatório sorteia um cenário) → estado `explore` com `game/Explorer.js`. Esc/B volta à seleção; de lá, ao menu.
+- `Explorer`: um `World` só com o cenário (sem lutadores), câmera de voo para onde olha (yaw/pitch, ordem YXZ), o
+  `input.freeLook` do Outro Lado para o mouse (trava o ponteiro já ao entrar; clique trava se o navegador recusar) e o
+  analógico direito. Teclas pedidas pelo dono: Espaço sobe, Ctrl desce (R2/L2 no controle); Shift/L3 corre. Os atalhos
+  do navegador com Ctrl são bloqueados enquanto explora (o Ctrl+W do Chrome não dá para bloquear — avisar).
+- Colisão: `moveWithCollision` anda em passos de 0,25 m; cada passo é um raio (BVH) contra `solidMeshes` (tudo visível
+  do cenário menos céu de lado de dentro, transparências e névoa); ao bater fica a 0,35 m e desliza pela superfície
+  (até 3 por passo), depois empurra para fora pelos seis eixos. Teto 70 m, raio 3× o da arena. Conferido no Coliseu:
+  para a 21,03 m na muralha (raio 21,4) e sai só pelo portão aberto.
+
 ## v4.51.3 — Animações e Queda
 
 - Versão: `VERSION` 4.51.2 → **4.51.3** (`package.json`/lock junto). Data: 2026-11-15.

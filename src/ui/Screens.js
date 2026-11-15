@@ -113,6 +113,7 @@ export class HomeScreen {
       </div>
       <div class="hsoon" hidden><div class="hsoon-box"><span class="hsoon-tag">${t('menu.soon')}</span><h3></h3><p>${t('menu.soon.text')}</p><div class="hsoon-ok">${t('menu.soon.ok')}</div></div></div>
       <div class="ver">${VERSION_LABEL}</div>
+      <button class="hexplore" type="button" title="Explorar os cenários" aria-label="Explorar os cenários">◉</button>
       <div class="foot">${touchOnly ? `<span>${t('menu.foot_touch')}</span>` : `<span>${t('menu.foot_confirm', { ok: OK, back: BACK })}</span><span>${t('menu.foot_keys')}</span>`}</div>`);
     this.desc = this.el.querySelector('.hdesc');
     this.listEl = this.el.querySelector('.hlist');
@@ -123,6 +124,9 @@ export class HomeScreen {
     this.parent = null;
     this.buildList();
     this.el.addEventListener('click', () => { if (!this.menu) this.tapped = true; });
+    // MODO EXPLORAR (pedido do dono, 2026-11-15): o olho quase apagado no canto — fora do menu, de propósito.
+    // No controle: L3 + R3 juntos no menu.
+    this.el.querySelector('.hexplore').addEventListener('click', (e) => { e.stopPropagation(); this.explore = true; });
     this.setMenu(menu);
     this.fillPortraits();
   }
@@ -210,6 +214,10 @@ export class HomeScreen {
   // 'start' (saiu do "pressione start"), id da opção, ou null
   update(input) {
     if (!this.portraitsReady) this.fillPortraits();
+    const pad = navigator.getGamepads ? [...navigator.getGamepads()].find((g) => g && g.buttons[10] && g.buttons[10].pressed && g.buttons[11] && g.buttons[11].pressed) : null;
+    const sticks = !!pad && !this.sticksHeld;
+    this.sticksHeld = !!pad;
+    if (this.explore || (this.menu && sticks && !this.soonOpen)) { this.explore = false; if (!this.menu) this.setMenu(true); return 'explore'; }
     if (!this.menu) {
       const go = this.tapped || input.keyPressedOnce('Enter') || input.players.some((x) => startGo(x, input) || confirm(x));
       this.tapped = false;
@@ -849,7 +857,7 @@ const STAGE_PAGE_SIZE = 16;
 const STAGE_COLS = 8;
 
 export class StageSelectScreen {
-  constructor(root, { audio, prev, thumbs = {} }) {
+  constructor(root, { audio, prev, thumbs = {}, title = null, confirmLabel = null }) {
     this.audio = audio;
     this.list = ARENA_ORDER.map((id) => ({ id, ...ARENAS[id] }));
     const prevIdx = prev ? this.list.findIndex((a) => a.id === prev) : -1;
@@ -861,7 +869,7 @@ export class StageSelectScreen {
     this.el = el(root, 'screen', 'stage', `
       <div class="sbg"><div class="sbg-l"></div><div class="sbg-l"></div></div>
       <div class="sshade"></div>
-      <h2 class="stitle">${t('stage.title')}</h2>
+      <h2 class="stitle">${title || t('stage.title')}</h2>
       <div class="sband"><div class="sname"></div><div class="sdesc"></div></div>
       <div class="stray">
         <div class="stage-nav-bar${this.pageCount < 2 ? ' single' : ''}">
@@ -886,7 +894,7 @@ export class StageSelectScreen {
           <button class="stage-side-arrow right${this.pageCount < 2 ? ' single' : ''}" type="button" aria-label="Próxima página" title="Próxima página (▶)">▶</button>
         </div>
       </div>
-      <button class="stage-confirm" type="button">${t('stage.confirm')}</button>
+      <button class="stage-confirm" type="button">${confirmLabel || t('stage.confirm')}</button>
       <div class="hint">${t('stage.hint', { ok: OK, jump: actionLabel(0, 'jump'), rand: RAND, carga: actionLabel(0, 'carga'), back: BACK, phys: actionLabel(0, 'physical') })} · <kbd>◀</kbd>/<kbd>▶</kbd> páginas</div>`);
     this.cards = [...this.el.querySelectorAll('.stagecard')];
     this.nameEl = this.el.querySelector('.sname');

@@ -1903,3 +1903,12 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 @keyframes sigAmbHit { 0% { opacity: .16; } 100% { opacity: .035; } }
 @keyframes sigAmbHitBoss { 0% { opacity: .3; } 100% { opacity: .075; } }
 @media (prefers-reduced-motion: reduce) { #sigamb .lines, #sigamb .band { animation: none; } #sigamb .snow { animation: none; } }
+
+/* MODO EXPLORAR: o olho quase apagado da tela inicial (fora do menu, de propósito) e a ajuda por cima do cenário */
+#home .hexplore { position: absolute; right: 14px; top: 12px; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #b8a8e0; font-size: 16px; line-height: 28px; opacity: .14; cursor: pointer; transition: opacity .25s, transform .25s; z-index: 5; }
+#home .hexplore:hover, #home .hexplore:focus-visible { opacity: .9; transform: scale(1.15); outline: none; }
+.explore-hud { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 20; pointer-events: none; text-align: center; color: #eee; font: 600 13px/1.5 system-ui, sans-serif; text-shadow: 0 1px 3px #000; transition: opacity 1s; max-width: calc(100vw - 32px); }
+.explore-hud .ex-name { font-size: 18px; font-weight: 800; letter-spacing: .1em; color: #e8d8ff; margin-bottom: 6px; }
+.explore-hud .ex-help { background: #0009; border-radius: 8px; padding: 6px 12px; }
+.explore-hud.faded .ex-help { opacity: 0; transition: opacity 1s; }
+.explore-hud.faded .ex-name { opacity: .45; }

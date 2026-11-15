@@ -19,6 +19,7 @@ import { loadLearned } from './ai/learner.js';
 import { ROSTER } from './characters/index.js';
 import { validatePassives } from './combat/passives.js';
 import { Match } from './game/Match.js';
+import { Explorer } from './game/Explorer.js';
 import { CpuController } from './ai/CpuController.js';
 import { ARENAS, ARENA_ORDER, DEFAULT_ARENA, preloadArenas } from './arena/index.js';
 import { SETTINGS, cycleSetting, saveSettings, TIMER_OPTIONS, timerLabel, cpuLabel, LANGUAGE_OPTIONS, languageLabel, FX_OPTIONS, RUMBLE_OPTIONS, LINES_OPTIONS, GFX_OPTIONS, gfxLabel, gfxProfile, autoGraphics } from './config/settings.js';
@@ -150,6 +151,7 @@ function setOverlay(state, overlay) {
 function toMainMenu() {
   if (game.net) { endNet('Partida online encerrada.', true); return; }
   endMatch();
+  endExplore();
   setOverlay(null, null);
   closeTowerStage();
   game.towerRun = null;
@@ -192,6 +194,26 @@ function toSelect() {
   setOverlay(null, null);
   const locked = game.mode.kind === 'pve' && game.pve ? game.pve.lockedChars() : null;
   setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind === 'pve' && game.mode.coop ? 'pvecoop' : game.mode.kind, team: !!game.mode.team, locked }));
+}
+
+// MODO EXPLORAR: escolhe o cenário e voa por ele (game/Explorer.js)
+function toExploreStage() {
+  endMatch();
+  endExplore();
+  setOverlay(null, null);
+  setScreen('explorestage', new StageSelectScreen(screens, { audio, prev: game.exploreArena, thumbs: arenaThumbs, title: 'EXPLORAR UM CENÁRIO', confirmLabel: 'EXPLORAR' }));
+}
+
+function startExplore(id) {
+  const avail = ARENA_ORDER.filter((a) => ARENAS[a].available);
+  if (!ARENAS[id] || !ARENAS[id].available) id = avail[Math.floor(Math.random() * avail.length)]; // aleatório
+  game.exploreArena = id;
+  setScreen('explore', null);
+  game.explorer = new Explorer({ renderer, audio, input, root: screens, arenaId: id });
+}
+
+function endExplore() {
+  if (game.explorer) { game.explorer.dispose(); game.explorer = null; }
 }
 
 function toStage() {
@@ -687,6 +709,7 @@ watchViewport(() => {
     cam.updateProjectionMatrix();
   }
   if (game.match) game.match.world.layoutVictoryLineup();
+  if (game.explorer) game.explorer.resize(w, h);
   placeVictoryLabels();
   if (game.touch) game.touch.layout();
 });
@@ -1037,6 +1060,7 @@ function tick(dt) {
         }
       }
       else if (c === 'news') { audio.play('confirm'); setOverlay('news', new ChangelogScreen(screens)); }
+      else if (c === 'explore') { audio.play('confirm'); toExploreStage(); }
       else if (c === 'lan') { audio.play('confirm'); openOnline(); }
       else if (c === 'tournament') {
         audio.play('confirm');
@@ -1152,6 +1176,15 @@ function tick(dt) {
       else if (c === 'go') toStage();
       break;
     }
+    case 'explorestage': {
+      const id = game.screen.update(input);
+      if (id === 'back') { audio.play('select'); toMainMenu(); }
+      else if (id) startExplore(id);
+      break;
+    }
+    case 'explore':
+      if (game.explorer && game.explorer.update(dt) === 'exit') { audio.play('select'); toExploreStage(); }
+      break;
     case 'stage': {
       const id = game.screen.update(input);
       if (id === 'back') toConfig();
@@ -1273,6 +1306,9 @@ function render() {
   if (game.match && (game.state === 'fight' || game.state === 'pause' || game.state === 'result' || game.state === 'commands')) {
     setStaticBg(false);
     game.match.render();
+  } else if (game.state === 'explore' && game.explorer) {
+    setStaticBg(false);
+    game.explorer.render();
   } else if (game.state === 'towerview' && game.towerStage) {
     setStaticBg(false);
     game.towerStage.render(renderer);

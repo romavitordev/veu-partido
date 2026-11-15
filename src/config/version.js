@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.51.3';
+export const VERSION = '4.52.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.52.0',
+    date: '2026-11-15',
+    title: 'Explorador',
+    items: [
+      'MODO EXPLORAR (segredo): um olho quase apagado no canto de cima da tela inicial (ou L3 + R3 juntos no controle) abre a seleção de cenários; escolha um e voe por ele como espectador para ver o mapa inteiro — sem atravessar parede nem chão.',
+      'Controles: o mouse ou o analógico direito olham; WASD ou o analógico esquerdo andam para onde você olha; Espaço sobe, Ctrl desce (R2/L2 no controle); Shift ou L3 corre; Esc ou B sai.',
+    ],
+  },
   {
     v: '4.51.3',
     date: '2026-11-15',
