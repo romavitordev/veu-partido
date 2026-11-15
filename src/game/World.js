@@ -14,6 +14,7 @@ import { SETTINGS } from '../config/settings.js';
 import { updateRiddle, cancelRiddle } from '../combat/riddle.js';
 import { postFX, MOOD } from '../render/postfx.js';
 import { accelerate } from '../render/bvh.js';
+import { acousticsFor } from '../audio/acoustics.js';
 
 const RAY = new THREE.Raycaster();
 
@@ -39,6 +40,13 @@ function recoverFighter(f) {
 
 // Tudo que existe dentro de uma luta: cena, arena, lutadores, projéteis,
 // efeitos, câmera, cinematics e congelamento de impacto (hitstop).
+// SOM 3D: o que quem está agindo tocar sai da posição dele (AudioManager.play lê audio.emitter)
+function emitAt(audio, pos, fn) {
+  const prev = audio.emitter;
+  audio.emitter = pos || null;
+  try { return fn(); } finally { audio.emitter = prev; }
+}
+
 export class World {
   constructor({ renderer, audio, input, ui }) {
     this.renderer = renderer;
@@ -69,6 +77,9 @@ export class World {
     this.arena = A.create();
     this.arena.build(this.scene);
     accelerate(this.arena.group); // raios rápidos no cenário (render/bvh.js): câmera, paredes, linha de visão
+    // SOM 3D + ECO DO CENÁRIO (audio/acoustics.js): a câmera ouve; a sala dá o eco
+    this.audio.listener = this.camera;
+    if (this.audio.setAcoustics) this.audio.setAcoustics(acousticsFor(arenaId));
     // as salas do Outro Lado como arena de luta: portas, armários, gavetas e caixas (arena/fightDressing.js)
     this.dressing = this.arena.dressing ? dressFightRoom(this, this.arena.dressing) : null;
     this.fighters = defs.map((def, i) => new Fighter(def, i, this, this.input.players[i]));
@@ -383,11 +394,11 @@ export class World {
     } else if (this.cinematic) {
       // mundo congelado: só quem está no especial se mexe
       const { actor, target } = this.cinematic;
-      actor.update(dt);
+      emitAt(this.audio, actor.pos, () => actor.update(dt));
       for (const f of this.fighters) if (f !== actor) f.updatePresentation(dt);
       // o Especial em Equipe é uma cena da equipe inteira: a equipe de quem está na cena (assistências e convidados) se mexe
-      if (actor.assists) for (const a of actor.assists) if (a && a.active) a.update(dt);
-      if (actor.teamGuests) for (const a of actor.teamGuests) a.update(dt);
+      if (actor.assists) for (const a of actor.assists) if (a && a.active) emitAt(this.audio, a.pos, () => a.update(dt));
+      if (actor.teamGuests) for (const a of actor.teamGuests) emitAt(this.audio, a.pos, () => a.update(dt));
       void target;
     } else if (simulate) {
       this.tickTimers(dt);
@@ -407,9 +418,9 @@ export class World {
       }
       for (let i = this.zones.length - 1; i >= 0; i--) if (!this.zones[i].alive) this.zones.splice(i, 1);
       for (const f of this.fighters) {
-        try { f.update(dt); } catch (e) { reportWorldError('lutador', e); recoverFighter(f); }
+        try { emitAt(this.audio, f.pos, () => f.update(dt)); } catch (e) { reportWorldError('lutador', e); recoverFighter(f); }
       }
-      for (const f of this.fighters) if (f.assists) for (const a of f.assists) a.update(dt); for (const f of this.fighters) if (f.teamGuests) for (const a of f.teamGuests) a.update(dt); // convidados do Especial em Equipe (teamSpecials.js)
+      for (const f of this.fighters) if (f.assists) for (const a of f.assists) emitAt(this.audio, a.pos, () => a.update(dt)); for (const f of this.fighters) if (f.teamGuests) for (const a of f.teamGuests) emitAt(this.audio, a.pos, () => a.update(dt)); // convidados do Especial em Equipe (teamSpecials.js)
       for (const n of this.npcs) {
         // OFUSCADO (luz na cara: abilities.js stunNpc): parado, sem agir, até passar
         if (n.stunT > 0) {
@@ -417,7 +428,7 @@ export class World {
           if (n.alive && Math.random() < dt * 6) this.fx.burst(new THREE.Vector3(n.pos.x + (Math.random() - 0.5) * 0.5, (n.pos.y || 0) + 1.9, n.pos.z + (Math.random() - 0.5) * 0.5), { count: 1, color: 0xfff2b0, speed: 0.6, life: 0.4, size: 0.07 });
           continue;
         }
-        try { n.update(dt); } catch (e) {
+        try { emitAt(this.audio, n.pos, () => n.update(dt)); } catch (e) {
           reportWorldError('NPC', e);
           n.alive = false;
           try { n.dispose && n.dispose(); } catch { /* já saiu do jogo */ }
@@ -460,6 +471,8 @@ export class World {
     for (const f of this.fighters || []) { if (f.assists) for (const a of f.assists) a.reset(); if (f.teamGuests) { for (const a of f.teamGuests) a.reset(); f.teamGuests = null; } }
     this.endCinematic();
     this.audio.stopAllLoops();
+    if (this.audio.setAcoustics) this.audio.setAcoustics(null); // menus: sem eco
+    this.audio.emitter = null;
     this.projectiles.clear();
     this.fx.clear();
     disposeSkeletons(this.scene);

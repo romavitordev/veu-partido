@@ -1,5 +1,24 @@
 # Registro administrativo de alterações
 
+## v4.50.0 — Ecos da Sala
+
+- Versão: `VERSION` 4.49.0 → **4.50.0** (`package.json`/lock junto). Data: 2026-11-15. Sem dependência nova.
+- **Som 3D sem mexer nas ~700 chamadas de `audio.play`:** o `AudioManager` ganhou `listener` (a câmera, posta em
+  `World.setup`) e `emitter` (a posição de quem está agindo). `World.update` marca o emissor em volta de
+  `f.update`, das assistências/convidados, dos NPCs e do ator da cena (`emitAt`, que devolve o anterior);
+  `projectiles.update` marca cada projétil (try/finally). `damage.js` passa `pos: victim.pos` no impacto e no Bloqueio
+  Perfeito. Só o canal `sfx` é posicionado (menu e zumbidos não): `_route` põe ganho + `StereoPannerNode` antes do
+  canal. `spatialize(cam, pos)` em `src/audio/acoustics.js`: lado = x na câmera / profundidade (até ±0,8), volume 1
+  até 12 m e depois 12/d (mínimo 0,35). StereoPanner em vez de PannerNode/HRTF: a luta é lida da tela e custa menos.
+- **Eco por cenário:** canal `sfx` → `reverbSend` (wet) → `ConvolverNode` → geral. Resposta gerada na hora
+  (`_impulse`: ruído estéreo caindo 60 dB em `time` s, filtro de um polo que escurece a cauda por `damp`), sem
+  arquivo. Tabela `ACOUSTICS` para todos os cenários (Igreja 3,2 s/0,30; Torre 2,2 s; Mansão 1,6 s; Escola 1,4 s;
+  Bar 0,9 s/0,16; ar livre 0,5–0,8 s/0,05–0,09). `World.setup` chama `setAcoustics(acousticsFor(arenaId))`;
+  `World.dispose` desliga (menus sem eco).
+- `tests/acoustics.test.js` (2): lado e volume pela câmera; todo id de `ARENAS` tem eco. Testado no jogo (Igreja,
+  CPU × CPU por 30 s): 87 de 87 sons posicionados, lados de -0,28 a +0,4, nenhum emissor preso, sem erro; eco de
+  3,2 s montado. NÃO ouvido com fone pelo dono.
+
 ## v4.49.0 — O Peso do Golpe
 
 - Versão: `VERSION` 4.48.1 → **4.49.0** (`package.json`/lock junto). Data: 2026-11-15.

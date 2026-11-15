@@ -193,7 +193,7 @@ export function applyHit(world, attacker, victim, o) {
         // Bloqueio Perfeito: nega o dano e abre janela de contra-ataque
         const p = victim.chestPos();
         world.fx.play('FX_PERFECT_BLOCK', p, { color: victim.def.energyColor, yaw: victim.yaw });
-        world.audio.play('perfectBlock');
+        world.audio.play('perfectBlock', { pos: victim.pos });
         world.hitstop(0.12);
         victim.notify('BLOQUEIO PERFEITO!', true);
         // golpe físico: o atacante fica aberto; projétil: só é anulado
@@ -320,7 +320,7 @@ export function applyHit(world, attacker, victim, o) {
     victim.notify('NO CHÃO!', true);
   }
   if (attacker.buffMultiplierActive(o.kind)) world.fx.play('FX_ENERGY', p);
-  world.audio.play(o.sound || 'impact', { volume: launch ? 1.1 : 0.9 });
+  world.audio.play(o.sound || 'impact', { volume: launch ? 1.1 : 0.9, pos: victim.pos });
   world.hitstop(hitstopFor({ ...o, launch }, dealt));
   world.cameraRig.shake(launch ? 0.35 : 0.15, 0.2);
   rumbleHit(world, attacker, victim, dealt, o, launch); // vibração do controle pelo peso do golpe (input/rumble.js)

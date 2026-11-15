@@ -2,6 +2,7 @@
 // SOUND_FILES (src/audio/soundFiles.js, gerado por tools/import-sounds.py a partir dos pacotes CC0), um dos arquivos
 // é sorteado a cada toque, com uma pequena variação de tom. Arquivo que não carregar → volta ao som sintetizado.
 import { SOUND_FILES } from './soundFiles.js';
+import { spatialize } from './acoustics.js';
 
 export { SOUND_FILES };
 const BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '';
@@ -22,6 +23,66 @@ export class AudioManager {
     this.buses = null;
     this.out = null; // canal do som que está sendo montado agora (os blocos de síntese ligam nele)
     this.loops = new Map();
+    // SOM 3D (audio/acoustics.js): a câmera que ouve e de onde vem o som que está tocando agora. O mundo marca a
+    // posição de quem está agindo (World.update: lutadores, NPCs, projéteis) — as centenas de audio.play dos golpes
+    // não precisam passar a posição; quem quiser, passa opts.pos
+    this.listener = null;
+    this.emitter = null;
+    this.acoustics = null;
+  }
+
+  // de onde vem o som tocado dentro de fn (volta ao anterior depois)
+  at(pos, fn) {
+    const prev = this.emitter;
+    this.emitter = pos;
+    try { return fn(); } finally { this.emitter = prev; }
+  }
+
+  // o destino de um som do canal sfx: com posição, passa por volume + lado antes do canal
+  _route(bus, ch, opts) {
+    const pos = opts.pos || this.emitter;
+    if (ch !== 'sfx' || !pos || !this.listener) return bus;
+    const s = spatialize(this.listener, pos);
+    if (!s) return bus;
+    const g = this.ctx.createGain();
+    g.gain.value = s.gain;
+    if (this.ctx.createStereoPanner && Math.abs(s.pan) > 0.02) {
+      const p = this.ctx.createStereoPanner();
+      p.pan.value = s.pan;
+      g.connect(p).connect(bus);
+    } else g.connect(bus);
+    return g;
+  }
+
+  // ECO DO CENÁRIO (audio/acoustics.js): { time, wet, damp } ou null (menus: sem eco)
+  setAcoustics(a) {
+    this.acoustics = a || null;
+    if (!this.ctx || !this.reverbSend) return;
+    const t = this.ctx.currentTime;
+    this.reverbSend.gain.setTargetAtTime(a ? a.wet : 0, t, 0.15);
+    if (!a) return;
+    const key = `${a.time}|${a.damp}`;
+    if (this.reverbKey === key) return;
+    this.reverbKey = key;
+    this.convolver.buffer = this._impulse(a.time, a.damp ?? 0.5);
+  }
+
+  // resposta de uma sala: ruído estéreo que cai 60 dB em `time` s, cada vez mais abafado (damp)
+  _impulse(time, damp) {
+    const sr = this.ctx.sampleRate;
+    const len = Math.max(1, Math.floor(sr * Math.min(4, time)));
+    const buf = this.ctx.createBuffer(2, len, sr);
+    for (let c = 0; c < 2; c++) {
+      const d = buf.getChannelData(c);
+      let lp = 0;
+      for (let i = 0; i < len; i++) {
+        const k = i / len;
+        const a = Math.min(0.97, damp * (0.3 + k)); // filtro de um polo: o fim da cauda fica mais grave
+        lp = lp * a + (Math.random() * 2 - 1) * (1 - a);
+        d[i] = lp * Math.exp(-6.9 * k) * (i < sr * 0.004 ? i / (sr * 0.004) : 1);
+      }
+    }
+    return buf;
   }
 
   // volume GERAL (OPÇÕES): 0..1 sobre o volume base
@@ -59,6 +120,12 @@ export class AudioManager {
       g.connect(this.master);
       this.buses[ch] = g;
     }
+    // eco: os efeitos da luta mandam uma parte para a "sala" (ConvolverNode), que volta no geral
+    this.convolver = this.ctx.createConvolver();
+    this.reverbSend = this.ctx.createGain();
+    this.reverbSend.gain.value = 0;
+    this.buses.sfx.connect(this.reverbSend).connect(this.convolver).connect(this.master);
+    if (this.acoustics) { const a = this.acoustics; this.acoustics = null; this.setAcoustics(a); }
     this.noiseBuf = this._makeNoise(1.5);
     for (const [name, urls] of Object.entries(SOUND_FILES)) for (const url of [].concat(urls)) this._load(name, url);
   }
@@ -95,14 +162,16 @@ export class AudioManager {
       src.playbackRate.value = (opts.pitch ?? 1) * (0.95 + Math.random() * 0.1);
       const g = this.ctx.createGain();
       g.gain.value = vol;
-      src.connect(g).connect(this.buses[this.channelOf(name)]);
+      const ch = this.channelOf(name);
+      src.connect(g).connect(this._route(this.buses[ch], ch, opts));
       src.start();
       return;
     }
     const synth = SYNTHS[name];
     if (!synth) return;
     const prev = this.out; // um som pode tocar outro por dentro (ex.: a explosão chama o soco pesado)
-    this.out = this.buses[this.channelOf(name)];
+    const ch = this.channelOf(name);
+    this.out = this._route(this.buses[ch], ch, opts);
     try { synth(this, this.ctx.currentTime, vol, opts); } finally { this.out = prev; }
   }
 

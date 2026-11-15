@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.50.0 — Ecos da Sala
+
+### Adicionado
+- Som 3D: golpes, impactos e projéteis saem do lado da tela onde acontecem e baixam com a distância da câmera.
+- Eco por cenário (ConvolverNode, gerado na hora): longo na Igreja, de sala na Torre/Mansão/Escola, quase nada ao ar livre.
+
 ## v4.49.0 — O Peso do Golpe
 
 ### Adicionado

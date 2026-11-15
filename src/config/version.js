@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.49.0';
+export const VERSION = '4.50.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.50.0',
+    date: '2026-11-15',
+    title: 'Ecos da Sala',
+    items: [
+      'SOM DE QUE LADO VEM: o golpe, o impacto e o projétil saem do lado da tela onde acontecem (esquerda ou direita), e o que está longe da câmera soa mais baixo — no Outro Lado dá para ouvir o monstro antes de vê-lo.',
+      'ECO DE CADA CENÁRIO: a Igreja ecoa longo como uma nave de pedra, a Torre e a Mansão têm eco de sala fechada, o Bar é curto e abafado, e ao ar livre quase não há eco. Os sons de menu continuam secos.',
+    ],
+  },
   {
     v: '4.49.0',
     date: '2026-11-15',

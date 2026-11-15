@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.50.0 — Ecos da Sala
+- SOM DE QUE LADO VEM: o golpe, o impacto e o projétil saem do lado da tela onde acontecem (esquerda ou direita), e o que está longe da câmera soa mais baixo — no Outro Lado dá para ouvir o monstro antes de vê-lo.
+- ECO DE CADA CENÁRIO: a Igreja ecoa longo como uma nave de pedra, a Torre e a Mansão têm eco de sala fechada, o Bar é curto e abafado, e ao ar livre quase não há eco. Os sons de menu continuam secos.
+
 ## v4.49.0 — O Peso do Golpe
 - VIBRAÇÃO DO CONTROLE: o controle treme pelo peso do golpe — forte ao levar um golpe pesado, um agarrão ou um especial, bem forte no nocaute, leve ao acertar ou defender. Só para quem joga com controle; o celular não vibra.
 - OPÇÕES: nova linha "Vibração do controle" (ligada ou desligada).

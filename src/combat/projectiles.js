@@ -623,8 +623,12 @@ export class Projectiles {
 
   update(dt) {
     const w = this.world;
+    const au = w.audio;
+    const prevEmitter = au && au.emitter;
+    try {
     for (let i = this.list.length - 1; i >= 0; i--) {
       const p = this.list[i];
+      if (au) au.emitter = p.pos; // SOM 3D: o estouro/impacto sai de onde o projétil está
       const a = p.ability;
       p.age += dt;
       // zonas paranormais do adversário (névoa) desaceleram ou engolem projéteis
@@ -864,6 +868,7 @@ export class Projectiles {
         this.list.splice(i, 1);
       }
     }
+    } finally { if (au) au.emitter = prevEmitter; }
   }
 
   // a lança fica cravada na parede por um tempo e some (o mesh passa a ser de um ticker do mundo)
