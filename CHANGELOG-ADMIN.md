@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v4.48.1 — Raios Rápidos
+
+- Versão: `VERSION` 4.48.0 → **4.48.1** (`package.json`/lock junto). Data: 2026-11-15.
+- **three-mesh-bvh 0.9.18 (MIT, dependência; dono: "Sim, próximo item"):** `src/render/bvh.js` troca
+  `Mesh.prototype.raycast` pelo `acceleratedRaycast` e `accelerate(root)` monta a árvore das malhas com 48+ triângulos
+  (fora `SkinnedMesh`/`InstancedMesh`); `World.setup` chama em `arena.group`. `CameraRig.avoidSolids` usa
+  `firstHitOnly`. Medido no jogo: `avoidSolids` 1,58 → 0,008 ms (Santo Berço) e 1,65 → 0,006 ms (Igreja); 400 raios
+  contra os blocos e oclusores do Santo Berço 1208 → 24 ms, com 1 diferença em 400 (um raio raspando a quina de um
+  galho a 28 m — precisão do teste de triângulo). `tests/bvh.test.js`: mesmos acertos com e sem a árvore.
+- **Correção do pós-processamento (achada no teste acima):** com alvo linear + `OutputPass`, a NÉVOA era misturada
+  antes do tom ACES e do sRGB (no desenho direto o Three mistura depois) — Santo Berço +35% de brilho médio (136 × 100).
+  Agora os alvos do compositor são `isXRRenderTarget` com `colorSpace` sRGB (o único caminho do `WebGLRenderer` para
+  aplicar tom e sRGB nos materiais fora da tela); sem `OutputPass`, a vinheta escreve na tela e a cor do clima é
+  convertida para sRGB; limiar do bloom 0,82 (a imagem já está em 0–1). Conferido: com e sem efeito o brilho médio
+  fica igual a menos da vinheta (Santo Berço 90 × 94, Coliseu 98 × 102, Orfanato 127 × 134); sem avisos no console.
+
 ## v4.48.0 — A Luz do Outro Lado
 
 - Versão: `VERSION` 4.47.2 → **4.48.0** (`package.json`/lock junto). Data: 2026-11-15.

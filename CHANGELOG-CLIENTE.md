@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.48.1 — Raios Rápidos
+- CÂMERA MAIS LEVE: o teste que impede a câmera de entrar nas casas e muralhas ficou cerca de 200 vezes mais rápido (no Santo Berço e na Igreja pesava em todo especial).
+- CORRIGIDO: com a qualidade gráfica alta ou média, os mapas com névoa densa (como o Santo Berço) ficavam lavados e claros demais. Agora a imagem é a mesma de antes, só com o brilho e a borda por cima.
+
 ## v4.48.0 — A Luz do Outro Lado
 - BRILHO: velas, tochas, chamas, olhos, runas e sigilos agora brilham de verdade na luta (bloom).
 - CLIMA NA TELA: a borda da tela fica vermelha quando alguém desperta, escurece e treme as cores no especial, puxa para o roxo no Outro Lado e avermelha quando a sua vida está no fim. Golpes fortes dão um pulso nas cores.

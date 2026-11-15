@@ -1,6 +1,6 @@
 {
   "name": "arena-paranormal",
-  "version": "4.48.0",
+  "version": "4.48.1",
   "private": true,
   "description": "Jogo de luta 3D em arena com temática paranormal (protótipo).",
   "author": "Vitor Roma",
@@ -23,7 +23,8 @@
     "dist:android": "vite build && cap sync android"
   },
   "dependencies": {
-    "three": "^0.187.0"
+    "three": "^0.187.0",
+    "three-mesh-bvh": "^0.9.18"
   },
   "devDependencies": {
     "@capacitor/android": "^6.2.2",

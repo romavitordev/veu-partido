@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.48.1 — Raios Rápidos
+
+### Alterado
+- Raios contra o cenário com three-mesh-bvh (câmera contra blocos ~200× mais rápida).
+
+### Corrigido
+- Pós-processamento deixava os mapas de névoa densa lavados (a névoa era misturada antes do tom e do sRGB).
+
 ## v4.48.0 — A Luz do Outro Lado
 
 ### Adicionado

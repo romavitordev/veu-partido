@@ -13,6 +13,7 @@ import { yawTo } from '../core/util.js';
 import { SETTINGS } from '../config/settings.js';
 import { updateRiddle, cancelRiddle } from '../combat/riddle.js';
 import { postFX, MOOD } from '../render/postfx.js';
+import { accelerate } from '../render/bvh.js';
 
 const RAY = new THREE.Raycaster();
 
@@ -67,6 +68,7 @@ export class World {
     const A = ARENAS[arenaId];
     this.arena = A.create();
     this.arena.build(this.scene);
+    accelerate(this.arena.group); // raios rápidos no cenário (render/bvh.js): câmera, paredes, linha de visão
     // as salas do Outro Lado como arena de luta: portas, armários, gavetas e caixas (arena/fightDressing.js)
     this.dressing = this.arena.dressing ? dressFightRoom(this, this.arena.dressing) : null;
     this.fighters = defs.map((def, i) => new Fighter(def, i, this, this.input.players[i]));

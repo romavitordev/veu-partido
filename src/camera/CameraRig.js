@@ -455,7 +455,9 @@ export class CameraRig {
     if (look) {
       ray.set(from, dir);
       ray.far = len;
+      ray.firstHitOnly = true; // só o primeiro bloco importa (three-mesh-bvh)
       const hit = ray.intersectObjects(solids, false)[0];
+      ray.firstHitOnly = false;
       if (hit && hit.distance > 0.5) pos.copy(from).addScaledVector(dir, hit.distance - 0.3);
       return;
     }
@@ -464,7 +466,9 @@ export class CameraRig {
       this.solidTimer = 0.1;
       ray.set(from, dir);
       ray.far = len;
+      ray.firstHitOnly = true;
       const hit = ray.intersectObjects(solids, false)[0];
+      ray.firstHitOnly = false;
       this.solidFree = hit && hit.distance > 1.5 ? hit.distance - 0.4 : null;
     }
     if (this.solidFree != null && this.solidFree < len) this.pos.copy(from).addScaledVector(dir, this.solidFree);

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.48.0';
+export const VERSION = '4.48.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.48.1',
+    date: '2026-11-15',
+    title: 'Raios Rápidos',
+    items: [
+      'CÂMERA MAIS LEVE: o teste que impede a câmera de entrar nas casas e muralhas ficou cerca de 200 vezes mais rápido (no Santo Berço e na Igreja pesava em todo especial).',
+      'CORRIGIDO: com a qualidade gráfica alta ou média, os mapas com névoa densa (como o Santo Berço) ficavam lavados e claros demais. Agora a imagem é a mesma de antes, só com o brilho e a borda por cima.',
+    ],
+  },
   {
     v: '4.48.0',
     date: '2026-11-15',

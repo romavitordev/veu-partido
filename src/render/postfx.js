@@ -3,12 +3,16 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { gfxProfile, SETTINGS } from '../config/settings.js';
 
 // PÓS-PROCESSAMENTO DA LUTA (seção 10 do GUIA_TECNOLOGIAS_GAME_DEV.txt). Só o EffectComposer do próprio Three.js:
-//   1) a cena  2) BLOOM — só o que é mais claro que a luz comum brilha (olhos, runas, sigilos, chamas, emissivos)
-//   3) TELA — vinheta e aberração cromática, com força conforme o momento (MOOD)  4) saída (tom ACES + sRGB).
+//   1) a cena, JÁ com o tom ACES e o sRGB aplicados no próprio material — igual ao desenho direto na tela
+//   2) BLOOM — só o que é mais claro que a luz comum brilha (olhos, runas, sigilos, chamas)
+//   3) TELA — vinheta e aberração cromática, com força conforme o momento (MOOD), direto na tela.
+// Por que a cena sai pronta (v4.48.1): com o alvo linear + OutputPass no fim, a NÉVOA (que o Three mistura depois do
+// tom e do sRGB no desenho direto) passava a ser misturada antes deles — o Santo Berço e os mapas de névoa densa
+// ficavam lavados (+35% de brilho médio). O alvo é marcado como `isXRRenderTarget` com `colorSpace` sRGB, o único
+// jeito do WebGLRenderer aplicar tom e sRGB nos materiais fora da tela; os passes depois só leem e escrevem os valores.
 // Qualidade (OPÇÕES › gráficos): alta = tudo; média = bloom em meia resolução; baixa = desligado (desenha direto).
 // EFEITOS DE TELA REDUZIDOS (SETTINGS.reduceFx) corta a aberração e os pulsos.
 
@@ -74,17 +78,20 @@ export class PostFX {
     if (level === 'off') return false;
     const r = this.renderer;
     const size = r.getSize(new THREE.Vector2());
-    // alvo em ponto flutuante: o bloom precisa enxergar o que passa de 1 (os emissivos fortes)
     const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: G.antialias ? 4 : 0 });
     this.composer = new EffectComposer(r, rt);
+    // a cena sai com tom e sRGB como na tela (ver o topo do arquivo)
+    for (const t of [this.composer.renderTarget1, this.composer.renderTarget2]) {
+      t.isXRRenderTarget = true;
+      t.texture.colorSpace = THREE.SRGBColorSpace;
+    }
     this.renderPass = new RenderPass(null, null);
     const res = level === 'full' ? size.clone() : size.clone().multiplyScalar(0.5);
-    this.bloom = new UnrealBloomPass(res, MOOD.base.bloom, 0.45, 0.92);
+    this.bloom = new UnrealBloomPass(res, MOOD.base.bloom, 0.45, 0.82);
     this.screen = new ShaderPass(ScreenShader);
     this.composer.addPass(this.renderPass);
     this.composer.addPass(this.bloom);
-    this.composer.addPass(this.screen);
-    this.composer.addPass(new OutputPass());
+    this.composer.addPass(this.screen); // o último: escreve na tela
     this.setSize(size.x, size.y);
     return true;
   }
@@ -111,7 +118,7 @@ export class PostFX {
     this.bloom.strength = c.bloom;
     const u = this.screen.uniforms;
     u.vignette.value = c.vignette;
-    u.tint.value.copy(c.tint);
+    u.tint.value.copy(c.tint).convertLinearToSRGB(); // a imagem já está em sRGB
     u.aberration.value = c.aberration + (reduce ? 0 : Math.min(kick, 1) * 0.006);
     this.composer.render(dt);
   }
