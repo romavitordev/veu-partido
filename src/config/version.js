@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.47.0';
+export const VERSION = '4.47.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.47.1',
+    date: '2026-11-15',
+    title: 'Mais Leve',
+    items: [
+      'MAIS LEVE: os modelos dos personagens, dos cenários e das criaturas agora vêm comprimidos. O jogo baixa 61% menos (de 166 MB para 65 MB de modelos) e abre mais rápido na web, no celular e no PC, com a mesma aparência.',
+    ],
+  },
   {
     v: '4.47.0',
     date: '2026-11-14',

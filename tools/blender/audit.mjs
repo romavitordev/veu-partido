@@ -4,7 +4,9 @@
 // Regras: ossos obrigatórios presentes, nada sem UV, nenhum vértice sem peso, até 4 influências por vértice,
 // escala aplicada, materiais sem duplicata e orçamento de triângulos (personagem ≤ 40k, cenário ≤ 150k).
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { descompactar } from '../optimize-glb.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,8 +27,12 @@ for (const dir of ['models', 'arenas']) {
 
 let problems = 0;
 const rows = [];
+// os .glb ficam comprimidos com meshopt (tools/optimize-glb.mjs): o Blender audita uma cópia descompactada
+const tmp = mkdtempSync(join(tmpdir(), 'veu-audit-'));
 for (const { dir, f, p } of files) {
-  const r = spawnSync(BLENDER, ['-b', '--factory-startup', '-P', join(here, 'audit_glb.py'), '--', p], { encoding: 'utf8' });
+  const plain = join(tmp, f);
+  await descompactar(p, plain);
+  const r = spawnSync(BLENDER, ['-b', '--factory-startup', '-P', join(here, 'audit_glb.py'), '--', plain], { encoding: 'utf8' });
   const line = (r.stdout || '').split('\n').find((l) => l.startsWith('AUDIT '));
   if (!line) { console.log(`✘ ${f}: falhou a auditoria`); problems++; continue; }
   const a = JSON.parse(line.slice(6));
@@ -44,6 +50,7 @@ for (const { dir, f, p } of files) {
   problems += issues.length;
   rows.push({ arquivo: f, tris: a.tris, malhas: a.meshes, materiais: a.materials, ossos: a.bones.length, altura: a.height, problemas: issues.join(' · ') || 'ok' });
 }
+rmSync(tmp, { recursive: true, force: true });
 console.table(rows);
 console.log(problems ? `${problems} problema(s) encontrado(s).` : 'Tudo certo.');
 process.exitCode = problems ? 1 : 0;

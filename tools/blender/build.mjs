@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { otimizar } from '../optimize-glb.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
@@ -32,6 +33,8 @@ for (const j of jobs) {
   const r = spawnSync(BLENDER, ['-b', '--factory-startup', '-P', join(here, j.file), '--', j.out], { encoding: 'utf8' });
   const log = `${r.stdout}\n${r.stderr}`;
   const ok = log.includes('EXPORTADO');
+  // comprime com meshopt (tools/optimize-glb.mjs) — o jogo descompacta no GLTFLoader
+  if (ok) await otimizar(j.out);
   console.log(ok ? `ok (${((Date.now() - t0) / 1000).toFixed(1)}s)` : 'FALHOU');
   if (!ok) {
     const lines = log.split('\n');

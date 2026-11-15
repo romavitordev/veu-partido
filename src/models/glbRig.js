@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
 
@@ -11,7 +12,8 @@ import { MATERIAL_TEXTURES } from './textures.js';
 //   local = inverso(repouso do pai) × rotação da pose × repouso do osso
 // para que as mesmas poses sirvam para os dois tipos de rig.
 
-const loader = new GLTFLoader();
+// Os .glb saem comprimidos com meshopt (tools/optimize-glb.mjs): o decodificador descompacta no carregamento.
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const cache = new Map();
 
 // PELE: a luz colorida do cenário (o roxo das Ruínas) deixava as peles morenas rosadas. Na pele, a luz muda o

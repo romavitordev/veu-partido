@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.47.1 — Mais Leve
+
+### Alterado
+- Modelos e cenários comprimidos com meshopt: 166 MB → 65 MB de .glb; o jogo pronto (dist) caiu de 173 MB para 72 MB.
+
 ## v4.47.0 — O Outro Lado responde
 
 ### Adicionado

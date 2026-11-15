@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v4.47.1 — Mais Leve
+
+- Versão: `VERSION` 4.47.0 → **4.47.1** (`package.json`/lock junto). Data: 2026-11-15.
+- **Compressão dos .glb (dono escolheu "Comprimir os modelos", 1º item da seção 10 do guia de tecnologias):**
+  `tools/optimize-glb.mjs` (`npm run optimize`) com glTF-Transform 4.5 + meshoptimizer 1.3 (MIT, devDependencies):
+  `dedup` de accessors, `reorder` e `EXT_meshopt_compression`. Só NORMAL/TANGENT/COLOR/WEIGHTS são quantizados;
+  POSIÇÃO e UV ficam em float de propósito (quantizar posição muda a matriz dos nós ou cria nó filho sem nome, e o código
+  usa nós pelo nome — CROWD_, COL_, FLICKER_, soquetes; quantizar UV põe KHR_texture_transform, que se perderia na troca
+  de textura por nome de material). Sem prune/join/flatten. Resultado: models 121 → 42 MB, arenas 38 → 20 MB,
+  npcs 7,7 → 4,0 MB (61% menor); `dist` 173 → 72 MB. Os 94 arquivos são idempotentes (pula o que já está comprimido).
+- `src/models/glbRig.js`: `GLTFLoader().setMeshoptDecoder(MeshoptDecoder)` (o decodificador do próprio Three.js).
+- `tools/blender/build.mjs` comprime cada .glb que gera; `tools/blender/audit.mjs` audita uma cópia descompactada
+  (`descompactar()`), porque o importador do Blender não lê meshopt.
+- Testado no jogo: os 94 .glb carregam (alturas e normais conferidas), lutas no Coliseu (Sabara × Amigo) e na Igreja
+  (Raziel × Estrangeiro) sem erro no console e com a mesma aparência. npm test 91/91, check "Tudo certo.", build OK.
+
 ## v4.47.0 — O Outro Lado responde
 
 - Versão: `VERSION` 4.46.0 → **4.47.0** (`package.json`/lock junto). Data: 2026-11-14.

@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.47.1 — Mais Leve
+- MAIS LEVE: os modelos dos personagens, dos cenários e das criaturas agora vêm comprimidos. O jogo baixa 61% menos (de 166 MB para 65 MB de modelos) e abre mais rápido na web, no celular e no PC, com a mesma aparência.
+
 ## v4.47.0 — O Outro Lado responde
 - OUTRO LADO EM COOP: quem cai fica no chão e volta após 60 segundos. Se o aliado ficar por perto, a volta acelera.
 - TORRE: o poço das pilastras agora sobe muito mais alto e desce mais fundo; a câmera acompanha a queda sem bater no teto.
