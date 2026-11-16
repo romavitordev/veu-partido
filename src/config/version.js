@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.52.0';
+export const VERSION = '4.52.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.52.1',
+    date: '2026-11-15',
+    title: 'Explorador',
+    items: [
+      'CORRIGIDO: a Barra de Transformação enchia e acendia "segure para transformar" mesmo para quem já tinha despertado (o despertar dura o round inteiro, e no Outro Lado não tem round) — e a transformação não saía. Agora a barra não enche enquanto a transformação está valendo.',
+      'AMOR E SANGUE: no fim, o Eloy tira a focinheira, a Kemi aparece ao lado dele no lodo da Fantasma e os dois se beijam ("Sempre no seu tempo.").',
+    ],
+  },
   {
     v: '4.52.0',
     date: '2026-11-15',

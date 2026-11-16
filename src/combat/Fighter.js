@@ -257,7 +257,9 @@ export class Fighter {
     // Barra de Transformação: enche com o dano recebido (na forma base de quem transforma, ou numa forma com SEGUNDO
     // estágio — awakening.chain, ex.: Juan no Ódio do Diabo → Portador do Trono; awakening.fill acelera)
     const aw = this.def.awakening;
-    if (aw && (!this.baseForm || aw.chain)) this.storm = Math.min(100, this.storm + (dealt / this.maxHealth) * 100 * COMBAT.storm.fillPerHealth * (this.baseForm ? aw.fill ?? 1 : 1));
+    // (já transformado e a transformação ainda valendo — o despertar dura o round inteiro, e no Outro Lado não há round:
+    // a barra NÃO enche, senão ficava cheia, acendia "segure para transformar" e não transformava. Bug do dono, 2026-11-15)
+    if (aw && (!this.baseForm || aw.chain) && this.awakeningAvailable()) this.storm = Math.min(100, this.storm + (dealt / this.maxHealth) * 100 * COMBAT.storm.fillPerHealth * (this.baseForm ? aw.fill ?? 1 : 1));
     // a barra de esquivas recupera conforme toma dano
     // (zerou as esquivas há pouco: o dano não conta até passar COMBAT.dodge.emptyLockout)
     if (this.dodgeLockout <= 0) this.dodgeDmgAcc += dealt;
@@ -3325,7 +3327,16 @@ export class Fighter {
   canTransform() {
     const aw = this.def.awakening;
     if (!aw || (this.baseForm && !aw.chain) || this.health <= 0) return false;
+    if (!this.awakeningAvailable()) return false;
     return this.storm >= 100 && (this.health <= this.maxHealth * COMBAT.storm.healthRatio || this.trainingAwaken);
+  }
+
+  // a transformação pode começar agora? (awakenMode: ainda não despertou; santoPact: o pacto não está ativo...)
+  awakeningAvailable() {
+    const aw = this.def.awakening;
+    const impl = aw && SPECIALS[aw.type];
+    if (!impl) return false;
+    try { return !impl.canStart || !!impl.canStart(this, aw, this.world); } catch { return false; }
   }
 
   startAwakening() {

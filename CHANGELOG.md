@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.52.1 — Explorador
+
+### Corrigido
+- Barra de Transformação cheia que não transformava: quem já despertou não enche mais a barra enquanto a transformação vale (luta e Outro Lado).
+
+### Alterado
+- Amor e Sangue termina com o beijo do Eloy e da Kemi.
+
 ## v4.52.0 — Explorador
 
 ### Adicionado

@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v4.52.1 — Explorador
+
+- Versão: `VERSION` 4.52.0 → **4.52.1** (`package.json`/lock junto). Data: 2026-11-15.
+- **Bug (dono: "às vezes ocorre um bug que impede de transformar mesmo com a barra cheia ... mais no Outro Lado"):**
+  `canTransform()` e o enchimento da barra (`takeDamage`) não perguntavam se a transformação podia começar. O
+  `awakenMode` põe o buff `awakened` com duração infinita (vale até o `resetRound`); a barra enchia de novo, a HUD
+  acendia "segure para transformar" e o `startAwakening` recusava ("JÁ DESPERTOU"). No Outro Lado não há
+  `resetRound`, então acontecia sempre depois do primeiro despertar. Novo `Fighter.awakeningAvailable()` (o `canStart`
+  do tipo da transformação) barra os dois. Vale também para o Santo Pacto do Ferreiro. Conferido no jogo com o Eloy.
+- **Amor e Sangue (dono: "no final do especial da Kemi e do Eloy eles devem se beijar"):** +1,5 s (END = S + 7,7). O
+  Eloy tira a focinheira, a Kemi some no lodo e os dois reaparecem a 5 m do alvo caído; clipes novos `kiss_lead` /
+  `kiss_follow` (`anim/victoryClips.js`, PROPOSTA); câmera de perfil calculada a cada quadro (perpendicular ao casal,
+  do lado do alvo, que fica atrás dela); pétalas rosa; fala do Eloy "Sempre no seu tempo." (PROPOSTA).
+
 ## v4.52.0 — Explorador
 
 - Versão: `VERSION` 4.51.3 → **4.52.0** (`package.json`/lock junto). Data: 2026-11-15.

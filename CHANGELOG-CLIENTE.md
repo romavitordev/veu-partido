@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.52.1 — Explorador
+- CORRIGIDO: a Barra de Transformação enchia e acendia "segure para transformar" mesmo para quem já tinha despertado (o despertar dura o round inteiro, e no Outro Lado não tem round) — e a transformação não saía. Agora a barra não enche enquanto a transformação está valendo.
+- AMOR E SANGUE: no fim, o Eloy tira a focinheira, a Kemi aparece ao lado dele no lodo da Fantasma e os dois se beijam ("Sempre no seu tempo.").
+
 ## v4.52.0 — Explorador
 - MODO EXPLORAR (segredo): um olho quase apagado no canto de cima da tela inicial (ou L3 + R3 juntos no controle) abre a seleção de cenários; escolha um e voe por ele como espectador para ver o mapa inteiro — sem atravessar parede nem chão.
 - Controles: o mouse ou o analógico direito olham; WASD ou o analógico esquerdo andam para onde você olha; Espaço sobe, Shift desce (R2/L2 no controle); dois toques no W (ou L3) correm; Esc ou B sai.

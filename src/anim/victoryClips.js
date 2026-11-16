@@ -120,5 +120,10 @@ export function addVictoryClips(CLIPS, k) {
     vic_boris: pose({ sp: [0.04, 0, 0], hd: [0.15, 0, 0.16], sR: [-0.5, 0, -0.45], eR: [-1.4, 0, 0], sL: [0.05, 0, 0.2], eL: [-0.15, 0, 0], lL: [-0.04, 0, 0.1], lR: [0.04, 0, -0.1] }),
     // Lírio: a Leonora erguida acima da cabeça com as duas mãos, base larga e o grito (a parede)
     vic_lirio: pose({ h: -0.1, sp: [-0.1, 0, 0], hd: [-0.4, 0, 0], sR: [-2.9, 0, -0.3], eR: [-0.6, 0, 0], sL: [-2.9, 0, 0.3], eL: [-0.6, 0, 0], lL: [-0.15, 0, 0.3], kL: [0.25, 0, 0], lR: [0.15, 0, -0.3], kR: [0.25, 0, 0] }),
+    // ---- o BEIJO do fim do Amor e Sangue (pedido do dono, 2026-11-15: "no final do especial da Kemi e do Eloy eles
+    // devem se beijar"). PROPOSTA: ele (mais alto) sem a focinheira, as mãos na cintura dela e a cabeça baixa de lado;
+    // ela nas pontas dos pés, os braços no pescoço dele e o rosto erguido para o outro lado
+    kiss_lead: pose({ sp: [0.22, 0, 0], hd: [0.38, 0, -0.22], sL: [-0.75, 0.25, 0.3], eL: [-1.25, 0, 0], sR: [-0.75, -0.25, -0.3], eR: [-1.25, 0, 0], lL: [-0.05, 0, 0.1], lR: [0.05, 0, -0.1] }),
+    kiss_follow: pose({ h: 0.05, sp: [-0.12, 0, 0], hd: [-0.35, 0, 0.2], sL: [-2.35, -0.2, 0.3], eL: [-1.45, 0, 0], sR: [-2.35, 0.2, -0.3], eR: [-1.45, 0, 0], lL: [0.05, 0, 0.06], kL: [0.05, 0, 0], lR: [-0.35, 0, -0.06], kR: [0.85, 0, 0] }),
   });
 }

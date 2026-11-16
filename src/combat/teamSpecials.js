@@ -1086,7 +1086,7 @@ const CHOREO = {
   // joga o alvo no ar, o tempo desacelera, a bala dela atravessa devagar deixando a espiral, e ele desce do alto cravando
   // a baqueta no MESMO instante em que a bala chega.
   eloy_kemi({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 6.2;
+    const END = S + 7.7; // (+1,5 s: o beijo no fim — pedido do dono, 2026-11-15)
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const eloy = tools.get('eloy'), kemi = tools.get('kemi');
     const hits = splitDamage(crewTotal, 11);
@@ -1277,6 +1277,57 @@ const CHOREO = {
     lift(opp, T1, S + 5.6, (k) => (1 - k) * Math.max(0, 2.4));
     if (eloy) lift(eloy, T1, S + 5.35, (k) => (1 - smooth(k)) * 1.6);
     tl.add(S + 5.5, () => { if (live() && kemi) say(kemi, 'No tempo, amor. Eu tô aqui.', 1); });
+
+    // 7. O BEIJO (pedido do dono): ele tira a focinheira e volta a ser o Eloy gentil; ela some no lodo da Fantasma e
+    // aparece colada nele; os dois de perfil, pétalas rosa subindo
+    if (eloy && kemi) {
+      tl.add(S + 5.8, () => {
+        if (!live()) return;
+        prop(eloy, 'maskOn', false);
+        world.audio.play('maskOn', { pitch: 0.8, volume: 0.7 });
+        eloy.play('idle', 0.4);
+        world.fx.burst(kemi.chest(), { count: 26, color: DEATH, kind: 'smoke', speed: 1.4, life: 0.55, size: 0.45 });
+      });
+      tl.add(S + 6.05, () => {
+        if (!live()) return;
+        // no corte, os dois se afastam do alvo caído (senão o corpo dele tapava o beijo): o Eloy a 5 m, do lado da Kemi
+        const away = new THREE.Vector3(eloy.pos.x - opp.pos.x, 0, eloy.pos.z - opp.pos.z);
+        if (away.lengthSq() < 1e-4) away.set(Math.sin(eloy.yaw), 0, Math.cos(eloy.yaw));
+        away.normalize();
+        const spot = findFreeSpotNear(world.arena, opp.pos.x + away.x * 5, opp.pos.z + away.z * 5, { radius: 0.6, others: [{ x: opp.pos.x, z: opp.pos.z, r: 1.2 }] }) || { x: opp.pos.x + away.x * 5, z: opp.pos.z + away.z * 5 };
+        eloy.pos.set(spot.x, 0, spot.z);
+        // ela do lado dele, de perfil para o alvo (o eixo do casal fica de través)
+        const d = new THREE.Vector3(-away.z, 0, away.x);
+        kemi.pos.set(eloy.pos.x + d.x * 0.46, 0, eloy.pos.z + d.z * 0.46);
+        world.fx.burst(kemi.chest(), { count: 30, color: DEATH, kind: 'smoke', speed: 1.2, life: 0.6, size: 0.45 });
+        eloy.face(kemi);
+        kemi.face(eloy);
+        eloy.play('kiss_lead', 1.0);
+        kemi.play('kiss_follow', 1.0);
+        say(eloy, 'Sempre no seu tempo.', 0);
+        // de perfil, do lado do alvo: ele fica atrás da câmera, fora do quadro
+        // (calculado a cada quadro com as posições reais: perpendicular ao eixo Eloy–Kemi, do lado do alvo)
+        const mid = () => new THREE.Vector3((eloy.pos.x + kemi.pos.x) / 2, 1.5, (eloy.pos.z + kemi.pos.z) / 2);
+        const camDir = () => {
+          const ax = new THREE.Vector3(kemi.pos.x - eloy.pos.x, 0, kemi.pos.z - eloy.pos.z).normalize();
+          const side = new THREE.Vector3(-ax.z, 0, ax.x);
+          return side.dot(new THREE.Vector3(opp.pos.x - eloy.pos.x, 0, opp.pos.z - eloy.pos.z)) >= 0 ? side : side.negate();
+        };
+        world.cameraRig.playShots([{
+          dur: 1.65, fov: 34, cut: true,
+          pos: (t) => mid().addScaledVector(camDir(), 3.0 - t * 0.4).setY(1.5 + t * 0.05),
+          look: () => mid(),
+        }]);
+      });
+      // as pétalas sobem entre os dois enquanto o beijo dura
+      for (let i = 0; i < 6; i++) {
+        tl.add(S + 6.5 + i * 0.17, () => {
+          if (!live()) return;
+          const mid = eloy.chest().lerp(kemi.chest(), 0.5).setY(1.75);
+          world.fx.burst(mid, { count: 4, color: i % 2 ? ROSE : 0xffc2d4, speed: 0.6, up: 1.2, life: 0.9, size: 0.12 });
+        });
+      }
+    }
     tl.add(END, () => { opp.pos.y = Math.max(0, opp.pos.y); if (eloy) eloy.pos.y = 0; prop.undo(); world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return END;
   },
