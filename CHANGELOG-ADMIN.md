@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v4.53.3 — Sem Brilho Preso
+
+- Versão: `VERSION` 4.53.2 → **4.53.3** (`package.json`/lock junto). Data: 2026-11-16.
+- **Brilho preso (dono: "às vezes os personagens bugam e ficam brilhando em toda fase, assim como essa foto do
+  Chris, já ocorreu com o Xande"):** a foto é a do travamento do baú. O mundo congelava no pico da abertura
+  (`Chest.updateAnim`: `chestLight` 18 a 0,9 m de altura), e a luz forte estourava a pele e a camisa clara em branco
+  com o bloom; a calça escura ficava escura (é luz, não o `glowTint`, que pinta o corpo inteiro). A causa foi a da
+  v4.53.2 (`who` sem declarar no `openReward`).
+- Trava de segurança em `Dungeon.update`: `choosing` sem `pveHud.choice` (escolher sempre fecha a tela e solta o jogo
+  no mesmo instante, então isso só acontece por erro) avisa no console e solta. Teste em
+  `tests/pve-interaction.test.js`.
+
 ## v4.53.2 — O Baú que Travava
 
 - Versão: `VERSION` 4.53.1 → **4.53.2** (`package.json`/lock junto). Data: 2026-11-16.

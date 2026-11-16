@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.53.3 — Sem Brilho Preso
+
+### Corrigido
+- Outro Lado: escolha marcada sem a tela aberta não congela mais o mundo (a luz do baú presa no pico deixava o personagem brilhando em branco).
+
+### Adicionado
+- Teste da trava de segurança da escolha.
+
 ## v4.53.2 — O Baú que Travava
 
 ### Corrigido

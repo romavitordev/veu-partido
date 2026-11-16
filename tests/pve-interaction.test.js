@@ -111,3 +111,19 @@ test('a recompensa Moedas ou vida abre a escolha sem travar', () => {
     assert.equal(d.choosing, false, 'escolher solta o jogo');
   }
 });
+
+// a trava de segurança: "escolhendo" sem a tela de escolha aberta (um erro ao abri-la) não pode congelar o mundo
+test('escolhendo sem tela aberta solta o jogo', () => {
+  const d = Object.create(Dungeon.prototype);
+  let choiceTicks = 0;
+  Object.assign(d, {
+    phase: 'explore', choosing: true, bossIntro: null, reviveOffer: null, endQueued: false, disposed: false,
+    tickRevive() {}, hud: { update() {} },
+    pveHud: { choice: null, updateChoice() { choiceTicks++; } },
+  });
+  const warn = console.warn;
+  console.warn = () => {};
+  try { d.update(0.016); } catch { /* o resto do quadro precisa do mundo inteiro; aqui só importa a trava */ } finally { console.warn = warn; }
+  assert.equal(d.choosing, false);
+  assert.equal(choiceTicks, 0, 'não ficou preso esperando uma escolha que não existe');
+});

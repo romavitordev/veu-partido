@@ -1848,6 +1848,13 @@ export class Dungeon {
       this.hud.update(this);
       return;
     }
+    // TRAVA DE SEGURANÇA (dono, 2026-11-16: "travou ao abrir baú" / "fica brilhando"): escolher fecha a tela e solta o
+    // jogo no mesmo instante, então "escolhendo" sem a tela aberta só acontece por um erro ao abri-la — e congelava o
+    // mundo inteiro (a luz do baú presa no pico, estourando o personagem em branco). Solta e segue.
+    if (this.choosing && this.pveHud && !this.pveHud.choice) {
+      console.warn('Outro Lado: escolha sem tela aberta — soltando o jogo');
+      this.choosing = false;
+    }
     // escolhendo melhoria: o mundo para
     if (this.choosing) {
       this.pveHud.updateChoice(this.input, this.audio);

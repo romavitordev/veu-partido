@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.53.2';
+export const VERSION = '4.53.3';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.53.3',
+    date: '2026-11-16',
+    title: 'Sem Brilho Preso',
+    items: [
+      'OUTRO LADO: o personagem "preso brilhando" em branco era a luz do baú congelada no pico — o mesmo travamento do baú corrigido na 4.53.2. Agora, se uma escolha falhar ao abrir, o jogo se solta sozinho em vez de congelar.',
+    ],
+  },
   {
     v: '4.53.2',
     date: '2026-11-16',
