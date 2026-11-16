@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.53.2 — O Baú que Travava
+
+- Versão: `VERSION` 4.53.1 → **4.53.2** (`package.json`/lock junto). Data: 2026-11-16.
+- **Travamento do baú (dono: "travou duas vezes ao abrir baú na fase da degolificada, mas não é o primeiro ao abrir,
+  é depois de algumas salas"):** `Dungeon.openReward` usava `who` sem declarar (a linha `const who = this.coop ?
+  this.chooser : 0` saiu na v4.44.0 junto com a mudança do `openLevelUp`). Ele roda quando o baú sobra "Moedas ou
+  vida" (nível 2+ e nada para subir), e por isso nunca no primeiro baú (nível 1 vai pelo `openEarlyChest`). Marcava
+  `choosing = true` e quebrava antes de abrir a escolha: o jogo ficava pausado para sempre. Vale para todas as
+  fases; na Escola aparece mais por ser a 2ª (build já cheia).
+- `tests/pve-interaction.test.js`: abre a recompensa (solo e coop), confere que a escolha abre e que escolher solta o
+  jogo. Falha sem a correção (`ReferenceError: who is not defined`).
+- TODO: a Escola Nostradamus precisa de mais variedade de salas (pátio com pilastras e cantina; almoxarifado sem saída).
+
 ## v4.53.1 — A Chama de Proteção
 
 - Versão: `VERSION` 4.53.0 → **4.53.1** (`package.json`/lock junto). Data: 2026-11-15.

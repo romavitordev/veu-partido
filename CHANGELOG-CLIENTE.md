@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.53.2 — O Baú que Travava
+- OUTRO LADO: corrigido o travamento ao abrir um baú depois de algumas salas — quando o baú não tinha mais nada para subir e oferecia "Moedas ou vida", o jogo parava e a escolha nunca aparecia.
+
 ## v4.53.1 — A Chama de Proteção
 - TREB CIACH: a chama de proteção agora é fogo de verdade — as línguas amarelas sobem e dançam por entre as toras da grande fogueira, como as fogueiras dos outros cenários, no Samhain e no Pós-Tempestade.
 

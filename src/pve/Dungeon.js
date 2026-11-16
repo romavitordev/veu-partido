@@ -1324,6 +1324,9 @@ export class Dungeon {
   openReward(r) {
     this.audio.play('levelUp', { volume: 0.8, pitch: 1.1 });
     this.choosing = true;
+    // quem escolhe (sumiu na v4.44.0: o ReferenceError deixava choosing = true e o jogo PARADO depois de um baú sem nada
+    // para subir — o travamento do dono, 2026-11-16)
+    const who = this.coop ? this.chooser : 0;
     if (this.coop) this.chooser = 1 - this.chooser;
     const choices = rewardChoices(r.coins, r.heal);
     this.pveHud.openChoice(choices, this.run, (id) => {

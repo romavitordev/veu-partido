@@ -91,3 +91,23 @@ test('doors still open immediately on a tap', () => {
   dungeon.updateInteract(view, 0.016);
   assert.deepEqual(dungeon.opened, [door]);
 });
+
+// o baú sem nada para subir enfileira "Moedas ou vida": abrir essa escolha não pode quebrar e deixar o jogo parado
+// (a v4.44.0 perdeu o `who` do openReward; o ReferenceError deixava choosing = true para sempre — dono, 2026-11-16)
+test('a recompensa Moedas ou vida abre a escolha sem travar', () => {
+  for (const coop of [false, true]) {
+    const d = Object.create(Dungeon.prototype);
+    let opened = null;
+    Object.assign(d, {
+      coop, chooser: 0, local: null, net: null, run: { picks: [], depth: 1 }, world: { fighters: [{ state: 'idle' }, {}, { state: 'idle' }] },
+      audio: { play() {} }, hud: { callout() {} },
+      pveHud: { openChoice(choices, run, cb, opts) { opened = { choices, cb, opts }; } },
+      giveCoins() {},
+    });
+    d.openReward({ coins: 10, heal: 0.3 });
+    assert.ok(opened, 'a escolha abriu');
+    assert.equal(opened.opts.who, 0);
+    opened.cb('reward:coins');
+    assert.equal(d.choosing, false, 'escolher solta o jogo');
+  }
+});

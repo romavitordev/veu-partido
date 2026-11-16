@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.53.2 — O Baú que Travava
+
+### Corrigido
+- Outro Lado: o baú sem nada para subir ("Moedas ou vida") travava o jogo — a variável de quem escolhe tinha sumido de `openReward`.
+
+### Adicionado
+- Teste de regressão da escolha "Moedas ou vida".
+
 ## v4.53.1 — A Chama de Proteção
 
 ### Alterado

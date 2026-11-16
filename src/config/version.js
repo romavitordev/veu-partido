@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.53.1';
+export const VERSION = '4.53.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.53.2',
+    date: '2026-11-16',
+    title: 'O Baú que Travava',
+    items: [
+      'OUTRO LADO: corrigido o travamento ao abrir um baú depois de algumas salas — quando o baú não tinha mais nada para subir e oferecia "Moedas ou vida", o jogo parava e a escolha nunca aparecia.',
+    ],
+  },
   {
     v: '4.53.1',
     date: '2026-11-15',
