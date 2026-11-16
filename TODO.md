@@ -22,7 +22,7 @@
 - [x] Vistoria pelo modo Explorar (os 8 antigos).
 - [ ] Tipora · [ ] Palco do Anfitrião · [ ] Santo Berço · [ ] Coliseu · [ ] Orfanato · [ ] Igreja (referências → Blender → Explorar).
 - [x] Gráficos (v4.53.0): sombra de contato (GTAO) no nível alta; o metal falso (metalness 0,4) das peças do Kenney zerado; reflexo só nos metais de verdade.
-- [ ] Gráficos: decalques no chão; gradação de cor por mapa.
+- [ ] Melhoria de Gráficos — Parte 2: decalques no chão; gradação de cor por mapa.
 
 ## Polimento dos personagens recentes (pedido do dono, 2026-11-15)
 

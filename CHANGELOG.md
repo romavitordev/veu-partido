@@ -1,6 +1,6 @@
 # Changelog
 
-## v4.53.0 — Luz e Contato
+## v4.53.0 — Melhoria de Gráficos — Parte 1
 
 ### Adicionado
 - Sombra de contato (GTAO) na qualidade gráfica alta.

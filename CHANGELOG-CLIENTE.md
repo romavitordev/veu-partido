@@ -2,7 +2,7 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
-## v4.53.0 — Luz e Contato
+## v4.53.0 — Melhoria de Gráficos — Parte 1
 - SOMBRA DE CONTATO (qualidade gráfica alta): os cantos e onde as coisas se encostam escurecem — pés no chão, base das pilastras e muralhas, pedras, troncos —, e os modelos ganham volume.
 - CORES DOS CENÁRIOS CORRIGIDAS: madeira, pedra, barracas, árvores e móveis vinham com um "metal" falso que apagava a cor; agora aparecem com a cor de verdade. Os metais de verdade ganharam reflexo.
 

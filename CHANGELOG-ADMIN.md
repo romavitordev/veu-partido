@@ -1,6 +1,9 @@
 # Registro administrativo de alterações
 
-## v4.53.0 — Luz e Contato
+## v4.53.0 — Melhoria de Gráficos — Parte 1
+
+- Título trocado de "Luz e Contato" para "Melhoria de Gráficos — Parte 1" (pedido do dono; a Parte 2 traz os
+  decalques no chão e a cor por mapa). A tag e a mensagem do commit ficam como estavam.
 
 - Versão: `VERSION` 4.52.1 → **4.53.0** (`package.json`/lock junto). Data: 2026-11-15. Dono: "Gráficos primeiro".
 - `render/postfx.js`: `ContactAO` (o `GTAOPass` do Three r187, sem dependência nova) entre a cena e o bloom, só com
