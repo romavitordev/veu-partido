@@ -3,6 +3,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
 import { gfxProfile, SETTINGS } from '../config/settings.js';
 
 // PÓS-PROCESSAMENTO DA LUTA (seção 10 do GUIA_TECNOLOGIAS_GAME_DEV.txt). Só o EffectComposer do próprio Three.js:
@@ -13,6 +14,9 @@ import { gfxProfile, SETTINGS } from '../config/settings.js';
 // tom e do sRGB no desenho direto) passava a ser misturada antes deles — o Santo Berço e os mapas de névoa densa
 // ficavam lavados (+35% de brilho médio). O alvo é marcado como `isXRRenderTarget` com `colorSpace` sRGB, o único
 // jeito do WebGLRenderer aplicar tom e sRGB nos materiais fora da tela; os passes depois só leem e escrevem os valores.
+// 1b) SOMBRA DE CONTATO (GTAO, só na qualidade alta; pedido do dono 2026-11-15 "gráficos primeiro"): escurece os cantos
+//     e onde as coisas se encostam (pés no chão, caixas na parede), o que dá volume aos modelos low-poly. Roda em meia
+//     resolução; efeitos transparentes, céu e partículas ficam fora (senão ganhavam um halo escuro).
 // Qualidade (OPÇÕES › gráficos): alta = tudo; média = bloom em meia resolução; baixa = desligado (desenha direto).
 // EFEITOS DE TELA REDUZIDOS (SETTINGS.reduceFx) corta a aberração e os pulsos.
 
@@ -60,6 +64,26 @@ export const MOOD = {
 
 const TMP = new THREE.Color();
 
+// parâmetros da sombra de contato (metros do mundo; a escala do jogo é 1 = 1 m)
+export const AO = { radius: 0.55, thickness: 1.2, distanceExponent: 1.4, distanceFallOff: 1, scale: 1, samples: 12, intensity: 0.75, resolution: 0.5 };
+
+// o GTAO só olha o que é sólido: some com o transparente que não escreve profundidade (efeitos), o céu (lado de dentro)
+// e os sprites, além dos pontos e linhas que ele já tira
+class ContactAO extends GTAOPass {
+  _overrideVisibility() {
+    const cache = this._visibilityCache;
+    this.scene.traverse((o) => {
+      if (!o.visible) return;
+      let hide = o.isPoints || o.isLine || o.isLine2 || o.isSprite;
+      if (!hide && o.isMesh && o.material) {
+        const m = Array.isArray(o.material) ? o.material[0] : o.material;
+        hide = !!m && ((m.transparent && (m.depthWrite === false || m.opacity < 0.6)) || m.side === THREE.BackSide || o.userData.noAO);
+      }
+      if (hide) { o.visible = false; cache.push(o); }
+    });
+  }
+}
+
 export class PostFX {
   constructor(renderer) {
     this.renderer = renderer;
@@ -90,6 +114,8 @@ export class PostFX {
     this.bloom = new UnrealBloomPass(res, MOOD.base.bloom, 0.45, 0.82);
     this.screen = new ShaderPass(ScreenShader);
     this.composer.addPass(this.renderPass);
+    this.ao = null;
+    this.wantAO = !!G.ao; // o GTAO precisa da câmera para nascer: é criado no primeiro render (ensureAO)
     this.composer.addPass(this.bloom);
     this.composer.addPass(this.screen); // o último: escreve na tela
     this.setSize(size.x, size.y);
@@ -101,6 +127,19 @@ export class PostFX {
     this.composer.setPixelRatio(this.renderer.getPixelRatio());
     this.composer.setSize(w, h);
     if (this.level === 'light') this.bloom.setSize(w * 0.5, h * 0.5);
+    if (this.ao) { const pr = this.renderer.getPixelRatio(); this.ao.setSize(Math.round(w * pr * AO.resolution), Math.round(h * pr * AO.resolution)); }
+  }
+
+  // cria a sombra de contato com a cena e a câmera de agora (e refaz quando a câmera muda: luta nova, modo Explorar)
+  ensureAO(scene, camera) {
+    if (this.ao && this.ao.camera === camera) { this.ao.scene = scene; return; }
+    if (this.ao) { this.composer.removePass(this.ao); this.ao.dispose(); }
+    const size = this.renderer.getDrawingBufferSize(new THREE.Vector2());
+    this.ao = new ContactAO(scene, camera, Math.round(size.x * AO.resolution), Math.round(size.y * AO.resolution), undefined, {
+      radius: AO.radius, thickness: AO.thickness, distanceExponent: AO.distanceExponent, distanceFallOff: AO.distanceFallOff, scale: AO.scale, samples: AO.samples, screenSpaceRadius: false,
+    }, { lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 8 });
+    this.ao.blendIntensity = AO.intensity;
+    this.composer.insertPass(this.ao, 1); // logo depois da cena, antes do bloom
   }
 
   // mood: um dos MOOD (ou mistura já calculada); kick: 0..1 de pulso de impacto (o tremor da câmera)
@@ -115,6 +154,7 @@ export class PostFX {
     c.tint.lerp(TMP.set(mood.tint), k);
     this.renderPass.scene = scene;
     this.renderPass.camera = camera;
+    if (this.wantAO) this.ensureAO(scene, camera);
     this.bloom.strength = c.bloom;
     const u = this.screen.uniforms;
     u.vignette.value = c.vignette;
@@ -126,6 +166,7 @@ export class PostFX {
   dispose() {
     if (!this.composer) return;
     this.bloom.dispose();
+    if (this.ao) { this.ao.dispose(); this.ao = null; }
     this.composer.renderTarget1.dispose();
     this.composer.renderTarget2.dispose();
     this.composer = null;
