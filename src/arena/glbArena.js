@@ -24,6 +24,38 @@ export async function preloadArena(cfg) {
   return cache[cfg.glb];
 }
 
+// METAL FALSO (vistoria de gráficos, 2026-11-15): as peças do Kenney chegam com metalness 0,4 em madeira, pedra,
+// barraca, árvore... Sem mapa de ambiente, "40% metálico" só tira 40% da cor difusa — tudo isso saía mais escuro e
+// apagado do que a cor da peça. Quem não é metal (pelo nome do material) volta a 0; o metal de verdade ganha um mapa de
+// ambiente só para ele (um degradê céu → chão), sem clarear o resto do mapa (os noturnos continuam escuros).
+const METAL_NAME = /metal|chrome|foil|iron|steel|ferro|a[cç]o|gold|ouro|silver|prata|bronze|cobre|copper|blade|l[aâ]mina/i;
+let metalEnv = null;
+function metalEnvMap() {
+  if (metalEnv || typeof document === 'undefined') return metalEnv;
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 32;
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0, 0, 0, 32);
+  grad.addColorStop(0, '#dfe6f0'); grad.addColorStop(0.48, '#8d94a0'); grad.addColorStop(0.52, '#4a4038'); grad.addColorStop(1, '#1c1814');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 32);
+  metalEnv = new THREE.CanvasTexture(c);
+  metalEnv.mapping = THREE.EquirectangularReflectionMapping;
+  metalEnv.colorSpace = THREE.SRGBColorSpace;
+  return metalEnv;
+}
+export function fixMetal(mat) {
+  if (!mat || !mat.isMeshStandardMaterial || mat.userData.metalFixed) return;
+  mat.userData.metalFixed = true;
+  if (!(mat.metalness > 0)) return;
+  if (METAL_NAME.test(mat.name || '')) {
+    const env = metalEnvMap();
+    if (env && !mat.envMap) { mat.envMap = env; mat.envMapIntensity = 0.7; mat.needsUpdate = true; }
+  } else {
+    mat.metalness = 0;
+  }
+}
+
 export function createGLBArena(cfg) {
   const colliders = [];
   const boxes = [];
@@ -122,6 +154,7 @@ export function createGLBArena(cfg) {
           return;
         }
         if (!o.isMesh) return;
+        for (const m of Array.isArray(o.material) ? o.material : [o.material]) fixMetal(m);
         o.castShadow = !n.startsWith('GROUND') && !n.startsWith('FLOOR') && !n.startsWith('DECAL_'); // decalque no chão não faz sombra
         o.receiveShadow = true;
         // texturas pintadas pelo nome do material

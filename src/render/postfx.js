@@ -65,7 +65,7 @@ export const MOOD = {
 const TMP = new THREE.Color();
 
 // parâmetros da sombra de contato (metros do mundo; a escala do jogo é 1 = 1 m)
-export const AO = { radius: 0.55, thickness: 1.2, distanceExponent: 1.4, distanceFallOff: 1, scale: 1, samples: 12, intensity: 0.75, resolution: 0.5 };
+export const AO = { radius: 0.6, thickness: 1.2, distanceExponent: 1.4, distanceFallOff: 1, scale: 1, samples: 12, intensity: 0.9, resolution: 0.5 };
 
 // o GTAO só olha o que é sólido: some com o transparente que não escreve profundidade (efeitos), o céu (lado de dentro)
 // e os sprites, além dos pontos e linhas que ele já tira

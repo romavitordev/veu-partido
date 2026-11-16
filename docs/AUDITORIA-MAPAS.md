@@ -33,6 +33,15 @@ marcas, decalques, tufos baixos sem colisão) e na BORDA (peças altas e cheias,
   3. **Decalques no chão** (marcas, sangue, rachaduras) em vez de chão de uma cor só.
   4. **Gradação de cor por mapa** (uma LUT pequena) para cada cenário ter a sua cara.
 
+### Feito na v4.53.0
+
+- Sombra de contato (GTAO) no nível alta, em meia resolução, antes do bloom: +1,4 ms no Coliseu e +2,8 ms no
+  Acampamento (medido com `gl.finish`, numa GPU de PC).
+- Achado na vistoria: as peças do Kenney chegam com `metalness` 0,4 em madeira, pedra, barraca e árvore (433
+  materiais só no Acampamento). Sem mapa de ambiente isso só apagava 40% da cor. `fixMetal` (arena/glbArena.js) zera
+  quem não tem nome de metal; os metais de verdade ganham um mapa de ambiente próprio (degradê), sem clarear o mapa.
+  O `scene.environment` geral ficou de fora: clarearia os mapas noturnos.
+
 ## Ordem proposta
 
 1. Tipora (o mais vazio) — pesquisa de referência primeiro, como em `REFERENCIAS-MAPAS.md`.

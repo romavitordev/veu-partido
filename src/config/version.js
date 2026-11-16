@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.52.1';
+export const VERSION = '4.53.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.53.0',
+    date: '2026-11-15',
+    title: 'Luz e Contato',
+    items: [
+      'SOMBRA DE CONTATO (qualidade gráfica alta): os cantos e onde as coisas se encostam escurecem — pés no chão, base das pilastras e muralhas, pedras, troncos —, e os modelos ganham volume.',
+      'CORES DOS CENÁRIOS CORRIGIDAS: madeira, pedra, barracas, árvores e móveis vinham com um "metal" falso que apagava a cor; agora aparecem com a cor de verdade. Os metais de verdade ganharam reflexo.',
+    ],
+  },
   {
     v: '4.52.1',
     date: '2026-11-15',

@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v4.53.0 — Luz e Contato
+
+- Versão: `VERSION` 4.52.1 → **4.53.0** (`package.json`/lock junto). Data: 2026-11-15. Dono: "Gráficos primeiro".
+- `render/postfx.js`: `ContactAO` (o `GTAOPass` do Three r187, sem dependência nova) entre a cena e o bloom, só com
+  `gfxProfile().ao` (nível alta). Criado no primeiro render com a câmera da cena (`ensureAO`; refeito quando a câmera
+  muda: luta nova, modo Explorar). Tira do passe de normais os transparentes sem profundidade (efeitos), o céu
+  (`BackSide`), sprites, pontos e linhas. Parâmetros em `AO` (raio 0,6 m, 12 amostras, força 0,9, meia resolução).
+  Custo medido: +1,4 ms (Coliseu) e +2,8 ms (Acampamento).
+- `arena/glbArena.js`: `fixMetal` em todo material Standard do cenário — metalness > 0 sem nome de metal → 0 (o
+  Kenney exporta 0,4 em madeira/pedra/barraca/árvore, o que apagava 40% da cor sem mapa de ambiente); com nome de
+  metal → `envMap` de um degradê (céu → chão) com intensidade 0,7. Comparado no Acampamento, Coliseu e Santo Berço:
+  as peças ganham a cor delas, o chão e a luz do mapa ficam iguais.
+- `tests/graphics.test.js`.
+- O commit `342c8fa` (pedido do dono no meio do trabalho) foi o GTAO em andamento; esta versão fecha o pacote.
+
 ## v4.52.1 — Explorador
 
 - Versão: `VERSION` 4.52.0 → **4.52.1** (`package.json`/lock junto). Data: 2026-11-15.

@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.53.0 — Luz e Contato
+
+### Adicionado
+- Sombra de contato (GTAO) na qualidade gráfica alta.
+- Teste dos gráficos (metal falso e níveis de qualidade).
+
+### Corrigido
+- Peças dos cenários com metal falso (metalness 0,4) que apagava a cor; reflexo só nos metais de verdade.
+
 ## v4.52.1 — Explorador
 
 ### Corrigido

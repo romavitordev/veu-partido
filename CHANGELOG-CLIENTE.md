@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.53.0 — Luz e Contato
+- SOMBRA DE CONTATO (qualidade gráfica alta): os cantos e onde as coisas se encostam escurecem — pés no chão, base das pilastras e muralhas, pedras, troncos —, e os modelos ganham volume.
+- CORES DOS CENÁRIOS CORRIGIDAS: madeira, pedra, barracas, árvores e móveis vinham com um "metal" falso que apagava a cor; agora aparecem com a cor de verdade. Os metais de verdade ganharam reflexo.
+
 ## v4.52.1 — Explorador
 - CORRIGIDO: a Barra de Transformação enchia e acendia "segure para transformar" mesmo para quem já tinha despertado (o despertar dura o round inteiro, e no Outro Lado não tem round) — e a transformação não saía. Agora a barra não enche enquanto a transformação está valendo.
 - AMOR E SANGUE: no fim, o Eloy tira a focinheira, a Kemi aparece ao lado dele no lodo da Fantasma e os dois se beijam ("Sempre no seu tempo.").
