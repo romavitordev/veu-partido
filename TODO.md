@@ -19,6 +19,12 @@
   - [ ] um **almoxarifado sem saída**: só a porta por onde se entrou; pega o loot e volta para a sala anterior para
     seguir (precisa da rota aceitar sala-beco: a porta de volta vira a saída e a sala anterior mantém as portas).
   - [ ] PROPOSTA: biblioteca (estantes como cobertura), banheiro, sala dos professores, quadra coberta.
+- [ ] **Personagem preso brilhando (branco) a fase inteira** (dono: "às vezes os personagens bugam e ficam brilhando
+  em toda fase, assim como essa foto do Chris, já ocorreu com o Xande"). Pista: o brilho do corpo é o `glowTint`
+  (`Fighter.updateVisuals`); o `startChargeFx` (carregar energia) e vários especiais o ligam e só apagam no fim
+  normal (`stop()` / timeline). Se a carga ou o especial é cortado (golpe, troca de sala, cinemática, porta), o
+  `glowTint` fica — e só o `resetRound` o limpa, que o Outro Lado não tem (mesmo padrão do bug da transformação,
+  v4.52.1). Corrigir: limpar `glowTint`/`buffTint` na troca de sala e ao cancelar a carga, e um teste.
 
 ## Modo Explorar (pedido do dono, 2026-11-15)
 
