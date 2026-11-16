@@ -14,6 +14,15 @@
   (`game/Explorer.js`, `tests/explorer.test.js`).
 - [ ] Celular: olhar arrastando o dedo e botões de subir/descer na tela (hoje o modo é de teclado/mouse/controle).
 
+## Polir os mapas antigos (pedido do dono, 2026-11-15)
+
+> "procure mais coisas para melhorar ... maior detalhamento com mais informações de referências e polir os antigos
+> mapas, agora pode usar o modo espectador para ter uma visão melhor dos mapas". Vistoria em `docs/AUDITORIA-MAPAS.md`.
+
+- [x] Vistoria pelo modo Explorar (os 8 antigos).
+- [ ] Tipora · [ ] Palco do Anfitrião · [ ] Santo Berço · [ ] Coliseu · [ ] Orfanato · [ ] Igreja (referências → Blender → Explorar).
+- [ ] Gráficos: sombra de contato (GTAO) no nível alta; mapa de ambiente; decalques no chão; gradação de cor por mapa.
+
 ## Polimento dos personagens recentes (pedido do dono, 2026-11-15)
 
 > "veja os personagens que ainda não têm uma pose de vitória própria, veja falas, vá polindo essas coisas que nos
