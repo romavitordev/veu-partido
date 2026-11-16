@@ -555,13 +555,20 @@ function makeFire(group, o) {
   root.position.set(...o.pos);
   group.add(root);
   const tongues = [];
-  const layers = [[0xd8400c, 0.55, 1.5, 6, 0.55], [0xff8a24, 0.4, 1.15, 5, 0.5], [0xffd070, 0.22, 0.75, 3, 0.45]];
-  for (const [color, r, h, count, op] of layers) {
-    const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+  // o.colors: [fora, meio, miolo, brilho] (a chama de proteção de Treb Ciach é AMARELA); o.spread: quanto as línguas se
+  // abrem pela base (fogueira larga); o.count: multiplica o número de línguas; o.opacity: multiplica a opacidade
+  const col = o.colors || [0xd8400c, 0xff8a24, 0xffd070, 0xff7a20];
+  const spread = o.spread ?? 0.6;
+  const mult = o.count ?? 1;
+  const fade = o.opacity ?? 1; // fogueira grande: muitas línguas somando luz estouram em branco
+  const layers = [[col[0], 0.55, 1.5, 6, 0.55], [col[1], 0.4, 1.15, 5, 0.5], [col[2], 0.22, 0.75, 3, 0.45]];
+  for (const [color, r, h, count0, op] of layers) {
+    const count = Math.round(count0 * mult);
+    const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: op * fade, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
     for (let i = 0; i < count; i++) {
       const m = new THREE.Mesh(new THREE.ConeGeometry(r * s * (0.7 + Math.random() * 0.5), h * s * (0.7 + Math.random() * 0.6), 7, 1, true), mat);
       const a = (i / count) * Math.PI * 2 + Math.random();
-      const d = r * s * 0.6 * Math.random();
+      const d = r * s * spread * Math.random();
       m.position.set(Math.cos(a) * d, 0, Math.sin(a) * d);
       m.geometry.translate(0, (h * s) / 2, 0);
       m.raycast = () => {};
@@ -569,7 +576,7 @@ function makeFire(group, o) {
       tongues.push({ m, seed: Math.random() * 10, base: m.position.clone() });
     }
   }
-  const glow = new THREE.Mesh(new THREE.SphereGeometry(0.45 * s, 10, 8), new THREE.MeshBasicMaterial({ color: 0xff7a20, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const glow = new THREE.Mesh(new THREE.SphereGeometry(0.45 * s, 10, 8), new THREE.MeshBasicMaterial({ color: col[3], transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
   glow.scale.y = 0.35;
   root.add(glow);
   return {
@@ -581,7 +588,7 @@ function makeFire(group, o) {
         k.m.position.x = k.base.x + Math.sin(t * 5 + k.seed) * 0.05 * s;
         k.m.position.z = k.base.z + Math.cos(t * 4 + k.seed) * 0.05 * s;
       }
-      glow.material.opacity = 0.5 + Math.sin(t * 11) * 0.1;
+      glow.material.opacity = (0.5 + Math.sin(t * 11) * 0.1) * fade;
     },
   };
 }

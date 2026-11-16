@@ -720,7 +720,9 @@ export const TREB_CIACH = {
   materials: {
     mud_trail: { hide: true },
     window_glow: { emissiveIntensity: 0.55 }, turnip_glow: { emissiveIntensity: 0.9 },
-    fire_flame: { color: 0xffe070, emissive: 0xffc020, emissiveIntensity: 1.6 }, // a chama de proteção é AMARELA
+    // a chama de proteção é AMARELA; os cones parados do GLB saem e entra o fogo animado das fogueiras (dono, 2026-11-15:
+    // "melhore a chama da proteção para parecer fogo mesmo, como as fogueiras que tem nos outros mapas")
+    fire_flame: { hide: true },
     ghost_flower: { emissiveIntensity: 0 }, // de dia as flores do campo são brancas e não brilham
   },
   bounds: { radius: 18.5 }, // a fogueira (r ≈ 4,8) ocupa o meio: a luta é em volta dela
@@ -737,6 +739,8 @@ export const TREB_CIACH = {
     { type: 'point', color: 0xffd84a, intensity: 60, distance: 26, decay: 1.4, pos: [0, 3, 0], flicker: true }, // a chama de proteção (amarela)
   ],
   stars: null,
+  // a CHAMA DE PROTEÇÃO: o fogo das fogueiras, em amarelo, largo como a grade de toras (r ≈ 2,6) e alto (≈ 5 m)
+  fires: [{ pos: [0, 0.45, 0], scale: 4.2, spread: 1.0, count: 1.4, opacity: 0.26, colors: [0xd87c0c, 0xf0b020, 0xffe070, 0xe8a020] }],
   particles: [
     { color: 0xffe060, count: 90, area: 4.5, height: 10, rise: 2.2, drift: 0.5, size: 0.07, opacity: 0.9, center: [0, 1.2, 0] }, // as fagulhas
     // os SIGILOS DE ENERGIA subindo da chama como brasa (dono: "a chama de proteção é amarela e com sigilos de energia saindo como brasa")
@@ -767,7 +771,7 @@ export const TREB_CIACH_TEMPESTADE = {
   materials: {
     // a fogueira continua ACESA à noite, amarela (dono: "devia estar acesa mesmo no mapa de noite com chamas amarelas e
     // sigilos de conhecimento")
-    fire_flame: { color: 0xffe070, emissive: 0xffc020, emissiveIntensity: 1.6 },
+    fire_flame: { hide: true }, // o fogo animado (fires, herdado do Samhain) no lugar dos cones parados
     turnip_glow: { emissive: 0x4ad0ff, emissiveIntensity: 0.7 }, window_glow: { emissive: 0x3ab8ff, emissiveIntensity: 0.8 },
     // a AURA (print do ep. mandado pelo dono): as flores e o mato brilham em ciano, o chão com um reflexo azul
     ghost_flower: { emissiveIntensity: 2.2 }, grass_tuft: { emissive: 0x1a9ab8, emissiveIntensity: 0.55 },

@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.53.1 — A Chama de Proteção
+- TREB CIACH: a chama de proteção agora é fogo de verdade — as línguas amarelas sobem e dançam por entre as toras da grande fogueira, como as fogueiras dos outros cenários, no Samhain e no Pós-Tempestade.
+
 ## v4.53.0 — Melhoria de Gráficos — Parte 1
 - SOMBRA DE CONTATO (qualidade gráfica alta): os cantos e onde as coisas se encostam escurecem — pés no chão, base das pilastras e muralhas, pedras, troncos —, e os modelos ganham volume.
 - CORES DOS CENÁRIOS CORRIGIDAS: madeira, pedra, barracas, árvores e móveis vinham com um "metal" falso que apagava a cor; agora aparecem com a cor de verdade. Os metais de verdade ganharam reflexo.

@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.53.1 — A Chama de Proteção
+
+### Alterado
+- Treb Ciach (Samhain e Pós-Tempestade): a chama de proteção usa o fogo animado das fogueiras, em amarelo, no lugar dos cones parados.
+- Fogueiras animadas aceitam cores, abertura, quantidade de línguas e opacidade na config.
+
 ## v4.53.0 — Melhoria de Gráficos — Parte 1
 
 ### Adicionado

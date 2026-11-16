@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v4.53.1 — A Chama de Proteção
+
+- Versão: `VERSION` 4.53.0 → **4.53.1** (`package.json`/lock junto). Data: 2026-11-15.
+- **Chama de proteção (dono: "melhore a chama da proteção para parecer fogo mesmo, como as fogueiras que tem nos
+  outros mapas"):** em `TREB_CIACH` e `TREB_CIACH_TEMPESTADE` o material `fire_flame` (os 15 cones `FLICKER_flame*`
+  do GLB, opacos e parados) ficou `hide: true`; entrou `fires: [{ pos: [0, 0.45, 0], scale: 4.2, spread: 1, count:
+  1.4, opacity: 0.26, colors: [...] }]` (a tempestade herda do Samhain). Continua AMARELA (cânone do dono).
+- `makeFire` (glbArena.js) ganhou `colors` ([fora, meio, miolo, brilho]), `spread` (abertura da base), `count`
+  (multiplica as línguas) e `opacity` (multiplica a opacidade: numa fogueira grande as línguas aditivas somadas
+  estouravam em branco). Sem essas opções as fogueiras antigas ficam iguais.
+- Conferido no jogo nos dois mapas: as línguas sobem por entre as toras da pirâmide.
+
 ## v4.53.0 — Melhoria de Gráficos — Parte 1
 
 - Título trocado de "Luz e Contato" para "Melhoria de Gráficos — Parte 1" (pedido do dono; a Parte 2 traz os
