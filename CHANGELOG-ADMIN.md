@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.53.4 — Luz nas Costas
+
+- Versão: `VERSION` 4.53.3 → **4.53.4** (`package.json`/lock junto). Data: 2026-11-16.
+- **Brilho branco andando (dono: "os personagens andavam, com o brilho da iluminação local fixa no seu corpo"):** a
+  v4.53.3 tinha atribuído a foto à luz do baú congelada — errado. Reproduzido no corredor da Escola com o Chris: a
+  `lamp` do Dungeon (PointLight 0xffd8a8, 7, alcance 8, decay 1,6, posta em `pos.y + 2,4` bem em cima do jogador
+  desde a v4.26) ficava a ~40 cm do topo da cabeça (ossos até 1,81 m) e estourava a regata branca e a pele clara em
+  branco, com halo do bloom; com a luz em 0 ele fica normal. Subir a luz não resolve (em cima, a cabeça sempre leva
+  mais luz que o chão).
+- Agora `placeLamp(lamp, pos, cameraPos)` (exportada de Dungeon.js, com `LAMP`): 3,5 m atrás do jogador na direção da
+  câmera, 3,2 m de altura, intensidade 5, alcance 12. Conferido no jogo: cabeça e cabelo normais, corredor ainda
+  iluminado. Teste em `tests/pve-interaction.test.js` (longe da cabeça, do lado da câmera).
+
 ## v4.53.3 — Sem Brilho Preso
 
 - Versão: `VERSION` 4.53.2 → **4.53.3** (`package.json`/lock junto). Data: 2026-11-16.

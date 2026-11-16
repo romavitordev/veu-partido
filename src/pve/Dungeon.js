@@ -46,6 +46,18 @@ import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
 
 const CHEST_INTERACT_HOLD_TIME = 0.45;
 
+// a luz que anda com o jogador: atrás dele, na direção da câmera, a `back` m e `height` m de altura — ilumina o que a
+// câmera vê sem ficar colada na cabeça (testado no corredor da Escola com o Chris: em cima, a 2,4 m, estourava)
+export const LAMP = { intensity: 5, distance: 12, back: 3.5, height: 3.2 };
+export function placeLamp(lamp, pos, cam) {
+  let dx = cam.x - pos.x;
+  let dz = cam.z - pos.z;
+  const l = Math.hypot(dx, dz);
+  if (l < 1e-3) { dx = 0; dz = 1; } else { dx /= l; dz /= l; }
+  lamp.position.set(pos.x + dx * LAMP.back, pos.y + LAMP.height, pos.z + dz * LAMP.back);
+  return lamp.position;
+}
+
 // AS ROUPAS dos Alheios da Torre (PROPOSTA: gente comum de Varminho que virou hospedeiro; os Homens de Terno com ternos
 // de cores diferentes). Cada peça é achada pelo nome do material do .glb e TINGIDA (a textura continua por baixo).
 const INTERFLORADO_OUTFITS = [
@@ -228,8 +240,10 @@ export class Dungeon {
     w.cameraRig.chase = () => this.chaseTarget(this.views[0]);
     w.cameraRig.update(0, [this.player], true);
     if (this.coop) this.views[1].rig.update(0, [this.player2], true);
-    // a luz fraca que anda com o jogador: na 3ª pessoa a câmera olha para os cantos que as luzes da casa não pegam
-    this.lamp = new THREE.PointLight(0xffd8a8, 7, 8, 1.6);
+    // a luz fraca que anda com o jogador: na 3ª pessoa a câmera olha para os cantos que as luzes da casa não pegam.
+    // Fica ATRÁS dele, do lado da câmera (LAMP): em cima da cabeça (2,4 m) ela estourava em branco quem é alto ou de
+    // roupa clara — o Chris de regata, o Xande (dono, 2026-11-16: "o brilho da iluminação local fixo no corpo")
+    this.lamp = new THREE.PointLight(0xffd8a8, LAMP.intensity, LAMP.distance, 1.6);
     w.scene.add(this.lamp);
     // a luz dos BAÚS: criada já aqui (apagada) — acender uma luz nova no meio do jogo recompilaria os materiais
     this.chestLight = new THREE.PointLight(0xffd84a, 0, 7, 1.8);
@@ -1892,7 +1906,7 @@ export class Dungeon {
     this.applyGates(dt);
     this.updateExitDoor(dt);
     if (this.D.mist) this.updateMist(dt);
-    this.lamp.position.set(p.pos.x, p.pos.y + 2.4, p.pos.z);
+    placeLamp(this.lamp, p.pos, this.world.camera.position);
     this.ambience && this.ambience.update(dt);
     for (const V of this.views) { this.updateLock(dt, V); this.updateArrows(dt, V); }
     if (this.transit) this.updateTransit(dt);

@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.53.4 — Luz nas Costas
+
+### Corrigido
+- Outro Lado: a luz que acompanha o jogador saiu de cima da cabeça (estourava em branco personagens altos ou de roupa clara) e foi para trás dele, do lado da câmera.
+
+### Adicionado
+- Teste da posição da luz do jogador.
+
 ## v4.53.3 — Sem Brilho Preso
 
 ### Corrigido

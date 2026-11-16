@@ -127,3 +127,21 @@ test('escolhendo sem tela aberta solta o jogo', () => {
   assert.equal(d.choosing, false);
   assert.equal(choiceTicks, 0, 'não ficou preso esperando uma escolha que não existe');
 });
+
+// a luz que anda com o jogador fica ATRÁS dele (lado da câmera), longe da cabeça: em cima, a 2,4 m do chão, ela
+// estourava em branco quem é alto ou de roupa clara (Chris, Xande — dono, 2026-11-16)
+test('a luz do jogador fica longe da cabeça, do lado da câmera', async () => {
+  const { placeLamp, LAMP } = await import('../src/pve/Dungeon.js');
+  const THREE = await import('three');
+  const lamp = new THREE.PointLight();
+  const pos = new THREE.Vector3(2, 0, 3);
+  for (const cam of [new THREE.Vector3(2, 2.5, 7.3), new THREE.Vector3(-1, 2, 3), new THREE.Vector3(2, 6, 3)]) {
+    const at = placeLamp(lamp, pos, cam);
+    const head = new THREE.Vector3(pos.x, 1.95, pos.z);
+    assert.ok(at.distanceTo(head) >= 3, `longe da cabeça (${at.distanceTo(head).toFixed(2)} m)`);
+    const toCam = new THREE.Vector3(cam.x - pos.x, 0, cam.z - pos.z);
+    const toLamp = new THREE.Vector3(at.x - pos.x, 0, at.z - pos.z);
+    if (toCam.lengthSq() > 1e-6) assert.ok(toCam.dot(toLamp) > 0, 'do lado da câmera');
+  }
+  assert.ok(LAMP.intensity <= 6);
+});

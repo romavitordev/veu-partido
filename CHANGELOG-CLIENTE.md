@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.53.4 — Luz nas Costas
+- OUTRO LADO: acabou o personagem "brilhando" em branco enquanto anda. A luz que acompanha o jogador ficava logo acima da cabeça e estourava quem é alto ou de roupa clara (o Chris de regata, o Xande); agora ela fica atrás, do lado da câmera, e ilumina a sala sem queimar o personagem.
+
 ## v4.53.3 — Sem Brilho Preso
 - OUTRO LADO: o personagem "preso brilhando" em branco era a luz do baú congelada no pico — o mesmo travamento do baú corrigido na 4.53.2. Agora, se uma escolha falhar ao abrir, o jogo se solta sozinho em vez de congelar.
 

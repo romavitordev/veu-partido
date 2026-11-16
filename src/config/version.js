@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.53.3';
+export const VERSION = '4.53.4';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.53.4',
+    date: '2026-11-16',
+    title: 'Luz nas Costas',
+    items: [
+      'OUTRO LADO: acabou o personagem "brilhando" em branco enquanto anda. A luz que acompanha o jogador ficava logo acima da cabeça e estourava quem é alto ou de roupa clara (o Chris de regata, o Xande); agora ela fica atrás, do lado da câmera, e ilumina a sala sem queimar o personagem.',
+    ],
+  },
   {
     v: '4.53.3',
     date: '2026-11-16',
