@@ -6,7 +6,8 @@ import cindy from '../src/characters/cindy.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, treeCoinCost, migrateTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
 import { CPU_LEVELS } from '../src/ai/CpuController.js';
-import { Closet, PeekingCrack } from '../src/pve/espreitador.js';
+import { Closet, PeekingCrack, ESPREITADOR_CFG } from '../src/pve/espreitador.js';
+import { RASTROPODA, BILU } from '../src/combat/alheios.js';
 
 const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k), m }; };
 
@@ -442,4 +443,14 @@ test('Degolificada: fica exausta depois do Grito e da Investida que erra — lev
   assert.ok(brain.tiredFor > 0 && brain.tiredFor < T.lashMiss);
   // a Investida que acerta deixa só um respiro; a que erra, a brecha
   assert.ok(T.lashMiss > T.lashHit * 2 && T.grabMiss >= 1 && T.scream >= 1.5);
+});
+
+test('chefes com brecha: o Espreitador mais duro e os minibosses tontos depois do golpe grande que erra', () => {
+  const E = ESPREITADOR_CFG;
+  // mais difícil: habilidades mais seguidas, pânico mais curto, frestas reabrem antes, bote em cadeia
+  assert.ok(E.duel[1] <= 5 && E.terror.time < 7 && E.terror.taken < 2 && E.closet.lockTime < 20);
+  assert.ok(E.fresta.chain.max >= 1 && E.fresta.chain.below <= 0.5);
+  // mas o bote que ERRA ainda abre a guarda dele
+  assert.ok(E.fresta.lunge.miss >= 0.8);
+  for (const M of [RASTROPODA, BILU]) assert.ok(M.daze.taken > 1 && Object.values(M.daze).every((x) => x > 1));
 });

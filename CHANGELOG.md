@@ -1,5 +1,15 @@
 # Changelog
 
+## v4.55.0 — Brechas
+
+### Alterado
+- Espreitador mais difícil: habilidades mais frequentes, menos tempo escondido, frestas reabrem antes (14 s), pânico mais curto e mais fraco, Cópias com mais vida, olhar drena mais, recua menos; abaixo da metade emenda botes em cadeia.
+
+### Adicionado
+- Brecha no bote do Espreitador que erra (tropeça 1 s).
+- Brecha no pulo do Rastropoda e na corrida do Bilu que erram: tontos, parados e levando ×1,5 de dano.
+- Teste das brechas e dos números novos do Espreitador.
+
 ## v4.54.0 — Fusões
 
 ### Adicionado

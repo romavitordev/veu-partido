@@ -19,21 +19,24 @@ const v1 = new THREE.Vector3();
 const v2 = new THREE.Vector3();
 
 export const ESPREITADOR_CFG = {
-  duel: [4.5, 7.5], // segundos de luta comum entre uma habilidade e outra
-  gaze: { windup: 0.9, time: 3.0, range: 15, arc: 55, drain: 17, burn: 22, turn: 1.1 }, // drain: Sanidade/s; burn: vida/s sem Sanidade
+  // MAIS DIFÍCIL (dono, 2026-11-17: "aumente a dificuldade do espreitador que é o boss mais fácil atualmente"; PROPOSTA):
+  // habilidades mais seguidas, bote em CADEIA abaixo da metade, frestas que reabrem antes, pânico mais curto, Cópias
+  // mais fortes e menos recuo. Antes: duel [4.5, 7.5]
+  duel: [3.0, 5.0], // segundos de luta comum entre uma habilidade e outra
+  gaze: { windup: 0.9, time: 3.0, range: 15, arc: 55, drain: 20, burn: 26, turn: 1.4 }, // drain: Sanidade/s; burn: vida/s sem Sanidade
   // warn: os OLHOS AMARELOS acendem na fresta por onde ele vai sair, este tanto antes do bote (feedback do dono)
-  fresta: { hide: [1.6, 2.6], warn: 0.95, lunge: { speed: 13, time: 0.42, damage: 62, reach: 1.9 }, walk: 9.5, maxWalk: 2.4 },
-  copia: { count: 2, max: 3, hp: 110 },
+  fresta: { hide: [1.1, 1.9], warn: 0.95, lunge: { speed: 14, time: 0.42, damage: 62, reach: 1.9, miss: 1.0 }, walk: 9.5, maxWalk: 2.4, chain: { below: 0.5, chance: 0.6, max: 2 } },
+  copia: { count: 2, max: 3, hp: 140 },
   fortify: { hold: 1.6, breakDamage: 110, reach: 1.4, hpMult: 2, dmgMult: 1.7 },
-  terror: { time: 7, taken: 2.0, ranged: 2.4, speed: 2.2 }, // o tiro no olho da boca (Kaiser) é o que acaba com ele
+  terror: { time: 5.5, taken: 1.7, ranged: 2.1, speed: 2.6 }, // o tiro no olho da boca (Kaiser) é o que acaba com ele
   // TÍMIDO (wiki, "Pancada": só ataca "quando encurralado ou sem alternativa"): mantém distância observando; a CPU de
   // luta só assume (os golpes desesperados) com o jogador colado nele ou com ele sem para onde recuar
-  shy: { keep: 6, corner: 2.6, retreat: 3.4, stuck: 0.6, release: 4.2 },
+  shy: { keep: 4.5, corner: 3.2, retreat: 4.0, stuck: 0.5, release: 4.2 },
   // ESPREITAR (wiki): escondido na fresta, ele devora a Sanidade de quem observa (e a goteira acelera)
-  stalk: { drain: 3.5, drip: 0.55 },
+  stalk: { drain: 4.5, drip: 0.55 },
   // DRENAR ENERGIA (wiki): "dificulta qualquer tipo de aproximação" — quem olha para ele fica lento
   gazeSlow: 0.6,
-  closet: { lockTime: 20 },
+  closet: { lockTime: 14 },
 };
 
 // ================================================================== ARMÁRIO (a fresta)
@@ -333,6 +336,7 @@ export class EspreitadorBrain {
     const b = this.boss;
     if (b.state === 'ability' && b.seq === this.seq) { b.seq = null; b.setState('idle'); }
     this.seq = null;
+    this.chain = 0;
     this.setState('duel');
     this.next = wait ?? C.duel[0] + Math.random() * (C.duel[1] - C.duel[0]);
   }
@@ -627,6 +631,19 @@ export class EspreitadorBrain {
       return;
     }
     this.d.hint(null);
+    // A BRECHA do bote: quem ESQUIVA (ele passa direto) o vê tropeçar para fora da fresta — um instante para punir
+    if (!this.lungeHit) {
+      this.backToDuel();
+      b.stun(ESPREITADOR_CFG.fresta.lunge.miss, 'stagger');
+      return;
+    }
+    const K = ESPREITADOR_CFG.fresta.chain;
+    if (b.health / b.maxHealth <= K.below && (this.chain || 0) < K.max && this.openClosets().length > 1 && Math.random() < K.chance) {
+      this.chain = (this.chain || 0) + 1;
+      this.startFresta();
+      return;
+    }
+    this.chain = 0;
     this.backToDuel();
   }
 

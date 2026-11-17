@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.54.0';
+export const VERSION = '4.55.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.55.0',
+    date: '2026-11-17',
+    title: 'Brechas',
+    items: [
+      'O ESPREITADOR ficou mais perigoso: usa as habilidades com mais frequência, fica menos tempo escondido, as frestas trancadas reabrem antes, o pânico dura menos, as Cópias aguentam mais e, abaixo da metade da vida, ele emenda um bote atrás do outro pelas frestas.',
+      'Mas o bote do Espreitador tem BRECHA: quem esquiva o vê tropeçar para fora da fresta.',
+      'Minibosses da Torre com BRECHA: o pulo do RASTROPODA que erra crava as garras no chão (ele aparece, tonto); a corrida do BILU que erra o faz tropeçar. Tontos, os dois levam mais dano.',
+    ],
+  },
   {
     v: '4.54.0',
     date: '2026-11-17',

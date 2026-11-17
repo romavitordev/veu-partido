@@ -25,6 +25,36 @@ function stubModel(names, size) {
   return { root, J };
 }
 
+// ================================================================== A BRECHA DOS MINIBOSSES
+// (dono, 2026-11-16: "todos os bosses têm que [...] ter suas fraquezas também, momentos na batalha onde o player pode
+// atacar, o player tem que aprender quando é esse momento sozinho"). O golpe GRANDE de cada um (o pulo do Rastropoda, a
+// corrida do Bilu) que ERRA deixa o bicho tonto: parado, balançando, sem atacar e levando mais dano. Sem texto na tela.
+// PROPOSTA: os tempos e o dano extra.
+function startDaze(m, time) {
+  m.atk = null;
+  m.dazeT = time;
+  m.setState('dazed');
+  m.world.audio.play('drain', { volume: 0.5, pitch: 0.7 });
+  m.world.fx.burst(new THREE.Vector3(m.pos.x, 0.3, m.pos.z), { count: 22, color: 0x6a6a5a, kind: 'smoke', speed: 1.8, up: 0.4, life: 0.7, size: 0.7 });
+}
+
+// devolve true enquanto está tonto (o update do filho não faz mais nada)
+function tickDaze(m, dt) {
+  if (m.state !== 'dazed') return false;
+  m.dazeT -= dt;
+  for (const k in m.cds) m.cds[k] = Math.max(0, m.cds[k] - dt);
+  m.t += dt;
+  m.stateT += dt;
+  if (Math.random() < dt * 6) m.world.fx.burst(new THREE.Vector3(m.pos.x + (Math.random() - 0.5) * 0.6, m.height * 0.9, m.pos.z + (Math.random() - 0.5) * 0.6), { count: 1, color: 0xf0f0c0, speed: 0.3, up: 0.6, life: 0.5, size: 0.08 });
+  if (m.dazeT <= 0) { m.model.root.rotation.x = 0; m.model.root.rotation.z = 0; m.setState('chase'); return false; }
+  m.model.root.position.set(m.pos.x, m.restY(), m.pos.z);
+  m.pose();
+  // balança tonto, o corpo caído para a frente
+  m.model.root.rotation.x = 0.22;
+  m.model.root.rotation.z = Math.sin(m.t * 5) * 0.14;
+  return true;
+}
+
 // ================================================================== RASTROPODA
 export const RASTROPODA = {
   name: 'RASTROPODA', hp: 900, duration: Infinity, speed: 3.6, radius: 0.9, height: 1.4, restY: 0,
@@ -44,6 +74,8 @@ export const RASTROPODA = {
   // ENFARINHADO (a farinha pegou): aparece inteiro, a barra mostra a vida de verdade e ele fica meio tonto — anda
   // devagar, demora mais para atacar e não consegue fugir (não é um atordoamento: ainda bate)
   floured: { speed: 0.45, cd: 1.8 },
+  // A BRECHA: o PULO que erra crava as garras no chão — aparece inteiro, tonto, e leva mais dano
+  daze: { leap: 1.7, taken: 1.5 },
 };
 
 export class Rastropoda extends Marionette {
@@ -81,7 +113,7 @@ export class Rastropoda extends Marionette {
 
   hitBy(attacker, dmg, info) {
     this.dust(0.5); // apanhar mostra só um lampejo (antes 1,2 s)
-    super.hitBy(attacker, dmg, info);
+    super.hitBy(attacker, this.state === 'dazed' ? dmg * this.cfg.daze.taken : dmg, info);
   }
 
   // o canto (1 m para dentro) da sala atual mais longe de quem ele caça
@@ -106,7 +138,9 @@ export class Rastropoda extends Marionette {
   // BATE E FOGE: depois da garra/do gás, recua para longe (não quando enfarinhado)
   endAttack() {
     const name = this.atk && this.atk.name;
+    const missed = this.atk && !this.atk.done.some(Boolean);
     super.endAttack();
+    if (name === 'leap' && missed) { startDaze(this, this.cfg.daze.leap); this.dust(this.cfg.daze.leap + 0.4); return; }
     if (this.floured) { for (const k in this.cds) this.cds[k] = Math.max(this.cds[k], 0); return; }
     if (name === 'claw' || name === 'gas') {
       const [a, b] = this.cfg.flee;
@@ -188,6 +222,7 @@ export class Rastropoda extends Marionette {
   bob() { return 0; }
 
   update(dt) {
+    if (tickDaze(this, dt)) { this.reveal = Math.max(this.reveal - dt, 0.6); this.updateThrow(dt); return; }
     const a = this.atk;
     // no alto do pulo: escolhe onde cair (em cima do alvo)
     if (a && a.name === 'leap' && this.state === 'attack' && !a.landSet && this.stateT >= a.windup && this.target) {
@@ -308,6 +343,8 @@ export const BILU = {
   // "QUEM TOSSIU?" (wiki: no quarto escuro ele faz barulhos de bicho): o barulho e os olhos verdes acendem NA FRENTE do
   // alvo — e o Bilu de verdade some no escuro e volta pelas COSTAS dando o bote. PROPOSTA: os tempos
   lure: { every: [7, 10], hide: 1.3 },
+  // A BRECHA: a CORRIDA que erra o faz tropeçar nas pernas compridas — tonto, sem fugir, leva mais dano
+  daze: { sprint: 1.4, taken: 1.5 },
 };
 
 export class Bilu extends Marionette {
@@ -377,14 +414,21 @@ export class Bilu extends Marionette {
   stepSpeed() { return 0; }
 
   endAttack() {
+    const missed = this.atk && this.atk.name === 'sprint' && !this.atk.done.some(Boolean);
     super.endAttack();
     this.circleT = 0;
+    if (missed) { startDaze(this, this.cfg.daze.sprint); return; }
     const [a, b] = this.cfg.flee;
     this.fleeT = a + Math.random() * (b - a);
     this.setState('flee');
   }
 
+  hitBy(attacker, dmg, info) {
+    super.hitBy(attacker, this.state === 'dazed' ? dmg * this.cfg.daze.taken : dmg, info);
+  }
+
   update(dt) {
+    if (this.alive && tickDaze(this, dt)) return;
     const tg = this.target;
     if (tg && this.alive && !this.held) {
       const d = Math.hypot(this.pos.x - tg.pos.x, this.pos.z - tg.pos.z);

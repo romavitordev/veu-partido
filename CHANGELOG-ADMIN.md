@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v4.55.0 — Brechas
+
+- Versão: `VERSION` 4.54.0 → **4.55.0** (`package.json`/lock junto). Data: 2026-11-17.
+- **Brechas (dono, 2026-11-16: "todos os bosses têm que [...] ter suas fraquezas também"):** `combat/alheios.js`
+  `startDaze/tickDaze` + `daze` no RASTROPODA (`leap` 1,7 s) e no BILU (`sprint` 1,4 s): o golpe grande que não acerta
+  ninguém (`atk.done` vazio) deixa o bicho no estado `dazed` (parado, inclinado, balançando, faíscas), sem atacar,
+  levando ×1,5 (`hitBy`). O Rastropoda fica visível (pó) enquanto tonto. Espreitador: `fresta.lunge.miss` 1,0 s de
+  `stun('stagger')` quando o bote não pega. Estrangeiro: sem mudança (o Sino já expõe). Conferido no jogo.
+- **Espreitador mais difícil (dono, 2026-11-17):** `ESPREITADOR_CFG` duel [4.5,7.5]→[3,5]; gaze drain 17→20, burn
+  22→26, turn 1.1→1.4; fresta hide [1.6,2.6]→[1.1,1.9], lunge speed 13→14; `fresta.chain { below: 0.5, chance: 0.6, max: 2 }`
+  (o bote que acerta emenda outra fresta abaixo de 50%); copia hp 110→140; terror 7 s ×2,0/×2,4 → 5,5 s ×1,7/×2,1;
+  shy keep 6→4,5, corner 2,6→3,2; stalk drain 3,5→4,5; closet lockTime 20→14. PROPOSTA, sem bateria ainda.
+- Teste novo em `tests/pve.test.js` (118 passando).
+
 ## v4.54.0 — Fusões
 
 - Versão: `VERSION` 4.53.4 → **4.54.0** (`package.json`/lock junto). Data: 2026-11-17.

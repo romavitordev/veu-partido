@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.55.0 — Brechas
+- O ESPREITADOR ficou mais perigoso: usa as habilidades com mais frequência, fica menos tempo escondido, as frestas trancadas reabrem antes, o pânico dura menos, as Cópias aguentam mais e, abaixo da metade da vida, ele emenda um bote atrás do outro pelas frestas.
+- Mas o bote do Espreitador tem BRECHA: quem esquiva o vê tropeçar para fora da fresta.
+- Minibosses da Torre com BRECHA: o pulo do RASTROPODA que erra crava as garras no chão (ele aparece, tonto); a corrida do BILU que erra o faz tropeçar. Tontos, os dois levam mais dano.
+
 ## v4.54.0 — Fusões
 - OUTRO LADO — FUSÕES (como as evoluções do Vampire Survivors): junte duas melhorias na tentativa, a primeira no nível máximo, e cada baú pode trazer o poder FUNDIDO — Carnificina, Muralha Viva, Transe Ritual, Olho Morto, Passo de Sombra, Carapaça de Espinhos e Predador. A primeira vez é uma DESCOBERTA: depois disso ela ainda aparece, rara, mesmo sem a receita.
 - Nova tela DESCOBERTAS no menu do Outro Lado: a coleção de todas as fusões já encontradas (as que faltam aparecem como "???").
