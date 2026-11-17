@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import lib
 from lib import *
 from mathutils import Vector
+from sculpt_lib import Sculpt, ridge, n3
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'dalmo.glb'
 random.seed(1979)  # Aracaju
@@ -125,6 +126,26 @@ def grid(fn, nu, nv, flip=False):
     return verts, faces, uvs
 
 
+def cyl_uv(part, a, b, turns=1.0):
+    """UV cilíndrico ao longo do eixo a→b (as peças esculpidas vêm sem UV; a textura de pano precisa dos vincos)"""
+    v, f, _ = part
+    a, b = Vector(a), Vector(b)
+    ax = (b - a)
+    L = ax.length
+    ax.normalize()
+    ref = Vector((0, -1, 0))  # u = 0,5 na FRENTE (o rasgo da textura da calça cai no joelho)
+    ref = (ref - ax * ref.dot(ax)).normalized()
+    ref2 = ax.cross(ref)
+    uv = []
+    for p in v:
+        d = Vector(p) - a
+        t = d.dot(ax) / L
+        r = d - ax * d.dot(ax)
+        ang = math.atan2(r.dot(ref2), r.dot(ref)) / TAU + 0.5
+        uv.append((ang * turns, 1 - t))
+    return v, f, uv
+
+
 # ---------------------------------------------------------------- TRONCO: barriga e peitoral enormes, ombros caídos
 # (z relativo ao quadril, meia-largura, profundidade da FRENTE, profundidade das COSTAS) — em frações de H
 TT = [
@@ -164,7 +185,7 @@ def dalmo_torso(sk_, profile, seg=18, depth=0.62):
 
 lib.torso_part = dalmo_torso  # o b.body usa este tronco (barriga para a frente) no lugar do tubo simétrico
 
-hc = b.body(M, [], arms=(), legs=False, head_r=(0.15, 0.158, 0.168), neck_r=0.108)
+hc = b.body(M, [], arms=(), legs=False, head_r=(0.13, 0.138, 0.146), neck_r=0.104)  # remodel 2026-11-17: cabeça menor (antes 0,15/0,158/0,168)
 
 
 def spikes_on(pts_normals, ln=0.035, r=0.012):
@@ -176,37 +197,31 @@ def outward(p):
     return v.normalized() if v.length > 1e-6 else Vector((0, 1, 0))
 
 
-# ---------------------------------------------------------------- BRAÇOS: ombro redondo, bíceps enorme, antebraço grosso
+# ---------------------------------------------------------------- BRAÇOS (remodel 2026-11-17, escultura): o deltoide
+# enorme e redondo emendado no trapézio, o bíceps cheio dentro da manga folgada, a manga ARREGAÇADA amontoada logo abaixo
+# do cotovelo e o antebraço de pele grosso (músculo do lado de fora), com as faixas
 for side in ('L', 'R'):
     s, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     sx = 1 if side == 'L' else -1
-    shtop = s + Vector((-sx * 0.025 * H, 0, 0.0))
-    cuff = e.lerp(h, 0.2)
-    # manga (camisa) do ombro até logo abaixo do cotovelo: bíceps bem cheio
-    rings = []
-    for i in range(9):
-        t = i / 8
-        p = shtop.lerp(e, t)
-        r = 0.108 + 0.018 * math.sin(t * math.pi * 0.9) - 0.006 * t
-        rings.append((p.x, p.y, p.z, r, r * 1.04))
-    for i in range(1, 4):
-        p = e.lerp(cuff, i / 3)
-        rings.append((p.x, p.y, p.z, 0.106, 0.106))
-    b.add('sleeve' + side, tube(rings, 16), shirt, region='arm' + side, subdiv=0)
-    # deltoide: a cabeça do ombro arredondada (some o "ombro quadrado")
-    b.add('delt' + side, ellipsoid((s.x - sx * 0.005 * H, s.y, s.z - 0.03 * H), (0.1 * H, 0.112 * H, 0.09 * H), 16, 12), shirt, region='arm' + side, subdiv=0)
-    # antebraço de pele, grosso perto do cotovelo
-    fr = []
-    for i in range(7):
-        t = 0.08 + i / 6 * 0.86
-        p = e.lerp(h, t)
-        r = 0.1 - 0.024 * t + 0.008 * math.sin(t * math.pi)
-        fr.append((p.x, p.y, p.z, r, r * 0.92))
-    b.add('forearm' + side, tube(fr, 14), skin, region='e' + side, subdiv=0)
-    b.add('hand' + side, hand_part(sk, side, 0.09), skin, region='e' + side)
-    # faixas enroladas no antebraço (as mãos de lutador): mais no direito
-    ts = (0.5, 0.6, 0.7, 0.8) if side == 'R' else (0.62, 0.72)
-    wraps = [tube(limb_rings(e.lerp(h, t), e.lerp(h, t + 0.075), 0.1 - t * 0.024 + 0.006, 0.1 - t * 0.024 + 0.005, n=1), 14) for t in ts]
+    ax = (e - s).normalized()
+    S = Sculpt()
+    S.ell(s + Vector((-sx * 0.04, 0.0, -0.035)), (0.118, 0.112, 0.105))          # a cabeça do ombro (redonda, caída)
+    S.ell(s + Vector((-sx * 0.15, 0.0, 0.0)), (0.12, 0.1, 0.07), dir=Vector((sx, 0, -0.45)))  # emenda no trapézio, descendo do pescoço
+    S.chain([s + Vector((0, 0, -0.04)), s.lerp(e, 0.5), e + Vector((0, 0, 0.02))], [0.112, 0.108, 0.094], step=0.35)
+    S.ell(s.lerp(e, 0.45) + Vector((0, -0.03, 0)), (0.085, 0.07, 0.11))           # o bíceps puxando o pano na frente
+    fold = lambda p, a=s, ax=ax: 0.0045 * (ridge((p - a).dot(ax) * 38 + n3(p, 9) * 2.2, 2) - 0.4)
+    b.add('sleeve' + side, cyl_uv(S.mesh(res=0.012, smooth=3, disp=fold, target=1500), s + Vector((0, 0, 0.12)), e), shirt, region='arm' + side, subdiv=0)
+    F = Sculpt()
+    F.chain([e.lerp(h, 0.05), e.lerp(h, 0.3), e.lerp(h, 0.66), e.lerp(h, 0.9)], [0.094, 0.09, 0.072, 0.062], step=0.35)
+    F.ell(e.lerp(h, 0.28) + Vector((sx * 0.03, -0.012, 0)), (0.06, 0.06, 0.12), dir=h - e)  # o músculo de fora do antebraço
+    b.add('forearm' + side, F.mesh(res=0.01, smooth=3, disp=lambda q: 0.0012 * n3(q, 30), target=900), skin, region='e' + side, subdiv=0)
+    b.add('hand' + side, hand_part(sk, side, 0.088), skin, region='e' + side)
+    # faixas enroladas no antebraço (as mãos de lutador): mais no direito; cada volta um pouco torta
+    ts = (0.46, 0.56, 0.66, 0.76) if side == 'R' else (0.6, 0.7)
+    wraps = []
+    for t in ts:
+        r = 0.098 - t * 0.04 + 0.008
+        wraps.append(tube(limb_rings(e.lerp(h, t) + Vector((0, 0, random.uniform(-0.006, 0.006))), e.lerp(h, t + 0.07), r, r - 0.002, n=1), 14))
     b.add('wraps' + side, merge(*wraps), bandage, region='e' + side, subdiv=0)
 
 # pulseira com o axolote rosa no pulso esquerdo
@@ -225,7 +240,7 @@ def shirt_pt(u, v):
     z_lin = z_top - v * 0.82
     g = 0.2 * smoothstep(0.46, 0.63, z_lin)          # decote: o botão de cima aberto
     a = g + u * (TAU - 2 * g)                        # a costura do decote fica na frente
-    hem = -0.13 - 0.075 * abs(math.cos(a)) + 0.02 * math.cos(2 * a) ** 2  # fralda: mais comprida na frente e atrás
+    hem = -0.19 - 0.07 * abs(math.cos(a)) + 0.025 * math.cos(2 * a) ** 2  # remodel: a fralda até o alto da coxa  # fralda: mais comprida na frente e atrás
     z = z_top - v * (z_top - hem)
     folds = 0.006 * math.sin(a * 9 + v * 2.5) * smoothstep(0.15, 0.8, v)
     extra = 0.02 + 0.008 * v + folds + max(0.0, 0.02 - z) * 0.45  # abre por cima da calça
@@ -258,7 +273,10 @@ b.add('prop_shirt_placket', rod([torso_pt(0, z, 1.0, 0.03) for z in (0.47, 0.3, 
 # dobra grossa da manga arregaçada
 for side in ('L', 'R'):
     e, h = sk['e' + side], sk['hand' + side]
-    b.add('prop_shirt_cuff' + side, tube(limb_rings(e.lerp(h, 0.1), e.lerp(h, 0.24), 0.116, 0.112, n=2, bulge=0.05), 16), shirt, region='e' + side, subdiv=0)
+    C = Sculpt()
+    for k in range(3):  # três voltas do pano enrolado, cada uma um pouco torta
+        C.ell(e.lerp(h, 0.08 + k * 0.06) + Vector((random.uniform(-0.005, 0.005), random.uniform(-0.005, 0.005), 0)), (0.104 - k * 0.002, 0.1 - k * 0.002, 0.032), dir=h - e)
+    b.add('prop_shirt_cuff' + side, cyl_uv(C.mesh(res=0.01, smooth=2, disp=lambda q: 0.003 * (ridge(n3(q, 12) * 4, 2) - 0.4), target=700), e, e.lerp(h, 0.3)), shirt, region='e' + side, subdiv=0)
 b.group('prop_shirt')
 
 # ---------------------------------------------------------------- CALÇA CARGO larga e COTURNOS
@@ -268,15 +286,15 @@ for side in ('L', 'R'):
     l, k, f = sk['l' + side], sk['k' + side], sk['foot' + side]
     sx = 1 if side == 'L' else -1
     topp = Vector((l.x, l.y, l.z + 0.07 * H))
-    rings = []
-    for t, r in ((0.0, 0.122), (0.25, 0.124), (0.55, 0.118), (0.85, 0.108), (1.0, 0.104)):
-        p = topp.lerp(k, t)
-        rings.append((p.x, p.y, p.z, r, r))
-    # abaixo do joelho: a faixa e o pano franzido por cima do cano do coturno
-    for t, r in ((0.15, 0.1), (0.27, 0.098), (0.36, 0.104), (0.43, 0.106), (0.48, 0.098)):
-        p = k.lerp(f, t)
-        rings.append((p.x, p.y, p.z, r, r))
-    b.add('pants' + side, tube(rings, 16), pants, region='leg' + side, subdiv=0)
+    P = Sculpt()
+    P.chain([topp + Vector((0, 0, -0.06)), topp.lerp(k, 0.35), topp.lerp(k, 0.75), k + Vector((0, -0.006, 0)), k.lerp(f, 0.2), k.lerp(f, 0.36)],
+            [0.12, 0.128, 0.122, 0.112, 0.104, 0.106], step=0.35)
+    P.ell(k.lerp(f, 0.44), (0.112, 0.112, 0.05))                                 # o pano franzido em cima do cano
+    P.ell(k + Vector((0, -0.1, 0.01)), (0.045, 0.03, 0.035), neg=True)           # o RASGO no joelho
+    cxy = (l.x, l.y)
+    fold = lambda q, c=cxy, kz=k.z: 0.0045 * (ridge(math.atan2(q.x - c[0], q.y - c[1]) * 3 + q.z * 9 + n3(q, 7) * 2.5, 2) - 0.4) * (1.5 if q.z < kz else 1)
+    b.add('pants' + side, cyl_uv(P.mesh(res=0.012, smooth=3, disp=fold, target=1600), topp, k.lerp(f, 0.5)), pants, region='leg' + side, subdiv=0)
+    b.add('knee_skin' + side, ellipsoid((k.x, k.y - 0.085, k.z + 0.01), (0.04, 0.02, 0.03), 10, 6), skin, region='leg' + side, subdiv=0)
     # bolsos cargo na lateral da coxa
     pc = topp.lerp(k, 0.55)
     b.add('cargo' + side, box((pc.x + sx * 0.112 * H, pc.y, pc.z), (0.03 * H, 0.1 * H, 0.12 * H), bevel=0.01), pants, region='leg' + side, subdiv=0)
@@ -306,33 +324,38 @@ def hp(phi, th, r=1.0):
 
 b.add('hair_cap', hair_cap((HC.x, HC.y, HC.z), (HR[0] * 0.98, HR[1] * 0.98, HR[2] * 0.98), front=0.2, side=0.52, back=0.66), hairm, region='head')
 dreads = []
-N = 84
+N = 64
 for i in range(N):
-    phi = (i / N) * TAU - math.pi + random.uniform(-0.05, 0.05)
+    phi = (i / N) * TAU - math.pi + random.uniform(-0.07, 0.07)
     front = math.cos(phi)               # 1 = testa, -1 = nuca
-    th0 = random.uniform(0.12, 0.42)
-    # comprimento: na testa caem até a sobrancelha / olho; nos lados até a mandíbula; atrás até a nuca
-    if front > 0.55:
-        end_z = HC.z + random.uniform(0.035, 0.08) * H
+    th0 = random.uniform(0.05, 0.45)
+    # comprimento (a arte): na testa caem por cima da sobrancelha, bagunçadas; nos lados até a orelha / mandíbula;
+    # atrás até a nuca. Umas mais curtas, outras mais longas
+    if front > 0.6:
+        end_z = HC.z + random.uniform(-0.01, 0.07) * H
     elif front > -0.2:
-        end_z = HC.z - random.uniform(0.06, 0.12) * H
+        end_z = HC.z - random.uniform(0.02, 0.13) * H
     else:
-        end_z = HC.z - random.uniform(0.14, 0.2) * H
-    pts = [hp(phi, th0, 1.0)]
+        end_z = HC.z - random.uniform(0.12, 0.2) * H
+    pts = [hp(phi, th0, 0.98)]
     th = th0
-    # acompanha o crânio até a "aba", depois cai por gravidade, um pouco afastado do rosto
-    while th < 1.25 and pts[-1].z > end_z + 0.04 * H:
-        th += 0.22
-        pts.append(hp(phi + random.uniform(-0.04, 0.04), th, 1.07 + 0.03 * (th - th0)))
+    wob = random.uniform(-0.12, 0.12)
+    while th < 1.2 and pts[-1].z > end_z + 0.03 * H:
+        th += 0.2
+        phi += wob * 0.3
+        pts.append(hp(phi, th, 1.06 + 0.05 * (th - th0)))
     last = pts[-1]
-    lean = Vector((math.sin(phi) * 0.02 * H, -math.cos(phi) * 0.02 * H, 0)) if front > 0.55 else Vector((math.sin(phi) * 0.012 * H, -math.cos(phi) * 0.012 * H, 0))
+    out = Vector((math.sin(phi), -math.cos(phi), 0))
+    lean = out * (0.03 * H if front > 0.6 else 0.016 * H)
+    side_w = Vector((math.cos(phi), math.sin(phi), 0)) * random.uniform(-0.02, 0.02) * H
     while last.z > end_z:
-        last = last + Vector((0, 0, -0.045 * H)) + lean * 0.4
+        last = last + Vector((0, 0, -0.04 * H)) + lean * 0.35 + side_w * 0.4
         pts.append(last)
     pts[-1].z = max(pts[-1].z, end_z)
     if len(pts) < 3:
         pts.insert(1, pts[0].lerp(pts[-1], 0.5))
-    rad = [0.021 * H] * (len(pts) - 1) + [0.016 * H]
+    r0 = random.uniform(0.019, 0.026) * H
+    rad = [r0 * (1 - 0.45 * (k / (len(pts) - 1)) ** 2) for k in range(len(pts))]
     dreads.append(rod(pts, rad, 6))
 b.add('dreads', merge(*dreads[0::2]), hairm, region='head', subdiv=0)
 b.add('dreads_hi', merge(*dreads[1::2]), hairhi, region='head', subdiv=0)
@@ -368,7 +391,7 @@ def cape_pt(u, v):
     a = 0.95 + u * 2.25        # da frente do ombro esquerdo, por cima do ombro e do braço, até o meio das costas
     z = 0.6 - v * (0.62 + 0.22 * math.sin(u * 9 + 1) ** 2)
     side = max(0.0, math.sin(a))  # no lado esquerdo a capa passa por fora do braço
-    extra = 0.06 + 0.2 * side * smoothstep(0.2, 0.55, z) + 0.05 * v
+    extra = 0.06 + 0.15 * side * smoothstep(0.2, 0.55, z) + 0.05 * v  # remodel: o braço ficou mais fino (antes 0,2)
     p = torso_pt(a, max(z, -0.12), 1.0, extra)
     p.z = hz + z * H
     return p

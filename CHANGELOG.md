@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.56.0 — O Colosso Refeito
+
+### Alterado
+- Dalmo remodelado no Blender (pelo MCP) pela arte oficial: braços, manga arregaçada, antebraços, calça cargo e dreads esculpidos; cabeça menor; UV cilíndrico nas peças esculpidas para as texturas de pano.
+
 ## v4.55.0 — Brechas
 
 ### Alterado

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.55.0';
+export const VERSION = '4.56.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.56.0',
+    date: '2026-11-17',
+    title: 'O Colosso Refeito',
+    items: [
+      'DALMO remodelado pela arte oficial: o corpo em barril com os ombros enormes e redondos, a cabeça menor, os dreads bagunçados caindo na testa, a camisa escura folgada com a fralda para fora e as mangas arregaçadas, os antebraços grossos com as faixas e a calça cargo larga rasgada nos joelhos. O Colosso continua igual por cima.',
+    ],
+  },
   {
     v: '4.55.0',
     date: '2026-11-17',

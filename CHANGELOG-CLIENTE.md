@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.56.0 — O Colosso Refeito
+- DALMO remodelado pela arte oficial: o corpo em barril com os ombros enormes e redondos, a cabeça menor, os dreads bagunçados caindo na testa, a camisa escura folgada com a fralda para fora e as mangas arregaçadas, os antebraços grossos com as faixas e a calça cargo larga rasgada nos joelhos. O Colosso continua igual por cima.
+
 ## v4.55.0 — Brechas
 - O ESPREITADOR ficou mais perigoso: usa as habilidades com mais frequência, fica menos tempo escondido, as frestas trancadas reabrem antes, o pânico dura menos, as Cópias aguentam mais e, abaixo da metade da vida, ele emenda um bote atrás do outro pelas frestas.
 - Mas o bote do Espreitador tem BRECHA: quem esquiva o vê tropeçar para fora da fresta.

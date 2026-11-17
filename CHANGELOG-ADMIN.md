@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.56.0 — O Colosso Refeito
+
+- Versão: `VERSION` 4.55.0 → **4.56.0** (`package.json`/lock junto). Data: 2026-11-17.
+- **Remodel do Dalmo (dono, 2026-11-17: "siga com upd de remodel dos personagens que faltam"; TODO §23.5):** referências
+  da wiki vistas no navegador (sem baixar): "Arte de Dalmo em Natal Macabro" (corpo inteiro) e "Arte Completa Portrait
+  Dalmo" (Hexatombe). `tools/blender/char_dalmo.py`, rodado e conferido no Blender vivo pelo MCP (`mcp_build`), 4 vistas:
+  braços por escultura (`Sculpt`: deltoide redondo emendado no trapézio, bíceps na manga, antebraço com o músculo de
+  fora), manga arregaçada em três voltas, calça cargo esculpida (dobras, o pano franzido no cano, o rasgo do joelho com a
+  pele), dreads em mechas de tamanhos e pontas diferentes (64), cabeça 0,13/0,138/0,146 (antes 0,15/0,158/0,168), fralda
+  mais comprida. `cyl_uv` dá UV cilíndrico (frente em u = 0,5) às peças esculpidas para `shirt_dalmo`/`pants_dalmo`.
+  Colosso igual (capa `extra` 0,2 → 0,15). Juntas, regiões e nomes `prop_*` preservados. `.glb` comprimido (meshopt,
+  0,70 MB); `.blend` em `tools/blender/fonte/dalmo.blend`. Conferido no jogo (tela de carregamento com as texturas).
+
 ## v4.55.0 — Brechas
 
 - Versão: `VERSION` 4.54.0 → **4.55.0** (`package.json`/lock junto). Data: 2026-11-17.
