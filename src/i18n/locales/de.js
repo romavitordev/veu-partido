@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "BETÄUBT",
   "hud.held": "GEFANGEN",
   "hud.transform": "HALTE {btn}: VERWANDELN",
+  "hud.transform_low": "VERWANDLUNG: LEBEN ≤ {pct} %",
   "hud.def": "BLK",
   "hud.esq": "AUSW",
   "combat.fight": "KÄMPFT!",

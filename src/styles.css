@@ -1912,3 +1912,28 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 .explore-hud .ex-help { background: #0009; border-radius: 8px; padding: 6px 12px; }
 .explore-hud.faded .ex-help { opacity: 0; transition: opacity 1s; }
 .explore-hud.faded .ex-name { opacity: .45; }
+
+/* OUTRO LADO — DESCOBERTAS (as fusões, como a coleção do Vampire Survivors) */
+.pve-found { display: flex; align-items: center; justify-content: center; padding: 16px; background: radial-gradient(ellipse at 50% 30%, #1e0f2acc, #060307ee 70%); font-family: Inter, system-ui, sans-serif; color: #e8e2d4; }
+.pve-found .pf-wrap { width: min(760px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.pve-found header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.pve-found header small { color: #a89c90; letter-spacing: .14em; font-size: 12px; }
+.pve-found header h2 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 40px; letter-spacing: .06em; color: #f4ece0; }
+.pve-found header span { margin-left: auto; color: #d8a0ff; font-weight: 700; }
+.pve-found .pf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pve-found .pf-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 6px; border-radius: 10px; background: #140c18d9; border: 1px solid #ffffff14; cursor: pointer; text-align: center; }
+.pve-found .pf-tile i { font-style: normal; font-size: 30px; color: #5a5060; }
+.pve-found .pf-tile b { font-size: 12px; color: #7a7080; letter-spacing: .04em; }
+.pve-found .pf-tile.ok i { color: #d8a0ff; text-shadow: 0 0 12px #b060ff88; }
+.pve-found .pf-tile.ok b { color: #f4ece0; }
+.pve-found .pf-tile.on { border-color: #ffd84a; background: #2a1a10e6; }
+.pve-found .pf-info { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 10px; background: #160c12d9; border: 1px solid #ffffff1a; min-height: 96px; }
+.pve-found .pf-info > i { font-style: normal; font-size: 40px; color: #d8a0ff; width: 48px; text-align: center; }
+.pve-found .pf-info.locked > i { color: #5a5060; }
+.pve-found .pf-info b { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 24px; letter-spacing: .05em; }
+.pve-found .pf-info p { margin: 4px 0; font-size: 14px; line-height: 1.4; }
+.pve-found .pf-info small { color: #ffd84a; font-size: 13px; }
+.pve-found .pf-tip { margin: 0; font-size: 12px; color: #a89c90; line-height: 1.5; }
+.pve-found .pf-btns { display: flex; justify-content: flex-end; }
+.pve-found .pf-btns button { padding: 10px 18px; border-radius: 8px; background: #2a1a10e6; color: #ffd84a; border: 1px solid #ffd84a55; font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+@media (max-width: 560px) { .pve-found .pf-grid { grid-template-columns: repeat(2, 1fr); } }

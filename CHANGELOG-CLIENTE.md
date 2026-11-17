@@ -2,6 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.54.0 — Fusões
+- OUTRO LADO — FUSÕES (como as evoluções do Vampire Survivors): junte duas melhorias na tentativa, a primeira no nível máximo, e cada baú pode trazer o poder FUNDIDO — Carnificina, Muralha Viva, Transe Ritual, Olho Morto, Passo de Sombra, Carapaça de Espinhos e Predador. A primeira vez é uma DESCOBERTA: depois disso ela ainda aparece, rara, mesmo sem a receita.
+- Nova tela DESCOBERTAS no menu do Outro Lado: a coleção de todas as fusões já encontradas (as que faltam aparecem como "???").
+- Uma segunda vida só: o Segundo Fôlego saiu do baú. A segunda chance agora é a Ressurreição, comprada na loja da Aghata.
+- A DEGOLIFICADA agora tem BRECHAS: depois de certos golpes ela perde o fôlego por um instante — o corpo desce, a cabeça pende e ela não se defende. Descubra quais golpes deixam a guarda dela aberta.
+- Barra de Transformação cheia com a vida alta: o HUD avisa que a transformação só sai com a vida em 35% ou menos (antes parecia que "não funcionava").
+
 ## v4.53.4 — Luz nas Costas
 - OUTRO LADO: acabou o personagem "brilhando" em branco enquanto anda. A luz que acompanha o jogador ficava logo acima da cabeça e estourava quem é alto ou de roupa clara (o Chris de regata, o Xande); agora ela fica atrás, do lado da câmera, e ilumina a sala sem queimar o personagem.
 

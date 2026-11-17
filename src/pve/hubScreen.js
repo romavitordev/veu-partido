@@ -2,7 +2,7 @@
 // apagar dados está tão à mostra que eu apago para testar; deixe profissional, intuitivo e bonito").
 // Em cima: as MOEDAS e o resumo da campanha. No meio: o cartão da TENTATIVA (quem, profundidade, nível, dificuldade) com
 // o botão principal (CONTINUAR ou COMEÇAR). Embaixo: LOJA, MELHORIAS e, pequeno no canto, DADOS (backup, reiniciar e
-// apagar ficam lá dentro, atrás de confirmação). Devolve: 'continue' | 'new' | 'unlock' | 'tree' | 'data' | 'back'.
+// apagar ficam lá dentro, atrás de confirmação). Devolve: 'continue' | 'new' | 'unlock' | 'tree' | 'found' | 'data' | 'back'.
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export class PveHubScreen {
@@ -12,7 +12,7 @@ export class PveHubScreen {
     const a = info.attempt;
     const c = info.campaign;
     const played = c.runs > 0 || c.bossKills > 0 || c.deaths > 0;
-    this.items = a ? ['continue', 'new', 'unlock', 'tree', 'data', 'back'] : ['new', 'unlock', 'tree', 'data', 'back'];
+    this.items = a ? ['continue', 'new', 'unlock', 'tree', 'found', 'data', 'back'] : ['new', 'unlock', 'tree', 'found', 'data', 'back'];
     this.index = 0;
     const el = document.createElement('div');
     el.className = 'screen pve-hub';
@@ -44,6 +44,7 @@ export class PveHubScreen {
           ${a ? '<button data-id="new"><b>NOVA TENTATIVA</b><small>abandona a atual</small></button>' : ''}
           <button data-id="unlock"><b>LOJA · GACHA</b><small>${info.owned}/${info.total} personagens · giro ● 150</small></button>
           <button data-id="tree"><b>MELHORIAS</b><small>${info.treeRanks} grau(s) · balcão da Aghata</small></button>
+          <button data-id="found"><b>DESCOBERTAS</b><small>${info.found || 0}/${info.foundTotal || 0} fusões de poderes</small></button>
         </nav>
         <footer class="ph-foot">
           <span>${played ? `Recorde: profundidade ${c.bestDepth} · chefes ${c.bossKills} · mortes ${c.deaths}` : 'Nenhuma descida ainda'}</span>

@@ -18,15 +18,16 @@ import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseD
 // o personagem pode entrar em TODAS as dungeons (nenhum chefe contra ele mesmo)
 const allowedEverywhere = (id) => !pveBanned(byId(id)) && DUNGEON_ORDER.every((d) => isAllowed(d, id));
 import { PveTreeScreen } from './treeScreen.js';
+import { PveFusionScreen } from './fusionScreen.js';
 import { lockedMap, isUnlocked, buyChar, pveBanned } from './unlocks.js';
 import { PveUnlockScreen } from './unlockScreen.js';
 import { PveChoiceScreen } from './choiceScreen.js';
 import { PveHubScreen } from './hubScreen.js';
 import { fmtTime } from './pveHud.js';
 import { spin } from './economy.js';
-import { TREE } from './upgrades.js';
+import { TREE, FUSIONS } from './upgrades.js';
 import { AGHATA_LINES, pickLine, buyLine } from './aghataShop.js';
-import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath, exportPve, parseBackup, describePve } from './save.js';
+import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath, discover, exportPve, parseBackup, describePve } from './save.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = (id) => ROSTER.find((c) => c.id === id);
@@ -107,6 +108,8 @@ export function createPveFlow(ctx) {
       owned: ROSTER.length - lockedMap(data, ROSTER).size,
       total: ROSTER.length,
       treeRanks: Object.values(data.tree || {}).reduce((x, y) => x + y, 0),
+      found: FUSIONS.filter((f) => (data.discovered || []).includes(f.id)).length,
+      foundTotal: FUSIONS.length,
       warn,
       attempt: a ? {
         name: d ? d.name : a.charId,
@@ -302,6 +305,13 @@ export function createPveFlow(ctx) {
     setScreen('pvetree', new PveTreeScreen(screens, { audio, index, data, portrait: portraits.aghata || '' }));
   }
 
+  // ------------------------------------------------ DESCOBERTAS: a coleção das fusões (como no Vampire Survivors)
+  function toFound() {
+    endMatch();
+    setOverlay(null, null);
+    setScreen('pvefound', new PveFusionScreen(screens, { audio, discovered: data.discovered || [] }));
+  }
+
   // ------------------------------------------------ a loja de personagens (moedas dos baús)
   function toUnlock() {
     endMatch();
@@ -361,7 +371,7 @@ export function createPveFlow(ctx) {
     let failed = null;
     try {
       dungeon = new Dungeon({
-        renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: { tree: d1.tree || {} }, dungeonId: D.id,
+        renderer, audio, input, hud, playerDef: def, teamDefs, run: a, profile: { tree: d1.tree || {}, discovered: data.discovered || [] }, dungeonId: D.id,
         coopDef, coopTeam: coopDef ? (a.coop.team || []).map(byId).filter(Boolean) : [], coopProfile: coopDef ? { tree: d2.tree || {} } : null,
         net: net0 ? { slot: game.net.slot } : null,
         onEnd: (r) => onDungeonEnd(dungeon, r),
@@ -386,6 +396,8 @@ export function createPveFlow(ctx) {
       }
       save();
     };
+    // FUSÃO descoberta: fica no save na hora (a tela DESCOBERTAS); devolve true se é a 1ª vez
+    dungeon.onDiscover = (id) => { const fresh = discover(data, id); if (fresh) { dungeon.profile.discovered = data.discovered; save(); } return fresh; };
     // moedas dos baús: entram no save na hora (a morte não leva)
     // moedas: online, as de cada um andam igual nos dois computadores (net.coins); o save local recebe só as dele
     if (net0) {
@@ -541,6 +553,7 @@ export function createPveFlow(ctx) {
         if (data.attempt) confirmBox('pveconfirm', 'NOVA TENTATIVA?', 'A tentativa atual será perdida (o nível e os pontos dos personagens ficam).', 'SIM, COMEÇAR OUTRA');
         else toPlayers();
       } else if (c === 'tree') toTree();
+      else if (c === 'found') toFound();
       else if (c === 'unlock') toUnlock();
       else if (c === 'data') toData();
       else if (c === 'back') toMainMenu();
@@ -606,6 +619,8 @@ export function createPveFlow(ctx) {
         }
         game.screen.render();
       }
+    } else if (state === 'pvefound') {
+      if (c === 'back') toHub();
     } else if (state === 'pveunlock') {
       if (c === 'back') toHub();
       else if (c === 'spin') {

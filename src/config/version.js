@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.53.4';
+export const VERSION = '4.54.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.54.0',
+    date: '2026-11-17',
+    title: 'Fusões',
+    items: [
+      'OUTRO LADO — FUSÕES (como as evoluções do Vampire Survivors): junte duas melhorias na tentativa, a primeira no nível máximo, e cada baú pode trazer o poder FUNDIDO — Carnificina, Muralha Viva, Transe Ritual, Olho Morto, Passo de Sombra, Carapaça de Espinhos e Predador. A primeira vez é uma DESCOBERTA: depois disso ela ainda aparece, rara, mesmo sem a receita.',
+      'Nova tela DESCOBERTAS no menu do Outro Lado: a coleção de todas as fusões já encontradas (as que faltam aparecem como "???").',
+      'Uma segunda vida só: o Segundo Fôlego saiu do baú. A segunda chance agora é a Ressurreição, comprada na loja da Aghata.',
+      'A DEGOLIFICADA agora tem BRECHAS: depois de certos golpes ela perde o fôlego por um instante — o corpo desce, a cabeça pende e ela não se defende. Descubra quais golpes deixam a guarda dela aberta.',
+      'Barra de Transformação cheia com a vida alta: o HUD avisa que a transformação só sai com a vida em 35% ou menos (antes parecia que "não funcionava").',
+    ],
+  },
   {
     v: '4.53.4',
     date: '2026-11-16',

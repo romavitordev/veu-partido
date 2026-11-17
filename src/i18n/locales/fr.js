@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "ÉTOURDI",
   "hud.held": "IMMOBILISÉ",
   "hud.transform": "MAINTIENS {btn} : TRANSFORMATION",
+  "hud.transform_low": "TRANSFORMATION : VIE ≤ {pct} %",
   "hud.def": "GARDE",
   "hud.esq": "ESQ",
   "combat.fight": "COMBATTEZ !",

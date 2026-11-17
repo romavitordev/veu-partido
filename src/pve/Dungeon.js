@@ -122,6 +122,8 @@ export class Dungeon {
     this.input = input;
     this.onEnd = onEnd;
     this.run = run; // a tentativa (pve/save.js newAttempt): nível, xp, melhorias, profundidade, dificuldade
+    // melhorias que saíram do jogo (o Segundo Fôlego, v4.54.0) somem da tentativa salva: o HUD não acha a ficha delas
+    if (run && Array.isArray(run.picks)) run.picks = run.picks.filter((id) => typeof id === 'string' && (id.startsWith('kit:') || getUpgrade(id)));
     this.profile = profile; // o perfil permanente do personagem (a árvore)
     // COOP LOCAL (pedido do dono, 2026-11-06): o 2º jogador no mesmo PC, com a própria câmera (tela dividida)
     this.coop = !!coopDef;
@@ -301,31 +303,16 @@ export class Dungeon {
       if (kind !== 'melee' || o.thorns || !attacker || attacker === p || !attacker.takeDamage || attacker.state === 'ko') return;
       applyHit(this.world, p, attacker, { damage: Math.max(1, Math.round(dealt * m.thorns)), kind: 'ability', thorns: true, unblockable: true, reaction: false, knockback: 0, hitstun: 0, sound: 'clawHit', color: 0xc8a0ff, scale: 0.6 });
     } : null;
-    // SEGUNDO FÔLEGO (baú): uma vez por tentativa, o golpe que ia derrubar deixa com 30%
-    // RESSURREIÇÃO (loja da Aghata): uma vez por tentativa, depois do Segundo Fôlego, volta com 50% e afasta os inimigos
+    // RESSURREIÇÃO (loja da Aghata): a ÚNICA segunda vida — uma vez por tentativa, volta com 50% e afasta os inimigos
+    // (o Segundo Fôlego do baú saiu: dono, 2026-11-16, "deveriam ser a mesma coisa")
     const slot = p === this.player ? 0 : 1;
-    const windOk = m.secondWind && !(this.run.secondWindUsed || []).includes(slot);
-    const reviveOk = m.revive && !(this.run.reviveUsed || []).includes(slot);
-    if (windOk || reviveOk) {
-      const hook = () => {
-        const wind = m.secondWind && !(this.run.secondWindUsed || []).includes(slot);
-        const rev = m.revive && !(this.run.reviveUsed || []).includes(slot);
-        if (wind) {
-          this.run.secondWindUsed = [...(this.run.secondWindUsed || []), slot];
-          p.health = Math.round(p.maxHealth * 0.3);
-          p.invuln = Math.max(p.invuln || 0, 1.2);
-          this.world.fx.burst(p.chestPos(v1).clone(), { count: 40, color: 0xfff0c0, speed: 4, life: 0.7, size: 0.18 });
-          this.hud.callout('SEGUNDO FÔLEGO', '#fff0c0');
-          this.audio.play('levelUp', { volume: 0.9, pitch: 1.2 });
-        } else if (rev) {
-          this.run.reviveUsed = [...(this.run.reviveUsed || []), slot];
-          this.resurrect(p);
-        } else return false;
-        // o Fighter limpa o gancho antes de chamar: sobrou outra vida (Fôlego e Ressurreição juntos), rearma
-        if ((m.secondWind && !(this.run.secondWindUsed || []).includes(slot)) || (m.revive && !(this.run.reviveUsed || []).includes(slot))) p.lethalHook = hook;
+    if (m.revive && !(this.run.reviveUsed || []).includes(slot)) {
+      p.lethalHook = () => {
+        if ((this.run.reviveUsed || []).includes(slot)) return false;
+        this.run.reviveUsed = [...(this.run.reviveUsed || []), slot];
+        this.resurrect(p);
         return true;
       };
-      p.lethalHook = hook;
     } else p.lethalHook = null;
     p.pveMods = m;
     return m;
@@ -1188,7 +1175,7 @@ export class Dungeon {
     // A BUILD COMEÇA VAZIA (pedido do dono, 2026-11-13): o baú só sobe habilidades que o jogador ESCOLHEU ao subir de
     // nível. Antes do nível 2 (ou sem nenhuma habilidade ainda) ele só dá moedas ou experiência — sem melhoria de graça
     if ((this.run.level || 1) < 2 || !this.run.picks.length) return this.openEarlyChest(c, n);
-    const ups = chestUpgrades(this.run.picks, Math.random, n);
+    const ups = chestUpgrades(this.run.picks, Math.random, n, { discovered: this.discovered() });
     const items = [];
     const rows = [];
     for (const id of ups) {
@@ -1211,10 +1198,22 @@ export class Dungeon {
       rows.push({ icon: '?', name: 'Moedas ou vida', tag: 'escolha' });
       this.pendingRewards = [...(this.pendingRewards || []), { coins, heal }];
     }
-    for (const id of ups) if (getUpgrade(id).chest && countOf(this.run.picks, id) === 1) this.hud.callout(getUpgrade(id).name.toUpperCase(), '#7ec8ff');
+    for (const id of ups) {
+      const u = getUpgrade(id);
+      if (u.kind === 'fusion') {
+        // a FUSÃO: a 1ª vez em qualquer tentativa é uma DESCOBERTA (fica na tela DESCOBERTAS, no save)
+        const fresh = this.onDiscover ? this.onDiscover(id) : false;
+        this.hud.callout(`${fresh ? 'NOVA FUSÃO' : 'FUSÃO'}: ${u.name.toUpperCase()}`, '#d8a0ff');
+        this.audio.play('levelUp', { volume: 1, pitch: 0.8 });
+        for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'fusão';
+      } else if (u.chest && countOf(this.run.picks, id) === 1) this.hud.callout(u.name.toUpperCase(), '#7ec8ff');
+    }
     this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
     return items;
   }
+
+  // as fusões já descobertas (o flow.js põe `profile.discovered`): chegam ao baú bem raras mesmo sem a receita
+  discovered() { return (this.profile && this.profile.discovered) || []; }
 
   // o baú do começo (nível 1, build vazia): cada item é um punhado de moedas ou de experiência, sorteado
   openEarlyChest(c, n) {

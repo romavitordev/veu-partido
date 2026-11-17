@@ -31,8 +31,26 @@ export const UPGRADES = [
   { id: 'frequencia', kind: 'passive', name: 'Ritmo', icon: '↻', max: 3, desc: 'Habilidades, tiro e especial recarregam 6% mais rápido.', apply: (m) => { m.cdMult *= 0.94; } },
   { id: 'ima', kind: 'passive', name: 'Ímã', icon: '⊕', max: 2, desc: 'Puxa moedas, experiência e cura de 60% mais longe.', apply: (m) => { m.magnet += 0.6; } },
   { id: 'sabedoria', kind: 'passive', name: 'Sabedoria', icon: '✎', max: 3, desc: '+10% de experiência.', apply: (m) => { m.xpMult += 0.1; } },
-  { id: 'folego', kind: 'passive', chest: true, name: 'Segundo Fôlego', icon: '✝', max: 1, desc: 'Uma vez por tentativa: o golpe que ia te derrubar te deixa com 30% da vida.', apply: (m) => { m.secondWind = true; } },
+  // ---------------- FUSÕES (pedido do dono, 2026-11-16: "poderes desbloqueáveis... essas fusões de poderes encontrados nas
+  // partidas que deveria ter uma tela separada pra todos descobertos. Assim como no Vampire Survivors"). Como a evolução
+  // de arma do VS (a arma no máximo + o item pedido + um baú aberto depois, por chance): com as DUAS melhorias da receita
+  // (a primeira no máximo), cada baú tem `chance` de trazer a fusão; descoberta uma vez, ela fica na tela DESCOBERTAS e
+  // pode vir, bem rara (`rare`), mesmo sem a receita. Nunca sai nas cartas de nível e não ocupa vaga. PROPOSTA: todas.
+  ...[
+    { id: 'carnificina', name: 'Carnificina', icon: '☠', needs: [['furia', 5], ['sanguessuga', 1]], desc: '+15% de dano dos golpes físicos e cura 4% do dano físico que causar.', apply: (m) => { m.dealt.melee += 0.15; m.lifesteal += 0.04; } },
+    { id: 'muralhaViva', name: 'Muralha Viva', icon: '⛫', needs: [['couraca', 5], ['vigor', 1]], desc: '−8% de dano recebido e +15% de vida máxima.', apply: (m) => { m.taken *= 0.92; m.hpMult += 0.15; } },
+    { id: 'transe', name: 'Transe Ritual', icon: '✺', needs: [['foco', 5], ['calma', 1]], desc: 'Habilidades custam 15% menos Sanidade e causam +12% de dano (o especial também).', apply: (m) => { m.costMult *= 0.85; m.dealt.ability += 0.12; m.dealt.special += 0.12; } },
+    { id: 'olhoMorto', name: 'Olho Morto', icon: '◉', needs: [['mira', 5], ['certeiro', 1]], desc: '+15% de dano dos tiros e arremessos e +8% de chance de crítico.', apply: (m) => { m.dealt.ranged += 0.15; m.crit += 0.08; } },
+    { id: 'passoSombra', name: 'Passo de Sombra', icon: '☽', needs: [['agilidade', 3], ['reflexos', 1]], desc: '+8% de velocidade e a esquiva recarrega 15% mais rápido.', apply: (m) => { m.speedMult += 0.08; m.dodgeMult *= 0.85; } },
+    { id: 'carapaca', name: 'Carapaça de Espinhos', icon: '✹', needs: [['espinhos', 3], ['couraca', 1]], desc: 'Devolve mais 25% do dano corpo a corpo que você recebe.', apply: (m) => { m.thorns += 0.25; } },
+    { id: 'predador', name: 'Predador', icon: '⚔', needs: [['cacador', 3], ['agilidade', 1]], desc: 'Derrotar um inimigo cura mais 4% da vida, e você anda 5% mais rápido.', apply: (m) => { m.killHeal += 0.04; m.speedMult += 0.05; } },
+  ].map((f) => ({ ...f, kind: 'fusion', chest: true, max: 1, evolve: { needs: f.needs, chance: 0.3, rare: 0.03 } })),
 ];
+
+// a receita da fusão está pronta (todas as `needs` no nível pedido): o baú pode trazê-la
+export function evolutionReady(picks, u) {
+  return !!(u.evolve && u.evolve.needs.every(([id, lv]) => countOf(picks, id) >= lv));
+}
 
 // duas melhorias juntas: o efeito extra (needs: ids que precisam estar na build)
 export const SYNERGIES = [
@@ -68,6 +86,8 @@ export const TREE = [
   { id: 'iniciacao', name: 'Iniciação', icon: '⚝', ranks: 1, cost: 1800, desc: 'Toda fase começa com um golpe do SEU KIT sorteado já no nível 1.', apply: (m) => { m.startKit = true; } },
   { id: 'opcoes', name: 'Mais Opções', icon: '☰', ranks: 1, cost: 2600, desc: 'Ao subir de nível aparecem 4 cartas em vez de 3.', apply: (m) => { m.choices = 4; } },
   { id: 'duplicacao', name: 'Especialista', icon: '⧉', ranks: 1, cost: 5200, desc: 'As cartas do SEU KIT valem 30% a mais.', apply: (m) => { m.kitPower += 0.3; } },
+  // a ÚNICA segunda vida (dono, 2026-11-16: "segundo fôlego e ressurreição deveriam ser a mesma coisa"): o Segundo
+  // Fôlego do baú saiu; ficou esta, comprada
   { id: 'ressurreicao', name: 'Ressurreição', icon: '☥', ranks: 1, cost: 26000, desc: 'Uma vez por tentativa: ao cair, você VOLTA com metade da vida e uma onda afasta os inimigos.', apply: (m) => { m.revive = true; } },
 ];
 
@@ -92,7 +112,6 @@ export function baseMods() {
     coinMult: 1,
     thorns: 0,
     crit: 0,
-    secondWind: false,
     chestLuck: 0,
     revive: false,
     // o KIT: { slot: nível } (slot = id da habilidade, 'ranged', 'melee' ou 'special') e o que cada nível vira
@@ -225,12 +244,18 @@ export function rollChoices(picks, rng = Math.random, n = 3, def = null) {
 // o BAÚ (como no Vampire Survivors): sobe de grau melhorias que o jogador JÁ tem e, enquanto houver vaga, pode trazer
 // uma do baú (u.chest). Ids sem repetir, só abaixo do máximo. Devolve [] quando não há mais nada: aí o baú oferece moedas
 // ou vida (Dungeon.openChest)
-export function chestUpgrades(picks, rng = Math.random, n = 1) {
+export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = [] } = {}) {
   const have = [...picks];
   const out = [];
+  // a FUSÃO primeiro, por chance: com a receita pronta (u.evolve.chance) ou, já descoberta antes, bem rara (rare)
+  for (const u of UPGRADES) {
+    if (!u.evolve || countOf(have, u.id) >= u.max || out.length >= n) continue;
+    const chance = evolutionReady(have, u) ? u.evolve.chance : discovered.includes(u.id) ? u.evolve.rare : 0;
+    if (chance > 0 && rng() < chance) { out.push(u.id); have.push(u.id); }
+  }
   while (out.length < n) {
     const owned = [...new Set(have)].filter(isKit).map((id) => KIT.get(id)).filter(Boolean);
-    const pool = [...UPGRADES, ...owned].filter((u) => !out.includes(u.id) && countOf(have, u.id) < u.max
+    const pool = [...UPGRADES, ...owned].filter((u) => !u.evolve && !out.includes(u.id) && countOf(have, u.id) < u.max
       && (countOf(have, u.id) > 0 || (u.chest && slotFree(have, u)))).map((u) => u.id);
     if (!pool.length) break;
     const id = pool[Math.floor(rng() * pool.length)];
@@ -277,3 +302,7 @@ export function gainXp(run, amount) {
 
 export function getUpgrade(id) { return byId(UPGRADES, id); }
 export function getTreeNode(id) { return byId(TREE, id); }
+
+// as FUSÕES (para a tela DESCOBERTAS e o HUD)
+export const FUSIONS = UPGRADES.filter((u) => u.kind === 'fusion');
+export const isFusion = (id) => FUSIONS.some((f) => f.id === id);

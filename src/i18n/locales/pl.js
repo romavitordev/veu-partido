@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "OGŁUSZONY",
   "hud.held": "UWIĘZIONY",
   "hud.transform": "PRZYTRZYMAJ {btn}: PRZEMIANA",
+  "hud.transform_low": "PRZEMIANA: ŻYCIE ≤ {pct}%",
   "hud.def": "BLOK",
   "hud.esq": "UNIK",
   "combat.fight": "WALCZCIE!",

@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "スタン",
   "hud.held": "拘束",
   "hud.transform": "{btn} 長押し：変身",
+  "hud.transform_low": "変身：体力 {pct}% 以下",
   "hud.def": "防",
   "hud.esq": "避",
   "combat.fight": "ファイト！",

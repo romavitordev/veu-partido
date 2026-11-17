@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "ОГЛУШЁН",
   "hud.held": "СХВАЧЕН",
   "hud.transform": "УДЕРЖИВАЙТЕ {btn}: ПРЕВРАЩЕНИЕ",
+  "hud.transform_low": "ПРЕВРАЩЕНИЕ: ЗДОРОВЬЕ ≤ {pct}%",
   "hud.def": "БЛОК",
   "hud.esq": "УКЛ",
   "combat.fight": "В БОЙ!",

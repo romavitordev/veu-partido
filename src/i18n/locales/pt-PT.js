@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "ATORDOADO",
   "hud.held": "PRESO",
   "hud.transform": "MANTENHA {btn}: TRANSFORMAR",
+  "hud.transform_low": "TRANSFORMAR: VIDA ≤ {pct}%",
   "hud.def": "DEF",
   "hud.esq": "ESQ",
   "combat.fight": "LUTEM!",

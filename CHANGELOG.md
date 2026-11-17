@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.54.0 — Fusões
+
+### Adicionado
+- Outro Lado: FUSÕES de melhorias (7 receitas) que saem do baú por chance quando a receita está pronta; a primeira vez é uma descoberta salva.
+- Tela DESCOBERTAS no menu do Outro Lado, com todas as fusões (as que faltam como "???").
+- Degolificada: estado de exaustão depois do Grito, da Investida que erra, do Agarrar no vazio e da Explosão de cabelo (não se defende e leva mais dano).
+- HUD: aviso "TRANSFORMAR: VIDA ≤ 35%" com a barra de transformação cheia e a vida alta.
+- Testes das fusões, da descoberta e da exaustão da Degolificada.
+
+### Removido
+- Segundo Fôlego (a segunda vida do baú): a única segunda vida é a Ressurreição da loja.
+
 ## v4.53.4 — Luz nas Costas
 
 ### Corrigido

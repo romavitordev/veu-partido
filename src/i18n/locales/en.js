@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "STUNNED",
   "hud.held": "HELD",
   "hud.transform": "HOLD {btn}: TRANSFORM",
+  "hud.transform_low": "TRANSFORM: HEALTH ≤ {pct}%",
   "hud.def": "BLK",
   "hud.esq": "DODGE",
   "combat.fight": "FIGHT!",

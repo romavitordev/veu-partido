@@ -186,7 +186,7 @@ test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o se
   for (const a of cindy.abilities) assert.ok(names.includes(a.name), a.name);
   assert.ok(names.includes(cindy.ranged.name) && names.includes(cindy.melee.name) && names.includes(cindy.special.name));
   assert.ok(kit.length > MAX_KIT, 'mais golpes do que vagas: precisa escolher');
-  assert.ok(UPGRADES.every((u) => u.kind === 'passive'), 'sem as ativas automáticas fora da lore');
+  assert.ok(UPGRADES.every((u) => u.kind === 'passive' || u.kind === 'fusion'), 'sem as ativas automáticas fora da lore');
   const pass = UPGRADES.filter((u) => !u.chest);
   assert.ok(pass.length >= 14);
   // as do baú nunca nas cartas
@@ -203,13 +203,14 @@ test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o se
   }
   // tudo no máximo: o baú não tem o que dar -> recompensa (moedas ou vida)
   const maxed = base.flatMap((id) => Array(5).fill(id)).filter((id, i, arr) => arr.slice(0, i).filter((x) => x === id).length < ([...UPGRADES, ...kit].find((u) => u.id === id).max));
-  assert.deepEqual(chestUpgrades(maxed, Math.random, 3), []);
+  // (a sorte acima da chance: nenhuma FUSÃO sai — a receita de algumas está pronta aqui)
+  assert.deepEqual(chestUpgrades(maxed, () => 0.99, 3), []);
   assert.equal(rollChoices(maxed, Math.random, 3, cindy).length, 0);
   const r = rewardChoices(30, 0.3);
   assert.deepEqual(r.map((x) => x.id), ['reward:coins', 'reward:heal']);
   // os efeitos do kit: só valem para quem é dono do golpe
   const sil = kitId('cindy', 'silenciar');
-  const picks = [sil, sil, kitId('cindy', 'special'), 'espinhos', 'espinhos', 'certeiro', 'folego', 'frequencia', 'reflexos'];
+  const picks = [sil, sil, kitId('cindy', 'special'), 'espinhos', 'espinhos', 'certeiro', 'frequencia', 'reflexos'];
   const m = computeMods(picks, {}, 'cindy');
   assert.deepEqual(m.kit, { silenciar: 2, special: 1 });
   assert.ok(Math.abs(m.kitDmg.silenciar - (1 + 2 * KIT_STEP.ability.dmg)) < 1e-9);
@@ -218,7 +219,6 @@ test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o se
   assert.deepEqual(computeMods(picks, {}, 'eloy').kit, {}, 'a carta da Cindy não vale para o Eloy (co-op)');
   assert.ok(Math.abs(m.thorns - 0.25) < 1e-9);
   assert.ok(Math.abs(m.crit - 0.1) < 1e-9);
-  assert.equal(m.secondWind, true);
   assert.ok(Math.abs(m.cdMult - 0.94) < 1e-9 && Math.abs(m.dodgeMult - 0.88) < 1e-9);
   // a loja: Mais Opções, Iniciação, Especialista
   const t = computeMods([sil], { opcoes: 1, iniciacao: 1, duplicacao: 1, area: 3, ritmo: 3 }, 'cindy');
@@ -369,4 +369,77 @@ test('loja da Aghata: DEVOLVER TUDO devolve cada moeda; a Ressurreição é cara
   assert.ok(treeCoinCost(res, 0) >= rest * 0.6, 'a Ressurreição custa perto de toda a loja junta');
   assert.ok(computeMods([], { ressurreicao: 1 }).revive);
   assert.ok(Math.abs(computeMods(['certeiro'], { precisao: 3 }).crit - 0.16) < 1e-9, 'o Golpe Certeiro do baú soma por cima da Precisão');
+});
+
+// FUSÕES (dono, 2026-11-16, "como no Vampire Survivors"): só do baú, só com a receita (a 1ª no máximo + a 2ª), por chance;
+// descobertas antes, bem raras mesmo sem receita. O Segundo Fôlego saiu (a segunda vida é só a Ressurreição comprada)
+test('fusões: receita, chance do baú, descoberta e nada de Segundo Fôlego', async () => {
+  const U = await import('../src/pve/upgrades.js');
+  assert.ok(!U.UPGRADES.some((u) => u.id === 'folego'), 'o Segundo Fôlego saiu');
+  assert.ok(U.TREE.some((n) => n.id === 'ressurreicao'), 'a Ressurreição continua na loja');
+  assert.ok(U.FUSIONS.length >= 5);
+  for (const f of U.FUSIONS) {
+    assert.equal(f.max, 1);
+    for (const [id] of f.needs) assert.ok(U.getUpgrade(id), `${f.id}: a receita usa melhorias que existem (${id})`);
+    const [a, lv] = f.needs[0];
+    assert.equal(U.getUpgrade(a).max, lv, `${f.id}: a 1ª da receita pede o máximo`);
+  }
+  // nunca nas cartas de nível
+  for (let i = 0; i < 30; i++) assert.ok(!U.rollChoices([], Math.random, 4).some((u) => u.kind === 'fusion'));
+  const carn = U.FUSIONS.find((f) => f.id === 'carnificina');
+  const meia = ['furia', 'furia', 'sanguessuga'];
+  const pronta = ['furia', 'furia', 'furia', 'furia', 'furia', 'sanguessuga'];
+  const always = () => 0; // o sorteio sempre "acerta"
+  // sem a receita e sem descoberta: nunca
+  assert.ok(!U.chestUpgrades(meia, always, 1).includes('carnificina'));
+  // com a receita: sai quando a sorte cai abaixo da chance...
+  assert.deepEqual(U.chestUpgrades(pronta, () => carn.evolve.chance - 0.01, 1), ['carnificina']);
+  // ...e não sai acima dela
+  assert.ok(!U.chestUpgrades(pronta, () => carn.evolve.chance + 0.01, 1).includes('carnificina'));
+  // já descoberta: rara mesmo sem a receita
+  assert.deepEqual(U.chestUpgrades(meia, () => carn.evolve.rare - 0.001, 1, { discovered: ['carnificina'] }), ['carnificina']);
+  assert.ok(!U.chestUpgrades(meia, () => carn.evolve.rare + 0.001, 1, { discovered: ['carnificina'] }).includes('carnificina'));
+  // não ocupa vaga e aplica o efeito
+  assert.equal(U.slotsOf([...pronta, 'carnificina'], 'passive'), 2);
+  const m = U.computeMods([...pronta, 'carnificina']);
+  assert.ok(Math.abs(m.dealt.melee - (1 + 5 * 0.1 + 0.15)) < 1e-9);
+  // o save guarda a descoberta uma vez
+  const S = await import('../src/pve/save.js');
+  const data = {};
+  assert.equal(S.discover(data, 'carnificina'), true);
+  assert.equal(S.discover(data, 'carnificina'), false);
+  assert.ok(S.isDiscovered(data, 'carnificina'));
+});
+
+// a BRECHA da Degolificada (dono, 2026-11-16: "todos os bosses têm que ter suas fraquezas... depois de um ataque o boss
+// fica vulnerável; atualmente a Degolificada não tem esse momento")
+test('Degolificada: fica exausta depois do Grito e da Investida que erra — leva mais dano e não se defende', async () => {
+  const { DegolificadaBrain, DEGOLIFICADA_CFG } = await import('../src/pve/degolificada.js');
+  const T = DEGOLIFICADA_CFG.tired;
+  const boss = { cpuEdge: {}, pos: new THREE.Vector3(), vel: new THREE.Vector3(), radius: 0.5, state: 'idle', health: 900, rig: { body: { position: new THREE.Vector3(0, 0.22, 0), rotation: new THREE.Euler() }, root: { scale: { y: 1 } } }, anim: { play() {}, speed: 1 }, chestPos: (v) => v.set(0, 1.2, 0) };
+  const brain = Object.create(DegolificadaBrain.prototype);
+  Object.assign(brain, {
+    d: { enemy: boss, players: [], pveHud: null, cluesNeeded: 3 },
+    w: { audio: { play() {} }, fx: { burst() {} } },
+    layers: 0, t: 0, st: 0, cds: { guard: 0, breakout: 0 }, marks: [], fury: false, devourer: false, near: 0, cornered: 0,
+  });
+  brain.backToDuel(T.scream);
+  assert.equal(brain.state, 'tired');
+  assert.equal(boss.cpuEdge.taken, T.taken, 'exausta: leva mais dano');
+  assert.ok(T.taken > 1);
+  // o corpo desce
+  for (let i = 0; i < 30; i++) { brain.t += 1 / 60; brain.st += 1 / 60; brain.updateTired(1 / 60); }
+  assert.ok(boss.rig.body.position.y < 0.22 - T.sink * 0.5);
+  // passa o tempo: volta ao duelo, e a defesa de cabelo espera um pouco (o jogador ainda bate)
+  brain.st = T.scream + 0.01;
+  brain.updateTired(1 / 60);
+  assert.equal(brain.state, 'duel');
+  assert.equal(boss.cpuEdge.taken, 1);
+  assert.ok(brain.cds.guard >= T.guardAfter);
+  // na Fúria a brecha encolhe mas existe
+  brain.fury = true;
+  brain.backToDuel(T.lashMiss);
+  assert.ok(brain.tiredFor > 0 && brain.tiredFor < T.lashMiss);
+  // a Investida que acerta deixa só um respiro; a que erra, a brecha
+  assert.ok(T.lashMiss > T.lashHit * 2 && T.grabMiss >= 1 && T.scream >= 1.5);
 });

@@ -1,8 +1,36 @@
 # TODO — VÉU PARTIDO (antes Arena Paranormal)
 
-**Versão de referência atual:** v4.53.4 (a luz do jogador nas costas: fim do brilho branco). Antes: v4.53.3 (trava de segurança da escolha). Antes: v4.53.2 (o travamento do baú no Outro Lado). Antes: v4.53.1 (a chama de proteção de Treb Ciach animada). Antes: v4.53.0 (sombra de contato e o metal falso dos cenários). Antes: v4.52.1 (bug da transformação com a barra cheia; o beijo do Amor e Sangue). Antes: v4.52.0 (modo Explorar escondido na tela inicial). Antes: v4.51.3 (falas de luta dos recentes e relações do cânone). Antes: v4.51.2 (Amor e Sangue refeito). Antes: v4.51.1 (poses de vitória próprias para 20 personagens). Antes: v4.51.0 (ragdoll no nocaute com o Rapier determinístico). Antes: v4.50.0 (som 3D de que lado vem o golpe e eco por cenário). Antes: v4.49.0 (vibração do controle pelo peso do golpe). Antes: v4.48.1 (raios rápidos no cenário com three-mesh-bvh; névoa certa com o pós-processamento). Antes: v4.48.0 (pós-processamento: brilho e clima na tela por momento da luta). Antes: v4.47.2 (online com atraso adaptativo ao ping e sincronia de relógio). Antes: v4.47.1 (modelos e cenários comprimidos com meshopt: o jogo baixa 61% menos). Antes: v4.47.0 (coop com retorno acelerado, poço das pilastras ampliado, portas trancadas com escolha de caminho, visibilidade entre salas corrigida, ajustes do Estrangeiro, Bilu e especiais no Outro Lado; Dissolver do Amigo; transformação de Raziel; despertar da Sabara). Antes: v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
+**Versão de referência atual:** v4.54.0 (fusões e DESCOBERTAS; brechas da Degolificada; uma segunda vida só). Antes: v4.53.4 (a luz do jogador nas costas: fim do brilho branco). Antes: v4.53.3 (trava de segurança da escolha). Antes: v4.53.2 (o travamento do baú no Outro Lado). Antes: v4.53.1 (a chama de proteção de Treb Ciach animada). Antes: v4.53.0 (sombra de contato e o metal falso dos cenários). Antes: v4.52.1 (bug da transformação com a barra cheia; o beijo do Amor e Sangue). Antes: v4.52.0 (modo Explorar escondido na tela inicial). Antes: v4.51.3 (falas de luta dos recentes e relações do cânone). Antes: v4.51.2 (Amor e Sangue refeito). Antes: v4.51.1 (poses de vitória próprias para 20 personagens). Antes: v4.51.0 (ragdoll no nocaute com o Rapier determinístico). Antes: v4.50.0 (som 3D de que lado vem o golpe e eco por cenário). Antes: v4.49.0 (vibração do controle pelo peso do golpe). Antes: v4.48.1 (raios rápidos no cenário com three-mesh-bvh; névoa certa com o pós-processamento). Antes: v4.48.0 (pós-processamento: brilho e clima na tela por momento da luta). Antes: v4.47.2 (online com atraso adaptativo ao ping e sincronia de relógio). Antes: v4.47.1 (modelos e cenários comprimidos com meshopt: o jogo baixa 61% menos). Antes: v4.47.0 (coop com retorno acelerado, poço das pilastras ampliado, portas trancadas com escolha de caminho, visibilidade entre salas corrigida, ajustes do Estrangeiro, Bilu e especiais no Outro Lado; Dissolver do Amigo; transformação de Raziel; despertar da Sabara). Antes: v4.46.0 (Acampamento dos Pássaros em duas versões; Henri de Sangue e Juan de Intenção). Antes: v4.45.2 (elemento Intenção para quem tocou a Coroa de Espinhos; símbolos oficiais dos elementos na página Sobre). Antes: v4.45.1 (Treb Ciach refeito: dia nublado e noite azul, a fogueira com o símbolo do crânio de cervo). Antes: v4.45.0 (Vilarejo de Treb Ciach em duas versões; Sala do Sino sem porta no fundo). Antes: v4.44.3 (retorno visual ao segurar o baú; bateria da fase inteira, Espreitador com 2–3 cópias por sala). Antes: v4.44.2 (chiado de TV em toda a Torre, mais forte na sala do chefe). Antes: v4.44.1 (Bilu impaciente, Rastropoda foge para o canto). Antes: v4.44.0 (2026-11-14: Outro Lado em fases separadas, cartas do kit do personagem, loja 4 × 5, Torre com cabos e cápsulas em pé, Rastropoda e Bilu novos, Cindy balanceada). Antes: v4.41.0 (Cindy Lopes jogável, especial Amor e Sangue).
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
+
+## Outro Lado — fusões, segunda vida e chefes com brecha (pedido do dono, 2026-11-16)
+
+> "tem uma segunda vida que deveria ser uma habilidade comprável e atualmente qualquer um tem. Às vezes a transformação
+> não funciona [...] a Degolificada está bem mais difícil que o Espreitador, todos os bosses têm que saber defender,
+> atacar no tempo certo, se afastar, stunnar, mas eles têm que ter suas fraquezas também, momentos na batalha onde o
+> player pode atacar, o player tem que aprender quando é esse momento sozinho [...] no baú vem o 'segundo fôlego', devia
+> ser algo bem raro, e tem que descobrir essa habilidade juntando outras duas [...] é uma mecânica de Vampire Survivors"
+> + "atualmente tem 2: segundo fôlego e ressurreição que deveriam ser a mesma coisa. Quando me referi a poderes
+> desbloqueáveis me referi a essas fusões de poderes encontrados nas partidas que deveria ter uma tela separada pra todos
+> descobertos. Assim como no Vampire Survivors".
+
+- [x] v4.54.0: **uma segunda vida só** — o Segundo Fôlego saiu do baú; ficou a Ressurreição (loja da Aghata). Tentativas
+  salvas com ele perdem a carta (o HUD não acha a ficha).
+- [x] v4.54.0: **FUSÕES** (`upgrades.js`, kind `fusion`): 7 receitas (a 1ª no máximo + a 2ª na build); com a receita
+  pronta cada baú tem 30% de trazer a fusão; descoberta, 3% mesmo sem receita. Não ocupa vaga, nunca nas cartas.
+  PROPOSTA: as receitas, os efeitos e as chances.
+- [x] v4.54.0: tela **DESCOBERTAS** no menu do Outro Lado (`pve/fusionScreen.js`, `data.discovered` no save).
+- [x] v4.54.0: **brechas da Degolificada** (estado `tired`): depois do Grito Rasgado, da Investida que erra, do Agarrar
+  que pega o ar e da Explosão de cabelo ela fica exausta (corpo desce e curva, não se defende, leva +35%). Na Fúria a
+  brecha encolhe (×0,7). Sem texto: o jogador aprende pelo corpo dela.
+- [x] v4.54.0: barra de Transformação cheia com a vida alta: o HUD diz "TRANSFORMAR: VIDA ≤ 35%" (13 idiomas). No
+  Outro Lado a cura sobe a vida e a barra continua cheia — parecia bug.
+- [ ] Rodar a bateria da Degolificada × Espreitador depois das brechas e comparar o tempo e as mortes (ela é a 1ª fase
+  e estava bem mais difícil).
+- [ ] As BRECHAS nos outros chefes: conferir o Espreitador, o Estrangeiro e os minibosses da Torre (cada um precisa de
+  pelo menos um momento claro para o jogador punir).
+- [ ] Mais fusões (uma por par de passivas que combina) e, talvez, fusões do KIT do personagem.
 
 ## Outro Lado — baú e salas da Escola (pedido do dono, 2026-11-16)
 

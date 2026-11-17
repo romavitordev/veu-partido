@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "SERSEMLEDİ",
   "hud.held": "TUTSAK",
   "hud.transform": "{btn} BASILI TUT: DÖNÜŞ",
+  "hud.transform_low": "DÖNÜŞÜM: CAN ≤ %{pct}",
   "hud.def": "SAV",
   "hud.esq": "KAÇ",
   "combat.fight": "DÖVÜŞÜN!",

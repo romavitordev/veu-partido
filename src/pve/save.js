@@ -148,6 +148,14 @@ export function treeCoinCost(node, rank) {
   return Math.round((n?.cost || 150) * (rank + 1));
 }
 
+// as FUSÕES já descobertas (upgrades.js FUSIONS), para sempre no save: a tela DESCOBERTAS
+export const isDiscovered = (data, id) => !!(data && (data.discovered || []).includes(id));
+export function discover(data, id) {
+  if (isDiscovered(data, id)) return false;
+  data.discovered = [...(data.discovered || []), id];
+  return true;
+}
+
 // comprar um grau da árvore GLOBAL com moedas (false: sem moedas ou no máximo)
 export function buyRank(data, nodeId) {
   const node = TREE.find((n) => n.id === nodeId);

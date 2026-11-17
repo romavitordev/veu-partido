@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "기절",
   "hud.held": "구속",
   "hud.transform": "{btn} 길게 누르기: 변신",
+  "hud.transform_low": "변신: 체력 {pct}% 이하",
   "hud.def": "방어",
   "hud.esq": "회피",
   "combat.fight": "싸워라!",

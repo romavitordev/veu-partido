@@ -194,7 +194,12 @@ export class HUD {
         e.storm.classList.toggle('ready', f.canTransform());
       }
       // transformação disponível (barra cheia + vida baixa): avisa para segurar △
-      const awakenHint = f.canTransform && f.canTransform() && (f.state === 'idle' || f.state === 'charging') ? t('hud.transform', { btn: actionLabel(i, 'carga', f.input.source) }) : '';
+      // barra cheia mas a vida ainda alta (dono, 2026-11-16: "às vezes a transformação não funciona" — o Dalmo com a barra
+      // cheia e 85% de vida; no Outro Lado a cura sobe a vida e a barra continua cheia): diz o que falta
+      const calm = f.state === 'idle' || f.state === 'charging';
+      const lowNeeded = calm && f.def.awakening && f.storm >= 100 && !f.canTransform() && f.health > 0 && !(f.baseForm && !f.def.awakening.chain) && f.awakeningAvailable && f.awakeningAvailable();
+      const awakenHint = f.canTransform && f.canTransform() && calm ? t('hud.transform', { btn: actionLabel(i, 'carga', f.input.source) })
+        : lowNeeded ? t('hud.transform_low', { pct: Math.round(COMBAT.storm.healthRatio * 100) }) : '';
       e.state.textContent = stateText || awakenHint;
       e.state.classList.toggle('awaken', !stateText && !!awakenHint);
       this.updateDamageMarker(i, f, match);

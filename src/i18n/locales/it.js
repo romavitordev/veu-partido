@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "STORDITO",
   "hud.held": "BLOCCATO",
   "hud.transform": "TIENI {btn}: TRASFORMATI",
+  "hud.transform_low": "TRASFORMAZIONE: VITA ≤ {pct}%",
   "hud.def": "PAR",
   "hud.esq": "SCHIV",
   "combat.fight": "COMBATTETE!",

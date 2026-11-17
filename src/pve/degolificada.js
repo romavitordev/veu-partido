@@ -51,6 +51,13 @@ export const DEGOLIFICADA_CFG = {
   // FÚRIA (pedido do dono: "quando acha todas as pistas, ela fica mais difícil/furiosa"): sem o escudo ela ataca mais
   // rápido, mais forte e se move mais. rage (Super Difícil/Aniquilação): a fúria já vem com a última prova faltando
   fury: { cd: 0.72, dealt: 1.2, speed: 1.25, guardAfter: 0.18 },
+  // EXAUSTA — a brecha (pedido do dono, 2026-11-16: "todos os bosses têm que ter suas fraquezas, momentos na batalha onde
+  // o player pode atacar, o player tem que aprender quando é esse momento sozinho, talvez depois de um ataque que o boss
+  // fica vulnerável; atualmente a Degolificada não tem esse momento"). Depois do Grito Rasgado (a fita rasgou), da
+  // Investida que ERROU (o cabelo cravou no chão), do Agarrar que pegou o ar e da Explosão de cabelo, ela para: o corpo
+  // desce, o cabelo cai, não se defende nem foge, e leva mais dano. Sem texto na tela: o jogador aprende pelo corpo dela.
+  // Na Fúria as brechas ficam menores (mas existem). PROPOSTA: os tempos.
+  tired: { scream: 1.8, lashMiss: 1.3, lashHit: 0.35, grabMiss: 1.4, breakout: 1.0, taken: 1.35, sink: 0.2, bow: 0.35, fury: 0.7, guardAfter: 0.9 },
 };
 
 // ================================================================== a CENA DE ENTRADA
@@ -179,7 +186,7 @@ export class DegolificadaBrain {
   applyShield() {
     const b = this.boss;
     const on = this.layers > 0;
-    const taken = on ? 0 : this.state === 'guard' ? DEGOLIFICADA_CFG.guard.taken : this.state === 'breakout' ? DEGOLIFICADA_CFG.breakout.taken : 1;
+    const taken = on ? 0 : this.state === 'guard' ? DEGOLIFICADA_CFG.guard.taken : this.state === 'breakout' ? DEGOLIFICADA_CFG.breakout.taken : this.state === 'tired' ? DEGOLIFICADA_CFG.tired.taken : 1;
     b.cpuEdge = { ...(b.cpuEdge || {}), taken };
     b.lethalHook = on ? () => { b.health = Math.max(1, b.health); return true; } : null;
     this.d.pveHud && this.d.pveHud.setShield(this.layers, this.d.cluesNeeded || 3, b);
@@ -266,7 +273,7 @@ export class DegolificadaBrain {
     if (b.input.cpu) this.holdCpu(true); // alguém religou a CPU de luta: ela não luta corpo a corpo
     if (this.layers > 0 && !b.lethalHook) this.applyShield(); // o gancho é de uma vez só: rearma
     // flutua (Voo): o corpo balança um pouco acima do chão
-    if (b.rig.body) b.rig.body.position.y = 0.22 + Math.sin(this.t * 2.2) * 0.07;
+    if (b.rig.body && this.state !== 'tired') b.rig.body.position.y = 0.22 + Math.sin(this.t * 2.2) * 0.07; // exausta: desce (updateTired)
     this.hazards = this.hazards.filter((h) => !h.update(dt));
     this.updateFlung(dt);
     // METAMORFOSE (Devoradora): com o tempo a vedação da boca cede — contado de quando o escudo caiu (bateria de
@@ -281,6 +288,7 @@ export class DegolificadaBrain {
       case 'guard': this.updateGuard(dt); break;
       case 'breakout': this.updateBreakout(dt); break;
       case 'scream': this.updateScream(dt); break;
+      case 'tired': this.updateTired(dt); break;
       default: break;
     }
   }
@@ -354,13 +362,49 @@ export class DegolificadaBrain {
     else this.startScream();
   }
 
-  backToDuel() {
+  backToDuel(tired = 0) {
     const C = DEGOLIFICADA_CFG;
     const b = this.boss;
     this.clearMarks();
     if (b.rig.body) b.rig.body.position.x = 0;
+    if (tired > 0) { this.startTired(tired); return; }
     this.setState('duel');
     this.next = (C.duel[0] + Math.random() * (C.duel[1] - C.duel[0])) * this.cdMult;
+  }
+
+  // ------------------------------------------------ EXAUSTA: a brecha depois de um golpe grande (ver DEGOLIFICADA_CFG.tired)
+  startTired(time) {
+    const T = DEGOLIFICADA_CFG.tired;
+    const b = this.boss;
+    this.tiredFor = time * (this.fury ? T.fury : 1);
+    this.setState('tired'); // applyShield: leva mais dano (T.taken)
+    this.near = 0;
+    this.cornered = 0;
+    b.anim.play('idle', { restart: true });
+    b.anim.speed = 0.4;
+    this.w.audio.play('whisper', { volume: 0.5, pitch: 0.55 }); // o fôlego que escapa pela fita
+    this.w.fx.burst(this.head(), { count: 10, color: 0x2a2626, kind: 'smoke', speed: 0.6, up: -0.6, life: 0.9, size: 0.3, grow: 1 });
+  }
+
+  updateTired(dt) {
+    const T = DEGOLIFICADA_CFG.tired;
+    const b = this.boss;
+    b.vel.set(0, 0, 0);
+    // o corpo desce (para de flutuar) e balança devagar; o cabelo pinga para o chão
+    if (b.rig.body) {
+      b.rig.body.position.y = Math.max(0.22 - T.sink, b.rig.body.position.y - dt * 0.8);
+      // curva para a frente, a cabeça pendendo (o sinal da brecha, de longe)
+      b.rig.body.rotation.x = Math.min(T.bow, (b.rig.body.rotation.x || 0) + dt * 1.6);
+    }
+    if (Math.random() < dt * 6) this.w.fx.burst(this.head().add(new THREE.Vector3((Math.random() - 0.5) * 0.5, -0.2, (Math.random() - 0.5) * 0.5)), { count: 1, color: HAIR, kind: 'debris', speed: 0.3, life: 0.6, size: 0.06, gravity: 9 });
+    if (this.st < this.tiredFor) return;
+    b.anim.speed = 1;
+    if (b.rig.body) b.rig.body.rotation.x = 0;
+    this.w.audio.play('whisper', { volume: 0.7, pitch: 1.4 }); // voltou: o cabelo levanta
+    // um respiro antes de ela fechar a defesa de novo em quem ficou batendo
+    this.cds.guard = Math.max(this.cds.guard, T.guardAfter);
+    this.setState('duel');
+    this.next = 0.5 * this.cdMult;
   }
 
   mark(m) { this.marks.push(m); return m; }
@@ -401,6 +445,7 @@ export class DegolificadaBrain {
     }
     if (!this.struck) {
       this.struck = true;
+      this.lashHit = false;
       this.clearMarks();
       const from = this.head();
       this.w.audio.play('whip', { volume: 1, pitch: 0.55 });
@@ -421,10 +466,12 @@ export class DegolificadaBrain {
           const side = Math.abs(rx * dir.z - rz * dir.x);
           if (along < 0 || along > C.len + 0.6 || side > C.width + q.radius) continue;
           applyHit(this.w, b, q, { damage: this.dealt(C.damage), kind: 'ability', knockback: C.knockback, hitstun: 0.5, dir, sound: 'clawHit', color: 0x2a2626, scale: 1.1 });
+          this.lashHit = true;
         }
       }
     }
-    if (this.st > C.windup + 0.45) this.backToDuel();
+    // errou: o cabelo cravou no chão e ela fica exausta (a brecha)
+    if (this.st > C.windup + 0.45) this.backToDuel(this.lashHit ? DEGOLIFICADA_CFG.tired.lashHit : DEGOLIFICADA_CFG.tired.lashMiss);
   }
 
   // ------------------------------------------------ AGARRAR E ARREMESSAR (até dois): estrangula e joga na PAREDE
@@ -463,6 +510,7 @@ export class DegolificadaBrain {
       }).slice(0, 2);
       const from = this.head();
       this.w.audio.play('whip', { volume: 0.9, pitch: 0.6 });
+      this.grabMissed = !caught.length;
       if (!caught.length) {
         inkTentacle(this.w, from, from.clone().addScaledVector(fw, G.range * 0.85).setY(1.1), { grow: 0.14, hold: 0.1, retract: 0.25, arc: 0.3, radius: 0.07, color: HAIR, emissive: HAIR_E, splash: false });
         this.st = G.windup + G.hold;
@@ -502,7 +550,7 @@ export class DegolificadaBrain {
       for (const r of this.ropes) r.release && r.release();
       this.ropes = [];
       this.victims = [];
-      this.backToDuel();
+      this.backToDuel(this.grabMissed ? DEGOLIFICADA_CFG.tired.grabMiss : 0); // pegou o ar: exausta
       if (this.devourPending) { this.devourPending = false; this.becomeDevourer('Ela absorveu a vítima'); }
     }
   }
@@ -902,7 +950,7 @@ export class DegolificadaBrain {
       resolveBody(this.w.arena, b.pos, b.radius);
       return;
     }
-    this.backToDuel();
+    this.backToDuel(DEGOLIFICADA_CFG.tired.breakout); // a explosão gastou o cabelo: ela para no meio
   }
 
   // ------------------------------------------------ GRITO RASGADO
@@ -940,7 +988,7 @@ export class DegolificadaBrain {
         if (typeof res === 'number' && q.state !== 'ko') { q.stun(S.stun, 'stagger'); q.notify('ENSURDECIDO', true); }
       }
     }
-    if (this.st > S.windup + 0.6) this.backToDuel();
+    if (this.st > S.windup + 0.6) this.backToDuel(DEGOLIFICADA_CFG.tired.scream); // a fita rasgou: ela perde o fôlego
   }
 
   // a fita em X cede (true) ou volta (false): a boca enorme de dentes (peças do .glb)

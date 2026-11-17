@@ -257,6 +257,7 @@ export default {
   "hud.stunned": "眩晕",
   "hud.held": "被困",
   "hud.transform": "按住 {btn}：变身",
+  "hud.transform_low": "变身：生命 ≤ {pct}%",
   "hud.def": "防",
   "hud.esq": "闪",
   "combat.fight": "开打！",

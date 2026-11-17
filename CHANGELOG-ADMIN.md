@@ -1,5 +1,32 @@
 # Registro administrativo de alterações
 
+## v4.54.0 — Fusões
+
+- Versão: `VERSION` 4.53.4 → **4.54.0** (`package.json`/lock junto). Data: 2026-11-17.
+- **Uma segunda vida (dono: "segundo fôlego e ressurreição deveriam ser a mesma coisa"):** a carta `folego` saiu de
+  `UPGRADES` e o gancho dela do `Dungeon.modsFor`; o `lethalHook` agora é só a Ressurreição (TREE `ressurreicao`).
+  O construtor do Dungeon tira da tentativa salva os ids que não existem mais.
+- **Fusões (dono: "essas fusões de poderes encontrados nas partidas que deveria ter uma tela separada pra todos
+  descobertos. Assim como no Vampire Survivors"):** pesquisa — no VS a evolução pede a arma no nível máximo + o item
+  passivo e sai de um baú aberto depois, por chance (wiki "Evolution"). Aqui: `kind: 'fusion'` em `UPGRADES`, com
+  `needs` [[1ª, nível máximo], [2ª, 1]] e `evolve { chance: 0.3, rare: 0.03 }`. `chestUpgrades(picks, rng, n,
+  { discovered })` sorteia a fusão primeiro (receita pronta → 30%; já descoberta → 3%) e tira as fusões do sorteio
+  comum. Não ocupa vaga (`slotsOf` conta só passive/kit). Receitas (PROPOSTA): Carnificina (Fúria 5 + Sanguessuga),
+  Muralha Viva (Couraça 5 + Vigor), Transe Ritual (Foco 5 + Calma), Olho Morto (Mira 5 + Golpe Certeiro), Passo de
+  Sombra (Agilidade 3 + Reflexos), Carapaça de Espinhos (Pele de Espinhos 3 + Couraça), Predador (Caçador 3 + Agilidade).
+- Descoberta: `save.js discover/isDiscovered` (`data.discovered`); o flow passa `profile.discovered` e
+  `dungeon.onDiscover` (grava na hora). O baú anuncia "NOVA FUSÃO: …" / "FUSÃO: …".
+- Tela **DESCOBERTAS** (`pve/fusionScreen.js`, estado `pvefound`): botão no hub (`found`), grade 4 colunas, a que falta
+  é "???"; a descoberta mostra a receita e o efeito. Conferido no navegador.
+- **Brechas da Degolificada (dono: "momentos na batalha onde o player pode atacar... atualmente a Degolificada não tem
+  esse momento"):** estado `tired` (`DEGOLIFICADA_CFG.tired`): Grito 1,8 s, Investida que erra 1,3 s (acertou: 0,35 s),
+  Agarrar no vazio 1,4 s, Explosão de cabelo 1,0 s; leva ×1,35, não usa Defesa nem Explosão, o corpo desce 0,2 e
+  curva 0,35 rad, fios pingando; depois a Defesa espera 0,9 s. Na Fúria ×0,7. Conferido no jogo (Grito → `tired`,
+  `taken` 1,35, corpo curvado) e em `tests/pve.test.js`.
+- **Transformação "que não funciona" (a foto do Dalmo com a barra cheia e 85% de vida):** não é bug — a regra é vida
+  ≤ 35% (`COMBAT.storm.healthRatio`). O HUD agora mostra `hud.transform_low` ("TRANSFORMAR: VIDA ≤ 35%") com a barra
+  cheia e a forma disponível; chave nova nos 13 idiomas.
+
 ## v4.53.4 — Luz nas Costas
 
 - Versão: `VERSION` 4.53.3 → **4.53.4** (`package.json`/lock junto). Data: 2026-11-16.
