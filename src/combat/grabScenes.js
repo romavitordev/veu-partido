@@ -212,6 +212,8 @@ export const GRAB_SCENES = {
   // ELOY: o Moeller Method no agarrão — dois socos no tempo e a baqueta cravada de cima (sangra)
   eloy: scene({ ...S('jab'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('hook_r'), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'dual_both', fx: 'slam', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } }),
   // CINDY: o corpo do baixo na cara, o salto alto cravado e o tiro colado do Fuzil Baixo (sangra)
+  // CAIO: a lâmina farpada, o microfone na cara e o BERRÃO colado no ouvido (sangra)
+  caio: scene({ ...S('hammer_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('hammer_v'), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'taunt_roar', fx: 'trauma', sound: 'scream', bleed: { dps: 4, duration: 2 } }),
   cindy: scene({ ...S('hammer_h'), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'shoot_bass', fx: 'pointBlank', sound: 'rifleShot', bleed: { dps: 4, duration: 2 } }),
   // SABARA: a espada no pescoço, a adaga curva no lado e a mordida (cânone: o Aguiar no ep. 4)
   sabara: scene({ ...S('dual_r'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('dual_l'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),

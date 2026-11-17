@@ -159,6 +159,20 @@ export const VOICES = {
       any: [(o) => `Grita mais alto, ${o.name}. Não te escuto.`, (o) => `Ai, ${o.name}. Que fã dedicado. ✩☾`],
     },
   },
+  // CAIO TELES (cânone: o vocalista da PSIKOLERA, o curso de primeiros socorros de seis meses, simpático sem a máscara e
+  // GRITANDO com ela; o tom = PROPOSTA)
+  caio: {
+    open: {
+      ally: (o) => `${o.name}! Fica tranquilo, eu tenho curso de primeiros socorros. Seis meses!`,
+      rival: (o) => `${o.name}. ${o.group} veio pro show? Tampa os ouvidos.`,
+      any: [(o) => `Prontos pro show, ${o.name}?? TÁ CHEGANDO!`, (o) => `Relaxa, ${o.name}. Se eu te machucar, eu mesmo faço o curativo.`],
+    },
+    reply: {
+      ally: (o) => `Bora, ${o.name}! Eu grito, você bate.`,
+      rival: (o) => `${o.group}? Beleza. VOCÊS VÃO OUVIR A GENTE!`,
+      any: [(o) => `FALA MAIS ALTO, ${o.name.toUpperCase()}!`, (o) => `Calma, ${o.name}. O refrão ainda nem começou.`],
+    },
+  },
   // SABARA (cânone: arrogante, exige gestos de humilhação; tira a bandana para mostrar o rosto de vampira)
   sabara: {
     open: {

@@ -417,6 +417,14 @@ export const ABILITY_TYPES = {
             const got = opp.drainEnergy(a.drain);
             if (got > 0) { f.addEnergy(got * (a.drainGain ?? 1)); opp.notify(`SANIDADE DRENADA −${Math.round(got)}`, true); }
           }
+          // a.earsCover (o Berrão do Caio — cânone: "tampar os ouvidos reduz o dano"): quem está DEFENDENDO leva só a
+          // fração e não treme nem solta a arma
+          if (a.earsCover && opp.isGuarding()) {
+            if (a.damage) applyHit(world, f, opp, { damage: Math.round(a.damage * a.earsCover), kind: 'ability', ability: a.id, element: a.element, unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: a.color, sound: 'drain', scale: 0.6 });
+            opp.notify('TAMPOU OS OUVIDOS', true);
+            world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
+            return;
+          }
           if (a.damage) applyHit(world, f, opp, { damage: a.damage, kind: 'ability', ability: a.id, element: a.element, unblockable: true, reaction: false, knockback: 0, hitstun: 0, color: a.color, sound: 'drain', scale: 0.8 });
           // a.resist (cânone: "caso o alvo consiga resistir, ele fica esmorecido"): quem está DEFENDENDO resiste — não
           // fica paralisado, só esmorecido
@@ -432,7 +440,12 @@ export const ABILITY_TYPES = {
           opp.stun(a.stun, 'fear');
           world.fx.burst(opp.chestPos(), { count: 30, color: 0x1a0610, kind: 'smoke', speed: 2, life: 1.0, size: 0.8, grow: 1 });
           world.fx.burst(opp.chestPos(), { count: 16, color: a.color, speed: 3, life: 0.6, size: 0.2 });
-          opp.notify('DESESPERO', true);
+          opp.notify(a.hitLabel || 'DESESPERO', true);
+          // a.disarm (o Berrão do Caio — cânone: o alvo SOLTA o que estiver segurando): fica sem o ataque à distância
+          if (a.disarm && opp.cooldowns) {
+            opp.cooldowns.ranged = Math.max(opp.cooldowns.ranged || 0, a.disarm);
+            world.after(0.3, () => { if (opp.state !== 'ko') opp.notify('SOLTOU A ARMA', true); });
+          }
           // a.wither (Joui com a Shi no Kage — cânone do Olhar do Desespero: "paralisa... ou torna-o ESMORECIDO"): passada a
           // paralisia, o alvo fica esmorecido — bate mais fraco por alguns segundos
           if (a.wither) {

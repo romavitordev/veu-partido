@@ -27,7 +27,7 @@ export default {
     tagline: 'Eu tô apenas protegendo o Equilíbrio.',
   },
   stats: { moveSpeed: 7.6, attackSpeed: 1.0, maxHealth: 1800 }, // Portador das Relíquias: aguenta mais que o elenco (o número não aparece na tela)
-  anims: { idle: 'idle_arnaldo', run: 'run', charge: 'charge', victory: 'vic_magistrada', block: 'block_weapon' },
+  anims: { idle: 'idle_nubi', run: 'run', charge: 'charge', victory: 'vic_magistrada', block: 'block_weapon' },
   chargeFx: { style: 'default', color: GOLD },
   dodge: { style: 'default', distance: 4.6 },
 

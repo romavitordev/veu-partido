@@ -1339,7 +1339,7 @@ const CHOREO = {
   psikolera({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
     const END = S + 5.6;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
-    const eloy = tools.get('eloy'), cindy = tools.get('cindy');
+    const eloy = tools.get('eloy'), cindy = tools.get('cindy'), caio = tools.get('caio');
     const hits = splitDamage(crewTotal, 8);
     const ACID = 0xc6f03a, BLOOD = 0xd01c30;
     const say = sayer(world);
@@ -1360,6 +1360,11 @@ const CHOREO = {
         tools.enter(cindy, 0.45, 4.2);
         cindy.play('bass_play', 1.6);
       }
+      // o CAIO (2026-11-17) no meio do palco, a Espada Microfone erguida
+      if (caio) {
+        tools.enter(caio, 0, 3.4);
+        caio.play('taunt_roar', 1.2);
+      }
       world.audio.play('drumCrash', { volume: 0.8 });
       say(eloy || cindy, eloy ? 'UM, DOIS, TRÊS, QUATRO!' : 'Boa noite, Monica Club! ✩☾', 0);
       if (eloy && cindy) world.cameraRig.playShots([{ ...twoShot(eloy, cindy, { dur: 1.5, dist: 4.2, height: 1.5, side: -1, fov: 46 }), cut: true }]);
@@ -1376,8 +1381,9 @@ const CHOREO = {
     // 2. o GRITO: a Cindy Silencia o alvo (preso no lugar)
     tl.add(S + 1.55, () => {
       if (!live()) return;
-      const who = cindy || eloy;
+      const who = caio || cindy || eloy; // o vocalista é quem grita (o Berrão do Caio, cânone)
       if (cindy) { cindy.face(opp); cindy.play('taunt_roar', 0.6); say(cindy, 'SHHH... SILÊNCIO NA PLATEIA!', 1); }
+      if (caio) { caio.face(opp); caio.play('taunt_roar', 0.6); say(caio, 'EU VOU TOMAR TUDO QUE EU POSSO TER!', 2); }
       world.audio.play('scream', { volume: 1 });
       world.fx.distort(who.chest(), { color: ACID, radius: 2.4, life: 0.4 });
       for (let i = 1; i <= 3; i++) world.fx.ring(who.chest().lerp(opp.chestPos(), i / 3), { color: ACID, radius: 0.6 + i * 0.4, life: 0.35, vertical: true, yaw: who.yaw + Math.PI / 2 });

@@ -587,6 +587,18 @@ Object.assign(CLIPS, {
       k(1, L_STANCE),
     ],
   },
+  // CAIO — O BERRÃO (cânone: "finca a ponta da espada no chão e grita no microfone"; pedido do dono, 2026-11-17): ergue a
+  // Espada Microfone, CRAVA no chão à frente, e fica curvado sobre ela com a cabeça erguida GRITANDO, a mão esquerda aberta
+  caio_berro: {
+    dur: 1.0, keys: [
+      k(0, L_STANCE),
+      k(0.22, { ...L_LEGS, h: -0.02, sp: [-0.35, 0.1, 0], hd: [-0.2, 0, 0], sR: [-3.0, 0, 0], eR: [-0.4, 0, 0], sL: [-0.6, 0, 0.3], eL: [-0.6, 0, 0] }),
+      k(0.36, { h: -0.4, lL: [-1.0, 0, 0.18], kL: [1.15, 0, 0], lR: [0.7, 0, -0.18], kR: [0.75, 0, 0], sp: [0.8, 0, 0], hd: [0.2, 0, 0], sR: [0.05, 0.1, 0], eR: [0, 0, 0], sL: [-0.4, 0, 0.5], eL: [-0.5, 0, 0] }),
+      k(0.46, { h: -0.36, lL: [-1.0, 0, 0.18], kL: [1.1, 0, 0], lR: [0.7, 0, -0.18], kR: [0.7, 0, 0], sp: [0.55, 0, 0], hd: [-0.4, 0, 0], sR: [-0.1, 0.1, 0], eR: [0, 0, 0], sL: [-1.0, 0, 1.1], eL: [-0.5, 0, 0] }),
+      k(0.82, { h: -0.38, lL: [-1.0, 0, 0.18], kL: [1.12, 0, 0], lR: [0.7, 0, -0.18], kR: [0.72, 0, 0], sp: [0.58, 0, 0.04], hd: [-0.45, 0, 0.06], sR: [-0.1, 0.1, 0], eR: [0, 0, 0], sL: [-1.05, 0, 1.15], eL: [-0.45, 0, 0] }),
+      k(1, L_STANCE),
+    ],
+  },
   // ombrada no fim da corrida do Cai Dentro
   shoulder_charge: {
     dur: 0.4, keys: [

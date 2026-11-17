@@ -86,6 +86,8 @@ export function addVictoryClips(CLIPS, k) {
     // Cindy: toca o Fuzil Baixo como um baixo — a mão esquerda no braço do instrumento, a direita no corpo, o quadril
     // de lado e a cabeça para trás cantando (com a máscara "não consegue parar de dançar")
     vic_cindy: pose({ hip: [0, 0.25, 0.12], sp: [-0.12, -0.15, 0], hd: [-0.32, 0, 0.15], sL: [-1.3, -0.5, 0.3], eL: [-0.6, 0, 0], sR: [-0.5, 0.6, -0.1], eR: [-1.6, 0, 0], lR: [-0.2, 0, -0.06], kR: [0.4, 0, 0], lL: [0.08, 0, 0.1] }),
+    // Caio: a Espada Microfone fincada do lado, a outra mão aberta para a plateia e a cabeça para trás GRITANDO
+    vic_caio: pose({ h: -0.03, sp: [-0.15, 0, 0], hd: [-0.45, 0, 0], sR: [-0.45, 0, -0.35], eR: [-0.4, 0, 0], sL: [-2.2, -0.2, 0.7], eL: [-0.3, 0, 0], lL: [-0.08, 0, 0.18], lR: [0.08, 0, -0.18] }),
     // Damir: a bengala fincada à frente na direita, a esquerda na aba do fedora e o queixo erguido (arrogante)
     vic_damir: pose({ sp: [-0.08, 0, 0], hd: [-0.22, 0.1, 0], sR: [-0.55, 0, -0.2], eR: [-0.5, 0, 0], sL: [-1.95, -0.3, 0.5], eL: [-2.4, 0, 0], lL: [-0.06, 0, 0.12], lR: [0.06, 0, -0.12] }),
     // Eloy: as baquetas erguidas no alto depois do solo, a cabeça baixa batendo no ritmo e as pernas abertas

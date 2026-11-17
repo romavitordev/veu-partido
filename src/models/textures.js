@@ -698,6 +698,41 @@ function carinaFace(eye) {
   });
 }
 
+// ------------------------------------------------------------ o pano do Caio (camisa de força suja de sangue)
+function caioCloth(g, w, h, seed) {
+  g.fillStyle = '#d9d0bb'; g.fillRect(0, 0, w, h);
+  const rnd = seeded(seed);
+  for (let i = 0; i < 260; i++) { // o encardido e a trama
+    g.fillStyle = `rgba(${rnd() < 0.5 ? '120,104,80' : '240,236,224'},${0.05 + rnd() * 0.08})`;
+    g.fillRect(rnd() * w, rnd() * h, 4 + rnd() * 30, 2 + rnd() * 6);
+  }
+}
+// a faixa ENCHARCADA: uma borda irregular de sangue de y0 até y0 + bh, com os escorridos para dentro do pano
+function caioSoak(g, w, y0, bh, k, seed) {
+  const rnd = seeded(seed);
+  const top = y0 === 0;
+  for (let x = 0; x < w; x += 6) {
+    const edge = bh * (0.55 + 0.45 * rnd()) * k;
+    g.fillStyle = `rgba(${105 + rnd() * 30},${14 + rnd() * 14},${16 + rnd() * 10},${0.55 + rnd() * 0.3})`;
+    if (top) g.fillRect(x, 0, 7, edge);
+    else g.fillRect(x, y0 + bh - edge, 7, edge);
+    if (rnd() < 0.18) { // o escorrido
+      const l = 20 + rnd() * 70;
+      g.fillRect(x + 2, top ? edge : y0 + bh - edge - l, 3, l);
+    }
+  }
+}
+function caioSpatter(g, w, h, n, seed) {
+  const rnd = seeded(seed);
+  for (let i = 0; i < n; i++) {
+    const x = rnd() * w, y = rnd() * h, r = 4 + rnd() * 16;
+    g.fillStyle = `rgba(${110 + rnd() * 40},${16 + rnd() * 16},${18 + rnd() * 10},${0.5 + rnd() * 0.4})`;
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+    for (let j = 0; j < 5; j++) { const a = rnd() * 6.28, d = r + rnd() * 18; g.beginPath(); g.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, 1 + rnd() * 3, 0, Math.PI * 2); g.fill(); }
+    if (rnd() < 0.5) g.fillRect(x - 1.5, y, 3, 10 + rnd() * 30); // escorrendo
+  }
+}
+
 export const MATERIAL_TEXTURES = {
   // ---------------- KAISER: queimadura no lado ESQUERDO (x > 256)
   // KAISER depois do orfanato (wiki): a metade ESQUERDA do rosto queimada, sem barba e sem a sobrancelha esquerda; com
@@ -2590,6 +2625,73 @@ export const MATERIAL_TEXTURES = {
     eye: { iris: '#3a7ac8', irisLight: '#8ac0f0', w: 14, h: 7, tilt: 0.06, lid: 3 },
     brow: { angry: 0.2, thick: 2.6, color: '#b8904a' },
     mouth: { mouthW: 13, smile: 5, lip: 'rgba(140,16,28,0.92)' },
+  }),
+  // ---------------- CAIO TELES (wiki: sem a máscara, os olhos CASTANHOS com a maquiagem PRETA embaixo, a SOBRANCELHA
+  // CORTADA, os piercings no nariz e na boca e a barba rala; com a máscara, a placa PARE — prop_maskOn, mask_caio)
+  face_caio: face((g) => {
+    stubble(g, 'rgba(30,20,16,0.3)', 1100, { y0: 150, y1: 226, w: 74 });
+    for (const sx of [-1, 1]) { // a maquiagem preta borrada embaixo dos olhos
+      g.fillStyle = 'rgba(16,12,14,0.55)';
+      g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 9, 19, 7, sx * 0.08, 0, Math.PI * 2); g.fill();
+    }
+    g.fillStyle = '#d2a07e'; g.fillRect(CX + 18, EYE_Y - 26, 4, 14); // a fresta na sobrancelha
+    g.strokeStyle = '#b8b8bc'; g.lineWidth = 2.4; // os piercings: a argola na narina e a da boca
+    g.beginPath(); g.arc(CX + 9, EYE_Y + 50, 4, 0, Math.PI * 1.6); g.stroke();
+    g.beginPath(); g.arc(CX - 8, EYE_Y + 78, 4, 0, Math.PI * 1.6); g.stroke();
+  }, {
+    skin: '#d2a07e',
+    eye: { iris: '#5a3820', irisLight: '#9a6a40', w: 14, h: 7, tilt: 0.02, lid: 3 },
+    brow: { angry: 0.35, thick: 3.4, color: '#141214' },
+    mouth: { mouthW: 15, smile: 5, lip: 'rgba(120,60,56,0.5)' },
+  }),
+  // o MACACÃO do Caio (a arte: creme, encardido e cheio de sangue). O tronco: respingos e a mancha na cintura (no UV do
+  // tronco, v = 1 é a cintura — o alto da tela)
+  suit_caio: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 31);
+    caioSoak(g, w, 0, 70, 0.55, 41); // a cintura
+    caioSpatter(g, w, h, 18, 51);
+  }, { wrap: true }),
+  // as mangas: o sangue escorre até o punho (o fim da manga é a base da tela)
+  sleeve_caio: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 32);
+    caioSoak(g, w, h - 120, 120, 0.9, 42);
+    caioSpatter(g, w, h, 10, 52);
+  }, { wrap: true }),
+  // as pernas: o joelho manchado na frente (u = 0,5) e a BARRA encharcada (a base da tela)
+  pants_caio: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 33);
+    caioSoak(g, w, h - 150, 150, 1, 43);
+    const rnd = seeded(44);
+    for (let i = 0; i < 9; i++) { // os joelhos (a frente da perna, perto do meio da altura)
+      g.fillStyle = `rgba(${110 + rnd() * 40},${20 + rnd() * 20},${20 + rnd() * 10},${0.35 + rnd() * 0.35})`;
+      g.beginPath(); g.ellipse(w * (0.4 + rnd() * 0.2), h * (0.42 + rnd() * 0.12), 20 + rnd() * 40, 14 + rnd() * 30, rnd() * 3, 0, Math.PI * 2); g.fill();
+    }
+    caioSpatter(g, w, h, 14, 53);
+  }, { wrap: true }),
+  // a MÁSCARA DE FERRO do Caio: a placa PARE alongada (o UV é plano: a largura e a altura da placa inteira). O vermelho
+  // gasto, a borda branca, o PARE no alto, as frestas dos olhos, a fenda da boca, os riscos e o sangue
+  mask_caio: () => canvasTex(256, 448, (g, w, h) => {
+    const oct = (k) => { // o octógono da placa (os mesmos cantos do char_caio.py), encolhido por k
+      const P = [[-0.05, 0.205], [0.05, 0.205], [0.118, 0.125], [0.118, -0.125], [0.05, -0.205], [-0.05, -0.205], [-0.118, -0.125], [-0.118, 0.125]];
+      g.beginPath();
+      P.forEach(([x, z], i) => { const px = (0.5 + (x * k) / 0.236) * w, py = (0.5 - (z * k) / 0.41) * h; if (i) g.lineTo(px, py); else g.moveTo(px, py); });
+      g.closePath();
+    };
+    g.fillStyle = '#7a0a10'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#f2ece2'; oct(0.94); g.fill(); // a borda branca
+    g.fillStyle = '#b8141c'; oct(0.86); g.fill();
+    const rnd = seeded(77);
+    for (let i = 0; i < 120; i++) { // o ferro gasto: manchas e riscos
+      g.fillStyle = `rgba(${rnd() < 0.5 ? '60,8,10' : '200,60,50'},${0.08 + rnd() * 0.12})`;
+      g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 10, 1 + rnd() * 3);
+    }
+    g.fillStyle = '#f2ece2'; g.font = 'bold 66px Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('PARE', w / 2, 150);
+    g.fillStyle = '#0a0606'; // as frestas dos olhos e a fenda da boca
+    for (const s of [-1, 1]) { g.beginPath(); g.ellipse(w / 2 + s * 49, 236, 21, 10, s * -0.12, 0, Math.PI * 2); g.fill(); }
+    g.fillRect(w / 2 - 22, 342, 44, 7);
+    g.strokeStyle = 'rgba(90,6,10,0.85)'; g.lineWidth = 3; g.lineCap = 'round'; // o sangue escorrido
+    for (const [x, l] of [[70, 90], [178, 60], [140, 120]]) { g.beginPath(); g.moveTo(x, 270); g.lineTo(x + 3, 270 + l); g.stroke(); }
   }),
   // os braços de fora do Eloy: a pele com as CICATRIZES DE CORTE (wiki)
   arm_eloy: () => canvasTex(256, 256, (g) => {

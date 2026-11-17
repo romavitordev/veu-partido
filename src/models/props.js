@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo, espadaMicrofone } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -967,11 +967,12 @@ export function addColossoProps(rig) {
   if (rig.props.laces) rig.showProp('laces', false);
 }
 
-// A MAGISTRADA: a bengala na mão direita (como na arte), empunhada como espada
+// A MAGISTRADA: a bengala na mão direita (como na arte), segurada PARA BAIXO com a ponta no chão, como a do Damir
+// (dono, 2026-11-17: "bengala da magistrada deveria ser mirada pra baixo como a do damir")
 export function addMagistradaProps(rig) {
   const { sockets, props } = rig;
   const cane = bengala();
-  cane.rotation.x = -0.3;
+  inFist(cane, 0);
   sockets.handR.add(cane);
   props.cane = cane;
   // a MÁSCARA DO DESESPERO em relevo (a mesma da Celestine): os sulcos e o coração do nariz afundados no rosto
@@ -1805,6 +1806,40 @@ export function addCindyProps(rig) {
   rig.muzzle = gun.userData.muzzle;
   if (props.maskOn) rig.showProp('maskOn', false);
 }
+
+// CAIO (PSIKOLERA): a ESPADA MICROFONE na direita, empunhada como arma pesada (a lâmina para a frente, o microfone para
+// trás). A MÁSCARA PARE é a peça prop_maskOn do modelo (tools/blender/char_caio.py): só aparece no despertar
+export function addCaioProps(rig) {
+  const { sockets, props } = rig;
+  const sword = espadaMicrofone();
+  inFist(sword, GRIP_HEAVY);
+  sockets.handR.add(sword);
+  props.sword = sword;
+  rig.mic = sword.userData.mic;
+  if (props.maskOn) rig.showProp('maskOn', false);
+  // O BERRÃO (dono, 2026-11-17: "a espada deveria cravar na vertical, ele pegar ela com as duas mãos e cravar no chão
+  // reta, para ele gritar nela — de ponta-cabeça, a lâmina no chão e o microfone na boca dele"): durante o clipe
+  // caio_berro a espada sai da pegada da mão e fica EM PÉ à frente dele, a ponta enterrada e o microfone em cima, na
+  // altura da boca (as duas mãos no cabo vêm da pose). Fora do clipe, volta para a mão.
+  const rest = { p: sword.position.clone(), q: sword.quaternion.clone() };
+  const want = new THREE.Matrix4(), inv = new THREE.Matrix4(), tmpS = new THREE.Vector3();
+  const L = sword.userData.tipLength;
+  (rig.tickers || (rig.tickers = [])).push((dt, f) => {
+    const a = f && f.anim;
+    const k = a && a.currentName === 'caio_berro' ? a.progress : -1;
+    if (!(k >= PLANT[0] && k <= PLANT[1])) {
+      if (sword.userData.planted) { sword.position.copy(rest.p); sword.quaternion.copy(rest.q); sword.userData.planted = false; }
+      return;
+    }
+    sword.userData.planted = true;
+    rig.root.updateMatrixWorld(true);
+    // no espaço do corpo (olhando para +Z): a ponta 3 cm dentro do chão, 0,6 m à frente; o cabo L acima dela
+    want.makeTranslation(0, L - 0.03, 0.6).premultiply(rig.root.matrixWorld);
+    inv.copy(sockets.handR.matrixWorld).invert();
+    want.premultiply(inv).decompose(sword.position, sword.quaternion, tmpS);
+  });
+}
+const PLANT = [0.33, 0.9]; // o trecho do caio_berro em que a espada fica cravada
 
 // SABARA (Vampiros): a ESPADA longa na direita e a ADAGA CERIMONIAL curva na esquerda (ela saca as duas juntas no ep. 4);
 // a faca pequena dos cintos aparece na esquerda só no arremesso

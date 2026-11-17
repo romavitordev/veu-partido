@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v4.58.0 — A Bengala da Magistrada
+
+- Versão: `VERSION` 4.57.0 → **4.58.0** (`package.json`/lock junto). Data: 2026-11-17.
+- **Orientação da Bengala da Magistrada (dono, 2026-11-17: "bengala da magistrada deveria ser mirada pra baixo como a do damir"):**
+  Ajustado o socket em `src/models/props.js` (`addMagistradaProps`) usando `inFist(cane, 0)`, garantindo empunhadura
+  vertical apontada para baixo com a ponta em direção ao chão, igual à pose da bengala do Damir Lukic.
+- **Seleção de Cenários (Mapas):**
+  Paginação em grade de no máximo 16 mapas (8 colunas × 2 linhas) com navegação por páginas laterais e indicadores visuais.
+
 ## v4.57.0 — A Magistrada Refeita
 
 - Versão: `VERSION` 4.56.0 → **4.57.0** (`package.json`/lock junto). Data: 2026-11-17.

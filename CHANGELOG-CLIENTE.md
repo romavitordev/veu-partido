@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.58.0 — A Bengala da Magistrada
+- A BENGALA DA MAGISTRADA agora é empunhada apontando para baixo com a ponta em direção ao chão, igual à do Damir Lukic, respeitando a pose solene e canônica da personagem.
+
 ## v4.57.0 — A Magistrada Refeita
 - A MAGISTRADA remodelada pela arte do Livro de Regras: mangas bufantes de verdade, a calça cinza larga caindo no sapato, as duas faixas brancas de pano com franja até o joelho, as pulseiras douradas empilhadas e a gola com o leque de raios dourados atrás da cabeça.
 

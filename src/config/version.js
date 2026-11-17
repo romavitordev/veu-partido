@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.57.0';
+export const VERSION = '4.58.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.58.0',
+    date: '2026-11-17',
+    title: 'A Bengala da Magistrada',
+    items: [
+      'A BENGALA DA MAGISTRADA agora é empunhada apontando para baixo com a ponta em direção ao chão, igual à bengala do Damir Lukic, respeitando a pose solene e canônica da personagem.',
+    ],
+  },
   {
     v: '4.57.0',
     date: '2026-11-17',

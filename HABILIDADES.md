@@ -1773,6 +1773,52 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## CAIO TELES
+
+*O vocalista da PSIKOLERA* · arma: A Espada Microfone: uma espadona enrolada em arame farpado com um microfone adaptado na outra ponta
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Lâmina farpada | 26 | 2.4 m |  |
+| ○ 2 | Volta da espada | 30 | 2.4 m |  |
+| ○ 3 | Microfone na cara | 38 | 2.3 m |  |
+| ○ 4 | Refrão | 62 | 2.5 m | finalizador: lança |
+| Frente + ○ | Intercepta | 32 | 1.9 m |  |
+| Trás + ○ | Recua e corta | 32 | 2.3 m |  |
+| Lado + ○ | Corte rodado | 30 | 2.3 m |  |
+| No ar + ○ | Espada do alto | 38 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Espada de baixo | 36 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Espada no chão | 44 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Microfonia
+
+- Dano 22 · alcance 13 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Berrão** — △ + ○ / Y + B · custo 26 · cooldown 14 s · dano 34 · alcance 3.2 m
+  Finca a espada e grita no microfone colado ao ouvido do adversário: dano, um tremor e ele SOLTA A ARMA (fica 4 s sem o ataque à distância). Quem estiver defendendo tampa os ouvidos e leva menos.
+- **Barulheira** — △ + □ / Y + X · custo 22 · cooldown 16 s · alcance 6 m
+  Solta um grito em volta: quem estiver perto treme por um instante e, por 6 s, bate mais fraco.
+- **Primeiros Socorros** — R2 + △ / RT + Y · custo 24 · cooldown 22 s
+  Seis meses de curso: aperta as faixas, estanca o sangue e recupera vida por 2 s.
+- **Corte na Jugular** — △ + L2 / Y + LT · custo 24 · cooldown 11 s · dano 52 · alcance 2.5 m
+  Avança e corta na altura do pescoço: faz sangrar, ainda pega de raspão quem esquivar e, com o adversário de vida baixa, entra mais fundo. Se errar, fica exposto.
+- **Espada Fincada** — R2 + × / RT + A · custo 20 · cooldown 11 s · dano 32
+  Crava a Espada Microfone no chão e grita: a onda derruba quem estiver em volta dele.
+
+### Especial: Show Final
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Ninguém Me Para
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades, especial), +6% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 12% na hora.
+
+---
+
 ## RAZIEL
 
 *O líder dos Vampiros e anfitrião da Ceia na Igreja Antiga — por baixo das vestes, a verdadeira forma* · arma: Garras, a Mordida e os rituais de Sangue

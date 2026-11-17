@@ -173,7 +173,8 @@ export const TEAM_LINKS = {
     sceneProps: { kemi: { show: ['sniperHand'], hide: ['stowed'] } },
     sceneForms: { kemi: 'fantasma' }, // ela veste as faixas para o Disparo da Morte (cânone: a Fantasma)
   },
-  // PSIKOLERA (pedido do dono, 2026-11-14): a banda de Hexatombe. Hoje o Eloy (bateria) e a Cindy (baixo); Franco, Caio e
+  // PSIKOLERA (pedido do dono, 2026-11-14): a banda de Hexatombe. Hoje o Eloy (bateria), a Cindy (baixo) e o Caio (vocal,
+  // 2026-11-17); Franco e
   // Alê entram no grupo quando estiverem no elenco (aí o mínimo sobe para 3, como os outros grupos). Os dois de máscara
   // (combat/teamSpecials.js CHOREO.psikolera). NÃO LANÇADO (dono, 2026-11-13: "só vai ser lançado quando ter todos
   // psikolera"): a coreografia fica pronta, mas a ligação só vale quando tirar o `unreleased`
@@ -183,12 +184,12 @@ export const TEAM_LINKS = {
     kind: 'group',
     name: 'HORA DO SHOW!',
     banner: 'Hora do Show!',
-    group: ['eloy', 'cindy'],
+    group: ['eloy', 'cindy', 'caio'],
     min: 2,
-    order: ['eloy', 'cindy'],
+    order: ['eloy', 'cindy', 'caio'],
     color: 0xc6f03a,
     choreo: 'psikolera',
-    masks: { eloy: { show: ['maskOn'] }, cindy: { show: ['maskOn'] } },
+    masks: { eloy: { show: ['maskOn'] }, cindy: { show: ['maskOn'] }, caio: { show: ['maskOn'] } },
   },
   // OS ESCRIPTAS (os Marcados do Kian em Calamidade): vale com 3 na equipe e aparecem todos
   escriptas: {

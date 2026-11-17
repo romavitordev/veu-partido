@@ -641,6 +641,16 @@ export const cinematicCombo = {
             stepFx(st);
             if (st.anim) f.anim.play(st.anim, st.dur ? { restart: true, duration: st.dur } : { restart: true });
             if (st.sound) world.audio.play(st.sound);
+            // st.scream (o Show Final do Caio — o Berrão): a onda do grito sai do microfone até o adversário e o ATORDOA
+            if (st.scream && opp && opp.state !== 'ko') {
+              const from = f.rig.mic ? f.rig.mic.getWorldPosition(new THREE.Vector3()) : f.chestPos();
+              const to = opp.chestPos();
+              world.audio.play('scream', { volume: 1.1 });
+              world.cameraRig.shake(0.35, 0.3);
+              for (let i = 1; i <= 5; i++) world.fx.ring(from.clone().lerp(to, i / 5), { color: sp.color, radius: 0.5 + i * 0.3, life: 0.3 + i * 0.04, vertical: true, yaw: f.yaw + Math.PI / 2 });
+              world.fx.distort(from, { color: sp.color, radius: 2.2, life: 0.4 });
+              if (!opp.isInvulnerable()) { opp.stun(st.scream.stun, 'fear'); opp.notify(st.scream.label || 'ATORDOADO', true); }
+            }
             if (st.smash && kit && !kitFly) {
               const F = forwardFromYaw(kit.rotation.y);
               kitFly = { t: 0, parts: kit.userData.pieces.map((o) => ({ o, v: new THREE.Vector3(F.x * (5 + Math.random() * 4) + (Math.random() - 0.5) * 4, 3 + Math.random() * 4, F.z * (5 + Math.random() * 4) + (Math.random() - 0.5) * 4), spin: new THREE.Vector3((Math.random() - 0.5) * 16, 0, (Math.random() - 0.5) * 16) })) };

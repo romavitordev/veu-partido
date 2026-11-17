@@ -3371,6 +3371,89 @@ export function bengalaDamir() {
   return g;
 }
 
+// A ESPADA MICROFONE DO CAIO (wiki "Caio Teles", Arsenal; artes "Arte Espada de Caio em Hexatombe" e "Arte Caio com
+// Microfone"): uma espadona estilizada vermelho-escura, ENROLADA EM ARAME FARPADO, com um MICROFONE adaptado na outra
+// ponta (a cabeça de grade presa por uma braçadeira). Empunhadura na origem, a lâmina para −Y, o microfone para +Y.
+// userData.mic: o ponto da grade do microfone (o Berrão sai dali).
+export function espadaMicrofone() {
+  const g = new THREE.Group();
+  const RED = 0x5a1a1c, WIRE = 0x8a8a90;
+  const grip = part(new THREE.CylinderGeometry(0.02, 0.022, 0.24, 10), 0x1a1214);
+  grip.position.y = 0.04;
+  g.add(grip);
+  for (let k = 0; k < 6; k++) { // a fita enrolada no cabo
+    const band = part(new THREE.TorusGeometry(0.022, 0.004, 4, 12), 0x6e2a24, { outline: false });
+    band.rotation.set(Math.PI / 2 + 0.35, 0, 0);
+    band.position.y = -0.06 + k * 0.04;
+    g.add(band);
+  }
+  // o MICROFONE na ponta de cima: a braçadeira, o corpo preto e a grade prateada
+  const clamp = part(new THREE.CylinderGeometry(0.03, 0.03, 0.04, 10), 0x3a3a3e, { mat: toon(0x3a3a3e, { emissive: 0x0a0a0c }) });
+  clamp.position.y = 0.18;
+  g.add(clamp);
+  const body = part(new THREE.CylinderGeometry(0.026, 0.018, 0.13, 12), 0x121214);
+  body.position.y = 0.26;
+  g.add(body);
+  const grille = part(new THREE.SphereGeometry(0.042, 14, 10), 0xb8b8c0, { mat: toon(0xb8b8c0, { emissive: 0x18181c }) });
+  grille.position.y = 0.355;
+  g.add(grille);
+  const ring = part(new THREE.TorusGeometry(0.04, 0.005, 6, 16), 0x2a2a2e, { outline: false });
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 0.335;
+  g.add(ring);
+  const mic = new THREE.Object3D();
+  mic.position.y = 0.36;
+  g.add(mic);
+  // a guarda: uma barra curta e torta
+  const guard = part(new THREE.BoxGeometry(0.03, 0.04, 0.2), RED, { mat: toon(RED, { emissive: 0x1a0406 }) });
+  guard.position.y = -0.1;
+  guard.rotation.x = 0.08;
+  g.add(guard);
+  // a LÂMINA longa e estreita, com os dentes tortos nas bordas
+  const L = 1.05;
+  const sh = new THREE.Shape();
+  sh.moveTo(-0.03, 0);
+  const teeth = 9;
+  for (let i = 1; i <= teeth; i++) {
+    const y = -L * 0.92 * i / teeth;
+    sh.lineTo(-0.03 + 0.006 * (i % 2), y + 0.03);
+    sh.lineTo(-0.048 + 0.004 * (i % 3), y + 0.012);
+    sh.lineTo(-0.028, y);
+  }
+  sh.lineTo(0, -L);
+  for (let i = teeth; i >= 1; i--) {
+    const y = -L * 0.92 * i / teeth;
+    sh.lineTo(0.028, y);
+    sh.lineTo(0.048 - 0.004 * ((i + 1) % 3), y + 0.016);
+    sh.lineTo(0.03 - 0.006 * (i % 2), y + 0.03);
+  }
+  sh.lineTo(0.03, 0);
+  sh.lineTo(-0.03, 0);
+  const blade = part(extrude(sh, 0.014), RED, { mat: toon(RED, { emissive: 0x1a0406 }) });
+  blade.rotation.y = Math.PI / 2;
+  blade.position.y = -0.12;
+  g.add(blade);
+  // o ARAME FARPADO enrolado em espiral na lâmina, com as farpas
+  const pts = [];
+  const turns = 11;
+  for (let i = 0; i <= turns * 12; i++) {
+    const t = i / (turns * 12);
+    const a = t * turns * Math.PI * 2;
+    pts.push(new THREE.Vector3(Math.cos(a) * 0.03, -0.14 - t * L * 0.86, Math.sin(a) * 0.045));
+  }
+  g.add(part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), turns * 24, 0.0035, 4, false), WIRE, { outline: false, mat: toon(WIRE, { emissive: 0x101012 }) }));
+  for (let i = 0; i < pts.length; i += 6) {
+    const p = pts[i];
+    const barb = part(new THREE.ConeGeometry(0.004, 0.024, 4), WIRE, { outline: false });
+    barb.position.copy(p);
+    barb.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+    g.add(barb);
+  }
+  g.userData.mic = mic;
+  g.userData.tipLength = L + 0.12;
+  return g;
+}
+
 // O CADERNINHO DO DAMIR: capa preta com o círculo dos Lukic em dourado; aberto, as páginas com os sigilos
 export function caderninho() {
   const g = new THREE.Group();

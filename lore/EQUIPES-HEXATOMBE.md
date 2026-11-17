@@ -168,6 +168,35 @@ Fonte: página "Cindy Lopes" da wiki (infobox, Aparência, Personalidade, Biogra
 - **Artes para modelar**: miniaturas "Arte Cindy com Baixo em Hexatombe.png" (frente e costas) e "Arte Cindy sem
   Máscara em Hexatombe.png"; pôster "PSIKOLERA - Cindy.jpeg"; "Arte conceitual de Cindy.jpg".
 
+### CAIO TELES (PSIKOLERA, vocalista; pesquisa de 2026-11-17)
+Fonte: página "Caio Teles" da wiki (infobox, Aparência, Personalidade, Biografia, Habilidades, Arsenal). Resumo nosso.
+- **Quem é**: 25 anos, de São Paulo; o vocalista da banda (voz do Cellbit, músicas do Maad). Namorado SECRETO da Cindy
+  e obedece a ela. Morto no ep. 9: o Raziel o dilacera e o Mutilador Noturno (o Jasper no corpo do Aguiar) o decapita
+  na Igreja Antiga. Falas: "Prontos pro Show final das Pegadas de Sangue?? Tá chegando!! The Monica Club, P#RRA!!!!!" e
+  "EU VOU TOMAR TUDO QUE EU POSSO TER!". No Twitter escrevia com palavras em CAIXA ALTA.
+- **Aparência**: alto e robusto; macacão de camisa de força (branco/creme) cheio de TIRAS cruzadas e enroladas com
+  fivelas, manchas de sangue; FAIXAS nas duas mãos; CORRENTE pendurada no pescoço como colar; ALGEMAS com ESPINHOS nos
+  pulsos. MÁSCARA de ferro vermelha: uma placa de trânsito "PARE" ALONGADA (customizada), cobrindo o rosto todo, com
+  frestas nos olhos e uma fenda pequena na boca. Sem máscara: cabelo preto com uma parte pintada de VERMELHO, olhos
+  castanhos com maquiagem preta embaixo, sobrancelha cortada, piercings (orelha, nariz, boca), barba rala.
+- **Personalidade**: tranquilo e simpático; vive citando o CURSO DE PRIMEIROS SOCORROS de seis meses; provoca a Cindy
+  pela altura. Com a máscara fica agressivo e BARULHENTO, gritando o tempo todo.
+- **Arma — ESPADA MICROFONE**: uma espadona estilizada enrolada em ARAME FARPADO, com um MICROFONE adaptado na outra
+  ponta.
+- **Habilidade — BERRÃO**: finca a ponta da espada no chão e GRITA no microfone colado ao ouvido do alvo: causa dano e
+  o alvo SOLTA o que estiver segurando; tampar os ouvidos reduz o dano.
+- **Bônus de aliado — BARULHEIRA**: um grito alto tira um dado de ataque de quem ataca os aliados. **CORTE NA JUGULAR**
+  (como desertor): +5 de dano mesmo se o aliado errar.
+- **Cenas de combate**:
+  - O massacre no The Monica Club abre o portal; ele pula primeiro.
+  - No 3º dia encontra o Aguiar, o Jae e o Labirinto.
+  - No Mercado Central, GRITA para parar o Quibungo.
+  - Intercepta o Eloy quando ele se joga na Cindy; briga com o Eloy por causa do Caíto e vira DESERTOR quando o Caíto
+    morre.
+- **Artes para modelar**: "Arte Caio com Microfone em Hexatombe.png" (frente e costas), "Arte Caio Teles sem Mascara em
+  Hexatombe.png" (frente e costas), "Arte Caio Teles Desertor em Hexatombe.png", "Arte Espada de Caio em Hexatombe.png",
+  pôster "PSIKOLERA - Caio.jpeg", "Arte conceitual de Caio.jpg", "Banda PSIKOLERA.jpg".
+
 ## COURAÇAS (futuro, pedido do dono em 2026-11-13)
 - Os donos do Ferro Velho; o cenário "Base dos Couraças" já está no jogo.
 - A equipe entra depois do Eloy e da Sabara.
