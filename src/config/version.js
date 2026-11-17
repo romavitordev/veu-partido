@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.56.0';
+export const VERSION = '4.57.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.57.0',
+    date: '2026-11-17',
+    title: 'A Magistrada Refeita',
+    items: [
+      'A MAGISTRADA remodelada pela arte do Livro de Regras: mangas bufantes de verdade, a calça cinza larga caindo no sapato, as duas faixas brancas de pano com franja até o joelho, as pulseiras douradas empilhadas e a gola com o leque de raios dourados atrás da cabeça.',
+    ],
+  },
   {
     v: '4.56.0',
     date: '2026-11-17',

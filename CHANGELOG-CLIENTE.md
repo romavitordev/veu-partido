@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.57.0 — A Magistrada Refeita
+- A MAGISTRADA remodelada pela arte do Livro de Regras: mangas bufantes de verdade, a calça cinza larga caindo no sapato, as duas faixas brancas de pano com franja até o joelho, as pulseiras douradas empilhadas e a gola com o leque de raios dourados atrás da cabeça.
+
 ## v4.56.0 — O Colosso Refeito
 - DALMO remodelado pela arte oficial: o corpo em barril com os ombros enormes e redondos, a cabeça menor, os dreads bagunçados caindo na testa, a camisa escura folgada com a fralda para fora e as mangas arregaçadas, os antebraços grossos com as faixas e a calça cargo larga rasgada nos joelhos. O Colosso continua igual por cima.
 

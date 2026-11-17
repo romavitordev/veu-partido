@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.57.0 — A Magistrada Refeita
+
+### Alterado
+- Magistrada remodelada no Blender (pelo MCP) pela arte do Livro de Regras: mangas bufantes e calça larga esculpidas, faixas brancas de pano com franja, pulseiras douradas, gola em leque de raios dourados; calça cinza.
+
 ## v4.56.0 — O Colosso Refeito
 
 ### Alterado

@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v4.57.0 — A Magistrada Refeita
+
+- Versão: `VERSION` 4.56.0 → **4.57.0** (`package.json`/lock junto). Data: 2026-11-17.
+- **Remodel da Magistrada (dono, 2026-11-17: "tem personagens mais antigos que precisam de remodel primeiro, como a
+  magistrada"):** referência vista na wiki pelo navegador (sem baixar): "Arte da Magistrada no Livro de Regras" (e a
+  miniatura de Desconjuração, base da revisão de 2026-10-31). `tools/blender/char_magistrada.py` no Blender vivo pelo MCP:
+  manga bufante por `Sculpt` (franzida no cotovelo, pregas), antebraço esculpido, 5 PULSEIRAS douradas por braço, calça
+  larga esculpida (dobras, barra amontoada no sapato) na cor `#7c766d` (antes `#d6d2c8`), as faixas brancas viraram
+  pano de duas faces (grid ondulando, franja de 9 fios), a gola abre em leque (`spread` 0,22 → 0,42) com 46 raios
+  dourados longos. `cyl_uv` nas peças esculpidas. Juntas e regiões preservadas. `.glb` 0,66 MB (meshopt); `.blend` em
+  `tools/blender/fonte/magistrada.blend`. Conferido no jogo, sem erros no console.
+- Ordem dos próximos remodelamentos pela idade do modelo: Erin, Labirinto, Ferreiro, Jae, Guizo, Amigo, Estrangeiro.
+
 ## v4.56.0 — O Colosso Refeito
 
 - Versão: `VERSION` 4.55.0 → **4.56.0** (`package.json`/lock junto). Data: 2026-11-17.

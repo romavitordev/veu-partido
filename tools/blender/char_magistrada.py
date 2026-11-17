@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import lib
 from lib import *
 from mathutils import Vector
+from sculpt_lib import Sculpt, ridge, n3
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'magistrada.glb'
 random.seed(42)
@@ -31,7 +32,7 @@ hz = sk['hips'].z
 skin = material('skin_magistrada', '#4a2e22', 0.75)
 shirt = material('shirt_magistrada', '#e6e2da', 0.85)
 scarf = material('scarf_magistrada', '#efebe2', 0.9)
-pants = material('pants_magistrada', '#d6d2c8', 0.9)
+pants = material('pants_magistrada', '#7c766d', 0.9)  # remodel 2026-11-17: cinza da arte do Livro de Regras (antes #d6d2c8)
 glove = material('glove_magistrada', '#141214', 0.6)
 shoe = material('shoe_magistrada', '#141216', 0.5)
 shoe_w = material('shoe_magistrada_w', '#e8e4dc', 0.6)
@@ -112,6 +113,23 @@ def outward(p):
     return v.normalized() if v.length > 1e-6 else Vector((0, 1, 0))
 
 
+def cyl_uv(part, a, b):
+    v, f, _ = part
+    a, b = Vector(a), Vector(b)
+    ax = b - a
+    L = ax.length
+    ax.normalize()
+    ref = Vector((0, -1, 0))
+    ref = (ref - ax * ref.dot(ax)).normalized()
+    ref2 = ax.cross(ref)
+    uv = []
+    for q in v:
+        d = Vector(q) - a
+        r = d - ax * d.dot(ax)
+        uv.append((math.atan2(r.dot(ref2), r.dot(ref)) / TAU + 0.5, 1 - d.dot(ax) / L))
+    return v, f, uv
+
+
 # ---------------------------------------------------------------- TRONCO esguio (feminino, ombros estreitos)
 TT = [
     (-0.16, 0.168, 0.118, 0.128),
@@ -155,37 +173,41 @@ hc = b.body(M, [], arms=(), legs=False, head_r=(0.122, 0.134, 0.168), neck_r=0.0
 for side in ('L', 'R'):
     s, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     sx = 1 if side == 'L' else -1
-    top = s + Vector((-sx * 0.02 * H, 0, 0.005 * H))
-    up = []
-    for i in range(7):
-        t = i / 6
-        p = top.lerp(e + (e - s).normalized() * 0.03 * H, t)
-        r = 0.066 + 0.026 * math.sin(min(1.0, t * 1.15) * math.pi) ** 0.8  # bufante no meio, franzida nas pontas
-        up.append((p.x, p.y, p.z, r, r))
-    b.add('sleeve' + side, tube(up, 16), shirt, region='arm' + side, subdiv=0)
-    b.add('delt' + side, ellipsoid((s.x - sx * 0.006 * H, s.y, s.z - 0.012 * H), (0.06 * H, 0.066 * H, 0.056 * H), 12, 8), shirt, region='arm' + side, subdiv=0)
-    # a dobra franzida da manga no cotovelo
-    cuff = e + (e - s).normalized() * 0.03 * H
-    b.add('sleeveCuff' + side, tube(limb_rings(cuff, cuff + (h - e).normalized() * 0.022 * H, 0.06, 0.056, n=1), 14), shirt, region='e' + side, subdiv=0)
-    lo = [(q.x, q.y, q.z, r, r * 0.95) for q, r in ((e.lerp(h, t), 0.05 - 0.01 * t) for t in (0.0, 0.3, 0.6, 0.86))]
-    b.add('forearm' + side, tube(lo, 12), skin, region='e' + side, subdiv=0)
+    ax = (e - s).normalized()
+    S = Sculpt()  # remodel 2026-11-17: a manga BUFANTE por escultura (o pano cheio no meio, franzido nas pontas)
+    S.ell(s + Vector((-sx * 0.02 * H, 0, -0.01 * H)), (0.056 * H, 0.058 * H, 0.05 * H))
+    S.chain([s + Vector((0, 0, -0.03 * H)), s.lerp(e, 0.45), e.lerp(s, 0.12)], [0.056 * H, 0.072 * H, 0.06 * H], step=0.35)
+    S.ell(e + ax * 0.01 * H, (0.058 * H, 0.058 * H, 0.03 * H), dir=ax)  # o franzido no cotovelo
+    puff = lambda q, a=s, ax=ax: 0.004 * H * (ridge(math.atan2(q.x - a.x, q.y - a.y) * 5 + (q - a).dot(ax) / H * 12 + n3(q, 20), 2) - 0.4)
+    b.add('sleeve' + side, cyl_uv(S.mesh(res=0.008, smooth=3, disp=puff, target=1300), s, e), shirt, region='arm' + side, subdiv=0)
+    F = Sculpt()
+    F.chain([e.lerp(h, 0.04), e.lerp(h, 0.3), e.lerp(h, 0.62), e.lerp(h, 0.88)], [0.05 * H, 0.047 * H, 0.038 * H, 0.033 * H], step=0.35)
+    b.add('forearm' + side, F.mesh(res=0.007, smooth=3, target=700), skin, region='e' + side, subdiv=0)
     b.add('hand' + side, hand_part(sk, side, 0.05), glove, region='e' + side)
-    wraps = [tube(limb_rings(e.lerp(h, t), e.lerp(h, t + 0.045), 0.05, 0.05, n=1), 12) for t in (0.62, 0.7, 0.78)]
+    wraps = [tube(limb_rings(e.lerp(h, t), e.lerp(h, t + 0.045), 0.046, 0.046, n=1), 12) for t in (0.74, 0.8)]
     b.add('wristWraps' + side, merge(*wraps), glove, region='e' + side, subdiv=0)
+    # as PULSEIRAS douradas empilhadas no antebraço (a arte do Livro de Regras)
+    br = []
+    for k in range(5):
+        t = 0.5 + k * 0.045
+        c = e.lerp(h, t)
+        r = 0.05 * H - t * 0.012 * H + 0.004 * H
+        ring = [c + Vector((math.sin(a) * r, math.cos(a) * r, 0.006 * H * math.sin(a + k))) for a in [i_ / 16 * TAU for i_ in range(17)]]
+        br.append(rod(ring, [0.0045 * H] * 17, 5))
+    b.add('bracelets' + side, merge(*br), gold, region='e' + side, subdiv=0)
 
 # ---------------------------------------------------------------- PERNAS: calça cinza larga, sapatos escuros
 b.add('pants_hip', grid(lambda u, v: torso_pt((u - 0.5) * TAU, 0.06 - v * 0.24, 1.0, 0.012), 32, 4), pants, region='torso', subdiv=0)
 for side in ('L', 'R'):
     l, k, f = sk['l' + side], sk['k' + side], sk['foot' + side]
     topp = Vector((l.x, l.y, l.z + 0.07 * H))
-    rings = []
-    for t, r in ((0.0, 0.086), (0.4, 0.082), (0.8, 0.072), (1.0, 0.07)):
-        p = topp.lerp(k, t)
-        rings.append((p.x, p.y, p.z, r, r))
-    for t, r in ((0.3, 0.068), (0.65, 0.064), (0.9, 0.06), (0.98, 0.058)):
-        p = k.lerp(f, t)
-        rings.append((p.x, p.y, p.z, r, r))
-    b.add('pants' + side, tube(rings, 14), pants, region='leg' + side, subdiv=0)
+    P = Sculpt()  # remodel 2026-11-17: a calça LARGA por escultura (antes tubos)
+    P.chain([topp + Vector((0, 0, -0.04 * H)), topp.lerp(k, 0.5), k, k.lerp(f, 0.5), k.lerp(f, 0.86)],
+            [0.088 * H, 0.084 * H, 0.078 * H, 0.076 * H, 0.074 * H], step=0.35)
+    P.ell(k.lerp(f, 0.9) + Vector((0, -0.012 * H, 0)), (0.078 * H, 0.084 * H, 0.032 * H))  # a barra amontoada no sapato
+    cxy = (l.x, l.y)
+    fold = lambda q, c=cxy: 0.0042 * H * (ridge(math.atan2(q.x - c[0], q.y - c[1]) * 3 + q.z / H * 7 + n3(q, 9) * 2.2, 2) - 0.4)
+    b.add('pants' + side, cyl_uv(P.mesh(res=0.009, smooth=3, disp=fold, target=1500), topp, k.lerp(f, 0.9)), pants, region='leg' + side, subdiv=0)
     b.add('shoe' + side, ellipsoid((f.x, f.y - 0.05 * H, f.z + 0.025 * H), (0.046 * H, 0.12 * H, 0.036 * H), 12, 8, theta_max=math.pi * 0.6), shoe, region='foot' + side, subdiv=0)
     b.add('shoeTop' + side, ellipsoid((f.x, f.y - 0.02 * H, f.z + 0.05 * H), (0.04 * H, 0.06 * H, 0.022 * H), 10, 6), shoe_w, region='foot' + side, subdiv=0)  # o peito do pé branco (os sapatos de duas cores)
     b.add('sole' + side, sole_part((f.x, f.y - 0.05 * H, f.z - 0.006 * H), (0.095 * H, 0.24 * H, 0.02 * H), bevel=0.005), shoe, region='foot' + side, subdiv=0)
@@ -237,7 +259,7 @@ def collar_pt(u, v):
     a = (u - 0.5) * 1.3 * math.pi + math.pi  # de um ombro ao outro, passando por trás
     base = torso_pt(a, 0.62, 1.0, 0.06)
     up = v * 0.26 * H
-    spread = 1 + v * 0.22  # EM PÉ atrás da cabeça, abrindo só um pouco
+    spread = 1 + v * 0.42  # remodel: abre em LEQUE atrás da cabeça (a arte); antes 0,22
     return Vector((base.x * spread, base.y * spread + v * 0.02 * H, base.z + up))
 
 
@@ -245,11 +267,11 @@ b.add('collar', grid(collar_pt, 30, 4), cape, region='torso', subdiv=0)
 # face de dentro um pouco para dentro (na mesma superfície as duas brigavam e piscavam em xadrez)
 b.add('collar_in', grid(lambda u, v: collar_pt(u, v) * 0.97 + Vector((0, 0, collar_pt(u, v).z * 0.03)), 30, 4, flip=True), cape_in, region='torso', subdiv=0)
 spikes = []
-for i in range(34):
-    u = i / 33
+for i in range(46):  # os RAIOS dourados do leque (a arte do Livro de Regras): longos e finos, alternando o tamanho
+    u = i / 45
     p = collar_pt(u, 1.0)
-    d = (p - Vector((0, 0, p.z))).normalized() * 0.35 + Vector((0, 0, 1))
-    spikes.append(cone(tuple(p), tuple(p + d.normalized() * (0.04 + 0.02 * (i % 2)) * H), 0.008 * H, 3))
+    d = (p - Vector((0, 0, p.z))).normalized() * 0.8 + Vector((0, 0, 0.75))
+    spikes.append(cone(tuple(p - d.normalized() * 0.02 * H), tuple(p + d.normalized() * (0.07 + 0.045 * (i % 2)) * H), 0.009 * H, 3))
 rim = [collar_pt(i / 30, 1.0) for i in range(31)]
 b.add('collar_gold', merge(rod(rim, [0.012 * H] * 31, 5), *spikes), gold, region='torso', subdiv=0)
 
@@ -269,11 +291,23 @@ for sx in (1, -1):
 
 # ---------------------------------------------------------------- TECIDO BRANCO caindo do pescoço até os joelhos
 for sx in (1, -1):
-    pts = [torso_pt(sx * 0.5, 0.64, 1.0, 0.03), torso_pt(sx * 0.45, 0.42, 1.0, 0.035), torso_pt(sx * 0.42, 0.1, 1.0, 0.045),
-           torso_pt(sx * 0.42, -0.14, 1.0, 0.06) + Vector((0, 0, -0.0)), torso_pt(sx * 0.42, -0.16, 1.0, 0.07) + Vector((0, -0.01 * H, -0.2 * H))]
-    b.add(f'scarf{sx}', rod(pts, [0.036 * H, 0.04 * H, 0.042 * H, 0.042 * H, 0.04 * H], 6, flat=(outward, 0.14)), scarf, region='torso', weight_fn=cape_weights, subdiv=0)
-    end = pts[-1]
-    fringe = [cone(tuple(end + Vector((k * 0.012 * H, 0, 0))), tuple(end + Vector((k * 0.013 * H, -0.002 * H, -0.04 * H))), 0.004 * H, 3) for k in range(-3, 4)]
+    def band(u, v, sx=sx, inner=0.0):
+        # v: do pescoço (0) ao joelho (1); u: a largura da faixa
+        z = 0.64 - v * 1.06
+        a = sx * (0.5 - 0.1 * v) + (u - 0.5) * 0.36 * sx
+        zc = max(z, -0.16)
+        q = torso_pt(a, zc, 1.0, 0.035 + 0.025 * v - inner)
+        q.z = hz + z * H
+        if z < -0.16:
+            q.y -= (-0.16 - z) * 0.05 * H
+        q.y += 0.006 * H * math.sin(v * 9 + u * 3 + sx)  # o pano ondula
+        return q
+    b.add(f'scarf{sx}', grid(band, 4, 22, flip=sx < 0), scarf, region='torso', weight_fn=cape_weights, subdiv=0)
+    b.add(f'scarfBack{sx}', grid(lambda u, v, band=band: band(u, v, inner=0.006), 4, 22, flip=sx > 0), scarf, region='torso', weight_fn=cape_weights, subdiv=0)
+    fringe = []
+    for k_ in range(9):
+        q = band(k_ / 8, 1.0)
+        fringe.append(cone(tuple(q + Vector((0, 0, 0.006 * H))), tuple(q + Vector((0, -0.003 * H, -0.06 * H))), 0.004 * H, 3))
     b.add(f'scarf_fringe{sx}', merge(*fringe), scarf, region='torso', weight_fn=cape_weights, subdiv=0)
 # volta do tecido em torno do pescoço
 b.add('scarf_neck', rod([torso_pt((k / 24 - 0.5) * TAU, 0.66, 1.0, 0.04) + Vector((0, 0, 0.01 * H)) for k in range(25)], [0.03 * H] * 25, 8), scarf, region='torso', subdiv=0)
