@@ -161,6 +161,8 @@ export const PASSIVES = {
   },
   // Kian — Precognição: imune a bônus de costas e a ficar "surpreso" (lido em abilities/passives)
   precognition: {},
+  // Franco — Fogo em Geral (cânone: o bônus de aliado que deixa o alvo "Em chamas"): o golpe de perto acende (lido em damage.js)
+  fogoEmGeral: {},
   // Aghata — Identificação Macabra: acha o verdadeiro (furtivo, clones e ilusões); lido no Fighter (lostTrack, untrackable, updateMacabreMark)
   macabreId: {},
   // Gal — Desviar de Balas: esquivar de projéteis não gasta carga de esquiva (lido no Fighter)

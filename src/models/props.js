@@ -1878,7 +1878,7 @@ export function addFrancoProps(rig) {
   props.guitar = gtr;
   rig.muzzle = gtr.userData.muzzle;
   const tank = tanqueFranco();
-  tank.position.set(0, -0.1, -0.14);
+  tank.position.set(0, -0.1, -0.165);
   sockets.back.add(tank);
   props.tank = tank;
   const mask = mascaraFranco();

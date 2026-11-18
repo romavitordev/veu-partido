@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.10.0 — PSIKOLERA Afinada
+
+### Adicionado
+- Passiva `fogoEmGeral` (Franco): golpe de perto aplica QUEIMANDO. `src/combat/burn.js` com `igniteFighter`.
+
+### Alterado
+- `balance.js`: `franco` 1,22/0,86 (6% → 55%), `ale` 1,22/0,87 (15% → 54%).
+- Modelos `franco.glb` e `ale.glb` refeitos pelas artes oficiais; cabelo de Alê sem a touca no topo, cabelo do Franco espetado.
+- `guitarraLancaChamas`, `tanqueFranco`, `mascaraFranco` e `laminaKeytar` redesenhadas pelas artes; `pants_franco` creme.
+
 ## v5.9.0 — PSIKOLERA Completa
 
 ### Adicionado

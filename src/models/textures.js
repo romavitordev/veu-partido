@@ -2738,10 +2738,15 @@ export const MATERIAL_TEXTURES = {
     caioCloth(g, w, h, 64);
     caioSoak(g, w, h - 90, 90, 0.6, 65);
   }, { wrap: true }),
-  pants_franco: () => canvasTex(256, 256, (g, w, h) => {
-    g.fillStyle = '#3a3634'; g.fillRect(0, 0, w, h);
-    const rnd = seeded(66);
-    for (let i = 0; i < 140; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '20,18,18' : '90,86,80'},${0.08 + rnd() * 0.1})`; g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 18, 1 + rnd() * 4); }
+  // as pernas bufantes do macacão (as artes da wiki, 2026-11-18): o mesmo pano creme encardido, chamuscado na barra
+  pants_franco: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 66);
+    const rnd = seeded(69);
+    for (let i = 0; i < 8; i++) {
+      g.fillStyle = `rgba(40,30,24,${0.2 + rnd() * 0.3})`;
+      g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 12 + rnd() * 30, 8 + rnd() * 18, rnd() * 3, 0, Math.PI * 2); g.fill();
+    }
+    caioSoak(g, w, h - 70, 70, 0.5, 70);
   }, { wrap: true }),
   skin_franco_leg: () => canvasTex(256, 256, (g, w, h) => {
     g.fillStyle = '#e6b89a'; g.fillRect(0, 0, w, h);

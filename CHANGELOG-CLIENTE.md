@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.10.0 — PSIKOLERA Afinada
+- FRANCO e ALÊ mais fortes: os dois quase não ganhavam e agora ficam no meio do elenco.
+- FOGO EM GERAL: os golpes de perto do Franco deixam o adversário EM CHAMAS por alguns segundos.
+- Visual novo dos dois, pelas artes oficiais: a guitarra laranja com chamas, o tanque grande nas costas, o tubo vermelho da máscara, o keytar com a lâmina serrilhada, o cabelo espetado do Franco e o cabelo de Alê sem o defeito no alto da cabeça.
+
 ## v5.9.0 — PSIKOLERA Completa
 - FRANCO, o guitarrista da PSIKOLERA, chegou: golpes com a Guitarra Lança-Chamas, a Labareda, o SOLO INCENDIÁRIO (o jato de fogo sai do bico da guitarra enquanto você segura), o Power Chord, a Guitarrada, a Distorção, o especial TORMENTA TARDIA e a máscara de gás no despertar.
 - ALÊ, o teclado da PSIKOLERA, chegou: a LÂMINA KEYTAR, o TRANSE que puxa o adversário, a LEITURA DE MÃO que atordoa, o Corte de Teclado, o PREVER RESULTADOS (as esquivas voltam e você toma menos dano), o especial ACORDE FINAL e a máscara de corpse paint no despertar.

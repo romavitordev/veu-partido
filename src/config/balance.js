@@ -71,8 +71,9 @@ export const BALANCE = {
   // 2026-11-14 — Cindy focada (125 lutas, sem ajuste): 18%; dano feito/recebido 0,73. O kit sai inteiro (a rajada, o
   // sangramento do salto alto e a queimadura da Última Nota são o grosso), só bate pouco
   caio: { dealt: 1.15, taken: 0.9 }, // 20% (sem ajuste) → 50% (212 lutas)
-  franco: { dealt: 1.0, taken: 1.0 }, // novo (2026-11-18): bateria pendente
-  ale: { dealt: 1.0, taken: 1.0 }, // novo (2026-11-18): bateria pendente
+  // 2026-11-18 — Franco e Alê focados (110 lutas cada, sem ajuste): 6% e 15%; ~2500 de dano feito contra ~3600 recebido
+  franco: { dealt: 1.22, taken: 0.86 }, // 6% (sem ajuste) → 55% (com o Fogo em Geral, cânone; 110 lutas)
+  ale: { dealt: 1.22, taken: 0.87 }, // 15% (sem ajuste) → 54% (110 lutas)
   cindy: { dealt: 1.15, taken: 0.92 }, // 18% (sem ajuste) → 50% (78 lutas)
 };
 

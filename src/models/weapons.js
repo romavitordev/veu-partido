@@ -1337,7 +1337,7 @@ export function facaPredadora() {
   // lâmina ondulada: contorno senoidal
   const s = new THREE.Shape();
   const len = 0.3;
-  const N = 14;
+  const N = 24; // o teclado comprido, com muitas teclas (a arte)
   s.moveTo(-0.022, 0);
   for (let i = 1; i <= N; i++) { const t = i / N; s.lineTo(-0.022 * (1 - t * 0.85) + Math.sin(t * Math.PI * 5) * 0.01, -len * t); }
   for (let i = N; i >= 0; i--) { const t = i / N; s.lineTo(0.022 * (1 - t * 0.85) + Math.sin(t * Math.PI * 5) * 0.01, -len * t); }
@@ -3900,7 +3900,8 @@ export function fuzilBaixo() {
 }
 
 // GUITARRA LANÇA-CHAMAS do FRANCO (PSIKOLERA; cânone, wiki "Franco": a guitarra com PINTURA DE CHAMAS e um LANÇA-CHAMAS
-// saindo de baixo). Mesma orientação do fuzilBaixo (o braço para −Y, o corpo em +Y, as cordas para +Z): o cano do
+// saindo de baixo). Refeita em 2026-11-18 pelas artes da wiki: o corpo em V é LARANJA com as chamas pintadas, o cano
+// do lança-chamas é de METAL e a cabeça tem ESPINHOS. Mesma orientação do fuzilBaixo (o braço para −Y, o corpo em +Y, as cordas para +Z): o cano do
 // lança-chamas sai de BAIXO do corpo e corre por baixo do braço até passar da cabeça (PROPOSTA de forma), com o bico em
 // userData.muzzle — o jato do Solo Incendiário sai dali (tristanAbilities.flameStream, `nozzle: 'guitar'`).
 export function guitarraLancaChamas() {
@@ -3912,7 +3913,7 @@ export function guitarraLancaChamas() {
   const MET = toon(0xb8b8be, { emissive: 0x18181c });
   const DK = toon(0x2a2a2e, { emissive: 0x060608 });
   const add = (geo, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = part(geo, 0, { mat }); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m; };
-  // o CORPO em V pontudo (guitarra de metal), preto
+  // o CORPO em V pontudo (guitarra de metal), laranja como na arte
   const s = new THREE.Shape();
   s.moveTo(0.03, 0.04);
   s.lineTo(0.16, 0.5);
@@ -3925,7 +3926,7 @@ export function guitarraLancaChamas() {
   s.lineTo(0.03, 0.04);
   const bodyGeo = new THREE.ExtrudeGeometry(s, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 1 });
   bodyGeo.translate(0, 0, -0.02);
-  add(bodyGeo, BLK, 0, 0.06, 0.02);
+  add(bodyGeo, ORG, 0, 0.06, 0.02);
   // a PINTURA DE CHAMAS nas duas faces: línguas de fogo subindo das pontas do V para o braço
   const flame = (h, w) => {
     const f = new THREE.Shape();
@@ -3941,7 +3942,7 @@ export function guitarraLancaChamas() {
     for (const sx of [-1, 1]) {
       // na linha do meio de cada perna do V, da ponta (embaixo) subindo para o braço
       const base = [0.122 * sx, 0.545];
-      for (const [h, w, mat, dz] of [[0.34, 0.03, RED, 0], [0.26, 0.021, ORG, 0.001], [0.16, 0.012, YEL, 0.002]]) {
+      for (const [h, w, mat, dz] of [[0.36, 0.034, BLK, 0], [0.3, 0.026, RED, 0.001], [0.2, 0.016, YEL, 0.002]]) {
         if (side > 0) add(flame(h, w), mat, base[0], base[1], z + dz, 0, 0, Math.PI - sx * 0.27);
         else add(flame(h, w), mat, base[0], base[1], z - dz, 0, Math.PI, Math.PI + sx * 0.27);
       }
@@ -3961,11 +3962,14 @@ export function guitarraLancaChamas() {
   const HY = 0.08 - NECK;
   add(new THREE.BoxGeometry(0.05, 0.14, 0.022), BLK, 0.012, HY - 0.07, 0.034, 0, 0, -0.25);
   for (let k = 0; k < 6; k++) add(new THREE.CylinderGeometry(0.005, 0.005, 0.026, 6), MET, 0.05 - k * 0.002, HY - 0.02 - k * 0.022, 0.034, 0, 0, Math.PI / 2);
+  // os ESPINHOS na cabeça (a arte): três na borda de fora e um na ponta
+  for (let k = 0; k < 3; k++) add(new THREE.ConeGeometry(0.008, 0.04, 6), MET, -0.03, HY - 0.03 - k * 0.04, 0.034, 0, 0, Math.PI / 2);
+  add(new THREE.ConeGeometry(0.009, 0.05, 6), MET, 0.03, HY - 0.155, 0.034, 0, 0, Math.PI - 0.25);
   // o LANÇA-CHAMAS: o cano sai de baixo do corpo (o tanque fica nas costas, ligado pela mangueira) e corre por baixo do
   // braço até passar da cabeça; o bico chamuscado e a luzinha azul da chama-piloto
   const L = NECK + 0.42;
-  add(new THREE.CylinderGeometry(0.018, 0.018, L, 10), DK, 0, 0.3 - L / 2, -0.01);
-  for (const y of [0.1, -0.2, -0.45]) add(new THREE.BoxGeometry(0.03, 0.02, 0.05), MET, 0, y, 0.008); // as braçadeiras
+  add(new THREE.CylinderGeometry(0.02, 0.02, L, 12), MET, 0, 0.3 - L / 2, -0.01); // o cano de metal (a arte)
+  for (const y of [0.1, -0.2, -0.45]) add(new THREE.BoxGeometry(0.03, 0.02, 0.05), DK, 0, y, 0.008); // as braçadeiras
   add(new THREE.CylinderGeometry(0.03, 0.022, 0.08, 12), MET, 0, 0.3 - L - 0.03, -0.01);
   add(new THREE.CylinderGeometry(0.032, 0.032, 0.02, 12), BLK, 0, 0.3 - L - 0.075, -0.01);
   const pilot = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 6), glowMat(0x4ab0ff, 0.9));
@@ -3979,9 +3983,18 @@ export function guitarraLancaChamas() {
 }
 
 // a MÁSCARA DE GÁS do FRANCO (cânone: preta, com ESPINHOS e LENTES VERMELHAS, o tubo ligado a um tanque nas costas):
-// a máscara de gás do jogo (gasMask) com as lentes vermelhas e a coroa de espinhos
+// a máscara de gás do jogo (gasMask) com as lentes vermelhas, a coroa de espinhos e o TUBO VERMELHO sanfonado que sai do
+// filtro e desce para o tanque (as artes da wiki)
 export function mascaraFranco() {
   const g = gasMask(0xff3020);
+  const tubeCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, -0.035, 0.12), new THREE.Vector3(0.02, -0.12, 0.13), new THREE.Vector3(0.07, -0.22, 0.06), new THREE.Vector3(0.12, -0.28, -0.08)]);
+  g.add(part(new THREE.TubeGeometry(tubeCurve, 24, 0.016, 8), 0xb81c14));
+  for (let i = 1; i < 12; i++) {
+    const r = part(new THREE.TorusGeometry(0.017, 0.004, 4, 10), 0x7a100c);
+    r.position.copy(tubeCurve.getPoint(i / 12));
+    r.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), tubeCurve.getTangent(i / 12));
+    g.add(r);
+  }
   const SP = toon(0xc8c8cc, { emissive: 0x202024 });
   for (let i = 0; i < 9; i++) {
     const a = (i / 8 - 0.5) * 2.4;
@@ -3993,29 +4006,43 @@ export function mascaraFranco() {
   return g;
 }
 
-// o TANQUE do FRANCO nas costas (cânone: o tubo da máscara liga a um tanque): um cilindro só, preto e chamuscado
+// o TANQUE do FRANCO nas costas (cânone: o tubo da máscara liga a um tanque). Refeito em 2026-11-18 pelas artes da wiki:
+// GRANDE e CINZA, com as faixas escuras e o selo de CHAMA laranja
 export function tanqueFranco() {
   const g = new THREE.Group();
-  const t = part(new THREE.CylinderGeometry(0.085, 0.085, 0.42, 16), 0x2a2a2e);
+  const R = 0.11, GRY = 0x6c6e72;
+  const t = part(new THREE.CylinderGeometry(R, R, 0.46, 18), GRY);
   g.add(t);
-  for (const y of [-0.21, 0.21]) {
-    const cap = part(new THREE.SphereGeometry(0.085, 14, 8, 0, Math.PI * 2, y > 0 ? 0 : Math.PI / 2, Math.PI / 2), 0x2a2a2e);
+  for (const y of [-0.23, 0.23]) {
+    const cap = part(new THREE.SphereGeometry(R, 16, 8, 0, Math.PI * 2, y > 0 ? 0 : Math.PI / 2, Math.PI / 2), GRY);
     cap.position.y = y;
     g.add(cap);
   }
-  for (const y of [-0.12, 0.12]) {
-    const band = part(new THREE.TorusGeometry(0.087, 0.008, 5, 18), 0x8a2a14);
+  for (const y of [-0.15, 0.15]) {
+    const band = part(new THREE.TorusGeometry(R + 0.003, 0.012, 5, 20), 0x2a2a2e);
     band.rotation.x = Math.PI / 2;
     band.position.y = y;
     g.add(band);
   }
   const valve = part(new THREE.CylinderGeometry(0.02, 0.02, 0.05, 8), 0x9a9aa0);
-  valve.position.y = 0.3;
+  valve.position.y = 0.35;
   g.add(valve);
-  const warn = part(new THREE.BoxGeometry(0.07, 0.07, 0.006), 0xffb020, { outline: false });
-  warn.position.set(0, 0, 0.088);
-  warn.rotation.z = Math.PI / 4;
-  g.add(warn);
+  // o SELO DE CHAMA: a língua de fogo laranja com o miolo amarelo, colada na face de trás (−Z: para fora das costas)
+  const fl = (h, w) => {
+    const f = new THREE.Shape();
+    f.moveTo(-w, 0);
+    f.bezierCurveTo(-w, h * 0.45, -w * 0.2, h * 0.55, -w * 0.35, h);
+    f.bezierCurveTo(0, h * 0.7, w * 0.3, h * 0.6, w * 0.15, h * 0.88);
+    f.bezierCurveTo(w * 0.85, h * 0.5, w, h * 0.3, w, 0);
+    f.lineTo(-w, 0);
+    return new THREE.ShapeGeometry(f, 8);
+  };
+  for (const [h, w, c, z] of [[0.16, 0.06, 0xff7a1a, 0], [0.1, 0.035, 0xffd040, 0.002]]) {
+    const m = part(fl(h, w), c, { outline: false });
+    m.position.set(0, -0.08, -(R + 0.003 + z));
+    m.rotation.y = Math.PI;
+    g.add(m);
+  }
   return g;
 }
 
@@ -4036,7 +4063,7 @@ export function laminaKeytar() {
   add(new THREE.BoxGeometry(0.03, 0.12, 0.006), RED, 0, 0.1, 0.021);
   add(new THREE.BoxGeometry(0.08, 0.1, 0.04), BODY, 0, 0.25, 0, 0, 0, 0.2);
   // o TECLADO: o corpo comprido e chato, levemente torto para fora, as teclas brancas e pretas na face de fora
-  const L = 0.62, W = 0.16, Y0 = -0.1;
+  const L = 0.78, W = 0.16, Y0 = -0.1;
   add(new THREE.BoxGeometry(W, L, 0.05), BODY, -0.03, Y0 - L / 2, 0);
   const N = 14;
   for (let i = 0; i < N; i++) add(new THREE.BoxGeometry(W * 0.8, L / N - 0.006, 0.012), WHT, -0.03, Y0 - 0.02 - (i + 0.5) * ((L - 0.06) / N), 0.028);
@@ -4046,30 +4073,29 @@ export function laminaKeytar() {
   scr.position.set(-0.03, Y0 + 0.0, 0.027);
   g.add(scr);
   for (let i = 0; i < 3; i++) add(new THREE.CylinderGeometry(0.008, 0.008, 0.01, 8), STEEL, -0.08 + i * 0.03, Y0 - 0.02, 0.03, Math.PI / 2);
-  // a LÂMINA: presa na lateral (+X) do teclado por três braçadeiras, mais comprida que ele, de ponta reta e chanfrada
+  // a LÂMINA ENORME (as artes da wiki): corre por TODA a lateral (+X) do teclado e PASSA DAS DUAS PONTAS, com o fio
+  // SERRILHADO em dentes irregulares; presa por quatro braçadeiras
+  const BL = L + 0.34, TOP = 0.14; // começa 0,14 acima do teclado e termina 0,2 depois dele
   const bl = new THREE.Shape();
-  const BL = 0.98;
-  bl.moveTo(0, 0);
-  bl.lineTo(0.07, -0.04);
-  bl.lineTo(0.085, -BL * 0.85);
-  bl.lineTo(0.02, -BL);
-  bl.lineTo(0, -BL * 0.9);
-  bl.lineTo(0, 0);
-  const blade = add(extrude(bl, 0.01), STEEL, W / 2 - 0.03, Y0 + 0.02, 0);
+  bl.moveTo(0, TOP);
+  bl.lineTo(0.06, TOP - 0.06);
+  const teeth = 16;
+  for (let i = 0; i <= teeth; i++) {
+    const y = TOP - 0.08 - (BL - 0.2) * (i / teeth);
+    bl.lineTo(0.1 + 0.02 * Math.sin(i * 2.3), y);
+    if (i < teeth) bl.lineTo(0.068, y - ((BL - 0.2) / teeth) * 0.55);
+  }
+  bl.lineTo(0.03, TOP - BL);
+  bl.lineTo(0, TOP - BL + 0.08);
+  bl.lineTo(0, TOP);
+  const blade = add(extrude(bl, 0.012), STEEL, W / 2 - 0.03, Y0, 0);
   blade.castShadow = true;
-  // o fio afiado do lado de fora
-  const ed = new THREE.Shape();
-  ed.moveTo(0.07, -0.04);
-  ed.lineTo(0.085, -BL * 0.85);
-  ed.lineTo(0.02, -BL);
-  ed.lineTo(0.06, -BL * 0.84);
-  ed.lineTo(0.052, -0.06);
-  ed.lineTo(0.07, -0.04);
-  add(extrude(ed, 0.012), EDGE, W / 2 - 0.03, Y0 + 0.02, 0);
-  for (const t of [0.12, 0.32, 0.52]) add(new THREE.BoxGeometry(0.05, 0.03, 0.064), STEEL, W / 2 - 0.03, Y0 - t, 0);
+  // o brilho do fio: uma tira clara na base dos dentes
+  add(new THREE.BoxGeometry(0.006, BL - 0.2, 0.014), EDGE, W / 2 - 0.03 + 0.07, Y0 + TOP - 0.08 - (BL - 0.2) / 2, 0);
+  for (const t of [0.1, 0.3, 0.5, 0.7]) add(new THREE.BoxGeometry(0.05, 0.03, 0.066), STEEL, W / 2 - 0.03, Y0 - t, 0);
   // a ponta da lâmina (para a trilha e o fogo de cor)
   const tip = new THREE.Object3D();
-  tip.position.set(W / 2, Y0 - BL + 0.05, 0);
+  tip.position.set(W / 2, Y0 + TOP - BL + 0.05, 0);
   g.add(tip);
   g.userData.tip = tip;
   const muzzle = new THREE.Object3D();

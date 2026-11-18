@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.9.0';
+export const VERSION = '5.10.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.10.0',
+    date: '2026-11-18',
+    title: 'PSIKOLERA Afinada',
+    items: [
+      'FRANCO e ALÊ mais fortes: os dois quase não ganhavam e agora ficam no meio do elenco.',
+      'FOGO EM GERAL: os golpes de perto do Franco deixam o adversário EM CHAMAS por alguns segundos.',
+      'Visual novo dos dois, pelas artes oficiais: a guitarra laranja com chamas, o tanque grande nas costas, o tubo vermelho da máscara, o keytar com a lâmina serrilhada, o cabelo espetado do Franco e o cabelo de Alê sem o defeito no alto da cabeça.',
+    ],
+  },
   {
     v: '5.9.0',
     date: '2026-11-18',

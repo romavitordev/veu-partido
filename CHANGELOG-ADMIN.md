@@ -1,5 +1,31 @@
 # Registro administrativo de alterações
 
+## v5.10.0 — PSIKOLERA Afinada
+
+- Versão: `VERSION` 5.9.0 → **5.10.0**. Data: 2026-11-18. Dono: "Sim, rodar bateria" e "se estiverem fracos analise o
+  cannon, wiki, e aproveite pra melhorar o modelo dos dois, estao bem feios"; depois "cabelo do ale esta bugado no topo".
+- **Balanço** (`src/config/balance.js`, 110 lutas cada, `runBalance`): sem ajuste Franco 6% e Alê 15% (~2500 de dano
+  feito contra ~3600 recebido). Agora `franco` 1,22/0,86 e `ale` 1,22/0,87 → **55%** e **54%**.
+- **FOGO EM GERAL** (cânone: o bônus de aliado do Franco deixa o alvo "Em chamas" com a guitarra): passiva
+  `fogoEmGeral` (`passives.js`, lida em `damage.js`): golpe de perto acende o alvo (QUEIMANDO, 7/s por 2,5 s).
+  `igniteFighter` passou para `src/combat/burn.js` (sem dependências; `tristanAbilities.js` reexporta), porque o import
+  em `damage.js` fazia um ciclo de módulos.
+- **Modelos refeitos pelas artes oficiais no Blender MCP** (`char_franco.py`, `char_ale.py` → `public/models/*.glb`):
+  - Franco: macacão creme com as pernas bufantes até acima do joelho e tiras queimadas, joelheiras redondas, botas
+    marrons até o joelho com tiras e espinhos, correntes do quadril às joelheiras, faixas e fivela de argola no peito,
+    braçadeiras de couro, gola com espinhos, piercings (sobrancelha, glabela, lábio) e brincos. Cabelo pelo método do
+    Guizo: mechas `rod` achatadas que afinam em ponta, no alto, nos lados e na nuca (no Sculpt as pontas viravam bolinhas).
+  - Alê: pernas largas até o tornozelo, joelho esquerdo rasgado, tênis preto de lona com sola e biqueira brancas, argola
+    grande no peito, alça preta do keytar, tiras compridas com ponta triangular, mangas desfiadas, franja, piercings
+    canônicos (bridge no nariz, três na orelha). Topo do cabelo corrigido: a raiz vermelha era uma touca lisa acima das
+    mechas; agora a calota loira é contínua (método da Cindy) e a raiz é uma camada rente recortada só no alto
+    (`crown_only`), com a risca do meio.
+- **Armas** (`weapons.js`): `guitarraLancaChamas` com o corpo laranja, chamas, cano de metal e espinhos na cabeça;
+  `tanqueFranco` maior e cinza, faixas escuras e selo de chama (`props.js`: tanque recuado para −0,165);
+  `mascaraFranco` com o tubo vermelho sanfonado; `laminaKeytar` com 24 teclas e a lâmina serrilhada que passa das duas
+  pontas do teclado. `textures.js`: `pants_franco` creme (o mesmo pano do macacão).
+- Conferido: galeria dos dois, `npm test` 119/119, `npm run check`, `vite build`, `npm run moves`.
+
 ## v5.9.0 — PSIKOLERA Completa
 
 - Versão: `VERSION` 5.8.0 → **5.9.0**. Data: 2026-11-18. Dono: "Agora quero que finalize os psikolera, adicione

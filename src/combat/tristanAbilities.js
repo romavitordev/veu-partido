@@ -3,6 +3,7 @@ import { yawTo, distXZ, forwardFromYaw, angleDiff, turnTowards, DEG } from '../c
 import { ABILITY_TYPES } from './abilities.js';
 import { applyHit } from './damage.js';
 import { FIRE } from './cristinoAbilities.js';
+import { igniteFighter } from './burn.js';
 
 // Habilidades próprias do TRISTAN MONTEIRO (Desconjuração). Cânone (wiki "Tristan Monteiro", Arsenal): o coquetel
 // molotov (usa o lanternThrow do Cristino: arremessa, estoura e deixa o chão queimando) e o LANÇA-CHAMAS com os
@@ -12,32 +13,7 @@ const foeOf = (world, owner) => (world.opponentOf ? world.opponentOf(owner) : ow
 
 // QUEIMANDO: dano contínuo por alguns segundos (renova a cada pulso do fogo). O buff 'burn' também é o que o fogo no
 // chão do Cristino marca — e o que a Piromania do Tristan procura
-export function igniteFighter(world, owner, foe, { dps = 10, duration = 2.5 } = {}) {
-  if (!foe || foe.state === 'ko') return;
-  let b = foe.findBuff('burn');
-  if (!b) {
-    b = { type: 'burn', name: 'QUEIMANDO', time: duration, duration };
-    foe.addBuff(b);
-  }
-  b.time = Math.max(b.time || 0, duration);
-  b.duration = Math.max(b.duration || 0, duration);
-  b.dps = Math.max(b.dps || 0, dps);
-  if (!b.onTick) {
-    let acc = 0;
-    b.onTick = (dt) => {
-      if (foe.state === 'ko' || !b.dps) return;
-      acc += b.dps * dt;
-      if (acc >= 1) {
-        const n = Math.floor(acc);
-        acc -= n;
-        foe.takeDamage(n);
-        foe.flash = 0;
-        if (Math.random() < 0.5) world.fx.burst(foe.chestPos(), { count: 3, color: Math.random() < 0.5 ? FIRE : 0xffd070, speed: 1, up: 2.2, life: 0.35, size: 0.22 });
-        world.onHit && world.onHit(owner, foe, n, { kind: 'burn' });
-      }
-    };
-  }
-}
+export { igniteFighter }; // vive em burn.js (sem ciclo de imports com damage.js)
 
 Object.assign(ABILITY_TYPES, {
   // △ → □  LANÇA-CHAMAS: o jato de fogo em cone à frente. SEGURÁVEL COM LIMITE (pedido do dono, 2026-11-09): o fogo

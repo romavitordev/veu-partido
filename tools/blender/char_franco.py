@@ -1,223 +1,260 @@
 """
 FRANCO — PSIKOLERA (Hexatombe), o guitarrista da banda — public/models/franco.glb.
-Cânone (wiki "Franco", lore/EQUIPES-HEXATOMBE.md): 19 anos, ~1,75 m, MAGRO; o cabelo RUIVO espetado; QUEIMADURAS pelo
-corpo e a TATUAGEM TRIBAL na panturrilha; a CAMISA DE FORÇA com ESPINHOS NA GOLA, o MANTO CINZA queimado e furado por
-cima, a CALÇA ATÉ A CANELA, as CANELEIRAS DE METAL COM ESPINHOS sobre o COTURNO; a MÁSCARA DE GÁS preta com espinhos e
-lentes vermelhas, com o tubo ligado a um TANQUE nas costas.
-Aqui: o corpo, a roupa, o manto, as caneleiras e o cabelo. A máscara de gás, o tanque e a Guitarra Lança-Chamas ficam em
-código (src/models/weapons.js → mascaraFranco / tanqueFranco / guitarraLancaChamas; props.js → addFrancoProps). As
-queimaduras e a tatuagem são pintadas (src/models/textures.js: face_franco, skin_franco_leg).
-  node tools/blender/build.mjs franco
+Refeito em 2026-11-18 (dono: "estão bem feios") pelas artes oficiais da wiki "Franco": "Arte Franco com Guitarra" (de
+frente e de costas) e "Arte Franco sem Máscara":
+  - ~1,75 m, MAGRO; o cabelo RUIVO-ACOBREADO desgrenhado e espetado, médio (mechas na testa e na nuca); olhos verdes,
+    sardas, QUEIMADURAS (face_franco); piercings na sobrancelha, na glabela e no lábio, brincos;
+  - o MACACÃO DE CAMISA DE FORÇA creme encardido, de pernas BUFANTES que terminam LOGO ACIMA DO JOELHO; a GOLA ALTA com
+    ESPINHOS curtos; as faixas HORIZONTAIS que abraçam o peito, a faixa VERTICAL do meio com a fivela;
+  - as TIRAS RASGADAS penduradas dos braços (o "manto cinza queimado" da descrição: farrapos chamuscados); as
+    BRAÇADEIRAS de couro marrom nos antebraços e as luvas sem dedo;
+  - as JOELHEIRAS redondas de couro marrom com as CORRENTES entre elas; os COTURNOS MARRONS até o joelho com as
+    CANELEIRAS cheias de ESPINHOS de metal;
+  - o ARNÊS nas costas segurando o TANQUE (o tanque é peça de código: tanqueFranco).
+A máscara de gás, o tanque e a Guitarra Lança-Chamas ficam em código (src/models/weapons.js; props.js → addFrancoProps).
+  pelo Blender MCP: exec(open(r"E:/arena paranormal/tools/blender/mcp_build.py").read()); mcp_build("franco")
 """
 import sys, os, math, random
 sys.path.insert(0, os.path.dirname(__file__))
 from lib import *
-from sculpt_lib import Sculpt, ridge, n3, rod, outward, relief, hug
+from sculpt_lib import Sculpt, ridge, n3, rod, outward, relief, hug, chain_mesh
 from mathutils import Vector
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'franco.glb'
 random.seed(19)
 
-b = Builder(width=0.93, bulk=0.88, height=1.0)  # ~1,75 m e magro
+b = Builder(width=0.9, bulk=0.86, height=1.0)  # ~1,75 m e magro
 sk = b.sk
 H = sk.h
 hz = sk['hips'].z
 
-skin = material('skin_franco', '#e6b89a', 0.75)  # ruivo: a pele clara
-suit = material('suit_franco', '#d6ccb4', 0.92)  # a camisa de força (sangue e queimado: textura)
+skin = material('skin_franco', '#e8bea2', 0.75)  # ruivo: a pele clara
+suit = material('suit_franco', '#d4ccb6', 0.92)  # o macacão creme encardido (chamuscado: textura)
 M = {
     'skin': skin,
     'face': material('face_franco', '#ffffff', 0.8),
     'torso': suit,
-    'arm': material('sleeve_franco', '#d6ccb4', 0.92),
-    'hand': material('wrap_franco', '#5a2a22', 0.95),
-    'legs': material('pants_franco', '#3a3634', 0.9),  # a calça escura até a canela
-    'feet': material('boot_franco', '#141416', 0.55),
+    'arm': material('sleeve_franco', '#d4ccb6', 0.92),
+    'hand': material('glove_franco', '#3a2a22', 0.8),  # a luva sem dedo
+    'legs': material('pants_franco', '#d4ccb6', 0.92),  # as pernas do macacão
+    'feet': material('boot_franco', '#4a2c22', 0.6),  # o coturno marrom
 }
-calf = material('skin_franco_leg', '#e6b89a', 0.75)  # a canela de fora, com a tatuagem tribal (textura)
-strap = material('strap_franco', '#a89c84', 0.85)
-cloak = material('cloak_franco', '#6a6864', 0.95)  # o manto cinza queimado (furos e bordas pretas: textura)
-cloakIn = material('cloak_franco_in', '#3a3836', 0.95)
+suit_dk = material('suit_franco_dk', '#aaa08a', 0.92)
+strap = material('strap_franco', '#c2b89c', 0.85)
+rag = material('cloak_franco', '#bcb4a2', 0.95)  # os farrapos queimados (furos e bordas pretas: textura)
+leather = material('leather_franco', '#5a3424', 0.6)  # joelheiras e braçadeiras
 metal = material('buckle_franco', '#9a9a9e', 0.35, metal=0.9)
-guard = material('greave_franco', '#5a5a60', 0.4, metal=0.85)
 spike = material('spike_franco', '#c8c8cc', 0.3, metal=0.9)
-sole = material('sole_franco', '#2a2a2e', 0.7)
-hairm = material('hair_franco', '#c8461c', 0.65)  # RUIVO
-hairDk = material('hair_franco_dk', '#8a2a10', 0.7)
+chainm = material('chain_franco', '#7a7a80', 0.35, metal=0.9)
+sole = material('sole_franco', '#1a1414', 0.7)
+harness = material('harness_franco', '#2a2420', 0.7)
+hairm = material('hair_franco', '#9a3c18', 0.65)  # ruivo-acobreado
+hairDk = material('hair_franco_dk', '#6a2410', 0.7)
+pierc = material('pierce_franco', '#d0d0d6', 0.25, metal=0.95)
 
-PREVIEW = {'face_franco': '#e6b89a', 'skin_franco_leg': '#e6b89a'}
+PREVIEW = {'face_franco': '#e8bea2'}
 for m in bpy.data.materials:
     for k, c in PREVIEW.items():
         if m.name.endswith(k):
             m['preview'] = c
 
-TP = [(-0.12, 0.158), (0.0, 0.158), (0.18, 0.152), (0.38, 0.2), (0.5, 0.214), (0.6, 0.12), (0.66, 0.066)]
-hc = b.body(M, TP, arm_r=(0.064, 0.054, 0.044), leg_r=(0.084, 0.07, 0.058), head_r=(0.126, 0.138, 0.152))
+TP = [(-0.12, 0.158), (0.0, 0.158), (0.18, 0.15), (0.38, 0.196), (0.5, 0.21), (0.6, 0.12), (0.66, 0.066)]
+hc = b.body(M, TP, arm_r=(0.064, 0.056, 0.046), leg_r=(0.084, 0.07, 0.058), head_r=(0.124, 0.136, 0.15))
 
 
 def part(name):
     return next(o for o in b.parts if o.name == name)
 
 
-def grid(fn, nu, nv, flip=False):
-    verts, faces, uvs = [], [], []
-    for j in range(nv + 1):
-        for i in range(nu + 1):
-            verts.append(tuple(fn(i / nu, j / nv)))
-            uvs.append((i / nu, 1 - j / nv))
-    row = nu + 1
-    for j in range(nv):
-        for i in range(nu):
-            a = j * row + i
-            f = (a, a + 1, a + 1 + row, a + row)
-            faces.append(tuple(reversed(f)) if flip else f)
-    return verts, faces, uvs
-
-
-def cyl_uv(part_, a, b_):
-    v, f, _ = part_
-    a, b_ = Vector(a), Vector(b_)
-    ax = b_ - a
-    L = ax.length
-    ax.normalize()
-    ref = Vector((0, -1, 0))
-    ref = (ref - ax * ref.dot(ax)).normalized()
-    ref2 = ax.cross(ref)
-    uv = []
-    for q in v:
-        d = Vector(q) - a
-        r = d - ax * d.dot(ax)
-        uv.append((math.atan2(r.dot(ref2), r.dot(ref)) / TAU + 0.5, 1 - d.dot(ax) / L))
-    return v, f, uv
-
-
-relief(part('torso'), lambda p: 0.004 * H * (ridge(p.z / H * 22 + n3(p, 9) * 1.4, 2) - 0.4))
+TOR = part('torso')
+relief(TOR, lambda p: 0.004 * H * (ridge(p.z / H * 22 + n3(p, 9) * 1.4, 2) - 0.4))
 for side in ('L', 'R'):
     relief(part('arm' + side), lambda p: 0.004 * H * (ridge(p.z / H * 30 + n3(p, 12) * 1.6, 2) - 0.4))
-TOR = part('torso')
 flat = (outward((0, 0)), 0.3)
 
-# ================================================================ a CALÇA ATÉ A CANELA, a canela de fora, a CANELEIRA COM ESPINHOS e o COTURNO
+# ================================================================ as pernas BUFANTES do macacão (até logo acima do joelho)
 for side in ('L', 'R'):
     s = 1 if side == 'L' else -1
     l, k, f = sk['l' + side], sk['k' + side], sk['foot' + side]
     P = Sculpt()
-    P.chain([l + Vector((0, 0, 0.06 * H)), l.lerp(k, 0.5), k, k.lerp(f, 0.3)], [0.094 * H, 0.08 * H, 0.074 * H, 0.07 * H], step=0.45)
-    fold = lambda p, c=(l.x, l.y): 0.004 * H * (ridge(math.atan2(p.x - c[0], p.y - c[1]) * 4 + p.z / H * 30 + n3(p, 14), 2) - 0.35)
-    b.add('pants' + side, P.mesh(res=0.01, smooth=3, disp=fold, target=1100), M['legs'], region='leg' + side, subdiv=0)
-    # a barra dobrada no meio da canela
-    c = k.lerp(f, 0.3)
-    b.add('cuffRoll' + side, tube([(c.x, c.y, c.z - 0.012 * H, 0.072 * H, 0.072 * H), (c.x, c.y, c.z + 0.012 * H, 0.074 * H, 0.074 * H)], 18), M['legs'], region='k' + side, subdiv=0)
-    # a CANELA de fora (a tatuagem tribal vai na textura): só a parte entre a barra e o coturno aparece
-    C = Sculpt()
-    C.chain([k.lerp(f, 0.28), k.lerp(f, 0.62)], [0.05 * H, 0.046 * H], step=0.45)
-    b.add('calf' + side, cyl_uv(C.mesh(res=0.007, smooth=3, target=600), k.lerp(f, 0.28), k.lerp(f, 0.62)), calf, region='k' + side, subdiv=0)
-    # o COTURNO preto, alto
+    P.chain([l + Vector((0, 0, 0.06 * H)), l.lerp(k, 0.45), l.lerp(k, 0.74)], [0.088 * H, 0.09 * H, 0.084 * H], step=0.45)
+    P.ell(l.lerp(k, 0.76), (0.082 * H, 0.082 * H, 0.042 * H))  # a barra franzida
+    fold = lambda p, c=(l.x, l.y): 0.006 * H * (ridge(math.atan2(p.x - c[0], p.y - c[1]) * 5 + p.z / H * 26 + n3(p, 14), 2) - 0.35)
+    b.add('pants' + side, P.mesh(res=0.009, smooth=3, disp=fold, target=1300), M['legs'], region='leg' + side, subdiv=0)
+    for i in range(6):  # a barra em tiras soltas
+        a = (i / 6) * TAU + 0.3
+        p0 = l.lerp(k, 0.78) + Vector((math.sin(a) * 0.08 * H, -math.cos(a) * 0.08 * H, 0))
+        b.add(f'pantsRag{side}{i}', rod([p0, p0 + Vector((0, 0, -random.uniform(0.03, 0.06) * H))], [0.012 * H, 0.003 * H], 4), suit_dk, region='leg' + side, subdiv=0)
+    # a JOELHEIRA redonda de couro
+    b.add('kneePad' + side, ellipsoid(tuple(k + Vector((0, -0.05 * H, 0.004 * H))), (0.07 * H, 0.04 * H, 0.072 * H), 14, 10), leather, region='k' + side, subdiv=0)
+    b.add('kneeRim' + side, tube([(k.x, k.y - 0.074 * H, k.z - 0.004 * H, 0.06 * H, 0.06 * H), (k.x, k.y - 0.07 * H, k.z + 0.004 * H, 0.064 * H, 0.064 * H)], 16), harness, region='k' + side, subdiv=0)
+    # o COTURNO marrom até o joelho
     B = Sculpt()
-    B.chain([k.lerp(f, 0.6), f + Vector((0, 0.008 * H, 0.06 * H))], [0.058 * H, 0.056 * H], step=0.4)
-    B.ell(f + Vector((0, -0.05 * H, 0.03 * H)), (0.056 * H, 0.122 * H, 0.045 * H))
-    b.add('boot' + side, B.mesh(res=0.007, smooth=3, target=1000), M['feet'], region='k' + side, subdiv=0)
-    b.add('bootSole' + side, sole_part((f.x, f.y - 0.045 * H, f.z - 0.012 * H), (0.11 * H, 0.26 * H, 0.034 * H), bevel=0.006), sole, region='k' + side, subdiv=0)
-    # a CANELEIRA DE METAL na frente do coturno, com três espinhos
-    g0, g1 = k.lerp(f, 0.62), k.lerp(f, 0.92)
-    gv = []
-    gf = []
-    NU = 7
-    for j, t in enumerate((0.0, 0.5, 1.0)):
-        c = g0.lerp(g1, t)
-        for i in range(NU + 1):
-            a = (-0.55 + 1.1 * i / NU) * math.pi
-            gv.append((c.x + math.sin(a) * 0.066 * H, c.y - math.cos(a) * 0.066 * H, c.z))
-    for j in range(2):
-        for i in range(NU):
-            a0 = j * (NU + 1) + i
-            gf.append((a0, a0 + 1, a0 + NU + 2, a0 + NU + 1))
-    b.add('greave' + side, (gv, gf, [(0, 0)] * len(gv)), guard, region='k' + side, subdiv=0)
+    B.chain([k + Vector((0, 0, -0.04 * H)), k.lerp(f, 0.5), f + Vector((0, 0.005 * H, 0.07 * H))], [0.07 * H, 0.062 * H, 0.06 * H], step=0.4)
+    B.ell(f + Vector((0, -0.05 * H, 0.035 * H)), (0.06 * H, 0.124 * H, 0.05 * H))
+    bootfold = lambda p: 0.003 * H * (ridge(p.z / H * 60 + n3(p, 20), 2) - 0.4)
+    b.add('boot' + side, B.mesh(res=0.007, smooth=3, disp=bootfold, target=1300), M['feet'], region='k' + side, subdiv=0)
+    b.add('bootSole' + side, sole_part((f.x, f.y - 0.045 * H, f.z - 0.016 * H), (0.12 * H, 0.27 * H, 0.045 * H), bevel=0.006), sole, region='k' + side, subdiv=0)
+    for i in range(3):  # as cintas do cano
+        c = k.lerp(f, 0.25 + 0.22 * i)
+        r = (0.072 - 0.004 * i) * H
+        b.add(f'bootStrap{side}{i}', tube([(c.x, c.y, c.z - 0.01 * H, r, r), (c.x, c.y, c.z + 0.01 * H, r, r)], 16), harness, region='k' + side, subdiv=0)
+    # a CANELEIRA de ESPINHOS: fileiras de espinhos na frente e do lado de fora do cano
     sp = []
-    for t in (0.15, 0.5, 0.85):
-        c = g0.lerp(g1, t) + Vector((0, -0.064 * H, 0))
-        sp.append(cone(tuple(c), tuple(c + Vector((0, -0.045 * H, 0.008 * H))), 0.011 * H, 6))
-    b.add('greaveSpikes' + side, merge(*sp), spike, region='k' + side, subdiv=0)
+    for row in range(7):
+        t = 0.12 + row * 0.11
+        c = k.lerp(f, t)
+        r = (0.07 - 0.006 * t) * H
+        for a in (-0.45, -0.1, 0.25, 0.6, 0.95, 1.3):
+            a2 = a * s + (0.08 if row % 2 else -0.08)
+            d = Vector((math.sin(a2), -math.cos(a2), 0.15)).normalized()
+            base = c + Vector((math.sin(a2) * r, -math.cos(a2) * r, 0))
+            sp.append(cone(tuple(base), tuple(base + d * random.uniform(0.026, 0.04) * H), 0.0065 * H, 5))
+    b.add('bootSpikes' + side, merge(*sp), spike, region='k' + side, subdiv=0)
+# as CORRENTES penduradas da frente do quadril até as joelheiras
+for s in (1, -1):
+    kk = sk['kL' if s > 0 else 'kR']
+    a = kk + Vector((-s * 0.05 * H, -0.06 * H, 0.03 * H))
+    bb = Vector((0, -0.12 * H, hz - 0.12 * H))
+    path = [a.lerp(bb, t) + Vector((0, -0.01 * H, -0.07 * H * math.sin(t * math.pi))) for t in [i / 6 for i in range(7)]]
+    b.add(f'kneeChain{s}', chain_mesh(path, link=0.024 * H, r=0.0032 * H), chainm, region='hips', subdiv=0)
 
-# ================================================================ a CAMISA DE FORÇA: as tiras no peito, o cinto e as mangas
-for i, zf in enumerate((0.5, 0.36)):
-    pts = hug(TOR, [(math.sin(a) * 0.3 * H, -math.cos(a) * 0.3 * H, hz + zf * H) for a in [(-0.45 + 0.9 * j / 16) * math.pi for j in range(17)]], 0.008 * H)
-    b.add(f'chestStrap{i}', rod(pts, 0.02 * H, 5, flat=flat), strap, region='chest', subdiv=0)
-    bk = min(pts, key=lambda v: v.y)
-    b.add(f'chestBuckle{i}', box(tuple(bk + Vector((0.03 * H, -0.006 * H, 0))), (0.036 * H, 0.01 * H, 0.028 * H), bevel=0.003), metal, region='chest', subdiv=0)
-belt = hug(TOR, [(math.sin(a) * 0.3 * H, -math.cos(a) * 0.3 * H, hz + 0.05 * H) for a in [i / 40 * TAU for i in range(41)]], 0.006 * H)
-b.add('belt', rod(belt, 0.022 * H, 6, caps=False, flat=flat), strap, region='torso', subdiv=0)
+# ================================================================ a CAMISA DE FORÇA: as faixas horizontais, a faixa vertical e a fivela
+for i, zf in enumerate((0.52, 0.44, 0.36)):
+    ring = hug(TOR, [(math.sin(a) * 0.3 * H, -math.cos(a) * 0.3 * H, hz + zf * H) for a in [j / 40 * TAU for j in range(41)]], 0.007 * H)
+    b.add(f'chestBand{i}', rod(ring, 0.017 * H, 6, caps=False, flat=flat), strap, region='chest', subdiv=0)
+vt = hug(TOR, [(0, -0.3 * H, z) for z in [hz + 0.6 * H - 0.6 * H * i / 12 for i in range(13)]], 0.008 * H)
+b.add('vStrap', rod(vt, 0.014 * H, 5, flat=flat), strap, region='chest', subdiv=0)
+bk = hug(TOR, [(0, -0.3 * H, hz + 0.56 * H)], 0.014 * H)[0]
+b.add('vBuckle', rod([bk + Vector((math.sin(t) * 0.018 * H, -0.003 * H, math.cos(t) * 0.022 * H)) for t in [i / 14 * TAU for i in range(15)]], 0.0045 * H, 5, caps=False), metal, region='chest', subdiv=0)
+tipv = vt[-1]
+b.add('vTip', cone(tuple(tipv + Vector((0, -0.004 * H, 0.006 * H))), tuple(tipv + Vector((0, -0.004 * H, -0.04 * H))), 0.016 * H, 3), metal, region='hips', subdiv=0)
+belt = hug(TOR, [(math.sin(a) * 0.3 * H, -math.cos(a) * 0.3 * H, hz + 0.06 * H) for a in [i / 40 * TAU for i in range(41)]], 0.006 * H)
+b.add('belt', rod(belt, 0.016 * H, 6, caps=False, flat=flat), strap, region='torso', subdiv=0)
+# o ARNÊS do tanque: duas alças grossas dos ombros às costas
+for s in (1, -1):
+    hp = hug(TOR, [(s * 0.1 * H, -0.3 * H, hz + 0.5 * H), (s * 0.12 * H, -0.3 * H, hz + 0.6 * H), (s * 0.12 * H, 0.3 * H, hz + 0.6 * H), (s * 0.1 * H, 0.3 * H, hz + 0.45 * H), (s * 0.1 * H, 0.3 * H, hz + 0.2 * H)], 0.008 * H)
+    b.add(f'harness{s}', rod(hp, 0.022 * H, 5, flat=flat), harness, region='chest', subdiv=0)
+
+# ================================================================ os braços: faixas, BRAÇADEIRAS de couro e os FARRAPOS queimados pendurados
 for side in ('L', 'R'):
+    s = 1 if side == 'L' else -1
     sh, el, hd = sk['s' + side], sk['e' + side], sk['hand' + side]
-    for k_, t in enumerate((0.45, 0.75)):
+    ax = (el - sh).normalized()
+    for k_, t in enumerate((0.3, 0.62)):
         c = sh.lerp(el, t)
         r = 0.07 * H
-        ax = (el - sh).normalized()
-        b.add(f'armStrap{side}{k_}', tube(limb_rings(c - ax * 0.013 * H, c + ax * 0.013 * H, r, r, n=1), 16), strap, region='arm' + side, subdiv=0)
+        b.add(f'armBand{side}{k_}', tube(limb_rings(c - ax * 0.011 * H, c + ax * 0.011 * H, r, r, n=1), 16), strap, region='arm' + side, subdiv=0)
+    fa = (hd - el).normalized()
+    a0, a1 = el.lerp(hd, 0.3), el.lerp(hd, 0.88)
+    b.add(f'bracer{side}', tube(limb_rings(a0, a1, 0.06 * H, 0.056 * H, n=3), 16), leather, region='e' + side, subdiv=0)
+    for t in (0.4, 0.62, 0.82):
+        c = el.lerp(hd, t)
+        b.add(f'bracerStrap{side}{int(t * 100)}', tube(limb_rings(c - fa * 0.007 * H, c + fa * 0.007 * H, 0.064 * H, 0.064 * H, n=1), 16), harness, region='e' + side, subdiv=0)
+    # os FARRAPOS: tiras largas e chatas penduradas do braço e do cotovelo, chamuscadas
+    for i in range(5):
+        u = (i - 2) / 2
+        top = sh.lerp(el, 0.55 + 0.1 * u) + Vector((s * 0.06 * H, 0.03 * H * u, 0))
+        ln = random.uniform(0.2, 0.3) * H
+        pts = [top + Vector((s * 0.01 * H * j, 0, -ln * j / 4)) for j in range(5)]
+        b.add(f'rag{side}{i}', rod(pts, [0.02 * H, 0.022 * H, 0.02 * H, 0.016 * H, 0.008 * H], 4, flat=((lambda p, o=Vector((s, 0, 0)): o), 0.25)), rag, region='arm' + side, subdiv=0)
+    for i in range(4):
+        u = (i - 1.5) / 1.5
+        top = el + Vector((s * 0.05 * H, 0.03 * H * u, -0.02 * H))
+        ln = random.uniform(0.12, 0.2) * H
+        pts = [top + fa * (ln * j / 3) for j in range(4)]
+        b.add(f'ragE{side}{i}', rod(pts, [0.018 * H, 0.018 * H, 0.012 * H, 0.005 * H], 4, flat=((lambda p, o=Vector((s, 0, 0)): o), 0.25)), rag, region='e' + side, subdiv=0)
 
-# ================================================================ a GOLA COM ESPINHOS
-b.add('collar', tube([(0, 0, hz + 0.57 * H, 0.104 * H, 0.092 * H), (0, 0, hz + 0.625 * H, 0.08 * H, 0.076 * H)], 22), suit, region='chest', subdiv=0)
+# ================================================================ a GOLA ALTA com ESPINHOS curtos
+b.add('collar', tube([(0, 0, hz + 0.58 * H, 0.1 * H, 0.09 * H), (0, 0, hz + 0.67 * H, 0.074 * H, 0.072 * H)], 22), suit_dk, region='chest', subdiv=0)
 sp = []
-for j in range(14):
-    a = j / 14 * TAU
-    d = Vector((math.sin(a), -math.cos(a), 0.25)).normalized()
-    base = Vector((math.sin(a) * 0.086 * H, -math.cos(a) * 0.08 * H, hz + 0.605 * H))
-    sp.append(cone(tuple(base), tuple(base + d * 0.05 * H), 0.009 * H, 6))
+for j in range(18):
+    a = j / 18 * TAU
+    for zz in (0.61, 0.645):
+        d = Vector((math.sin(a), -math.cos(a), 0.1)).normalized()
+        rr = 0.088 if zz < 0.63 else 0.078
+        base = Vector((math.sin(a) * rr * H, -math.cos(a) * rr * 0.97 * H, hz + zz * H))
+        sp.append(cone(tuple(base), tuple(base + d * 0.022 * H), 0.006 * H, 5))
 b.add('collarSpikes', merge(*sp), spike, region='chest', subdiv=0)
 
-# ================================================================ o MANTO CINZA queimado (dos ombros até o meio da coxa, aberto na frente)
-top = hz + 0.6 * H
-GAP = 0.3
-
-
-def cloak_pt(u, v, out=1.0):
-    a = (GAP / 2 + u * (1 - GAP)) * TAU
-    z = top - v * (top - (hz - 0.32 * H))
-    w = 0.25 * H + 0.06 * H * v ** 1.2
-    d = 0.16 * H + 0.08 * H * v ** 1.2
-    # a barra queimada e rasgada: pontas irregulares embaixo
-    if v > 0.85:
-        z += (0.04 * H * ridge(u * 23 + 1.3, 3)) * (v - 0.85) / 0.15
-    fold = 1 + 0.04 * math.sin(u * TAU * 6) * v
-    return Vector((math.sin(a) * w * out * fold, -math.cos(a) * d * out * fold + 0.02 * H, z))
-
-
-def cloak_w(p):
-    side = 'L' if p.x > 0 else 'R'
-    w_leg = smoothstep(hz - 0.05 * H, hz - 0.3 * H, p.z) * 0.3
-    w_hip = smoothstep(hz + 0.3 * H, hz - 0.05 * H, p.z) * (1 - w_leg)
-    return {'chest': max(0.0, 1 - w_leg - w_hip), 'hips': w_hip, 'l' + side: w_leg}
-
-
-b.add('cloak', grid(cloak_pt, 34, 18), cloak, region='body', weight_fn=cloak_w, subdiv=0)
-b.add('cloak_in', grid(lambda u, v: cloak_pt(u, v, 0.985), 34, 18, flip=True), cloakIn, region='body', weight_fn=cloak_w, subdiv=0)
-
-# ================================================================ o CABELO RUIVO ESPETADO
+# ================================================================ o CABELO RUIVO desgrenhado (médio, espetado em mechas para todo lado)
 HC = Vector((hc.x, hc.y, hc.z))
 Vh = lambda x, y, z: HC + Vector((x * H, y * H, z * H))
+
+
+def hair_weights(p):
+    t = smoothstep(sk['hd'].z - 0.02 * H, sk['neck'].z - 0.03 * H, p.z)
+    return {'hd': 1 - t, 'chest': t}
+
+
 Hr = Sculpt()
-Hr.ell(Vh(0, 0.014, 0.035), (0.138 * H, 0.148 * H, 0.14 * H))
-Hr.ell(Vh(0, -0.132, -0.06), (0.11 * H, 0.1 * H, 0.14 * H), neg=True)  # o rosto livre
-Hr.ell(Vh(0, 0.04, -0.13), (0.16 * H, 0.16 * H, 0.06 * H), neg=True)
-HAIR = b.add('hair', Hr.mesh(res=0.006, smooth=2, target=3000), hairm, region='head', subdiv=0)
-S = Sculpt()
-for k in range(34):
-    # pontos na calota (sem a testa baixa): as pontas saem para fora e para cima
-    a = random.uniform(-math.pi * 0.95, math.pi * 0.95)
-    el_ = random.uniform(0.15, 1.25)
-    d = Vector((math.sin(a) * math.cos(el_), math.cos(a) * math.cos(el_) * 1.05 + 0.15, math.sin(el_) + 0.25)).normalized()
-    if d.y < -0.55 and d.z < 0.55:
-        continue  # a franja não cobre os olhos
-    root = Vh(0, 0.014, 0.035) + Vector((d.x * 0.128 * H, d.y * 0.138 * H, d.z * 0.13 * H))
-    L = random.uniform(0.06, 0.1) * H
-    tip = root + d * L + Vector((0, 0.02 * H, 0.01 * H))
-    S.chain([root, root.lerp(tip, 0.5), tip], [0.024 * H, 0.014 * H, 0.003 * H], step=0.45)
-b.add('hairSpikes', S.mesh(res=0.005, smooth=2, target=3500), hairm, region='head', subdiv=0)
-# as raízes mais escuras atrás
+Hr.ell(Vh(0, 0.014, 0.04), (0.142 * H, 0.152 * H, 0.146 * H))
+Hr.ell(Vh(0, 0.06, -0.03), (0.13 * H, 0.12 * H, 0.12 * H))  # a nuca coberta
+# as MECHAS ESPETADAS do jeito do Guizo: cada uma é um tubo ACHATADO contra a cabeça que afina até uma ponta fina (no
+# volume do Sculpt as pontas viravam bolinhas); nascem rente à calota, acompanham o crânio e soltam na ponta
+spikes = []
+for i in range(95):
+    th = random.uniform(-math.pi, math.pi)
+    ph0 = random.uniform(0.05, 0.9 if abs(th) > 2.0 else 0.75)
+    if math.cos(th) > 0.6 and ph0 > 0.55:
+        continue  # o rosto livre (a franja vem depois)
+    n = 5
+    ph1 = ph0 + random.uniform(0.35, 0.7)
+    lift = random.uniform(0.25, 0.8)
+    pts, rad = [], []
+    for k in range(n + 1):
+        t = k / n
+        ph = ph0 + (ph1 - ph0) * t
+        thk = th + 0.25 * math.sin(i * 1.7) * t  # a mecha torce
+        d = Vector((math.sin(thk) * math.sin(ph), -math.cos(thk) * math.sin(ph), math.cos(ph)))
+        r = 1.0 + 0.06 * math.sin(t * math.pi) + 0.55 * t ** 2 * lift  # a ponta solta para fora (o cabelo jogado para trás)
+        pts.append(HC + Vector((d.x * 0.142 * H * r, d.y * 0.152 * H * r + 0.014 * H + 0.03 * H * t * t, d.z * 0.146 * H * r + 0.04 * H)))
+        rad.append((0.03 - 0.028 * t ** 1.1) * H)
+    spikes.append(rod(pts, rad, 6, flat=(lambda q: (q - HC).normalized(), 0.6)))
+for i in range(120):  # os LADOS e a NUCA: mechas que caem rentes e soltam a ponta para fora (nada de calota lisa)
+    th = random.uniform(0.85, math.pi) * random.choice((1, -1))
+    ph0 = random.uniform(0.75, 1.75 if abs(th) > 2.2 else 1.3)
+    ph1 = ph0 + random.uniform(0.35, 0.6)
+    lift = random.uniform(0.15, 0.5)
+    pts, rad = [], []
+    for k in range(6):
+        t = k / 5
+        ph = ph0 + (ph1 - ph0) * t
+        d = Vector((math.sin(th) * math.sin(ph), -math.cos(th) * math.sin(ph), math.cos(ph)))
+        r = (1.22 if abs(th) > 2.2 else 1.12) + 0.04 * math.sin(t * math.pi) + 0.35 * t ** 2 * lift  # por fora da calota (a nuca é mais funda)
+        pts.append(HC + Vector((d.x * 0.142 * H * r, d.y * 0.152 * H * r + 0.014 * H, d.z * 0.146 * H * r + 0.04 * H)))
+        rad.append((0.028 - 0.026 * t ** 1.1) * H)
+    spikes.append(rod(pts, rad, 6, flat=(lambda q: (q - HC).normalized(), 0.6)))
+for i in range(9):  # as mechas na testa, desfiadas em ponta
+    x = -0.09 + 0.18 * i / 8
+    ln = random.uniform(0.07, 0.1)
+    pts = [Vh(x * 0.6, -0.1, 0.14), Vh(x * 0.9, -0.14, 0.1), Vh(x * 1.1 + random.uniform(-0.012, 0.012), -0.155, 0.12 - ln)]
+    spikes.append(rod(pts, [0.022 * H, 0.015 * H, 0.002 * H], 6, flat=(lambda q: (q - HC).normalized(), 0.6)))
+Hr.ell(Vh(0, -0.13, -0.07), (0.106 * H, 0.1 * H, 0.13 * H), neg=True)
+
+
+def messy(p):
+    return 0.004 * H * (ridge(math.atan2(p.x - HC.x, p.y - HC.y) * 14 + p.z / H * 30 + n3(p, 30) * 2, 2) - 0.4)
+
+
+b.add('hair', Hr.mesh(res=0.0055, smooth=2, disp=messy, target=4000), hairm, region='head', weight_fn=hair_weights, subdiv=0)
+b.add('hairSpikes', merge(*spikes), hairm, region='head', weight_fn=hair_weights, subdiv=0)
 Rr = Sculpt()
-Rr.ell(Vh(0, 0.07, -0.04), (0.12 * H, 0.08 * H, 0.08 * H))
-Rr.ell(Vh(0, -0.05, -0.06), (0.14 * H, 0.12 * H, 0.14 * H), neg=True)
+Rr.ell(Vh(0, 0.08, -0.05), (0.11 * H, 0.07 * H, 0.08 * H))
+Rr.ell(Vh(0, -0.04, -0.06), (0.13 * H, 0.12 * H, 0.14 * H), neg=True)
 b.add('hairNape', Rr.mesh(res=0.006, smooth=2, target=800), hairDk, region='head', subdiv=0)
+
+# ================================================================ os PIERCINGS: sobrancelha, glabela e lábio; os brincos
+pc = []
+pc.append(ellipsoid(tuple(Vh(0.052, -0.14, 0.05)), (0.0035 * H, 0.0035 * H, 0.0035 * H), 6, 4))
+pc.append(ellipsoid(tuple(Vh(0.052, -0.138, 0.032)), (0.0035 * H, 0.0035 * H, 0.0035 * H), 6, 4))
+pc.append(ellipsoid(tuple(Vh(0.0, -0.148, 0.03)), (0.003 * H, 0.003 * H, 0.003 * H), 6, 4))
+c = Vh(-0.016, -0.15, -0.088)
+pc.append(rod([c + Vector((math.cos(t) * 0.006 * H, -math.sin(t) * 0.004 * H, math.sin(t) * 0.006 * H)) for t in [j / 10 * TAU for j in range(11)]], 0.002 * H, 4, caps=False))
+for s in (1, -1):
+    c = Vh(s * 0.128, 0.0, -0.05)
+    pc.append(rod([c + Vector((0, math.cos(t) * 0.008 * H, math.sin(t) * 0.008 * H)) for t in [j / 10 * TAU for j in range(11)]], 0.002 * H, 4, caps=False))
+b.add('piercings', merge(*pc), pierc, region='head', subdiv=0)
 
 b.export(OUT)
 

@@ -31,6 +31,10 @@ export default {
   anims: { idle: 'idle_bass', run: 'run', charge: 'charge', victory: 'vic_franco', block: 'block' },
   chargeFx: { style: 'default', color: FIRE },
   dodge: { style: 'default', distance: 5.2 },
+  passives: [
+    // FOGO EM GERAL (cânone, bônus de aliado: aplica "Em chamas" com a Guitarra Lança-Chamas): todo golpe de perto acende
+    { type: 'fogoEmGeral', burn: { dps: 7, duration: 2.5 } },
+  ],
 
   // A GUITARRA de perto (empunhada como o baixo da Cindy): o corpo em V, o braço, a cabeça pontuda e o bico do fogo
   melee: {

@@ -38,6 +38,12 @@ Aparência (para modelar):
 v5.9.0) e o especial em equipe HORA DO SHOW! lançado. Kits do Franco (inteiro) e de Alê (fora Prever Resultados, o
 transe e a leitura de mão) = PROPOSTA.
 
+**Correções pela wiki (2026-11-18, v5.10.0):** Franco tem olhos verdes, sardas, piercings (sobrancelha, glabela,
+lábio) e brincos; o bônus de aliado dele é FOGO EM GERAL (o alvo fica "Em chamas" com a guitarra; no jogo, a passiva
+`fogoEmGeral`); a guitarra é LARANJA com chamas pintadas, cano de metal e espinhos na cabeça; o tanque é grande e cinza com
+o selo de chama. Morre decapitado pelo Raziel (ep. 7). Alê: bridge no nariz e três piercings na orelha, mangas desfiadas,
+tênis preto e branco; também usou Hemofagia (Sangue) e Desfazer Sinapses (Conhecimento); devorade pelo Zéfero.
+
 **Recomendação (PROPOSTA)** para o próximo personagem: **Eloy** (o único que sobrevive, kit corpo a corpo forte e
 original — Moeller Method como agarrão de "bateria" — e as baquetas) ou **Cindy** (líder, Fuzil Baixo dá um lutador de
 tiro dançando, Silenciar como habilidade). Franco (lança-chamas) e Caio (espada microfone + Berrão) também rendem kits

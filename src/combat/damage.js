@@ -6,6 +6,7 @@ import { elementMultiplier } from '../config/elements.js';
 import { weaknessMult } from './forms.js';
 import { balanceOf } from '../config/balance.js';
 import { rumble, rumbleHit } from '../input/rumble.js';
+import { igniteFighter } from './burn.js';
 
 const woundDir = new THREE.Vector3();
 const woundAt = new THREE.Vector3();
@@ -367,6 +368,12 @@ export function applyHit(world, attacker, victim, o) {
   }
   // golpe que corta fundo (ex.: machado do Mutilador) e estados que fazem sangrar (máscara do Aguiar)
   if (o.kind === 'melee' && victim.state !== 'ko' && o.strike && o.strike.bleed) victim.applyBleed(o.strike.bleed, attacker);
+  // FOGO EM GERAL (Franco, cânone: o bônus de aliado que deixa o alvo "Em chamas" com a Guitarra Lança-Chamas): os golpes
+  // de perto acendem o alvo (QUEIMANDO por alguns segundos)
+  if (o.kind === 'melee' && victim.state !== 'ko' && attacker && attacker.def && attacker.world) {
+    const fire = (attacker.def.passives || []).find((x) => x.type === 'fogoEmGeral');
+    if (fire) igniteFighter(attacker.world, attacker, victim, fire.burn);
+  }
   // buff.meleeBleed: máscara do Mutilador (TODO golpe do machado sangra — corpo a corpo e o machado na corda) e o Tomado
   // pelo Ódio do Joui (os poderes da máscara)
   if ((o.kind === 'melee' || o.kind === 'ranged') && victim.state !== 'ko') {
