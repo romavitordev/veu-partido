@@ -231,6 +231,7 @@ export default {
     type: 'awakenMode',
     anim: 'taunt_roar',
     props: [['maskOn', true]],
+    face: ['face_caio', 'face_caio_white'], // os olhos brancos com a máscara (dono, 2026-11-17)
     idleAnim: 'idle_wild',
     mult: 1.15, affects: ['melee', 'ranged', 'ability', 'special'], cdRate: 1.3, regen: 2, heal: 0.12, speedMult: 1.06, aura: 'flame', color: STOP,
   },

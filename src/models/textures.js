@@ -733,6 +733,25 @@ function caioSpatter(g, w, h, n, seed) {
   }
 }
 
+// o rosto do Caio (a maquiagem preta, a sobrancelha cortada, os piercings e a barba rala) e as opções do face()
+function caioFace(g) {
+  stubble(g, 'rgba(30,20,16,0.3)', 1100, { y0: 150, y1: 226, w: 74 });
+  for (const sx of [-1, 1]) { // a maquiagem preta borrada embaixo dos olhos
+    g.fillStyle = 'rgba(16,12,14,0.55)';
+    g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 9, 19, 7, sx * 0.08, 0, Math.PI * 2); g.fill();
+  }
+  g.fillStyle = '#d2a07e'; g.fillRect(CX + 18, EYE_Y - 26, 4, 14); // a fresta na sobrancelha
+  g.strokeStyle = '#b8b8bc'; g.lineWidth = 2.4; // os piercings: a argola na narina e a da boca
+  g.beginPath(); g.arc(CX + 9, EYE_Y + 50, 4, 0, Math.PI * 1.6); g.stroke();
+  g.beginPath(); g.arc(CX - 8, EYE_Y + 78, 4, 0, Math.PI * 1.6); g.stroke();
+}
+const CAIO_FACE = {
+  skin: '#d2a07e',
+  eye: { iris: '#5a3820', irisLight: '#9a6a40', w: 14, h: 7, tilt: 0.02, lid: 3 },
+  brow: { angry: 0.35, thick: 3.4, color: '#141214' },
+  mouth: { mouthW: 15, smile: 5, lip: 'rgba(120,60,56,0.5)' },
+};
+
 export const MATERIAL_TEXTURES = {
   // ---------------- KAISER: queimadura no lado ESQUERDO (x > 256)
   // KAISER depois do orfanato (wiki): a metade ESQUERDA do rosto queimada, sem barba e sem a sobrancelha esquerda; com
@@ -2628,22 +2647,9 @@ export const MATERIAL_TEXTURES = {
   }),
   // ---------------- CAIO TELES (wiki: sem a máscara, os olhos CASTANHOS com a maquiagem PRETA embaixo, a SOBRANCELHA
   // CORTADA, os piercings no nariz e na boca e a barba rala; com a máscara, a placa PARE — prop_maskOn, mask_caio)
-  face_caio: face((g) => {
-    stubble(g, 'rgba(30,20,16,0.3)', 1100, { y0: 150, y1: 226, w: 74 });
-    for (const sx of [-1, 1]) { // a maquiagem preta borrada embaixo dos olhos
-      g.fillStyle = 'rgba(16,12,14,0.55)';
-      g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 9, 19, 7, sx * 0.08, 0, Math.PI * 2); g.fill();
-    }
-    g.fillStyle = '#d2a07e'; g.fillRect(CX + 18, EYE_Y - 26, 4, 14); // a fresta na sobrancelha
-    g.strokeStyle = '#b8b8bc'; g.lineWidth = 2.4; // os piercings: a argola na narina e a da boca
-    g.beginPath(); g.arc(CX + 9, EYE_Y + 50, 4, 0, Math.PI * 1.6); g.stroke();
-    g.beginPath(); g.arc(CX - 8, EYE_Y + 78, 4, 0, Math.PI * 1.6); g.stroke();
-  }, {
-    skin: '#d2a07e',
-    eye: { iris: '#5a3820', irisLight: '#9a6a40', w: 14, h: 7, tilt: 0.02, lid: 3 },
-    brow: { angry: 0.35, thick: 3.4, color: '#141214' },
-    mouth: { mouthW: 15, smile: 5, lip: 'rgba(120,60,56,0.5)' },
-  }),
+  face_caio: face((g) => caioFace(g), CAIO_FACE),
+  // com a máscara (o despertar): os olhos BRANCOS, sem íris (dono, 2026-11-17) — de lado aparecem por trás da placa
+  face_caio_white: face((g) => caioFace(g), { ...CAIO_FACE, eye: { ...CAIO_FACE.eye, iris: '#f4f4f0', irisLight: '#ffffff', sclera: '#ffffff', glow: 'rgba(255,255,255,0.85)' } }),
   // o MACACÃO do Caio (a arte: creme, encardido e cheio de sangue). O tronco: respingos e a mancha na cintura (no UV do
   // tronco, v = 1 é a cintura — o alto da tela)
   suit_caio: () => canvasTex(512, 512, (g, w, h) => {
@@ -2690,6 +2696,15 @@ export const MATERIAL_TEXTURES = {
     g.fillStyle = '#0a0606'; // as frestas dos olhos e a fenda da boca
     for (const s of [-1, 1]) { g.beginPath(); g.ellipse(w / 2 + s * 49, 236, 21, 10, s * -0.12, 0, Math.PI * 2); g.fill(); }
     g.fillRect(w / 2 - 22, 342, 44, 7);
+    // os OLHOS BRANCOS por trás das frestas (dono, 2026-11-17: com a máscara, os olhos dele são brancos): o olhar vazio,
+    // sem íris, com um halo claro em volta
+    for (const s of [-1, 1]) {
+      const ex = w / 2 + s * 49;
+      const halo = g.createRadialGradient(ex, 236, 2, ex, 236, 19);
+      halo.addColorStop(0, 'rgba(255,255,255,0.55)'); halo.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = halo; g.beginPath(); g.ellipse(ex, 236, 20, 9.5, s * -0.12, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#f8f8f4'; g.beginPath(); g.ellipse(ex, 237, 12, 5.2, s * -0.12, 0, Math.PI * 2); g.fill();
+    }
     g.strokeStyle = 'rgba(90,6,10,0.85)'; g.lineWidth = 3; g.lineCap = 'round'; // o sangue escorrido
     for (const [x, l] of [[70, 90], [178, 60], [140, 120]]) { g.beginPath(); g.moveTo(x, 270); g.lineTo(x + 3, 270 + l); g.stroke(); }
   }),

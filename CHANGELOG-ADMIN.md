@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v4.59.0 — Olhos Brancos e a Cor dos Mapas
+
+- Versão: `VERSION` 4.58.1 → **4.59.0** (`package.json`/lock junto). Data: 2026-11-18.
+- **Olhos brancos do Caio com a máscara (dono, 2026-11-17, item do TODO):** `mask_caio` (`src/models/textures.js`)
+  pinta os olhos brancos com halo dentro das frestas; o rosto ganhou `face_caio_white` (o mesmo `caioFace` + `CAIO_FACE`
+  com a íris branca e o brilho, sem pupila à vista), trocado no despertar por `awakening.face` (`awakenMode` já fazia a
+  troca, como a Nubi). Conferido no jogo: com a máscara, os olhos aparecem brancos de frente e o rosto trocado de lado.
+- **Gradação de cor por mapa (TODO "Melhoria de Gráficos — Parte 2"):** `src/render/grade.js` (`GRADE` por cenário:
+  `sat`, `contrast`, `gain` RGB e `lift` RGB; `NEUTRAL` para quem não tem) aplicada no `ScreenShader` de
+  `src/render/postfx.js` antes da vinheta; muda suave como o clima (`render(..., grade)`). `World.setup` e o modo
+  Explorar guardam `gradeFor(arenaId)`. Só nas qualidades média e alta (na baixa não há passes). Valores leves e
+  PROPOSTA (escolhidos pela descrição e as cores de cada cenário). Conferido no Ferro Velho e no Orfanato, sem erros.
+  Os decalques no chão ficam para a parte 2b.
+
 ## v4.58.1 — O Berrão de Duas Mãos
 
 - Versão: `VERSION` 4.58.0 → **4.58.1** (`package.json`/lock junto). Data: 2026-11-18.

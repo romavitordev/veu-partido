@@ -16,6 +16,7 @@ import { postFX, MOOD } from '../render/postfx.js';
 import { accelerate } from '../render/bvh.js';
 import { acousticsFor } from '../audio/acoustics.js';
 import { preloadRagdoll } from '../physics/ragdoll.js';
+import { gradeFor } from '../render/grade.js';
 
 const RAY = new THREE.Raycaster();
 
@@ -76,6 +77,7 @@ export class World {
   setup(defs, arenaId) {
     const A = ARENAS[arenaId];
     this.arena = A.create();
+    this.grade = gradeFor(arenaId); // a gradação de cor do mapa (render/grade.js)
     this.arena.build(this.scene);
     accelerate(this.arena.group); // raios rápidos no cenário (render/bvh.js): câmera, paredes, linha de visão
     // SOM 3D + ECO DO CENÁRIO (audio/acoustics.js): a câmera ouve; a sala dá o eco
@@ -497,7 +499,7 @@ export class World {
     this.lastRender = now;
     const kick = this.cameraRig && this.cameraRig.shakeTime > 0 ? this.cameraRig.shakeAmt * 1.5 : 0;
     this.post = postFX(this.renderer);
-    this.post.render(this.scene, this.camera, dt, this.screenMood(), kick);
+    this.post.render(this.scene, this.camera, dt, this.screenMood(), kick, this.grade);
   }
 
   // o clima da tela (render/postfx.js): especial > despertar > Outro Lado > pouca vida > normal

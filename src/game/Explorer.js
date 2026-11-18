@@ -4,6 +4,7 @@ import { ARENAS } from '../arena/index.js';
 import { accelerate } from '../render/bvh.js';
 import { acousticsFor } from '../audio/acoustics.js';
 import { viewSize } from '../core/viewport.js';
+import { gradeFor } from '../render/grade.js';
 
 // MODO EXPLORAR (pedido do dono, 2026-11-15: "um botão meio escondido, não no menu, que leva ao menu de mapas e ele
 // pode escolher um mapa para explorar, tipo o modo espectador do Minecraft, só que com colisão nas paredes e chão, só
@@ -102,6 +103,7 @@ export class Explorer {
     this.world = new World({ renderer, audio, input, ui: null });
     const w = this.world;
     w.arena = A.create();
+    w.grade = gradeFor(arenaId);
     w.arena.build(w.scene);
     accelerate(w.arena.group);
     audio.listener = w.camera;

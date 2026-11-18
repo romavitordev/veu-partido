@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.59.0 — Olhos Brancos e a Cor dos Mapas
+
+### Adicionado
+- Gradação de cor por mapa (`src/render/grade.js`): saturação, contraste, calor da luz e cor das sombras de cada cenário, no último passe do pós-processamento.
+
+### Alterado
+- Caio Teles: olhos brancos com a máscara da placa PARE (nas frestas da máscara e no rosto, trocado no despertar).
+
 ## v4.58.1 — O Berrão de Duas Mãos
 
 ### Alterado

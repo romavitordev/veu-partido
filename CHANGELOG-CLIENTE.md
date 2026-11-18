@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.59.0 — Olhos Brancos e a Cor dos Mapas
+- CAIO TELES: com a máscara da placa PARE no despertar, os olhos dele ficam brancos, sem íris — nas frestas da máscara e no rosto, que aparece de lado.
+- A COR DE CADA MAPA: cada cenário ganhou o seu tom de tela — o Orfanato nublado e desbotado, o bar e o Coliseu quentes, a Igreja fria, o Circo de néon, a Torre esverdeada (gráficos média e alta).
+
 ## v4.58.1 — O Berrão de Duas Mãos
 - BERRÃO E SHOW FINAL: Caio segura a Espada Microfone com as duas mãos, crava a lâmina reta no chão de ponta-cabeça e grita no microfone, que fica na altura da boca.
 - CAIO BALANCEADO: mais dano e mais resistência; agora vence metade das lutas contra o elenco.

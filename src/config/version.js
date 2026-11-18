@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.58.1';
+export const VERSION = '4.59.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.59.0',
+    date: '2026-11-18',
+    title: 'Olhos Brancos e a Cor dos Mapas',
+    items: [
+      'CAIO TELES: com a máscara da placa PARE no despertar, os olhos dele ficam brancos, sem íris — nas frestas da máscara e no rosto, que aparece de lado.',
+      'A COR DE CADA MAPA: cada cenário ganhou o seu tom de tela — o Orfanato nublado e desbotado, o bar e o Coliseu quentes, a Igreja fria, o Circo de néon, a Torre esverdeada (gráficos média e alta).',
+    ],
+  },
   {
     v: '4.58.1',
     date: '2026-11-18',

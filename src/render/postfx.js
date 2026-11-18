@@ -5,6 +5,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
 import { gfxProfile, SETTINGS } from '../config/settings.js';
+import { NEUTRAL } from './grade.js';
 
 // PÓS-PROCESSAMENTO DA LUTA (seção 10 do GUIA_TECNOLOGIAS_GAME_DEV.txt). Só o EffectComposer do próprio Three.js:
 //   1) a cena, JÁ com o tom ACES e o sRGB aplicados no próprio material — igual ao desenho direto na tela
@@ -26,6 +27,11 @@ const ScreenShader = {
     vignette: { value: 0.25 }, // força da vinheta (0 = nada)
     tint: { value: new THREE.Color(0, 0, 0) }, // cor que a borda puxa (vermelho no despertar, roxo no Outro Lado)
     aberration: { value: 0 }, // deslocamento das cores (fração da tela)
+    // a GRADAÇÃO DE COR do mapa (render/grade.js)
+    sat: { value: 1 },
+    contrast: { value: 1 },
+    gain: { value: new THREE.Vector3(1, 1, 1) },
+    lift: { value: new THREE.Vector3(0, 0, 0) },
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
@@ -35,6 +41,10 @@ const ScreenShader = {
     uniform float vignette;
     uniform vec3 tint;
     uniform float aberration;
+    uniform float sat;
+    uniform float contrast;
+    uniform vec3 gain;
+    uniform vec3 lift;
     varying vec2 vUv;
     void main() {
       vec2 d = vUv - 0.5;
@@ -46,6 +56,11 @@ const ScreenShader = {
         c.r = texture2D(tDiffuse, vUv + off).r;
         c.b = texture2D(tDiffuse, vUv - off).b;
       }
+      // a gradação do mapa: o calor da luz, a cor do escuro, o contraste e a saturação
+      c.rgb = c.rgb * gain + lift * (1.0 - c.rgb);
+      c.rgb = (c.rgb - 0.5) * contrast + 0.5;
+      float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
+      c.rgb = clamp(mix(vec3(l), c.rgb, sat), 0.0, 1.0);
       float v = smoothstep(0.12, 0.62, r2 * 1.6) * vignette;
       // a borda escurece e puxa para a cor do clima (vermelho no despertar, roxo no Outro Lado)
       c.rgb = c.rgb * (1.0 - v * 0.7) + tint * v * 0.9;
@@ -63,6 +78,7 @@ export const MOOD = {
 };
 
 const TMP = new THREE.Color();
+const TMPV = new THREE.Vector3();
 
 // parâmetros da sombra de contato (metros do mundo; a escala do jogo é 1 = 1 m)
 export const AO = { radius: 0.6, thickness: 1.2, distanceExponent: 1.4, distanceFallOff: 1, scale: 1, samples: 12, intensity: 0.9, resolution: 0.5 };
@@ -89,7 +105,7 @@ export class PostFX {
     this.renderer = renderer;
     this.composer = null;
     this.level = null;
-    this.cur = { vignette: MOOD.base.vignette, aberration: 0, bloom: MOOD.base.bloom, tint: new THREE.Color(0) };
+    this.cur = { vignette: MOOD.base.vignette, aberration: 0, bloom: MOOD.base.bloom, tint: new THREE.Color(0), sat: 1, contrast: 1, gain: new THREE.Vector3(1, 1, 1), lift: new THREE.Vector3() };
   }
 
   // liga/desliga e ajusta à qualidade atual; devolve se está ativo
@@ -143,7 +159,8 @@ export class PostFX {
   }
 
   // mood: um dos MOOD (ou mistura já calculada); kick: 0..1 de pulso de impacto (o tremor da câmera)
-  render(scene, camera, dt, mood = MOOD.base, kick = 0) {
+  // grade: a gradação de cor do mapa (render/grade.js); muda suave como o clima
+  render(scene, camera, dt, mood = MOOD.base, kick = 0, grade = NEUTRAL) {
     if (!this.sync()) { this.renderer.render(scene, camera); return; }
     const k = Math.min(1, dt * 4);
     const reduce = SETTINGS.reduceFx;
@@ -152,6 +169,10 @@ export class PostFX {
     c.bloom += (mood.bloom - c.bloom) * k;
     c.aberration += ((reduce ? 0 : mood.aberration) - c.aberration) * k;
     c.tint.lerp(TMP.set(mood.tint), k);
+    c.sat += (grade.sat - c.sat) * k;
+    c.contrast += (grade.contrast - c.contrast) * k;
+    c.gain.lerp(TMPV.fromArray(grade.gain), k);
+    c.lift.lerp(TMPV.fromArray(grade.lift), k);
     this.renderPass.scene = scene;
     this.renderPass.camera = camera;
     if (this.wantAO) this.ensureAO(scene, camera);
@@ -159,6 +180,10 @@ export class PostFX {
     const u = this.screen.uniforms;
     u.vignette.value = c.vignette;
     u.tint.value.copy(c.tint).convertLinearToSRGB(); // a imagem já está em sRGB
+    u.sat.value = c.sat;
+    u.contrast.value = c.contrast;
+    u.gain.value.copy(c.gain);
+    u.lift.value.copy(c.lift);
     u.aberration.value = c.aberration + (reduce ? 0 : Math.min(kick, 1) * 0.006);
     this.composer.render(dt);
   }
