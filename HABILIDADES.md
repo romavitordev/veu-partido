@@ -1799,7 +1799,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Berrão** — △ + ○ / Y + B · custo 26 · cooldown 14 s · dano 34 · alcance 3.2 m
-  Finca a espada e grita no microfone colado ao ouvido do adversário: dano, um tremor e ele SOLTA A ARMA (fica 4 s sem o ataque à distância). Quem estiver defendendo tampa os ouvidos e leva menos.
+  Crava a espada no chão e grita no microfone: o adversário na frente fica ATORDOADO, leva dano e SOLTA A ARMA (fica 4 s sem o ataque à distância). Quem estiver defendendo tampa os ouvidos e leva menos.
 - **Barulheira** — △ + □ / Y + X · custo 22 · cooldown 16 s · alcance 6 m
   Solta um grito em volta: quem estiver perto treme por um instante e, por 6 s, bate mais fraco.
 - **Primeiros Socorros** — R2 + △ / RT + Y · custo 24 · cooldown 22 s

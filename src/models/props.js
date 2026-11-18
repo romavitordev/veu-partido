@@ -1822,7 +1822,7 @@ export function addCaioProps(rig) {
   // caio_berro a espada sai da pegada da mão e fica EM PÉ à frente dele, a ponta enterrada e o microfone em cima, na
   // altura da boca (as duas mãos no cabo vêm da pose). Fora do clipe, volta para a mão.
   const rest = { p: sword.position.clone(), q: sword.quaternion.clone() };
-  const want = new THREE.Matrix4(), inv = new THREE.Matrix4(), tmpS = new THREE.Vector3();
+  const want = new THREE.Matrix4(), inv = new THREE.Matrix4(), rootInv = new THREE.Matrix4(), tmpS = new THREE.Vector3(), mouth = new THREE.Vector3();
   const L = sword.userData.tipLength;
   (rig.tickers || (rig.tickers = [])).push((dt, f) => {
     const a = f && f.anim;
@@ -1833,13 +1833,18 @@ export function addCaioProps(rig) {
     }
     sword.userData.planted = true;
     rig.root.updateMatrixWorld(true);
-    // no espaço do corpo (olhando para +Z): a ponta 3 cm dentro do chão, 0,6 m à frente; o cabo L acima dela
-    want.makeTranslation(0, L - 0.03, 0.6).premultiply(rig.root.matrixWorld);
+    // no espaço do corpo (olhando para +Z): o microfone (0,36 acima do cabo) logo à frente da boca, a lâmina reta para
+    // baixo e enterrada no chão (se a boca subir demais, a ponta fica rente ao chão e o microfone um pouco abaixo)
+    rootInv.copy(rig.root.matrixWorld).invert();
+    mouth.setFromMatrixPosition((sockets.mouth || sockets.head).matrixWorld).applyMatrix4(rootInv);
+    const y = Math.min(mouth.y - MIC_UP, L - 0.03);
+    want.makeTranslation(0, y, mouth.z + 0.1).premultiply(rig.root.matrixWorld);
     inv.copy(sockets.handR.matrixWorld).invert();
     want.premultiply(inv).decompose(sword.position, sword.quaternion, tmpS);
   });
 }
 const PLANT = [0.33, 0.9]; // o trecho do caio_berro em que a espada fica cravada
+const MIC_UP = 0.36; // do cabo ao microfone (espadaMicrofone)
 
 // SABARA (Vampiros): a ESPADA longa na direita e a ADAGA CERIMONIAL curva na esquerda (ela saca as duas juntas no ep. 4);
 // a faca pequena dos cintos aparece na esquerda só no arremesso

@@ -459,6 +459,8 @@ for (const n of ['claw_raise', 'slash_h', 'slash_h_back', 'slash_d', 'slash_up',
 // o cabo automaticamente (def.grip.twoHand), então aqui só o braço direito conduz a marreta.
 const L_LEGS = { h: -0.13, lL: [-0.38, 0, 0.2], kL: [0.52, 0, 0], lR: [0.36, 0, -0.2], kR: [0.48, 0, 0] };
 const L_STANCE = { ...L_LEGS, hip: [0, -0.35, 0], sp: [0.15, 0.35, 0], hd: [0, -0.3, 0], sR: [-0.8, 0.5, -0.3], eR: [-1.1, 0, 0], sL: [-0.8, -0.4, 0.2], eL: [-1.2, 0, 0] };
+// as duas mãos juntas no cabo da espada em pé, à frente do peito (caio_berro)
+const HANDS_ON_HILT = { sR: [-0.9, 0.5, -0.1], eR: [-0.85, 0, 0], sL: [-0.9, -0.5, 0.1], eL: [-0.85, 0, 0] };
 const L_LUNGE = { h: -0.26, lL: [-0.85, 0, 0.12], kL: [0.95, 0, 0], lR: [0.62, 0, -0.12], kR: [0.42, 0, 0] };
 Object.assign(CLIPS, {
   // postura: pés bem plantados, joelhos dobrados, Leonora atravessada à frente
@@ -590,12 +592,14 @@ Object.assign(CLIPS, {
   // CAIO — O BERRÃO (cânone: "finca a ponta da espada no chão e grita no microfone"; pedido do dono, 2026-11-17): ergue a
   // Espada Microfone, CRAVA no chão à frente, e fica curvado sobre ela com a cabeça erguida GRITANDO, a mão esquerda aberta
   caio_berro: {
+    // as DUAS mãos sobem a espada de ponta-cabeça, cravam a lâmina reta no chão (0,36) e ele grita no microfone, que
+    // fica em cima do cabo, na boca (a espada em pé é posta por addCaioProps; aqui só as mãos no cabo e o corpo)
     dur: 1.0, keys: [
       k(0, L_STANCE),
-      k(0.22, { ...L_LEGS, h: -0.02, sp: [-0.35, 0.1, 0], hd: [-0.2, 0, 0], sR: [-3.0, 0, 0], eR: [-0.4, 0, 0], sL: [-0.6, 0, 0.3], eL: [-0.6, 0, 0] }),
-      k(0.36, { h: -0.4, lL: [-1.0, 0, 0.18], kL: [1.15, 0, 0], lR: [0.7, 0, -0.18], kR: [0.75, 0, 0], sp: [0.8, 0, 0], hd: [0.2, 0, 0], sR: [0.05, 0.1, 0], eR: [0, 0, 0], sL: [-0.4, 0, 0.5], eL: [-0.5, 0, 0] }),
-      k(0.46, { h: -0.36, lL: [-1.0, 0, 0.18], kL: [1.1, 0, 0], lR: [0.7, 0, -0.18], kR: [0.7, 0, 0], sp: [0.55, 0, 0], hd: [-0.4, 0, 0], sR: [-0.1, 0.1, 0], eR: [0, 0, 0], sL: [-1.0, 0, 1.1], eL: [-0.5, 0, 0] }),
-      k(0.82, { h: -0.38, lL: [-1.0, 0, 0.18], kL: [1.12, 0, 0], lR: [0.7, 0, -0.18], kR: [0.72, 0, 0], sp: [0.58, 0, 0.04], hd: [-0.45, 0, 0.06], sR: [-0.1, 0.1, 0], eR: [0, 0, 0], sL: [-1.05, 0, 1.15], eL: [-0.45, 0, 0] }),
+      k(0.2, { ...L_LEGS, h: -0.06, sp: [-0.2, 0, 0], hd: [-0.15, 0, 0], sR: [-2.9, 0.3, -0.25], eR: [-0.5, 0, 0], sL: [-2.9, -0.3, 0.25], eL: [-0.5, 0, 0] }),
+      k(0.34, { h: -0.3, lL: [-0.8, 0, 0.16], kL: [0.95, 0, 0], lR: [0.55, 0, -0.16], kR: [0.75, 0, 0], sp: [0.45, 0, 0], hd: [0.1, 0, 0], ...HANDS_ON_HILT }),
+      k(0.46, { h: -0.3, lL: [-0.8, 0, 0.18], kL: [0.95, 0, 0], lR: [0.55, 0, -0.18], kR: [0.75, 0, 0], sp: [0.42, 0, 0], hd: [0.25, 0, 0], ...HANDS_ON_HILT }),
+      k(0.84, { h: -0.31, lL: [-0.8, 0, 0.18], kL: [0.97, 0, 0], lR: [0.55, 0, -0.18], kR: [0.76, 0, 0], sp: [0.44, 0, 0.03], hd: [0.28, 0, 0.05], ...HANDS_ON_HILT }),
       k(1, L_STANCE),
     ],
   },

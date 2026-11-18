@@ -70,7 +70,7 @@ export const BALANCE = {
   eloy: { dealt: 1.28, taken: 0.85 }, // 3% (sem ajuste) → 42%
   // 2026-11-14 — Cindy focada (125 lutas, sem ajuste): 18%; dano feito/recebido 0,73. O kit sai inteiro (a rajada, o
   // sangramento do salto alto e a queimadura da Última Nota são o grosso), só bate pouco
-  caio: { dealt: 1.0, taken: 1.0 }, // novo (2026-11-17): bateria pendente
+  caio: { dealt: 1.15, taken: 0.9 }, // 20% (sem ajuste) → 50% (212 lutas)
   cindy: { dealt: 1.15, taken: 0.92 }, // 18% (sem ajuste) → 50% (78 lutas)
 };
 

@@ -14,9 +14,12 @@ export const CHANGELOG = [
   {
     v: '4.58.0',
     date: '2026-11-17',
-    title: 'A Bengala da Magistrada',
+    title: 'Caio Teles',
     items: [
-      'A BENGALA DA MAGISTRADA agora é empunhada apontando para baixo com a ponta em direção ao chão, igual à bengala do Damir Lukic, respeitando a pose solene e canônica da personagem.',
+      'CAIO TELES (PSIKOLERA): o vocalista da banda chega como novo personagem jogável com seu macacão de camisa de força, correntes e algemas com espinhos.',
+      'A ESPADA MICROFONE: espadona enrolada em arame farpado com um microfone na outra ponta. Com o Berrão, Caio crava a lâmina no chão e berra direto no microfone na altura da boca para atordoar e desarmar o adversário.',
+      'DESPERTAR: a máscara de ferro da placa "PARE" desce sobre o rosto no despertar paranormal.',
+      'SELEÇÃO DE MAPAS: paginação em grade (8 × 2, até 16 cenários por tela) com navegação lateral por setas e indicadores de página.',
     ],
   },
   {
@@ -25,6 +28,7 @@ export const CHANGELOG = [
     title: 'A Magistrada Refeita',
     items: [
       'A MAGISTRADA remodelada pela arte do Livro de Regras: mangas bufantes de verdade, a calça cinza larga caindo no sapato, as duas faixas brancas de pano com franja até o joelho, as pulseiras douradas empilhadas e a gola com o leque de raios dourados atrás da cabeça.',
+      'BENGALA DA MAGISTRADA: agora empunhada apontando para baixo com a ponta em direção ao chão, igual à do Damir Lukic, respeitando a pose solene da personagem.',
     ],
   },
   {

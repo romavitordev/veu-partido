@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.58.0 — Caio Teles
+
+### Adicionado
+- Caio Teles (PSIKOLERA) jogável: macacão de camisa de força com tiras, sangue e correntes, algemas com espinhos, a Espada Microfone com arame farpado e a máscara da placa PARE no despertar.
+- Berrão e especial Show Final: ele segura a espada com as duas mãos, crava a lâmina reta no chão de ponta-cabeça e grita no microfone, que fica na boca; o adversário fica atordoado.
+- Seleção de mapas em páginas de até 16 cenários.
+
+### Alterado
+- Bengala da Magistrada apontando para baixo, como a do Damir.
+- Balanceamento do Caio: 20% → 50% de vitórias (212 lutas).
+
 ## v4.57.0 — A Magistrada Refeita
 
 ### Alterado

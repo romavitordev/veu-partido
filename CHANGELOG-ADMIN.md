@@ -1,13 +1,24 @@
 # Registro administrativo de alterações
 
-## v4.58.0 — A Bengala da Magistrada
+## v4.58.0 — Caio Teles
 
 - Versão: `VERSION` 4.57.0 → **4.58.0** (`package.json`/lock junto). Data: 2026-11-17.
-- **Orientação da Bengala da Magistrada (dono, 2026-11-17: "bengala da magistrada deveria ser mirada pra baixo como a do damir"):**
-  Ajustado o socket em `src/models/props.js` (`addMagistradaProps`) usando `inFist(cane, 0)`, garantindo empunhadura
-  vertical apontada para baixo com a ponta em direção ao chão, igual à pose da bengala do Damir Lukic.
+- **Caio Teles jogável (dono, 2026-11-17: "adicione um novo Psikolera, o vocalista com a mascara de placa de Pare"):**
+  - Modelo `tools/blender/char_caio.py` (`public/models/caio.glb`): macacão de camisa de força creme com tiras caídas,
+    manchas de sangue nos punhos e joelhos, corrente no pescoço, algemas com espinhos e cabelo curto preto com topo vermelho.
+  - Máscara de ferro da placa PARE (`prop_maskOn`), exibida no despertar/transformação.
+  - Arma `espadaMicrofone()` em `src/models/weapons.js`: espadona com arame farpado e microfone adaptado na ponta.
+  - Habilidade canônica **Berrão**: durante o clipe `caio_berro`, a espada crava verticalmente no chão à frente dele de
+    ponta-cabeça e Caio segura o microfone com as duas mãos para gritar (`addCaioProps` em `src/models/props.js`).
+  - Ficha de combate completa em `src/characters/caio.js` (golpes com sangramento, primeiro socorro, refrão e bônus de aliado).
+- **O Berrão de duas mãos (dono, 2026-11-17: "a espada deveria cravar na vertical, ele pegar ela com as duas mãos e
+  cravar no chão reta, para ele gritar nela"):** `caio_berro` refeito (`src/anim/clips.js`, `HANDS_ON_HILT`): sobe a
+  espada com as duas mãos, crava e grita curvado sobre o cabo. O ticker de `addCaioProps` põe a espada em pé com o
+  microfone 10 cm à frente da boca (socket `mouth`) e a lâmina enterrada. Medido no jogo: microfone a 1,50 m, boca a
+  1,51 m, mãos a 1,08 m no cabo; o Show Final atordoa (ATORDOADO) e a espada volta à mão para os cortes.
+- **Balanceamento:** `caio` 20% (sem ajuste, 212 lutas) → `dealt 1.15 / taken 0.9` → **50%** (212 lutas).
 - **Seleção de Cenários (Mapas):**
-  Paginação em grade de no máximo 16 mapas (8 colunas × 2 linhas) com navegação por páginas laterais e indicadores visuais.
+  - Paginação em grade de no máximo 16 mapas (8 colunas × 2 linhas) com navegação lateral por páginas e indicadores visuais.
 
 ## v4.57.0 — A Magistrada Refeita
 
@@ -20,6 +31,9 @@
   pano de duas faces (grid ondulando, franja de 9 fios), a gola abre em leque (`spread` 0,22 → 0,42) com 46 raios
   dourados longos. `cyl_uv` nas peças esculpidas. Juntas e regiões preservadas. `.glb` 0,66 MB (meshopt); `.blend` em
   `tools/blender/fonte/magistrada.blend`. Conferido no jogo, sem erros no console.
+- **Orientação da Bengala da Magistrada:**
+  Ajustado o socket em `src/models/props.js` (`addMagistradaProps`) usando `inFist(cane, 0)`, garantindo empunhadura
+  vertical apontada para baixo com a ponta em direção ao chão, igual à pose da bengala do Damir Lukic.
 - Ordem dos próximos remodelamentos pela idade do modelo: Erin, Labirinto, Ferreiro, Jae, Guizo, Amigo, Estrangeiro.
 
 ## v4.56.0 — O Colosso Refeito

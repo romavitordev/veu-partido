@@ -2,11 +2,15 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
-## v4.58.0 — A Bengala da Magistrada
-- A BENGALA DA MAGISTRADA agora é empunhada apontando para baixo com a ponta em direção ao chão, igual à do Damir Lukic, respeitando a pose solene e canônica da personagem.
+## v4.58.0 — Caio Teles
+- CAIO TELES (PSIKOLERA): o vocalista da banda chega como novo personagem jogável com seu macacão de camisa de força, correntes no pescoço e algemas com espinhos.
+- A ESPADA MICROFONE: espadona enrolada em arame farpado com um microfone na outra ponta. Com a habilidade Berrão, ele crava a espada reta no chão e berra no microfone para atordoar e desarmar quem estiver por perto.
+- DESPERTAR: a máscara de ferro vermelha em placa "PARE" surge no rosto na transformação.
+- SELEÇÃO DE MAPAS: agora dividida em páginas de até 16 mapas (8 colunas × 2 linhas) com navegação fluida para a direita/esquerda e indicador de páginas.
 
 ## v4.57.0 — A Magistrada Refeita
 - A MAGISTRADA remodelada pela arte do Livro de Regras: mangas bufantes de verdade, a calça cinza larga caindo no sapato, as duas faixas brancas de pano com franja até o joelho, as pulseiras douradas empilhadas e a gola com o leque de raios dourados atrás da cabeça.
+- BENGALA DA MAGISTRADA: agora empunhada apontando para baixo com a ponta em direção ao chão, igual à bengala do Damir Lukic, respeitando a pose solene da personagem.
 
 ## v4.56.0 — O Colosso Refeito
 - DALMO remodelado pela arte oficial: o corpo em barril com os ombros enormes e redondos, a cabeça menor, os dreads bagunçados caindo na testa, a camisa escura folgada com a fralda para fora e as mangas arregaçadas, os antebraços grossos com as faixas e a calça cargo larga rasgada nos joelhos. O Colosso continua igual por cima.
