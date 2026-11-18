@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.2.0';
+export const VERSION = '5.3.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.3.0',
+    date: '2026-11-18',
+    title: 'Sangue nos Ferimentos',
+    items: [
+      'SANGUE NOS FERIMENTOS: os golpes que acertam agora espirram sangue para o lado do golpe, as gotas caem e deixam manchas no chão que secam e somem depois de alguns segundos. Golpes fortes deixam o ferido pingando por um instante.',
+      'Nova opção SANGUE em Opções → Vídeo: desligada, os golpes não soltam esse sangue (e o que já estava na tela some na hora). Os poderes de sangue, o sangramento e as poças antigas continuam iguais.',
+    ],
+  },
   {
     v: '5.2.0',
     date: '2026-11-18',

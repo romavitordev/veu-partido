@@ -113,7 +113,7 @@
 - [~] Especiais em equipe simples: revisar os outros nove (Força D, Os Cinco, Balu e Rubens, Irmãos Lukic, Psikolera, Mãe e Filho, Brasa, Abutres, Mascarados).
   - [x] Os três mais simples refeitos (v5.1.0; medidos por duração, golpes, falas e cortes de câmera): Balu e Rubens (Salto Fantasma, "Fio. Cobre. Solto.", Machado Demônio), Irmãos Lukic (o número do trapézio, a chuva de cartas, a Colheita com a bengala) e Mãe e Filho (garrafada, chutes do Arthur, o juramento dos Gaudérios).
   - [ ] Os outros seis (Força D, Os Cinco, Psikolera, Brasa, Abutres, Mascarados): já têm 5,4–6,4 s e 5–8 golpes; revisar depois.
-- [ ] **Opção de ligar/desligar os efeitos de sangue** (pedido do dono, 2026-11-18): efeitos NOVOS de sangue nos ferimentos (não mexer nos antigos) e a chave nas Opções.
+- [x] **Opção de ligar/desligar os efeitos de sangue** (pedido do dono, 2026-11-18): efeitos NOVOS de sangue nos ferimentos (não mexer nos antigos) e a chave nas Opções. Feito na v5.3.0 (`src/fx/woundBlood.js`, Opções → Vídeo → SANGUE).
 - [ ] Balanceamento dos recentes (bateria CPU × CPU) e revisão de cânone dos kits.
 
 ## Tecnologias novas do guia (pedido do dono, 2026-11-15)

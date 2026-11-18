@@ -7,6 +7,10 @@ import { weaknessMult } from './forms.js';
 import { balanceOf } from '../config/balance.js';
 import { rumble, rumbleHit } from '../input/rumble.js';
 
+const woundDir = new THREE.Vector3();
+const woundAt = new THREE.Vector3();
+const woundOff = new THREE.Vector3();
+
 // Pausa no impacto conforme o peso do golpe
 function hitstopFor(o, dealt) {
   const H = COMBAT.hitstopBy;
@@ -309,6 +313,18 @@ export function applyHit(world, attacker, victim, o) {
   const scale = o.scale ?? (launch ? 1.5 : 1);
   world.fx.play(launch || scale >= 1.5 ? 'FX_HIT_HEAVY' : 'FX_HIT_SMALL', p, { color, scale });
   if (o.strike && o.strike.impactFx === 'smash') world.fx.play('FX_DUST', victim.pos, { scale: Math.min(1.6, scale) });
+  // SANGUE NOS FERIMENTOS (fx/woundBlood.js; Opções → SANGUE): respingo para o lado do golpe; golpe forte deixa pingando.
+  // def.noBlood: quem não sangra (fica para corpos sem sangue). Dano 70 ≈ golpe médio; 300+ ≈ especial.
+  if (dealt > 0 && world.fx.wounds && !victim.def.noBlood) {
+    const bdir = o.dir ? woundDir.copy(o.dir).setY(0).normalize() : woundDir.subVectors(victim.pos, attacker.pos).setY(0).normalize();
+    const power = Math.min(2.5, 0.35 + dealt / 90 + (launch ? 0.5 : 0));
+    world.fx.wounds.hit(p, bdir, power);
+    if (dealt >= 90 || launch) {
+      // o ferimento fica do lado do golpe (fora do corpo, senão as gotas caem por dentro do modelo)
+      const ox = -bdir.x * 0.3, oz = -bdir.z * 0.3, oy = Math.max(-0.4, Math.min(0.5, p.y - victim.chestPos(woundAt).y));
+      world.fx.wounds.drip(() => (victim.state === 'ko' || !victim.visible ? null : victim.chestPos(woundAt).add(woundOff.set(ox, oy, oz))), 0.8 + Math.min(1.6, dealt / 200));
+    }
+  }
   // o ELEMENTO no impacto (pedido de 2026-10-26: "energia deveria ter raios e eletricidade em volta"): rituais e tiros de
   // Energia, e golpes com a arma amaldiçoada de Energia, soltam arcos elétricos em volta do corpo de quem apanha
   const curseEl = (o.kind === 'melee' || o.kind === 'ranged') && attacker.findBuff && attacker.findBuff('curse');

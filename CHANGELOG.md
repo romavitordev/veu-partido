@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.3.0 — Sangue nos Ferimentos
+
+### Adicionado
+- Sangue nos ferimentos (`src/fx/woundBlood.js`, dono em `Effects.wounds`): respingo de gotas na direção do golpe, névoa fina no impacto, gotas que viram manchas no chão (48 reaproveitadas, somem em 9 s) e o ferido pingando depois de golpe forte (dano ≥ 90 ou lançamento). Chamado em `applyHit` (`src/combat/damage.js`) quando o golpe tira vida; `def.noBlood` deixa um personagem sem esse sangue.
+- Opção SANGUE (`SETTINGS.blood`, padrão ligado; `BLOOD_OPTIONS`) na seção Vídeo das Opções, chaves `opt.blood.*` e `opt.desc.blood` nos 13 idiomas. Desligar limpa na hora o que estava na tela.
+
+### Sem mudança
+- Os efeitos de sangue antigos (FX_BLOOD, sangramento, poças de sangue, armaduras e lâminas de sangue) ficaram iguais.
+
 ## v5.2.0 — Tela de Carregamento
 
 ### Adicionado

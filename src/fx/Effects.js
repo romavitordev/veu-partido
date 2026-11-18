@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { FX_LIBRARY } from './library.js';
+import { WoundBlood } from './woundBlood.js';
 
 // Sistema de efeitos leve: dois pools de partículas (brilho aditivo e fumaça)
 // + efeitos de malha descartáveis (cortes, anéis, traçantes, clarões).
@@ -154,6 +155,7 @@ export class Effects {
     this.meshes = []; // {obj, life, maxLife, update}
     this.emitters = new Set();
     this.paused = false;
+    this.wounds = new WoundBlood(scene); // SANGUE NOS FERIMENTOS (fx/woundBlood.js; Opções → SANGUE)
   }
 
   pool(kind) {
@@ -453,6 +455,7 @@ export class Effects {
     this.smoke.update(dt);
     this.debris.update(dt);
     this.spark.update(dt);
+    this.wounds.update(dt);
     if (this.chains) for (const h of this.chains) { if (!h.alive) this.chains.delete(h); else this._updateChain(h); }
     if (this.runeSets) {
       for (const h of this.runeSets) {
@@ -488,6 +491,7 @@ export class Effects {
     this.smoke.clear();
     this.debris.clear();
     this.spark.clear();
+    this.wounds.clear();
     for (const fx of this.meshes) (fx.parent || this.scene).remove(fx.obj);
     this.meshes.length = 0;
     this.emitters.clear();

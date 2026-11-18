@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.3.0 — Sangue nos Ferimentos
+- SANGUE NOS FERIMENTOS: os golpes que acertam agora espirram sangue para o lado do golpe, as gotas caem e deixam manchas no chão que secam e somem depois de alguns segundos. Golpes fortes deixam o ferido pingando por um instante.
+- Nova opção SANGUE em Opções → Vídeo: desligada, os golpes não soltam esse sangue (e o que já estava na tela some na hora). Os poderes de sangue, o sangramento e as poças antigas continuam iguais.
+
 ## v5.2.0 — Tela de Carregamento
 - TELA DE CARREGAMENTO PRÓPRIA: ao abrir o jogo aparece uma tela só dela, com a barra de progresso de verdade, a porcentagem, quantos MB e arquivos já baixaram e dicas — antes era só um "PREPARANDO AS LUTAS…" no rodapé do menu.
 - Conexão lenta ou parada: o jogo avisa quanto tempo a conexão está parada, cancela o download que travou e tenta de novo sozinho.

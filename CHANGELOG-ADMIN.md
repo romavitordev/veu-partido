@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v5.3.0 — Sangue nos Ferimentos
+
+- Versão: `VERSION` 5.2.0 → **5.3.0** (`package.json`/lock junto). Data: 2026-11-18.
+- **Pedido do dono (2026-11-18):** "adicione nas opções a opção de ligar/deligar efeitos visuais de sangue no jogo
+  (serão novos efeitos de sangue em ferimentos e não sobre os antigos)."
+- **Feito:** `src/fx/woundBlood.js` (classe `WoundBlood`: pool próprio de 500 gotas em `Points` com mistura normal — sangue
+  não brilha —, 48 manchas com uma geometria e três texturas de canvas compartilhadas; `hit(p, dir, power)`, `drip(follow,
+  time)`, gotas que tocam y≈0 viram mancha, manchas próximas engrossam em vez de empilhar). `Effects` cria, atualiza e
+  limpa (`clear()` no fim do round). `applyHit` chama com força `0,35 + dano/90` (+0,5 no lançamento, máx. 2,5).
+- **Opção:** `SETTINGS.blood` (padrão `true`), linha nas Opções (Vídeo), textos nos 13 idiomas. Com a opção desligada
+  nada é criado e o que estava na tela some no quadro seguinte.
+- **Testado no jogo** (Caio × Balu, Coliseu): ligado → ~30 gotas por sequência e manchas no chão atrás do alvo;
+  desligado → 0 gotas e 0 manchas com o dano normal. Testes 119/119, `npm run check` "Tudo certo.", build e moves ok.
+
 ## v5.2.0 — Tela de Carregamento
 
 - Versão: `VERSION` 5.1.0 → **5.2.0** (`package.json`/lock junto). Data: 2026-11-18.
