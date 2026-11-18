@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.9.0 — PSIKOLERA Completa
+
+### Adicionado
+- Personagens `franco` (Guitarra Lança-Chamas, máscara de gás e tanque) e `ale` (Lâmina Keytar, máscara de corpse paint), com modelos (`char_franco.py`, `char_ale.py`), armas em `weapons.js`, props, texturas, falas, agarrões, poses de vitória e preço no Outro Lado.
+- `flameStream`: opção `nozzle` (o jato sai de uma peça sempre à mostra, sem ligar/desligar a lança).
+
+### Alterado
+- `teamLinks.psikolera` lançado (`min` 3, cinco membros); `CHOREO.psikolera` com o solo de fogo do Franco e o transe de Alê; dano em 10 partes, a parte de quem falta vai no golpe final.
+
 ## v5.8.0 — Praça de Tipora
 
 ### Alterado

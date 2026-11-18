@@ -215,6 +215,9 @@ export const GRAB_SCENES = {
   // CAIO: a lâmina farpada, o microfone na cara e o BERRÃO colado no ouvido (sangra)
   caio: scene({ ...S('hammer_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('hammer_v'), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'taunt_roar', fx: 'trauma', sound: 'scream', bleed: { dps: 4, duration: 2 } }),
   cindy: scene({ ...S('hammer_h'), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'shoot_bass', fx: 'pointBlank', sound: 'rifleShot', bleed: { dps: 4, duration: 2 } }),
+  // FRANCO: o corpo da guitarra, a ponta do V e o bafo do lança-chamas colado (queima e sangra)
+  ale: scene({ ...S('hammer_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'hammer_finisher', fx: 'trauma', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } }),
+  franco: scene({ ...S('hammer_h'), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'shoot_bass', fx: 'pointBlank', sound: 'explosion', bleed: { dps: 4, duration: 2 } }),
   // SABARA: a espada no pescoço, a adaga curva no lado e a mordida (cânone: o Aguiar no ep. 4)
   sabara: scene({ ...S('dual_r'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('dual_l'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),
   // Cristino: segura pela gola, dois golpes de peixeira e a lâmina no pescoço ("Eu odeio gente barulhenta" — o Caíto)

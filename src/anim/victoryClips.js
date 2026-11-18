@@ -88,6 +88,10 @@ export function addVictoryClips(CLIPS, k) {
     vic_cindy: pose({ hip: [0, 0.25, 0.12], sp: [-0.12, -0.15, 0], hd: [-0.32, 0, 0.15], sL: [-1.3, -0.5, 0.3], eL: [-0.6, 0, 0], sR: [-0.5, 0.6, -0.1], eR: [-1.6, 0, 0], lR: [-0.2, 0, -0.06], kR: [0.4, 0, 0], lL: [0.08, 0, 0.1] }),
     // Caio: a Espada Microfone fincada do lado, a outra mão aberta para a plateia e a cabeça para trás GRITANDO
     vic_caio: pose({ h: -0.03, sp: [-0.15, 0, 0], hd: [-0.45, 0, 0], sR: [-0.45, 0, -0.35], eR: [-0.4, 0, 0], sL: [-2.2, -0.2, 0.7], eL: [-0.3, 0, 0], lL: [-0.08, 0, 0.18], lR: [0.08, 0, -0.18] }),
+    // Franco: a guitarra erguida no alto com a mão direita, a esquerda em chifrinho, a cabeça para trás
+    // ALÊ: a lâmina keytar apoiada no ombro e a outra mão estendida, de palma para cima ("me dá sua mão")
+    vic_ale: pose({ h: 0, sp: [0.05, -0.2, 0], hd: [0.1, 0.25, 0], sR: [-2.2, 0.2, -0.6], eR: [-1.9, 0, 0], sL: [-1.1, -0.5, 0.2], eL: [-0.2, 0, 0], lL: [-0.04, 0, 0.12], lR: [0.04, 0, -0.12] }),
+    vic_franco: pose({ h: -0.02, sp: [-0.1, 0, 0], hd: [-0.35, 0, 0], sR: [-2.6, 0, -0.2], eR: [-0.3, 0, 0], sL: [-1.2, 0.3, 0.6], eL: [-1.2, 0, 0], lL: [-0.05, 0, 0.2], lR: [0.05, 0, -0.2] }),
     // Damir: a bengala fincada à frente na direita, a esquerda na aba do fedora e o queixo erguido (arrogante)
     vic_damir: pose({ sp: [-0.08, 0, 0], hd: [-0.22, 0.1, 0], sR: [-0.55, 0, -0.2], eR: [-0.5, 0, 0], sL: [-1.95, -0.3, 0.5], eL: [-2.4, 0, 0], lL: [-0.06, 0, 0.12], lR: [0.06, 0, -0.12] }),
     // Eloy: as baquetas erguidas no alto depois do solo, a cabeça baixa batendo no ritmo e as pernas abertas

@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.9.0 — PSIKOLERA Completa
+- FRANCO, o guitarrista da PSIKOLERA, chegou: golpes com a Guitarra Lança-Chamas, a Labareda, o SOLO INCENDIÁRIO (o jato de fogo sai do bico da guitarra enquanto você segura), o Power Chord, a Guitarrada, a Distorção, o especial TORMENTA TARDIA e a máscara de gás no despertar.
+- ALÊ, o teclado da PSIKOLERA, chegou: a LÂMINA KEYTAR, o TRANSE que puxa o adversário, a LEITURA DE MÃO que atordoa, o Corte de Teclado, o PREVER RESULTADOS (as esquivas voltam e você toma menos dano), o especial ACORDE FINAL e a máscara de corpse paint no despertar.
+- HORA DO SHOW! liberado: com 3 da PSIKOLERA na equipe, a banda inteira sobe ao palco — bateria, grito, tiros dançando, o solo de fogo do Franco, o transe de Alê e a Última Nota.
+
 ## v5.8.0 — Praça de Tipora
 - ILHA DE TIPORA mais viva: em volta da praça agora há o poço, a banca do peixe, as redes secando, covos e caixas, lenha com o machado no cepo, o varal de roupa, o mural da praça, o cocho e um bote virado perto do mar; no chão, pedrinhas, sulcos de carroça e tufos de grama. A área da luta continua livre.
 

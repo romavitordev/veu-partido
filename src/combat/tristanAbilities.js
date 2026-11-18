@@ -46,9 +46,12 @@ Object.assign(ABILITY_TYPES, {
   // segundos. Ele gira devagar acompanhando o alvo — correr de lado ou esquivar sai do fogo; a defesa de frente segura.
   flameStream: {
     start(f, a, world) {
-      const lance = f.rig.props.flameLance;
-      const tanks = f.rig.props.flameTanks;
+      // `nozzle`: o bico vem de outra peça que fica sempre à mostra (o FRANCO: a Guitarra Lança-Chamas, props.guitar)
+      const fixed = a.nozzle && f.rig.props[a.nozzle];
+      const lance = fixed || f.rig.props.flameLance;
+      const tanks = fixed ? null : f.rig.props.flameTanks;
       const props = (on) => {
+        if (fixed) return;
         if (lance) lance.visible = on;
         if (tanks) tanks.visible = on;
         if (a.hideProp) f.rig.showProp(a.hideProp, !on);

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo, espadaMicrofone } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo, espadaMicrofone, guitarraLancaChamas, mascaraFranco, tanqueFranco, laminaKeytar } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1864,4 +1864,38 @@ export function addSabaraProps(rig) {
   tk.visible = false;
   sockets.handL.add(tk);
   props.throwKnife = tk;
+}
+
+// FRANCO (PSIKOLERA): a GUITARRA LANÇA-CHAMAS na direita, empunhada como o baixo da Cindy (o corpo na cintura, o braço
+// e o bico para a frente); o TANQUE nas costas sempre (o tubo da máscara liga nele); a MÁSCARA DE GÁS com espinhos e
+// lentes vermelhas só no despertar, como o resto da PSIKOLERA
+export function addFrancoProps(rig) {
+  const { sockets, props } = rig;
+  const gtr = guitarraLancaChamas();
+  gtr.position.y = -0.2;
+  gtr.rotation.y = -Math.PI / 2;
+  sockets.handR.add(gtr);
+  props.guitar = gtr;
+  rig.muzzle = gtr.userData.muzzle;
+  const tank = tanqueFranco();
+  tank.position.set(0, -0.1, -0.14);
+  sockets.back.add(tank);
+  props.tank = tank;
+  const mask = mascaraFranco();
+  mask.position.set(0, -0.02, -0.01);
+  sockets.mouth.add(mask);
+  props.maskOn = mask;
+  rig.showProp('maskOn', false);
+}
+
+// ALÊ (PSIKOLERA): a LÂMINA KEYTAR na direita, empunhada como espada pesada (o teclado e a lâmina para a frente). A
+// MÁSCARA DE CORPSE PAINT é a peça prop_maskOn do modelo (tools/blender/char_ale.py): só aparece no despertar
+export function addAleProps(rig) {
+  const { sockets, props } = rig;
+  const k = laminaKeytar();
+  inFist(k, GRIP_HEAVY);
+  sockets.handR.add(k);
+  props.keytar = k;
+  rig.muzzle = k.userData.muzzle;
+  if (props.maskOn) rig.showProp('maskOn', false);
 }

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.8.0';
+export const VERSION = '5.9.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.9.0',
+    date: '2026-11-18',
+    title: 'PSIKOLERA Completa',
+    items: [
+      'FRANCO, o guitarrista da PSIKOLERA, chegou: golpes com a Guitarra Lança-Chamas, a Labareda, o SOLO INCENDIÁRIO (o jato de fogo sai do bico da guitarra enquanto você segura), o Power Chord, a Guitarrada, a Distorção, o especial TORMENTA TARDIA e a máscara de gás no despertar.',
+      'ALÊ, o teclado da PSIKOLERA, chegou: a LÂMINA KEYTAR, o TRANSE que puxa o adversário, a LEITURA DE MÃO que atordoa, o Corte de Teclado, o PREVER RESULTADOS (as esquivas voltam e você toma menos dano), o especial ACORDE FINAL e a máscara de corpse paint no despertar.',
+      'HORA DO SHOW! liberado: com 3 da PSIKOLERA na equipe, a banda inteira sobe ao palco — bateria, grito, tiros dançando, o solo de fogo do Franco, o transe de Alê e a Última Nota.',
+    ],
+  },
   {
     v: '5.8.0',
     date: '2026-11-18',

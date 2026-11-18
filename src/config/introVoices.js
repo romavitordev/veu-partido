@@ -173,6 +173,32 @@ export const VOICES = {
       any: [(o) => `FALA MAIS ALTO, ${o.name.toUpperCase()}!`, (o) => `Calma, ${o.name}. O refrão ainda nem começou.`],
     },
   },
+  // FRANCO (cânone: o guitarrista da PSIKOLERA, 19 anos, o mais novo, queimaduras pelo corpo; o tom = PROPOSTA)
+  franco: {
+    open: {
+      ally: (o) => `${o.name}! Fica atrás de mim. E longe do bico da guitarra.`,
+      rival: (o) => `${o.group}, é? Vocês vão sair daqui chamuscados.`,
+      any: [(o) => `Ô ${o.name}, gosta de calor? Eu trouxe o meu.`, (o) => `Afina aí, ${o.name}. Vai começar o solo.`],
+    },
+    reply: {
+      ally: (o) => `Fechou, ${o.name}! Você bate, eu queimo.`,
+      rival: (o) => `${o.group}? Nunca ouvi falar. Depois do show ninguém vai lembrar.`,
+      any: [(o) => `Fala sério, ${o.name}. Isso foi um acorde ou um tropeço?`, (o) => `Mais alto, ${o.name}! MAIS QUENTE!`],
+    },
+  },
+  // ALÊ (cânone: o teclado da PSIKOLERA, elu; lê mãos, põe em transe e prevê resultados; o tom = PROPOSTA)
+  ale: {
+    open: {
+      ally: (o) => `${o.name}, me dá sua mão. ... Tá tudo bem, a gente sai dessa.`,
+      rival: (o) => `${o.group}... eu já vi como isso termina. Não termina bem pra vocês.`,
+      any: [(o) => `Calma, ${o.name}. Eu já sei qual vai ser o seu próximo passo.`, (o) => `Olha pra luz, ${o.name}. Respira. Isso, devagar...`],
+    },
+    reply: {
+      ally: (o) => `Pode ir, ${o.name}. Eu te aviso antes de dar errado.`,
+      rival: (o) => `${o.group}? Já li a mão de gente de vocês. Linha da vida curta.`,
+      any: [(o) => `Engraçado, ${o.name}. Era exatamente isso que eu previ que você ia dizer.`, (o) => `Não precisa falar, ${o.name}. Eu já sei.`],
+    },
+  },
   // SABARA (cânone: arrogante, exige gestos de humilhação; tira a bandana para mostrar o rosto de vampira)
   sabara: {
     open: {

@@ -1461,14 +1461,22 @@ const CHOREO = {
   },
 
   // HORA DO SHOW! (nome do dono; pedido de 2026-11-14: "um especial dos psikolera"). A PSIKOLERA em cena: o Eloy na bateria e
-  // a Cindy no Fuzil Baixo, os dois de máscara (link.masks). PROPOSTA: a batida, o GRITO da Cindy (Silenciar, cânone)
-  // que prende o alvo, o rufo do Eloy, o leque de tiros dela dançando e a ÚLTIMA NOTA com o prato no fim. Franco, Caio e
-  // Alê entram na coreografia quando estiverem no elenco
+  // a Cindy no Fuzil Baixo, o Caio na Espada Microfone, o Franco na Guitarra Lança-Chamas e Alê na Lâmina Keytar, todos de
+  // máscara (link.masks). PROPOSTA: a batida, o GRITO (Silenciar da Cindy / o Berrão do Caio, cânone) que prende o alvo, o
+  // rufo do Eloy, o leque de tiros dela dançando, o SOLO DE FOGO do Franco, o TRANSE de Alê (cânone: põe em transe) e a
+  // ÚLTIMA NOTA com o prato no fim. Lançado em 2026-11-18 com os cinco no elenco (vale com 3 da banda na equipe); quem
+  // não está na equipe não entra, e o tempo encolhe junto
   psikolera({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 5.6;
+    const tools0 = { get: (id) => [f, ...crew].some((x) => linkId(x.def) === id) };
+    const hasFranco = tools0.get('franco'), hasAle = tools0.get('ale');
+    const FR = S + 3.55; // o solo do Franco
+    const AL = FR + (hasFranco ? 0.7 : 0); // o transe de Alê
+    const D = (hasFranco ? 0.7 : 0) + (hasAle ? 0.7 : 0); // quanto o fim anda para a frente
+    const END = S + 5.6 + D;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
-    const eloy = tools.get('eloy'), cindy = tools.get('cindy'), caio = tools.get('caio');
-    const hits = splitDamage(crewTotal, 8);
+    const eloy = tools.get('eloy'), cindy = tools.get('cindy'), caio = tools.get('caio'), franco = tools.get('franco'), ale = tools.get('ale');
+    const hits = splitDamage(crewTotal, 10);
+    const FIRE = 0xff7a2a, TRANCE = 0x9a7aff, STONE = 0xc8102a;
     const ACID = 0xc6f03a, BLOOD = 0xd01c30;
     const say = sayer(world);
     const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
@@ -1492,6 +1500,15 @@ const CHOREO = {
       if (caio) {
         tools.enter(caio, 0, 3.4);
         caio.play('taunt_roar', 1.2);
+      }
+      // o FRANCO e Alê (2026-11-18) nas pontas do palco
+      if (franco) {
+        tools.enter(franco, -1.0, 4.0);
+        franco.play('bass_play', 1.6);
+      }
+      if (ale) {
+        tools.enter(ale, 1.0, 4.0);
+        ale.play('bass_play', 1.6);
       }
       world.audio.play('drumCrash', { volume: 0.8 });
       say(eloy || cindy, eloy ? 'UM, DOIS, TRÊS, QUATRO!' : 'Boa noite, Monica Club! ✩☾', 0);
@@ -1549,22 +1566,67 @@ const CHOREO = {
         tools.impact(cindy, hits[3 + i], { sound: 'clawHit', color: BLOOD });
       });
     }
+    // 4b. o SOLO DE FOGO do Franco: o jato sai do bico da Guitarra Lança-Chamas e varre o alvo
+    if (franco) {
+      tl.add(FR, () => {
+        if (!live()) return;
+        const at = tools.around(franco, -0.9, 3.2);
+        franco.pos.set(at.x, 0, at.z);
+        franco.face(opp);
+        franco.play('shoot_bass', 0.7);
+        say(franco, 'MAIS ALTO! MAIS QUENTE!', 3);
+        world.audio.play('smoke', { volume: 0.9, pitch: 0.6 });
+        world.cameraRig.playShots([{ ...overShoulder(franco, opp, { dur: 0.8, back: 2, side: -0.8, height: 1.5, fov: 46 }), cut: true }]);
+      });
+      for (let i = 0; i < 6; i++) {
+        tl.add(FR + 0.1 + i * 0.08, () => {
+          if (!live()) return;
+          const from = muzzle(franco), to = opp.chestPos();
+          for (let k = 1; k <= 4; k++) world.fx.burst(from.clone().lerp(to, k / 4), { count: 2, color: k < 2 ? 0xffe8a0 : k < 3 ? 0xffa030 : FIRE, speed: 0.8, up: 1.2, life: 0.25, size: 0.2 + k * 0.12 });
+          if (i === 2) tools.impact(franco, hits[8], { sound: 'impact', color: FIRE });
+        });
+      }
+    }
+    // 4c. o TRANSE de Alê: a melodia acende a espiral, o alvo para no lugar e a lâmina corta
+    if (ale) {
+      tl.add(AL, () => {
+        if (!live()) return;
+        ale.face(opp);
+        ale.play('concentrate', 0.4);
+        say(ale, 'Me dá sua mão. Eu já sei como termina.', 4);
+        world.audio.play('ritual', { volume: 0.8 });
+        for (let i = 1; i <= 3; i++) world.fx.ring(opp.chestPos(), { color: TRANCE, radius: 0.4 + i * 0.35, life: 0.5 });
+        if (opp.state !== 'ko') { opp.stun(1.4, 'stagger'); opp.notify('EM TRANSE', true); }
+        world.cameraRig.playShots([{ ...faceClose(ale, { dur: 0.6, from: 2.2, to: 1.4, height: 1.6, fov: 36 }), cut: true }]);
+      });
+      tl.add(AL + 0.4, () => {
+        if (!live()) return;
+        const at = tools.around(ale, 0.6, 1.5);
+        ale.pos.set(at.x, 0, at.z);
+        ale.face(opp);
+        ale.play('hammer_diag', 0.35);
+        tools.impact(ale, hits[9], { sound: 'bladeHit', color: STONE, slash: true });
+      });
+    }
     // 5. a ÚLTIMA NOTA e o prato de ataque juntos
-    tl.add(S + 3.85, () => {
+    tl.add(S + 3.85 + D, () => {
       if (!live()) return;
       if (cindy) { cindy.face(opp); cindy.play('bass_play', 0.8); say(cindy, 'Última nota, amor. ✩☾', 1); }
       if (eloy) { eloy.face(opp); eloy.play('dual_both', 0.55); }
+      if (franco) { franco.face(opp); franco.play('bass_play', 0.8); }
+      if (ale) { ale.face(opp); ale.play('bass_play', 0.8); }
       world.audio.play('bassNote', { volume: 1, freq: 41 });
       world.cameraRig.playShots([{ ...lowAngle(cindy || eloy, { dur: 1.3, dist: 3.2, fov: 48 }), cut: true }]);
     });
-    tl.add(S + 4.15, () => {
+    tl.add(S + 4.15 + D, () => {
       if (!live()) return;
-      const who = cindy || eloy;
+      const who = cindy || eloy || caio || franco || ale;
       world.audio.play('drumCrash', { volume: 1.1 });
       world.audio.play('heavyPunch', { volume: 1.1, pitch: 0.45 });
       for (let i = 1; i <= 4; i++) world.fx.ring(who.chest().lerp(opp.chestPos(), i / 4), { color: i % 2 ? ACID : 0xffb040, radius: 0.6 + i * 0.45, life: 0.35, vertical: true, yaw: who.yaw + Math.PI / 2 });
       world.fx.burst(opp.chestPos(), { count: 30, color: 0xffb040, speed: 5, up: 2, life: 0.5, size: 0.2 });
-      tools.impact(who, hits[6] + hits[7], { sound: 'slashFinal', color: ACID });
+      // o que sobrou de quem não está na equipe vai todo no golpe final (o total do especial não muda)
+      tools.impact(who, hits[6] + hits[7] + (eloy ? 0 : hits[1] + hits[2]) + (cindy ? 0 : hits[3] + hits[4] + hits[5]) + (franco ? 0 : hits[8]) + (ale ? 0 : hits[9]), { sound: 'slashFinal', color: ACID });
       world.cameraRig.shake(0.5, 0.35);
     });
     tl.add(END, () => { if (kit) world.scene.remove(kit); kit = null; world.ui && world.ui.subtitle && world.ui.subtitle(null); });

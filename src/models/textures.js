@@ -752,6 +752,54 @@ const CAIO_FACE = {
   mouth: { mouthW: 15, smile: 5, lip: 'rgba(120,60,56,0.5)' },
 };
 
+// o FRANCO (PSIKOLERA; cânone: ruivo, 19 anos, QUEIMADURAS pelo corpo): sardas, as manchas de queimadura e o lápis
+// preto borrado da banda
+function francoBurn(g, x, y, r, seed) {
+  const rnd = seeded(seed);
+  g.fillStyle = 'rgba(176,74,60,0.55)';
+  g.beginPath(); g.ellipse(x, y, r, r * 0.75, rnd() * 3, 0, Math.PI * 2); g.fill();
+  for (let i = 0; i < 7; i++) { // a pele repuxada e brilhante por dentro
+    g.fillStyle = `rgba(${200 + rnd() * 30},${120 + rnd() * 30},${110 + rnd() * 20},0.5)`;
+    g.beginPath(); g.ellipse(x + (rnd() - 0.5) * r, y + (rnd() - 0.5) * r * 0.7, r * (0.15 + rnd() * 0.25), r * (0.1 + rnd() * 0.15), rnd() * 3, 0, Math.PI * 2); g.fill();
+  }
+}
+function francoFace(g) {
+  const rnd = seeded(75);
+  for (let i = 0; i < 70; i++) { // as sardas no nariz e nas bochechas
+    g.fillStyle = `rgba(150,80,50,${0.25 + rnd() * 0.3})`;
+    g.beginPath(); g.arc(CX + (rnd() - 0.5) * 120, EYE_Y + 22 + rnd() * 36, 1 + rnd() * 1.6, 0, Math.PI * 2); g.fill();
+  }
+  francoBurn(g, CX - 46, EYE_Y + 58, 26, 76); // a queimadura na bochecha direita, descendo para o queixo
+  francoBurn(g, CX + 60, EYE_Y - 30, 14, 77);
+  for (const sx of [-1, 1]) {
+    g.fillStyle = 'rgba(16,12,14,0.5)';
+    g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 8, 17, 6, sx * 0.08, 0, Math.PI * 2); g.fill();
+  }
+}
+const FRANCO_FACE = {
+  skin: '#e6b89a',
+  eye: { iris: '#4a7a3a', irisLight: '#8ab86a', w: 13, h: 7, tilt: 0.03, lid: 3 },
+  brow: { angry: 0.25, thick: 2.6, color: '#b8401a' },
+  mouth: { mouthW: 13, smile: 6, lip: 'rgba(170,90,80,0.5)' },
+};
+
+// ALÊ (PSIKOLERA; cânone: olhos AZUIS, 25 anos): o delineado preto borrado da banda e uma sombra escura embaixo dos olhos
+// (os piercings da sobrancelha, do lábio e das orelhas são peças do modelo)
+function aleFace(g) {
+  for (const sx of [-1, 1]) {
+    g.fillStyle = 'rgba(14,10,14,0.55)';
+    g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 8, 18, 6.5, sx * 0.1, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(14,10,14,0.35)'; g.lineWidth = 2; // o lápis escorrido
+    g.beginPath(); g.moveTo(CX + sx * 30, EYE_Y + 12); g.lineTo(CX + sx * 28, EYE_Y + 34); g.stroke();
+  }
+}
+const ALE_FACE = {
+  skin: '#efd6c6',
+  eye: { iris: '#2a6ad0', irisLight: '#8ac0ff', w: 13, h: 7, tilt: 0.02, lid: 3 },
+  brow: { angry: 0.1, thick: 2.4, color: '#c87a3a' },
+  mouth: { mouthW: 13, smile: 3, lip: 'rgba(150,90,90,0.5)' },
+};
+
 export const MATERIAL_TEXTURES = {
   // ---------------- KAISER: queimadura no lado ESQUERDO (x > 256)
   // KAISER depois do orfanato (wiki): a metade ESQUERDA do rosto queimada, sem barba e sem a sobrancelha esquerda; com
@@ -2673,6 +2721,65 @@ export const MATERIAL_TEXTURES = {
       g.beginPath(); g.ellipse(w * (0.4 + rnd() * 0.2), h * (0.42 + rnd() * 0.12), 20 + rnd() * 40, 14 + rnd() * 30, rnd() * 3, 0, Math.PI * 2); g.fill();
     }
     caioSpatter(g, w, h, 14, 53);
+  }, { wrap: true }),
+  // ---------------- FRANCO (PSIKOLERA): o rosto com sardas e queimaduras; a camisa de força encardida e chamuscada; a calça
+  // escura; a CANELA com a TATUAGEM TRIBAL e queimaduras; o MANTO CINZA queimado e furado (cânone)
+  face_franco: face((g) => francoFace(g), FRANCO_FACE),
+  suit_franco: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 61);
+    const rnd = seeded(62);
+    for (let i = 0; i < 12; i++) { // as marcas de chamuscado
+      g.fillStyle = `rgba(40,30,24,${0.25 + rnd() * 0.3})`;
+      g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 14 + rnd() * 36, 8 + rnd() * 20, rnd() * 3, 0, Math.PI * 2); g.fill();
+    }
+    caioSpatter(g, w, h, 8, 63);
+  }, { wrap: true }),
+  sleeve_franco: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 64);
+    caioSoak(g, w, h - 90, 90, 0.6, 65);
+  }, { wrap: true }),
+  pants_franco: () => canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#3a3634'; g.fillRect(0, 0, w, h);
+    const rnd = seeded(66);
+    for (let i = 0; i < 140; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '20,18,18' : '90,86,80'},${0.08 + rnd() * 0.1})`; g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 18, 1 + rnd() * 4); }
+  }, { wrap: true }),
+  skin_franco_leg: () => canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = '#e6b89a'; g.fillRect(0, 0, w, h);
+    // a TATUAGEM TRIBAL na panturrilha (atrás da perna: u perto de 0 e de 1)
+    g.fillStyle = '#141214';
+    for (const cx of [0, w]) {
+      for (let k = 0; k < 5; k++) {
+        const y = 40 + k * 36;
+        g.beginPath();
+        g.moveTo(cx - 40, y); g.quadraticCurveTo(cx, y - 30, cx + 40, y);
+        g.quadraticCurveTo(cx + 10, y - 8, cx, y + 26); g.quadraticCurveTo(cx - 10, y - 8, cx - 40, y);
+        g.fill();
+      }
+    }
+    francoBurn(g, w * 0.55, h * 0.35, 30, 67);
+  }, { wrap: true }),
+  cloak_franco: () => canvasTex(512, 512, (g, w, h) => {
+    g.fillStyle = '#6a6864'; g.fillRect(0, 0, w, h);
+    const rnd = seeded(68);
+    for (let i = 0; i < 220; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '40,38,36' : '140,136,128'},${0.06 + rnd() * 0.1})`; g.fillRect(rnd() * w, rnd() * h, 3 + rnd() * 30, 2 + rnd() * 5); }
+    for (let i = 0; i < 16; i++) { // os FUROS queimados: o miolo preto e a borda marrom chamuscada
+      const x = rnd() * w, y = h * 0.15 + rnd() * h * 0.85, r = 6 + rnd() * 16;
+      g.fillStyle = 'rgba(90,50,24,0.7)'; g.beginPath(); g.ellipse(x, y, r * 1.5, r * 1.2, rnd() * 3, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#0c0a0a'; g.beginPath(); g.ellipse(x, y, r, r * 0.8, rnd() * 3, 0, Math.PI * 2); g.fill();
+    }
+    const grd = g.createLinearGradient(0, h * 0.8, 0, h); // a barra queimada
+    grd.addColorStop(0, 'rgba(20,16,14,0)'); grd.addColorStop(1, 'rgba(20,16,14,0.9)');
+    g.fillStyle = grd; g.fillRect(0, h * 0.8, w, h * 0.2);
+  }, { wrap: true }),
+  // ---------------- ALÊ (PSIKOLERA): o rosto de olhos azuis e o delineado; o macacão de camisa de força encardido
+  face_ale: face((g) => aleFace(g), ALE_FACE),
+  suit_ale: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 81);
+    caioSpatter(g, w, h, 9, 82);
+  }, { wrap: true }),
+  legs_ale: () => canvasTex(512, 512, (g, w, h) => {
+    caioCloth(g, w, h, 83);
+    caioSpatter(g, w, h, 5, 84);
   }, { wrap: true }),
   // a MÁSCARA DE FERRO do Caio: a placa PARE alongada (o UV é plano: a largura e a altura da placa inteira). O vermelho
   // gasto, a borda branca, o PARE no alto, as frestas dos olhos, a fenda da boca, os riscos e o sangue

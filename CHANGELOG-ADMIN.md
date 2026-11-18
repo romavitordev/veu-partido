@@ -1,5 +1,34 @@
 # Registro administrativo de alterações
 
+## v5.9.0 — PSIKOLERA Completa
+
+- Versão: `VERSION` 5.8.0 → **5.9.0**. Data: 2026-11-18. Dono: "Agora quero que finalize os psikolera, adicione
+  Franco e Alê".
+- **FRANCO** (`src/characters/franco.js`, `tools/blender/char_franco.py` → `public/models/franco.glb`). Cânone
+  (`lore/EQUIPES-HEXATOMBE.md`): ruivo espetado, queimaduras, tatuagem tribal na canela, camisa de força com espinhos na
+  gola, manto cinza queimado, calça até a canela, caneleiras de metal com espinhos, máscara de gás com tanque, Guitarra
+  Lança-Chamas. Em código: `guitarraLancaChamas` / `mascaraFranco` / `tanqueFranco` (`weapons.js`), `addFrancoProps`.
+  Texturas `face_franco`, `suit_franco`, `sleeve_franco`, `pants_franco`, `skin_franco_leg`, `cloak_franco`. Kit
+  INTEIRO = PROPOSTA (a wiki não lista habilidade): Labareda, Solo Incendiário (`flameStream` com o novo `nozzle`: o
+  bico vem de uma peça sempre à mostra, `tristanAbilities.js`), Power Chord, Guitarrada, Distorção, especial Tormenta
+  Tardia, despertar Fogo na Plateia.
+- **ALÊ** (elu; `src/characters/ale.js`, `tools/blender/char_ale.py` → `public/models/ale.glb`). Cânone: cabelo loiro
+  longo com raiz vermelho-alaranjada, olhos azuis, macacão de camisa de força, piercings, pregos na gola, colar com a
+  pedra vermelha, máscara de corpse paint (peça `prop_maskOn`), Lâmina Keytar (`laminaKeytar`, `addAleProps`), Prever
+  Resultados (passiva `precognition` + o estado Prever Resultados: esquivas de volta, -20% de dano, +10% de
+  velocidade), lê mãos (Leitura de Mão: `fearGaze` de perto) e põe em transe (Transe: `hypnoSpiral`). Corte de
+  Teclado (`dashStrike`), Nota Aguda, especial Acorde Final e despertar Máscara do Humor = PROPOSTA.
+- Registros dos dois: `characters/index.js`, `models/index.js`, `textures.js`, `dialogues.js` (nomes e falas de
+  vitória contra todo o elenco nos dois sentidos), `battleRecent.js`, `introVoices.js`, `grabScenes.js`,
+  `victoryClips.js` (`vic_franco`, `vic_ale`), `balance.js` (1,0/1,0: bateria pendente), `pve/unlocks.js` (170),
+  `tools/check-roster.mjs`.
+- **HORA DO SHOW! lançado** (`teamLinks.js`: sem `unreleased`, `min` 3, os cinco em `group`/`order`/`masks`).
+  `CHOREO.psikolera`: Franco e Alê entram nas pontas do palco; depois do leque da Cindy vêm o SOLO DE FOGO do Franco
+  (o jato sai do bico da guitarra) e o TRANSE de Alê (o alvo para no lugar e a lâmina corta); a Última Nota fecha. O
+  dano passa a ser dividido em 10 partes e a parte de quem não está em cena vai no golpe final (o total não muda).
+- Conferido: galeria dos dois modelos, lutas CPU × CPU (Franco × Caio, Alê × Franco), Solo Incendiário, especiais
+  e o Hora do Show! numa equipe Alê/Franco/Cindy (todas as falas na ordem, sem erro no console).
+
 ## v5.8.0 — Praça de Tipora
 
 - Versão: `VERSION` 5.7.0 → **5.8.0**. Data: 2026-11-18. Dono: "Sim, próximo item".

@@ -1819,6 +1819,95 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## FRANCO
+
+*O guitarrista da PSIKOLERA, o mais novo da banda* · arma: A Guitarra Lança-Chamas: uma guitarra com pintura de chamas e um lança-chamas saindo de baixo
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corpo da guitarra | 19 | 1.8 m |  |
+| ○ 2 | Braço da guitarra | 21 | 1.9 m |  |
+| ○ 3 | Ponta do V | 22 | 2 m |  |
+| ○ 4 | Bafo do bico | 48 | 2.2 m | finalizador: lança |
+| Frente + ○ | Mosh | 26 | 1.9 m |  |
+| Trás + ○ | Recua e queima | 26 | 2.4 m | invulnerável no começo |
+| Lado + ○ | Giro do manto | 22 | 1.9 m |  |
+| No ar + ○ | Guitarra do alto | 30 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Guitarra para cima | 30 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão de coturno | 32 | 1.7 m | finalizador: derruba |
+
+### Principal (□ / X): Labareda
+
+- Dano 16 × 2 · alcance 16 m · cooldown 1.9 s · custo 0
+
+### Habilidades
+
+- **Solo Incendiário** — △ + □ / Y + X · custo 22 · cooldown 10 s · dano 9 · alcance 5.5 m
+  Abre o lança-chamas da guitarra e solta o jato em cone à frente ENQUANTO SEGURA (até 2,2 s; soltar apaga). Quem fica no fogo toma dano contínuo e sai QUEIMANDO.
+- **Power Chord** — △ + ○ / Y + B · custo 20 · cooldown 11 s · dano 34
+  Bate a guitarra no chão num acorde pesado: a onda de fogo derruba quem estiver em volta dele.
+- **Guitarrada** — △ + L2 / Y + LT · custo 22 · cooldown 10 s · dano 46 · alcance 2.3 m
+  Avança e acerta a guitarra inteira de cima para baixo: faz sangrar e quebra a defesa. Se errar, fica exposto.
+- **Distorção** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
+  Liga a distorção no máximo: por 7 s os golpes físicos e a Labareda saem mais rápidos e mais fortes.
+
+### Especial: Tormenta Tardia
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Fogo na Plateia
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades, especial), +6% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 12% na hora.
+
+---
+
+## ALÊ
+
+*O teclado da PSIKOLERA (elu), quem fez as máscaras da banda* · arma: A Lâmina Keytar: uma lâmina grande presa na lateral de um keytar
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte da lâmina | 22 | 2.4 m |  |
+| ○ 2 | Volta do teclado | 25 | 2.4 m |  |
+| ○ 3 | Estocada | 26 | 2.6 m |  |
+| ○ 4 | Acorde cortante | 54 | 2.5 m | finalizador: lança |
+| Frente + ○ | Entra no ritmo | 28 | 2.2 m |  |
+| Trás + ○ | Já sabia | 28 | 2.4 m | invulnerável no começo |
+| Lado + ○ | Corte rodado | 28 | 2.3 m |  |
+| No ar + ○ | Lâmina do alto | 34 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Lâmina de baixo | 32 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Teclado no chão | 38 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Nota Aguda
+
+- Dano 20 · alcance 15 m · cooldown 2.2 s · custo 0
+
+### Habilidades
+
+- **Transe** — △ + □ / Y + X · custo 25 · cooldown 20 s · alcance 10 m
+  Toca a melodia do transe: o alvo na frente anda em círculos até Alê, sem conseguir defender, e fica parado um instante, hipnotizade.
+- **Leitura de Mão** — △ + ○ / Y + B · custo 22 · cooldown 13 s · dano 28 · alcance 2.4 m
+  Pega a mão do adversário bem de perto e lê o futuro dele: dano e ATORDOADO. Quem estiver defendendo puxa a mão e leva menos.
+- **Corte de Teclado** — △ + L2 / Y + LT · custo 20 · cooldown 10 s · dano 32 · alcance 2 m
+  Avança deslizando a lâmina pela lateral do adversário (quebra a defesa) e termina atrás dele.
+- **Prever Resultados** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
+  Vê o resultado antes de acontecer: recupera todas as esquivas e, por 6 s, toma menos dano e se mexe mais rápido.
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
+
+### Especial: Acorde Final
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Máscara do Humor
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades, especial), +6% de velocidade, recargas 30% mais rápidas, regenera 2 de vida/s, cura 12% na hora.
+
+---
+
 ## RAZIEL
 
 *O líder dos Vampiros e anfitrião da Ceia na Igreja Antiga — por baixo das vestes, a verdadeira forma* · arma: Garras, a Mordida e os rituais de Sangue

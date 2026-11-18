@@ -34,6 +34,10 @@ Aparência (para modelar):
 - **Alê**: ~1,75 m, cabelo loiro longo com raiz vermelho-alaranjada, olhos azuis; macacão de camisa de força; máscara de
   CORPSE PAINT branca e preta, piercings, pregos na gola, colar com pedra vermelha.
 
+**No jogo (2026-11-18, v5.9.0):** os cinco jogáveis (Eloy v4.39.0, Cindy v4.41.0, Caio v4.58.0, Franco e Alê
+v5.9.0) e o especial em equipe HORA DO SHOW! lançado. Kits do Franco (inteiro) e de Alê (fora Prever Resultados, o
+transe e a leitura de mão) = PROPOSTA.
+
 **Recomendação (PROPOSTA)** para o próximo personagem: **Eloy** (o único que sobrevive, kit corpo a corpo forte e
 original — Moeller Method como agarrão de "bateria" — e as baquetas) ou **Cindy** (líder, Fuzil Baixo dá um lutador de
 tiro dançando, Silenciar como habilidade). Franco (lança-chamas) e Caio (espada microfone + Berrão) também rendem kits
