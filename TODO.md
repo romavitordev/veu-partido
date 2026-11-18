@@ -4,6 +4,14 @@
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
+## Tela de carregamento e o jogo que não abria (pedido do dono, 2026-11-18)
+
+- [x] **Tela própria de carregamento** (v5.2.0): barra real, %, MB/arquivos, dicas, aviso de conexão parada, erro com TENTAR DE NOVO (também WebGL e script).
+- [x] **Não ficar preso no carregamento** (v5.2.0): fila de downloads com tempo limite e novas tentativas; erro depois dos downloads agora aparece.
+- [ ] **Confirmar no PC do amigo** se abre; se não, pedir a mensagem que a tela mostra agora.
+- [ ] **Abrir o menu antes de baixar tudo** (ideia, não feito): baixar só os lutadores escolhidos/cenário da luta e o resto em segundo plano — o menu hoje espera os ~62 MB; precisa de retratos sem o modelo 3D (imagens prontas como as de `public/sobre/elenco`).
+- [ ] **Tela de carregamento da luta** (antes da partida): visual mais caprichado (retratos grandes, cenário de fundo) — só se o dono quiser; o pedido de 2026-11-18 era o carregamento inicial.
+
 ## Outro Lado — fusões, segunda vida e chefes com brecha (pedido do dono, 2026-11-16)
 
 > "tem uma segunda vida que deveria ser uma habilidade comprável e atualmente qualquer um tem. Às vezes a transformação

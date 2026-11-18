@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { toon } from './rig.js';
+import { fetchBuffer } from './netLoad.js';
 import { MATERIAL_TEXTURES } from './textures.js';
 
 // Rig a partir de um .glb feito no Blender (tools/blender/char_*.py).
@@ -34,12 +35,32 @@ function keepSkinHue(m) {
   m.customProgramCacheKey = () => 'skinKeep';
 }
 
+// baixa pela fila com tempo limite e progresso (models/netLoad.js) e monta o .glb
 export function loadGLB(url) {
   if (!cache.has(url)) {
+    const dir = url.slice(0, url.lastIndexOf('/') + 1);
+    const p = fetchBuffer(url).then((buf) => new Promise((resolve, reject) => loader.parse(buf, dir, resolve, reject)));
     // falhou: sai do cache para a próxima tentativa baixar de novo
-    cache.set(url, new Promise((resolve, reject) => loader.load(url, resolve, undefined, (e) => { cache.delete(url); reject(e); })));
+    p.catch(() => cache.delete(url));
+    cache.set(url, p);
   }
   return cache.get(url);
+}
+
+// tenta de novo (servidor ocupado, rede instável, download parado): só desiste depois de RETRIES vezes
+const RETRIES = 4;
+export async function loadGLBRetry(url) {
+  let last;
+  for (let i = 0; i < RETRIES; i++) {
+    try {
+      return await loadGLB(i ? `${url}?r=${i}` : url);
+    } catch (e) {
+      last = e;
+      console.warn(`Download falhou (tentativa ${i + 1} de ${RETRIES}):`, url, e && e.message);
+      await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+    }
+  }
+  throw last;
 }
 
 const JOINT_ORDER = { sL: 'YXZ', eL: 'YXZ', sR: 'YXZ', eR: 'YXZ' };

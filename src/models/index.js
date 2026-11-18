@@ -1,5 +1,5 @@
 import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps, addCarinaProps, addCarinaLeoneProps, addRubensProps, addBeatriceProps, addBeatriceExistidaProps, addEspreitadorProps, addDegolificadaProps, addFernandoProps, addLucianoProps, addTristanProps, addIveteProps, addBorisProps, addDamirProps, addArtemisProps, addEloyProps, addSabaraProps, addCindyProps, addCaioProps } from './props.js';
-import { loadGLB, rigFromGLB } from './glbRig.js';
+import { loadGLBRetry as loadWithRetry, rigFromGLB } from './glbRig.js';
 import { preloadNpcModels } from './npcRig.js';
 
 // Registro de MODELOS, separado das habilidades.
@@ -96,21 +96,6 @@ const MODEL_VARIANTS = {
 export const MODEL_IDS = [...Object.keys(BLENDER_MODELS), ...Object.keys(MODEL_VARIANTS)];
 
 const loaded = {};
-const RETRIES = 4;
-
-// baixa um .glb tentando de novo (servidor ocupado, rede instável, resposta errada): só desiste depois de RETRIES vezes
-async function loadWithRetry(url) {
-  let last;
-  for (let i = 0; i < RETRIES; i++) {
-    try {
-      return await loadGLB(i ? `${url}?r=${i}` : url);
-    } catch (e) {
-      last = e;
-      await new Promise((r) => setTimeout(r, 400 * (i + 1)));
-    }
-  }
-  throw last;
-}
 
 // Carrega todos os .glb (chamado uma vez no início do jogo). Falhou mesmo tentando de novo → erro (o jogo avisa)
 export async function preloadModels(onProgress) {

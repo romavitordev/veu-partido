@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { loadGLB } from '../models/glbRig.js';
+import { loadGLBRetry } from '../models/glbRig.js';
 import { ARENA_TEXTURES } from './arenaTextures.js';
 import { gfxProfile } from '../config/settings.js';
 import { blocksPointGeneric } from '../combat/positioning.js';
@@ -20,7 +20,7 @@ import { buildRoomShell } from './roomShell.js';
 const cache = {};
 
 export async function preloadArena(cfg) {
-  if (!cache[cfg.glb]) cache[cfg.glb] = await loadGLB(import.meta.env.BASE_URL + cfg.glb);
+  if (!cache[cfg.glb]) cache[cfg.glb] = await loadGLBRetry(import.meta.env.BASE_URL + cfg.glb);
   return cache[cfg.glb];
 }
 

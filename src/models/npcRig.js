@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { loadGLB } from './glbRig.js';
+import { loadGLBRetry } from './glbRig.js';
 import { toon } from './rig.js';
 
 // Modelos de INVOCAÇÕES feitos no Blender em peças rígidas (tools/blender/npc_*.py → public/npcs/*.glb):
@@ -34,7 +34,7 @@ const loaded = {};
 export async function preloadNpcModels() {
   await Promise.all(Object.entries(NPC_MODELS).map(async ([id, url]) => {
     try {
-      loaded[id] = await loadGLB(import.meta.env.BASE_URL + url);
+      loaded[id] = await loadGLBRetry(import.meta.env.BASE_URL + url);
     } catch (e) {
       console.warn(`Modelo de invocação indisponível (${id}), usando o provisório.`, e);
     }

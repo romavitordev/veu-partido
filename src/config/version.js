@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.1.0';
+export const VERSION = '5.2.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.2.0',
+    date: '2026-11-18',
+    title: 'Tela de Carregamento',
+    items: [
+      'TELA DE CARREGAMENTO PRÓPRIA: ao abrir o jogo aparece uma tela só dela, com a barra de progresso de verdade, a porcentagem, quantos MB e arquivos já baixaram e dicas — antes era só um "PREPARANDO AS LUTAS…" no rodapé do menu.',
+      'Conexão lenta ou parada: o jogo avisa quanto tempo a conexão está parada, cancela o download que travou e tenta de novo sozinho.',
+      'Se algo der errado (internet caiu, placa de vídeo sem WebGL), a tela mostra o motivo e o botão TENTAR DE NOVO, em vez de ficar carregando para sempre.',
+    ],
+  },
   {
     v: '5.1.0',
     date: '2026-11-18',

@@ -15,6 +15,7 @@ import { renderPortraits } from './ui/portraits.js';
 import { renderArenaThumbs } from './ui/arenaThumbs.js';
 import { victoryLine } from './config/dialogues.js';
 import { preloadModels } from './models/index.js';
+import { createBootScreen } from './ui/bootScreen.js';
 import { loadLearned } from './ai/learner.js';
 import { ROSTER } from './characters/index.js';
 import { validatePassives } from './combat/passives.js';
@@ -82,32 +83,25 @@ const arenaThumbs = {}; // previews dos cenários (gerados depois dos retratos)
 let booted = false;
 // aprendizado da CPU (Super Difícil): o que vem com o jogo + o que este navegador já aprendeu
 loadLearned(import.meta.env.BASE_URL).catch(() => {});
-// algum modelo não baixou nem tentando de novo: avisa e oferece recarregar (antes o jogo trocava pelo corpo antigo
-// de outro personagem)
-function loadFailed(e) {
-  console.error(e);
-  const box = document.createElement('div');
-  box.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#0c0a10;color:#eee;font:16px sans-serif;text-align:center;padding:16px';
-  box.innerHTML = '<div>Não foi possível carregar os modelos do jogo.<br>Verifique a conexão e tente de novo.</div>';
-  const btn = document.createElement('button');
-  btn.textContent = 'RECARREGAR';
-  btn.style.cssText = 'padding:10px 28px;font:600 16px sans-serif;background:#c81e2e;color:#fff;border:0;border-radius:6px;cursor:pointer';
-  btn.onclick = () => location.reload();
-  box.appendChild(btn);
-  document.body.appendChild(box);
-  throw e;
-}
+// TELA DE CARREGAMENTO (ui/bootScreen.js): progresso real dos downloads; algum arquivo não baixou nem tentando de
+// novo, ou a preparação quebrou (retratos, placa de vídeo) → mostra o erro com "TENTAR DE NOVO" — antes um erro
+// depois dos downloads deixava o jogo parado em "PREPARANDO AS LUTAS…" para sempre
+const boot = createBootScreen();
 Promise.all([preloadModels(), preloadArenas()])
-  .catch(loadFailed)
-  .then(() => {
+  .then(async () => {
+    boot.setStage('boot.portraits', 0);
+    // deixa a tela mostrar a etapa antes do trabalho pesado (os retratos travam a página por um instante)
+    await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
     // + os vilões das TORRES — ANTES do elenco: o Anfitrião e o Deus da Morte são vilão (forma, sem equipe) e também
     // lutadores da seleção (Relíquias) com o mesmo id; o retrato do elenco (com a cor da equipe) tem que ficar por último
     Object.assign(portraits, renderPortraits([...VILLAINS.map(getForm), ...ROSTER], renderer));
     booted = true;
     document.body.classList.remove('booting'); // o "pressione start" volta no lugar do aviso de carregamento
+    boot.done();
     // não trava a tela inicial: gera os previews no quadro seguinte
-    setTimeout(() => Object.assign(arenaThumbs, renderArenaThumbs(renderer)), 50);
-  });
+    setTimeout(() => { try { Object.assign(arenaThumbs, renderArenaThumbs(renderer)); } catch (e) { console.error('Previews dos cenários:', e); } }, 50);
+  })
+  .catch((e) => boot.fail(e));
 
 // fundo dos menus: arte ESTÁTICA em HTML/CSS (#backdrop no index.html, 2026-11-08) — antes eram lutadores em 3D
 // (ui/titleStage.js) que só apareciam depois do download dos modelos e custavam um quadro 3D inteiro no menu

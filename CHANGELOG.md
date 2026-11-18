@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.2.0 — Tela de Carregamento
+
+### Adicionado
+- Tela de carregamento própria (`#bootscreen` no `index.html`, `src/ui/bootScreen.js`): progresso real, MB e arquivos, etapa, dicas, aviso de conexão parada e erro com TENTAR DE NOVO; aparece antes do script e mostra também falha de WebGL ou de script.
+- Downloads dos .glb pela fila `src/models/netLoad.js`: no máximo 6 ao mesmo tempo, tempo limite de 30 s sem bytes e progresso; cenários e invocações também tentam de novo (`loadGLBRetry`).
+
+### Corrigido
+- O jogo podia ficar para sempre em "PREPARANDO AS LUTAS…" (download parado sem tempo limite, ou erro depois dos downloads sem aviso).
+
 ## v5.1.0 — Equipes em Cena
 
 ### Alterado

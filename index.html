@@ -28,6 +28,41 @@
     <div class="bd-fog"></div>
     <div class="bd-embers"><i style="--x:0%;--d:6s;--w:0.0s;--s:2px"></i><i style="--x:37%;--d:13s;--w:7.7s;--s:3px"></i><i style="--x:74%;--d:11s;--w:6.4s;--s:4px"></i><i style="--x:11%;--d:9s;--w:5.1s;--s:2px"></i><i style="--x:48%;--d:7s;--w:3.8s;--s:3px"></i><i style="--x:85%;--d:14s;--w:2.5s;--s:4px"></i><i style="--x:22%;--d:12s;--w:1.2s;--s:2px"></i><i style="--x:59%;--d:10s;--w:8.9s;--s:3px"></i><i style="--x:96%;--d:8s;--w:7.6s;--s:4px"></i><i style="--x:33%;--d:6s;--w:6.3s;--s:2px"></i><i style="--x:70%;--d:13s;--w:5.0s;--s:3px"></i><i style="--x:7%;--d:11s;--w:3.7s;--s:4px"></i><i style="--x:44%;--d:9s;--w:2.4s;--s:2px"></i><i style="--x:81%;--d:7s;--w:1.1s;--s:3px"></i><i style="--x:18%;--d:14s;--w:8.8s;--s:4px"></i><i style="--x:55%;--d:12s;--w:7.5s;--s:2px"></i><i style="--x:92%;--d:10s;--w:6.2s;--s:3px"></i><i style="--x:29%;--d:8s;--w:4.9s;--s:4px"></i></div>
   </div>
+  <!-- TELA DE CARREGAMENTO DO JOGO (2026-11-18, pedido do dono): própria, por cima de tudo, aparece antes do script.
+       Mostra o progresso real dos downloads (ui/bootScreen.js), avisa quando a conexão está parada e mostra o erro
+       com "TENTAR DE NOVO" — antes era só "PREPARANDO AS LUTAS…" no rodapé do menu, e no PC de um amigo ficou parado. -->
+  <div id="bootscreen" role="status" aria-live="polite">
+    <div class="bs-glow"></div>
+    <svg class="bs-sigil" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" class="o"/><circle cx="50" cy="50" r="40" class="i"/><polygon points="50,12 72.3,80.7 13.9,38.3 86.1,38.3 27.7,80.7" class="p"/></svg>
+    <div class="bs-title"><span class="bs-veu">VÉU</span><b>PARTIDO</b></div>
+    <div class="bs-status">CARREGANDO…</div>
+    <div class="bs-bar"><i></i></div>
+    <div class="bs-nums"><span class="bs-pct">0%</span><span class="bs-mb"></span></div>
+    <div class="bs-note" hidden></div>
+    <div class="bs-err" hidden><p></p><code></code><button type="button">TENTAR DE NOVO</button></div>
+    <div class="bs-tip"></div>
+  </div>
+  <script>
+    // se o script do jogo nem chegar a rodar (navegador antigo, erro antes da tela, WebGL desligado), mostra o erro
+    // aqui mesmo — sem isso a tela ficava em "CARREGANDO…" para sempre
+    (function () {
+      var bs = document.getElementById('bootscreen');
+      function fail(msg) {
+        if (!bs || bs.dataset.done || window.__bootFail) return;
+        var e = bs.querySelector('.bs-err'); e.hidden = false;
+        var webgl = /webgl/i.test(msg);
+        e.querySelector('p').textContent = webgl
+          ? 'O navegador não liberou o WebGL (a placa de vídeo). Ative a "aceleração por hardware" nas configurações do navegador, atualize o driver de vídeo ou tente outro navegador (Chrome, Edge ou Firefox atualizados).'
+          : 'O jogo não conseguiu iniciar neste navegador. Tente de novo; se continuar, atualize o navegador.';
+        e.querySelector('code').textContent = msg;
+        e.querySelector('button').onclick = function () { location.reload(); };
+        bs.classList.add('failed');
+      }
+      window.__bootFailEarly = fail;
+      window.addEventListener('error', function (ev) { if (!window.__bootStarted) fail(String(ev.message || ev.error || 'erro')); });
+      setTimeout(function () { if (!window.__bootStarted) fail('o script do jogo não iniciou em 90 s'); }, 90000);
+    })();
+  </script>
   <canvas id="game"></canvas>
   <div id="hud" class="hidden"></div>
   <div id="screens"></div>

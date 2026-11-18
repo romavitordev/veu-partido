@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v5.2.0 — Tela de Carregamento
+
+- Versão: `VERSION` 5.1.0 → **5.2.0** (`package.json`/lock junto). Data: 2026-11-18.
+- **Pedido do dono (2026-11-18):** "essa tela de loading carregando as lutas está feia deveria ter uma tela propria pro
+  loading. E no pc do meu amigo nao abriu, ficou só no loading por varios minutos e nao abriu o menu do jogo".
+- **Causas encontradas:** o menu só abria depois de baixar os ~95 `.glb` (~62 MB) todos de uma vez; não havia tempo
+  limite (um download parado segurava o jogo para sempre), nem progresso (numa conexão lenta parecia travado), e um erro
+  depois dos downloads (retratos, placa de vídeo) caía num `.then` sem `catch` e o jogo ficava parado sem aviso. Se o
+  WebGL falhar ao criar o renderizador, o script parava antes de qualquer tela.
+- **Correções:** `src/models/netLoad.js` (fila de 6, 30 s sem bytes → cancela, progresso por bytes/arquivos;
+  teste `tests/netLoad.test.js`); `loadGLB` baixa pela fila e monta com `GLTFLoader.parse`; `loadGLBRetry` (4
+  tentativas) agora também nos cenários e invocações; `#bootscreen` no `index.html` com script inline que mostra erro de
+  script/WebGL e um aviso se o jogo não iniciar em 90 s; `src/ui/bootScreen.js` (barra, %, MB, arquivos, dicas, aviso
+  de conexão parada após 15 s, erro com TENTAR DE NOVO). Chaves `boot.*` nos 13 idiomas.
+- **Não verificado:** o PC do amigo (sem acesso). Se ainda falhar, a tela agora mostra o motivo — pedir a mensagem.
+
 ## v5.1.0 — Equipes em Cena
 
 - Versão: `VERSION` 5.0.0 → **5.1.0** (`package.json`/lock junto). Data: 2026-11-18.

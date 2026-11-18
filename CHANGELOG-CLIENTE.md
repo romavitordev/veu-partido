@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.2.0 — Tela de Carregamento
+- TELA DE CARREGAMENTO PRÓPRIA: ao abrir o jogo aparece uma tela só dela, com a barra de progresso de verdade, a porcentagem, quantos MB e arquivos já baixaram e dicas — antes era só um "PREPARANDO AS LUTAS…" no rodapé do menu.
+- Conexão lenta ou parada: o jogo avisa quanto tempo a conexão está parada, cancela o download que travou e tenta de novo sozinho.
+- Se algo der errado (internet caiu, placa de vídeo sem WebGL), a tela mostra o motivo e o botão TENTAR DE NOVO, em vez de ficar carregando para sempre.
+
 ## v5.1.0 — Equipes em Cena
 - A COÇA DOS ABUTRES (Balu + Rubens) refeita: o Rubens some no Salto Fantasma e aparece atrás do alvo falando por palavras-chave — "Fio. Cobre. Solto." —, o Balu crava o pomo no peito e o Machado Demônio de sangue fecha com a Pancada do Urso. E ainda erra o nome dele no fim.
 - O SHOW DO DIABO (Irmãos Lukic) refeito: depois de encaixar a bengala na gadanha, o Boris lança o irmão pelo cabo da Foice Amaldiçoada no número do trapézio, as Cartas do Destino chovem lá de cima e a Colheita e a bengala caem juntas. Aplausos.
