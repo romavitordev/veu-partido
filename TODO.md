@@ -4,6 +4,19 @@
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
+## Resumo do trabalho de 2026-11-18 (para o dono ler)
+
+Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
+
+- v5.1.0 Equipes em Cena: Balu+Rubens, Irmãos Lukic e Mãe e Filho refeitos (faltam os outros seis especiais, abaixo).
+- v5.2.0 Tela de Carregamento: tela própria com progresso real; fila de downloads com tempo limite e nova tentativa; erro visível (rede, WebGL). Causa provável do PC do amigo: ~62 MB sem progresso nem tempo limite, ou um erro depois dos downloads que travava sem aviso.
+- v5.3.0 Sangue nos Ferimentos (outra sessão): efeitos novos e a chave SANGUE nas Opções.
+- v5.4.0 Explorar no Celular: analógico, arrastar para olhar, ▲ ▼ e corrida.
+- v5.4.1 Lançamento Seguro: o `release.bat` lê a versão sozinho e não repete tag.
+- v5.5.0 Carregando a Luta: a tela antes da luta com o cenário ao fundo.
+- Uso de tokens: o plano Pro chegou a ~67% da janela de 5 horas e ~23% da semanal; parei com folga. Próximos itens grandes ficam para outra janela: os seis especiais em equipe restantes, abrir o menu antes de baixar tudo, os mapas novos.
+- Precisa de você: abrir o jogo no PC do amigo (se falhar, a tela mostra o motivo), testar o Explorar num celular de verdade.
+
 ## Tela de carregamento e o jogo que não abria (pedido do dono, 2026-11-18)
 
 - [x] **Tela própria de carregamento** (v5.2.0): barra real, %, MB/arquivos, dicas, aviso de conexão parada, erro com TENTAR DE NOVO (também WebGL e script).
