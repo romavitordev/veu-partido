@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 // APRENDIZADO DA CPU (Super Difícil): no servidor de desenvolvimento o jogo envia o que a IA aprendeu jogando
 // (contra jogadores e CPU × CPU) e ele é somado em public/ai/learned.json — o arquivo vai no próximo commit/push e a
@@ -39,6 +40,21 @@ const PKG = JSON.parse(readFileSync(resolve(import.meta.dirname, 'package.json')
 
 // APP INSTALÁVEL (PWA): grava o sw.js no build a partir de src/sw-template.js, com a versão do jogo e a lista da "casca"
 // (página, scripts e estilos do jogo, manifesto e ícones) — ver o modelo para o que fica guardado no aparelho
+// impressão (hash) de cada arquivo de public/ para o cache do service worker: versão nova só baixa o que mudou
+function publicHashes() {
+  const root = resolve(import.meta.dirname, 'public');
+  const out = {};
+  for (const e of readdirSync(root, { recursive: true, withFileTypes: true })) {
+    if (!e.isFile()) continue;
+    const full = resolve(e.parentPath || e.path, e.name);
+    const rel = full.slice(root.length + 1).replace(/\\/g, '/');
+    // o aprendizado da CPU e o manifesto vêm da rede primeiro (sw-template.js)
+    if (rel === 'ai/learned.json' || rel.endsWith('.webmanifest')) continue;
+    out[rel] = createHash('sha1').update(readFileSync(full)).digest('hex').slice(0, 12);
+  }
+  return out;
+}
+
 function pwaPlugin() {
   return {
     name: 'arena-pwa',
@@ -48,8 +64,9 @@ function pwaPlugin() {
       const shell = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', ...files.map((f) => `./${f}`)];
       const src = readFileSync(resolve(import.meta.dirname, 'src/sw-template.js'), 'utf8')
         .replace("const VERSION = '__VERSION__';", `const VERSION = ${JSON.stringify(PKG.version)};`)
-        .replace('const SHELL = __SHELL__;', `const SHELL = ${JSON.stringify(shell)};`);
-      if (src.includes("= '__VERSION__'") || src.includes('= __SHELL__')) this.error('sw-template.js: não achei as linhas de VERSION/SHELL');
+        .replace('const SHELL = __SHELL__;', `const SHELL = ${JSON.stringify(shell)};`)
+        .replace('const HASHES = __HASHES__;', `const HASHES = ${JSON.stringify(publicHashes())};`);
+      if (src.includes("= '__VERSION__'") || src.includes('= __SHELL__') || src.includes('= __HASHES__')) this.error('sw-template.js: não achei as linhas de VERSION/SHELL/HASHES');
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: src });
     },
   };

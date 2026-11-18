@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.7.0 — Download Guardado
+- DOWNLOAD GUARDADO: no app instalado, uma versão nova não baixa mais o jogo inteiro de novo — só os lutadores, cenários e sons que mudaram. O resto continua guardado no aparelho.
+
 ## v5.6.0 — Menu Sem Espera
 - MENU SEM ESPERA: o menu abre logo e os lutadores continuam baixando por trás (o selo no alto mostra quanto falta). Se você escolher um modo antes do fim, ele abre sozinho quando o download terminar — ou toque em VOLTAR AO MENU.
 

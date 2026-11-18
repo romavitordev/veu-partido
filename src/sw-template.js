@@ -7,10 +7,18 @@
 //    for usado (na v3.41.0 o Arthur e o Joui novos não apareciam para quem já tinha o jogo guardado).
 //  - A página (index.html) e o aprendizado da CPU vêm primeiro da rede (versão nova chega na hora); sem rede, do aparelho.
 //  - Versão nova: o sw.js muda, instala a casca nova e apaga o que era da versão anterior.
+//  - ARQUIVOS POR CONTEÚDO (v5.7.0): antes o cache dos modelos/sons levava a VERSÃO, então cada versão nova apagava
+//    os ~62 MB e o jogo baixava tudo de novo, mesmo o que não mudou. Agora o build manda a impressão (hash) de cada
+//    arquivo de public/ (HASHES); o cache guarda o arquivo com a impressão no endereço e, numa versão nova, só apaga
+//    os que mudaram (o Arthur novo da v3.41.0 continua chegando; o resto fica no aparelho).
 const VERSION = '__VERSION__';
 const SHELL = __SHELL__;
+const HASHES = __HASHES__;
 const CACHE = `arena-${VERSION}`;
-const RUNTIME = `arena-arquivos-${VERSION}`;
+const RUNTIME = 'arena-arquivos'; // sem versão: as entradas levam a impressão do arquivo (?h=)
+const OLD = `arena-antigos-${VERSION}`; // arquivo sem impressão (não estava em public/ no build): por versão, como antes
+const BASE = new URL(self.registration.scope).pathname;
+const relPath = (path) => (path.startsWith(BASE) ? path.slice(BASE.length) : path.replace(/^\//, ''));
 const FONTS = 'arena-fontes';
 
 self.addEventListener('install', (e) => {
@@ -19,7 +27,13 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil((async () => {
-    for (const k of await caches.keys()) if (k.startsWith('arena-') && k !== CACHE && k !== RUNTIME && k !== FONTS) await caches.delete(k);
+    for (const k of await caches.keys()) if (k.startsWith('arena-') && k !== CACHE && k !== RUNTIME && k !== OLD && k !== FONTS) await caches.delete(k);
+    // apaga só os arquivos que mudaram (ou saíram do jogo)
+    const rt = await caches.open(RUNTIME);
+    for (const req of await rt.keys()) {
+      const u = new URL(req.url);
+      if (HASHES[relPath(u.pathname)] !== u.searchParams.get('h')) await rt.delete(req);
+    }
     await self.clients.claim();
   })());
 });
@@ -54,5 +68,16 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) return; // corretor das salas online, GitHub etc.: direto na rede
   const path = url.pathname;
   if (req.mode === 'navigate' || path.endsWith('/ai/learned.json') || path.endsWith('.webmanifest')) { e.respondWith(networkFirst(req)); return; }
-  e.respondWith(cacheFirst(req, /\/assets\//.test(path) ? CACHE : RUNTIME));
+  if (/\/assets\//.test(path)) { e.respondWith(cacheFirst(req, CACHE)); return; }
+  const h = HASHES[relPath(path)];
+  if (!h) { e.respondWith(cacheFirst(req, OLD)); return; }
+  // a chave ignora o ?r= das novas tentativas: o arquivo é o mesmo
+  const key = new Request(`${url.origin}${path}?h=${h}`);
+  e.respondWith((async () => {
+    const hit = await caches.match(key);
+    if (hit) return hit;
+    const res = await fetch(req);
+    if (res.ok) (await caches.open(RUNTIME)).put(key, res.clone());
+    return res;
+  })());
 });

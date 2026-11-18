@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.7.0 — Download Guardado
+
+### Alterado
+- Service worker: o cache dos arquivos de `public/` não leva mais a versão. O build (`vite.config.js`, `publicHashes()`) grava o hash de cada arquivo (`HASHES`); a entrada fica guardada como `arquivo?h=<hash>` em `arena-arquivos` e, ao ativar uma versão nova, só as entradas com hash diferente são apagadas. Arquivo sem hash vai para `arena-antigos-<versão>` (como antes).
+
 ## v5.6.0 — Menu Sem Espera
 
 ### Alterado

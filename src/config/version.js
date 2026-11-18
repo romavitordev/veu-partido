@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.6.0';
+export const VERSION = '5.7.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.7.0',
+    date: '2026-11-18',
+    title: 'Download Guardado',
+    items: [
+      'DOWNLOAD GUARDADO: no app instalado, uma versão nova não baixa mais o jogo inteiro de novo — só os lutadores, cenários e sons que mudaram. O resto continua guardado no aparelho.',
+    ],
+  },
   {
     v: '5.6.0',
     date: '2026-11-18',

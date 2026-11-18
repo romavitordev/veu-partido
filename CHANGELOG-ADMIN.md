@@ -1,5 +1,23 @@
 # Registro administrativo de alterações
 
+## v5.7.0 — Download Guardado
+
+- Versão: `VERSION` 5.6.0 → **5.7.0**. Data: 2026-11-18. Dono: "Sim, próximo item" (seguir o TODO).
+- **Achado ao seguir o item "Abrir o menu antes de baixar tudo":** o `sw-template.js` guardava modelos, sons e
+  imagens num cache com a VERSÃO no nome (`arena-arquivos-<versão>`, desde a v3.41.0, para o Arthur novo chegar).
+  Como saem várias versões por dia, cada uma apagava os ~62 MB guardados no app instalado e o jogo os pedia de novo
+  (no melhor caso o cache HTTP do navegador respondia; no pior, outro download inteiro).
+- Agora: `vite.config.js` (`publicHashes()`) calcula o sha1 (12 letras) de cada arquivo de `public/` (338; fora
+  `ai/learned.json` e o manifesto, que vêm da rede primeiro) e grava em `HASHES` no `sw.js`. O service worker guarda
+  cada arquivo como `caminho?h=<hash>` em `arena-arquivos` (sem versão; o `?r=` das novas tentativas é ignorado) e,
+  no `activate` de uma versão nova, apaga só as entradas cujo hash mudou ou que saíram do jogo. Arquivo sem hash
+  (não estava em `public/` no build) usa `arena-antigos-<versão>`, como antes.
+- Testado no build (`vite preview`): 93 `.glb` guardados com `?h=`; uma entrada falsa velha (`juan.glb?h=velho000`)
+  posta à mão; versão subida para 5.7.0 e build de novo → o cache `arena-5.6.0` sumiu, a entrada velha também, os 94
+  arquivos ficaram, e o jogo abriu na v5.7.0 com tudo carregado.
+- A primeira atualização para a 5.7.0 ainda baixa tudo uma vez (o cache antigo tinha a versão no nome); depois só o
+  que mudar.
+
 ## v5.6.0 — Menu Sem Espera
 
 - Versão: `VERSION` 5.5.0 → **5.6.0**. Data: 2026-11-18. Dono: "siga o todo".
