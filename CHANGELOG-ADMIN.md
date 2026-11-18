@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v4.58.1 — O Berrão de Duas Mãos
+
+- Versão: `VERSION` 4.58.0 → **4.58.1** (`package.json`/lock junto). Data: 2026-11-18.
+- Lançamento do commit `d8dded6` (Berrão de duas mãos e balanceamento do Caio, descritos na v4.58.0 abaixo) com tag
+  própria: a tag `v4.58.0` foi criada antes, apontando para o commit da v4.57.0 (`1a3c619`), e já estava no GitHub
+  (dono, 2026-11-18: "Criar v4.58.1" em vez de mover a tag).
+
 ## v4.58.0 — Caio Teles
 
 - Versão: `VERSION` 4.57.0 → **4.58.0** (`package.json`/lock junto). Data: 2026-11-17.

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.58.0';
+export const VERSION = '4.58.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.58.1',
+    date: '2026-11-18',
+    title: 'O Berrão de Duas Mãos',
+    items: [
+      'BERRÃO E SHOW FINAL: Caio segura a Espada Microfone com as duas mãos, crava a lâmina reta no chão de ponta-cabeça e grita no microfone, que fica na altura da boca.',
+      'CAIO BALANCEADO: mais dano e mais resistência; agora vence metade das lutas contra o elenco.',
+    ],
+  },
   {
     v: '4.58.0',
     date: '2026-11-17',

@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.58.1 — O Berrão de Duas Mãos
+- BERRÃO E SHOW FINAL: Caio segura a Espada Microfone com as duas mãos, crava a lâmina reta no chão de ponta-cabeça e grita no microfone, que fica na altura da boca.
+- CAIO BALANCEADO: mais dano e mais resistência; agora vence metade das lutas contra o elenco.
+
 ## v4.58.0 — Caio Teles
 - CAIO TELES (PSIKOLERA): o vocalista da banda chega como novo personagem jogável com seu macacão de camisa de força, correntes no pescoço e algemas com espinhos.
 - A ESPADA MICROFONE: espadona enrolada em arame farpado com um microfone na outra ponta. Com a habilidade Berrão, ele crava a espada reta no chão e berra no microfone para atordoar e desarmar quem estiver por perto.

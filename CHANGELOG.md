@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.58.1 — O Berrão de Duas Mãos
+
+### Alterado
+- Berrão e Show Final do Caio: as duas mãos no cabo, a espada cravada reta de ponta-cabeça e o microfone na boca.
+- Balanceamento do Caio: 20% → 50% de vitórias (212 lutas).
+- Versão nova porque a tag v4.58.0 ficou apontando para o commit da v4.57.0.
+
 ## v4.58.0 — Caio Teles
 
 ### Adicionado
