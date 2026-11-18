@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.11.0 — Alê Ao Vivo
+
+### Adicionado
+- Clipe `idle_keytar` e o ticker de `addAleProps`: parade, Alê toca o keytar na horizontal.
+
+### Alterado
+- `prop_maskOn` de Alê refeito pela arte oficial (olhos à mostra, rachaduras, escorridos, boca costurada); materiais `fine_` sem contorno.
+
 ## v5.10.0 — PSIKOLERA Afinada
 
 ### Adicionado

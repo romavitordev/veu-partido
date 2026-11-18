@@ -46,7 +46,7 @@ sole = material('sole_ale', '#ecebe6', 0.8)  # a sola e a biqueira brancas
 hairm = material('hair_ale', '#e6cf86', 0.65)  # o loiro
 rootm = material('hair_ale_root', '#d4541e', 0.7)  # a raiz vermelho-alaranjada
 maskw = material('mask_ale', '#f4f2ee', 0.45)
-paint = material('paint_ale', '#0c0c0e', 0.6)
+paint = material('fine_paint_ale', '#0c0c0e', 0.6)
 
 PREVIEW = {'face_ale': '#efd6c6'}
 for m in bpy.data.materials:
@@ -238,27 +238,61 @@ for k_ in range(3):
     pc.append(rod([c + Vector((0, math.cos(t) * 0.007 * H, math.sin(t) * 0.007 * H)) for t in [j / 10 * TAU for j in range(11)]], 0.002 * H, 4, caps=False))
 b.add('piercings', merge(*pc), pierc, region='head', subdiv=0)
 
-# ================================================================ prop_maskOn: a MÁSCARA DE CORPSE PAINT (branca, olhos e boca em preto)
+# ================================================================ prop_maskOn: a MÁSCARA DE CORPSE PAINT
+# Refeita em 2026-11-18 pela arte oficial (o pôster "PSIKOLERA - Alê"; wiki: "máscara de corpse paint branca com detalhes
+# pretos"): a máscara branca de porcelana com os OLHOS AZUIS À MOSTRA (nada de mancha cobrindo o olho), RACHADURAS
+# pretas finas saindo dos olhos, os ESCORRIDOS pretos descendo como lágrimas, os RISCOS em X na bochecha e a BOCA
+# COSTURADA escura. Os olhos ficam pintados na máscara no mesmo lugar dos da Cindy (a mesma casca)
 MROWS = [(0.1, 0.1, 0.13, 1.1), (0.05, 0.122, 0.15, 1.25), (0.0, 0.13, 0.158, 1.3), (-0.05, 0.126, 0.158, 1.3), (-0.1, 0.11, 0.15, 1.2), (-0.15, 0.078, 0.13, 1.0)]
 rows = [[Vector((math.sin(a_) * rx * H, hc.y - math.cos(a_) * ry * H, fz + dz * H)) for a_ in [-am + 2 * am * i / 18 for i in range(19)]] for dz, rx, ry, am in MROWS]
 b.add('prop_maskOnShell', shell_grid(rows, 0.006), maskw, region='head', subdiv=1)
 SURF = lambda x, z, off: Vector((x * H, hc.y - math.sqrt(max(0.0, 1 - (x / 0.13) ** 2)) * 0.158 * H - off * H, fz + z * H))
-pt = []
+eyew = material('fine_mask_ale_eye', '#f2f0ea', 0.35)
+iris = material('fine_mask_ale_iris', '#2a6ad0', 0.3, emission='#1a3a80', strength=0.4)
+pt, eyes, irises = [], [], []
+rnd = random.Random(77)
 for s in (1, -1):
-    ex = s * 0.046
-    # a mancha preta em volta do olho, puxada em ponta para cima e para baixo (o corpse paint clássico)
-    for k_ in range(9):
-        t = (k_ - 4) / 4
-        pts = [SURF(ex + t * 0.02, 0.05 - abs(t) * 0.02, 0.006), SURF(ex + t * 0.024, 0.005, 0.007), SURF(ex + t * 0.018, -0.04 + abs(t) * 0.015, 0.006)]
-        pt.append(rod(pts, [0.006 * H, 0.012 * H, 0.005 * H], 5))
-    pt.append(rod([SURF(ex + s * 0.012, 0.05, 0.006), SURF(ex + s * 0.03, 0.095, 0.004)], [0.007 * H, 0.002 * H], 4))  # a ponta da sobrancelha
-# o nariz preto e a boca costurada: os traços verticais sobre os lábios
-pt.append(ellipsoid(tuple(SURF(0.0, -0.035, 0.012)), (0.012 * H, 0.008 * H, 0.008 * H), 8, 4))
-for i in range(7):
-    x = -0.03 + 0.06 * i / 6
-    pt.append(rod([SURF(x, -0.07, 0.006), SURF(x * 1.1, -0.115 - 0.01 * (1 - abs(x) / 0.03), 0.005)], [0.004 * H, 0.002 * H], 4))
-pt.append(rod([SURF(x, -0.092, 0.006) for x in [-0.034 + 0.068 * i / 8 for i in range(9)]], 0.003 * H, 4))
+    ex, ez = s * 0.046, 0.004
+    # o olho: o branco, a íris azul e a pupila; o contorno borrado de preto em volta (o lápis grosso das artes)
+    eyes.append(ellipsoid(tuple(SURF(ex, ez, 0.0045)), (0.019 * H, 0.006 * H, 0.009 * H), 10, 6))
+    irises.append(ellipsoid(tuple(SURF(ex - s * 0.002, ez, 0.009)), (0.0075 * H, 0.003 * H, 0.0075 * H), 10, 6))
+    pt.append(ellipsoid(tuple(SURF(ex - s * 0.002, ez, 0.0115)), (0.0032 * H, 0.0015 * H, 0.0032 * H), 6, 4))
+    ring = [SURF(ex + math.cos(t) * 0.025, ez + math.sin(t) * (0.013 if math.sin(t) > 0 else 0.011), 0.0065) for t in [k / 20 * TAU for k in range(21)]]
+    pt.append(rod(ring, [(0.0042 if math.sin(t) > 0 else 0.003) * H for t in [k / 20 * TAU for k in range(21)]], 5, caps=False))
+    # as RACHADURAS finas saindo do olho (para cima, para fora e para baixo), cada uma com um galho
+    for a0 in (1.9, 1.3, 0.45, -0.35, -1.1, -2.3, 2.7):
+        a = a0 if s > 0 else math.pi - a0
+        r0 = 0.027
+        pts = []
+        for q in range(5):
+            r = r0 + q * 0.012
+            aa = a + rnd.uniform(-0.2, 0.2)
+            pts.append(SURF(ex + math.cos(aa) * r, ez + math.sin(aa) * r * 0.8, 0.0065))
+        pt.append(rod(pts, [0.0022 * H, 0.0018 * H, 0.0014 * H, 0.001 * H, 0.0006 * H], 4))
+        m = pts[2]
+        mx, mz = (m.x / H), (m.z - fz) / H
+        bp = [SURF(mx, mz, 0.0065), SURF(mx + math.cos(a + 0.7) * 0.016, mz + math.sin(a + 0.7) * 0.013, 0.0065)]
+        pt.append(rod(bp, [0.0012 * H, 0.0005 * H], 4))
+    # os ESCORRIDOS pretos: do contorno de baixo até a bochecha, finos e desiguais
+    for dx, ln in ((-0.008, 0.045), (0.002, 0.08), (0.013, 0.055)):
+        x0 = ex + dx * s
+        pts = [SURF(x0 + 0.002 * math.sin(q * 1.9), ez - 0.012 - ln * q / 6, 0.0065) for q in range(7)]
+        pt.append(rod(pts, [0.0022 * H, 0.0017 * H, 0.0014 * H, 0.0012 * H, 0.0011 * H, 0.001 * H, 0.0015 * H], 4))
+# os RISCOS em X na bochecha direita dela (x < 0, a esquerda de quem olha)
+for (cx, cz) in ((-0.075, -0.045), (-0.088, -0.075)):
+    for d in (1, -1):
+        pt.append(rod([SURF(cx - 0.014, cz - 0.012 * d, 0.0062), SURF(cx + 0.014, cz + 0.012 * d, 0.0062)], 0.0017 * H, 4))
+# a BOCA COSTURADA: os lábios escuros e os pontos verticais atravessando
+pt.append(rod([SURF(x, -0.09 + 0.004 * (1 - (x / 0.03) ** 2), 0.0062) for x in [-0.03 + 0.06 * k / 10 for k in range(11)]], [(0.0025 + 0.0035 * (1 - abs(k - 5) / 5)) * H for k in range(11)], 5))  # os lábios escuros, caídos nos cantos
+for k in range(9):
+    x = -0.028 + 0.056 * k / 8
+    pt.append(rod([SURF(x, -0.074 + 0.003 * math.sin(k * 2.1), 0.0065), SURF(x * 1.04, -0.104 - 0.003 * math.cos(k * 1.7), 0.0065)], [0.0014 * H, 0.0011 * H], 4))
+# o nariz: só a sombra das narinas
+for s in (1, -1):
+    pt.append(ellipsoid(tuple(SURF(s * 0.008, -0.036, 0.012)), (0.004 * H, 0.002 * H, 0.0025 * H), 6, 4))
 b.add('prop_maskOnPaint', merge(*pt), paint, region='head', subdiv=0)
+b.add('prop_maskOnEyes', merge(*eyes), eyew, region='head', subdiv=0)
+b.add('prop_maskOnIris', merge(*irises), iris, region='head', subdiv=0)
 b.group('prop_maskOn', 'prop_maskOn')
 
 b.export(OUT)

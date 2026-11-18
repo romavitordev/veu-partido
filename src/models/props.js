@@ -1898,4 +1898,43 @@ export function addAleProps(rig) {
   props.keytar = k;
   rig.muzzle = k.userData.muzzle;
   if (props.maskOn) rig.showProp('maskOn', false);
+  // TOCANDO (as artes da wiki, 2026-11-18: o keytar é tocado na HORIZONTAL, pendurado na alça): parade (idle_keytar)
+  // ou no solo (bass_play), o keytar sai da pegada de espada e fica entre as mãos — o braço na esquerda, o teclado
+  // sob a direita, as teclas para a frente e a lâmina para baixo. Nos golpes volta para a pegada. A troca é suave e só
+  // começa depois de um instante parade, para não ficar indo e voltando entre um golpe e outro
+  const rest = { p: k.position.clone(), q: k.quaternion.clone() };
+  const PLAY = new Set(['idle_keytar', 'bass_play']);
+  const hR = new THREE.Vector3(), hL = new THREE.Vector3(), fwd = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+  const X = new THREE.Vector3(), Y = new THREE.Vector3(), Z = new THREE.Vector3(), tmpS = new THREE.Vector3();
+  const want = new THREE.Matrix4(), inv = new THREE.Matrix4(), tp = new THREE.Vector3(), tq = new THREE.Quaternion();
+  let held = 0, blend = 0;
+  (rig.tickers || (rig.tickers = [])).push((dt, f) => {
+    const a = f && f.anim;
+    const playing = !!(a && PLAY.has(a.currentName));
+    held = playing ? held + dt : 0;
+    blend = Math.max(0, Math.min(1, blend + (held > 0.25 ? dt * 6 : -dt * 12)));
+    if (blend <= 0) {
+      if (k.userData.played) { k.position.copy(rest.p); k.quaternion.copy(rest.q); k.userData.played = false; }
+      return;
+    }
+    k.userData.played = true;
+    rig.root.updateMatrixWorld(true);
+    hR.setFromMatrixPosition(sockets.handR.matrixWorld);
+    hL.setFromMatrixPosition(sockets.handL.matrixWorld);
+    fwd.set(0, 0, 1).transformDirection(rig.root.matrixWorld);
+    // Y do keytar (o braço) da mão direita para a esquerda, quase na horizontal; Z (as teclas) para a frente e um
+    // pouco para cima; X (a lâmina) sai para baixo
+    Y.subVectors(hL, hR);
+    Y.y *= 0.3;
+    if (Y.lengthSq() < 1e-6) Y.set(1, 0, 0).transformDirection(rig.root.matrixWorld);
+    Y.normalize();
+    Z.copy(fwd).addScaledVector(up, 0.4);
+    Z.addScaledVector(Y, -Z.dot(Y)).normalize();
+    X.crossVectors(Y, Z).normalize();
+    want.makeBasis(X, Y, Z).setPosition(hR.x + Y.x * 0.6, hR.y + Y.y * 0.6 - 0.02, hR.z + Y.z * 0.6);
+    inv.copy(sockets.handR.matrixWorld).invert();
+    want.premultiply(inv).decompose(tp, tq, tmpS);
+    k.position.copy(rest.p).lerp(tp, blend);
+    k.quaternion.copy(rest.q).slerp(tq, blend);
+  });
 }

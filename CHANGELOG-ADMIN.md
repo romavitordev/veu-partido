@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v5.11.0 — Alê Ao Vivo
+
+- Versão: `VERSION` 5.10.0 → **5.11.0**. Data: 2026-11-18. Dono: "siga oque falta" e "a mascara do ale precisa ser
+  arrumada tambem".
+- **Keytar na horizontal** (as artes da wiki: Alê toca pendurado na alça): clipe `idle_keytar` (`src/anim/clips.js`,
+  `ale.js` `anims.idle`). Ticker em `addAleProps` (`props.js`, mesmo método do Berrão do Caio): em `idle_keytar` ou
+  `bass_play`, depois de 0,25 s parade, o keytar sai da pegada e vai para entre as mãos (o braço para a mão esquerda,
+  as teclas para a frente, a lâmina para baixo), com troca suave. Nos golpes volta à pegada de espada.
+- **Máscara de corpse paint refeita** (`char_ale.py`, `prop_maskOn`) pelo pôster "PSIKOLERA - Alê" (wiki: "branca com
+  detalhes pretos"). Antes eram duas manchas pretas cobrindo os olhos. Agora: casca branca, olhos brancos com a íris
+  azul à mostra, contorno borrado, rachaduras finas com galhos, três escorridos por olho, riscos em X na bochecha
+  direita, lábios escuros caídos e a boca costurada. Materiais `fine_paint_ale`, `fine_mask_ale_eye`,
+  `fine_mask_ale_iris` (`fine_`: sem contorno, `glbRig.js`; com contorno os traços viravam borrão).
+- Conferido: luta Franco × Alê na CPU sem erro no console (64 pulsos de QUEIMANDO em 12 s), o keytar na horizontal
+  parade e a máscara de perto no jogo; `npm test` 119/119, `npm run check`, `vite build`, `npm run moves`.
+
 ## v5.10.0 — PSIKOLERA Afinada
 
 - Versão: `VERSION` 5.9.0 → **5.10.0**. Data: 2026-11-18. Dono: "Sim, rodar bateria" e "se estiverem fracos analise o

@@ -26,7 +26,7 @@ export default {
     tagline: 'Me dá sua mão. Eu já sei como termina.',
   },
   stats: { moveSpeed: 8.0, attackSpeed: 1.04 },
-  anims: { idle: 'idle_hammer', run: 'run', charge: 'charge', victory: 'vic_ale', block: 'block_hammer', blockHeavy: 'block_heavy' },
+  anims: { idle: 'idle_keytar', run: 'run', charge: 'charge', victory: 'vic_ale', block: 'block_hammer', blockHeavy: 'block_heavy' },
   chargeFx: { style: 'default', color: STONE },
   dodge: { style: 'default', distance: 5.0 },
   passives: [

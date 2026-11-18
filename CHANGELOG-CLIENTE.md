@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.11.0 — Alê Ao Vivo
+- ALÊ AO VIVO: parade, Alê toca a Lâmina Keytar na horizontal, como nas artes oficiais. Na hora do golpe, empunha de novo.
+- A MÁSCARA DE CORPSE PAINT de Alê foi refeita pela arte oficial: branca, com os olhos azuis à mostra, rachaduras, escorridos pretos e a boca costurada.
+
 ## v5.10.0 — PSIKOLERA Afinada
 - FRANCO e ALÊ mais fortes: os dois quase não ganhavam e agora ficam no meio do elenco.
 - FOGO EM GERAL: os golpes de perto do Franco deixam o adversário EM CHAMAS por alguns segundos.

@@ -110,6 +110,16 @@ export const CLIPS = {
       k(1, { ...LEGS, hip: [0, -0.35, 0], sp: [0.04, 0.35, 0], hd: [0.02, -0.35, 0], sR: [-0.12, 0.35, -0.22], eR: [-1.45, 0, 0], sL: [-0.8, -0.45, 0.1], eL: [-0.3, 0, 0] }),
     ],
   },
+  // ALÊ TOCANDO O KEYTAR parade (as artes da wiki, 2026-11-18): o keytar na HORIZONTAL na frente do quadril — a mão
+  // esquerda segura o braço do lado esquerdo, a direita toca o teclado; o corpo balança devagar no tempo da melodia (o
+  // keytar é posto entre as mãos pelo ticker de addAleProps)
+  idle_keytar: {
+    dur: 1.2, loop: true, keys: [
+      k(0, { ...LEGS, hip: [0, -0.12, 0], sp: [0.06, 0.1, 0], hd: [0.18, -0.1, 0.05], sR: [-0.25, 0.3, -0.3], eR: [-1.35, 0, 0], sL: [-0.55, -0.15, 0.45], eL: [-0.9, 0, 0] }),
+      k(0.5, { ...LEGS, h: -0.1, hip: [0, -0.12, 0], sp: [0.1, 0.14, 0], hd: [0.26, -0.14, -0.08], sR: [-0.3, 0.3, -0.26], eR: [-1.45, 0, 0], sL: [-0.58, -0.15, 0.45], eL: [-0.95, 0, 0] }),
+      k(1, { ...LEGS, hip: [0, -0.12, 0], sp: [0.06, 0.1, 0], hd: [0.18, -0.1, 0.05], sR: [-0.25, 0.3, -0.3], eR: [-1.35, 0, 0], sL: [-0.55, -0.15, 0.45], eL: [-0.9, 0, 0] }),
+    ],
+  },
   // o tiro do Fuzil Baixo: na mesma empunhadura de baixo, o coice joga a ponta para cima e volta
   shoot_bass: {
     dur: 0.5, keys: [

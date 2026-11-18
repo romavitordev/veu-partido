@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.10.0';
+export const VERSION = '5.11.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.11.0',
+    date: '2026-11-18',
+    title: 'Alê Ao Vivo',
+    items: [
+      'ALÊ AO VIVO: parade, Alê toca a Lâmina Keytar na horizontal, como nas artes oficiais. Na hora do golpe, empunha de novo.',
+      'A MÁSCARA DE CORPSE PAINT de Alê foi refeita pela arte oficial: branca, com os olhos azuis à mostra, rachaduras, escorridos pretos e a boca costurada.',
+    ],
+  },
   {
     v: '5.10.0',
     date: '2026-11-18',
