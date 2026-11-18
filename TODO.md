@@ -78,7 +78,8 @@
 
 - [x] v4.52.0: o olho no canto da tela inicial (L3 + R3 no controle) → seleção de cenários → voo livre com colisão
   (`game/Explorer.js`, `tests/explorer.test.js`).
-- [ ] Celular: olhar arrastando o dedo e botões de subir/descer na tela (hoje o modo é de teclado/mouse/controle).
+- [x] Celular: olhar arrastando o dedo e botões de subir/descer na tela — v5.4.0 (testado no navegador com `?touch=1`).
+- [ ] Testar o Explorar num celular de verdade (o dono).
 
 ## Chama de proteção de Treb Ciach (pedido do dono, 2026-11-15)
 

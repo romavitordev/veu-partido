@@ -7,6 +7,14 @@ import { viewSize } from '../core/viewport.js';
 import { gradeFor } from '../render/grade.js';
 import { addGroundDecals } from '../arena/groundDecals.js';
 
+// celular/tablet (o mesmo critério de ui/touchControls.js; ?touch=1 força para testar no PC)
+const touchScreen = () => {
+  if (typeof window === 'undefined') return false;
+  const q = new URLSearchParams(window.location.search);
+  if (q.has('touch')) return q.get('touch') !== '0';
+  return 'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;
+};
+
 // MODO EXPLORAR (pedido do dono, 2026-11-15: "um botão meio escondido, não no menu, que leva ao menu de mapas e ele
 // pode escolher um mapa para explorar, tipo o modo espectador do Minecraft, só que com colisão nas paredes e chão, só
 // pra poder ver o mapa completo"). Uma câmera que voa para onde olha, sem lutadores, sem HUD de luta. Ela não atravessa
@@ -19,6 +27,7 @@ export const EXPLORE = {
   fast: 2.6, // multiplicador correndo (W W / L3)
   doubleTap: 0.3, // s entre os dois toques no W para correr
   lookMouse: 0.0024, // rad por pixel
+  lookTouch: 0.005, // rad por pixel arrastado na tela (celular)
   lookPad: 2.4, // rad/s no analógico direito
   maxStep: 0.25, // passo máximo por raio (m): nada de pular uma parede fina num quadro lento
   ceiling: 70, // altura máxima (m)
@@ -138,6 +147,8 @@ export class Explorer {
       <div class="ex-help"><b>Mouse</b> olha · <b>WASD</b> anda · <b>Espaço</b> sobe · <b>Shift</b> desce · <b>W W</b> (dois toques) corre · <b>Esc</b> sai<br>
       Controle: analógico esquerdo anda · <b>direito olha</b> · <b>R2</b>/<b>L2</b> sobe/desce · <b>L3</b> corre · <b>B</b> sai</div>`;
     root.appendChild(this.el);
+    this.touch = touchScreen() ? this.makeTouch() : null;
+    if (this.touch) this.el.querySelector('.ex-help').innerHTML = '<b>Arraste à esquerda</b> anda · <b>arraste à direita</b> olha · <b>▲ ▼</b> sobe/desce · <b>»</b> corre · <b>←</b> sai';
     // o mouse já olha ao entrar (o clique/tecla que escolheu o cenário ainda vale como gesto); se o navegador recusar,
     // um clique na tela trava o ponteiro (InputManager)
     const cv = renderer.domElement;
@@ -156,6 +167,84 @@ export class Explorer {
     this.prevPad = {};
   }
 
+  // CELULAR (TODO "Modo Explorar"): metade esquerda da tela = analógico que aparece onde o dedo encosta; metade direita
+  // = arrastar para olhar; botões ▲ ▼ (sobe/desce, enquanto segura) e » (corre, liga/desliga); o ← do canto sai
+  makeTouch() {
+    const T = { mx: 0, my: 0, dx: 0, dy: 0, up: 0, down: 0, fast: false, exit: false };
+    const el = document.createElement('div');
+    el.className = 'ex-touch';
+    el.innerHTML = `<div class="ex-move"><div class="ex-stick"><i></i></div></div><div class="ex-look"></div>
+      <div class="ex-btns"><button type="button" class="ex-up" aria-label="Subir">▲</button><button type="button" class="ex-down" aria-label="Descer">▼</button></div>
+      <button type="button" class="ex-fast" aria-label="Correr" aria-pressed="false">»</button>`;
+    // fora do .explore-hud (ele tem transform: o position fixed ficaria preso nele)
+    this.el.parentNode.appendChild(el);
+    this.touchEl = el;
+    const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
+    // analógico
+    const zone = el.querySelector('.ex-move');
+    const stick = el.querySelector('.ex-stick');
+    const knob = stick.querySelector('i');
+    const R = 46;
+    let sid = null;
+    let ox = 0;
+    let oy = 0;
+    zone.addEventListener('pointerdown', (e) => {
+      stop(e);
+      if (sid !== null) return;
+      sid = e.pointerId;
+      const r = zone.getBoundingClientRect();
+      ox = e.clientX; oy = e.clientY;
+      stick.style.left = `${e.clientX - r.left}px`;
+      stick.style.top = `${e.clientY - r.top}px`;
+      stick.classList.add('on');
+      try { zone.setPointerCapture(e.pointerId); } catch { /* sem captura */ }
+    });
+    zone.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== sid) return;
+      let x = e.clientX - ox;
+      let y = e.clientY - oy;
+      const d = Math.hypot(x, y);
+      if (d > R) { x *= R / d; y *= R / d; }
+      knob.style.transform = `translate(${x}px, ${y}px)`;
+      T.mx = x / R; T.my = -y / R;
+    });
+    const endStick = (e) => { if (e.pointerId !== sid) return; sid = null; T.mx = T.my = 0; knob.style.transform = ''; stick.classList.remove('on'); };
+    zone.addEventListener('pointerup', endStick);
+    zone.addEventListener('pointercancel', endStick);
+    // olhar arrastando
+    const look = el.querySelector('.ex-look');
+    const last = new Map();
+    look.addEventListener('pointerdown', (e) => { stop(e); last.set(e.pointerId, [e.clientX, e.clientY]); try { look.setPointerCapture(e.pointerId); } catch { /* sem captura */ } });
+    look.addEventListener('pointermove', (e) => {
+      const p = last.get(e.pointerId);
+      if (!p) return;
+      T.dx += e.clientX - p[0]; T.dy += e.clientY - p[1];
+      last.set(e.pointerId, [e.clientX, e.clientY]);
+    });
+    const endLook = (e) => last.delete(e.pointerId);
+    look.addEventListener('pointerup', endLook);
+    look.addEventListener('pointercancel', endLook);
+    // botões de segurar
+    const hold = (sel, key) => {
+      const b = el.querySelector(sel);
+      b.addEventListener('pointerdown', (e) => { stop(e); T[key] = 1; b.classList.add('on'); });
+      const up = () => { T[key] = 0; b.classList.remove('on'); };
+      b.addEventListener('pointerup', up);
+      b.addEventListener('pointercancel', up);
+      b.addEventListener('pointerleave', up);
+    };
+    hold('.ex-up', 'up');
+    hold('.ex-down', 'down');
+    const fast = el.querySelector('.ex-fast');
+    fast.addEventListener('pointerdown', (e) => { stop(e); T.fast = !T.fast; fast.classList.toggle('on', T.fast); fast.setAttribute('aria-pressed', String(T.fast)); });
+    // sair: o ← dos controles de toque (ui/touchControls.js, no canto de cima) — no Explorar ele não vira ○
+    this.backBtn = document.querySelector('#touch .t-back');
+    this.onBack = () => { T.exit = true; };
+    if (this.backBtn) this.backBtn.addEventListener('click', this.onBack);
+    el.addEventListener('contextmenu', stop);
+    return T;
+  }
+
   pad() {
     const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : [];
     return pads[0] || null;
@@ -169,12 +258,19 @@ export class Explorer {
     const btn = (i) => !!(pad && pad.buttons[i] && pad.buttons[i].pressed);
     const val = (i) => (pad && pad.buttons[i] ? pad.buttons[i].value || (pad.buttons[i].pressed ? 1 : 0) : 0);
     const edge = (i) => { const now = btn(i); const was = this.prevPad[i]; this.prevPad[i] = now; return now && !was; };
-    if (input.keyPressedOnce('Escape') || input.keyPressedOnce('Backspace') || edge(1) || edge(9)) return 'exit';
+    const T = this.touch;
+    if (input.keyPressedOnce('Escape') || input.keyPressedOnce('Backspace') || edge(1) || edge(9) || (T && T.exit)) return 'exit';
 
     // olhar: mouse (travado) e analógico direito
     const L = p.look || {};
     this.yaw -= (L.mx || 0) * EXPLORE.lookMouse + (L.x || 0) * EXPLORE.lookPad * dt;
     this.pitch -= (L.my || 0) * EXPLORE.lookMouse + (L.y || 0) * EXPLORE.lookPad * dt;
+    if (T) {
+      // o dedo arrasta a cena: um pouco mais sensível que o mouse (a tela do celular é pequena)
+      this.yaw -= T.dx * EXPLORE.lookTouch;
+      this.pitch -= T.dy * EXPLORE.lookTouch;
+      T.dx = T.dy = 0;
+    }
     this.pitch = Math.max(-1.5, Math.min(1.5, this.pitch));
 
     // andar: para onde olha (como o espectador), de lado e para cima/baixo
@@ -182,13 +278,13 @@ export class Explorer {
     const fwd = new THREE.Vector3(-Math.sin(this.yaw) * Math.cos(this.pitch), Math.sin(this.pitch), -Math.cos(this.yaw) * Math.cos(this.pitch));
     const right = new THREE.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
     // pedido do dono: Espaço sobe, Shift desce (no controle, R2/L2). Ctrl não: Ctrl + W fecha a aba do navegador
-    const up = (k.has('Space') ? 1 : 0) - (k.has('ShiftLeft') || k.has('ShiftRight') ? 1 : 0) + val(7) - val(6);
-    const move = new THREE.Vector3().addScaledVector(fwd, p.moveY || 0).addScaledVector(right, p.moveX || 0);
+    const up = (k.has('Space') ? 1 : 0) - (k.has('ShiftLeft') || k.has('ShiftRight') ? 1 : 0) + val(7) - val(6) + (T ? T.up - T.down : 0);
+    const move = new THREE.Vector3().addScaledVector(fwd, (p.moveY || 0) + (T ? T.my : 0)).addScaledVector(right, (p.moveX || 0) + (T ? T.mx : 0));
     move.y += Math.max(-1, Math.min(1, up));
     if (move.lengthSq() > 1) move.normalize();
     this.clock += dt;
     if (!k.has('KeyW')) this.sprint = false;
-    const fast = this.sprint || btn(10);
+    const fast = this.sprint || btn(10) || !!(T && T.fast);
     move.multiplyScalar(EXPLORE.speed * (fast ? EXPLORE.fast : 1) * dt);
     moveWithCollision(this.pos, move, this.solids);
     // fora do cenário: teto, chão de reserva e um raio máximo em volta do centro
@@ -227,6 +323,8 @@ export class Explorer {
     window.removeEventListener('keydown', this.onKey);
     if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
     this.el.remove();
+    if (this.touchEl) this.touchEl.remove();
+    if (this.backBtn) this.backBtn.removeEventListener('click', this.onBack);
     this.world.dispose();
     this.audio.listener = null;
   }

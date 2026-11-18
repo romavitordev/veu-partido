@@ -1966,3 +1966,18 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 @keyframes bsPulse { 50% { opacity: .55; transform: translate(-50%, -50%) scale(1.08); } }
 @keyframes bsDraw { from { stroke-dashoffset: 260; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { #bootscreen .bs-sigil, #bootscreen .bs-glow, #bootscreen .bs-sigil .p { animation: none; } #bootscreen .bs-sigil .p { stroke-dasharray: none; } }
+
+/* MODO EXPLORAR no celular (game/Explorer.js makeTouch): analógico à esquerda, arrastar à direita olha */
+.ex-touch { position: fixed; inset: 0; z-index: 19; touch-action: none; user-select: none; -webkit-user-select: none; }
+.ex-touch .ex-move, .ex-touch .ex-look { position: absolute; top: 0; bottom: 0; }
+.ex-touch .ex-move { left: 0; width: 45%; }
+.ex-touch .ex-look { right: 0; width: 55%; }
+.ex-touch .ex-stick { position: absolute; left: 18%; top: 72%; width: 104px; height: 104px; margin: -52px 0 0 -52px; border-radius: 50%; border: 2px solid rgba(232,216,255,.35); background: rgba(10,6,18,.35); opacity: .55; transition: opacity .15s; }
+.ex-touch .ex-stick.on { opacity: 1; }
+.ex-touch .ex-stick i { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; background: rgba(181,138,255,.75); box-shadow: 0 0 12px #9b4dff; }
+.ex-touch button { position: absolute; width: 58px; height: 58px; border-radius: 50%; border: 2px solid rgba(232,216,255,.45); background: rgba(10,6,18,.55); color: #f1e8ff; font: 700 22px system-ui, sans-serif; touch-action: none; }
+.ex-touch button.on { background: rgba(155,77,255,.7); border-color: #fff; }
+.ex-touch .ex-btns { position: absolute; right: max(18px, env(safe-area-inset-right)); bottom: 22%; width: 58px; height: 130px; }
+.ex-touch .ex-up { right: 0; top: 0; }
+.ex-touch .ex-down { right: 0; bottom: 0; }
+.ex-touch .ex-fast { right: calc(max(18px, env(safe-area-inset-right)) + 74px); bottom: calc(22% + 36px); }

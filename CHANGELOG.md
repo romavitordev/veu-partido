@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.4.0 — Explorar no Celular
+
+### Adicionado
+- Modo Explorar com controles de toque (`Explorer.makeTouch`, `.ex-touch`): analógico flutuante na metade esquerda, arrastar para olhar na direita (`EXPLORE.lookTouch`), ▲ ▼ de segurar, » para correr e o ← dos controles de toque para sair.
+
 ## v5.3.0 — Sangue nos Ferimentos
 
 ### Adicionado

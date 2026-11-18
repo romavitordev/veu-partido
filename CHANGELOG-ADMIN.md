@@ -1,6 +1,16 @@
 # Registro administrativo de alterações
 
-## v5.3.0 — Sangue nos Ferimentos
+## v5.4.0 — Explorar no Celular
+
+- Versão: `VERSION` 5.3.0 → **5.4.0** (`package.json`/lock junto). Data: 2026-11-18.
+- **TODO "Modo Explorar" (dono, 2026-11-15):** "Celular: olhar arrastando o dedo e botões de subir/descer na tela".
+  `game/Explorer.js` cria `.ex-touch` quando a tela é de toque (mesmo critério de `ui/touchControls.js`; `?touch=1`
+  força no PC): metade esquerda = analógico que nasce onde o dedo encosta; metade direita = arrastar olha
+  (`EXPLORE.lookTouch` 0,005 rad/px); ▲ ▼ enquanto segura; » liga/desliga a corrida; o ← (`#touch .t-back`) sai.
+  A camada fica fora do `.explore-hud` (ele tem `transform`, que prenderia o `position: fixed`).
+- Testado no navegador em 812×375 com `?touch=1`: olhar (+0,3 rad), andar (5 m) e subir (3,2 m), e o ← volta à
+  seleção de cenários sem deixar a camada para trás. **Não testado num celular de verdade.**
+ — Sangue nos Ferimentos
 
 - Versão: `VERSION` 5.2.0 → **5.3.0** (`package.json`/lock junto). Data: 2026-11-18.
 - **Pedido do dono (2026-11-18):** "adicione nas opções a opção de ligar/deligar efeitos visuais de sangue no jogo

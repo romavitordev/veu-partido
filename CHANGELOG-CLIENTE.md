@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.4.0 — Explorar no Celular
+- MODO EXPLORAR NO CELULAR: arraste o dedo à esquerda para andar (o analógico aparece onde você encosta) e à direita para olhar; ▲ ▼ sobem e descem, » liga a corrida e o ← do canto sai.
+
 ## v5.3.0 — Sangue nos Ferimentos
 - SANGUE NOS FERIMENTOS: os golpes que acertam agora espirram sangue para o lado do golpe, as gotas caem e deixam manchas no chão que secam e somem depois de alguns segundos. Golpes fortes deixam o ferido pingando por um instante.
 - Nova opção SANGUE em Opções → Vídeo: desligada, os golpes não soltam esse sangue (e o que já estava na tela some na hora). Os poderes de sangue, o sangramento e as poças antigas continuam iguais.

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.3.0';
+export const VERSION = '5.4.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.4.0',
+    date: '2026-11-18',
+    title: 'Explorar no Celular',
+    items: [
+      'MODO EXPLORAR NO CELULAR: arraste o dedo à esquerda para andar (o analógico aparece onde você encosta) e à direita para olhar; ▲ ▼ sobem e descem, » liga a corrida e o ← do canto sai.',
+    ],
+  },
   {
     v: '5.3.0',
     date: '2026-11-18',
