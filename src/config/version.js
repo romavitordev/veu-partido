@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.5.0';
+export const VERSION = '5.6.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.6.0',
+    date: '2026-11-18',
+    title: 'Menu Sem Espera',
+    items: [
+      'MENU SEM ESPERA: o menu abre logo e os lutadores continuam baixando por trás (o selo no alto mostra quanto falta). Se você escolher um modo antes do fim, ele abre sozinho quando o download terminar — ou toque em VOLTAR AO MENU.',
+    ],
+  },
   {
     v: '5.5.0',
     date: '2026-11-18',

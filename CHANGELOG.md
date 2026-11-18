@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.6.0 — Menu Sem Espera
+
+### Alterado
+- O menu abre antes dos downloads (`main.js`: `boot.menuReady()` no quadro seguinte); os modelos e cenários seguem baixando por trás com o selo `#netbadge`. Modo escolhido antes do fim espera na tela de carregamento (`game.pendingCmd`, `boot.wait()`), abre sozinho e pode ser cancelado (VOLTAR AO MENU / B). Teste no `npm run dev`: `?slownet=MS`.
+
 ## v5.5.0 — Carregando a Luta
 
 ### Alterado

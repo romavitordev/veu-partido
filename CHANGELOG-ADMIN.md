@@ -1,5 +1,22 @@
 # Registro administrativo de alterações
 
+## v5.6.0 — Menu Sem Espera
+
+- Versão: `VERSION` 5.5.0 → **5.6.0**. Data: 2026-11-18. Dono: "siga o todo".
+- **Item do TODO "Abrir o menu antes de baixar tudo":** o menu esperava os ~62 MB (o PC do amigo ficou minutos
+  sem menu). Agora a tela de carregamento sai da frente ~300 ms depois do primeiro quadro (`boot.menuReady()`; tira o
+  `body.booting`) e os downloads continuam por trás, com o selo `#netbadge` no alto (só nos menus, `static-bg`).
+  O "pressione start", o menu, NOVIDADES, OPÇÕES e SOBRE funcionam já (`MENU_ONLY` em `main.js`); qualquer outro
+  comando (lutas, Torre, Torneio, Outro Lado, Online, Treino, Tutorial, Explorar) com o download incompleto vira
+  `game.pendingCmd`: a tela volta com "TERMINANDO DE BAIXAR — O MODO ABRE SOZINHO" e o botão VOLTAR AO MENU (B
+  também cancela); quando `booted` fica verdadeiro o comando roda sozinho. Erro de download continua mostrando a
+  tela de erro, mesmo com o menu aberto (`fail()` tira o `.hide`).
+- Três textos novos nos 13 idiomas (`boot.wait`, `boot.cancel`, `boot.badge`).
+- Teste só no `npm run dev`: `?slownet=1500` atrasa cada download (`netLoad.js`). Testado: menu com "BAIXANDO 5%",
+  Torre escolhida → espera, VOLTAR volta ao menu, Torre de novo → abriu sozinha ao fim; o selo some.
+- Ainda não é "baixar só os lutadores escolhidos": a seleção precisa dos retratos, que são feitos dos modelos 3D.
+  Próximo passo (anotado no TODO): retratos prontos em imagem e download por personagem.
+
 ## v5.5.0 — Carregando a Luta
 
 - Versão: `VERSION` 5.4.1 → **5.5.0**. Data: 2026-11-18.

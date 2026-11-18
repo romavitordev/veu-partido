@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.6.0 — Menu Sem Espera
+- MENU SEM ESPERA: o menu abre logo e os lutadores continuam baixando por trás (o selo no alto mostra quanto falta). Se você escolher um modo antes do fim, ele abre sozinho quando o download terminar — ou toque em VOLTAR AO MENU.
+
 ## v5.5.0 — Carregando a Luta
 - TELA ANTES DA LUTA renovada: o cenário escolhido aparece ao fundo, os retratos ficam maiores e inclinados com a cor de cada lado, o VS entra com brilho e a barra mostra a porcentagem.
 

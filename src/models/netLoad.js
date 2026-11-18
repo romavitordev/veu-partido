@@ -39,7 +39,11 @@ function pump() {
   }
 }
 
+// teste (só no `npm run dev`): ?slownet=MS atrasa cada download, para ver o menu abrindo antes do fim
+const SLOW = import.meta.env && import.meta.env.DEV && typeof location !== 'undefined' ? Number(new URLSearchParams(location.search).get('slownet')) || 0 : 0;
+
 async function download(url, id) {
+  if (SLOW) await new Promise((r) => setTimeout(r, SLOW));
   const ctrl = new AbortController();
   let timer = 0;
   const arm = () => { clearTimeout(timer); timer = setTimeout(() => ctrl.abort(new Error(`sem resposta por ${IDLE_MS / 1000} s: ${url}`)), IDLE_MS); };

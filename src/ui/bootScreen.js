@@ -1,6 +1,9 @@
 // TELA DE CARREGAMENTO DO JOGO (#bootscreen, index.html) — pedido do dono, 2026-11-18. Mostra o progresso real dos
 // downloads (models/netLoad.js), o que está sendo feito, avisa quando a conexão para e mostra o erro com
 // "TENTAR DE NOVO". Some quando o menu fica pronto.
+// MENU ANTES DOS DOWNLOADS (TODO, 2026-11-18): a tela sai da frente logo (menuReady) e os downloads seguem por trás,
+// com um selo no canto (#netbadge). Escolher um modo antes do fim chama wait(): a tela volta com "TERMINANDO DE
+// BAIXAR" e o botão VOLTAR; quando tudo chega, done() some com ela e o modo abre sozinho.
 import { onNetProgress } from '../models/netLoad.js';
 import { t } from '../i18n/index.js';
 
@@ -11,7 +14,7 @@ const mb = (b) => (b / 1048576).toLocaleString(undefined, { minimumFractionDigit
 
 export function createBootScreen() {
   const root = document.getElementById('bootscreen');
-  if (!root) return { setStage() {}, fail() {}, done() {} };
+  if (!root) return { setStage() {}, fail() {}, done() {}, menuReady() {}, wait() {}, unwait() {}, onCancel() {} };
   window.__bootStarted = true;
   const $ = (s) => root.querySelector(s);
   const fill = $('.bs-bar i');
@@ -23,12 +26,30 @@ export function createBootScreen() {
   let shown = 0; // a barra só anda para frente (uma nova tentativa aumenta o total de arquivos)
   let scale = 0.9; // os downloads ocupam até 90%; o resto é preparar os retratos
   let finished = false;
+  let away = false; // menu aberto por cima: a tela está escondida, mas segue o progresso
+  let cancelFn = null;
+  const badge = document.createElement('div');
+  badge.id = 'netbadge';
+  badge.setAttribute('role', 'status');
+  badge.hidden = true;
+  badge.innerHTML = '<i></i><span></span>';
+  document.body.appendChild(badge);
+  const badgeTxt = badge.querySelector('span');
+  const badgeFill = badge.querySelector('i');
+  const cancel = document.createElement('button');
+  cancel.type = 'button';
+  cancel.className = 'bs-cancel';
+  cancel.hidden = true;
+  cancel.addEventListener('click', () => cancelFn && cancelFn());
+  tipEl.before(cancel);
   let last = { bytes: 0, lastByteAt: performance.now(), files: 0, done: 0, failed: 0, frac: 0 };
 
   const setBar = (k) => {
     shown = Math.max(shown, Math.min(1, k));
     fill.style.width = `${(shown * 100).toFixed(1)}%`;
     pct.textContent = `${Math.floor(shown * 100)}%`;
+    badgeFill.style.width = `${(shown * 100).toFixed(1)}%`;
+    badgeTxt.textContent = t('boot.badge', { pct: Math.floor(shown * 100) });
   };
   status.textContent = t('boot.models');
   let tip = Math.floor(Math.random() * TIP_COUNT);
@@ -57,7 +78,7 @@ export function createBootScreen() {
     } else note.hidden = true;
   }, 1000);
 
-  const stop = () => { finished = true; off(); clearInterval(stallTimer); clearInterval(tipTimer); };
+  const stop = () => { finished = true; off(); clearInterval(stallTimer); clearInterval(tipTimer); badge.remove(); };
 
   return {
     // etapa depois dos downloads (os retratos): a barra vai de 90% a 100%
@@ -73,6 +94,8 @@ export function createBootScreen() {
       console.error(e);
       const msg = String((e && (e.message || e)) || 'erro');
       root.classList.add('failed');
+      root.classList.remove('hide');
+      cancel.hidden = true;
       note.hidden = true;
       status.textContent = t('boot.failed_title');
       const box = $('.bs-err');
@@ -84,9 +107,32 @@ export function createBootScreen() {
       btn.onclick = () => location.reload();
       btn.focus();
     },
+    // o menu já pode abrir: a tela sai da frente e o selo do canto mostra o resto
+    menuReady() {
+      if (finished || away) return;
+      away = true;
+      root.classList.add('hide');
+      badge.hidden = false;
+    },
+    // escolheram um modo antes do fim: a tela volta por cima do menu, com o VOLTAR
+    wait() {
+      if (finished) return;
+      status.textContent = t('boot.wait');
+      cancel.textContent = t('boot.cancel');
+      cancel.hidden = false;
+      root.classList.remove('hide');
+      cancel.focus();
+    },
+    unwait() {
+      if (finished) return;
+      cancel.hidden = true;
+      root.classList.add('hide');
+    },
+    onCancel(fn) { cancelFn = fn; },
     done() {
       if (finished) return;
       setBar(1);
+      cancel.hidden = true;
       status.textContent = t('boot.ready');
       stop();
       root.dataset.done = '1';

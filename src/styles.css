@@ -1961,6 +1961,15 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #bootscreen .bs-err code { max-width: 100%; font-size: 11px; color: #c9a3ad; overflow-wrap: anywhere; }
 #bootscreen .bs-err button { padding: 10px 26px; font: 700 15px system-ui, sans-serif; letter-spacing: .08em; color: #fff; background: #c81e2e; border: 0; border-radius: 6px; cursor: pointer; }
 #bootscreen .bs-err button:hover, #bootscreen .bs-err button:focus-visible { background: #e2283a; outline: 2px solid #fff; outline-offset: 2px; }
+/* menu antes dos downloads: selo do progresso no alto da tela e o VOLTAR da espera */
+#netbadge { position: fixed; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 8000; display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 12px; border-radius: 999px; background: rgba(11,6,18,.82); box-shadow: inset 0 0 0 1px rgba(181,138,255,.35), 0 4px 14px rgba(0,0,0,.5); font: 700 11px system-ui, sans-serif; letter-spacing: .12em; color: #d9c4ff; pointer-events: none; overflow: hidden; white-space: nowrap; }
+#netbadge[hidden] { display: none; }
+#netbadge i { position: absolute; inset: auto auto 0 0; height: 2px; width: 0; background: linear-gradient(90deg, #6a1428, #9b4dff); transition: width .25s ease; }
+#netbadge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #9b4dff; box-shadow: 0 0 8px #9b4dff; animation: bsPulse 1.6s ease-in-out infinite; }
+body:not(.static-bg) #netbadge { display: none; }
+#bootscreen .bs-cancel { padding: 9px 24px; font: 700 14px system-ui, sans-serif; letter-spacing: .1em; color: #e9e0f7; background: transparent; border: 1px solid rgba(181,138,255,.55); border-radius: 6px; cursor: pointer; }
+#bootscreen .bs-cancel[hidden] { display: none; }
+#bootscreen .bs-cancel:hover, #bootscreen .bs-cancel:focus-visible { background: rgba(155,77,255,.2); outline: 2px solid #fff; outline-offset: 2px; }
 #bootscreen.failed .bs-sigil { animation-play-state: paused; filter: grayscale(.6) drop-shadow(0 0 8px #d1122e); }
 #bootscreen .bs-tip { position: absolute; bottom: max(16px, env(safe-area-inset-bottom)); left: 16px; right: 16px; font-family: system-ui, sans-serif; font-size: 12px; color: #7f7396; }
 @keyframes bsPulse { 50% { opacity: .55; transform: translate(-50%, -50%) scale(1.08); } }

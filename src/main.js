@@ -87,6 +87,15 @@ loadLearned(import.meta.env.BASE_URL).catch(() => {});
 // novo, ou a preparação quebrou (retratos, placa de vídeo) → mostra o erro com "TENTAR DE NOVO" — antes um erro
 // depois dos downloads deixava o jogo parado em "PREPARANDO AS LUTAS…" para sempre
 const boot = createBootScreen();
+// MENU ANTES DOS DOWNLOADS (TODO, 2026-11-18): antes o menu esperava os ~62 MB; agora ele abre no quadro seguinte e
+// os modelos/cenários continuam baixando por trás (selo no canto). Um modo escolhido antes do fim espera na tela de
+// carregamento (game.pendingCmd) e abre sozinho quando tudo chega; VOLTAR / B cancela.
+requestAnimationFrame(() => setTimeout(() => {
+  if (window.__bootFail) return;
+  document.body.classList.remove('booting');
+  boot.menuReady();
+}, 300));
+boot.onCancel(() => { game.cancelPending = true; });
 Promise.all([preloadModels(), preloadArenas()])
   .then(async () => {
     boot.setStage('boot.portraits', 0);
@@ -1027,6 +1036,9 @@ game.touch = touch;
 registerPWA();
 const installHint = new InstallHint();
 
+// comandos do menu que não precisam dos modelos (o resto espera os downloads)
+const MENU_ONLY = new Set(['start', 'back', 'move', 'news', 'options', 'about']);
+
 function tick(dt) {
   if (touch) touch.sync(game.state, !!input.teamMode, game.state === 'mainmenu' && game.screen.menu, game.state === 'fight' && !!game.match && ['entrance', 'dialogue'].includes(game.match.phase), game.match && game.match.fighters ? game.match.fighters[input.netSlot || 0] : null);
   installHint.sync(game.state);
@@ -1039,9 +1051,25 @@ function tick(dt) {
     case 'title':
     case 'mainmenu': {
       // a tela inicial é uma só: "pressione start" → menu (B volta para o "pressione start")
-      if (!booted && !game.screen.menu) break;
       if (game.menuGuard > 0) { game.menuGuard -= dt; break; }
-      const c = game.screen.update(input);
+      let c;
+      if (game.pendingCmd) {
+        // esperando o fim dos downloads para abrir o modo escolhido
+        if (!booted) {
+          if (game.cancelPending || input.players.some((p) => p.pressed.physical)) {
+            game.pendingCmd = null;
+            boot.unwait();
+            audio.play('select');
+          }
+          game.cancelPending = false;
+          break;
+        }
+        c = game.pendingCmd;
+        game.pendingCmd = null;
+      } else c = game.screen.update(input);
+      game.cancelPending = false;
+      // modos precisam dos modelos e cenários: ainda baixando → espera na tela de carregamento
+      if (!booted && c && !MENU_ONLY.has(c)) { audio.play('confirm'); game.pendingCmd = c; boot.wait(); break; }
       if (c === 'start') {
         audio.unlock();
         audio.play('confirm');
