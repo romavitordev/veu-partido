@@ -10,7 +10,7 @@ Feita com o modo Explorar (v4.52.0): uma vista aérea na diagonal e uma de chão
 
 | Mapa | Criado | Estado | O que falta |
 | --- | --- | --- | --- |
-| Tipora | 2026-11-01 | o pior: um disco de terra lisa com grama em volta, quase nenhum objeto | quase tudo: referência, chão, borda, peças |
+| Tipora | 2026-11-01 | v5.8.0: borda vestida (poço, banca do peixe, redes, covos, lenha, varal, mural, cocho, bote) e chão com pedrinhas, sulcos e tufos | o centro da praça segue liso (a luta precisa); referências da wiki para mais peças da vila |
 | Palco do Anfitrião | 2026-11-01 | disco roxo com a cruz de luz; bonito de longe, vazio de perto | cortinas, plateia, cenário de palco, luzes de ribalta |
 | Santo Berço | 2026-10-02 | a praça tem o Símbolo Espiral e mais nada no meio; as casas ficam longe | calçamento, bancas, poço/fonte, vida de vilarejo na borda da praça |
 | Coliseu | 2026-10-01 | areia lisa, três pedras e duas pilastras no meio | marcas de luta na areia, armas e escudos caídos, sangue velho, arquibancada mais próxima |

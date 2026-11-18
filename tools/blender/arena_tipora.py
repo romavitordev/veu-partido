@@ -337,6 +337,163 @@ for s in (-1, 1):
     box(f'bench_leg{s}', (9.8 + s * 0.8 * math.cos(-0.9), 0.22, 7.6 - s * 0.8 * math.sin(-0.9)), (0.08, 0.45, 0.45), M['wood_d'], rot_y=-0.9)
 col_box('bench', (9.8, 0, 7.6), (1.6, 1, 1.6))
 
+# ================================================================ VIDA NA BORDA DA PRAÇA (v5.8.0, vistoria dos mapas)
+# docs/AUDITORIA-MAPAS.md: "o pior: um disco de terra lisa com grama em volta". A luta vai até r = 17: tudo daqui fica
+# FORA dela (r >= 17,4), no anel de grama entre a praça e as casas (r 21–23), longe das trilhas. PROPOSTA visual a
+# partir da vila de pescadores sem eletricidade da wiki ("Vilarejo de Tipora"): o poço, a banca do peixe, as redes
+# secando, os covos e caixas da permuta, a lenha, o varal, o mural da praça, o cocho e um bote virado perto do mar.
+EDGE = []  # (x, z, raio livre): os arbustos não nascem em cima
+M['rope'] = material('rope', '#b8a070', 1)
+M['net'] = material('fish_net', '#8a8a6a', 1)
+M['fish'] = material('fish_silver', '#9aa8a8', 0.35, metal=0.3)
+M['canvas'] = material('stall_canvas', '#a85a3a', 0.9)
+M['cloth2'] = material('cloth_white', '#d8d0bc', 1)
+M['cloth3'] = material('cloth_blue', '#4a6a8a', 1)
+M['paper'] = material('notice_paper', '#e0d4b0', 1)
+M['water'] = material('water_dark', '#1a3a3a', 0.1)
+M['hull'] = material('boat_hull', '#3a5a6a', 0.8)
+
+
+def edge_spot(a, r, free=1.8):
+    x, z = at(a, r)
+    EDGE.append((x, z, free))
+    return x, z, face_center(x, z)
+
+
+def local(x, z, ry, u, v=0.0):
+    """ponto a u metros para o lado e v para a frente (de quem olha a praça) a partir de (x, z)"""
+    return x + math.cos(ry) * u + math.sin(ry) * v, z - math.sin(ry) * u + math.cos(ry) * v
+
+
+# o POÇO de pedra com o telhadinho, a manivela e o balde
+x, z, ry = edge_spot(-0.75, 18.4, 2.2)
+cyl('well_ring', (x, 0, z), 0.95, 0.8, M['stone'], seg=14)
+cyl('well_water', (x, 0.62, z), 0.78, 0.04, M['water'], seg=14)
+for s in (-1, 1):
+    px, pz = local(x, z, ry, s * 0.9)
+    box(f'well_post{s}', (px, 1.25, pz), (0.12, 1.7, 0.12), M['wood_d'])
+for s in (-1, 1):
+    px, pz = local(x, z, ry, 0, s * 0.33)
+    box(f'well_roof{s}', (px, 2.2, pz), (2.2, 0.06, 0.85), M['shingle'], rot_y=ry, rot_x=0.55 * s)
+box('well_axle', (x, 1.6, z), (2.0, 0.1, 0.1), M['wood'], rot_y=ry)
+px, pz = local(x, z, ry, 0, 0)
+cyl('well_rope', (px, 0.8, pz), 0.015, 0.8, M['rope'], seg=4)
+px, pz = local(x, z, ry, 0.55, 0.35)
+cyl('well_bucket', (px, 0.8, pz), 0.17, 0.28, M['wood'], seg=10, r_top=0.2)
+
+# a BANCA DO PEIXE: o tampo, o toldo de lona e os peixes em fileira
+x, z, ry = edge_spot(0.82, 18.6, 2.4)
+box('stall_top', (x, 0.85, z), (2.4, 0.08, 0.9), M['wood'], rot_y=ry)
+for i, (u, v) in enumerate(((-1.1, -0.4), (1.1, -0.4), (-1.1, 0.4), (1.1, 0.4))):
+    px, pz = local(x, z, ry, u, v)
+    box(f'stall_leg{i}', (px, 0.42, pz), (0.08, 0.84, 0.08), M['wood_d'])
+    if v < 0:
+        box(f'stall_pole{i}', (px, 1.55, pz), (0.07, 1.4, 0.07), M['wood_d'])
+px, pz = local(x, z, ry, 0, -0.1)
+box('stall_awning', (px, 2.15, pz), (2.6, 0.04, 1.4), M['canvas'], rot_y=ry, rot_x=0.22)
+for i in range(7):
+    px, pz = local(x, z, ry, -0.95 + i * 0.32, 0.05)
+    sphere(f'stall_fish{i}', (px, 0.93, pz), (0.09, 0.05, 0.3), M['fish'], seg=8, rings=4)
+for i in range(2):
+    px, pz = local(x, z, ry, -0.6 + i * 1.2, -0.8)
+    box(f'stall_crate{i}', (px, 0.22, pz), (0.6, 0.44, 0.45), M['wood'], rot_y=ry + 0.1 * i)
+
+# as REDES secando no varal de varas (perto da trilha do mar)
+x, z, ry = edge_spot(2.62, 18.8, 2.6)
+for s in (-1, 1):
+    px, pz = local(x, z, ry, s * 1.4)
+    cyl(f'net_pole{s}', (px, 0, pz), 0.07, 2.3, M['wood_d'], seg=6)
+box('net_bar', (x, 2.18, z), (2.95, 0.08, 0.08), M['wood'], rot_y=ry)
+for i in range(5):
+    px, pz = local(x, z, ry, -1.1 + i * 0.55)
+    hh = 1.35 - 0.12 * (i % 2)
+    box(f'net_drape{i}', (px, 2.15 - hh / 2, pz), (0.5, hh, 0.03), M['net'], rot_y=ry, rot_x=0.08 * (i % 3 - 1))
+px, pz = local(x, z, ry, 0.3, -0.9)
+sphere('net_heap', (px, 0.12, pz), (0.7, 0.18, 0.5), M['net'], seg=8, rings=4)
+
+# COVOS (armadilhas de pesca) e caixas da permuta empilhadas
+x, z, ry = edge_spot(2.1, 18.0, 1.9)
+for i, (u, v, y) in enumerate(((-0.5, 0, 0.25), (0.25, 0.1, 0.25), (-0.15, 0.05, 0.75))):
+    px, pz = local(x, z, ry, u, v)
+    box(f'trade_crate{i}', (px, y, pz), (0.62, 0.5, 0.55), M['wood'], rot_y=ry + 0.15 * i)
+for i in range(3):
+    px, pz = local(x, z, ry, 0.95, -0.5 + i * 0.5)
+    box(f'trap{i}', (px, 0.24, pz), (0.75, 0.46, 0.46), M['net'], rot_y=ry + 0.4 + i * 0.3)
+    box(f'trap_band{i}', (px, 0.24, pz), (0.06, 0.5, 0.5), M['rope'], rot_y=ry + 0.4 + i * 0.3)
+px, pz = local(x, z, ry, -1.15)
+sphere('trade_sack', (px, 0.28, pz), (0.32, 0.3, 0.28), M['cloth'], seg=8, rings=5)
+
+# a LENHA empilhada e o machado cravado no cepo
+x, z, ry = edge_spot(-1.38, 18.2, 1.9)
+for row in range(3):
+    for i in range(5 - row):
+        px, pz = local(x, z, ry, -0.8 + i * 0.32 + row * 0.16, -0.3)
+        cyl(f'log{row}_{i}', (px, 0.15 + row * 0.27, pz), 0.14, 1.0, M['bark'], seg=7, rot_x=math.pi / 2, rot_y=ry)
+px, pz = local(x, z, ry, 1.35, 0.2)
+cyl('chop_block', (px, 0, pz), 0.32, 0.5, M['wood'], seg=10)
+box('axe_handle', (px, 0.78, pz), (0.05, 0.6, 0.05), M['wood'], rot_y=ry, rot_z=0.35)
+box('axe_head', (px + 0.04, 0.55, pz), (0.04, 0.12, 0.2), M['iron'], rot_y=ry, rot_z=0.35)
+
+# o VARAL de roupa entre duas estacas
+x, z, ry = edge_spot(-1.98, 19.0, 2.4)
+for s in (-1, 1):
+    px, pz = local(x, z, ry, s * 1.6)
+    cyl(f'line_post{s}', (px, 0, pz), 0.06, 1.9, M['wood_d'], seg=6)
+box('line_rope', (x, 1.82, z), (3.2, 0.02, 0.02), M['rope'], rot_y=ry)
+for i, (u, w, h, m) in enumerate(((-1.0, 0.55, 0.7, 'cloth2'), (-0.3, 0.45, 0.85, 'cloth3'), (0.35, 0.6, 0.55, 'cloth2'), (1.0, 0.4, 0.75, 'canvas'))):
+    px, pz = local(x, z, ry, u)
+    box(f'line_cloth{i}', (px, 1.8 - h / 2, pz), (w, h, 0.02), M[m], rot_y=ry, rot_x=0.05 * (i % 2))
+
+# o MURAL da praça (as notícias e os avisos da igreja) perto da escada do morro
+x, z, ry = edge_spot(1.4, 17.8, 1.6)
+for s in (-1, 1):
+    px, pz = local(x, z, ry, s * 0.7)
+    box(f'board_leg{s}', (px, 0.9, pz), (0.1, 1.8, 0.1), M['wood_d'])
+box('board', (x, 1.35, z), (1.6, 0.9, 0.06), M['wood'], rot_y=ry)
+box('board_roof', (x, 1.9, z), (1.8, 0.05, 0.35), M['shingle'], rot_y=ry, rot_x=0.25)
+for i, (u, v, w, h) in enumerate(((-0.45, 0.12, 0.38, 0.5), (0.05, -0.05, 0.32, 0.4), (0.48, 0.15, 0.36, 0.3))):
+    px, pz = local(x, z, ry, u, 0.04)
+    box(f'board_paper{i}', (px, 1.35 + v, pz), (w, h, 0.01), M['paper'], rot_y=ry, rot_z=0.04 * (i - 1))
+
+# o COCHO de água com o balde
+x, z, ry = edge_spot(-2.48, 18.1, 1.8)
+box('trough', (x, 0.3, z), (1.6, 0.5, 0.6), M['wood'], rot_y=ry)
+box('trough_water', (x, 0.53, z), (1.45, 0.04, 0.46), M['water'], rot_y=ry)
+px, pz = local(x, z, ry, 1.1)
+cyl('trough_bucket', (px, 0, pz), 0.18, 0.3, M['wood'], seg=10, r_top=0.21)
+
+# um BOTE virado de casco para cima, perto da trilha do mar (no setor aberto)
+x, z, ry = edge_spot(SEA_GAP + 0.32, 19.2, 2.6)
+hull = sphere('boat_hull', (x, 0.18, z), (2.0, 0.38, 0.75), M['hull'], seg=12, rings=6)
+hull.rotation_euler[2] = ry
+box('boat_keel', (x, 0.55, z), (3.6, 0.06, 0.08), M['wood_d'], rot_y=ry)
+for s in (-1, 1):
+    px, pz = local(x, z, ry, 0.4 * s, 1.0 * s)
+    box(f'boat_oar{s}', (px, 0.05, pz), (2.2, 0.04, 0.12), M['wood'], rot_y=ry + 0.3 * s)
+
+# ================================================================ o CHÃO da praça: pedras, sulcos das carroças e tufos
+# só no chão (poucos cm, sem colisão): a luta continua livre
+PEBBLE = (material('pebble_light', '#bcae94', 1), material('pebble_dark', '#8e8270', 1))
+for i in range(70):
+    a, r = random.uniform(0, TAU), 2.0 + 12.6 * math.sqrt(random.random())
+    x, z = at(a, r)
+    w = random.uniform(0.12, 0.3)
+    sphere(f'square_stone{i}', (x, 0.01, z), (w, 0.045, w * random.uniform(0.6, 1.0)), PEBBLE[i % 2], seg=7, rings=3)
+# os sulcos das rodas nas trilhas do porto e da praia, entrando na praça
+RUT = material('dirt_rut', '#8a7254', 1)
+for k, a in enumerate((SEA_GAP - 0.15, 0.0)):
+    for s in (-1, 1):
+        x, z = at(a, 18.5)
+        px, pz = x + math.cos(a) * s * 0.75, z - math.sin(a) * s * 0.75
+        box(f'rut{k}_{s}', (px, 0.012, pz), (0.22, 0.02, 13.0), RUT, rot_y=a)
+# tufos de grama na beira da praça (onde a terra encontra a grama)
+for i in range(70):
+    a = random.uniform(0, TAU)
+    if in_gap(a, 0.12):
+        continue
+    x, z = at(a, random.uniform(14.9, 16.6))
+    cyl(f'tuft{i}', (x, 0, z), random.uniform(0.14, 0.26), random.uniform(0.18, 0.34), M['grass'] if i % 2 else M['slope'], seg=5, r_top=0.02)
+
 # ================================================================ a MATA fechada em volta (com a abertura para o mar e o farol)
 k = 0
 for ring_r, n in ((27, 30), (32, 36), (37, 40), (43, 44), (49, 46)):
@@ -363,6 +520,8 @@ for ring_r, n in ((27, 30), (32, 36), (37, 40), (43, 44), (49, 46)):
 for i in range(26):
     a = random.uniform(0, TAU)
     x, z = at(a, random.uniform(17.5, 19.5))
+    if any((x - ex) ** 2 + (z - ez) ** 2 < er ** 2 for ex, ez, er in EDGE):
+        continue
     sphere(f'bush{i}', (x, 0.3, z), (random.uniform(0.6, 1.1), random.uniform(0.45, 0.7), random.uniform(0.6, 1.0)), M['leaf'], seg=7, rings=5)
 
 # ================================================================ o FAROL no rochedo, ao longe (listras vermelhas e brancas)

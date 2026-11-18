@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v5.8.0 — Praça de Tipora
+
+- Versão: `VERSION` 5.7.0 → **5.8.0**. Data: 2026-11-18. Dono: "Sim, próximo item".
+- **Item do TODO "Polir os mapas antigos" (ordem de `docs/AUDITORIA-MAPAS.md`, 1º: Tipora, "o pior: um disco de terra
+  lisa com grama em volta").** O Blender MCP não estava conectado; montado pelo script de sempre
+  (`node tools/blender/build.mjs tipora`, Blender 5.2 em segundo plano).
+- Regra da vistoria seguida: a área de luta (r = 17) fica livre; o detalhe vai no CHÃO e na BORDA. Novas peças no anel
+  de grama entre a praça e as casas (r 17,8–19,2), longe das três trilhas: o POÇO de pedra com telhadinho, a BANCA DO
+  PEIXE com toldo, as REDES secando, COVOS e caixas da permuta, a LENHA e o machado no cepo, o VARAL de roupa, o MURAL
+  da praça, o COCHO e um BOTE virado no setor aberto do mar. `edge_spot()` guarda o lugar de cada uma e os arbustos
+  aleatórios desviam. Chão: 70 pedrinhas achatadas (cor da terra), sulcos de carroça nas trilhas do porto e da praia,
+  70 tufos de grama na divisa terra/grama. Sem colisão nova (tudo fora da luta ou rente ao chão).
+- PROPOSTA visual (vila de pescadores sem eletricidade, wiki "Vilarejo de Tipora"); nada disso é citado nominalmente.
+- Conferido no Explorar (4 direções a partir do centro) e numa luta CPU × CPU: sem erros, a luta livre.
+- `.glb`: 848 → 989 KB. Próximo da ordem: Palco do Anfitrião.
+
 ## v5.7.0 — Download Guardado
 
 - Versão: `VERSION` 5.6.0 → **5.7.0**. Data: 2026-11-18. Dono: "Sim, próximo item" (seguir o TODO).

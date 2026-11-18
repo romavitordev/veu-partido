@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.8.0 — Praça de Tipora
+
+### Alterado
+- `tools/blender/arena_tipora.py`: borda da praça vestida (r ≥ 17,4, fora da luta): poço, banca do peixe, redes secando, covos/caixas, lenha, varal, mural, cocho e bote virado (`edge_spot`/`local`; os arbustos desviam); chão com 70 pedrinhas, sulcos de carroça nas trilhas e 70 tufos na beira. `public/arenas/tipora.glb` refeito (848 → 989 KB).
+
 ## v5.7.0 — Download Guardado
 
 ### Alterado

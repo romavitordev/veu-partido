@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.8.0 — Praça de Tipora
+- ILHA DE TIPORA mais viva: em volta da praça agora há o poço, a banca do peixe, as redes secando, covos e caixas, lenha com o machado no cepo, o varal de roupa, o mural da praça, o cocho e um bote virado perto do mar; no chão, pedrinhas, sulcos de carroça e tufos de grama. A área da luta continua livre.
+
 ## v5.7.0 — Download Guardado
 - DOWNLOAD GUARDADO: no app instalado, uma versão nova não baixa mais o jogo inteiro de novo — só os lutadores, cenários e sons que mudaram. O resto continua guardado no aparelho.
 

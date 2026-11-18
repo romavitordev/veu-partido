@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.7.0';
+export const VERSION = '5.8.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.8.0',
+    date: '2026-11-18',
+    title: 'Praça de Tipora',
+    items: [
+      'ILHA DE TIPORA mais viva: em volta da praça agora há o poço, a banca do peixe, as redes secando, covos e caixas, lenha com o machado no cepo, o varal de roupa, o mural da praça, o cocho e um bote virado perto do mar; no chão, pedrinhas, sulcos de carroça e tufos de grama. A área da luta continua livre.',
+    ],
+  },
   {
     v: '5.7.0',
     date: '2026-11-18',
