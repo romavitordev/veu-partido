@@ -390,6 +390,15 @@ export function applyHit(world, attacker, victim, o) {
       world.fx.burst(link.target.chestPos(), { count: 8, color: 0x9a0010, speed: 2, life: 0.4, size: 0.14, gravity: 6 });
     }
   }
+  // VAMPIRISMO (Alvira): quem marcou o alvo bebe parte de todo dano que causa nele
+  const vamp = victim.findBuff && victim.findBuff('vampirismo');
+  if (vamp && dealt > 0 && attacker && vamp.owner === attacker && attacker.state !== 'ko') {
+    const heal = Math.round(dealt * vamp.ratio);
+    if (heal > 0) {
+      attacker.health = Math.min(attacker.maxHealth, attacker.health + heal);
+      if (world.fx && Math.random() < 0.6) world.fx.tracer(victim.chestPos(), attacker.chestPos(), { color: vamp.color ?? 0xa01018, life: 0.18, width: 0.03 });
+    }
+  }
   // REAÇÃO (Luciano, cânone de Desconjuração): segurando o aparelho eletrônico e concentrado no símbolo, metade do dano
   // volta para quem bateu como Energia caótica; a outra metade vai para a mente (o corpo leva a metade — takenMult no
   // buff — e a sanidade, que é a barra de energia, paga o resto)

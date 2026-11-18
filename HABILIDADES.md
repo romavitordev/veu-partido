@@ -1999,6 +1999,51 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## ALVIRA
+
+*A Primeira Vampira, a freira dos Vampiros* · arma: O Cajado da Cruz de Sangue e as hastes de metal
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Varrida da cruz | 28 | 2.8 m |  |
+| ○ 2 | Volta do cajado | 30 | 2.8 m |  |
+| ○ 3 | Penitência | 36 | 2.9 m |  |
+| ○ 4 | Lança no peito | 56 | 3 m | finalizador: lança |
+| Frente + ○ | Estocada da lança | 32 | 3.1 m |  |
+| Trás + ○ | Distância santa | 30 | 2.8 m |  |
+| Lado + ○ | Giro do cajado | 28 | 2.9 m |  |
+| No ar + ○ | A cruz desce | 34 | 2.7 m | desce com impacto |
+| ↑ + ○ (no combo) | Cruz que ergue | 36 | 2.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Cravar no chão | 40 | 2.7 m | finalizador: derruba |
+
+### Principal (□ / X): Hastes de Metal
+
+- Dano 17 × 2 · alcance 26 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Titereira de Sangue** — △ + □ / Y + X · custo 30 · cooldown 17 s · alcance 10 m
+  Cordas de sangue saem das mãos dela e prendem os pulsos e a cabeça do alvo: ele vem andando até ela sem se defender. Dá para resistir apertando os botões, mas cada puxão nas cordas machuca.
+- **Vampirismo** — △ + ○ / Y + B · custo 22 · cooldown 16 s · dano 8 · alcance 11 m
+  Desenha a cruz de sangue no peito do alvo: por 7 s, um terço de todo dano que a Alvira causa nele volta para ela como vida.
+- **Bolsa do Sangue** — R2 + △ / RT + Y · custo 26 · cooldown 22 s
+  Abre a bolsa de sangue e bebe: recupera vida por 2,5 s e limpa os efeitos.
+- **O Sino** — △ + L2 / Y + LT · custo 24 · cooldown 14 s · dano 12 · alcance 6.5 m
+  Bate o cajado no chão e o sino toca: o adversário perto fica parado, ouvindo, aberto para o próximo golpe.
+- **Passiva — Afinidade com Sangue:** rituais de Sangue +10%; −15% de dano de rituais desse elemento
+
+### Especial: Absolvição
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Sino Tocou
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano (físico, habilidades, especial), +10% de velocidade, recargas 30% mais rápidas, regenera 2.5 de vida/s, cura 10% na hora.
+
+---
+
 ## JUAN
 
 *Juan tomado pelo Ódio do Diabo: garras que fazem sangrar — e o Trono ainda chama* · arma: Garras de sangue no braço direito

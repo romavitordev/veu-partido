@@ -4104,3 +4104,54 @@ export function laminaKeytar() {
   g.userData.muzzle = muzzle;
   return g;
 }
+
+// CAJADO DA CRUZ DE SANGUE (Alvira; arte "Cajado da Cruz de Sangue" em Arquivos Secretos): a haste longa e fina de metal
+// vermelho-escuro; numa ponta a LANÇA, na outra DUAS TRAVESSAS (a de cima mais longa, com as pontas anguladas e
+// afiadas) com espinhos nos cruzamentos. Mesmo eixo da gadanha: a mão direita na origem, +Y sobe para trás (a lança) e
+// −Y desce para a frente (as cruzes, a cabeça que bate)
+export function cajadoCruzSangue() {
+  const g = new THREE.Group();
+  const iron = toon(0x5a0a12, { emissive: 0x140204 });
+  const dark = toon(0x2a0408, { emissive: 0x0a0102 });
+  const edge = toon(0x9a2a32, { emissive: 0x200406 });
+  const shaft = part(new THREE.CylinderGeometry(0.013, 0.015, 1.86, 8), 0, { mat: iron });
+  shaft.position.y = -0.33;
+  g.add(shaft);
+  // a lança (atrás, +Y)
+  const collar = part(new THREE.CylinderGeometry(0.022, 0.018, 0.05, 8), 0, { mat: dark });
+  collar.position.y = 0.6;
+  g.add(collar);
+  const blade = part(new THREE.ConeGeometry(0.034, 0.26, 4), 0, { mat: edge });
+  blade.position.y = 0.75;
+  blade.scale.z = 0.35;
+  g.add(blade);
+  // as cruzes (à frente, −Y): a travessa longa perto da ponta e a curta logo depois
+  const bar = (y, half, tipLen) => {
+    const b = part(new THREE.BoxGeometry(half * 2, 0.024, 0.024), 0, { mat: iron });
+    b.position.y = y;
+    g.add(b);
+    for (const s of [1, -1]) {
+      // a ponta angulada e afiada, dobrada na direção da cabeça do cajado
+      const t = part(new THREE.ConeGeometry(0.016, tipLen, 4), 0, { mat: edge });
+      t.position.set(s * (half + tipLen * 0.35), y - tipLen * 0.3, 0);
+      t.rotation.z = s * (Math.PI / 2 + 0.6);
+      g.add(t);
+    }
+    // os espinhos no cruzamento
+    for (let i = 0; i < 4; i++) {
+      const sp = part(new THREE.ConeGeometry(0.01, 0.07, 4), 0, { mat: dark });
+      const a = Math.PI / 4 + i * Math.PI / 2;
+      sp.position.set(Math.cos(a) * 0.03, y, Math.sin(a) * 0.03);
+      sp.rotation.set(Math.sin(a) * Math.PI / 2, 0, -Math.cos(a) * Math.PI / 2);
+      g.add(sp);
+    }
+  };
+  bar(-1.1, 0.2, 0.09);
+  bar(-0.88, 0.12, 0.07);
+  const head = part(new THREE.ConeGeometry(0.022, 0.12, 4), 0, { mat: edge });
+  head.position.y = -1.32;
+  head.rotation.x = Math.PI;
+  g.add(head);
+  g.userData.tip = head;
+  return g;
+}

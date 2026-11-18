@@ -272,6 +272,61 @@ function calamitasSymbol(g, cx, cy, k = 1) {
   g.restore();
 }
 
+// ALVIRA: pálida, as ATADURAS costuradas sobre onde ficavam os olhos (a faixa de pano com os pontos e o sangue seco
+// vazando por baixo) e o SORRISO ENORME de dentes afiados, quase de orelha a orelha (as artes de Hexatombe)
+const ALVIRA_FACE = {
+  skin: '#e6d8d2',
+  noEyes: true,
+  mouth: { mouthW: 0.1, smile: 0, lip: 'rgba(0,0,0,0)', lipLine: 'rgba(0,0,0,0)' },
+};
+function alviraFace(g) {
+  const rnd = seeded(91);
+  // a sombra funda das olheiras por baixo do pano
+  for (const sx of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 6, 4, CX + sx * 32, EYE_Y + 6, 30);
+    gr.addColorStop(0, 'rgba(90,50,60,0.55)'); gr.addColorStop(1, 'rgba(90,50,60,0)');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 6, 32, 22, 0, 0, Math.PI * 2); g.fill();
+  }
+  // a faixa das ataduras: duas voltas de pano encardido atravessando os olhos
+  for (const [dy, h, tilt, col] of [[-4, 30, 0.04, '#d8cfc0'], [10, 20, -0.05, '#c8bca8']]) {
+    g.save(); g.translate(CX, EYE_Y + dy); g.rotate(tilt);
+    g.fillStyle = col; g.fillRect(-110, -h / 2, 220, h);
+    g.strokeStyle = 'rgba(90,70,50,0.45)'; g.lineWidth = 1.2;
+    for (let i = 0; i < 9; i++) { const y = -h / 2 + rnd() * h; g.beginPath(); g.moveTo(-110, y); g.lineTo(110, y + (rnd() - 0.5) * 4); g.stroke(); }
+    g.restore();
+  }
+  // o sangue seco vazando pelo pano onde ficavam os olhos, escorrendo pelo rosto
+  for (const sx of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 2, 2, CX + sx * 32, EYE_Y + 2, 16);
+    gr.addColorStop(0, 'rgba(110,10,14,0.85)'); gr.addColorStop(1, 'rgba(110,10,14,0)');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 17, 12, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(110,10,14,0.8)'; g.lineWidth = 2.2; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(CX + sx * 30, EYE_Y + 20); g.quadraticCurveTo(CX + sx * 33, EYE_Y + 36, CX + sx * 31, EYE_Y + 50); g.stroke();
+  }
+  // os pontos da costura (linha preta atravessando o pano)
+  g.strokeStyle = '#1a1010'; g.lineWidth = 1.8;
+  for (let i = -8; i <= 8; i++) {
+    const x = CX + i * 11;
+    g.beginPath(); g.moveTo(x - 3, EYE_Y - 14); g.lineTo(x + 3, EYE_Y - 4); g.stroke();
+    g.beginPath(); g.moveTo(x + 3, EYE_Y + 12); g.lineTo(x - 3, EYE_Y + 20); g.stroke();
+  }
+  // o SORRISO ENORME: o rasgo largo subindo para as bochechas, as duas fileiras de dentes afiados
+  g.fillStyle = '#1a0406';
+  g.beginPath(); g.moveTo(CX - 58, MOUTH_Y - 16); g.quadraticCurveTo(CX, MOUTH_Y + 26, CX + 58, MOUTH_Y - 16); g.quadraticCurveTo(CX, MOUTH_Y + 2, CX - 58, MOUTH_Y - 16); g.fill();
+  g.fillStyle = '#f4eee2';
+  for (let i = -10; i <= 10; i++) {
+    const x = CX + i * 5.2;
+    const t = i / 10;
+    const yTop = MOUTH_Y - 16 + 16 * (1 - t * t) * 0.62 + 0.5;
+    g.beginPath(); g.moveTo(x - 2.4, yTop); g.lineTo(x + 2.4, yTop); g.lineTo(x, yTop + 7 - Math.abs(i) * 0.3); g.closePath(); g.fill();
+    const yBot = MOUTH_Y - 16 + 42 * (1 - t * t) * 0.5 - 0.5;
+    g.beginPath(); g.moveTo(x - 2.2, yBot); g.lineTo(x + 2.2, yBot); g.lineTo(x, yBot - 6 + Math.abs(i) * 0.25); g.closePath(); g.fill();
+  }
+  // os cantos da boca puxados (as covinhas do sorriso)
+  g.strokeStyle = 'rgba(80,30,40,0.6)'; g.lineWidth = 1.6;
+  for (const sx of [-1, 1]) { g.beginPath(); g.moveTo(CX + sx * 58, MOUTH_Y - 16); g.quadraticCurveTo(CX + sx * 64, MOUTH_Y - 20, CX + sx * 63, MOUTH_Y - 28); g.stroke(); }
+}
+
 // SABARA: as covas dos olhos e a boca de dentes; `blood` = o Gosto de Sangue (machucada e coberta de sangue)
 const SABARA_FACE = {
   skin: '#5a3828',
@@ -2778,6 +2833,7 @@ export const MATERIAL_TEXTURES = {
   }, { wrap: true }),
   // ---------------- ALÊ (PSIKOLERA): o rosto de olhos azuis e o delineado; o macacão de camisa de força encardido
   face_ale: face((g) => aleFace(g), ALE_FACE),
+  face_alvira: face((g) => alviraFace(g), ALVIRA_FACE), // ALVIRA (Vampiros): as ataduras costuradas nos olhos e o sorriso enorme
   suit_ale: () => canvasTex(512, 512, (g, w, h) => {
     caioCloth(g, w, h, 81);
     caioSpatter(g, w, h, 9, 82);

@@ -189,6 +189,19 @@ export const TEAM_LINKS = {
     choreo: 'psikolera',
     masks: { eloy: { show: ['maskOn'] }, cindy: { show: ['maskOn'] }, caio: { show: ['maskOn'] }, franco: { show: ['maskOn'] }, ale: { show: ['maskOn'] } },
   },
+  // VAMPIROS (pedido do dono, 2026-11-18: "personagem novo de alguma equipe que falta"): o Raziel, a Sabara e a Alvira,
+  // a Primeira Vampira, fecham o trio de Hexatombe. Velisar e Zéfero entram no grupo quando estiverem no elenco
+  vampiros: {
+    id: 'vampiros',
+    kind: 'group',
+    name: 'MISSA DE SANGUE',
+    banner: 'Missa de Sangue!',
+    group: ['raziel', 'sabara', 'alvira'],
+    min: 3,
+    order: ['alvira', 'sabara', 'raziel'],
+    color: 0xa01018,
+    choreo: 'vampiros',
+  },
   // OS ESCRIPTAS (os Marcados do Kian em Calamidade): vale com 3 na equipe e aparecem todos
   escriptas: {
     id: 'escriptas',

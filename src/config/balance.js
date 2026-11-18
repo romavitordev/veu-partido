@@ -63,6 +63,7 @@ export const BALANCE = {
   // 2026-11-13 — Escriptas e Hexatombe, focados (102 lutas cada, sem ajuste): Sabara 31%, Artemis 24%, Boris 10%,
   // Damir 5%, Eloy 3%. Nenhum golpe travado: os kits novos só causam ~40% menos dano por luta (Eloy ~1800, Damir
   // ~1400 contra ~3300 da Ivete e do Kaiser). O Damir também ganhou a Força Paranormal (cânone) no físico.
+  alvira: { dealt: 1.3, taken: 0.8 }, // 7% (sem ajuste, 106 lutas) → 56% (106 lutas)
   sabara: { dealt: 1.08, taken: 0.95 }, // 31% (sem ajuste) → 40%
   artemis: { dealt: 1.12, taken: 0.93 }, // 24% (sem ajuste) → 37%
   boris: { dealt: 1.25, taken: 0.86 }, // 10% (sem ajuste) → 32% (1.2/0.88) → 51%

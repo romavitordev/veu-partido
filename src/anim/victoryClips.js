@@ -106,6 +106,7 @@ export function addVictoryClips(CLIPS, k) {
     // "Ainda bem que eu voltei"
     vic_rubens: pose({ sp: [0.06, 0.15, 0], hd: [0.38, 0.32, 0], sL: [-1.5, -0.7, 0.2], eL: [-1.9, 0, 0], sR: [-0.25, 0, -0.2], eR: [-0.3, 0, 0], lL: [-0.05, 0, 0.1], lR: [0.06, 0, -0.1] }),
     // Sabara: espada e adaga abertas para baixo dos dois lados, agachada de leve, a cabeça tombada (sem olhos, só os dentes)
+    vic_alvira: pose({ h: 0, sp: [0.05, 0, 0], hd: [-0.1, 0, 0.25], sR: [-0.62, 0.75, -0.1], eR: [-1.6, 0, 0], sL: [-0.62, -0.75, 0.1], eL: [-1.6, 0, 0] }), // a reza depois da absolvição
     vic_sabara: pose({ h: -0.1, sp: [0.2, 0, 0], hd: [-0.15, 0, 0.28], sR: [-0.6, 0.3, -0.45], eR: [-0.35, 0, 0], sL: [-0.6, -0.3, 0.45], eL: [-0.35, 0, 0], lL: [-0.3, 0, 0.2], kL: [0.45, 0, 0], lR: [0.2, 0, -0.2], kR: [0.35, 0, 0] }),
     // Tristan: o lança-chamas apontado para o céu, o outro punho fechado e o sorrisão (barulhento, piromaníaco)
     vic_tristan: pose({ sp: [-0.12, 0, 0], hd: [-0.22, 0.15, 0], sR: [-1.9, 0.25, -0.55], eR: [-1.0, 0, 0], sL: [-1.0, 0.4, 0.6], eL: [-1.6, 0, 0], lL: [-0.1, 0, 0.18], lR: [0.1, 0, -0.18] }),

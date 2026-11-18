@@ -212,6 +212,19 @@ export const VOICES = {
       any: [(o) => `Hm. ${o.name} tem cheiro de sangue fresco.`, (o) => `Ajoelha e talvez eu seja rápida, ${o.name}.`],
     },
   },
+  // ALVIRA (cânone: a Primeira Vampira, freira; calma, sádica, analogias religiosas; o tom = PROPOSTA)
+  alvira: {
+    open: {
+      ally: (o) => `${o.name}, meu filho. Reze comigo antes de começar.`,
+      rival: (o) => `${o.group}... tantas almas para absolver hoje.`,
+      any: [(o) => `Quando o sino tocar hoje, ${o.name}, você vai alcançar a sua liberdade.`, (o) => `Ajoelhe-se, ${o.name}. Ainda dá tempo de confessar.`],
+    },
+    reply: {
+      ally: (o) => `Venha, ${o.name}. Até os nossos precisam de penitência.`,
+      rival: (o) => `${o.group}? Eu rezo por vocês. Depois.`,
+      any: [(o) => `Shhh, ${o.name}. Fale baixo. Estamos na casa de Deus.`, (o) => `Que sangue bonito você tem, ${o.name}.`],
+    },
+  },
   artemis: {
     open: {
       ally: (o) => `${o.name}, querido. Vem com a mamãe. Vai doer só um pouquinho.`,

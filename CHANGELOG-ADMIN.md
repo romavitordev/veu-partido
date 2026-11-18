@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v5.12.0 — Alvira (Vampiros)
+
+- Versão: `VERSION` 5.11.1 → **5.12.0**. Data: 2026-11-18. Dono: "veja oque faltou o claude fazer sobre a nova personagem Alvira depois faça oque falta, de commit push".
+- **Personagem jogável Alvira** (`src/characters/alvira.js`, `public/models/alvira.glb`, `tools/blender/char_alvira.py`): a Primeira Vampira ("Czerwona Demonica", Hexatombe), fecha a equipe dos Vampiros com Raziel e Sabara. Cânone: 1,70 m, hábito de freira preto com véu rasgado, franja e ataduras sobre os olhos mutilados, sorriso de dentes afiados, cruzes de Sangue no cinto e diadema, cajado nas costas.
+- **Arma e Kit**: Cajado da Cruz de Sangue (golpes lentos e longos de martelo/lança), Hastes de Metal no □ (`metalRod`, bleed), Titereira de Sangue (`mindControl` com cordas e `struggleDamage`), Vampirismo (marca que devolve 33% do dano como cura), Bolsa do Sangue (`healOverTime` + `cleanse`), O Sino (`command` PARE!).
+- **Especial e Despertar**: Absolvição (`cinematicCombo` com reza, hastes, dreno e finalização de lança) e O Sino Tocou (`awakenMode` com regeneração).
+- **Especial em Equipe Vampiros** ("Missa de Sangue", `src/combat/teamSpecials.js`): coreografia dos 3 Vampiros (Raziel salta e morde, Sabara corta pelas costas, Alvira puxa nas cordas da Titereira e os três atacam juntos).
+- **Áudio, Texturas e Animações**: `ALVIRA_FACE` e `alviraFace` em `textures.js`, `face_alvira` registrado, `idle_pray` em `clips.js`, `vic_alvira` em `victoryClips.js`, `VOICES.alvira` em `introVoices.js`, `VICTORY_ALVIRA` em `dialogues.js`, `cajadoCruzSangue` em `weapons.js` e `addAlviraProps` em `props.js`.
+- **Balanço** (`src/config/balance.js`): bateria focada em 4 abas (106 lutas): 7% sem ajuste (causava metade do dano que
+  recebia) → `dealt 1.3, taken 0.8` → **56%**.
+- **Modelo** feito e conferido no Blender MCP (vistas de frente, costas, 3/4 e de cima; cabelo pelo método da Cindy e do
+  Guizo: calota contínua sob o véu e mechas achatadas). No jogo: a oração parada com o cajado nas costas, as cordas de
+  sangue da Titereira, o especial Absolvição e a Missa de Sangue (Alvira, Sabara e Raziel × Kaiser) sem erro no console.
+- Validação: `npm test` 119/119, `npm run check` ("Tudo certo."), `vite build`, `npm run moves`.
+
 ## v5.11.1 — Só o Keytar
 
 - Dono: "o ale tá com baquetas na mão parece, era pra ser só o keytar". As tiras `armTail`/`armTailTip` de

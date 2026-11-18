@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { glowMat, toon } from './rig.js';
 import { MATERIAL_TEXTURES } from './textures.js';
-import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo, espadaMicrofone, guitarraLancaChamas, mascaraFranco, tanqueFranco, laminaKeytar } from './weapons.js';
+import { katana, scabbard, shiNoKage, relicScabbard, relicBlade, m4, sniper, guitarCase, bloodArm, bloodForearmBlade, knife, karambit, machineGun, sickleBlade, mutilatorAxe, shotgun, handGrenade, antenna, daraSmg, mac10, barbedBat, chaosSkate, leonora, magnum, espadaConsumidora, facaPredadora, sniperFantasma, baluAxe, demonMace, gasMask, swordArnaldo, pocketWatch, roundGlasses, neonWraps, pulseEmitter, bandolier, bengala, mustache, socadeira, peixeira, spikedLantern, tenebrisPendant, chainHatchet, despairMask, seitaMask, SEITA_MASKS, energyFlames, ironMace, amphitruoMask, alienPistol, amaliaBow, nunchaku, glockLeone, mangual, leoneKnife, martelo, glockSilenciada, balestra, glock17, molotov, flameTanks, flameLance, glockTatica, ivetePump, barBottle, poolCue, gadanha, elmoSangrento, bengalaDamir, caderninho, apache, rifleArtemis, baqueta, espadaSabara, adagaSabara, fuzilBaixo, espadaMicrofone, guitarraLancaChamas, mascaraFranco, tanqueFranco, laminaKeytar, cajadoCruzSangue } from './weapons.js';
 
 // Armas e acessórios adicionados em código sobre os modelos do Blender.
 // Usam só `sockets`, `attach()` e `props`, que existem nos dois tipos de rig.
@@ -1936,5 +1936,33 @@ export function addAleProps(rig) {
     want.premultiply(inv).decompose(tp, tq, tmpS);
     k.position.copy(rest.p).lerp(tp, blend);
     k.quaternion.copy(rest.q).slerp(tq, blend);
+  });
+}
+
+// ALVIRA (Vampiros): o CAJADO DA CRUZ DE SANGUE. Cânone (as artes de Hexatombe): ela o leva nas COSTAS, na diagonal,
+// a lança para cima e as cruzes perto dos pés, e reza com as mãos juntas. Parada (idle_pray, corrida, vitória) o cajado
+// fica nas costas; nos golpes vai para a mão direita. Só volta para as costas depois de um instante parada, para não
+// ficar trocando entre um golpe e outro
+export function addAlviraProps(rig) {
+  const { sockets, props } = rig;
+  const hand = cajadoCruzSangue();
+  inFist(hand, GRIP_HEAVY);
+  sockets.handR.add(hand);
+  props.staff = hand;
+  const back = cajadoCruzSangue();
+  back.rotation.set(Math.PI, 0, 0.5);
+  back.position.set(0, -0.12, -0.14);
+  sockets.back.add(back);
+  props.staffBack = back;
+  const REST = new Set(['idle_pray', 'run', 'walk', 'vic_alvira', 'concentrate', 'cast_up', 'point']);
+  let rest = 1;
+  hand.visible = false;
+  (rig.tickers || (rig.tickers = [])).push((dt, f) => {
+    const a = f && f.anim;
+    if (!a) return;
+    const resting = REST.has(a.currentName);
+    rest = resting ? rest + dt : 0;
+    const onBack = rest > 0.5;
+    if (hand.visible === onBack) { hand.visible = !onBack; back.visible = onBack; }
   });
 }

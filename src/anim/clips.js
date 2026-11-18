@@ -113,6 +113,15 @@ export const CLIPS = {
   // ALÊ TOCANDO O KEYTAR parade (as artes da wiki, 2026-11-18): o keytar na HORIZONTAL na frente do quadril — a mão
   // esquerda segura o braço do lado esquerdo, a direita toca o teclado; o corpo balança devagar no tempo da melodia (o
   // keytar é posto entre as mãos pelo ticker de addAleProps)
+  // ALVIRA — em oração (cânone: a pose de reza com as mãos juntas formando a cruz de Sangue): parada, ereta, a cabeça
+  // um pouco baixa e as mãos unidas na frente do peito; mal se mexe
+  idle_pray: {
+    dur: 2.4, loop: true, keys: [
+      k(0, { ...LEGS, sp: [0.04, 0, 0], hd: [0.22, 0, 0.1], sR: [-0.62, 0.75, -0.1], eR: [-1.6, 0, 0], sL: [-0.62, -0.75, 0.1], eL: [-1.6, 0, 0] }),
+      k(0.5, { ...LEGS, h: -0.01, sp: [0.06, 0, 0], hd: [0.26, 0, 0.14], sR: [-0.64, 0.75, -0.1], eR: [-1.6, 0, 0], sL: [-0.64, -0.75, 0.1], eL: [-1.6, 0, 0] }),
+      k(1, { ...LEGS, sp: [0.04, 0, 0], hd: [0.22, 0, 0.1], sR: [-0.62, 0.75, -0.1], eR: [-1.6, 0, 0], sL: [-0.62, -0.75, 0.1], eL: [-1.6, 0, 0] }),
+    ],
+  },
   idle_keytar: {
     dur: 1.2, loop: true, keys: [
       k(0, { ...LEGS, hip: [0, -0.12, 0], sp: [0.06, 0.1, 0], hd: [0.18, -0.1, 0.05], sR: [-0.25, 0.3, -0.3], eR: [-1.35, 0, 0], sL: [-0.55, -0.15, 0.45], eL: [-0.9, 0, 0] }),

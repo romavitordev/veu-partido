@@ -2,6 +2,16 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.12.0 — Alvira (Vampiros)
+- ALVIRA chegou: a Primeira Vampira (Hexatombe) completa a equipe dos Vampiros ao lado de Raziel e Sabara. Luta com o Cajado da Cruz de Sangue e as Hastes de Metal no □, reza, drena a vida e comanda o adversário com as cordas de sangue.
+- TITEREIRA DE SANGUE: cordas de sangue prendem os pulsos e a cabeça do alvo, forçando-o a andar até Alvira indefeso. Resistir às cordas causa dano.
+- VAMPIRISMO: marca o peito do alvo com uma cruz de sangue; um terço de todo dano que Alvira causa nele retorna como vida.
+- BOLSA DO SANGUE: cura ao beber o próprio sangue e limpa efeitos negativos.
+- O SINO: bate o cajado no chão e paralisa o adversário próximo.
+- ESPECIAL ABSOLVIÇÃO: Alvira reza, o sino toca, as cordas prendem, as hastes atravessam e ela bebe o sangue antes do golpe final de lança ("Você terá sua absolvição").
+- DESPERTAR "O SINO TOCOU": a Primeira Vampira se enfurece com regeneração contínua de sangue e maior velocidade.
+- ESPECIAL EM EQUIPE DOS VAMPIROS: "Missa de Sangue" disponível quando a equipe reunir Raziel, Sabara e Alvira.
+
 ## v5.11.1 — Só o Keytar
 - Alê não parece mais segurar baquetas: as duas tiras com ponta de metal presas no antebraço saíram, e nas mãos fica só o keytar.
 

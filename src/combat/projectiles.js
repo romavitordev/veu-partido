@@ -378,6 +378,22 @@ const VISUALS = {
     return flameArrow(color);
   },
   // VIROTE da balestra (Beatrice): a haste curta escura, a ponta de aço e as penas claras atrás (aponta para +Z)
+  // as HASTES DE METAL da Alvira (cânone: as varetas que ela crava no Damir): ferro vermelho-escuro, fino e pontudo
+  metalRod(color) {
+    const g = new THREE.Group();
+    const iron = new THREE.MeshBasicMaterial({ color: 0x4a0a10 });
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.56, 6), iron);
+    shaft.rotation.x = Math.PI / 2;
+    g.add(shaft);
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.09, 6), new THREE.MeshBasicMaterial({ color: 0x8a2a30 }));
+    tip.rotation.x = Math.PI / 2;
+    tip.position.z = 0.32;
+    g.add(tip);
+    const glow = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.5, 6), glowMat(color, 0.35));
+    glow.rotation.x = Math.PI / 2;
+    g.add(glow);
+    return g;
+  },
   bolt(color) {
     const g = new THREE.Group();
     const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.34, 6), new THREE.MeshBasicMaterial({ color: 0x4a3a2a }));

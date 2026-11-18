@@ -1460,6 +1460,88 @@ const CHOREO = {
     return END;
   },
 
+  // MISSA DE SANGUE (PROPOSTA; base canônica: o sino da Alvira, as cordas da Titereira de Sangue, a Dança das Lâminas da
+  // Sabara e a fome do Raziel). O sino toca, a Alvira reza e as cordas de sangue prendem o alvo; a Sabara dança com
+  // as lâminas em volta, o Raziel salta e morde, e a Alvira dá a absolvição com a lança do cajado
+  vampiros({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
+    const END = S + 5.4;
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
+    const alvira = tools.get('alvira'), sabara = tools.get('sabara'), raziel = tools.get('raziel');
+    const BLOOD = 0xa01018, CRIMSON = 0xd01c30;
+    const hits = splitDamage(crewTotal, 7);
+    const say = sayer(world);
+    const cords = [];
+    // 1. o sino e a reza; as cordas de sangue saem das mãos dela
+    tl.add(S, () => {
+      if (!live()) return;
+      if (alvira) { tools.enter(alvira, 0, 4.2); alvira.play('concentrate', 1.4); }
+      if (sabara) { tools.enter(sabara, -0.9, 3.2); sabara.play('idle_dual', 1.2); }
+      if (raziel) { tools.enter(raziel, 0.9, 3.4); raziel.play('taunt_roar', 1.0); }
+      world.audio.play('bellToll', { volume: 0.9 });
+      say(alvira || sabara || raziel, alvira ? 'Quando o sino tocar hoje...' : 'De joelhos.', 0);
+      if (alvira) world.cameraRig.playShots([{ ...faceClose(alvira, { dur: 1.2, from: 2.6, to: 1.6, height: 1.55, fov: 38 }), cut: true }]);
+    });
+    tl.add(S + 0.8, () => {
+      if (!live()) return;
+      if (alvira && alvira.rig) {
+        const node = (fi, j) => (fi.rig.sockets && fi.rig.sockets[j]) || fi.rig.joints[j];
+        const jp = (fi, j) => () => (node(fi, j) ? node(fi, j).getWorldPosition(new THREE.Vector3()) : fi.chest());
+        for (const [a, b] of [['handR', 'handR'], ['handL', 'handL'], ['handR', 'hd']]) cords.push(world.fx.chain(jp(alvira, a), jp(opp, b), { rope: true, thick: 0.018, color: CRIMSON, glow: 0xff2030, sag: 0.18, links: 18 }));
+      }
+      if (opp.state !== 'ko') { opp.stun(3.2, 'stagger'); opp.notify('MARIONETE', true); }
+      world.audio.play('bellToll', { volume: 0.7, pitch: 0.9 });
+      tools.impact(alvira || sabara || raziel, hits[0], { sound: 'clawHit', color: BLOOD });
+    });
+    // 2. a Sabara dança com as lâminas em volta do alvo preso
+    const blades = [[S + 1.4, 'dual_r', -1.2], [S + 1.7, 'dual_spin', 1.4], [S + 2.0, 'dual_cross', 0.2]];
+    blades.forEach(([t, anim, ang], i) => tl.add(t, () => {
+      if (!live() || !sabara) return;
+      const at = tools.around(sabara, ang, 1.4);
+      sabara.pos.set(at.x, 0, at.z);
+      sabara.face(opp);
+      sabara.play(anim, 0.32);
+      if (i === 0) say(sabara, 'Dança comigo.', 1);
+      tools.impact(sabara, hits[1 + i], { sound: 'bladeHit', color: CRIMSON, slash: true });
+    }));
+    // 3. o Raziel salta e morde
+    tl.add(S + 2.5, () => {
+      if (!live() || !raziel) return;
+      const at = tools.around(raziel, Math.PI, 1.2);
+      raziel.pos.set(at.x, 0, at.z);
+      raziel.face(opp);
+      raziel.play('raziel_pounce', 0.45);
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.2, radius: 3.4, height: 1.5, a0: 0.4, a1: -0.4 }), cut: true }]);
+    });
+    tl.add(S + 2.95, () => {
+      if (!live() || !raziel) return;
+      raziel.play('raziel_feast', 0.7);
+      say(raziel, 'Sangue... finalmente.', 0);
+      world.fx.burst(opp.chestPos(), { count: 26, color: BLOOD, speed: 3, life: 0.6, size: 0.16, gravity: 8 });
+      tools.impact(raziel, hits[4], { sound: 'clawHit', color: BLOOD });
+    });
+    // 4. a absolvição: as cordas puxam o alvo e a lança do cajado atravessa
+    tl.add(S + 3.8, () => {
+      if (!live()) return;
+      const who = alvira || sabara || raziel;
+      const at = tools.around(who, 0, 2.2);
+      who.pos.set(at.x, 0, at.z);
+      who.face(opp);
+      who.play(alvira ? 'thrust' : 'dual_cross', 0.6);
+      say(who, alvira ? '...você terá sua absolvição.' : 'Acabou.', 1);
+      world.cameraRig.playShots([{ ...impactClose(who, opp), cut: true }]);
+      tools.impact(who, hits[5], { sound: 'bladeHit', color: CRIMSON });
+    });
+    tl.add(S + 4.3, () => {
+      if (!live()) return;
+      for (const c of cords) c.stop();
+      cords.length = 0;
+      world.audio.play('bellToll', { volume: 1 });
+      tools.impact(alvira || sabara || raziel, hits[6], { sound: 'slashFinal', color: BLOOD });
+    });
+    tl.add(END, () => { for (const c of cords) c.stop(); cords.length = 0; world.ui && world.ui.subtitle && world.ui.subtitle(null); });
+    return S + 4.3;
+  },
+
   // HORA DO SHOW! (nome do dono; pedido de 2026-11-14: "um especial dos psikolera"). A PSIKOLERA em cena: o Eloy na bateria e
   // a Cindy no Fuzil Baixo, o Caio na Espada Microfone, o Franco na Guitarra Lança-Chamas e Alê na Lâmina Keytar, todos de
   // máscara (link.masks). PROPOSTA: a batida, o GRITO (Silenciar da Cindy / o Berrão do Caio, cânone) que prende o alvo, o

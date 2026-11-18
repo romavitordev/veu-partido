@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.11.1';
+export const VERSION = '5.12.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.12.0',
+    date: '2026-11-18',
+    title: 'Alvira (Vampiros)',
+    items: [
+      'ALVIRA, a Primeira Vampira de Hexatombe, fecha a equipe dos Vampiros (ao lado de Raziel e Sabara): Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo (marca que suga vida), Bolsa do Sangue, O Sino que paralisa, especial Absolvição e despertar O Sino Tocou.',
+      'Missa de Sangue liberada: o especial em equipe dos Vampiros completo com Raziel, Sabara e Alvira atacando juntos.',
+    ],
+  },
   {
     v: '5.11.1',
     date: '2026-11-18',

@@ -1320,11 +1320,21 @@ Object.assign(ABILITY_TYPES, {
         world.fx.ring(head(), { color: a.color, radius: 0.6, life: a.duration, vertical: false });
         const sig = world.fx.emitter({ rate: 30, follow: head, particle: { color: a.color, speed: 0.3, spread: 0.3, life: 0.4, size: 0.12 } });
         const old = opp.findBuff('mindControl');
+        // a.strings (Alvira, Titereira de Sangue): CORDAS DE SANGUE das mãos de quem controla até os pulsos e a cabeça
+        // do alvo, enquanto o controle dura
+        const cords = [];
+        if (a.strings && !old) {
+          const node = (fi, j) => (fi.rig.sockets && fi.rig.sockets[j]) || fi.rig.joints[j];
+          const jp = (fi, j) => () => (fi.state === 'ko' ? null : node(fi, j) ? node(fi, j).getWorldPosition(new THREE.Vector3()) : fi.chestPos());
+          for (const [from, to] of [['handR', 'handR'], ['handL', 'handL'], ['handR', 'hd']]) {
+            cords.push(world.fx.chain(jp(f, from), jp(opp, to), { rope: true, thick: 0.018, color: a.color, glow: 0xff2030, sag: 0.18, links: 18 }));
+          }
+        }
         if (old) old.time = a.duration;
         // a.walkTo: o corpo obedece a quem controla — anda sozinho até ele (em vez de inverter as direções, que fazia
         // o alvo FUGIR do Gal, que luta de perto); a.noBlock: também não consegue defender enquanto dura
-        else opp.addBuff({ type: 'mindControl', name: 'CONTROLADO', time: a.duration, duration: a.duration, invertMove: !a.walkTo, walkTo: a.walkTo ? f : null, noBlock: !!a.noBlock, onEnd() { sig.stop(); } });
-        opp.notify('CONTROLE MENTAL', true);
+        else opp.addBuff({ type: 'mindControl', name: a.buffName || 'CONTROLADO', time: a.duration, duration: a.duration, invertMove: !a.walkTo, walkTo: a.walkTo ? f : null, noBlock: !!a.noBlock, onEnd() { sig.stop(); for (const c of cords) c.stop(); } });
+        opp.notify(a.notifyText || 'CONTROLE MENTAL', true);
         world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
         // a.struggle: a vítima RESISTE — cada botão apertado encurta o controle (o escape de quem apanha)
         if (a.struggle) {
@@ -1336,6 +1346,11 @@ Object.assign(ABILITY_TYPES, {
               if (p && Object.keys(p).some((k) => p[k])) {
                 buff.time -= a.struggle;
                 world.fx.burst(head(), { count: 4, color: a.color, speed: 1.5, life: 0.25, size: 0.1 });
+                // a.struggleDamage (Alvira, cânone: "cortar as cordas de sangue machuca"): cada puxão custa vida
+                if (a.struggleDamage) {
+                  opp.takeDamage(a.struggleDamage);
+                  world.onHit && world.onHit(f, opp, a.struggleDamage, { kind: 'ability', ability: a.id });
+                }
               }
               return false;
             },
@@ -2927,6 +2942,41 @@ Object.assign(ABILITY_TYPES, {
         if (old) { old.time = a.duration; old.target = opp; }
         else f.addBuff({ type: 'bloodLink', name: 'VÍNCULO DE SANGUE', time: a.duration, duration: a.duration, target: opp, ratio: a.ratio });
         opp.notify('VÍNCULO DE SANGUE', true);
+      });
+      tl.end(a.windup + 0.3);
+      return seqFrom(tl);
+    },
+  },
+
+  // VAMPIRISMO (Alvira, cânone: o ritual que AMALDIÇOA um corpo — quem o devora absorve as intenções dele). No jogo
+  // (PROPOSTA): a cruz de sangue marca o alvo; enquanto dura, parte de TODO dano que quem marcou causa nele volta como
+  // vida (damage.js lê o buff 'vampirismo' da vítima)
+  vampirismo: {
+    start(f, a, world) {
+      const opp = f.opponent;
+      const tl = new Timeline();
+      f.vel.set(0, 0, 0);
+      if (opp) f.yaw = yawTo(f.pos, opp.pos);
+      f.anim.play(a.anim || 'cast_up', { restart: true, duration: a.windup + 0.3 });
+      world.audio.play('ritual', { volume: 0.6, pitch: 0.8 });
+      tl.add(a.windup, () => {
+        const col = a.color ?? 0xa01018;
+        world.fx.ring(f.chestPos(), { color: col, radius: 0.8, life: 0.4, vertical: true, yaw: f.yaw });
+        if (!opp || opp.state === 'ko' || !inCone(f, opp, a.range, a.arc) || opp.isInvulnerable()) { f.notify('NINGUÉM MARCADO', true); return; }
+        const c = opp.chestPos();
+        // a cruz de sangue no peito do alvo
+        world.fx.tracer(c.clone().add(new THREE.Vector3(0, 0.35, 0)), c.clone().add(new THREE.Vector3(0, -0.35, 0)), { color: col, life: 0.6, width: 0.07 });
+        world.fx.tracer(c.clone().add(new THREE.Vector3(-0.2, 0.12, 0)), c.clone().add(new THREE.Vector3(0.2, 0.12, 0)), { color: col, life: 0.6, width: 0.07 });
+        world.fx.burst(c, { count: 14, color: col, speed: 2.5, life: 0.5, size: 0.14, gravity: 6 });
+        const old = opp.findBuff('vampirismo');
+        if (old) { old.time = a.duration; old.owner = f; }
+        else {
+          const sig = world.fx.emitter({ rate: 12, follow: () => (opp.state === 'ko' ? null : opp.chestPos()), particle: { color: col, speed: 0.4, spread: 0.25, life: 0.5, size: 0.1, gravity: 4 } });
+          opp.addBuff({ type: 'vampirismo', name: 'VAMPIRISMO', time: a.duration, duration: a.duration, owner: f, ratio: a.ratio ?? 0.3, color: col, onEnd() { sig.stop(); } });
+        }
+        opp.notify('VAMPIRISMO', true);
+        if (a.damage) applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: 0, hitstun: 0.15, sound: 'clawHit', color: col, scale: 0.8 });
+        else world.onHit && world.onHit(f, opp, 0, { kind: 'ability', ability: a.id });
       });
       tl.end(a.windup + 0.3);
       return seqFrom(tl);

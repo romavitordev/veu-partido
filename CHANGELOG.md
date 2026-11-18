@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.12.0 — Alvira (Vampiros)
+
+### Adicionado
+- `src/characters/alvira.js`, `public/models/alvira.glb` (`tools/blender/char_alvira.py`, feito e conferido no Blender MCP), `face_alvira`, `cajadoCruzSangue` + `addAlviraProps` (o cajado nas costas parada, na mão nos golpes).
+- Tipo de habilidade `vampirismo` (marca que cura quem marcou, lida em `damage.js`), visual de projétil `metalRod`, clipes `idle_pray` e `vic_alvira`.
+- `mindControl`: opções `strings` (cordas de sangue até os pulsos e a cabeça do alvo), `struggleDamage`, `buffName` e `notifyText`.
+- Ligação `vampiros` (Raziel, Sabara e Alvira, mín. 3) com a coreografia `CHOREO.vampiros` (Missa de Sangue).
+
 ## v5.11.1 — Só o Keytar
 
 ### Corrigido
