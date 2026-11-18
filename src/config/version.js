@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.4.0';
+export const VERSION = '5.4.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.4.1',
+    date: '2026-11-18',
+    title: 'Lançamento Seguro',
+    items: [
+      'Bastidores: o atalho de lançar versão agora lê o número sozinho e não deixa repetir uma versão já lançada.',
+    ],
+  },
   {
     v: '5.4.0',
     date: '2026-11-18',

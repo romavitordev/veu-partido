@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.4.1 — Lançamento Seguro
+
+### Corrigido
+- `release.bat` lê versão e título de `src/config/version.js` (`tools/release-info.mjs`), recusa tag repetida e commit vazio, não inclui `.claude` e para no primeiro erro (antes tinha a v4.58.0 escrita no arquivo).
+
 ## v5.4.0 — Explorar no Celular
 
 ### Adicionado

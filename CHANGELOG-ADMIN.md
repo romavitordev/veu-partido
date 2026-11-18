@@ -1,6 +1,13 @@
 # Registro administrativo de alterações
 
-## v5.4.0 — Explorar no Celular
+## v5.4.1 — Lançamento Seguro
+
+- Versão: `VERSION` 5.4.0 → **5.4.1**. Data: 2026-11-18.
+- `release.bat` do dono tinha a v4.58.0 escrita em todos os passos (foi por ele que a tag v4.58.0 saiu no commit
+  errado). Agora lê `VERSÃO|TÍTULO` de `tools/release-info.mjs` (a entrada do topo do `CHANGELOG` precisa ser da
+  `VERSION`), para se a tag já existe ou se não há nada para commitar, faz `git add -A -- . ':!.claude'` e para no
+  primeiro passo que falhar. Testado só a leitura e a recusa de tag repetida (sem commit de verdade).
+ — Explorar no Celular
 
 - Versão: `VERSION` 5.3.0 → **5.4.0** (`package.json`/lock junto). Data: 2026-11-18.
 - **TODO "Modo Explorar" (dono, 2026-11-15):** "Celular: olhar arrastando o dedo e botões de subir/descer na tela".

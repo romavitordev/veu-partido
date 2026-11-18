@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.4.1 — Lançamento Seguro
+- Bastidores: o atalho de lançar versão agora lê o número sozinho e não deixa repetir uma versão já lançada.
+
 ## v5.4.0 — Explorar no Celular
 - MODO EXPLORAR NO CELULAR: arraste o dedo à esquerda para andar (o analógico aparece onde você encosta) e à direita para olhar; ▲ ▼ sobem e descem, » liga a corrida e o ← do canto sai.
 
