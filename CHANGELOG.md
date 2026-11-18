@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.5.0 — Carregando a Luta
+
+### Alterado
+- Tela de carregamento da luta (`LoadingScreen`): preview do cenário ao fundo (`thumb`, de `arenaThumbs`), tinta com a cor dos dois lados, retratos maiores em paralelogramo, entrada animada, VS com brilho e porcentagem (`.ld-pct`); respeita `prefers-reduced-motion`.
+
 ## v5.4.1 — Lançamento Seguro
 
 ### Corrigido

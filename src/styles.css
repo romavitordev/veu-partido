@@ -1981,3 +1981,26 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 .ex-touch .ex-up { right: 0; top: 0; }
 .ex-touch .ex-down { right: 0; bottom: 0; }
 .ex-touch .ex-fast { right: calc(max(18px, env(safe-area-inset-right)) + 74px); bottom: calc(22% + 36px); }
+
+/* TELA DE CARREGAMENTO DA LUTA (2026-11-18): cenário ao fundo, a cor de cada lado e retratos maiores */
+#loading { overflow: hidden; background: #050308; }
+#loading > * { position: relative; z-index: 1; }
+#loading > .ld-bg, #loading > .ld-tint { position: absolute; inset: 0; z-index: 0; }
+#loading .ld-bg { background: radial-gradient(ellipse at center, #2a1840, #050308 70%) center / cover no-repeat; filter: blur(3px) brightness(.42) saturate(1.1); transform: scale(1.06); animation: ldDrift 14s ease-in-out infinite alternate; }
+#loading .ld-tint { background: linear-gradient(100deg, color-mix(in srgb, var(--c1) 34%, transparent) 0%, transparent 42%, transparent 58%, color-mix(in srgb, var(--c2) 34%, transparent) 100%), radial-gradient(ellipse at center, transparent 30%, #050308 92%); }
+#loading .vs { gap: clamp(14px, 4vw, 48px); }
+#loading .side img { width: min(30vw, 250px); clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%); border-radius: 0; border-width: 0; box-shadow: none; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 30%, #0b0612), #0b0612); }
+#loading .side { filter: drop-shadow(0 0 18px var(--c)); animation: ldIn .5s cubic-bezier(.2, .9, .3, 1.2) both; }
+#loading .side.l { --from: -40px; }
+#loading .side.r { --from: 40px; animation-delay: .08s; }
+#loading .side b { font-size: clamp(24px, 4vw, 38px); }
+#loading .vstext { font-size: clamp(54px, 9vw, 96px); color: #fff; transform: skewX(-8deg); text-shadow: 3px 3px 0 #000, 0 0 26px #9b4dff, 0 0 60px #d1122e; animation: ldVs .6s .15s ease-out both; }
+#loading .arena-name { font-size: clamp(20px, 3vw, 30px); text-shadow: 2px 2px 0 #000; }
+#loading .bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; }
+#loading .bar .fill { background: linear-gradient(90deg, #6a1428, #9b4dff 55%, #f3e9ff); box-shadow: 0 0 12px #9b4dff; }
+#loading .ld-pct { margin-top: -10px; font: 800 12px system-ui, sans-serif; letter-spacing: .12em; color: #d8c8ff; font-variant-numeric: tabular-nums; }
+#loading .tip { text-shadow: 0 1px 3px #000; color: #b9aed0; }
+@keyframes ldIn { from { opacity: 0; transform: translateX(var(--from)); } }
+@keyframes ldVs { from { opacity: 0; transform: skewX(-8deg) scale(1.6); } }
+@keyframes ldDrift { to { transform: scale(1.12) translateX(-1.5%); } }
+@media (prefers-reduced-motion: reduce) { #loading .ld-bg, #loading .side, #loading .vstext { animation: none; } }

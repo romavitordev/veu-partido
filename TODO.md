@@ -10,7 +10,7 @@
 - [x] **Não ficar preso no carregamento** (v5.2.0): fila de downloads com tempo limite e novas tentativas; erro depois dos downloads agora aparece.
 - [ ] **Confirmar no PC do amigo** se abre; se não, pedir a mensagem que a tela mostra agora.
 - [ ] **Abrir o menu antes de baixar tudo** (ideia, não feito): baixar só os lutadores escolhidos/cenário da luta e o resto em segundo plano — o menu hoje espera os ~62 MB; precisa de retratos sem o modelo 3D (imagens prontas como as de `public/sobre/elenco`).
-- [ ] **Tela de carregamento da luta** (antes da partida): visual mais caprichado (retratos grandes, cenário de fundo) — só se o dono quiser; o pedido de 2026-11-18 era o carregamento inicial.
+- [x] **Tela de carregamento da luta** (antes da partida): cenário de fundo, retratos maiores, cor de cada lado e porcentagem — v5.5.0.
 
 ## Outro Lado — fusões, segunda vida e chefes com brecha (pedido do dono, 2026-11-16)
 

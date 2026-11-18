@@ -224,7 +224,7 @@ async function startMatch() {
   setOverlay(null, null);
   const { p1, p2 } = game.pick;
   const arena = ARENAS[game.arenaId] || ARENAS[DEFAULT_ARENA];
-  const loading = new LoadingScreen(screens, { p1, p2, arena, cpu: game.mode.cpu, mode: game.mode.kind, portraits });
+  const loading = new LoadingScreen(screens, { p1, p2, arena, cpu: game.mode.cpu, mode: game.mode.kind, portraits, thumb: arenaThumbs[game.arenaId] });
   setScreen('loading', loading);
   const t0 = performance.now();
   // quadro de tela (ou 50 ms, se a janela estiver em segundo plano: na LAN o outro jogador não fica esperando)

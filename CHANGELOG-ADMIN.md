@@ -1,6 +1,14 @@
 # Registro administrativo de alterações
 
-## v5.4.1 — Lançamento Seguro
+## v5.5.0 — Carregando a Luta
+
+- Versão: `VERSION` 5.4.1 → **5.5.0**. Data: 2026-11-18.
+- Item que eu tinha anotado na v5.2.0 ("tela de carregamento da luta"): o dono achou o carregamento feio; a
+  `LoadingScreen` era uma caixa com dois retratos. Agora recebe `thumb` (o preview do cenário, gerado no início) e
+  ganha `.ld-bg` (desfocado, escuro, leve movimento), `.ld-tint` (cor de P1 à esquerda, de P2 à direita), retratos
+  em paralelogramo com brilho da cor, VS inclinado e `.ld-pct`. Sem preview (antes de ficar pronto), cai no fundo
+  roxo antigo. O PvE usa a mesma tela (sem `thumb`). Conferido no navegador (Caio × Balu no Coliseu).
+ — Lançamento Seguro
 
 - Versão: `VERSION` 5.4.0 → **5.4.1**. Data: 2026-11-18.
 - `release.bat` do dono tinha a v4.58.0 escrita em todos os passos (foi por ele que a tag v4.58.0 saiu no commit

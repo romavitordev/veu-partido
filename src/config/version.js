@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.4.1';
+export const VERSION = '5.5.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.5.0',
+    date: '2026-11-18',
+    title: 'Carregando a Luta',
+    items: [
+      'TELA ANTES DA LUTA renovada: o cenário escolhido aparece ao fundo, os retratos ficam maiores e inclinados com a cor de cada lado, o VS entra com brilho e a barra mostra a porcentagem.',
+    ],
+  },
   {
     v: '5.4.1',
     date: '2026-11-18',

@@ -1107,7 +1107,7 @@ export class StageSelectScreen {
 const TIP_COUNT = 6; // tip.1 … tip.6 nos arquivos de idioma
 
 export class LoadingScreen {
-  constructor(root, { p1, p2, pvePlayers = null, arena, cpu, portraits, mode = cpu ? 'cpu' : 'pvp' }) {
+  constructor(root, { p1, p2, pvePlayers = null, arena, cpu, portraits, thumb = null, mode = cpu ? 'cpu' : 'pvp' }) {
     const slots = (MODES[mode] || MODES.pvp).slots;
     const playerPortrait = (def) => portraits[def.id] || `${import.meta.env.BASE_URL}sobre/elenco/${encodeURIComponent(def.id)}.webp`;
     const opponentPortrait = portraits[p2.id];
@@ -1120,7 +1120,11 @@ export class LoadingScreen {
           </div>`).join('')}
         </div>`
       : `<div class="side l" style="--c:${p1.color}"><img src="${playerPortrait(p1)}" alt="${esc(p1.name)}"><b>${p1.name}</b><small>${slots[0]}</small></div>`;
+    // TELA DE CARREGAMENTO DA LUTA (2026-11-18): o cenário da luta ao fundo (o preview da seleção de cenários),
+    // a cor de cada lado e a porcentagem
     this.el = el(root, 'screen', 'loading', `
+      <div class="ld-bg"${thumb ? ` style="background-image:url('${thumb}')"` : ''}></div>
+      <div class="ld-tint" style="--c1:${p1.color};--c2:${p2.color}"></div>
       <div class="vs ${pvePlayers && pvePlayers.length > 1 ? 'pve-coop-vs' : ''}">
         ${leftSide}
         <div class="vstext">VS</div>
@@ -1128,12 +1132,15 @@ export class LoadingScreen {
       </div>
       <div class="arena-name">${arena.name}</div>
       <div class="bar"><div class="fill"></div></div>
+      <div class="ld-pct">0%</div>
       <div class="tip">${t('load.tip', { tip: t(`tip.${1 + Math.floor(Math.random() * TIP_COUNT)}`) })}</div>`);
     this.fill = this.el.querySelector('.fill');
+    this.pct = this.el.querySelector('.ld-pct');
     this.opponentImage = this.el.querySelector('.side.r img');
   }
   progress(k) {
     this.fill.style.width = `${Math.round(k * 100)}%`;
+    this.pct.textContent = `${Math.round(k * 100)}%`;
   }
   setOpponentPortrait(src) {
     if (src) {
