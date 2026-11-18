@@ -17,6 +17,7 @@ import { accelerate } from '../render/bvh.js';
 import { acousticsFor } from '../audio/acoustics.js';
 import { preloadRagdoll } from '../physics/ragdoll.js';
 import { gradeFor } from '../render/grade.js';
+import { addGroundDecals } from '../arena/groundDecals.js';
 
 const RAY = new THREE.Raycaster();
 
@@ -80,6 +81,8 @@ export class World {
     this.grade = gradeFor(arenaId); // a gradação de cor do mapa (render/grade.js)
     this.arena.build(this.scene);
     accelerate(this.arena.group); // raios rápidos no cenário (render/bvh.js): câmera, paredes, linha de visão
+    // os decalques no chão (sangue, rachaduras, óleo, folhas, poças): fora do grupo do cenário, sem entrar nos raios
+    addGroundDecals(this.arena, arenaId, this.scene);
     // SOM 3D + ECO DO CENÁRIO (audio/acoustics.js): a câmera ouve; a sala dá o eco
     this.audio.listener = this.camera;
     preloadRagdoll(); // o Rapier do nocaute (physics/ragdoll.js) chega enquanto a luta começa

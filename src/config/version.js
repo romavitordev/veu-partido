@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.59.0';
+export const VERSION = '4.60.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '4.60.0',
+    date: '2026-11-18',
+    title: 'Marcas no Chão',
+    items: [
+      'DECALQUES NO CHÃO: os mapas ganharam marcas no piso da luta — sangue velho e riscos na areia do Coliseu, óleo e rachaduras no Ferro Velho, poças e lama nas noites de chuva, folhas no Orfanato e nos Pássaros, sangue e rachaduras no bunker da Escola, manchas no chão do bar.',
+    ],
+  },
   {
     v: '4.59.0',
     date: '2026-11-18',

@@ -5,6 +5,7 @@ import { accelerate } from '../render/bvh.js';
 import { acousticsFor } from '../audio/acoustics.js';
 import { viewSize } from '../core/viewport.js';
 import { gradeFor } from '../render/grade.js';
+import { addGroundDecals } from '../arena/groundDecals.js';
 
 // MODO EXPLORAR (pedido do dono, 2026-11-15: "um botão meio escondido, não no menu, que leva ao menu de mapas e ele
 // pode escolher um mapa para explorar, tipo o modo espectador do Minecraft, só que com colisão nas paredes e chão, só
@@ -106,6 +107,7 @@ export class Explorer {
     w.grade = gradeFor(arenaId);
     w.arena.build(w.scene);
     accelerate(w.arena.group);
+    addGroundDecals(w.arena, arenaId, w.scene); // os decalques no chão (arena/groundDecals.js)
     audio.listener = w.camera;
     if (audio.setAcoustics) audio.setAcoustics(acousticsFor(arenaId));
     this.solids = solidMeshes(w.arena.group || w.scene);

@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.60.0 — Marcas no Chão
+
+### Adicionado
+- Decalques no chão (`src/arena/groundDecals.js`): sangue velho, rachaduras, queimado, óleo, terra, lama, poças, folhas e marcas arrastadas, pintados em canvas, com receita por mapa (20 cenários de luta), nas lutas e no modo Explorar.
+
 ## v4.59.0 — Olhos Brancos e a Cor dos Mapas
 
 ### Adicionado

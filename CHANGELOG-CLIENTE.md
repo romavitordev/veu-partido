@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v4.60.0 — Marcas no Chão
+- DECALQUES NO CHÃO: os mapas ganharam marcas no piso da luta — sangue velho e riscos na areia do Coliseu, óleo e rachaduras no Ferro Velho, poças e lama nas noites de chuva, folhas no Orfanato e nos Pássaros, sangue e rachaduras no bunker da Escola, manchas no chão do bar.
+
 ## v4.59.0 — Olhos Brancos e a Cor dos Mapas
 - CAIO TELES: com a máscara da placa PARE no despertar, os olhos dele ficam brancos, sem íris — nas frestas da máscara e no rosto, que aparece de lado.
 - A COR DE CADA MAPA: cada cenário ganhou o seu tom de tela — o Orfanato nublado e desbotado, o bar e o Coliseu quentes, a Igreja fria, o Circo de néon, a Torre esverdeada (gráficos média e alta).

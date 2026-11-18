@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v4.60.0 — Marcas no Chão
+
+- Versão: `VERSION` 4.59.0 → **4.60.0** (`package.json`/lock junto). Data: 2026-11-18.
+- **Decalques no chão (dono, 2026-11-18: "Decalques no chão"; TODO "Melhoria de Gráficos — Parte 2b";
+  `docs/AUDITORIA-MAPAS.md` item 3):** `src/arena/groundDecals.js`. Nove desenhos pintados em canvas, sem download
+  (`blood`, `crack`, `scorch`, `oil`, `dirt`, `mud`, `puddle`, `leaves`, `scratch`), cada um num atlas 3 × 1 com três
+  variações; `DECALS` dá a receita de cada mapa (tipo, quantidade, tamanho em m; folhas verdes ou de outono). São
+  planos deitados em y ≈ 0,012 (o chão da luta), transparentes, sem escrever profundidade, com `polygonOffset`, sem
+  sombra e recebendo sombra; espalhados em volta do meio dos pontos de partida (até 10 m), dentro da área andável
+  (`inBounds`) e fora de `colliders`/`boxes`. Semente = id do mapa (sempre os mesmos). Ficam fora do grupo do cenário
+  (não entram nos raios do BVH); texturas guardadas entre lutas (`sharedMap`, `sharedGeometry`). Ligado em
+  `World.setup` e no modo Explorar. Ajustes de leitura no jogo: manchas maiores, riscos mais fortes, lama mais clara
+  (à noite parecia buraco) e poças com o céu refletido e `roughness` 0,6 (a fogueira de Treb Ciach virava brilho
+  branco). Conferido no Coliseu, Ferro Velho (dia), Orfanato (noite), Treb Ciach (tempestade), Escola, Suvaco e Circo,
+  sem erros. PROPOSTA: o que suja cada chão saiu da descrição do cenário.
+
 ## v4.59.0 — Olhos Brancos e a Cor dos Mapas
 
 - Versão: `VERSION` 4.58.1 → **4.59.0** (`package.json`/lock junto). Data: 2026-11-18.
