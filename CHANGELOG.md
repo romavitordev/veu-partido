@@ -1,6 +1,12 @@
 # Changelog
 
-## v4.60.0 — Marcas no Chão
+## v5.1.0 — Equipes em Cena
+
+### Alterado
+- Especiais em equipe refeitos (`src/combat/teamSpecials.js`): Balu e Rubens (Salto Fantasma, palavras-chave, Machado Demônio), Irmãos Lukic (número do trapézio, chuva das Cartas do Destino, Colheita com a bengala) e Mãe e Filho (garrafada, chutes do Arthur, juramento dos Gaudérios); 6,6–6,8 s cada.
+- Versões: depois de x.59 vem (x+1).0.0; a antiga v4.60.0 passou a se chamar v5.0.0.
+
+## v5.0.0 — Marcas no Chão
 
 ### Adicionado
 - Decalques no chão (`src/arena/groundDecals.js`): sangue velho, rachaduras, queimado, óleo, terra, lama, poças, folhas e marcas arrastadas, pintados em canvas, com receita por mapa (20 cenários de luta), nas lutas e no modo Explorar.

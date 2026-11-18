@@ -841,18 +841,23 @@ const CHOREO = {
     return F;
   },
 
-  // BALU + RUBENS (pedido do dono, 2026-11-02): "Balu fala RUBINHOO! VAMOS DAR UMA COÇA NELE! avançando pra bater,
-  // Rubens diz: É RUBENS! e Rubens o ajuda a bater." O Balu vem CORRENDO de longe com a fala na legenda e abre com a
-  // machadada; o Rubens chega correndo do lado, corrige o nome e os DOIS batem juntos, um golpe atrás do outro, até a
-  // pancada dupla. Golpes: os do próprio kit (machado do Balu, martelo do Rubens) — PROPOSTA até o dono escolher.
+  // BALU + RUBENS — A COÇA DOS ABUTRES (pedido do dono, 2026-11-02: "Balu fala RUBINHOO! VAMOS DAR UMA COÇA NELE!
+  // avançando pra bater, Rubens diz: É RUBENS! e Rubens o ajuda a bater"; refeita em 2026-11-18 na revisão dos especiais
+  // em equipe simples). Cânone usado: o Balu bobo e piadista que paga o MACHADO DEMÔNIO com o próprio sangue (o pomo de
+  // pantera cravado no peito vira a maça-estrela) e a PANCADA DO URSO; o Rubens que fala por PALAVRAS-CHAVE ("Fio, cobre,
+  // solto"), o SALTO FANTASMA (some na estática rosa, azul, ciano e verde e reaparece), o martelo de guerra e a fala
+  // "Ainda bem que eu voltei". PROPOSTA (a ordem, os tempos e as falas novas): o machado em giro abre, a coça dos dois, o
+  // "Fio" com o Salto Fantasma para trás do alvo, o "Cobre" segurando, o Balu crava o pomo no peito, o "Solto" empurra o
+  // alvo para a maça de sangue e a piada do nome fecha.
   balu_rubens({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 4.8;
+    const END = S + 6.8;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const balu = tools.get('balu'), rubens = tools.get('rubens');
-    const hits = splitDamage(crewTotal, 7);
-    const hex = (def, fb) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? fb).getHexString());
-    // a fala na legenda de diálogo (nome de quem fala + texto), a mesma das falas da luta
-    const say = (actor, text) => world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def, 0xe8b23a), text, side: actor === balu ? 0 : 1 });
+    const hits = splitDamage(crewTotal, 10);
+    const BLOOD = 0xc01828;
+    const GLITCH = [0xff4ab0, 0x3a6aff, 0x4ae0ff, 0x4aff8a]; // a estática do Salto Fantasma (cânone)
+    const say = sayer(world);
+    const prop = propSwapper();
     // corre de `from` até `to` entre t0 e t1 (o corpo de verdade anda; a câmera acompanha)
     const run = (actor, t0, t1, fromAng, fromR, toAng, toR) => {
       let a0 = null, a1 = null;
@@ -879,13 +884,11 @@ const CHOREO = {
     };
     const AXE = { sound: 'axeHit', color: 0xd8d8de, slash: true };
     const HAMMER = { sound: 'heavyPunch', color: 0xe8b23a };
-    // troca de peças na mão (o machado que voa, a Glock do Queima-Roupa), desfeita no fim da cena
-    const undo = [];
-    const prop = (actor, name, on) => {
-      const rig = actor && actor.rig;
-      if (!rig || !rig.props || !rig.props[name]) return;
-      undo.push([rig, name, rig.props[name].visible]);
-      rig.showProp(name, on);
+    const glitch = (at) => {
+      for (const c of GLITCH) {
+        world.fx.burst(at.clone().setY(0.9), { count: 10, color: c, speed: 2.4, up: 0.6, life: 0.5, size: 0.1 });
+        world.fx.tracer(at.clone().setY(0.3 + Math.random() * 1.4), at.clone().set(at.x + (Math.random() - 0.5) * 1.4, 0.3 + Math.random() * 1.4, at.z + (Math.random() - 0.5) * 1.4), { color: c, life: 0.25, width: 0.02 });
+      }
     };
 
     // 1. o Balu avança gritando e abre com o MACHADO EM GIRO (□ do kit): o machado sai girando, acerta e volta
@@ -893,7 +896,7 @@ const CHOREO = {
       run(balu, S, S + 0.9, 0.25, 7, 0.25, 4.6);
       tl.add(S, () => {
         if (!live()) return;
-        say(balu, 'RUBINHOO! VAMOS DAR UMA COÇA NELE!');
+        say(balu, 'RUBINHOO! VAMOS DAR UMA COÇA NELE!', 0);
         world.cameraRig.playShots([{ ...overShoulder(balu, opp, { dur: 1.5, back: 2.2, side: 0.8, height: 1.8, fov: 46 }), cut: true }]);
       });
       let axe = null;
@@ -921,7 +924,6 @@ const CHOREO = {
       });
       tl.add(S + 1.32, () => tools.impact(balu, hits[0], AXE));
       tl.add(END, () => { if (axe) { world.scene.remove(axe); axe = null; } });
-      // e fecha a distância correndo para a Pancada do Urso
       run(balu, S + 1.62, S + 2.0, 0.25, 4.6, 0.35, 1.5);
     }
     // 2. o Rubens chega correndo do lado, corrigindo o nome
@@ -929,63 +931,145 @@ const CHOREO = {
       run(rubens, S + 1.25, S + 1.95, -1.5, 6, -1.2, 1.5);
       tl.add(S + 1.3, () => {
         if (!live()) return;
-        say(rubens, 'É RUBENS!');
+        say(rubens, 'É RUBENS!', 1);
         world.cameraRig.playShots([{ ...twoShot(rubens, opp, { dur: 0.75, dist: 3, height: 1.5, side: -1, fov: 42 }), cut: true }]);
       });
     }
-    // 3. a coça: o MARTELO do Rubens (lateral, cruzada, por cima) intercalado com a PANCADA DO URSO do Balu
-    //    (a ombrada derruba e a machadada vai no chão, como no especial dele)
+    // 3. a coça: o MARTELO do Rubens intercalado com a ombrada e a machadada do Balu
     tl.add(S + 2.0, () => {
       if (!live()) return;
-      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.5, radius: 3.6, height: 1.7, a0: -0.5, a1: 0.6 }), cut: true }]);
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.3, radius: 3.6, height: 1.7, a0: -0.5, a1: 0.6 }), cut: true }]);
     });
     blow(rubens, S + 2.0, 'hammer_h', 0.36, 1, HAMMER);
-    blow(balu, S + 2.2, 'shoulder_bash', 0.42, 2, { sound: 'heavyPunch', color: 0xc01828 });
+    blow(balu, S + 2.2, 'shoulder_bash', 0.42, 2, { sound: 'heavyPunch', color: BLOOD });
     blow(rubens, S + 2.5, 'hammer_diag', 0.42, 3, HAMMER);
-    blow(balu, S + 2.8, 'hammer_ground', 0.55, 4, { ...AXE, color: 0xc01828 });
-    blow(rubens, S + 3.15, 'hammer_v', 0.45, 5, HAMMER);
-    // 4. o fecho: a machadada final do Balu e, colado no alvo, o QUEIMA-ROUPA da Glock do Rubens
-    tl.add(S + 3.6, () => {
+    blow(balu, S + 2.8, 'hammer_ground', 0.55, 4, { ...AXE, color: BLOOD });
+
+    // 4. "FIO." — o SALTO FANTASMA: o Rubens some na estática e reaparece atrás do alvo
+    if (rubens) {
+      tl.add(S + 3.3, () => {
+        if (!live()) return;
+        say(rubens, 'Fio.', 1);
+        rubens.play('vanish', 0.2);
+        world.audio.play('blink');
+        world.fx.distort(rubens.chest(), { color: GLITCH[2], radius: 1.8, life: 0.35 });
+        glitch(rubens.pos.clone());
+      });
+      tl.add(S + 3.42, () => { if (live() && rubens.rig) rubens.rig.root.visible = false; });
+      tl.add(S + 3.55, () => {
+        if (!live()) return;
+        const at = tools.around(rubens, Math.PI, 1.1); // do outro lado do alvo: atrás dele
+        rubens.pos.set(at.x, 0, at.z);
+        if (rubens.rig) rubens.rig.root.visible = true;
+        rubens.face(opp);
+        world.audio.play('signalStatic', { volume: 0.5 });
+        glitch(rubens.pos.clone());
+        world.fx.ring(new THREE.Vector3(rubens.pos.x, 0.06, rubens.pos.z), { color: GLITCH[1], radius: 2, life: 0.35 });
+        world.cameraRig.playShots([{ ...overShoulder(rubens, opp, { dur: 0.7, back: 1.6, side: 0.6, height: 1.6, fov: 40 }), cut: true }]);
+      });
+      // "COBRE." — o martelo atravessado prende o alvo
+      tl.add(S + 3.8, () => {
+        if (!live()) return;
+        say(rubens, 'Cobre.', 1);
+        rubens.face(opp);
+        rubens.play('hammer_up', 0.46);
+        if (opp.state !== 'ko') opp.stun(2.4, 'stagger');
+      });
+      tl.add(S + 3.98, () => tools.impact(rubens, hits[5], HAMMER));
+    }
+    // 5. o Balu crava o pomo de pantera no peito: o MACHADO DEMÔNIO nasce de sangue (pago com o dele)
+    if (balu) {
+      tl.add(S + 4.05, () => {
+        if (!live()) return;
+        balu.face(opp);
+        balu.play('concentrate', 0.7);
+        say(balu, 'Essa aqui eu pago do meu bolso, ó!', 0);
+        world.audio.play('bloodClaw', { volume: 0.9 });
+        world.audio.play('heartbeat', { volume: 0.7 });
+        world.cameraRig.playShots([{ ...orbit(balu, { dur: 0.75, radius: 2.4, height: 1.5, a0: 1.25, a1: 1.5, lookH: 1.3 }), cut: true }]); // de lado: de frente o alvo tapava
+      });
+      tl.add(S + 4.35, () => {
+        if (!live()) return;
+        prop(balu, 'axe', false);
+        prop(balu, 'demonMace', true);
+        world.fx.burst(balu.chest(), { count: 28, color: BLOOD, speed: 2.6, life: 0.5, size: 0.14 });
+        world.fx.flash(balu.chest(), { color: BLOOD, size: 1.6, life: 0.2 });
+        for (let i = 0; i < 4; i++) world.fx.lightning(balu.chest(), balu.chest().add(new THREE.Vector3((Math.random() - 0.5) * 1.2, 0.6 + Math.random() * 0.6, (Math.random() - 0.5) * 1.2)), { color: BLOOD, life: 0.25 });
+      });
+    }
+    // 6. "SOLTO." — o Rubens solta o alvo de costas para o Balu, e a PANCADA DO URSO com a maça de sangue
+    tl.add(S + 4.75, () => {
       if (!live()) return;
-      if (balu) { balu.face(opp); balu.play('hammer_finisher', 0.75); }
-      if (rubens) { rubens.face(opp); prop(rubens, 'hammer', false); prop(rubens, 'glock', true); rubens.play('point', 0.6); }
-      world.cameraRig.playShots([{ ...lowAngle(rubens || balu, { dur: 1.0, dist: 2.8, fov: 46 }), cut: true }]);
+      if (rubens) { say(rubens, 'Solto.', 1); rubens.face(opp); rubens.play('shove', 0.42); }
+      opp.anim.play('hit', { restart: true, blend: 0.03 });
+      if (balu) {
+        balu.face(opp);
+        balu.play('hammer_finisher', 0.8);
+        world.cameraRig.playShots([{ ...lowAngle(balu, { dur: 1.0, dist: 3, fov: 48 }), cut: true }]);
+      }
     });
-    tl.add(S + 3.95, () => {
+    tl.add(S + 5.1, () => {
       if (!live()) return;
-      if (rubens) {
+      world.audio.play('slashFinal', { volume: 1 });
+      tools.impact(balu || rubens, hits[6] + hits[7] + hits[8], { sound: 'heavyPunch', color: BLOOD });
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: BLOOD, radius: 3, life: 0.55 });
+      world.fx.burst(opp.chestPos(), { count: 40, color: BLOOD, speed: 5, life: 0.6, size: 0.2 });
+      opp.anim.play('downed', { restart: true, blend: 0.04 });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.0, radius: 5, height: 1.4, a0: 0.4, a1: 0.8, lookH: 0.8 }), cut: true }]);
+      world.cameraRig.shake(0.55, 0.35);
+      world.hitstop(0.12);
+    });
+    // 7. o QUEIMA-ROUPA do Rubens no alvo caído e a piada do nome
+    if (rubens) {
+      tl.add(S + 5.55, () => {
+        if (!live()) return;
+        prop(rubens, 'hammer', false);
+        prop(rubens, 'glock', true);
+        rubens.face(opp);
+        rubens.play('point', 0.6);
+      });
+      tl.add(S + 5.75, () => {
+        if (!live()) return;
         const from = rubens.rig?.muzzle ? rubens.rig.muzzle.getWorldPosition(new THREE.Vector3()) : rubens.chest();
         world.fx.flash(from, { color: 0xffe08a, size: 0.9, life: 0.08 });
         world.fx.tracer(from, opp.chestPos(), { color: 0xffe08a, life: 0.1, width: 0.05 });
-        world.audio.play('sniper', { volume: 0.7 }); // o mesmo estalo do Queima-Roupa do kit
-      }
-      world.fx.ring(opp.pos.clone().setY(0.08), { color: 0xe8b23a, radius: 2.4, life: 0.5 });
-      tools.impact(rubens || balu, hits[6], { sound: 'axeHit', color: 0xffe08a });
-      world.cameraRig.shake(0.45, 0.3);
+        world.audio.play('sniper', { volume: 0.6 });
+        tools.impact(rubens, hits[9], { sound: 'impact', color: 0xffe08a });
+      });
+    }
+    tl.add(S + 6.0, () => {
+      if (!live()) return;
+      if (balu) { say(balu, 'HAHAHA! Viu, Rubinho?', 0); world.audio.play('laugh', { volume: 0.7 }); }
+      if (balu && rubens) world.cameraRig.playShots([{ ...twoShot(balu, rubens, { dur: 0.8, dist: 3.4, height: 1.6, side: 1, fov: 44 }), cut: true }]);
     });
-    tl.add(END, () => { for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v); undo.length = 0; });
-    tl.add(END, () => world.ui && world.ui.subtitle && world.ui.subtitle(null));
+    tl.add(S + 6.45, () => { if (live() && rubens) say(rubens, 'Rubens.', 1); });
+    tl.add(END, () => { prop.undo(); world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return END;
   },
 
-  // IRMÃOS LUKIC (cânone: a FOICE AMALDIÇOADA é a gadanha do Boris com a bengala do Damir encaixada — o Damir esfrega a
-  // bengala, os sigilos dourados de Conhecimento acendem e dão poder à foice; o corte deixa a escrita na pele do alvo).
-  // PROPOSTA da cena: o Damir abre com as Cartas do Destino, manda o alvo sentar, encaixa a bengala e o Boris ceifa
+  // IRMÃOS LUKIC — O SHOW DO DIABO (refeito em 2026-11-18 na revisão dos especiais em equipe simples). Cânone usado: a
+  // FOICE AMALDIÇOADA (a gadanha do Boris com a bengala do Damir encaixada: o Damir esfrega a bengala, os sigilos dourados
+  // de Conhecimento acendem e dão poder à foice; "Nostis omnia perdet omnia"), as CARTAS DO DESTINO e a PERTURBAÇÃO
+  // ("senta") do Damir, o Boris sereno que obedece ao irmão e sorri, e os dois EX-TRAPEZISTAS do "Show do Diabo" (o circo
+  // do pai). PROPOSTA (a ordem, os tempos e as falas novas): as cartas e o "senta", os dois cortes do Boris, o encaixe da
+  // bengala, o NÚMERO DO TRAPÉZIO (o Boris lança o irmão pelo cabo da foice), a chuva de cartas lá de cima, a Colheita e
+  // a bengala do Damir caindo no mesmo instante, e os aplausos.
   irmaos_lukic({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 4.6;
+    const END = S + 6.6;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const damir = tools.get('damir'), boris = tools.get('boris');
-    const hits = splitDamage(crewTotal, 6);
+    const hits = splitDamage(crewTotal, 9);
     const GOLD = 0xf2c230;
-    const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? GOLD).getHexString());
-    const say = (actor, text, side) => world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
-    const undo = [];
-    const prop = (actor, name, on) => {
-      const rig = actor && actor.rig;
-      if (!rig || !rig.props || !rig.props[name]) return;
-      undo.push([rig, name, rig.props[name].visible]);
-      rig.showProp(name, on);
-    };
+    const say = sayer(world);
+    const prop = propSwapper();
+    const lifts = [];
+    const lift = (body, t0, t1, curve) => lifts.push({ body, t0, t1, curve });
+    tl.each((time) => {
+      for (const l of lifts) {
+        if (time < l.t0 || time > l.t1 + 0.05 || !live()) continue;
+        l.body.pos.y = Math.max(0, l.curve(Math.min(1, (time - l.t0) / (l.t1 - l.t0))));
+      }
+    });
     const place = (actor, ang, r, t) => tl.add(t, () => {
       if (!live() || !actor) return;
       const p = tools.around(actor, ang, r);
@@ -993,6 +1077,10 @@ const CHOREO = {
       actor.pos.set(p.x, 0, p.z);
       actor.face(opp);
     });
+    const card = (from, i) => {
+      world.fx.tracer(from, opp.chestPos().add(new THREE.Vector3((Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4)), { color: i % 2 ? GOLD : 0xf4ecd8, life: 0.16, width: 0.05 });
+      world.audio.play('knifeThrow', { volume: 0.55, pitch: 1.2 + i * 0.04 });
+    };
     // 1. o Damir de longe: três cartas e "SENTA."
     if (damir) {
       place(damir, -0.4, 5.5, S);
@@ -1002,48 +1090,39 @@ const CHOREO = {
         damir.play('throw_r', 0.5);
         world.cameraRig.playShots([{ ...overShoulder(damir, opp, { dur: 1.3, back: 2, side: 0.8, height: 1.7, fov: 46 }), cut: true }]);
       });
-      for (let i = 0; i < 3; i++) {
-        tl.add(S + 0.2 + i * 0.12, () => {
-          if (!live()) return;
-          world.fx.tracer(damir.chest(), opp.chestPos(), { color: GOLD, life: 0.16, width: 0.05 });
-          world.audio.play('knifeThrow', { volume: 0.6, pitch: 1.2 });
-        });
-      }
+      for (let i = 0; i < 3; i++) tl.add(S + 0.2 + i * 0.12, () => { if (live()) card(damir.chest(), i); });
       tl.add(S + 0.5, () => tools.impact(damir, hits[0], { sound: 'impact', color: GOLD }));
       tl.add(S + 0.9, () => {
         if (!live()) return;
         damir.play('point', 0.7);
         say(damir, 'Senta.', 0);
-        if (opp.state !== 'ko') opp.stun(2.6, 'forced_kneel');
+        if (opp.state !== 'ko') opp.stun(4.6, 'forced_kneel');
         world.fx.ring(opp.chestPos(), { color: GOLD, radius: 1.4, life: 0.45, vertical: true, yaw: damir.yaw });
       });
     }
     // 2. o Boris chega com a gadanha e corta duas vezes
     if (boris) {
       place(boris, 0.5, 2.2, S + 0.8);
-      tl.add(S + 0.85, () => {
-        if (!live()) return;
-        world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.3, radius: 3.6, height: 1.6, a0: 0.4, a1: -0.4 }), cut: true }]);
-      });
+      tl.add(S + 0.85, () => { if (live()) world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.1, radius: 3.6, height: 1.6, a0: 0.4, a1: -0.4 }), cut: true }]); });
       tl.add(S + 1.1, () => { if (live()) { boris.face(opp); boris.play('hammer_h', 0.4); } });
-      tl.add(S + 1.3, () => live() && say(boris, 'Tô aqui, irmão.', 1));
       tl.add(S + 1.28, () => tools.impact(boris, hits[1], { sound: 'bladeHit', color: 0xb8bcc4, slash: true }));
+      tl.add(S + 1.3, () => live() && say(boris, 'Tô aqui, irmão.', 1));
       tl.add(S + 1.5, () => { if (live()) { boris.face(opp); boris.play('hammer_diag', 0.42); } });
       tl.add(S + 1.7, () => tools.impact(boris, hits[2], { sound: 'bladeHit', color: 0xb8bcc4, slash: true }));
     }
     // 3. o Damir esfrega a bengala (os sigilos acendem) e a encaixa na gadanha: a FOICE AMALDIÇOADA
     tl.add(S + 1.95, () => {
       if (!live()) return;
-      if (damir && boris) { // o Damir chega do lado do irmão para encaixar a bengala
+      if (damir && boris) {
         const yaw = boris.yaw + Math.PI / 2;
         damir.pos.set(boris.pos.x + Math.sin(yaw) * 1.1, 0, boris.pos.z + Math.cos(yaw) * 1.1);
         damir.face(boris);
         world.fx.burst(damir.chest(), { count: 10, color: GOLD, speed: 1.2, life: 0.4, size: 0.08 });
       }
       if (damir) { damir.play('concentrate', 0.7); prop(damir, 'caneSigils', true); }
-      world.cameraRig.playShots([{ ...twoShot(damir || boris, boris || damir, { dur: 1.0, dist: 3.2, height: 1.5, side: 1, fov: 42 }), cut: true }]);
+      world.cameraRig.playShots([{ ...twoShot(damir || boris, boris || damir, { dur: 0.9, dist: 3.2, height: 1.5, side: 1, fov: 42 }), cut: true }]);
     });
-    tl.add(S + 2.6, () => {
+    tl.add(S + 2.55, () => {
       if (!live()) return;
       if (damir) prop(damir, 'cane', false);
       if (boris) {
@@ -1054,22 +1133,71 @@ const CHOREO = {
       }
       world.audio.play('ritual', { volume: 0.7 });
     });
-    // 4. a ceifa da Foice Amaldiçoada: a escrita dourada fica na pele do alvo
-    tl.add(S + 3.1, () => {
+    // 4. O NÚMERO DO TRAPÉZIO: o Boris firma a foice, o Damir corre, pisa no cabo e sobe girando
+    if (damir && boris) {
+      tl.add(S + 3.05, () => {
+        if (!live()) return;
+        boris.face(damir);
+        boris.play('hammer_up', 0.5);
+        damir.face(boris);
+        damir.play('dash_slash', 0.3);
+        say(damir, 'Respeitável público...', 0);
+        world.audio.play('jump');
+        world.cameraRig.playShots([{ ...lowAngle(damir, { dur: 1.0, dist: 3.4, fov: 52 }), cut: true }]);
+      });
+      let d0 = null;
+      tl.add(S + 3.3, () => {
+        if (!live()) return;
+        d0 = damir.pos.clone();
+        damir.play('air_slash', 1.1);
+        world.fx.burst(boris.chest(), { count: 12, color: GOLD, speed: 2, life: 0.4, size: 0.08 });
+      });
+      // sobe por cima do alvo e desce na frente dele (a bengala por cima no fim)
+      tl.each((time) => {
+        if (!d0 || time < S + 3.3 || time > S + 4.6 || !live()) return;
+        const k = (time - (S + 3.3)) / 1.3;
+        const at = opp.pos;
+        damir.pos.x = d0.x + (at.x - d0.x) * smooth(k) * 0.8;
+        damir.pos.z = d0.z + (at.z - d0.z) * smooth(k) * 0.8;
+        damir.face(opp);
+      });
+      lift(damir, S + 3.3, S + 4.6, (k) => Math.sin(Math.PI * k) * 3.6);
+      // 5. lá de cima, a chuva das CARTAS DO DESTINO
+      for (let i = 0; i < 6; i++) tl.add(S + 3.6 + i * 0.07, () => { if (live()) card(damir.chest(), i); });
+      tl.add(S + 3.65, () => { if (live()) world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.75, radius: 4.4, height: 0.9, a0: -0.3, a1: 0.2, lookH: 2.4 }), cut: true }]); });
+      tl.add(S + 4.0, () => tools.impact(damir, hits[3], { sound: 'impact', color: GOLD }));
+    }
+    // 6. a COLHEITA da Foice Amaldiçoada e a bengala do Damir caindo do alto no MESMO instante
+    tl.add(S + 4.2, () => {
       if (!live() || !boris) return;
       boris.face(opp);
       boris.play('hammer_finisher', 0.8);
-      world.cameraRig.playShots([{ ...lowAngle(boris, { dur: 1.2, dist: 3, fov: 46 }), cut: true }]);
+      world.cameraRig.playShots([{ ...lowAngle(boris, { dur: 0.8, dist: 3, fov: 46 }), cut: true }]);
     });
-    tl.add(S + 3.45, () => {
+    tl.add(S + 4.4, () => { if (live() && damir) { damir.face(opp); damir.play('slash_v', 0.4); } });
+    tl.add(S + 4.6, () => {
       if (!live()) return;
-      tools.impact(boris || damir, hits[3] + hits[4] + hits[5], { sound: 'slashFinal', color: GOLD, slash: true });
-      world.fx.slash(opp.chestPos(), (boris || damir).yaw, { color: GOLD, radius: 2.2, arc: 3, life: 0.45, width: 0.6, roll: 1.2 });
-      for (let i = 0; i < 10; i++) world.fx.burst(opp.chestPos().add(new THREE.Vector3((Math.random() - 0.5) * 0.6, (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.6)), { count: 2, color: GOLD, speed: 0.6, life: 0.9, size: 0.06 });
-      world.cameraRig.shake(0.45, 0.3);
+      if (damir) damir.pos.y = 0;
+      const hitter = boris || damir;
+      tools.impact(hitter, hits[4] + hits[5] + hits[6] + hits[7], { sound: 'slashFinal', color: GOLD, slash: true });
+      world.fx.slash(opp.chestPos(), hitter.yaw, { color: GOLD, radius: 2.2, arc: 3, life: 0.45, width: 0.6, roll: 1.2 });
+      if (damir) world.fx.slash(opp.chestPos(), damir.yaw + Math.PI / 2, { color: 0xf4ecd8, radius: 1.8, arc: 2.4, life: 0.4, width: 0.4, roll: -1.2 });
+      for (let i = 0; i < 12; i++) world.fx.burst(opp.chestPos().add(new THREE.Vector3((Math.random() - 0.5) * 0.6, (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.6)), { count: 2, color: GOLD, speed: 0.6, life: 0.9, size: 0.06 });
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: GOLD, radius: 2.8, life: 0.5 });
+      world.cameraRig.playShots([{ ...pullBack(hitter, opp, { dur: 1.0, from: 3, to: 6.5, height: 2.2 }), cut: true }]);
+      world.cameraRig.shake(0.5, 0.3);
+      world.hitstop(0.12);
     });
-    tl.add(END, () => { for (const [rig, name, v] of undo.reverse()) rig.showProp(name, v); undo.length = 0; });
-    tl.add(END, () => world.ui && world.ui.subtitle && world.ui.subtitle(null));
+    tl.add(S + 5.0, () => tools.impact(damir || boris, hits[8], { sound: 'impact', color: GOLD })); // a escrita queima
+    // 7. a reverência: os aplausos do circo que não existe mais
+    tl.add(S + 5.5, () => {
+      if (!live()) return;
+      world.audio.play('applause', { volume: 0.6 });
+      if (damir) { damir.face(opp); damir.play('point', 0.8); say(damir, 'Pode aplaudir.', 0); }
+      if (damir && boris) world.cameraRig.playShots([{ ...twoShot(damir, boris, { dur: 1.0, dist: 3.6, height: 1.6, side: -1, fov: 44 }), cut: true }]);
+    });
+    tl.add(S + 6.05, () => { if (live() && boris) say(boris, '(sorri)', 1); });
+    tl.add(END, () => { if (damir) damir.pos.y = 0; prop.undo(); world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return END;
   },
 
@@ -1443,24 +1571,37 @@ const CHOREO = {
     return END;
   },
 
-  // MÃE E FILHO (pedido do dono, 2026-11-09): o Arthur abre os olhos e passa o REBIRTH para a DOZE da Ivete (o ritual
-  // Amaldiçoar Tecnologia "Rebirth": o pulso verde sobe até a mão que toca a arma; ser na arma dela é PROPOSTA), ela avança atirando chumbo
-  // amaldiçoado e o filho cobre de longe, ajoelhado com a sniper. Fecha com ela colada no alvo e o tiro dele junto.
+  // MÃE E FILHO (pedido do dono, 2026-11-09; refeito em 2026-11-18 na revisão dos especiais em equipe simples). Cânone
+  // usado: o REBIRTH do Arthur (o ritual Amaldiçoar Tecnologia: o pulso verde sobe até a mão que toca a arma; o ser na
+  // doze dela é PROPOSTA), a ESPINGARDA da Ivete, a dona do SUVACO SECO (a garrafa), o combate de UM BRAÇO SÓ do Arthur
+  // (chutes), a tatuagem dos GAUDÉRIOS ABUTRES dos dois (no braço dela e no pescoço dele: o juramento de proteger quem
+  // ama) e a fala dela "você só precisa buscar um motivo e você se agarra nele com toda força". PROPOSTA (a ordem, os
+  // tempos e as falas novas): o Rebirth na doze, ela avança atirando e ele cobre de longe, a garrafada da casa, ele chega
+  // nos chutes, o juramento acende nos dois e o fecho: o chute dele joga o alvo para o alto e a doze dela o pega no ar.
   mae_filho({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 5.2;
+    const END = S + 6.6;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const ivete = tools.get('ivete'), arthur = tools.get('arthur');
-    const GREEN = 0x3aff6a;
-    const hits = splitDamage(crewTotal, 6);
-    const hex = (def) => (typeof def.color === 'string' ? def.color : '#' + new THREE.Color(def.energyColor ?? 0x5a8ab8).getHexString());
-    const say = (actor, text, side) => actor && world.ui && world.ui.subtitle && world.ui.subtitle({ name: actor.def.name, color: hex(actor.def), text, side });
+    const GREEN = 0x3aff6a, OATH = 0xd83a2a;
+    const hits = splitDamage(crewTotal, 10);
+    const say = sayer(world);
+    const prop = propSwapper();
     const muzzle = (actor) => (actor.rig && actor.rig.muzzle ? actor.rig.muzzle.getWorldPosition(new THREE.Vector3()) : actor.chest());
     const handles = [];
+    const lifts = [];
+    const lift = (body, t0, t1, curve) => lifts.push({ body, t0, t1, curve });
+    tl.each((time) => {
+      for (const l of lifts) {
+        if (time < l.t0 || time > l.t1 + 0.05 || !live()) continue;
+        l.body.pos.y = Math.max(0, l.curve(Math.min(1, (time - l.t0) / (l.t1 - l.t0))));
+        if (l.body === opp) opp.onGround = false;
+      }
+    });
     const run = (actor, t0, t1, fromAng, fromR, toAng, toR, anim = 'run') => {
       let a0 = null, a1 = null;
       tl.add(t0, () => {
         if (!live()) return;
-        a0 = tools.around(actor, fromAng, fromR);
+        a0 = fromR == null ? actor.pos.clone() : tools.around(actor, fromAng, fromR);
         a1 = tools.around(actor, toAng, toR);
         actor.show(END - t0, a0);
         actor.pos.set(a0.x, 0, a0.z);
@@ -1496,16 +1637,21 @@ const CHOREO = {
       world.audio.play('sniper', { volume: 0.9 });
       tools.impact(arthur, hits[i], { sound: 'clawHit', color: GREEN });
     };
+    const kick = (t, anim, dur, i) => {
+      if (!arthur) return;
+      tl.add(t, () => { if (live()) { arthur.face(opp); arthur.play(anim, dur); } });
+      tl.add(t + dur * 0.45, () => tools.impact(arthur, hits[i], { sound: 'kick', color: 0xff2a3d }));
+    };
 
     // 1. o REBIRTH na doze: o Arthur atrás dela abre os olhos verdes e os raios passam para a espingarda
     tl.add(S, () => {
       if (!live()) return;
-      if (ivete) { const at = tools.enter(ivete, 0.15, 6.2); if (at) ivete.play('charge_fists', 1.3); }
+      if (ivete) { const at = tools.enter(ivete, 0.15, 6.2); if (at) ivete.play('charge_fists', 1.3); prop(ivete, 'shotgunBack', false); prop(ivete, 'shotgun', true); }
       if (arthur) {
         tools.enter(arthur, 0.33, 6.6); // colado nela: o Rebirth sobe pela mão que TOCA a arma (wiki)
         arthur.face(ivete || opp);
         arthur.play('rebirth', 0.9);
-        if (arthur.rig && arthur.rig.props && arthur.rig.props.eyes) arthur.rig.showProp('eyes', true);
+        prop(arthur, 'eyes', true);
       }
       world.audio.play('rebirth');
       say(arthur || ivete, arthur ? 'Mãe! Pega o Rebirth!' : 'Ninguém mexe com os meus meninos!', 1);
@@ -1530,9 +1676,6 @@ const CHOREO = {
       run(ivete, S + 1.3, S + 1.75, 0.15, 6.2, 0.1, 4.4);
       tl.add(S + 1.75, () => { if (live()) { ivete.face(opp); ivete.play('shoot_rifle', 0.4); } });
       tl.add(S + 1.85, () => blast(ivete, 0));
-      run(ivete, S + 2.15, S + 2.55, 0.1, 4.4, 0.05, 2.6);
-      tl.add(S + 2.55, () => { if (live()) { ivete.face(opp); ivete.play('shoot_rifle', 0.4); } });
-      tl.add(S + 2.65, () => blast(ivete, 2));
     }
     if (arthur) {
       tl.add(S + 1.3, () => {
@@ -1541,46 +1684,116 @@ const CHOREO = {
         arthur.pos.set(at.x, 0, at.z);
         arthur.face(opp);
         arthur.play('sniper_kneel', 0.5);
-        world.cameraRig.playShots([{ ...overShoulder(ivete || arthur, opp, { dur: 1.0, back: 2.2, side: -0.8, height: 1.7, fov: 46 }), cut: true }]);
+        world.cameraRig.playShots([{ ...overShoulder(ivete || arthur, opp, { dur: 0.9, back: 2.2, side: -0.8, height: 1.7, fov: 46 }), cut: true }]);
       });
       tl.add(S + 2.1, () => {
         if (!live()) return;
         arthur.face(opp);
         arthur.play('shoot_sniper', 0.6);
-        world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.7, back: 2.6, side: 1.1, height: 1.7, fov: 34 }), cut: true }]);
+        world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.6, back: 2.6, side: 1.1, height: 1.7, fov: 34 }), cut: true }]);
       });
       tl.add(S + 2.3, () => snipe(1));
     }
-    // 3. o fecho: a doze colada no peito e o tiro do Arthur no mesmo instante
-    const F = S + 3.3;
+    // 3. A GARRAFADA da casa: a garrafa do Suvaco Seco na cabeça do alvo
     if (ivete) {
-      run(ivete, F - 0.35, F - 0.05, 0.05, 2.6, 0.0, 1.2);
+      tl.add(S + 2.6, () => {
+        if (!live()) return;
+        prop(ivete, 'shotgun', false);
+        prop(ivete, 'bottle', true);
+        ivete.face(opp);
+        ivete.play('throw_r', 0.5);
+        say(ivete, 'Essa é por conta da casa!', 0);
+        world.audio.play('knifeThrow', { volume: 0.8 });
+        world.cameraRig.playShots([{ ...overShoulder(ivete, opp, { dur: 0.7, back: 1.8, side: 0.7, height: 1.6, fov: 42 }), cut: true }]);
+      });
+      tl.add(S + 2.78, () => {
+        if (!live()) return;
+        prop(ivete, 'bottle', false);
+        const head = opp.chestPos().add(new THREE.Vector3(0, 0.45, 0));
+        world.fx.tracer(ivete.chest(), head, { color: 0x7a4a14, life: 0.14, width: 0.08 });
+      });
+      tl.add(S + 2.92, () => {
+        if (!live()) return;
+        const head = opp.chestPos().add(new THREE.Vector3(0, 0.45, 0));
+        world.audio.play('blockHit', { volume: 1, pitch: 1.3 }); // o vidro estoura
+        world.fx.burst(head, { count: 22, color: 0x9ac8a0, speed: 4, life: 0.4, size: 0.07 });
+        world.fx.burst(head, { count: 10, color: 0x7a4a14, speed: 2, life: 0.5, size: 0.12 });
+        tools.impact(ivete, hits[2], { sound: 'impact', color: 0x7a4a14 });
+        if (opp.state !== 'ko') opp.stun(2.6, 'stagger');
+        prop(ivete, 'shotgun', true);
+      });
+    }
+    // 4. o filho chega nos CHUTES (um braço só: a perna faz o serviço)
+    if (arthur) {
+      run(arthur, S + 2.75, S + 3.15, 0.7, null, -0.6, 1.4);
+      tl.add(S + 3.15, () => {
+        if (!live()) return;
+        say(arthur, 'Deixa comigo, mãe.', 1);
+        world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.0, radius: 3.4, height: 1.5, a0: -0.6, a1: 0.3 }), cut: true }]);
+      });
+      kick(S + 3.2, 'kick_low', 0.32, 3);
+      kick(S + 3.5, 'side_kick', 0.36, 4);
+      kick(S + 3.8, 'spin_kick', 0.5, 5);
+    }
+    // 5. O JURAMENTO DOS GAUDÉRIOS: a tatuagem acende no braço dela e no pescoço dele; o fio vermelho liga os dois
+    tl.add(S + 4.3, () => {
+      if (!live()) return;
+      if (ivete && arthur) {
+        const arm = () => (ivete.rig?.sockets?.handR ? ivete.rig.sockets.handR.getWorldPosition(new THREE.Vector3()).lerp(ivete.chest(), 0.4) : ivete.chest());
+        const neck = () => arthur.chest().add(new THREE.Vector3(0, 0.32, 0));
+        world.fx.flash(arm(), { color: OATH, size: 1.2, life: 0.3 });
+        world.fx.flash(neck(), { color: OATH, size: 1.2, life: 0.3 });
+        for (let i = 0; i < 3; i++) world.fx.lightning(arm(), neck(), { color: OATH, life: 0.45 });
+        const thread = world.fx.chain(arm, neck, { rope: true, thick: 0.012, color: OATH, glow: 0x6a0808, sag: 0.1, links: 18 }); // o fio vermelho do juramento
+        handles.push(thread);
+        world.after(0.7, () => { if (handles.includes(thread)) { thread.stop(); handles.splice(handles.indexOf(thread), 1); } });
+        world.cameraRig.playShots([{ ...twoShot(ivete, arthur, { dur: 1.0, dist: 3.4, height: 1.5, side: 1, fov: 42 }), cut: true }]);
+      }
+      world.audio.play('heartbeat', { volume: 0.8 });
+      say(ivete || arthur, 'Busca um motivo e te agarra nele com toda força!', 0);
+    });
+    // 6. o fecho: o chute alto dele joga o alvo para cima e a doze dela o pega no ar, com o Rebirth junto
+    const F = S + 5.2;
+    if (arthur) {
+      tl.add(F - 0.3, () => { if (live()) { arthur.face(opp); arthur.play('kick_front', 0.46); } });
+      tl.add(F - 0.12, () => {
+        if (!live()) return;
+        tools.impact(arthur, hits[6], { sound: 'kick', color: 0xff2a3d });
+        opp.anim.play('launched', { restart: true, blend: 0.04 });
+      });
+      lift(opp, F - 0.12, F + 0.9, (k) => (k < 0.4 ? smooth(k / 0.4) * 2.2 : 2.2 - smooth((k - 0.4) / 0.6) * 2.2));
+    }
+    if (ivete) {
+      run(ivete, F - 0.55, F - 0.15, 0.1, null, 0.0, 2.2);
       tl.add(F, () => {
         if (!live()) return;
         ivete.face(opp);
         ivete.play('shoot_rifle', 0.6);
-        world.cameraRig.playShots([{ ...twoShot(ivete, opp, { dur: 0.45, dist: 2.8, height: 1.4, side: -1, fov: 42 }), cut: true }]);
+        say(ivete, 'Ninguém!', 0);
+        world.cameraRig.playShots([{ ...lowAngle(ivete, { dur: 0.6, dist: 2.6, fov: 50 }), cut: true }]);
       });
-      tl.add(F + 0.1, () => blast(ivete, 3, { pellets: 9, spread: 0.3, big: true }));
+      tl.add(F + 0.15, () => blast(ivete, 7, { pellets: 10, spread: 0.3, big: true }));
     }
-    if (arthur) {
-      tl.add(F - 0.2, () => { if (live()) { arthur.face(opp); arthur.play('shoot_sniper', 0.6); } });
-      tl.add(F + 0.12, () => snipe(4));
-    }
-    tl.add(F + 0.3, () => {
+    tl.add(F + 0.18, () => {
       if (!live()) return;
-      world.fx.ring(opp.pos.clone().setY(0.08), { color: GREEN, radius: 2.6, life: 0.5 });
-      world.fx.burst(opp.chestPos(), { count: 30, color: GREEN, speed: 5, life: 0.45, size: 0.18 });
-      tools.impact(ivete || arthur, hits[5], { sound: 'clawHit', color: GREEN });
-      world.cameraRig.playShots([{ ...pullBack(ivete || arthur, opp, { dur: 1.0, from: 3, to: 7, height: 2.2 }), cut: true }]);
+      if (arthur) for (let i = 0; i < 3; i++) world.fx.lightning(arthur.chest(), opp.chestPos(), { color: GREEN, life: 0.3 });
+      tools.impact(ivete || arthur, hits[8] + hits[9], { sound: 'slashFinal', color: GREEN });
+      world.fx.ring(opp.chestPos(), { color: GREEN, radius: 2.4, life: 0.5, vertical: true, yaw: (ivete || arthur).yaw });
+      world.fx.burst(opp.chestPos(), { count: 34, color: GREEN, speed: 5, life: 0.45, size: 0.18 });
+      world.fx.burst(opp.chestPos(), { count: 14, color: OATH, speed: 3, life: 0.5, size: 0.14 });
+      world.cameraRig.playShots([{ ...pullBack(ivete || arthur, opp, { dur: 1.2, from: 3, to: 7, height: 2.2 }), cut: true }]);
       world.cameraRig.shake(0.5, 0.3);
+      world.hitstop(0.12);
     });
+    tl.add(F + 1.0, () => { opp.pos.y = 0; if (live() && opp.state !== 'ko') opp.anim.play('downed', { restart: true, blend: 0.05 }); });
+    tl.add(F + 1.1, () => { if (live() && arthur) say(arthur, 'Valeu, mãe.', 1); });
     tl.add(END, () => {
-      for (const h of handles.splice(0)) h.stop();
-      if (arthur && arthur.rig && arthur.rig.props && arthur.rig.props.eyes) arthur.rig.showProp('eyes', false);
+      opp.pos.y = Math.max(0, opp.pos.y);
+      for (const h of handles.splice(0)) h && h.stop && h.stop();
+      prop.undo();
       world.ui && world.ui.subtitle && world.ui.subtitle(null);
     });
-    return F + 0.3;
+    return END;
   },
 
   // EQUIPE BRASA (wiki "Tristan Monteiro"/"Erin Parker"/"Luciano Carvalho"): o Tristan recrutou a Erin e os dois dividem

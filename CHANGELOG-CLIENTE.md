@@ -2,7 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
-## v4.60.0 — Marcas no Chão
+## v5.1.0 — Equipes em Cena
+- A COÇA DOS ABUTRES (Balu + Rubens) refeita: o Rubens some no Salto Fantasma e aparece atrás do alvo falando por palavras-chave — "Fio. Cobre. Solto." —, o Balu crava o pomo no peito e o Machado Demônio de sangue fecha com a Pancada do Urso. E ainda erra o nome dele no fim.
+- O SHOW DO DIABO (Irmãos Lukic) refeito: depois de encaixar a bengala na gadanha, o Boris lança o irmão pelo cabo da Foice Amaldiçoada no número do trapézio, as Cartas do Destino chovem lá de cima e a Colheita e a bengala caem juntas. Aplausos.
+- MÃE E FILHO (Ivete + Arthur) refeito: a garrafada por conta da casa, o Arthur chega nos chutes, o juramento dos Gaudérios acende na tatuagem dos dois e o chute dele joga o alvo para a doze dela.
+- VERSÕES: depois da 4.59 vem a 5.0.0 (a antiga 4.60.0 passou a se chamar 5.0.0).
+
+## v5.0.0 — Marcas no Chão
 - DECALQUES NO CHÃO: os mapas ganharam marcas no piso da luta — sangue velho e riscos na areia do Coliseu, óleo e rachaduras no Ferro Velho, poças e lama nas noites de chuva, folhas no Orfanato e nos Pássaros, sangue e rachaduras no bunker da Escola, manchas no chão do bar.
 
 ## v4.59.0 — Olhos Brancos e a Cor dos Mapas

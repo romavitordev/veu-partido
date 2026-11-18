@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '4.60.0';
+export const VERSION = '5.1.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -12,7 +12,18 @@ export function formatVersion(version) {
 
 export const CHANGELOG = [
   {
-    v: '4.60.0',
+    v: '5.1.0',
+    date: '2026-11-18',
+    title: 'Equipes em Cena',
+    items: [
+      'A COÇA DOS ABUTRES (Balu + Rubens) refeita: o Rubens some no Salto Fantasma e aparece atrás do alvo falando por palavras-chave — "Fio. Cobre. Solto." —, o Balu crava o pomo no peito e o Machado Demônio de sangue fecha com a Pancada do Urso. E ainda erra o nome dele no fim.',
+      'O SHOW DO DIABO (Irmãos Lukic) refeito: depois de encaixar a bengala na gadanha, o Boris lança o irmão pelo cabo da Foice Amaldiçoada no número do trapézio, as Cartas do Destino chovem lá de cima e a Colheita e a bengala caem juntas. Aplausos.',
+      'MÃE E FILHO (Ivete + Arthur) refeito: a garrafada por conta da casa, o Arthur chega nos chutes, o juramento dos Gaudérios acende na tatuagem dos dois e o chute dele joga o alvo para a doze dela.',
+      'VERSÕES: depois da 4.59 vem a 5.0.0 (a antiga 4.60.0 passou a se chamar 5.0.0).',
+    ],
+  },
+  {
+    v: '5.0.0',
     date: '2026-11-18',
     title: 'Marcas no Chão',
     items: [

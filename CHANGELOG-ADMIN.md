@@ -1,8 +1,30 @@
 # Registro administrativo de alterações
 
-## v4.60.0 — Marcas no Chão
+## v5.1.0 — Equipes em Cena
 
-- Versão: `VERSION` 4.59.0 → **4.60.0** (`package.json`/lock junto). Data: 2026-11-18.
+- Versão: `VERSION` 5.0.0 → **5.1.0** (`package.json`/lock junto). Data: 2026-11-18.
+- **Regra de versão (dono, 2026-11-18: "sempre que passar de x.59.9, x muda a versão pra x.0.0"):** depois de x.59.y
+  vem (x+1).0.0. A v4.60.0 foi renomeada para **v5.0.0** em todos os documentos e no `version.js`; a tag `v4.60.0`
+  foi trocada pela `v5.0.0` (mesmo commit `442641f`).
+- **Especiais em equipe simples (TODO "Polimento dos personagens recentes"; dono, 2026-11-18: "Sim, revisar"):**
+  medidos os nove por duração, golpes (`tools.impact`), falas e cortes de câmera; os três mais curtos e com menos cenas
+  foram refeitos no padrão do Amor e Sangue (v4.51.2), com o cânone das fichas:
+  - `balu_rubens` (4,8 → 6,8 s; 3 → 10 golpes): o Salto Fantasma do Rubens (a estática rosa/azul/ciano/verde, some e
+    reaparece atrás do alvo), as palavras-chave "Fio. Cobre. Solto.", o Balu crava o pomo no peito (`demonMace`),
+    a Pancada do Urso com a maça de sangue, o Queima-Roupa no alvo caído e a piada do nome ("Viu, Rubinho?" / "Rubens.").
+  - `irmaos_lukic` (4,6 → 6,6 s): o NÚMERO DO TRAPÉZIO (o Boris lança o Damir pelo cabo da Foice Amaldiçoada; os dois
+    eram trapezistas do "Show do Diabo"), seis Cartas do Destino lá de cima, a Colheita e a bengala do Damir caindo no
+    mesmo instante (dois cortes cruzados) e os aplausos (`applause`).
+  - `mae_filho` (3,6 → 6,6 s; 3 → 10 golpes): a garrafada do Suvaco Seco (`bottle`, atordoa), o Arthur chega nos
+    chutes (um braço só), o JURAMENTO DOS GAUDÉRIOS (a tatuagem dos dois acende e um fio vermelho liga o braço dela ao
+    pescoço dele; a fala canônica dela, encurtada) e o fecho: o chute alto joga o alvo para cima e a doze o pega no ar.
+  Falas novas, ordem e tempos são PROPOSTA. Testados no jogo (Coliseu): sem erros, todas as falas na ordem, o alvo
+  volta ao chão; câmera do Balu cravando o pomo trocada para o lado (de frente o alvo tapava).
+- Os outros seis ficam para depois; anotado no TODO o pedido novo da opção de sangue.
+
+## v5.0.0 — Marcas no Chão
+
+- Versão: `VERSION` 4.59.0 → **5.0.0** (`package.json`/lock junto). Data: 2026-11-18.
 - **Decalques no chão (dono, 2026-11-18: "Decalques no chão"; TODO "Melhoria de Gráficos — Parte 2b";
   `docs/AUDITORIA-MAPAS.md` item 3):** `src/arena/groundDecals.js`. Nove desenhos pintados em canvas, sem download
   (`blood`, `crack`, `scorch`, `oil`, `dirt`, `mud`, `puddle`, `leaves`, `scratch`), cada um num atlas 3 × 1 com três
