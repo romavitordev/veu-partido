@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.11.1 — Só o Keytar
+
+### Corrigido
+- `char_ale.py`: sem as tiras do antebraço (`armTail`), que pareciam baquetas na mão.
+
 ## v5.11.0 — Alê Ao Vivo
 
 ### Adicionado

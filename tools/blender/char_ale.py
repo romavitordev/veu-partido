@@ -128,11 +128,8 @@ for side in ('L', 'R'):
         d = Vector((math.cos(a) * s, math.sin(a), 0))
         p0 = el.lerp(hd, 0.86) + d * 0.05 * H
         b.add(f'cuff{side}{i}', rod([p0, p0 + fa * random.uniform(0.03, 0.07) * H], [0.012 * H, 0.002 * H], 4), suit, region='e' + side, subdiv=0)
-    # a TIRA COMPRIDA pendurada do antebraço até o joelho, com a PONTA TRIANGULAR de metal
-    t0 = el.lerp(hd, 0.7) + Vector((s * 0.05 * H, 0, 0))
-    tl = [t0 + Vector((0, 0, -0.07 * H * j)) for j in range(6)]
-    b.add(f'armTail{side}', rod(tl, 0.012 * H, 4, flat=((lambda p, o=Vector((s, 0, 0)): o), 0.3)), strap, region='e' + side, subdiv=0)
-    b.add(f'armTailTip{side}', cone(tuple(tl[-1] + Vector((0, 0, 0.004 * H))), tuple(tl[-1] + Vector((0, 0, -0.045 * H))), 0.017 * H, 3), metal, region='e' + side, subdiv=0)
+    # (as TIRAS compridas com a ponta de metal saíram em 2026-11-18: presas ao antebraço, ficavam retas para a frente
+    # e pareciam baquetas na mão — o dono)
 
 # ================================================================ a GOLA COM OS PREGOS
 b.add('collar', tube([(0, 0, hz + 0.57 * H, 0.104 * H, 0.092 * H), (0, 0, hz + 0.63 * H, 0.08 * H, 0.076 * H)], 22), suit_dk, region='chest', subdiv=0)

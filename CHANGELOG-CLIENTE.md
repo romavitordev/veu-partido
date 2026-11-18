@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.11.1 — Só o Keytar
+- Alê não parece mais segurar baquetas: as duas tiras com ponta de metal presas no antebraço saíram, e nas mãos fica só o keytar.
+
 ## v5.11.0 — Alê Ao Vivo
 - ALÊ AO VIVO: parade, Alê toca a Lâmina Keytar na horizontal, como nas artes oficiais. Na hora do golpe, empunha de novo.
 - A MÁSCARA DE CORPSE PAINT de Alê foi refeita pela arte oficial: branca, com os olhos azuis à mostra, rachaduras, escorridos pretos e a boca costurada.

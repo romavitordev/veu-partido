@@ -1,5 +1,11 @@
 # Registro administrativo de alterações
 
+## v5.11.1 — Só o Keytar
+
+- Dono: "o ale tá com baquetas na mão parece, era pra ser só o keytar". As tiras `armTail`/`armTailTip` de
+  `char_ale.py` (presas à região do antebraço, ficavam retas para a frente com o braço dobrado) saíram; `ale.glb`
+  reexportado pelo Blender MCP e conferido na galeria.
+
 ## v5.11.0 — Alê Ao Vivo
 
 - Versão: `VERSION` 5.10.0 → **5.11.0**. Data: 2026-11-18. Dono: "siga oque falta" e "a mascara do ale precisa ser

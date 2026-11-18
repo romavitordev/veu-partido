@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.11.0';
+export const VERSION = '5.11.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.11.1',
+    date: '2026-11-18',
+    title: 'Só o Keytar',
+    items: [
+      'Alê não parece mais segurar baquetas: as duas tiras com ponta de metal presas no antebraço saíram, e nas mãos fica só o keytar.',
+    ],
+  },
   {
     v: '5.11.0',
     date: '2026-11-18',
