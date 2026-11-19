@@ -133,7 +133,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
     - [x] (v5.26.0) Os ESPECIAIS com a cena e o nome nos bichos (o dublê, pve/duble.js) e as habilidades na mira.
     - [x] (v5.26.0) O Racha da Dara com 3 laços; os carros dos golpes sem travar na parede e sem ficar no mapa;
       a lamparina fraca pisca só em amarelo.
-    - [ ] Conferir com controle humano: os especiais nos bichos na tela; o Racha e os carros nas arenas.
+    - [x] (v5.27.0) Conferido: os especiais nos bichos pelo teclado; o Racha e os carros nas arenas (bateria src/dev/vehicleBattery.js; Van/Direção Avançada sem pista livre corrigidas).
+    - [x] (v5.27.0) Suvaco Seco: cadeiras de bar brancas viradas para a mesa; mesas brancas e de cervejaria.
     - [ ] Conferir com controle humano: pegar brasas no corredor e a janela do RESGATE na Árvore.
     - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
     - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).

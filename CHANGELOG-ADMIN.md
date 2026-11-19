@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v5.27.0 — Mesa de Bar
+
+- Versão: `VERSION` 5.26.1 → **5.27.0**. Data: 2026-11-19.
+- Dono: "o suvaco seco, precisa arrumar as cadeiras que estão viradas pro lado contrario da mesa, deveriam parecer
+  cadeiras de bar brasileiro, aquelas brancas, e as mesas deveriam ser aquelas brancas ou da skol" (com as fotos de
+  referência: o jogo branco de plástico e o jogo amarelo de cervejaria). "faça oque está pendente".
+- Conferido no navegador: o especial nos bichos pelo teclado de verdade (Z) — o nome, a cena e o dano no bicho; o
+  Racha com a van, as faixas e "Segura o volante!"; a van some no fim. Bateria dos carros em 8 arenas (orfanato,
+  suvaco, coliseu, santo_berco, acampamento, igreja, palco, tipora) e, depois da correção, nas falhas + as que
+  faltavam até o dono dizer que bastava: Van/Direção Avançada no Suvaco com dano e sem carro sobrando.
+- A mesa de cervejaria tem só o redemoinho, SEM a marca escrita. Para o build completo do Suvaco
+  (`node tools/blender/build.mjs suvaco`) faltam os kits do Kenney em `assets_src/kenney` nesta máquina.
+- Sobra: o Racha encostado na parede ainda passa por cima de uma mesa do Suvaco por ~0,3 s num dos cantos.
+- PROPOSTA: o formato das cadeiras/mesas e quais mesas são de cervejaria.
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.26.1 — A Assombração Refeita
 
 - Versão: `VERSION` 5.26.0 → **5.26.1**. Data: 2026-11-19.

@@ -198,6 +198,107 @@ def plastic_chair(name, pos, mat, rot_y=0.0):
     return _move(o, pos, rot_y)
 
 
+def _seg(name, p, q, w, d, mat):
+    """barra reta de p a q no plano vertical x-y do jogo (z = p[2]): w = largura, d = espessura em z"""
+    dx, dy = q[0] - p[0], q[1] - p[1]
+    L = math.hypot(dx, dy)
+    return box(name, ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2, p[2]), (L + w * 0.6, w, d), mat, rot_z=math.atan2(dy, dx))
+
+
+def _shear_back(o, y0=0.45, k=0.2):
+    """inclina o encosto para trás: z do jogo += (y - y0)·k (o Blender guarda o z do jogo como -y)"""
+    rebase(o)
+    for v in o.data.vertices:
+        if v.co.z > y0:
+            v.co.y -= (v.co.z - y0) * k
+    return o
+
+
+def bar_chair(name, pos, mat, rot_y=0.0, solid=False):
+    """CADEIRA DE BAR brasileira (a de plástico inteiriça, referência do dono): encosto em arco com ripas em leque (ou
+    inteiriço na de cervejaria, `solid`), braços em alça descendo até a frente do assento, pernas grossas abertas e a
+    saia por baixo do assento. Encosto em +z local: rot_y = ângulo da direção mesa → cadeira (assento para a mesa)."""
+    parts = [box(f'{name}_s', (0, 0.43, -0.01), (0.46, 0.035, 0.44), mat, bevel=0.015)]
+    parts.append(box(f'{name}_kf', (0, 0.39, -0.22), (0.46, 0.07, 0.025), mat))
+    for sx in (-1, 1):
+        parts.append(box(f'{name}_ks{sx}', (sx * 0.225, 0.39, -0.01), (0.025, 0.07, 0.44), mat))
+        # pernas: largas em cima, finas no pé, abertas
+        for sz, tilt in ((-1, 6), (1, -8)):
+            parts.append(cyl(f'{name}_l{sx}{sz}', (sx * 0.245, 0, sz * 0.235), 0.03, 0.42, mat, seg=4, r_top=0.055,
+                             rot_y=math.radians(45), rot_x=math.radians(tilt), rot_z=sx * math.radians(-6)))
+    # encosto (montado reto e inclinado depois): a moldura em arco e as ripas
+    back = []
+    arc = []
+    for i in range(9):
+        t = i / 8
+        arc.append((-0.235 + 0.47 * t, 0.62 + 0.24 * math.sqrt(max(0.0, 1 - ((t - 0.5) / 0.5) ** 2)), 0.215))
+    for i in range(8):
+        back.append(_seg(f'{name}_arc{i}', arc[i], arc[i + 1], 0.045, 0.035, mat))
+    for sx in (-1, 1):
+        back.append(box(f'{name}_post{sx}', (sx * 0.228, 0.53, 0.215), (0.045, 0.2, 0.035), mat))
+    if solid:
+        # inteiriço (o da cervejaria): o painel enche o arco
+        for i in range(8):
+            x0, y0, _ = arc[i]
+            x1, y1, _ = arc[i + 1]
+            hgt = (y0 + y1) / 2 - 0.45
+            back.append(box(f'{name}_pan{i}', ((x0 + x1) / 2, 0.45 + hgt / 2, 0.218), (abs(x1 - x0) + 0.004, hgt, 0.022), mat))
+    else:
+        # ripas em leque: juntas embaixo, abrindo até o arco
+        n = 9
+        for i in range(n):
+            u = (i / (n - 1)) * 2 - 1
+            top = arc[min(8, max(0, round((u * 0.85 * 0.5 + 0.5) * 8)))]
+            back.append(_seg(f'{name}_rip{i}', (u * 0.11, 0.46, 0.215), (u * 0.19, top[1] - 0.02, 0.215), 0.026, 0.02, mat))
+        back.append(box(f'{name}_base', (0, 0.465, 0.215), (0.44, 0.04, 0.03), mat))
+    bk = join_objs(back, f'{name}_back')
+    _shear_back(bk)
+    parts.append(bk)
+    # braços em alça: saem do encosto, vão para a frente e descem até o assento
+    for sx in (-1, 1):
+        parts.append(box(f'{name}_arm{sx}', (sx * 0.265, 0.64, 0.02), (0.04, 0.03, 0.42), mat, bevel=0.01))
+        parts.append(box(f'{name}_armd{sx}', (sx * 0.262, 0.54, -0.19), (0.04, 0.22, 0.035), mat, rot_x=math.radians(-12)))
+        parts.append(box(f'{name}_armb{sx}', (sx * 0.25, 0.66, 0.255), (0.04, 0.06, 0.06), mat))
+    o = join_objs(parts, name)
+    return _move(o, pos, rot_y)
+
+
+def bar_table(name, pos, top_mat, art_mats=None, size=0.70):
+    """MESA DE BAR de plástico (referência do dono): tampo quadrado com os cantos recortados, aba por baixo e as pernas
+    em L afinando até o pé. `art_mats` (vermelho, laranja): a de cervejaria, com as faixas em redemoinho no tampo."""
+    h = size / 2
+    n = 0.045  # recorte dos cantos
+    parts = [box(f'{name}_top', (0, 0.715, 0), (size, 0.03, size - 2 * n), top_mat, bevel=0.008),
+             box(f'{name}_top2', (0, 0.715, 0), (size - 2 * n, 0.03, size), top_mat, bevel=0.008)]
+    for k, (x, z, w, d) in enumerate(((0, h - 0.015, size - 2 * n, 0.03), (0, -h + 0.015, size - 2 * n, 0.03),
+                                      (h - 0.015, 0, 0.03, size - 2 * n), (-h + 0.015, 0, 0.03, size - 2 * n))):
+        parts.append(box(f'{name}_skirt{k}', (x, 0.665, z), (w, 0.07, d), top_mat))
+    c = h - n - 0.005
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            # perna em L (duas chapas) afinando: larga em cima, estreita no pé
+            for j in range(4):
+                y0 = 0.7 - j * 0.175
+                wdt = 0.13 - j * 0.017
+                parts.append(box(f'{name}_lx{sx}{sz}{j}', (sx * (c - wdt / 2 + 0.03), y0 - 0.0875, sz * c), (wdt, 0.176, 0.026), top_mat))
+                parts.append(box(f'{name}_lz{sx}{sz}{j}', (sx * c, y0 - 0.0875, sz * (c - wdt / 2 + 0.03)), (0.026, 0.176, wdt), top_mat))
+    if art_mats:
+        # o redemoinho da cervejaria: faixas curvas (vermelha e laranja) no tampo, sem marca escrita
+        for m, (r0, ph, mt) in enumerate(((0.22, 0.0, art_mats[0]), (0.15, 2.4, art_mats[1]), (0.29, 3.6, art_mats[0]))):
+            for i in range(7):
+                a0 = ph + i * 0.32
+                a1 = a0 + 0.32
+                p0 = (math.cos(a0) * r0, math.sin(a0) * r0)
+                p1 = (math.cos(a1) * r0, math.sin(a1) * r0)
+                if max(abs(p0[0]), abs(p0[1]), abs(p1[0]), abs(p1[1])) > h - 0.03:
+                    continue
+                L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+                parts.append(box(f'{name}_art{m}{i}', ((p0[0] + p1[0]) / 2, 0.7315, (p0[1] + p1[1]) / 2), (L + 0.03, 0.003, 0.07 if m == 0 else 0.05), mt,
+                                 rot_y=-math.atan2(p1[1] - p0[1], p1[0] - p0[0])))
+    o = join_objs(parts, name)
+    return _move(o, pos, 0)
+
+
 def rebase(o):
     """Aplica a posição: a origem do objeto vira a origem do mundo (peças montadas em volta de 0,0,0)."""
     for s in bpy.context.selected_objects:

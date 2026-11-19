@@ -13,6 +13,7 @@ import { vehicleBlocked, trackVehicle } from '../vehicleCollision.js';
 // O tamanho dos laços se ajusta ao espaço livre (paredes/casas) para a van não travar. PROPOSTA de jogo: a cena e os números.
 //   sp.speed (m/s), sp.shares ([1ª, 2ª, 3ª passada]), sp.loop (raio máximo do laço, m)
 const LOOP_MIN = 2.8;
+const LOOP_MIN_TIGHT = 1.6; // encostado na parede: o laço daquele lado aperta até aqui
 
 export const racha = {
   canStart: (f) => !!f.opponent && f.opponent.state !== 'ko',
@@ -24,19 +25,49 @@ export const racha = {
     const car = vanDosCinco();
     const arena = world.arena;
     const center = opp.pos.clone().setY(0);
-    const base = Math.atan2(f.pos.x - center.x, f.pos.z - center.z); // o 1º laço começa do lado dela
-    // a rosácea r = R·cos(3θ), θ ∈ [0, π]: começa na ponta de uma pétala e passa pelo centro 3 vezes
-    const at = (R, th) => {
-      const r = R * Math.cos(3 * th);
-      const a = base + th;
+    const side = Math.atan2(f.pos.x - center.x, f.pos.z - center.z); // o 1º laço começa do lado dela
+    // a rosácea r = Rk·cos(3θ), θ ∈ [0, π]: três pétalas que passam pelo centro; cada pétala tem o SEU raio (a que
+    // aponta para uma parede encolhe, as outras continuam grandes) e o giro da flor é o que deixa os laços maiores
+    // (dono: "em algumas fases eles travam na parede")
+    const petal = (th) => (th < Math.PI / 6 || th >= (5 * Math.PI) / 6 ? 0 : th < Math.PI / 2 ? 1 : 2);
+    const RMAX = sp.loop ?? 6.5;
+    let base = side;
+    let Rk = [LOOP_MIN, LOOP_MIN, LOOP_MIN];
+    const at = (th, b = base, Rs = Rk) => {
+      const r = Rs[petal(th)] * Math.cos(3 * th);
+      const a = b + th;
       return { x: center.x + Math.sin(a) * r, z: center.z + Math.cos(a) * r };
     };
-    // o maior laço que cabe no espaço livre
-    let R = sp.loop ?? 6.5;
-    const fits = (Rt) => { for (let i = 0; i <= 48; i++) { const p = at(Rt, (i / 48) * Math.PI); if (vehicleBlocked(arena, 'van', { x: p.x, y: 0.6, z: p.z })) return false; } return true; };
-    while (R > LOOP_MIN && !fits(R)) R -= 0.5;
-    R = Math.max(LOOP_MIN, R);
-    const vel = Math.min(speed, 8 + R * 3); // laço apertado (pouco espaço): mais devagar, para dar as três passadas
+    // quantos pontos da pétala k (com raio Rt, giro b) caem em parede/casa
+    const blockedIn = (k, Rt, b) => {
+      const Rs = [Rt, Rt, Rt];
+      let n = 0;
+      for (let i = 0; i <= 48; i++) {
+        const th = (i / 48) * Math.PI;
+        if (petal(th) !== k) continue;
+        const p = at(th, b, Rs);
+        if (vehicleBlocked(arena, 'van', { x: p.x, y: 0.6, z: p.z })) n++;
+      }
+      return n;
+    };
+    let best = -Infinity;
+    for (let j = 0; j < 12; j++) {
+      const b = side + (j % 2 ? -1 : 1) * Math.ceil(j / 2) * (Math.PI / 18); // gira a flor até 30° para cada lado
+      const Rs = [0, 0, 0];
+      let score = 0;
+      for (let k = 0; k < 3; k++) {
+        let R = RMAX;
+        while (R > LOOP_MIN && blockedIn(k, R, b)) R -= 0.5;
+        R = Math.max(LOOP_MIN, R);
+        let tight = R;
+        while (tight > LOOP_MIN_TIGHT && blockedIn(k, tight, b)) tight -= 0.3; // nem o mínimo cabe: aperta mais
+        Rs[k] = Math.max(LOOP_MIN_TIGHT, tight);
+        score += Rs[k] - 10 * blockedIn(k, Rs[k], b);
+      }
+      if (score > best + 0.01) { best = score; base = b; Rk = Rs; }
+    }
+    const Rmean = (Rk[0] + Rk[1] + Rk[2]) / 3;
+    const vel = Math.min(speed, 8 + Rmean * 3); // laço apertado (pouco espaço): mais devagar, para dar as três passadas
 
     let phase = 'enter';
     let t = 0;
@@ -58,14 +89,14 @@ export const racha = {
     world.cameraRig.playShots([{
       dur: 4.2,
       fov: 55,
-      pos: (k) => new THREE.Vector3(center.x + Math.sin(base + 0.9 + k * 1.2) * (R + 6), 6.5 - k * 1.5, center.z + Math.cos(base + 0.9 + k * 1.2) * (R + 6)),
+      pos: (k) => new THREE.Vector3(center.x + Math.sin(base + 0.9 + k * 1.2) * (Rmean + 6), 6.5 - k * 1.5, center.z + Math.cos(base + 0.9 + k * 1.2) * (Rmean + 6)),
       look: () => new THREE.Vector3(center.x, 0.8, center.z),
     }]);
 
     const smoke = (p, n = 2) => world.fx.burst(new THREE.Vector3(p.x, 0.2, p.z), { count: n, color: 0x7a7068, kind: 'smoke', speed: 1, up: 0.8, life: 0.6, size: 0.8, grow: 1 });
     const place = () => {
-      const p = at(R, th);
-      const q = at(R, Math.min(Math.PI, th + 0.02));
+      const p = at(th);
+      const q = at(Math.min(Math.PI, th + 0.02));
       car.position.set(p.x, 0, p.z);
       const dx = q.x - p.x, dz = q.z - p.z;
       if (Math.hypot(dx, dz) > 1e-4) { heading = Math.atan2(dx, dz); dir.set(dx, 0, dz).normalize(); }
@@ -103,7 +134,8 @@ export const racha = {
         f.invuln = Math.max(f.invuln, 0.2); // dentro da van: ninguém acerta a motorista
         if (phase === 'race') {
           // anda pela rosácea na velocidade do racha (dθ pelo comprimento do arco)
-          const r = R * Math.cos(3 * th), dr = -3 * R * Math.sin(3 * th);
+          const Rp = Rk[petal(th)];
+          const r = Rp * Math.cos(3 * th), dr = -3 * Rp * Math.sin(3 * th);
           const ds = Math.max(0.5, Math.hypot(r, dr));
           th = Math.min(Math.PI, th + (vel * dt) / ds);
           place();
@@ -138,7 +170,8 @@ export const racha = {
           // freia de lado (cavalo de pau) e ela pula da cabine
           const k = Math.min(1, t / 0.45);
           car.rotation.y = heading + k * 1.4;
-          car.position.addScaledVector(dir, (1 - k) * 7 * dt);
+          const nx = car.position.x + dir.x * (1 - k) * 7 * dt, nz = car.position.z + dir.z * (1 - k) * 7 * dt;
+          if (!vehicleBlocked(arena, 'van', { x: nx, y: 0.6, z: nz })) car.position.set(nx, 0, nz); // não derrapa para dentro da parede
           f.pos.set(car.position.x, 0, car.position.z);
           smoke(car.position, 3);
           if (k >= 1) { finish(); phase = 'out'; t = 0; }

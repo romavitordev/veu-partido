@@ -22,19 +22,23 @@ export function clearLane(arena, vehicle, from, to, step = 0.8) {
 
 export function clearStart(arena, vehicle, start, aim, minDist = 3) {
   const free = (x, z) => !vehicleBlocked(arena, vehicle, { x, y: 0.6, z });
-  const tryLine = (sx, sz) => {
-    const dx = aim.x - sx, dz = aim.z - sz;
-    const L = Math.hypot(dx, dz);
-    for (let s = 0; s <= L - minDist; s += 0.5) {
-      const x = sx + (dx * s) / L, z = sz + (dz * s) / L;
-      if (free(x, z)) return { x, z };
+  // procura uma PISTA inteira livre até o alvo (antes só o ponto de partida: no Suvaco/Igreja/Acampamento o carro
+  // nascia livre mas com uma mesa/banco no caminho e batia no 1º quadro, sem atropelar ninguém): primeiro atrás de
+  // quem chama, depois girando a pista em volta do alvo (até o lado oposto); em cada direção, de longe para perto
+  const D = Math.max(minDist, Math.hypot(start.x - aim.x, start.z - aim.z));
+  const phi = Math.atan2(start.x - aim.x, start.z - aim.z);
+  let fallback = null;
+  for (let k = 0; k <= 16; k++) {
+    const ang = phi + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * (Math.PI / 8);
+    for (let d = D; d >= minDist; d -= 0.5) {
+      const x = aim.x + Math.sin(ang) * d, z = aim.z + Math.cos(ang) * d;
+      if (!free(x, z)) continue;
+      if (!fallback) fallback = { x, z };
+      // a frente do carro também (2,2 m adiante) e o caminho todo até o alvo
+      if (clearLane(arena, vehicle, { x, z }, aim, 0.5)) return { x, z };
     }
-    return null;
-  };
-  const a = tryLine(start.x, start.z);
-  if (a) return a;
-  const b = tryLine(2 * aim.x - start.x, 2 * aim.z - start.z); // do outro lado do alvo
-  return b || { x: start.x, z: start.z };
+  }
+  return fallback || { x: start.x, z: start.z };
 }
 
 // o VIGIA do carro: qualquer que seja o fim do golpe (acabou, foi interrompido, o round virou, a sala mudou), o carro

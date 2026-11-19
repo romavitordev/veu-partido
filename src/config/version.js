@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.26.1';
+export const VERSION = '5.27.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.27.0',
+    date: '2026-11-19',
+    title: 'Mesa de Bar',
+    items: [
+      'SUVACO SECO: as mesas e cadeiras do bar e da calçada agora são as de bar brasileiro — as cadeiras brancas de plástico (encosto em arco com ripas em leque, braços) e as mesas brancas de cantos recortados, mais o jogo amarelo de cervejaria (mesa com redemoinho vermelho e laranja, cadeiras de encosto inteiriço); as cadeiras ficam viradas PARA a mesa (antes o encosto ficava do lado da mesa) e a pilha do canto também é das brancas. CARROS DOS GOLPES: a Van dos Cinco (Chico) e a Direção Avançada (Cristopher) procuram uma pista livre até o alvo — no Suvaco, na Igreja e no Acampamento elas batiam numa mesa/banco logo na saída, não acertavam ninguém e o carro ficava parado no mapa por 6 s. RACHA (Dara): perto de parede cada laço se ajusta sozinho e a flor gira para caber; a van não entra mais na parede ao frear.',
+    ],
+  },
   {
     v: '5.26.1',
     date: '2026-11-19',

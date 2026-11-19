@@ -45,7 +45,9 @@ M = {
     'crate_b': material('crate_blue', '#2a4ab0', 0.7),
     'crate_y': material('crate_yellow', '#d8a624', 0.7),
     'cooler': material('cooler_blue', '#4a8ad8', 0.1, emission='#2a5aa0', strength=0.4),
-    'white': material('plastic_white', '#e8e6de', 0.6),
+    'white': material('plastic_white', '#eceae4', 0.55),
+    'beer': material('plastic_beer_yellow', '#f0bf22', 0.5),
+    'orange': material('plastic_orange', '#e8701c', 0.5),
     'plant': material('plant_green', '#2a6a2a', 1),
     'awning': material('awning', '#3a5a4a', 0.8),
     'window_lit': material('window_lit_bar', '#ffd08a', 0.4, emission='#ffb860', strength=2),
@@ -112,13 +114,16 @@ for k in range(10):
     sphere(f'ball{k}', (PX - 0.6 + (k % 4) * 0.12, 0.81, PZ - 0.2 + (k // 4) * 0.12), (0.04, 0.04, 0.04), random.choice(bottle_mats))
 col_box('pool', (PX, 0.6, PZ), (2.8, 1.0, 1.6))
 
-# ---------------- mesas e cadeiras de plástico
+# ---------------- mesas e cadeiras de bar (dono, 2026-11-19: "cadeiras de bar brasileiro, aquelas brancas, e as mesas
+# deveriam ser aquelas brancas ou da [cervejaria]"; as cadeiras viradas PARA a mesa — antes o encosto ficava do lado
+# da mesa). As de cervejaria são o jogo amarelo (mesa com o redemoinho vermelho/laranja, sem marca escrita; cadeiras de encosto inteiriço).
 for k, (x, z) in enumerate([(-5.5, 2.5), (-3.4, -0.4), (0.5, -1.2)]):  # nada na frente da porta
-    table_square(f'table{k}', (x, 0, z), M['red'] if k % 2 else M['yellow'], M['metal'])
+    beer = k == 1
+    bar_table(f'table{k}', (x, 0, z), M['beer'] if beer else M['white'], (M['red'], M['orange']) if beer else None)
     col_cyl(f'table{k}', (x, 0, z), 0.5, 0.8)
-    for j, a in enumerate((0, math.pi / 2, math.pi)):
-        cx, cz = x + math.sin(a) * 0.75, z + math.cos(a) * 0.75
-        plastic_chair(f'chair{k}_{j}', (cx, 0, cz), M['red'] if (k + j) % 2 else M['yellow'], rot_y=a + math.pi)
+    for j, a in enumerate((0.15, math.pi / 2 + 0.1, math.pi - 0.1)):
+        cx, cz = x + math.sin(a) * 0.68, z + math.cos(a) * 0.68
+        bar_chair(f'chair{k}_{j}', (cx, 0, cz), M['beer'] if beer else M['white'], rot_y=a + random.uniform(-0.15, 0.15), solid=beer)
 
 # ---------------- canto: engradados, cadeiras empilhadas, bebedouro, lixeira, geladeira
 for c in range(3):
@@ -127,7 +132,7 @@ for c in range(3):
         box(f'crate{c}_{r}', (W0 + 0.5 + c * 0.55, 0.17 + r * 0.33, D0 + 0.6), (0.5, 0.32, 0.4), m)
 col_box('crates', (W0 + 1.05, 0.8, D0 + 0.6), (1.7, 1.6, 0.6))
 for k in range(9):
-    plastic_chair(f'stack{k}', (W0 + 2.8, k * 0.09, D0 + 0.55), M['beige'], rot_y=math.pi)
+    bar_chair(f'stack{k}', (W0 + 2.8, k * 0.09, D0 + 0.55), M['white'], rot_y=0)
 col_box('stack', (W0 + 2.8, 0.8, D0 + 0.55), (0.6, 1.6, 0.6))
 box('cooler_base', (W0 + 3.8, 0.5, D0 + 0.4), (0.38, 1.0, 0.36), M['white'])
 cyl('cooler_jug', (W0 + 3.8, 1.0, D0 + 0.4), 0.15, 0.45, M['cooler'], seg=12)
@@ -236,12 +241,12 @@ for k in range(5):
 col_box('bags', (18.1, 0.3, -3.6), (0.9, 0.6, 2.4))
 box('alley_lamp', (17.15, 3.4, -1.0), (0.2, 0.25, 0.4), M['lamp'])
 
-# mesas de plástico na calçada do bar
-for k, (x, z, m) in enumerate([(-7, 9.5, M['red']), (6.5, 9.0, M['yellow']), (-2.5, 12.0, M['yellow'])]):
-    table_square(f'otable{k}', (x, 0, z), m, M['metal'])
+# mesas de bar na calçada (as amarelas de cervejaria e uma branca), cadeiras brancas viradas para a mesa
+for k, (x, z, beer) in enumerate([(-7, 9.5, True), (6.5, 9.0, False), (-2.5, 12.0, True)]):
+    bar_table(f'otable{k}', (x, 0, z), M['beer'] if beer else M['white'], (M['red'], M['orange']) if beer else None)
     col_cyl(f'otable{k}', (x, 0, z), 0.5, 0.8)
     for j, a in enumerate((0.3, math.pi + 0.3)):
-        plastic_chair(f'ochair{k}_{j}', (x + math.sin(a) * 0.78, 0, z + math.cos(a) * 0.78), m, rot_y=a + math.pi)
+        bar_chair(f'ochair{k}_{j}', (x + math.sin(a) * 0.68, 0, z + math.cos(a) * 0.68), M['beer'] if beer else M['white'], rot_y=a + random.uniform(-0.15, 0.15), solid=beer)
 # vaso com plantas ao lado da porta
 for k, x in enumerate((3.1, 4.1)):
     put('furniture', 'pottedPlant', (x, 0, D1 + 0.75), 0.4 * k, 2.2, center=True)

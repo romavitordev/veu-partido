@@ -204,10 +204,6 @@ Object.assign(ABILITY_TYPES, {
       let travelled = 0;
       let track = null;
       const total = start.distanceTo(aim) + (a.overshoot ?? 10);
-      tl.add(a.delay ?? 0.35, () => {
-        track = trackVehicle(world, car, 6);
-        world.audio.play('shockwave', { volume: 0.8, pitch: 0.55 }); // o motor roncando
-      });
       // ele se joga para o lado quando o carro chega (a cena de dublê)
       tl.add((a.delay ?? 0.35) + 0.25, () => {
         f.anim.play('dodge', { restart: true, duration: 0.45 });
@@ -225,6 +221,12 @@ Object.assign(ABILITY_TYPES, {
           carT += dt;
           if (carT < 0) return false;
           if (gone) return true;
+          // o carro entra na cena aqui (antes era num passo da linha do tempo: se ele batia no 1º quadro, o vigia já
+          // tinha ido embora e o carro entrava depois e ficava 6 s parado no mapa)
+          if (!track) {
+            track = trackVehicle(world, car, 6);
+            world.audio.play('shockwave', { volume: 0.8, pitch: 0.55 }); // o motor roncando
+          }
           const step = (a.speed ?? 26) * dt;
           travelled += step;
           car.position.addScaledVector(dir, step);
@@ -256,6 +258,7 @@ Object.assign(ABILITY_TYPES, {
             world.fx.burst(car.position.clone().setY(1), { count: 30, color: 0x3a3634, kind: 'smoke', speed: 3, up: 2, life: 1.2, size: 1.6, grow: 1 });
             world.audio.play('explosion', { volume: 0.8 });
             gone = true;
+            if (track) track.remove();
             return true;
           }
           return false;

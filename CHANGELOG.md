@@ -1,5 +1,26 @@
 # Changelog
 
+## v5.27.0 — Mesa de Bar
+
+### Adicionado
+- `tools/blender/arena_lib.py`: `bar_chair` (cadeira de bar de plástico: arco com ripas em leque ou inteiriço `solid`,
+  braços em alça, pernas abertas, saia; encosto inclinado por `_shear_back`) e `bar_table` (tampo de cantos recortados,
+  aba, pernas em L afinando; `art_mats` = o redemoinho da mesa de cervejaria). `_seg` (barra entre dois pontos).
+- `src/dev/vehicleBattery.js`: bateria dos carros (Racha, Van dos Cinco, Direção Avançada) nas arenas — no meio, de
+  costas e de frente para a parede; conta dano, quadros dentro de parede, carro parado e carro sobrando.
+
+### Mudado
+- `tools/blender/arena_suvaco.py`: mesas/cadeiras do salão e da calçada com `bar_table`/`bar_chair` (brancas + o jogo
+  amarelo de cervejaria), cadeiras com `rot_y = a` (o encosto do lado de fora; antes `a + π`), pilha de cadeiras brancas.
+  `public/arenas/suvaco.glb` remendado (os kits do Kenney não estão nesta máquina para o build completo): os móveis
+  antigos tirados por posição/nome e os novos montados com as mesmas funções (1,39 → 1,89 MB).
+- `vehicleCollision.clearStart`: procura uma pista INTEIRA livre (`clearLane`) até o alvo, girando a direção em volta
+  dele (passos de 22,5°, de longe para perto); antes só o ponto de partida.
+- `stuntCar`: o carro entra na cena no 1º quadro do próprio vigia (antes num passo da linha do tempo: batendo no 1º
+  quadro, ele entrava depois e ficava 6 s parado no mapa) e sai na batida.
+- `specials/racha.js`: raio por pétala (`Rk`, mín. 2,8 → 1,6 encostado na parede) e o giro da flor (±30°) que deixa
+  os laços maiores; a freada não anda para dentro de parede.
+
 ## v5.26.1 — A Assombração Refeita
 
 ### Mudado
