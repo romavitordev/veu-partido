@@ -1,5 +1,23 @@
 # Changelog
 
+## v5.24.0 — A Noite Inteira em Treb Ciach
+
+A fase do Samhain fechada numa versão só: no menu do jogo e no `CHANGELOG-CLIENTE.md` as notas da v5.22.0 e da v5.23.0
+viraram uma entrada única (esta). As seções técnicas abaixo continuam como histórico.
+
+### Mudado
+- A progressão da fase: a VILA (parte 1) é a única com XP de abate e baús, e tem duas ondas a mais (`samhain.waves.count`
+  8/9/10/11/12); `samhain.xp` 24/55/130 (antes 18/42/100).
+- `pve/corredor.js`: as BRASAS DA CHAMA (`RUN.relicFirst` 4 s, `relicEvery` 5,5–7,5 s, `relicXp` 0,45 do nível atual via
+  `xpForLevel`): `spawnRelic` põe a brasa na beirada (u = ±(meia largura − 0,6)) e força um aviso de bote no mesmo ponto
+  (`spawnHazard(p, P, force)`); `takeRelic` → `giveXp` e "+1 NÍVEL GUARDADO"; o rótulo mostra "Níveis guardados N".
+  As escolhas de nível continuam esperando a Árvore.
+- `Dungeon.js`: na Árvore abate não dá XP (`onZombieSlain`), não cai XP (`dropLoot`), sem baús (`onWaveCleared`) e a cura
+  ×0,5; `startTree` anuncia "RESGATE: N NÍVEIS" quando há níveis guardados.
+- `pve/arvore.js` `doorHp`: Difícil 1800 → 1900, Muito Difícil 1700 → 1750.
+- `dungeons.js` `tips` do Samhain: a vila com XP, as brasas do corredor e a Árvore sem XP.
+- `dev/samhainBattery.js` `fullRun`: o nível e os guardados a cada parte; a CPU com vida cheia no corredor.
+
 ## v5.23.0 — O Fogo da Vigília
 
 ### Adicionado

@@ -1,5 +1,23 @@
 # Registro administrativo de alterações
 
+## v5.24.0 — A Noite Inteira em Treb Ciach
+
+- Versão: `VERSION` 5.23.0 → **5.24.0**. Data: 2026-11-19.
+- Dono: "a primeira parte tem que durar um pouco mais e não ter que ficar upando na parte 3 … sem essas caixas de xp na
+  parte 3. O player tem que conseguir upar o maximo possivel na parte 1, pegar umas recompensas que ficam no caminho da
+  parte dois … que não pode ser fácil de pegar, e nada interrompe a parte 2, ele só resgata ao chegar na parte 3"; e
+  "lance essa fase numa versão só".
+- Consolidação: no menu (`version.js` `CHANGELOG`) e no `CHANGELOG-CLIENTE.md`, as entradas 5.22.0 e 5.23.0 foram
+  trocadas por esta, que descreve a fase inteira com os números atuais (o texto da 5.22.0 estava velho: lamparinas
+  "3% até 45%", "14 tiram uma onda"). `CHANGELOG.md` e este arquivo mantêm o histórico técnico.
+- Bateria da fase inteira (`fullRun`, CPU Difícil sem guardar o alçapão, sem itens e sem pegar brasas): a vila passou de
+  ~300 s para 420–650 s, chegando à Árvore no nível 9–10; Normal venceu 2/2 (porta 47% e 59%); Difícil perdeu na
+  última onda (5/5) → a porta do Difícil 1800 → 1900 (Muito Difícil 1750), sem nova rodada.
+- PROPOSTA: as brasas (nome, XP, posição no bote), a cura ×0,5 na Árvore e os números de ondas/XP.
+- Não conferido em jogo com controle humano: pegar a brasa no corredor e a janela "RESGATE" abrindo na Árvore (a CPU da
+  bateria corre pelo meio e não pega brasas).
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.23.0 — O Fogo da Vigília
 
 - Versão: `VERSION` 5.22.0 → **5.23.0**. Data: 2026-11-19.

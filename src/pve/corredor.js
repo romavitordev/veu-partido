@@ -18,6 +18,7 @@
 import * as THREE from 'three';
 import { buildAssombracao } from '../models/assombracao.js';
 import { applyHit } from '../combat/damage.js';
+import { xpForLevel } from './upgrades.js';
 
 export const RUN = {
   time: { easy: 35, normal: 45, hard: 55, superhard: 62, annihilation: 70 }, // segundos até a árvore
@@ -35,6 +36,13 @@ export const RUN = {
   length: 640,
   crowd: 18, // Assombrações nas beiradas ao mesmo tempo (recicladas para a frente)
   countdown: 2.6,
+  // as BRASAS DA CHAMA (dono, 2026-11-19: "pegar umas recompensas que ficam no caminho da parte dois … que não pode ser
+  // fácil de pegar, e nada interrompe a parte 2, ele só resgata ao chegar na parte 3"; PROPOSTA: o que são, onde e quanto):
+  // uma brasa na beirada DENTRO da faixa de um bote — pegar = passar pelo golpe (a esquiva atravessa); cada uma dá 45% de
+  // um nível em XP; os níveis ficam guardados e abrem na Árvore (Dungeon.startTree)
+  relicEvery: [5.5, 7.5],
+  relicFirst: 4,
+  relicXp: 0.45,
 };
 
 const RED = 0xff3a2a;
@@ -56,6 +64,9 @@ export class LanternRun {
     this.lit = 0;
     this.next = 1.6;
     this.hazards = [];
+    this.relics = [];
+    this.relicNext = RUN.relicFirst;
+    this.relicsTaken = 0;
     this.pool = [];
     // a frente do caminho (D), a direita (R) e a origem (O, na borda da praça)
     this.D = new THREE.Vector3(Math.sin(RUN.angle), 0, Math.cos(RUN.angle));
@@ -306,7 +317,8 @@ export class LanternRun {
 
   label() {
     const left = Math.max(0, Math.ceil(this.time - this.t));
-    return `Corra até a Árvore Anciã: ${left} s · Lamparinas ${this.lit}`;
+    const kept = this.d.pendingUps || 0;
+    return `Corra até a Árvore Anciã: ${left} s · Lamparinas ${this.lit}${kept ? ` · Níveis guardados ${kept}` : ''}`;
   }
 
   update(dt) {
@@ -355,6 +367,23 @@ export class LanternRun {
         }
       }
     }
+    // as BRASAS DA CHAMA: aparecem na beirada já dentro da faixa de um bote
+    this.relicNext -= dt;
+    if (this.relicNext <= 0 && this.t < this.time - 4) {
+      this.relicNext = RUN.relicEvery[0] + Math.random() * (RUN.relicEvery[1] - RUN.relicEvery[0]);
+      this.spawnRelic(p, P);
+    }
+    for (const r of this.relics) {
+      if (r.gone) continue;
+      r.g.position.y = h(r.v) + 0.75 + Math.sin(this.t * 4 + r.v) * 0.12;
+      r.g.rotation.y += dt * 2;
+      for (const q of live) {
+        const Q = this.local(q.pos);
+        if (Math.abs(Q.v - r.v) < 1.0 && Math.abs(Q.u - r.u) < 0.85) { this.takeRelic(r); break; }
+      }
+      if (!r.gone && P.v > r.v + 2.5) { r.gone = true; this.group.remove(r.g); }
+    }
+    this.relics = this.relics.filter((r) => !r.gone);
     // os botes: o aviso no chão onde o jogador vai estar daqui a `warn` segundos
     this.next -= dt;
     if (this.next <= 0 && this.t < this.time - 1.5) {
@@ -407,14 +436,46 @@ export class LanternRun {
     return m;
   }
 
-  spawnHazard(p, P) {
+  // uma BRASA na beirada e o bote que cobre aquela beirada no mesmo ponto (com um pouco mais de aviso)
+  spawnRelic(p, P) {
     const speed = Math.max(3, p.moveSpeed || 7.5);
-    const v = P.v + speed * RUN.warn;
+    const v = P.v + speed * RUN.warn * 1.7;
+    const side = Math.random() < 0.5 ? -1 : 1;
+    if (this.hazards.some((hz) => Math.abs(hz.v - v) < 3)) return; // não amontoa com outro bote
+    this.spawnHazard(p, P, { side, v });
+    const g = new THREE.Group();
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), new THREE.MeshBasicMaterial({ color: 0xffd060 }));
+    const glow = new THREE.Mesh(new THREE.SphereGeometry(0.48, 12, 10), new THREE.MeshBasicMaterial({ color: 0xffa020, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.025, 6, 20), new THREE.MeshBasicMaterial({ color: 0xffe08a }));
+    ring.rotation.x = Math.PI / 2;
+    g.add(core, glow, ring);
+    const u = side * (RUN.half - 0.6);
+    g.position.set(u, h(v) + 0.75, -v);
+    this.group.add(g);
+    this.relics.push({ u, v, g, gone: false });
+  }
+
+  takeRelic(r) {
+    const d = this.d;
+    r.gone = true;
+    this.group.remove(r.g);
+    this.relicsTaken++;
+    const before = d.pendingUps || 0;
+    d.giveXp(Math.round(xpForLevel(d.run.level) * RUN.relicXp));
+    const at = this.group.localToWorld(new THREE.Vector3(r.u, h(r.v) + 0.8, -r.v));
+    this.w.fx.burst(at, { count: 22, color: 0xffd060, speed: 3, up: 2, life: 0.5, size: 0.16 });
+    d.audio.play('pickup', { volume: 0.9, pitch: 1.3 });
+    if ((d.pendingUps || 0) > before) d.hud.callout('+1 NÍVEL GUARDADO', '#ffd84a');
+  }
+
+  spawnHazard(p, P, force = null) {
+    const speed = Math.max(3, p.moveSpeed || 7.5);
+    const v = force ? force.v : P.v + speed * RUN.warn;
     const H = RUN.half;
-    const kind = Math.random() < 0.6 ? 'side' : 'mid';
+    const kind = force || Math.random() < 0.6 ? 'side' : 'mid';
     let x0, x1, side = 0;
     if (kind === 'side') {
-      side = Math.random() < 0.5 ? -1 : 1;
+      side = force ? force.side : Math.random() < 0.5 ? -1 : 1;
       const reach = H * (1.05 + Math.random() * 0.35); // cobre de 50% a 70% da largura
       x0 = side < 0 ? -H : H - reach;
       x1 = side < 0 ? -H + reach : H;

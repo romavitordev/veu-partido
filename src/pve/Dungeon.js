@@ -559,7 +559,7 @@ export class Dungeon {
   // um drop no chão (moedas, experiência ou cura) — das gavetas, dos barris e dos monstros
   dropLoot(pos, source, mult = 1) {
     const r = rollLoot(source, Math.random, this.run.depth, mult * (this.mods?.dropMult || 1));
-    if (!r) return null;
+    if (!r || (this.tree && r.kind === 'xp')) return null; // na Árvore Anciã não cai XP
     const at = { x: pos.x + (Math.random() - 0.5) * 0.6, z: pos.z + (Math.random() - 0.5) * 0.6 };
     const k = new Pickup(this.world, { kind: r.kind, pos: at, amount: r.amount, onTake: r.kind === 'heal' ? null : () => (r.kind === 'coins' ? this.giveCoins(r.amount) : this.giveXp(r.amount)) });
     this.pickups.push(k);
@@ -982,8 +982,10 @@ export class Dungeon {
   onZombieSlain(z) {
     this.stats.kills++;
     const X = this.D.xp;
-    this.giveXp(z.giant ? X.gigante || X.zumbiForte * 2 : z.foe && X[z.foe] ? X[z.foe] : z.strong ? X.zumbiForte : X.zumbi);
-    this.tryHeal(z.pos, z.giant ? 2 : z.strong ? 1 : 0.6);
+    // na ÁRVORE (a parte 3 do Samhain) abate não dá XP e a cura cai menos (dono, 2026-11-19: "você chegar na parte 3
+    // com oque você conseguiu upar na parte um … E na parte 3 sobreviver com oque upou antes")
+    if (!this.tree) this.giveXp(z.giant ? X.gigante || X.zumbiForte * 2 : z.foe && X[z.foe] ? X[z.foe] : z.strong ? X.zumbiForte : X.zumbi);
+    this.tryHeal(z.pos, (z.giant ? 2 : z.strong ? 1 : 0.6) * (this.tree ? 0.5 : 1));
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
   }
 
@@ -1086,6 +1088,8 @@ export class Dungeon {
     }
     for (const v of this.views) v.rig && v.rig.update(0, [v.p], true);
     this.tree.intro();
+    // o RESGATE: os níveis guardados (os da vila que sobraram e as brasas do corredor) abrem agora, antes da 1ª onda
+    if (this.pendingUps > 0) this.world.after(1.2, () => { if (this.tree && this.pendingUps > 0) this.hud.callout(`RESGATE: ${this.pendingUps} ${this.pendingUps === 1 ? 'NÍVEL' : 'NÍVEIS'}`, '#ffd84a'); });
     this.waveObjective();
   }
 
@@ -1270,7 +1274,7 @@ export class Dungeon {
     // Normal (9 ondas): baús depois das ondas 2, 3 (gigante), 5, 6 (gigante) e 8. PROPOSTA: os números.
     S.sinceChest = (S.sinceChest || 0) + 1;
     const W = this.D.waves;
-    const due = enc.miniboss || S.sinceChest >= (W.chestEvery || 2);
+    const due = !this.tree && (enc.miniboss || S.sinceChest >= (W.chestEvery || 2)); // na Árvore não há baús
     const P = (this.tree ? this.tree.chests : this.mod.chests) || [];
     const waiting = this.pickups.filter((k) => k instanceof Chest && k.alive && !k.opened);
     if (due && P.length && waiting.length < 2) {

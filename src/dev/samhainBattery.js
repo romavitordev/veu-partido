@@ -52,15 +52,18 @@ export async function fullRun(diff = 'normal', char = 'joui') {
   slot.cpu = new CpuController({ level: 'hard' });
   slot.cpu.attach(m.player);
   const log = [];
-  let s = 0, part = 'vila', downs = 0;
+  let s = 0, part = 'vila', downs = 0, minK = 1;
   for (; s < 1500 && m.phase !== 'dead' && !(m.phase === 'bossDown' && m.tree); s++) {
     if (m.village) for (const h of m.village.houses) h.hp = h.maxHp;
+    if (m.runner && !m.runner.done) m.player.health = m.player.maxHealth; // a CPU não desvia no corredor: conta como quem desvia
     g.step(60);
     if (m.choosing && m.pick) { try { m.pick(0); } catch { /* sem escolha */ } }
     if (m.player.health < m.player.maxHealth * 0.08) { downs++; m.player.health = m.player.maxHealth; }
     const now = m.tree ? 'arvore' : m.runner ? 'corredor' : 'vila';
-    if (now !== part) { log.push(`${part} até ${s}s`); part = now; }
+    if (now !== part) { log.push(`${part} até ${s}s (nível ${m.run.level}, guardados ${m.pendingUps || 0})`); part = now; }
+    if (m.tree) minK = Math.min(minK, m.tree.door.hp / m.tree.door.maxHp);
   }
-  log.push(`${part} até ${s}s · fase ${m.phase} · lamparinas ${m.run.samhainLamps ?? '-'} · caídas ${downs} · nível ${m.run.level}`);
+  const door = m.tree ? Math.round(100 * m.tree.door.hp / m.tree.door.maxHp) : '-';
+  log.push(`${part} até ${s}s · fase ${m.phase} · porta ${door}% (mín ${Math.round(minK * 100)}%) · onda ${m.waves ? `${m.waves.n}/${m.waves.total}` : '-'} · lamparinas ${m.run.samhainLamps ?? '-'} · caídas ${downs} · nível ${m.run.level}`);
   return log;
 }

@@ -116,6 +116,12 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       soleira, e os crânios de porco nas estacas; a vila com a gaiola de ferro das lamparinas, o nabo entalhado aceso
       (apaga com a lamparina) e a oferenda em cada porta; o corredor com os sulcos, a cerca de estacas, as flores, os
       nabos acesos na beira, os marcos de pedra e o telhadinho das gaiolas. PROPOSTA: todo o desenho.
+    - [x] (v5.24.0) A PROGRESSÃO (dono: "o player tem que conseguir upar o maximo possivel na parte 1, pegar umas
+      recompensas que ficam no caminho da parte dois … e nada interrompe a parte 2, ele só resgata ao chegar na
+      parte 3"): a vila com 2 ondas a mais e o único XP/baús; as BRASAS DA CHAMA no corredor (na beirada, no bote,
+      ~meio nível cada, guardadas); "RESGATE" na Árvore; na Árvore sem XP, sem baús e cura ×0,5. PROPOSTA: números.
+    - [x] (v5.24.0) A fase lançada numa versão só (dono: "lance essa fase numa versão só"): a nota única no menu.
+    - [ ] Conferir com controle humano: pegar brasas no corredor e a janela do RESGATE na Árvore.
     - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
     - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).
   - [x] **Dificuldade** (v5.22.0: 6→10 ondas na vila, 35→70 s no corredor, 3→7 ondas na Árvore, mais fortes e mais dano): quanto mais alta, mais ondas na parte 1, mais tempo no corredor, mais ondas na árvore e bichos

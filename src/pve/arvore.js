@@ -15,7 +15,7 @@ import * as THREE from 'three';
 
 export const TREE = {
   radius: 22, // a clareira (o limite de quem anda)
-  doorHp: { easy: 2200, normal: 2150, hard: 1800, superhard: 1700, annihilation: 1600 },
+  doorHp: { easy: 2200, normal: 2150, hard: 1900, superhard: 1750, annihilation: 1600 },
   hpCut: 0.5, // a vida das Assombrações cai até a metade do corte das lamparinas (dungeons.js treeWeaken)
   regen: 0.18, // entre as ondas, o alçapão recupera 18% (os aldeões escoram por dentro)
   trunk: { x: 0, z: -10, r: 4.3 }, // o tronco: ~7 m de largura e ~10 m até se abrir (ep. 3, 3h30: uns 4 personagens de largura)

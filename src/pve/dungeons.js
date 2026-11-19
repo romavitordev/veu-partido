@@ -433,7 +433,9 @@ export const DUNGEONS = {
     restricted: [],
     waves: {
       foes: 'samhain',
-      count: { easy: 6, normal: 7, hard: 8, superhard: 9, annihilation: 10 },
+      // a VILA dura mais (dono, 2026-11-19: "a primeira parte tem que durar um pouco mais … O player tem que conseguir
+      // upar o maximo possivel na parte 1"): duas ondas a mais; é a única parte com XP de abate e baús
+      count: { easy: 8, normal: 9, hard: 10, superhard: 11, annihilation: 12 },
       bossEvery: 3, chestEvery: 2, chestFade: 6,
       rest: 6, // um respiro maior: dá tempo de reacender as lamparinas
       firstDelay: 8,
@@ -449,10 +451,12 @@ export const DUNGEONS = {
       '<b>1ª parte, a vila:</b> as Assombrações vão atrás de você e das CASAS. Se a lamparina de uma porta apagar, os aldeões de dentro morrem.',
       'Fique parado perto de uma porta para <b>reacender a chama</b> da lamparina.',
       'Se não sobrar nenhum aldeão vivo na vila, você perde. A cada 3 ondas vem a <b>Assombração de Broén</b>; no fim, a TEMPESTADE.',
+      '<b>Suba o máximo de níveis na vila:</b> é a única parte com XP dos abates e com baús. Na Árvore você luta com o que juntou.',
       '<b>2ª parte, o corredor:</b> o personagem corre sozinho. Desvie das faixas vermelhas e das pedras para os lados (←/→ ou o joystick) e com a esquiva.',
       'No corredor, passe rente às <b>lamparinas</b> para acendê-las: cada uma acesa enfraquece um pouco as Assombrações da Árvore.',
+      'As <b>brasas da Chama</b> brilham nas beiradas do corredor, bem onde as Assombrações dão o bote: cada uma dá XP. Os níveis ficam guardados e você os resgata ao chegar na Árvore.',
       '<b>3ª parte, a Árvore Anciã:</b> proteja o ALÇAPÃO do arsenal. A barra no topo mostra quão seguros estão os aldeões escondidos.',
-      'A porta se recupera um pouco entre as ondas. Se a barra ficar vermelha, volte para perto do alçapão.',
+      'A porta se recupera um pouco entre as ondas. Na Árvore não há XP nem baús, e a cura cai menos: guarde vida para o fim.',
       '<b>Itens da Vigília:</b> de tempos em tempos um aldeão sai do abrigo, larga um item no chão (a coluna de luz) e volta. Passe por cima para pegar.',
       'Derrame o <b>COMBUSTÍVEL</b> (□/tiro) perto de uma porta e encoste a <b>TOCHA</b> na poça: o fogo vira uma barreira que as Assombrações não atravessam.',
       'Depois do primeiro fogo vem a <b>LANTERNA DO CRÂNIO DE PORCO</b>: acenda no fogo e arremesse (□/tiro). O clarão ofusca as Assombrações em volta.',
@@ -460,7 +464,7 @@ export const DUNGEONS = {
     minDepth: 3,
     minions: 'zumbi',
     drops: { heal: { chance: 0.45, amount: 0.18 } },
-    xp: { assombracao: 18, assombracaoForte: 42, gigante: 100, boss: 160 },
+    xp: { assombracao: 24, assombracaoForte: 55, gigante: 130, boss: 160 }, // só na vila: na Árvore abate não dá XP
     exploreHint: 'Prepare-se: as Assombrações vêm da névoa',
     deathText: 'VOCÊ CAIU',
     endTitle: ['VOCÊ CAIU EM TREB CIACH', 'VOCÊS CAÍRAM EM TREB CIACH'],
