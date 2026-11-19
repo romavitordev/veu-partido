@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.18.1 — CPU Contorna
+- A CPU não fica mais presa em obstáculos como a fogueira de Treb Ciach: quando há algo no caminho até o adversário, ela contorna pelo lado livre, e se empacar numa quina troca de lado.
+
 ## v5.18.0 — A Vila do Samhain
 - Vilarejo de Treb Ciach com o que apareceu no último episódio de A Vigília: um pórtico de madeira com galhada de cervo na frente de cada casa, a lamparina da Chama de Proteção pendurada nele (amarela, acesa também na noite azul) e cordões de globos de vidro coloridos entre as casas.
 

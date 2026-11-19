@@ -331,7 +331,7 @@ export class CpuController {
   // REGRA DO JOGO (Anfitrião) em vigor: a CPU respeita a regra anunciada (não pula / não defende / não dá dash; parada
   // proibida → anda de lado). O nível mais fácil esquece a regra às vezes.
   produce(dt) {
-    const out = this.produceRaw(dt);
+    const out = this.steerAround(this.produceRaw(dt), dt);
     const f = this.fighter;
     const rule = f && f.world && f.world.activeRule;
     if (rule !== this.lastRule) { this.lastRule = rule; this.ruleForgot = rule && this.L.block < 0.2 && Math.random() < 0.3; }
@@ -356,6 +356,69 @@ export class CpuController {
         out.moveY = (dx / l) * b.forward.x + (dz / l) * b.forward.z;
       }
     }
+    return out;
+  }
+
+  // CONTORNAR O QUE ESTÁ NO CAMINHO (dono, 2026-11-18: "os cpu x cpu ficam presos na fogueira, eles deveriam identificar
+  // se tem algo no caminho deles impedindo de atacar o adversario"): a direção que a CPU quer andar é testada a 0,7, 1,4
+  // e 2,1 m; se bate num obstáculo (a fogueira de Treb Ciach, pilares, caixas), gira a direção para o lado livre mais
+  // próximo (de 25° em 25°, até 150°) e mantém esse lado por ~0,8 s para não tremer. Se, querendo andar, ficou parada
+  // ~0,4 s (empacada numa quina), troca o lado do desvio.
+  steerAround(out, dt) {
+    const f = this.fighter;
+    const arena = f && f.world && f.world.arena;
+    const len = Math.hypot(out.moveX || 0, out.moveY || 0);
+    // só o ANDAR: com botão apertado a direção escolhe o golpe (Direção + ○), e colado no adversário não há o que contornar
+    const opp = arena && f.world.opponentOf(f);
+    const pressing = Object.values(out.held || {}).some(Boolean);
+    const close = opp && Math.hypot(opp.pos.x - f.pos.x, opp.pos.z - f.pos.z) < 1.6;
+    if (!arena || len < 0.2 || f.state === 'ko' || pressing || close) { this.detour = null; this.stuckT = 0; this.lastPos = null; return out; }
+    const now = f.world.time || 0;
+    const b = f.moveBasis();
+    const wx = (out.moveX * b.right.x + out.moveY * b.forward.x) / len;
+    const wz = (out.moveX * b.right.z + out.moveY * b.forward.z) / len;
+    const P = this.probeP || (this.probeP = { x: 0, y: 1, z: 0 });
+    const rad = (f.radius || 0.45) * 0.9;
+    const clear = (x, z) => {
+      for (const s of [0.7, 1.4, 2.1]) {
+        P.x = f.pos.x + x * s; P.z = f.pos.z + z * s;
+        if (!inBounds(arena, P.x, P.z, 0)) return s > 0.7; // a borda da arena não é obstáculo a contornar
+        if (arena.blocksPoint ? arena.blocksPoint(P, rad) : blocksPointGeneric(arena, P, rad)) return false;
+      }
+      return true;
+    };
+    const rot = (a) => [wx * Math.cos(a) - wz * Math.sin(a), wx * Math.sin(a) + wz * Math.cos(a)];
+    // empacada: quer andar e não sai do lugar
+    const last = this.lastPos;
+    if (last) {
+      const moved = Math.hypot(f.pos.x - last.x, f.pos.z - last.z);
+      this.stuckT = f.state === 'idle' && moved < 0.6 * dt ? (this.stuckT || 0) + dt : 0; // só parada de pé, livre
+    }
+    this.lastPos = { x: f.pos.x, z: f.pos.z };
+    const stuck = this.stuckT > 0.4;
+    if (!stuck && clear(wx, wz)) {
+      if (this.detour && now > this.detour.until) this.detour = null;
+      if (!this.detour) return out;
+    }
+    if (stuck) { this.stuckT = 0; this.detour = { sign: this.detour ? -this.detour.sign : 1, until: now + 0.8 }; }
+    let pick = null;
+    const tryAngles = (sign) => {
+      for (let k = 1; k <= 6; k++) { const d = rot(sign * k * 0.436); if (clear(d[0], d[1])) return { d, k }; }
+      return null;
+    };
+    if (this.detour && now <= this.detour.until) {
+      const r = tryAngles(this.detour.sign);
+      if (r) pick = r.d;
+    }
+    if (!pick) {
+      const L = tryAngles(1), R = tryAngles(-1);
+      const sign = L && (!R || L.k <= R.k) ? 1 : R ? -1 : 0;
+      if (!sign) return out;
+      pick = (sign === 1 ? L : R).d;
+      this.detour = { sign, until: now + 0.8 };
+    }
+    out.moveX = (pick[0] * b.right.x + pick[1] * b.right.z) * len;
+    out.moveY = (pick[0] * b.forward.x + pick[1] * b.forward.z) * len;
     return out;
   }
 

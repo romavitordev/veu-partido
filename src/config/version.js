@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.18.0';
+export const VERSION = '5.18.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.18.1',
+    date: '2026-11-18',
+    title: 'CPU Contorna',
+    items: [
+      'A CPU não fica mais presa em obstáculos como a fogueira de Treb Ciach: quando há algo no caminho até o adversário, ela contorna pelo lado livre, e se empacar numa quina troca de lado.',
+    ],
+  },
   {
     v: '5.18.0',
     date: '2026-11-18',

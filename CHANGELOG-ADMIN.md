@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v5.18.1 — CPU Contorna
+
+- Versão: `VERSION` 5.18.0 → **5.18.1**. Data: 2026-11-18. Dono: "vi que os cpu x cpu ficam presos na fogueira, eles
+  deveriam identificar se tem algo no caminho deles impedindo de atacar o adversario".
+- Causa: a CPU andava em linha reta até o adversário (`move`); só o atirador fugindo olhava o cenário
+  (`fleeDirection`). Agora todo andar da CPU passa por `steerAround` (em `produce`), que contorna o obstáculo.
+  Fora quando há botão apertado (a direção escolhe o golpe) e colado no adversário.
+- Medido no jogo (Treb Ciach, Dante × Kaiser, CPU Difícil dos dois lados, 3 largadas em lados opostos da fogueira,
+  6 s cada): quadros parados encostados na fogueira 242 → 68 (o que sobra é em boa parte a CPU parada mirando).
+- `npm test` 122/122, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.18.0 — A Vila do Samhain
 
 - Versão: `VERSION` 5.17.0 → **5.18.0**. Data: 2026-11-18. Dono: "assista o ep 3 de a vigilia para ter mais noção do

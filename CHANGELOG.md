@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.18.1 — CPU Contorna
+
+### Corrigido
+- `CpuController.steerAround`: a direção de andar da CPU é testada a 0,7/1,4/2,1 m (`arena.blocksPoint`); bloqueada, gira para o lado livre mais próximo (25° por passo, até 150°) e mantém o lado ~0,8 s; parada ~0,4 s querendo andar troca o lado. Só no andar (sem botão apertado e a mais de 1,6 m do adversário).
+- Teste "CPU contorna o obstáculo no caminho".
+
 ## v5.18.0 — A Vila do Samhain
 
 ### Alterado

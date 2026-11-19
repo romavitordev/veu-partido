@@ -84,3 +84,32 @@ test('player move profile learns repeated moves for later matches', () => {
   assert.equal(playerMoveRate(move), 0.75);
   assert.equal(playerMoveRate(other), 0.25);
 });
+
+test('CPU contorna o obstáculo no caminho (a fogueira de Treb Ciach) em vez de empacar', async () => {
+  const { CpuController } = await import('../src/ai/CpuController.js');
+  const { blocksPointGeneric } = await import('../src/combat/positioning.js');
+  const arena = { radius: 18.5, colliders: [{ x: 0, z: 0, r: 4.8 }] };
+  arena.blocksPoint = (p, r) => blocksPointGeneric(arena, p, r);
+  const opp = { pos: { x: 0, z: 7 } };
+  const f = {
+    pos: { x: 0, z: -6.2 }, radius: 0.45, state: 'idle',
+    world: { arena, time: 0, opponentOf: () => opp },
+    moveBasis: () => ({ right: { x: 1, z: 0 }, forward: { x: 0, z: 1 } }),
+  };
+  const c = Object.create(CpuController.prototype);
+  c.fighter = f;
+  // quer ir reto para +z, através da fogueira: sai uma direção desviada para um lado, ainda para a frente
+  const out = c.steerAround({ moveX: 0, moveY: 1, held: {} }, 1 / 60);
+  assert.ok(Math.abs(out.moveX) > 0.3, `desviou de lado: ${out.moveX}`);
+  assert.ok(out.moveY > -0.2, 'não volta para trás');
+  // caminho livre: não mexe
+  f.pos = { x: 8, z: -6 };
+  c.detour = null;
+  f.world.time = 5;
+  const free = c.steerAround({ moveX: 0, moveY: 1, held: {} }, 1 / 60);
+  assert.deepEqual([free.moveX, free.moveY], [0, 1]);
+  // golpe com direção (botão apertado): não mexe
+  f.pos = { x: 0, z: -6.2 };
+  const atk = c.steerAround({ moveX: 0, moveY: 1, held: { physical: true } }, 1 / 60);
+  assert.deepEqual([atk.moveX, atk.moveY], [0, 1]);
+});
