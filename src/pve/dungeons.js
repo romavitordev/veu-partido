@@ -360,7 +360,7 @@ export const DUNGEONS = {
     storyOrder: 2.5,
     name: 'Proteja a Ilha de Tipora', // (dono, 2026-11-19: "Ao invés de Ondas de Tipora chame algo como 'Proteja a Ilha de Tipora'")
     place: 'Ilha de Tipora',
-    thumb: { arena: 'tipora', pos: [0, 6.5, 15], look: [0, 1.2, -2] }, // a prévia na ESCOLHA A FASE
+    thumb: { from: 'tipora' }, // a prévia na ESCOLHA A FASE (a do mapa de luta, já renderizada na escolha de mapa)
     color: '#7ad0b8',
     arena: 'tipora',
     boss: 'amigo',
@@ -371,7 +371,7 @@ export const DUNGEONS = {
     // `bossEvery` ondas vem o minichefe sozinho; `rest` = o respiro entre as ondas (s); `spawnRadius` = onde nascem
     waves: {
       count: { easy: 7, normal: 9, hard: 10, superhard: 12, annihilation: 13 },
-      bossEvery: 3,
+      bossEvery: 3, chestEvery: 2, chestFade: 6,
       rest: 4.5,
       firstDelay: 6,
       spawnRadius: 13,

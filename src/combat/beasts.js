@@ -261,6 +261,7 @@ export class InkBeast extends Marionette {
 // Tinta: rasteja ondulando, ergue a frente do corpo, MORDE de perto e dá o BOTE de longe; se o bote pega, ela se ENROLA
 // em quem mordeu e aperta por um instante (apertar botões solta antes, como os outros agarrões de bicho). PROPOSTA: os
 // números e o enrolar.
+const SNAKE_SEG = 0.33; // o comprimento de cada segmento (npc_cobra_tinta.py)
 export const INK_SNAKE = {
   name: 'COBRA INFECTADA', hp: 110, duration: 12, speed: 4.6, radius: 0.5, height: 0.9,
   element: 'tinta', fxColor: 0x8a4a22, poolColor: 0x2a1006, noPool: true,
@@ -291,13 +292,15 @@ export class InkSnake extends Marionette {
 
   attackSound(name) { return name === 'strike' ? 'whip' : 'bloodClaw'; }
   stepSpeed(d) { return this.cfg.speed * (d > 6 ? 1.3 : 1); }
-  restY() { return 0; }
+  // o pescoço erguido levanta a cadeia toda (a cabeça é a raiz): o corpo sobe o quanto o pescoço desce, e a cauda fica
+  // DEITADA NO CHÃO (sem isso a cobra afundava meio metro; feedback do dono, 2026-11-19: "cobras ficam bugadas no chão")
+  restY() { return this.lift || 0; }
   bob() { return 0; }
 
   riseTime() { return 0.6; }
   risePose(k) {
     const root = this.model.root;
-    root.position.set(this.pos.x, -0.6 * (1 - k), this.pos.z);
+    root.position.set(this.pos.x, -0.6 * (1 - k) + (this.lift || 0) * k, this.pos.z);
     root.scale.setScalar(1);
     if (Math.random() < 0.4) this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.15, this.pos.z), { count: 3, color: 0x4a1c0e, speed: 1.6, up: 2, life: 0.5, size: 0.12, gravity: 8 });
   }
@@ -360,10 +363,16 @@ export class InkSnake extends Marionette {
       else { neck = -0.75 - 0.4 * k; neck2 = -0.25 - 0.2 * k; head = 0.65 + 0.35 * k; jaw = 0.3 + 0.5 * k; } // recua o pescoço
     }
     if (this.state === 'drag') { neck = -0.3; neck2 = 0; head = 0.4; jaw = 0.6; }
+    // a curva do pescoço volta ao plano nos segmentos 2 e 3 (a soma das inclinações dá zero: o resto do corpo deitado)
+    const c1 = neck + neck2;
+    const pitch = [neck, neck2, -c1 * 0.6, -c1 * 0.4];
+    let cum = 0, drop = 0;
+    for (let i = 0; i < 4; i++) { cum += pitch[i]; drop += SNAKE_SEG * Math.sin(-cum); }
+    this.lift = Math.max(0, drop);
     J.segs.forEach((s, i) => {
       const lat = Math.sin(ph - i * 0.85) * (0.3 + i * 0.02) * (i < 2 ? 0.4 : 1) * moving;
       const coil = this.state === 'drag' ? 0.5 : 0;
-      s.rotation.set(i === 0 ? neck : i === 1 ? neck2 : i === 2 ? 0.55 : i === 3 ? 0.42 : 0, lat + (i > 1 ? coil : 0), 0);
+      s.rotation.set(pitch[i] || 0, lat + (i > 1 ? coil : 0), 0);
     });
     if (J.head) J.head.rotation.x = head;
     if (J.jaw) J.jaw.rotation.x = jaw;

@@ -7,6 +7,12 @@ rosto: só um buraco de onde escorre sem parar a TINTA marrom (o jorro até o ch
 REVISÃO (2026-10-31) pela "Miniatura Amigo Imaginário em O Segredo na Ilha": as BARBATANAS da crista bem maiores (a
 fileira de espinhos de pano que domina o perfil), as PREGAS fundas do manto esculpidas (relief), a CAUDA de pano bem
 mais longa arrastando para trás e os FIOS DE TINTA compridos escorrendo do buraco do rosto.
+REVISÃO (2026-11-19, dono: "melhorar o personagem dele jogável e ajustar o tamanho dele"): wiki — "aparência curvada
+e ENORME", "dois ENORMES braços secos e escuros", tentáculos que puxam de longe. Ele lia pequeno (um cone de manto com
+braços de graveto): agora maior e mais largo (≈ 2,9 m até o bico, os ombros acima de quem joga), os BRAÇOS grossos e
+fibrosos com tendões, as mãos grandes e as GARRAS bem mais longas, e mais tentáculos — alguns ERGUIDOS, enrolando no ar
+na frente do manto. PROPOSTA: as medidas (a wiki dá "chegando aos dois metros" curvado; aqui, maior, para ler como chefe
+e criatura ao lado do elenco).
 Elemento no jogo: TINTA (marrom).
 Coordenadas do tronco ANTES da escala do Builder (x × k_tx, y × k_ty); espessuras em frações de H.
 """
@@ -19,10 +25,23 @@ from sculpt_lib import relief, ridge, n3
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'amigo.glb'
 random.seed(13)
-b = Builder(width=0.9, bulk=0.86, height=1.1)  # 2 m
+b = Builder(width=1.04, bulk=0.96, height=1.3)  # ≈ 2,4 m de esqueleto (≈ 2,9 m até o bico do capuz)
 sk = b.sk
 H = sk.h
 hz = sk['hips'].z
+# os BRAÇOS ENORMES saem do manto (antes pendiam por dentro dele e nunca apareciam): os ombros mais abertos e um pouco
+# à frente, o cotovelo e a mão descendo na frente do corpo (o jogo anima a partir daí)
+for side, sx_ in (('L', 1), ('R', -1)):
+    for j, x, y in (('s', 0.33, -0.03), ('e', 0.37, -0.1), ('hand', 0.35, -0.16), ('handTip', 0.345, -0.18)):
+        q = sk.j[j + side]
+        sk.j[j + side] = Vector((sx_ * x * H, y * H, q.z))
+# a armadura nasce no Builder (com os ombros padrão): refeita com os novos
+import bpy
+_old = b.arm
+_data = _old.data
+bpy.data.objects.remove(_old, do_unlink=True)
+bpy.data.armatures.remove(_data)
+b.arm = lib.build_armature(sk)
 
 skin = material('skin_amigo', '#241c1a', 0.8)  # os braços secos e escuros
 robe = material('robe_amigo', '#33231a', 0.9)
@@ -323,8 +342,8 @@ b.add('sinew', merge(*sinew), sinew_m, region='torso', weight_fn=robe_weights, s
 
 # TENTÁCULOS negros saindo de baixo do manto, as pontas enroladas
 tents = []
-for i in range(12):
-    a = (i / 12) * TAU + 0.2
+for i in range(14):
+    a = (i / 14) * TAU + 0.2
     base = Vector((math.sin(a) * 0.16 * H, -math.cos(a) * 0.14 * H, hz - 0.72 * H))
     o = Vector((math.sin(a), -math.cos(a), 0))
     sv = Vector((-o.y, o.x, 0))
@@ -336,6 +355,21 @@ for i in range(12):
         pts.append(base + o * (0.08 * H + t * ln - curl * 0.06 * H) + sv * (math.sin(t * 5 + i) * 0.06 * H + curl * 0.05 * H * (1 if i % 2 else -1))
                    + Vector((0, 0, -0.22 * H * min(t, 0.6) + 0.04 * H * math.sin(t * math.pi) + curl * 0.09 * H)))
     tents.append(rod(pts, [0.048 * H * (1 - 0.85 * k / 9) + 0.004 * H for k in range(10)], 6))
+# os ERGUIDOS: saem da frente e dos lados do manto na altura do quadril e sobem enrolando no ar (os que puxam de longe)
+for i in range(6):
+    a = (-0.75 + i * 0.3) + (0.12 if i % 2 else 0.0)
+    o = Vector((math.sin(a), -math.cos(a), 0))
+    sv = Vector((-o.y, o.x, 0))
+    base = Vector((o.x * 0.17 * H, o.y * 0.15 * H, hz - (0.12 + 0.06 * (i % 3)) * H))
+    ln = (0.3 + 0.08 * (i % 3)) * H
+    pts = []
+    for k in range(11):
+        t = k / 10
+        curl = smoothstep(0.55, 1.0, t)
+        rise = math.sin(t * math.pi * 0.85) * (0.16 + 0.05 * (i % 2)) * H
+        pts.append(base + o * (t * ln - curl * 0.08 * H) + sv * (math.sin(t * 4 + i * 1.3) * 0.05 * H + curl * 0.07 * H * (1 if i % 2 else -1))
+                   + Vector((0, 0, rise + curl * 0.06 * H)))
+    tents.append(rod(pts, [0.04 * H * (1 - 0.85 * k / 10) + 0.004 * H for k in range(11)], 6))
 b.add('tentacles', merge(*tents), tent, region='torso', weight_fn=robe_weights, subdiv=0)
 
 # ---------------------------------------------------------------- BRAÇOS secos e escuros (saem das mangas rasgadas) e
@@ -343,8 +377,12 @@ b.add('tentacles', merge(*tents), tent, region='torso', weight_fn=robe_weights, 
 for side in ('L', 'R'):
     s, e, h = sk['s' + side], sk['e' + side], sk['hand' + side]
     sx = 1 if side == 'L' else -1
-    up = [(q.x, q.y, q.z, r, r) for q, r in ((s.lerp(e, t), 0.06 - 0.008 * t) for t in (0.0, 0.5, 1.0))]
-    b.add('sleeve' + side, tube(up, 12), robe, region='arm' + side, subdiv=0)
+    # a MANGA nasce de dentro do manto (o ombro caído) e ALARGA até o cotovelo, pendurada e rasgada
+    root = Vector((sx * 0.2 * H, s.y, s.z - 0.04 * H))
+    pts_ = [root, root.lerp(s, 0.6), s, s.lerp(e, 0.35), s.lerp(e, 0.7), e + (e - s).normalized() * 0.04 * H]
+    rad_ = [0.09, 0.085, 0.08, 0.085, 0.1, 0.115]
+    up = [(q.x, q.y, q.z, r, r) for q, r in zip(pts_, rad_)]
+    b.add('sleeve' + side, tube(up, 14), robe, region='arm' + side, subdiv=0)
     # a manga rasgada em pontas no cotovelo
     ax0 = (e - s).normalized()
     cuff = []
@@ -352,21 +390,30 @@ for side in ('L', 'R'):
         ang = k / 6 * TAU
         q = ax0.orthogonal().normalized()
         rr = Matrix.Rotation(ang, 3, ax0) @ q
-        base = e + rr * 0.055 * H * 0.9 - ax0 * 0.02 * H
-        cuff.append(cone(tuple(base), tuple(base + ax0 * (0.05 + 0.03 * (k % 2)) * H + rr * 0.008 * H), 0.016 * H, 3))
+        base = e + rr * 0.11 + ax0 * 0.03 * H
+        cuff.append(cone(tuple(base), tuple(base + ax0 * (0.07 + 0.05 * (k % 2)) * H + rr * 0.012 * H), 0.022 * H, 3))
     b.add('cuff' + side, merge(*cuff), robe, region='arm' + side, subdiv=0)
-    lo = [(q.x, q.y, q.z, r, r) for q, r in ((e.lerp(h, t), 0.032 - 0.01 * t) for t in (0.0, 0.5, 0.95))]
-    b.add('fore' + side, tube(lo, 10), skin, region='e' + side, subdiv=0)
-    b.add('hand' + side, hand_part(sk, side, 0.04), claw_m, region='e' + side)
+    # o antebraço SECO mas grosso: o osso e os TENDÕES saltados correndo por fora (como cordas)
+    lo = [(q.x, q.y, q.z, r, r) for q, r in ((e.lerp(h, t), 0.07 - 0.02 * t) for t in (0.0, 0.3, 0.6, 0.95))]
+    b.add('fore' + side, tube(lo, 12), skin, region='e' + side, subdiv=0)
+    axf = (h - e).normalized()
+    qf = axf.orthogonal().normalized()
+    tendons = []
+    for k in range(5):
+        rr = Matrix.Rotation(k / 5 * TAU + 0.4, 3, axf) @ qf
+        pts = [e.lerp(h, t) + rr * (0.064 - 0.018 * t + 0.008 * math.sin(t * 9 + k)) for t in (0.05, 0.3, 0.55, 0.8, 0.95)]
+        tendons.append(rod(pts, [0.012, 0.015, 0.014, 0.011, 0.007], 5))
+    b.add('tendons' + side, merge(*tendons), sinew_m, region='e' + side, subdiv=0)
+    b.add('hand' + side, hand_part(sk, side, 0.065), claw_m, region='e' + side)
     ax = (h - e).normalized()
     claws = []
     for k in range(5):
-        off = Vector((sx * (k - 2) * 0.011 * H, (k - 2) * 0.004 * H, 0))
-        base = h + ax * 0.04 * H + off
-        ln = (0.16 - 0.02 * abs(k - 2)) * H
-        mid = base + ax * ln * 0.55 + off * 0.3
-        tip = base + ax * ln + Vector((0, -0.05 * H, 0)) + off * 0.6
-        claws.append(rod([base, mid, tip], [0.009 * H, 0.006 * H, 0.0015 * H], 5))
+        off = Vector((sx * (k - 2) * 0.014 * H, (k - 2) * 0.005 * H, 0))
+        base = h + ax * 0.05 * H + off
+        ln = (0.24 - 0.03 * abs(k - 2)) * H  # as GARRAS enormes, curvas para a frente
+        mid = base + ax * ln * 0.55 + off * 0.3 + Vector((0, -0.02 * H, 0))
+        tip = base + ax * ln + Vector((0, -0.09 * H, 0)) + off * 0.6
+        claws.append(rod([base, mid, tip], [0.017 * H, 0.011 * H, 0.002 * H], 6))
     b.add('claws' + side, merge(*claws), claw_m, region='e' + side, subdiv=0)
 
 b.export(OUT)

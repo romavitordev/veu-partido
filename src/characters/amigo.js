@@ -29,7 +29,7 @@ export default {
     tagline: 'Quando o Sino tocar, todo mundo vai morrer.',
   },
   // enorme e lento (o chefe da ilha)
-  stats: { moveSpeed: 7.0, attackSpeed: 0.9, size: 1.15, maxHealth: 1800 }, // Portador das Relíquias: aguenta mais que o elenco (o número não aparece na tela)
+  stats: { moveSpeed: 7.0, attackSpeed: 0.9, size: 1.4, maxHealth: 1800 }, // ENORME (≈ 2,9 m; dono, 2026-11-19: ajustar o tamanho dele). Portador das Relíquias: aguenta mais que o elenco (o número não aparece na tela)
   anims: {
     idle: 'ai_idle', run: 'ai_run', walk: 'ai_walk', walk_back: 'ai_walk_back', strafe_L: 'ai_strafe_L', strafe_R: 'ai_strafe_R', dash: 'ai_dash',
     charge: 'ai_charge', concentrate: 'ai_charge', victory: 'vic_amigo', block: 'ai_block', block_hit: 'ai_block_hit', point: 'ai_point', gaze: 'ai_bell', breath: 'ai_dissolve',
@@ -37,7 +37,7 @@ export default {
   chargeFx: { style: 'default', color: INK },
   dodge: { style: 'default', distance: 4.4 },
   // a tinta escorre do buraco do rosto o tempo todo: o JORRO grosso até o chão (com a poça embaixo) e respingos
-  inkStream: { socket: 'mouth', color: 0x6a2812, width: 0.05, pool: 0.34, max: 2.2 },
+  inkStream: { socket: 'mouth', color: 0x6a2812, width: 0.06, pool: 0.4, max: 2.8 },
   drips: { sockets: ['mouth'], color: 0x5a1e10, every: 0.12 },
 
   // golpes próprios (clipes ai_*): garras em arcos largos e lentos, o corpo chicoteia e os TENTÁCULOS saem do chão

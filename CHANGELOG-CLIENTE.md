@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.21.1 — O Amigo Enorme
+- O AMIGO IMAGINÁRIO ficou ENORME (quase 3 m) e mais fiel: os dois braços secos e enormes agora saem do manto, com garras bem maiores, e alguns tentáculos se erguem enrolando no ar. Como chefe ele é ainda maior e, na fúria TODO MUNDO VAI MORRER, também fica mais rápido e mais resistente. Proteja a Ilha de Tipora: as cobras não afundam mais no chão, sai um baú a cada 2 ondas (o gigante sempre deixa um) e os baús abertos somem depois de alguns segundos; a fase ganhou a foto no menu de fases.
+
 ## v5.21.0 — Os Infectados da Ilha
 - Proteja a Ilha de Tipora com TODOS os infectados da ilha: além dos Zumbis de Sangue, chegam os ZUMBIS DE TINTA (sem rosto, curvados, deixando um rastro de tinta; a mordida deixa você derretendo), JAVALIS, COBRAS (dão o bote e se enrolam em você) e LOBOS infectados. A 1ª onda é só de zumbis, os lobos chegam na 2ª e da 4ª em diante os três animais vêm juntos; quanto mais difícil, mais bichos. O AMIGO IMAGINÁRIO agora se transforma com metade da vida: vira TODO MUNDO VAI MORRER, bate mais forte e chama Zumbis de Tinta, cobras, javalis e lobos (que caem junto com ele). Javali e lobo de tinta com modelos novos.
 

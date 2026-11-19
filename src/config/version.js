@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.21.0';
+export const VERSION = '5.21.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.21.1',
+    date: '2026-11-19',
+    title: 'O Amigo Enorme',
+    items: [
+      'O AMIGO IMAGINÁRIO ficou ENORME (quase 3 m) e mais fiel: os dois braços secos e enormes agora saem do manto, com garras bem maiores, e alguns tentáculos se erguem enrolando no ar. Como chefe ele é ainda maior e, na fúria TODO MUNDO VAI MORRER, também fica mais rápido e mais resistente. Proteja a Ilha de Tipora: as cobras não afundam mais no chão, sai um baú a cada 2 ondas (o gigante sempre deixa um) e os baús abertos somem depois de alguns segundos; a fase ganhou a foto no menu de fases.',
+    ],
+  },
   {
     v: '5.21.0',
     date: '2026-11-19',

@@ -40,7 +40,7 @@ import amigoBossDef from '../characters/bosses/amigo.js';
 import estrangeiroDef from '../characters/estrangeiro.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
-import { AmigoBrain } from './amigo.js';
+import { AmigoBrain, growBoss, AMIGO_SIZE } from './amigo.js';
 import { SinoMechanics } from './sino.js';
 import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
@@ -1089,12 +1089,23 @@ export class Dungeon {
     this.hudRemove('pve-minor');
     this.hud.callout(`ONDA ${enc.wave} VENCIDA`, '#7dffb0');
     this.revivePlayers();
-    // o gigante deixa um baú (o respiro com recompensa antes das próximas)
-    if (enc.miniboss && this.mod.chests && this.mod.chests.length) {
+    // OS BAÚS DAS ONDAS (dono, 2026-11-19: "Baús devem sumir depois de um tempo abertos e devem aparecer outros, talvez a
+    // cada duas ondas"): um baú a cada 2 ondas vencidas, e o gigante sempre deixa um (com mais sorte; zera a conta).
+    // Aberto, some depois de alguns segundos; no máximo 2 fechados esperando no mapa, cada um num ponto livre.
+    // Normal (9 ondas): baús depois das ondas 2, 3 (gigante), 5, 6 (gigante) e 8. PROPOSTA: os números.
+    S.sinceChest = (S.sinceChest || 0) + 1;
+    const W = this.D.waves;
+    const due = enc.miniboss || S.sinceChest >= (W.chestEvery || 2);
+    const P = this.mod.chests || [];
+    const waiting = this.pickups.filter((k) => k instanceof Chest && k.alive && !k.opened);
+    if (due && P.length && waiting.length < 2) {
+      S.sinceChest = 0;
       const p = this.player;
-      const s = this.mod.chests.slice().sort((a, b) => distXZ(a, p.pos) - distXZ(b, p.pos))[0];
-      const c = this.spawnChest(s, (this.D.locks || {}).luck || 0.6);
+      const free = P.filter((q) => !this.pickups.some((k) => k instanceof Chest && k.alive && distXZ(k.pos, q) < 1.5));
+      const s = (free.length ? free : P).slice().sort((a, b) => distXZ(a, p.pos) - distXZ(b, p.pos))[0];
+      const c = this.spawnChest(s, enc.miniboss ? (this.D.locks || {}).luck || 0.6 : 0, { fadeAfter: W.chestFade || 6 });
       this.world.fx.burst(new THREE.Vector3(c.pos.x, 0.6, c.pos.z), { count: 24, color: 0x6c6a66, kind: 'smoke', speed: 1.6, life: 0.7, size: 0.5, grow: 1 });
+      this.hud.callout(`ONDA ${enc.wave} VENCIDA · UM BAÚ`, '#7dffb0');
     }
     S.wait = this.D.waves.rest ?? 4;
     this.waveObjective();
@@ -1109,6 +1120,7 @@ export class Dungeon {
     // do lado oposto de quem joga
     const len = Math.hypot(p.pos.x, p.pos.z) || 1;
     const at = new THREE.Vector3(-p.pos.x / len * Math.abs(sp.z), 0, -p.pos.z / len * Math.abs(sp.z));
+    growBoss(e, AMIGO_SIZE); // o chefe é bem maior que a ficha jogável (pve/amigo.js)
     resolveBody(w.arena, at, e.radius || 0.8);
     e.pos.copy(at);
     e.vel.set(0, 0, 0);
@@ -1353,7 +1365,7 @@ export class Dungeon {
     }
     if (this.D.waves) {
       this.pressure = new BossPressure(this, e, this.diff.counter ?? 7);
-      this.brain = new AmigoBrain(this); // a FÚRIA: TODO MUNDO VAI MORRER e as invocações (pve/amigo.js)
+      this.brain = new AmigoBrain(this); // a FÚRIA: TODO MUNDO VAI MORRER e as invocações (pve/amigo.js); maior (o tamanho)
       this.bindHud();
       this.pveHud.hint('O AMIGO IMAGINÁRIO: os TENTÁCULOS puxam de longe e o SINO paralisa — com METADE da vida ele entra em FÚRIA e chama os bichos');
       this.hintT = 8;
@@ -1372,10 +1384,10 @@ export class Dungeon {
   }
 
   // ------------------------------------------------ baús (abrem pelo botão de interagir)
-  spawnChest(s, luck = 0) {
+  spawnChest(s, luck = 0, o = {}) {
     const pos = new THREE.Vector3(s.x, 0, s.z);
     resolveBody(this.world.arena, pos, 0.6);
-    const c = new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, manual: true, luck, light: this.chestLight, onOpen: (pp, ch) => this.openChest(ch) });
+    const c = new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, manual: true, luck, light: this.chestLight, fadeAfter: o.fadeAfter || (this.D.waves ? this.D.waves.chestFade || 6 : 0), onOpen: (pp, ch) => this.openChest(ch) });
     this.pickups.push(c);
     return c;
   }

@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v5.21.1 — O Amigo Enorme
+
+- Versão: `VERSION` 5.21.0 → **5.21.1**. Data: 2026-11-19. Dono: "cobras ficam bugadas no chão, percebi agora que o
+  amigo imaginario está pequeno, ele devia ser maior. Baús devem sumir depois de um tempo abertos e devem aparecer
+  outros, talvez a cada duas ondas, balanceie isso. falta a foto no menu de escolher fase." / "nao é pra aumentar só o
+  amigo imaginario chefe, é pra melhorar o personagem dele jogavel e ajustar o tamanho dele também". Lançada com o
+  "Pode lançar".
+- Cânone (wiki "Amigo Imaginário"): "aparência curvada e enorme", "dois enormes braços secos e escuros", e o "Frenesi de
+  Sangue" (mais rápido, agressivo e resistente). PROPOSTA: as medidas (≈ 2,9 m; a wiki diz "chegando aos dois metros"),
+  o chefe ×1,2/×1,35 e os números dos baús.
+- Conferido: o modelo no Blender MCP (4 vistas, ao lado de um cilindro de 1,75 m); no jogo, as cobras deitadas, os baús
+  (aberto some, o fechado fica), a foto no menu de fases e o Amigo jogável ao lado do chefe e de um zumbi. Não
+  conferido de perto: as animações de golpe com os ombros abertos. Save do Outro Lado guardado e devolvido.
+- `npm test` 124/124, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.21.0 — Os Infectados da Ilha
 
 - Versão: `VERSION` 5.20.0 → **5.21.0**. Data: 2026-11-19. Dono: "Faltou as ondas de porcos infectados, cobras, e lobos.

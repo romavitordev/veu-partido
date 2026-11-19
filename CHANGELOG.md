@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.21.1 — O Amigo Enorme
+
+### Alterado
+- `char_amigo.py` (Blender MCP): `Builder` 1,04/0,96/1,3 (≈ 2,9 m até o bico); juntas dos braços abertas e à frente (armadura refeita) para os braços saírem do manto; mangas que nascem do manto e alargam rasgadas, antebraços grossos com tendões, mãos e garras maiores; 14 tentáculos no chão + 6 erguidos. `amigo.js`: `stats.size` 1,4, `inkStream.max` 2,8.
+- `pve/amigo.js`: `growBoss`/`AMIGO_SIZE` (o chefe ×1,2 desde a entrada, ×1,35 na fúria; raio e `size` acompanham, `sizeScale`); fúria com `taken` ×0,85 e `moveSpeed` ×1,3 ("Frenesi de Sangue" da wiki). `amigoPowers.js` respeita `sizeScale` no Dissolver.
+- `combat/beasts.js` `InkSnake`: a curva do pescoço volta ao plano nos segmentos 2–3 e `restY` = a altura que o pescoço tira (a cauda deitada no chão).
+- Baús das ondas: `waves.chestEvery` 2 e `chestFade` 6; `Chest` com `fadeAfter` (afunda e some depois de aberto); no máximo 2 fechados, num ponto livre; o gigante sempre deixa um (com mais sorte).
+- `tipora.thumb`: `{ from: 'tipora' }` (a prévia do mapa de luta; a gerada não aparecia).
+
 ## v5.21.0 — Os Infectados da Ilha
 
 ### Adicionado

@@ -151,12 +151,14 @@ export const CHEST_TIERS = [0xffc040, 0xffc040, 0x7dffb0, 0x9ad8ff];
 // acender e apagar não recompila os materiais), um facho sobe e os itens saem flutuando (1 a 3 ícones das melhorias).
 // onOpen(p, chest) → [{ icon, colorCss }] (o que saiu: o Dungeon decide e aplica)
 export class Chest {
-  constructor(world, { pos, yaw = 0, onOpen, manual = false, luck = 0, light = null }) {
+  constructor(world, { pos, yaw = 0, onOpen, manual = false, luck = 0, light = null, fadeAfter = 0 }) {
     this.world = world;
     this.onOpen = onOpen;
     this.manual = manual; // abre pelo botão de interagir (Outro Lado), não ao encostar
     this.luck = luck; // baú com mais sorte (a sala trancada)
     this.light = light;
+    this.fadeAfter = fadeAfter; // > 0: aberto, some afundando depois desses segundos (as ondas de Tipora)
+    this.goneT = 0;
     this.radius = 0.75;
     this.t = Math.random() * 5;
     this.alive = true;
@@ -205,7 +207,15 @@ export class Chest {
     if (!this.group) return;
     this.t += dt;
     if (this.anim) { this.updateAnim(dt); return; }
-    if (this.opened) return;
+    if (this.opened) {
+      if (!this.fadeAfter) return;
+      // aberto e vazio: espera um pouco e afunda no chão (abre espaço para os próximos)
+      this.goneT += dt;
+      const k = (this.goneT - this.fadeAfter) / 1.2;
+      if (k > 0) this.group.position.y = -0.75 * Math.min(1, k);
+      if (k >= 1) this.dispose();
+      return;
+    }
     this.glow.material.opacity = 0.1 + Math.sin(this.t * 3) * 0.05;
     if (this.manual) return;
     for (const p of players) {

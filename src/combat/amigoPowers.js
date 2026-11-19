@@ -188,7 +188,7 @@ export const AMIGO_TYPES = {
         if (trail) { trail.stop(); trail = null; }
         if (gulp) { gulp.stop(); gulp = null; }
         if (opp && opp.rig) { opp.rig.root.visible = true; opp.rig.root.scale.set(1, 1, 1); }
-        if (f.rig) f.rig.root.scale.set(1, 1, 1);
+        if (f.rig) f.rig.root.scale.setScalar(f.sizeScale || 1); // o chefe é maior (sizeScale)
       };
       tl.each((t, dt) => {
         f.vel.set(0, 0, 0);
@@ -209,7 +209,8 @@ export const AMIGO_TYPES = {
         opp.pos.set(f.pos.x + F.x * 0.2, opp.pos.y, f.pos.z + F.z * 0.2);
         opp.vel.set(0, 0, 0);
         const w = Math.sin(t * 26) * 0.05;
-        f.rig.root.scale.set(1.08 + w, 0.96 - w * 0.5, 1.08 + w);
+        const S = f.sizeScale || 1;
+        f.rig.root.scale.set((1.08 + w) * S, (0.96 - w * 0.5) * S, (1.08 + w) * S);
       });
       tl.add(a.windup, () => {
         const caught = opp && opp.state !== 'ko' && !opp.isInvulnerable() && Math.abs(opp.pos.y - f.pos.y) < 1.2 && distXZ(f.pos, opp.pos) <= reach && inFront(f, opp, a.arc ?? 80);

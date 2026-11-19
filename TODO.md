@@ -125,6 +125,13 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
     mais animais e mais Zumbis de Tinta. O Amigo sempre a última onda.
   - [x] Amigo chefe (`src/pve/amigo.js`): com metade da vida vira TODO MUNDO VAI MORRER (nome na barra, +25% de dano,
     explosão de tinta) e invoca Zumbis de Tinta, cobras, javalis e lobos; reforços periódicos com teto; morrem com ele.
+  - [x] Feedback do dono (2026-11-19, depois da v5.21.0): as COBRAS afundavam no chão (o pescoço erguido girava a
+    cadeia toda; agora o corpo sobe e a cauda fica deitada); os BAÚS das ondas a cada 2 ondas (o gigante sempre deixa
+    um), somem uns 6 s depois de abertos, no máximo 2 fechados esperando; a FOTO de Tipora no menu de fases.
+  - [x] O AMIGO JOGÁVEL melhorado e maior (Blender MCP, `char_amigo.py`): ≈ 2,9 m, os ombros abertos para os BRAÇOS
+    ENORMES saírem do manto (mangas rasgadas, antebraços com tendões, mãos e garras maiores), mais tentáculos e alguns
+    erguidos; `stats.size` 1,4. O chefe ×1,2 dele (×1,35 na fúria); a fúria segue o "Frenesi de Sangue" da wiki (mais
+    rápido, agressivo e resistente).
   - [ ] Conferir jogando a fase inteira (dono) e ajustar os números; lançada a v5.21.0; falta só o dono jogar a fase inteira e pedir ajustes.
 
 ## Tela de carregamento e o jogo que não abria (pedido do dono, 2026-11-18)
