@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.27.1';
+export const VERSION = '5.27.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.27.2',
+    date: '2026-11-19',
+    title: 'A Foto do Bar',
+    items: [
+      'SUVACO SECO: a foto do cenário na seleção mostra o salão — o balcão das garrafas, a sinuca e as mesas de bar (antes era uma parede de perto).',
+    ],
+  },
   {
     v: '5.27.1',
     date: '2026-11-19',

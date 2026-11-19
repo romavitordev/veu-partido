@@ -40,7 +40,7 @@ export const ARENAS = {
     description: 'Bar de esquina à noite. A luta começa lá dentro, entre a sinuca e o balcão, e pode sair para a calçada.',
     colors: ['#14100c', '#3a2a1a', '#ffb347'],
     available: true,
-    thumbCamera: { pos: [7.5, 2.6, 4.5], look: [-4, 1.4, -2] }, // enquadramento do preview na seleção
+    thumbCamera: { pos: [-8.2, 2.8, 5.4], look: [4, 1.0, -4] }, // o salão: balcão das garrafas, sinuca e as mesas de bar
     create: () => createGLBArena(SUVACO),
   },
   coliseu: {

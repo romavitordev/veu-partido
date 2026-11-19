@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.27.2 — A Foto do Bar
+- SUVACO SECO: a foto do cenário na seleção mostra o salão — o balcão das garrafas, a sinuca e as mesas de bar (antes era uma parede de perto).
+
 ## v5.27.1 — O Bar Inteiro
 - SUVACO SECO refeito do zero com as mesas e cadeiras novas de bar (antes elas tinham sido encaixadas no mapa antigo); o resto do bar, a calçada e a rua ficam como estavam.
 

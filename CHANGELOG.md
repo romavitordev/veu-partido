@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.27.2 — A Foto do Bar
+
+### Corrigido
+- `arena/index.js` Suvaco `thumbCamera`: (7,5; 2,6; 4,5) → (-8,2; 2,8; 5,4) olhando (4; 1; -4) — a câmera antiga ficava
+  dentro de uma parede/geladeira do mapa novo.
+
 ## v5.27.1 — O Bar Inteiro
 
 ### Mudado

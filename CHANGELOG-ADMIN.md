@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v5.27.2 — A Foto do Bar
+
+- Versão: `VERSION` 5.27.1 → **5.27.2**. Data: 2026-11-19.
+- Dono: "ARRUME A FOTO DO CENARIO SUVACO SECO".
+- Testados 4 enquadramentos com `renderArenaThumbs`; escolhido o do canto da porta pegando o salão inteiro.
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.27.1 — O Bar Inteiro
 
 - Versão: `VERSION` 5.27.0 → **5.27.1**. Data: 2026-11-19.
