@@ -13,6 +13,9 @@ const v = new THREE.Vector3();
 
 const mouth = (f) => (f.rig.sockets.mouth || f.rig.joints.hd).getWorldPosition(new THREE.Vector3());
 const headOf = (f) => f.rig.joints.hd.getWorldPosition(new THREE.Vector3());
+// as distâncias dos agarrões crescem com a criatura (a ficha tem size 1,4; o chefe, maior): a vítima fica na frente do
+// manto, não dentro dele (v5.21.1 deixou o Amigo enorme)
+const big = (f) => Math.max(1, (f.size || 1) / 1.15);
 const inFront = (f, opp, arc) => Math.abs(angleDiff(f.yaw, yawTo(f.pos, opp.pos))) <= (arc * DEG) / 2;
 
 // ROSTO DERRETIDO: o que sobra depois da tinta — dano contínuo, lento, mais fraco e a tinta pingando do rosto
@@ -58,7 +61,7 @@ export const AMIGO_TYPES = {
         if (held) {
           // a vítima fica presa de frente para o buraco do rosto
           const F = forwardFromYaw(f.yaw);
-          opp.pos.set(f.pos.x + F.x * 1.0, opp.pos.y, f.pos.z + F.z * 1.0);
+          opp.pos.set(f.pos.x + F.x * 1.0 * big(f), opp.pos.y, f.pos.z + F.z * 1.0 * big(f));
           opp.vel.set(0, 0, 0);
           opp.yaw = yawTo(opp.pos, f.pos);
           f.vel.set(0, 0, 0);
@@ -66,7 +69,7 @@ export const AMIGO_TYPES = {
         }
         // investida curta até a vítima
         const t = tl.time;
-        if (t > a.windup - 0.16 && t < a.windup + 0.02 && opp && distXZ(f.pos, opp.pos) > 1.1) {
+        if (t > a.windup - 0.16 && t < a.windup + 0.02 && opp && distXZ(f.pos, opp.pos) > 1.1 * big(f)) {
           const F = forwardFromYaw(f.yaw);
           f.vel.x = F.x * 7;
           f.vel.z = F.z * 7;
@@ -182,7 +185,7 @@ export const AMIGO_TYPES = {
       let dragDur = 0.4;
       let trail = null;
       let gulp = null;
-      const hem = () => f.pos.clone().addScaledVector(F, 0.35).setY(0.15);
+      const hem = () => f.pos.clone().addScaledVector(F, 0.35 * big(f)).setY(0.15);
       const release = () => {
         phase = null;
         if (trail) { trail.stop(); trail = null; }
@@ -199,7 +202,7 @@ export const AMIGO_TYPES = {
           dragT += dt;
           const k = Math.min(1, dragT / dragDur);
           const e = k * k;
-          const to = f.pos.clone().addScaledVector(F, 0.7);
+          const to = f.pos.clone().addScaledVector(F, 0.7 * big(f));
           opp.pos.set(dragFrom.x + (to.x - dragFrom.x) * e, opp.pos.y, dragFrom.z + (to.z - dragFrom.z) * e);
           opp.vel.set(0, 0, 0);
           opp.yaw = yawTo(opp.pos, f.pos); // os pés na frente, para a criatura
@@ -262,7 +265,7 @@ export const AMIGO_TYPES = {
           if (phase !== 'inside') return;
           release();
           if (opp.state === 'ko') return;
-          opp.pos.set(f.pos.x + F.x * 1.2, opp.pos.y, f.pos.z + F.z * 1.2);
+          opp.pos.set(f.pos.x + F.x * 1.2 * big(f), opp.pos.y, f.pos.z + F.z * 1.2 * big(f));
           opp.react({ dir: F, knockback: 6, hitstun: 0.6, launch: true, lowLaunch: true });
           world.audio.play('heavyPunch', { volume: 0.7, pitch: 0.6 });
           inkSplash(world, opp.pos.clone().setY(0.4), { size: 1.4, puddle: false });

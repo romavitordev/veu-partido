@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v5.21.2 — Agarrões na Medida
+
+- Versão: `VERSION` 5.21.1 → **5.21.2**. Data: 2026-11-19. O que ficou pendente na v5.21.1 (as animações de golpe com o
+  Amigo maior), conferido a pedido do dono ("continue") e lançado com o "Pode lançar".
+- Conferido no jogo (luta Amigo × Dante, golpes disparados à mão): o Derreter prendia o Dante a 1,0 m, dentro do manto;
+  agora a 1,22 m, na frente, com a garra e o capuz por cima. Agarrão: puxa de 6 m até 1,6 m. Dissolver: engole (dentro
+  do manto, como deve) e solta a 2,5 m, com as escalas de volta a 1. O chefe (maior) não foi testado. Save do Outro
+  Lado sem tentativa pendurada.
+- `npm test` 124/124, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.21.1 — O Amigo Enorme
 
 - Versão: `VERSION` 5.21.0 → **5.21.1**. Data: 2026-11-19. Dono: "cobras ficam bugadas no chão, percebi agora que o

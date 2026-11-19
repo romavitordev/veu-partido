@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.21.2 — Agarrões na Medida
+
+### Corrigido
+- `combat/amigoPowers.js`: `big(f)` = `size / 1,15` (mínimo 1) multiplica as distâncias fixas do Derreter (a vítima presa a 1,0 m e a investida até 1,1 m), do Agarrão/Dissolver (a barra do manto a 0,35 m, o arrasto até 0,7 m e a soltura a 1,2 m) — com o Amigo maior da v5.21.1 a vítima entrava no manto.
+
 ## v5.21.1 — O Amigo Enorme
 
 ### Alterado

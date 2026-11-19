@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.21.2 — Agarrões na Medida
+- Os golpes do AMIGO IMAGINÁRIO que agarram (Derreter, Agarrão e Dissolver) acompanham o tamanho novo dele: a vítima fica na frente do manto, presa pela garra sob o capuz, em vez de sumir dentro do corpo da criatura.
+
 ## v5.21.1 — O Amigo Enorme
 - O AMIGO IMAGINÁRIO ficou ENORME (quase 3 m) e mais fiel: os dois braços secos e enormes agora saem do manto, com garras bem maiores, e alguns tentáculos se erguem enrolando no ar. Como chefe ele é ainda maior e, na fúria TODO MUNDO VAI MORRER, também fica mais rápido e mais resistente. Proteja a Ilha de Tipora: as cobras não afundam mais no chão, sai um baú a cada 2 ondas (o gigante sempre deixa um) e os baús abertos somem depois de alguns segundos; a fase ganhou a foto no menu de fases.
 

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.21.1';
+export const VERSION = '5.21.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.21.2',
+    date: '2026-11-19',
+    title: 'Agarrões na Medida',
+    items: [
+      'Os golpes do AMIGO IMAGINÁRIO que agarram (Derreter, Agarrão e Dissolver) acompanham o tamanho novo dele: a vítima fica na frente do manto, presa pela garra sob o capuz, em vez de sumir dentro do corpo da criatura.',
+    ],
+  },
   {
     v: '5.21.1',
     date: '2026-11-19',
