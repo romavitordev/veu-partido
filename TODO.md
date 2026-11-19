@@ -122,6 +122,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       ~meio nível cada, guardadas); "RESGATE" na Árvore; na Árvore sem XP, sem baús e cura ×0,5. PROPOSTA: números.
     - [x] (v5.24.0) A fase lançada numa versão só (dono: "lance essa fase numa versão só"): a nota única no menu.
     - [x] (v5.24.1) Os itens da Vigília só na Árvore (dono: "só devem aparecer na parte 3 e nao na 1").
+    - [x] (v5.24.2) O fogo maior, que queima de verdade e fica aceso até a lanterna acender (dono: "o fogo deveria ficar
+      no chão até eu acender a lanterna e devia ser maior para dar dano nas assombrações").
     - [ ] Conferir com controle humano: pegar brasas no corredor e a janela do RESGATE na Árvore.
     - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
     - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).

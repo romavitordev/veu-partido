@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.24.1';
+export const VERSION = '5.24.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.24.2',
+    date: '2026-11-19',
+    title: 'A Barreira que Queima',
+    items: [
+      'A BARREIRA DE FOGO da Árvore ficou bem maior, queima de verdade as Assombrações que encostam na borda (antes elas eram só empurradas) e fica acesa no chão até você acender a LANTERNA DO CRÂNIO DE PORCO; depois disso dura mais uns 12 segundos.',
+    ],
+  },
   {
     v: '5.24.1',
     date: '2026-11-19',

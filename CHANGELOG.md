@@ -1,5 +1,16 @@
 # Changelog
 
+## v5.24.2 — A Barreira que Queima
+
+### Corrigido
+- `itensSamhain.js updateFires`: a barreira empurrava a Assombração exatamente para a borda e, no quadro seguinte,
+  `d >= edge` a pulava — o fogo nunca queimava. Agora a faixa `ITEMS.fire.band` (0,9 m) além da borda também queima.
+
+### Mudado
+- `ITEMS.fire`: raio 2,7 → 4,2, `dps` 36 → 60, `life` 20 → `hold` + `after` 12: o fogo fica aceso até uma lanterna acender
+  (o `lit` solta os fogos em espera e zera o tempo) e então dura 12 s. A poça 2,7 → 3,4; 26 línguas de fogo; luz maior.
+  A dica do Samhain fala da queimadura e de esperar a lanterna.
+
 ## v5.24.1 — Itens Só na Árvore
 
 ### Mudado

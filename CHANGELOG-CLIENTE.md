@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.24.2 — A Barreira que Queima
+- A BARREIRA DE FOGO da Árvore ficou bem maior, queima de verdade as Assombrações que encostam na borda (antes elas eram só empurradas) e fica acesa no chão até você acender a LANTERNA DO CRÂNIO DE PORCO; depois disso dura mais uns 12 segundos.
+
 ## v5.24.1 — Itens Só na Árvore
 - Os ITENS DA VIGÍLIA (combustível, tocha e lanterna do crânio de porco) agora aparecem só na 3ª parte, na Árvore Anciã: o aldeão mensageiro sai do alçapão. Na vila não há mais itens; lá a luta é por níveis.
 

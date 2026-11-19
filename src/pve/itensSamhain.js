@@ -19,8 +19,11 @@ import { actionLabel } from '../ui/labels.js';
 export const ITEMS = {
   courierFirst: 14, // s até o 1º aldeão sair do abrigo
   courierEvery: 26, // s entre um aldeão e o próximo (depois que a caixa anterior foi aberta)
-  oil: { radius: 2.7, life: 70 }, // a poça de combustível (espera a tocha)
-  fire: { radius: 2.7, life: 20, dps: 36 }, // a barreira de fogo
+  oil: { radius: 3.4, life: 70 }, // a poça de combustível (espera a tocha)
+  // a barreira de fogo: maior e QUEIMA quem encosta na borda; fica acesa até a lanterna acender e depois dura
+  // `after` s (dono, 2026-11-19: "o fogo deveria ficar no chão até eu acender a lanterna e devia ser maior para dar
+  // dano nas assombrações")
+  fire: { radius: 4.2, after: 12, dps: 60, band: 0.9 },
   flash: { radius: 7.5, blind: 4.2, damage: 70 }, // o clarão da lanterna
   order: ['oil', 'torch', 'lantern'],
 };
@@ -343,16 +346,16 @@ export class SamhainItems {
     const mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 32), new THREE.MeshBasicMaterial({ color: 0xff5a10, transparent: true, opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending }));
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set(pool.x, 0.045, pool.z);
-    const light = new THREE.PointLight(0xff7a2a, 5, 9, 1.6);
+    const light = new THREE.PointLight(0xff7a2a, 6, 13, 1.6);
     light.position.set(pool.x, 1.2, pool.z);
     // as LÍNGUAS DE FOGO: cones que tremulam espalhados pela poça (o disco sozinho ficava chapado)
     const tongues = new THREE.Group();
     const tMat = glowMat(0xff8a2a, 0.85);
     const cMat = glowMat(0xffd070, 0.9);
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 26; i++) {
       const a = Math.random() * Math.PI * 2;
       const r = Math.sqrt(Math.random()) * R * 0.9;
-      const big = i < 10;
+      const big = i < 16;
       const cone = new THREE.Mesh(new THREE.ConeGeometry(big ? 0.22 : 0.13, big ? 0.9 : 0.55, 6), big ? tMat : cMat);
       cone.position.set(pool.x + Math.cos(a) * r, (big ? 0.45 : 0.28), pool.z + Math.sin(a) * r);
       cone.userData.ph = Math.random() * 10;
@@ -360,7 +363,7 @@ export class SamhainItems {
       tongues.add(cone);
     }
     this.w.scene.add(mesh, light, tongues);
-    this.fires.push({ x: pool.x, z: pool.z, R, mesh, light, tongues, t: 0, tick: 0 });
+    this.fires.push({ x: pool.x, z: pool.z, R, mesh, light, tongues, t: 0, tick: 0, hold: true }); // hold: espera a lanterna
     this.w.fx.burst(new THREE.Vector3(pool.x, 0.4, pool.z), { count: 40, color: FIRE, speed: 3.5, up: 3, life: 0.7, size: 0.4 });
     this.d.audio.play('explosion', { volume: 0.6, pitch: 1.2 });
     this.d.hud.callout('BARREIRA DE FOGO', '#ff9a3a');
@@ -432,6 +435,7 @@ export class SamhainItems {
         it.lightT = inFire ? it.lightT + dt : Math.max(0, it.lightT - dt);
         if (it.lightT >= 0.8) {
           it.lit = true;
+          for (const f of this.fires) if (f.hold) { f.hold = false; f.t = 0; } // a lanterna acesa: o fogo começa a apagar
           it.g.userData.glow.visible = true;
           for (const e of it.g.userData.eyes) e.material = glowMat(0xff8a1a, 0.9);
           this.w.fx.burst(new THREE.Vector3(pos.x, 2, pos.z), { count: 20, color: 0xffc040, speed: 2, up: 1.5, life: 0.5, size: 0.2 });
@@ -464,11 +468,11 @@ export class SamhainItems {
     for (let i = this.fires.length - 1; i >= 0; i--) {
       const f = this.fires[i];
       f.t += dt;
-      const k = f.t / FI.life;
-      f.mesh.scale.setScalar(f.R * Math.min(1, f.t / 0.25));
+      const k = f.hold ? 0 : f.t / FI.after;
+      f.mesh.scale.setScalar(f.R * (f.hold ? Math.min(1, f.t / 0.25) : 1));
       f.mesh.material.opacity = 0.5 * (k > 0.8 ? (1 - k) / 0.2 : 1) * (0.85 + 0.15 * Math.sin(t * 17));
       f.light.intensity = 5 * (k > 0.8 ? (1 - k) / 0.2 : 1) * (0.85 + 0.15 * Math.sin(t * 23));
-      const fade = k > 0.8 ? (1 - k) / 0.2 : Math.min(1, f.t / 0.3);
+      const fade = k > 0.8 ? (1 - k) / 0.2 : f.hold ? Math.min(1, f.t / 0.3) : 1;
       for (const c of f.tongues.children) {
         const fl = 0.75 + 0.35 * Math.sin(t * 14 + c.userData.ph) + 0.15 * Math.sin(t * 31 + c.userData.ph * 2);
         c.scale.set(fade, Math.max(0.05, fade * fl), fade);
@@ -490,16 +494,18 @@ export class SamhainItems {
         const dz = z.pos.z - f.z;
         const d = Math.hypot(dx, dz) || 0.01;
         const edge = f.R + (z.radius || 0.45);
-        if (d >= edge) continue;
-        z.pos.x = f.x + (dx / d) * edge;
-        z.pos.z = f.z + (dz / d) * edge;
-        if (z.model && z.model.root) { z.model.root.position.x = z.pos.x; z.model.root.position.z = z.pos.z; }
+        if (d >= edge + FI.band) continue; // a faixa da borda também queima (empurrada para a borda, antes nunca queimava)
+        if (d < edge) {
+          z.pos.x = f.x + (dx / d) * edge;
+          z.pos.z = f.z + (dz / d) * edge;
+          if (z.model && z.model.root) { z.model.root.position.x = z.pos.x; z.model.root.position.z = z.pos.z; }
+        }
         if (burn) {
           z.hitBy(this.d.player, Math.round(FI.dps * 0.5));
           this.w.fx.burst(new THREE.Vector3(z.pos.x, 1.2, z.pos.z), { count: 3, color: FIRE, speed: 1.2, up: 2, life: 0.35, size: 0.25 });
         }
       }
-      if (f.t >= FI.life) {
+      if (!f.hold && f.t >= FI.after) {
         this.w.scene.remove(f.mesh, f.light, f.tongues);
         f.tongues.children.forEach((c) => c.geometry.dispose());
         f.mesh.geometry.dispose();

@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v5.24.2 — A Barreira que Queima
+
+- Versão: `VERSION` 5.24.1 → **5.24.2**. Data: 2026-11-19.
+- Dono: "o fogo deveria ficar no chão até eu acender a lanterna e devia ser maior para dar dano nas assombrações".
+- Achado: o fogo nunca queimava (a Assombração empurrada para a borda saía do teste de distância). Conferido numa
+  simulação em Node (mundo falso): 60 s aceso sem lanterna, a Assombração parada na borda (4,65 m) perdendo 60/s; depois
+  da lanterna, apagou entre 11 e 13 s.
+- PROPOSTA: raio, dano e os 12 s depois da lanterna.
+- `npm test`, `npm run check` e `vite build` ok. Não conferido em jogo com controle humano.
+
 ## v5.24.1 — Itens Só na Árvore
 
 - Versão: `VERSION` 5.24.0 → **5.24.1**. Data: 2026-11-19.
