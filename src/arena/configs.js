@@ -724,6 +724,9 @@ export const TREB_CIACH = {
     // "melhore a chama da proteção para parecer fogo mesmo, como as fogueiras que tem nos outros mapas")
     fire_flame: { hide: true },
     ghost_flower: { emissiveIntensity: 0 }, // de dia as flores do campo são brancas e não brilham
+    // AV ep. 3: de dia as lamparinas das portas e os globos dos cordões brilham pouco
+    protect_lamp: { emissiveIntensity: 0.6 },
+    lamp_glass_blue: { emissiveIntensity: 0.4 }, lamp_glass_amber: { emissiveIntensity: 0.4 }, lamp_glass_rose: { emissiveIntensity: 0.35 },
   },
   bounds: { radius: 18.5 }, // a fogueira (r ≈ 4,8) ocupa o meio: a luta é em volta dela
   spawns: [{ x: 0, z: -10.5 }, { x: 0, z: 10.5 }],
@@ -776,6 +779,8 @@ export const TREB_CIACH_TEMPESTADE = {
     // a AURA (print do ep. mandado pelo dono): as flores e o mato brilham em ciano, o chão com um reflexo azul
     ghost_flower: { emissiveIntensity: 2.2 }, grass_tuft: { emissive: 0x1a9ab8, emissiveIntensity: 0.55 },
     irish_grass: { emissive: 0x06303c, emissiveIntensity: 0.6 }, birch_bark: { emissive: 0x2a6a80, emissiveIntensity: 0.35 },
+    // AV ep. 3: a Chama de Proteção nas lamparinas das portas continua amarela no meio do azul
+    protect_lamp: { emissiveIntensity: 2.4 },
   },
   // os RAIOS da tempestade no céu (dono: "pode fazer o efeito de raios de tempestade nesse mapa de Treb Ciach à noite")
   lightning: { interval: [4, 9], distance: 110, top: 80, bottom: 18, arc: [0, Math.PI * 2], intensity: 2.6, skyOpacity: 0.35 },

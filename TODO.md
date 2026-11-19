@@ -40,11 +40,39 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 > X ondas vem um boss, um bicho mais forte sozinho para ele derrotar." + Treb Ciach: "o player protegeria das
 > assombrações e protegeria a vila, tentando impedir que o numero de aldeões vivos chegue a zero."
 
+> Decidido (2026-11-18): "essas fases de ondas como treb ciach e ilha de tipora serão fases do modo outro lado, e terá
+> uma explicação de como funciona a fase, tanto no menu de seleção quanto na propria fase"
+
 - [ ] **Como funciona:** um MAPA ABERTO (sem salas nem portas), o jogador fica na arena e os monstros chegam em ondas;
-  a cada X ondas vem um CHEFE (um bicho mais forte, sozinho). Modo próprio ou fases de outro tipo no Outro Lado
-  (aproveitando loja, cartas, fusões e save de lá): decidir com o dono.
+  a cada X ondas vem um CHEFE (um bicho mais forte, sozinho). São FASES DO OUTRO LADO (decisão do dono), ao lado das
+  três de salas, com a loja, as cartas, as fusões e o save de lá.
+- [ ] **Explicação da fase**: no menu de seleção das fases (o card da fase diz que é de ondas e qual é o objetivo, por
+  exemplo "proteja os aldeões") e dentro da própria fase (um aviso no começo e o objetivo/contadores no HUD).
 - [ ] **Regra de derrota por mapa:** em Treb Ciach, além da própria vida, há um contador de ALDEÕES VIVOS; as
   Assombrações vão atrás deles e a partida acaba se chegar a zero.
+- [ ] **A FASE DE TREB CIACH NO OUTRO LADO: 3 PARTES** (dono, 2026-11-18):
+  > "primeiro ficaram até x rodadas derrotando ali proximo a chama de proteção mesmo, mas vai começar a trovejar muito
+  > e vai vir muitas assombrações de uma vez, então passará uma cutscene de muitas assombrações juntas vindo e o player
+  > fugindo por um caminho/corredor com lanternas com chama da proteção em volta assim como no ep 3 e ele terá que
+  > correr por esse caminho até chegar na arvore, o player terá que aguentar durante um tempo nesse corredor evitando
+  > ser acertado por essas assombrações que dão bastante dano por sinal, depois que aguentar por esse tempo correndo pra
+  > frente, ele chegará na arvore, que será outro mapa, assim como o da série. Ele tem que proteger a entrada da arvore
+  > enquanto derrota as ondas de bichos, que ai não são mais infinitas, tem um limite, mas ele não sabe quanto é. Quanto
+  > maior a dificuldade, mais tempo ele tem que aguentar nessas partes e mais fortes são os bichos. Imaginei a parte do
+  > corredor como aqueles jogos onde o boneco fica correndo e ele tem que desviar dos ataques, como um temple run, ou
+  > subway surfers."
+  - [ ] **Parte 1 — a praça da Chama de Proteção** (o `treb_ciach` atual): X ondas em volta da fogueira; no fim
+    começa a trovejar forte (os raios do motor, v4.48.1) e vem uma leva enorme de Assombrações de uma vez.
+  - [ ] **Cutscene**: a massa de Assombrações chegando e o jogador fugindo para o caminho (como às 3h28–3h31 do ep. 3).
+  - [ ] **Parte 2 — o CORREDOR DAS LAMPARINAS** (estilo corrida sem fim: o personagem corre sozinho para a frente e o
+    jogador desvia de lado/pula/abaixa): um caminho de terra com lamparinas da Chama de Proteção dos dois lados; as
+    Assombrações atacam de trás e dos lados com golpes que dão MUITO dano; aguentar por um tempo até chegar na árvore.
+    Precisa de um mapa novo (o caminho em faixa longa) e de um controle novo de corrida automática.
+  - [ ] **Parte 3 — a ÁRVORE ANCIÃ** (mapa novo, como na série: o tronco enorme e retorcido, o campo de flores brancas
+    e douradas, a porta de pedra do arsenal entre as raízes; prints `AV03_3h28`, `3h31`, `3h41`, `4h03`): proteger a
+    ENTRADA da árvore enquanto derrota as ondas, que agora têm FIM, mas o jogador não sabe quantas faltam.
+  - [ ] **Dificuldade**: quanto mais alta, mais ondas na parte 1, mais tempo no corredor, mais ondas na árvore e bichos
+    mais fortes.
 - [ ] **Treb Ciach AMPLIADO para o modo** (dono: "o mapa de treb ciach para esse modo seria ampliado para essa fase"):
   pelo mapa do ep. 3 (`AV03_1h43_mapa_vilarejo.jpg`), a vila inteira com a fogueira no meio, uma casa por aldeão
   nomeado (são ~15 casas: o contador de aldeões nasce daí), a Árvore Anciã ao norte e as entradas por onde as ondas
@@ -553,11 +581,13 @@ baixado sem o OK do dono.
           final com a barreira de fogo no campo (3h41) e a árvore em chamas (4h03); depois, queimada e cinza (5h13).
         - A Torre da Vigília (4h36, 5h08): redonda, de pedra, com poucas janelas, vista por cima das árvores.
         O que muda no mapa (base canônica; forma visual PROPOSTA):
-    - [ ] Lamparinas nas portas e em volta do vilarejo (a Chama de Proteção cerca o vilarejo todo): apagadas na noite
+    - [x] Lamparinas nas portas (v5.18.0, no pórtico; amarelas também na noite azul).
+    - [ ] Lamparinas em volta do vilarejo todo (a Chama de Proteção cerca o vilarejo): apagadas na noite
           do Samhain, acesas na versão do fim.
     - [ ] Silhuetas fantasiadas (crânios, vime, mantos) e Assombrações azuladas vagando e girando em volta da
           fogueira (cenário, sem colisão); o círculo ritual de espirais brilhando no chão da fogueira.
-    - [ ] Cordões de lamparinas e bandeirolas entre as casas e guirlandas de chifres nas fachadas.
+    - [x] Cordões de lamparinas entre as casas e a galhada nas entradas (v5.18.0: pórtico com galhada e lamparina na
+          frente de cada casa; cordões de globos azul, âmbar e rosa). [ ] As bandeirolas.
     - [ ] Tempestade com trovões sobre o vilarejo (já há raios rápidos no motor, v4.48.1).
     - [ ] A Árvore Anciã ao norte: campo florido (flores douradas), apiário e a porta de pedra com o símbolo da Vigília
           entre as raízes.

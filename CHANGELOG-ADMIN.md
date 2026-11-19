@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v5.18.0 — A Vila do Samhain
+
+- Versão: `VERSION` 5.17.0 → **5.18.0**. Data: 2026-11-18. Dono: "assista o ep 3 de a vigilia para ter mais noção do
+  mapa" + "era só pra você ver se tem algo pra atualizar na parte da vila".
+- Ep. 3 visto no VOD do YouTube (miniaturas a cada 2,5 min e 24 prints em `Referencias visuais/Mapas/treb-ciach/
+  episodios/AV03_*.jpg`). Entrou na vila (base canônica nos prints; forma PROPOSTA): o PÓRTICO de madeira com a GALHADA
+  de cervo clara na frente de cada casa (2h48), a LAMPARINA da Chama de Proteção pendurada nele (o episódio é a Vigília
+  acendendo de porta em porta) e os CORDÕES de globos de vidro azul, âmbar e rosa entre as casas (0h58, 2h48).
+- A galhada e a lamparina iam primeiro em cima da porta, mas o beiral de palha desce na frente dela e tudo ficou por cima
+  do telhado: viraram o pórtico, fora do beiral (como no print). Os cordões também saíram para fora do beiral.
+- Ficam para depois (TODO): silhuetas fantasiadas e Assombrações na fogueira, a tempestade com trovões na versão do
+  Samhain, a Árvore Anciã e as fases de ondas.
+- Conferido no jogo nas duas versões; sem erro no console. `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.17.0 — Mais Fusões
 
 - Versão: `VERSION` 5.16.0 → **5.17.0**. Data: 2026-11-18. Dono: lista colada ("Mais fusões de poderes").

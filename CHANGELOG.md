@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.18.0 — A Vila do Samhain
+
+### Alterado
+- `arena_treb_ciach.py` / `treb_ciach.glb`: pórtico com galhada e lamparina (`protect_lamp`) na frente de cada casa; cordões de globos (`lamp_glass_blue/amber/rose`) entre as casas vizinhas. Feito e conferido no Blender MCP.
+- `configs.js`: brilho das lamparinas e dos globos por versão (fraco de dia; a lamparina forte na pós-tempestade).
+
 ## v5.17.0 — Mais Fusões
 
 ### Adicionado

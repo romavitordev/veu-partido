@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.17.0';
+export const VERSION = '5.18.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.18.0',
+    date: '2026-11-18',
+    title: 'A Vila do Samhain',
+    items: [
+      'Vilarejo de Treb Ciach com o que apareceu no último episódio de A Vigília: um pórtico de madeira com galhada de cervo na frente de cada casa, a lamparina da Chama de Proteção pendurada nele (amarela, acesa também na noite azul) e cordões de globos de vidro coloridos entre as casas.',
+    ],
+  },
   {
     v: '5.17.0',
     date: '2026-11-18',

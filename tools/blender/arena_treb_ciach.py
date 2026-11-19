@@ -76,6 +76,12 @@ M = {
     'rock': material('mountain_rock', '#5a5e60', 1),
     'trail': material('mud_trail', '#2a2a22', 0.4),
     'iron': material('black_iron', '#2a2826', 0.6, metal=0.6),
+    # AV ep. 3 (o Samhain à noite, prints AV03_*): a LAMPARINA da porta de cada casa, que recebe a Chama de Proteção
+    # (acesa no Samhain; apagada depois da tempestade, cfg.materials), e os CORDÕES de globos de vidro colorido
+    'protect_lamp': material('protect_lamp', '#ffe8a0', 0.5, emission='#ffc840', strength=2.0),
+    'glass_blue': material('lamp_glass_blue', '#9ad0ff', 0.3, emission='#5ab0ff', strength=1.4),
+    'glass_amber': material('lamp_glass_amber', '#ffd890', 0.3, emission='#ffb040', strength=1.4),
+    'glass_rose': material('lamp_glass_rose', '#ffc0d8', 0.3, emission='#ff7aa8', strength=1.2),
 }
 R_FIGHT = 19.0
 # os caminhos de pedra que saem da praça (ângulo do jogo: x = sen a·r, z = cos a·r): para a câmera (+z), para a ponte
@@ -199,6 +205,29 @@ def cottage(name, x, z, w=8.0, d=4.8, big=False, rot=None):
     tx = dx + 0.85
     sphere(f'{name}_turnip', P(tx, 0.22, hd + 0.5), (0.2, 0.22, 0.2), M['turnip'], seg=8, rings=6)
     sphere(f'{name}_turnipTop', P(tx, 0.44, hd + 0.5), (0.06, 0.08, 0.06), M['turnip_skin'], seg=5, rings=3)
+    # o PÓRTICO de madeira na frente da porta, fora do beiral, com a GALHADA de cervo clara em cima e a LAMPARINA da
+    # Chama de Proteção pendurada (AV ep. 3 2h48: a entrada com os chifres brancos; 0h56: de porta em porta)
+    gz = hd + 1.55
+    for sx in (-1, 1):
+        strut(f'{name}_gatePost{sx}', P(dx + sx * 0.8, 0, gz), P(dx + sx * 0.8, 2.45, gz), 0.08, T, seg=5)
+    box(f'{name}_gateBeam', P(dx, 2.45, gz), (2.0, 0.18, 0.18), T, rot_y=ry)
+    ay = 2.55
+    box(f'{name}_antlerPlate', P(dx, ay, gz), (0.36, 0.24, 0.16), M['bone'], rot_y=ry)
+    for sx in (-1, 1):
+        b0 = P(dx + sx * 0.12, ay + 0.05, gz)
+        b1 = P(dx + sx * 0.5, ay + 0.45, gz + 0.05)
+        b2 = P(dx + sx * 0.7, ay + 1.0, gz)
+        strut(f'{name}_antler{sx}a', b0, b1, 0.045, M['bone'], seg=4, r2=0.035)
+        strut(f'{name}_antler{sx}b', b1, b2, 0.035, M['bone'], seg=4, r2=0.014)
+        for t, (ox, oy) in enumerate(((0.05, 0.38), (0.22, 0.34), (-0.04, 0.3))):
+            base = P(dx + sx * (0.38 + t * 0.12), ay + 0.32 + t * 0.25, gz + 0.03)
+            tip = P(dx + sx * (0.38 + t * 0.12 + ox), ay + 0.32 + t * 0.25 + oy, gz + 0.06)
+            strut(f'{name}_tine{sx}{t}', base, tip, 0.025, M['bone'], seg=4, r2=0.008)
+    lx_ = dx + 0.8
+    strut(f'{name}_lampArm', P(lx_, 2.2, gz), P(lx_ + 0.5, 2.2, gz), 0.025, M['iron'], seg=4)
+    for k_, yy in enumerate((2.12, 1.78)):  # a tampa e a base de ferro; o vidro aceso à mostra entre elas
+        box(f'{name}_lampCage{k_}', P(lx_ + 0.45, yy, gz), (0.26, 0.05, 0.26), M['iron'], rot_y=ry)
+    box(f'{name}_lampGlow', P(lx_ + 0.45, 1.95, gz), (0.2, 0.3, 0.2), M['protect_lamp'], rot_y=ry)
 
 
 def pine(name, x, z, h):
@@ -415,6 +444,25 @@ HOUSES = [(0.62, 26.5, 8.5, 5.0, False), (1.05, 28.5, 7.0, 4.6, False), (2.1, 26
 for k, (a, r, w, d, big) in enumerate(HOUSES):
     x, z = at(a, r)
     cottage(f'house{k}', x, z, w, d, big=big)
+# os CORDÕES de globos de vidro colorido entre as casas vizinhas, de beiral a beiral, em curva (AV ep. 3 0h58 e 2h48;
+# PROPOSTA a disposição)
+GLASS = (M['glass_blue'], M['glass_amber'], M['glass_rose'])
+for k in range(len(HOUSES)):
+    a0, r0 = HOUSES[k][0], HOUSES[k][1] - HOUSES[k][3] / 2 - 1.7
+    a1, r1 = HOUSES[(k + 1) % len(HOUSES)][0], HOUSES[(k + 1) % len(HOUSES)][1] - HOUSES[(k + 1) % len(HOUSES)][3] / 2 - 1.7
+    if (a1 - a0) % TAU > 1.2:
+        continue
+    (x0, z0), (x1, z1) = at(a0 + 0.12, r0), at(a1 - 0.12, r1)
+    n = max(6, int(math.hypot(x1 - x0, z1 - z0) / 1.1))
+    pts = []
+    for i in range(n + 1):
+        t = i / n
+        pts.append((x0 + (x1 - x0) * t, 2.9 - 1.1 * 4 * t * (1 - t), z0 + (z1 - z0) * t))
+    for i in range(n):
+        strut(f'lampString{k}_{i}', pts[i], pts[i + 1], 0.012, M['iron'], seg=3)
+        if 0 < i:
+            gx, gy, gz = pts[i]
+            sphere(f'lampGlobe{k}_{i}', (gx, gy - 0.16, gz), (0.11, 0.14, 0.11), GLASS[(i + k) % 3], seg=8, rings=5)
 # as cercas de pau a pique entre as casas e a HORTA cercada atrás (o mapa)
 for k, (a0, a1) in enumerate(((0.78, 0.95), (2.3, 2.48), (4.65, 4.85), (5.2, 5.45), (3.45, 3.62))):
     wattle(f'wattle{k}', a0, a1, 24.0)

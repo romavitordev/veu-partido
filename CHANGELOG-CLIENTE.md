@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.18.0 — A Vila do Samhain
+- Vilarejo de Treb Ciach com o que apareceu no último episódio de A Vigília: um pórtico de madeira com galhada de cervo na frente de cada casa, a lamparina da Chama de Proteção pendurada nele (amarela, acesa também na noite azul) e cordões de globos de vidro coloridos entre as casas.
+
 ## v5.17.0 — Mais Fusões
 - Outro Lado com 5 fusões de poderes novas (12 no total): Mente Desperta, Fluxo Paranormal, Execução, Banquete de Sangue e Ocultista Estudioso. Junte as duas melhorias da receita e um baú pode trazer a fusão; cada uma fica na tela Descobertas.
 
