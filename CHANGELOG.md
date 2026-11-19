@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.27.1 — O Bar Inteiro
+
+### Mudado
+- `public/arenas/suvaco.glb` gerado pelo build completo (`node tools/blender/build.mjs suvaco`) com os kits do Kenney
+  baixados (Furniture, City Roads, City Commercial 2.1, Car, Nature) — na v5.27.0 tinha sido um remendo do .glb antigo.
+- `assets_src/README.md`: City Kit (Commercial) e Car Kit na lista; como baixar (o botão do site; script dá 403) e onde
+  guardar os zips (`assets_src/kenney/_zips/`, fora da raiz — o `vite` cai com EBUSY vigiando um zip na raiz).
+
 ## v5.27.0 — Mesa de Bar
 
 ### Adicionado

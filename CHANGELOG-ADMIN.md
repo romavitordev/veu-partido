@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v5.27.1 — O Bar Inteiro
+
+- Versão: `VERSION` 5.27.0 → **5.27.1**. Data: 2026-11-19.
+- Dono: "faz esse negócio de kenney entao"; "acho que já baixou tudo que precisava na pasta".
+- Kits do Kenney (CC0) baixados pelo site e extraídos em `assets_src/kenney/` (fora do git): Furniture, City Roads,
+  City Commercial 2.1, Car e Nature — os que o Suvaco usa. Faltam, para os outros cenários: Fantasy Town 2.0,
+  Graveyard 5.0, Castle e City Suburban.
+- Conferido no jogo: o salão (mesa branca com cadeiras brancas, o jogo amarelo de cervejaria) e a calçada.
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.27.0 — Mesa de Bar
 
 - Versão: `VERSION` 5.26.1 → **5.27.0**. Data: 2026-11-19.

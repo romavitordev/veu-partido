@@ -15,6 +15,11 @@ Para gerar os cenários numa máquina nova, baixe e extraia cada zip numa pasta 
 | Furniture Kit | móveis de interior | https://kenney.nl/assets/furniture-kit |
 | City Kit (Suburban) | casas e prédios modernos | https://kenney.nl/assets/city-kit-suburban |
 | City Kit (Roads) | ruas, calçadas, postes | https://kenney.nl/assets/city-kit-roads |
+| City Kit (Commercial) 2.1 | prédios e lojas (vizinhança do Suvaco) | https://kenney.nl/assets/city-kit-commercial |
+| Car Kit | carros estacionados | https://kenney.nl/assets/car-kit |
+
+O site só entrega o zip pelo botão (Download → "Continue without donating"); baixar por script dá 403. Guarde os
+zips em `assets_src/kenney/_zips/` (nunca na raiz do projeto: o `vite` em execução cai com EBUSY ao vigiar o zip).
 
 Estrutura esperada (ver `tools/blender/kenney.py`, dicionário `KITS`):
 
