@@ -478,3 +478,21 @@ test('Escola: o almoxarifado sem saída e o pátio da cantina na rota', () => {
   assert.ok(stashSeen > 0 && patioSeen > 0);
   assert.equal(rollExits(D, 'almoxarifado', { step: 1, total: 5, rng }).some((e) => e.kind === 'stash'), false);
 });
+
+test('Fusões: 12, cada receita com passivas que existem e nenhuma receita repetida', async () => {
+  const U = await import('../src/pve/upgrades.js');
+  assert.equal(U.FUSIONS.length, 12);
+  const seen = new Set();
+  for (const f of U.FUSIONS) {
+    for (const [id, lv] of f.evolve.needs) {
+      const u = U.UPGRADES.find((x) => x.id === id);
+      assert.ok(u && u.kind === 'passive', `${f.id}: ${id}`);
+      assert.ok(lv >= 1 && lv <= u.max, `${f.id}: ${id} nível ${lv}`);
+    }
+    const key = f.evolve.needs.map(([id, lv]) => id + lv).join('+');
+    assert.ok(!seen.has(key), key);
+    seen.add(key);
+    const m = U.computeMods([f.id]);
+    assert.ok(m, f.id);
+  }
+});

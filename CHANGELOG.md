@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.17.0 — Mais Fusões
+
+### Adicionado
+- `upgrades.js`: fusões `menteDesperta` (Lucidez 3 + Ritmo), `fluxo` (Ritmo 3 + Foco), `execucao` (Golpe Certeiro 3 + Fúria), `banquete` (Sanguessuga 3 + Caçador) e `estudioso` (Sabedoria 3 + Ímã); 12 no total.
+- Teste "Fusões: 12, cada receita com passivas que existem e nenhuma receita repetida".
+
 ## v5.16.0 — A Escola Cresce
 
 ### Adicionado

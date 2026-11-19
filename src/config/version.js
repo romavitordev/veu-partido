@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.16.0';
+export const VERSION = '5.17.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.17.0',
+    date: '2026-11-18',
+    title: 'Mais Fusões',
+    items: [
+      'Outro Lado com 5 fusões de poderes novas (12 no total): Mente Desperta, Fluxo Paranormal, Execução, Banquete de Sangue e Ocultista Estudioso. Junte as duas melhorias da receita e um baú pode trazer a fusão; cada uma fica na tela Descobertas.',
+    ],
+  },
   {
     v: '5.16.0',
     date: '2026-11-18',

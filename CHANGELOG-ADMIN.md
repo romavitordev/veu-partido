@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v5.17.0 — Mais Fusões
+
+- Versão: `VERSION` 5.16.0 → **5.17.0**. Data: 2026-11-18. Dono: lista colada ("Mais fusões de poderes").
+- 5 fusões novas (PROPOSTA: nomes, receitas e números), uma por par de passivas que ainda não tinha fusão, no mesmo
+  molde das 7 da v4.54.0 (a 1ª passiva no máximo + a 2ª em nível 1; 30% por baú com a receita pronta, 3% depois
+  de descoberta): MENTE DESPERTA (Sanidade +30%, recargas ×0,94, Drenar Energia ×0,7), FLUXO PARANORMAL (recargas
+  ×0,9, habilidades +8%), EXECUÇÃO (crítico +8%, físico +10%), BANQUETE DE SANGUE (roubo de vida +3%, cura ao
+  derrotar +3%) e OCULTISTA ESTUDIOSO (XP +15%, ímã +50%). A tela DESCOBERTAS fecha 3 linhas de 4.
+- Fusões do KIT do personagem ficam para depois (o TODO dizia "talvez").
+- `npm test` 121/121, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.16.0 — A Escola Cresce
 
 - Versão: `VERSION` 5.15.0 → **5.16.0**. Data: 2026-11-18. Dono: lista colada ("Escola Nostradamus com mais variedade

@@ -71,7 +71,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   7 s ×2), Cópias 140 de vida (antes 110), olhar drena 20/s, recua menos e briga mais cedo; abaixo de 50% o bote
   ACERTADO pode emendar outro (60%, até 2). Conferido no jogo (3 cadeias em 6 botes).
 - [ ] Bateria Degolificada × Espreitador × Estrangeiro depois das brechas e do Espreitador novo (tempo e mortes).
-- [ ] Mais fusões (uma por par de passivas que combina) e, talvez, fusões do KIT do personagem.
+- [x] Mais fusões (uma por par de passivas que combina): v5.17.0, 5 novas (12 no total).
+- [ ] PROPOSTA: fusões do KIT do personagem (o "talvez" do item acima).
 
 ## Outro Lado — baú e salas da Escola (pedido do dono, 2026-11-16)
 

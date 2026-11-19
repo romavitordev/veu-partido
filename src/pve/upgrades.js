@@ -44,6 +44,12 @@ export const UPGRADES = [
     { id: 'passoSombra', name: 'Passo de Sombra', icon: '☽', needs: [['agilidade', 3], ['reflexos', 1]], desc: '+8% de velocidade e a esquiva recarrega 15% mais rápido.', apply: (m) => { m.speedMult += 0.08; m.dodgeMult *= 0.85; } },
     { id: 'carapaca', name: 'Carapaça de Espinhos', icon: '✹', needs: [['espinhos', 3], ['couraca', 1]], desc: 'Devolve mais 25% do dano corpo a corpo que você recebe.', apply: (m) => { m.thorns += 0.25; } },
     { id: 'predador', name: 'Predador', icon: '⚔', needs: [['cacador', 3], ['agilidade', 1]], desc: 'Derrotar um inimigo cura mais 4% da vida, e você anda 5% mais rápido.', apply: (m) => { m.killHeal += 0.04; m.speedMult += 0.05; } },
+    // mais 5 (pedido do dono, 2026-11-18: "mais fusões de poderes"; PROPOSTA), uma por par de passivas que ainda não tinha
+    { id: 'menteDesperta', name: 'Mente Desperta', icon: '◑', needs: [['lucidez', 3], ['frequencia', 1]], desc: 'A Sanidade volta 30% mais rápido, as recargas ficam 6% menores e o Drenar Energia tira 30% menos.', apply: (m) => { m.regenMult += 0.3; m.cdMult *= 0.94; m.drainTaken *= 0.7; } },
+    { id: 'fluxo', name: 'Fluxo Paranormal', icon: '⟳', needs: [['frequencia', 3], ['foco', 1]], desc: 'Habilidades, tiro e especial recarregam 10% mais rápido e as habilidades causam +8% de dano.', apply: (m) => { m.cdMult *= 0.9; m.dealt.ability += 0.08; } },
+    { id: 'execucao', name: 'Execução', icon: '✠', needs: [['certeiro', 3], ['furia', 1]], desc: '+8% de chance de crítico e +10% de dano dos golpes físicos.', apply: (m) => { m.crit += 0.08; m.dealt.melee += 0.1; } },
+    { id: 'banquete', name: 'Banquete de Sangue', icon: '❦', needs: [['sanguessuga', 3], ['cacador', 1]], desc: 'Cura mais 3% do dano físico que causar e derrotar um inimigo cura mais 3% da vida.', apply: (m) => { m.lifesteal += 0.03; m.killHeal += 0.03; } },
+    { id: 'estudioso', name: 'Ocultista Estudioso', icon: '✐', needs: [['sabedoria', 3], ['ima', 1]], desc: '+15% de experiência e puxa moedas, experiência e cura de 50% mais longe.', apply: (m) => { m.xpMult += 0.15; m.magnet += 0.5; } },
   ].map((f) => ({ ...f, kind: 'fusion', chest: true, max: 1, evolve: { needs: f.needs, chance: 0.3, rare: 0.03 } })),
 ];
 

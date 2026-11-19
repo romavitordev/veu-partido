@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.17.0 — Mais Fusões
+- Outro Lado com 5 fusões de poderes novas (12 no total): Mente Desperta, Fluxo Paranormal, Execução, Banquete de Sangue e Ocultista Estudioso. Junte as duas melhorias da receita e um baú pode trazer a fusão; cada uma fica na tela Descobertas.
+
 ## v5.16.0 — A Escola Cresce
 - Escola Nostradamus com quatro salas novas no Outro Lado: o pátio da cantina (luta entre pilastras e mesas), a sala dos professores, o banheiro e o almoxarifado, uma sala sem saída e sem luta, cheia de baús, cuja porta leva de volta para a sala de antes.
 - Página Sobre atualizada: as salas novas da Escola, os momentos dos especiais de equipe, as fusões de poderes e os retratos de Alvira, Franco, Alê e Caio no elenco.
