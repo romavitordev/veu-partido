@@ -148,7 +148,9 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       - [x] Força D (v5.15.0): a Névoa da Força D (PROPOSTA; base: a Cinerária do Kaiser).
       - [ ] Os Cinco e Mascarados.
 - [x] **Opção de ligar/desligar os efeitos de sangue** (pedido do dono, 2026-11-18): efeitos NOVOS de sangue nos ferimentos (não mexer nos antigos) e a chave nas Opções. Feito na v5.3.0 (`src/fx/woundBlood.js`, Opções → Vídeo → SANGUE).
-- [ ] Balanceamento dos recentes (bateria CPU × CPU) e revisão de cânone dos kits.
+- [~] Balanceamento dos recentes (bateria CPU × CPU) e revisão de cânone dos kits. Conferido em 2026-11-18 (`balance.js`):
+  medidos Caio 50%, Cindy 50%, Franco 55%, Alê 54%, Alvira 56%, Boris 51%, Tristan 48%, Ivete 49%, Fernando 47%;
+  ainda abaixo de 45%: Damir 40%, Artemis 37%, Eloy 42%, Sabara 40%; sem medida própria: Beatrice, Carina e Rubens.
 
 ## Tecnologias novas do guia (pedido do dono, 2026-11-15)
 
@@ -350,7 +352,8 @@ baixado sem o OK do dono.
       em `lore/EQUIPES-HEXATOMBE.md` (ainda falta ler a página de cada membro dos Psikolera, Vampiros e Transtornados).
 - [x] **Caio Teles (PSIKOLERA)** — v4.58.0: vocalista da banda jogável com o macacão de camisa de força creme com tiras e sangue, correntes e algemas com espinhos; Espada Microfone (com arame farpado), a mecânica do Berrão (segura a espada com as duas mãos, crava reta no chão de ponta-cabeça e grita no microfone na boca), balanceado 20% → 50%, e a máscara de ferro da placa PARE no despertar.
   - [x] **Olhos do Caio com a máscara devem ser brancos** (v4.59.0; pedido do dono, 2026-11-17): com a máscara da placa PARE no despertar, os olhos por dentro das frestas devem ser brancos.
-- [ ] **3ª dungeon do Outro Lado: TORRE DA TV VARMINHO** ("Torre de Transmissão"; pedido do dono, 2026-11-13). Chefe:
+- [x] **3ª dungeon do Outro Lado: TORRE DA TV VARMINHO** (lançada na v4.42.0; conferido em 2026-11-18: só ficam abertos
+      "jogar a rota inteira" e "polir os modelos da arena") ("Torre de Transmissão"; pedido do dono, 2026-11-13). Chefe:
       o Estrangeiro na Sala do Sino; miniboss opcional no meio da rota; Alheios variados; a sala das PILASTRAS (parkour:
       cair = voltar do céu à entrada com dano, as pilastras trocam de lugar; no coop os dois voltam). Estudo e plano em
       `docs/TORRE-TRANSMISSAO.md`; 265 prints dos ep. 6 e 7 em `Referencias visuais/Mapas/torre-tv-varminho/`.
@@ -695,7 +698,8 @@ baixado sem o OK do dono.
         descarnado com as costelas à mostra e os braços rasgados até o osso, a língua comprida; descontrolado, mais rápido
         e forte, SEDE INCONTROLÁVEL: devora quem está morrendo e se cura).
         Equipe nova "Vampiros" (Alvira, Velisar, Zéfero, Sabara quando entrarem).
-- [ ] 3–14 Modo PvE, que vai se chamar **Outro Lado** — **EM PRODUÇÃO desde 2026-11-05; a 1ª fase jogável (Território do Espreitador) saiu na v4.25.0** — o coop local saiu na v4.29.0, o coop online na v4.30.0 e o backup na v4.31.0; falta: mais dungeons (a 3ª ficou para depois — decisão do dono, 2026-11-08) (pedido do dono: "leia tudo
+- [x] 3–14 Modo PvE, que vai se chamar **Outro Lado** (conferido em 2026-11-18: as 3 dungeons estão no jogo — Espreitador,
+  Degolificada e Estrangeiro/Torre; o que falta tem item próprio nas seções do Outro Lado) — **EM PRODUÇÃO desde 2026-11-05; a 1ª fase jogável (Território do Espreitador) saiu na v4.25.0** — o coop local saiu na v4.29.0, o coop online na v4.30.0 e o backup na v4.31.0; falta: mais dungeons (a 3ª ficou para depois — decisão do dono, 2026-11-08) (pedido do dono: "leia tudo
   sobre o modo Outro Lado e comece a produção. Quero que tenha pelo menos uma fase jogável pra lançar"; antes ficou em
   espera de 2026-11-01 a 2026-11-05). O plano de produção está na seção 3.4; as ideias do dono, na seção 3.0. (dungeons, Espreitador como chefe, progressão, salvamento,
   cooperativo): antes da v4.25.0, já anunciado como "em desenvolvimento, sem data" na página Sobre. Na v3.47.0 entrou só a
@@ -1789,7 +1793,8 @@ Detalhes em `docs/outro-lado-playtest.md` (rodada 7).
       continua. A exceção exata do relato NÃO foi reproduzida (bateria, varredura das salas e fuzz de habilidades do
       Guizo sem erro) — se voltar a travar, o console agora mostra "Erro isolado (…)" com o ponto. Teste novo em
       `tests/glb-rig.test.js`.
-- [ ] **Personagens no Outro Lado — conferir e equilibrar TODOS** (pedido do dono, 2026-11-06): bateria automática
+- [x] **Personagens no Outro Lado — conferir e equilibrar TODOS** (conferido em 2026-11-18: feito em 2026-11-06/08,
+      `PVE_CHAR_TUNE` e `src/dev/pveBattery.js`) (pedido do dono, 2026-11-06): bateria automática
       (cada lutador sozinho, CPU Difícil no lugar do jogador, 2 salas de 3 monstros + o chefe) para achar quem quebra,
       quem não consegue limpar sala ou não acerta o chefe, e ajustar o kit no modo (sem mexer no balanceamento da luta).
       **1ª rodada (2026-11-06, 1 amostra cada, ruído alto):** os 39 permitidos FUNCIONAM — nenhum erro depois da
@@ -2724,7 +2729,7 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
 - [x] **O Diabo** (2026-10-26) pela "Miniatura O Diabo em Calamidade": os CHIFRES altos esculpidos com os anéis em relevo,
       os DEDOS longos vermelhos com as GARRAS escuras (mãos e pés), o manto, o capuz e as mangas com DOBRAS de verdade e a
       barra rasgada. Revisado pelo MCP e no jogo.
-- [ ] **PARA DEPOIS (pedido de 2026-10-27) — upgrade de modelos: A MAGISTRADA (e as MÁSCARAS que ela invoca), O
+- [x] **PARA DEPOIS (pedido de 2026-10-27) — upgrade de modelos: A MAGISTRADA (e as MÁSCARAS que ela invoca), O
       ESTRANGEIRO e O AMIGO IMAGINÁRIO** na técnica atual (sculpt_lib), pelas artes oficiais.
       [~] Feito em 2026-10-27: as MÁSCARAS (modelo `seita.glb`, v3.49.0) e o ESTRANGEIRO ajustado pelas artes (v3.50.0:
       mais alto e magro, ROSTO refeito do zero, pose parada própria `est_idle`, olhos verdes, ombreiras pontudas na capa,
@@ -2738,6 +2743,8 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       [x] 2026-11-08: a MAGISTRADA com acabamento `sculpt_lib`: a CAPA cai em pregas fundas que se abrem para baixo
       (antes um cone liso), e a camisa, a calça e o tecido do pescoço ganharam dobras de pano e as tranças os fios.
       As máscaras (`seita.glb`) ficaram como estavam.
+      [x] Conferido em 2026-11-18: os três já estão na técnica atual (Magistrada refeita na v4.57.0, Estrangeiro refeito
+      pela miniatura na Torre, Amigo com `sculpt_lib`).
       [x] 2026-11-08 (pedido do dono, "veja quais não foram"): os únicos `char_*.py` ainda sem `sculpt_lib` eram as
       MÁSCARAS (`char_seita.py`) e o ESTRANGEIRO (o Arnaldo e o Anfitrião usam o `arnaldo_common.py`, que já tem). Os dois
       ganharam o `sculpt_lib.pleat_pass` novo (PREGAS verticais que nascem rasas na cintura e se abrem para baixo, em vez
@@ -3061,7 +3068,8 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
       - Técnico: o cenário em `tools/blender/arena_*.py` (a técnica atual); a plateia como modelos instanciados com
         algumas poses prontas (trocadas por eventos da luta); os eventos e o narrador num módulo do mapa ligado ao
         Match/World (desligado nos outros cenários); conferir desempenho no celular.
-- [~] Os outros que ainda não usam a técnica atual (`char_*.py` sem `sculpt_lib`, conferido em 2026-10-26): Aghata, Amigo,
+- [x] Os outros que ainda não usam a técnica atual (`char_*.py` sem `sculpt_lib`, conferido em 2026-10-26): Aghata, Amigo,
+      (conferido em 2026-11-18: todos os da lista já importam `sculpt_lib`)
       Dalmo, Erin, Estrangeiro, Ferreiro, Guizo, Jae, Labirinto e Magistrada (fora o Portador do Trono acima; o Manancial
       foi refeito em 2026-10-26).
       2026-10-31: ACABAMENTO COMUM (`sculpt_lib.cloth_pass` / `hair_pass`) em Aghata, Dalmo, Erin, Ferreiro, Guizo, Jae e
