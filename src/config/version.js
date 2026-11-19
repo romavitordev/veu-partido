@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.12.0';
+export const VERSION = '5.13.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.13.0',
+    date: '2026-11-18',
+    title: 'Equipes Falam',
+    items: [
+      'Os especiais em equipe Força D, Os Cinco, Equipe Abutres e Execução dos Mascarados agora têm falas: cada membro diz a sua frase ao entrar no golpe, com a legenda na tela.',
+    ],
+  },
   {
     v: '5.12.0',
     date: '2026-11-18',

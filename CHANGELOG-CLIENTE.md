@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.13.0 — Equipes Falam
+- Os especiais em equipe Força D, Os Cinco, Equipe Abutres e Execução dos Mascarados agora têm falas: cada membro diz a sua frase ao entrar no golpe, com a legenda na tela.
+
 ## v5.12.0 — Alvira (Vampiros)
 - ALVIRA chegou: a Primeira Vampira (Hexatombe) completa a equipe dos Vampiros ao lado de Raziel e Sabara. Luta com o Cajado da Cruz de Sangue e as Hastes de Metal no □, reza, drena a vida e comanda o adversário com as cordas de sangue.
 - TITEREIRA DE SANGUE: cordas de sangue prendem os pulsos e a cabeça do alvo, forçando-o a andar até Alvira indefeso. Resistir às cordas causa dano.

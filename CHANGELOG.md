@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.13.0 — Equipes Falam
+
+### Alterado
+- `CHOREO.forca_d`, `os_cinco`, `abutres` e `mascarados`: falas de cada membro com `sayer`.
+- `teamScene`: a legenda é limpa no `cleanup`.
+
 ## v5.12.0 — Alvira (Vampiros)
 
 ### Adicionado

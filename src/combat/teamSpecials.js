@@ -475,6 +475,7 @@ const CHOREO = {
     const actors = [kaiser, joui, dante, arthur, erin, beatrice, fernando, tristan].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
+    const say = sayer(world);
     const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
     const END = S + 6.4;
 
@@ -483,6 +484,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(kaiser, -1.7, 5);
         kaiser.play('breath', 0.85);
+        say(kaiser, 'Força D, comigo. A névoa fecha o caminho.', 0);
         world.cameraRig.playShots([{ ...faceClose(kaiser, { dur: 1.15, from: 2.8, to: 1.35, height: 1.65, fov: 34 }), cut: true }]);
         world.audio.play('carga', { pitch: 0.8 });
       });
@@ -509,6 +511,7 @@ const CHOREO = {
         joui.pos.set(at.x, 0, at.z);
         joui.face(opp);
         joui.play('iai_slash', 0.5);
+        say(joui, 'Sem perder quem eu sou.', 1);
         world.cameraRig.playShots([{ ...twoShot(joui, opp, { dur: 0.8, dist: 2.4, height: 1.45, fov: 36 }), cut: true }]);
         world.fx.shadowDisc(new THREE.Vector3(at.x, 0, at.z), { radius: 0.9, life: 0.35, rim: 0x8f4cff });
       });
@@ -527,6 +530,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(dante, 1.2, 2.2);
         dante.play('wave_punch', 0.56);
+        say(dante, 'A luz apaga.', 0);
         world.cameraRig.playShots([{ ...twoShot(dante, opp, { dur: 0.6, dist: 3, height: 1.5, fov: 42 }), cut: true }]);
         world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x392d45, radius: 1.5, life: 0.5 });
       });
@@ -548,6 +552,7 @@ const CHOREO = {
         arthur.pos.set(at.x, 0, at.z);
         arthur.face(opp);
         arthur.play('run', 0.7);
+        say(arthur, 'Eu queria resolver de outro jeito. Mas vamos lá!', 1);
         start = arthur.pos.clone();
         world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.7, back: 2.1, side: 0.5, height: 1.7, fov: 42 }), cut: true }]);
         world.fx.burst(start.clone().lerp(new THREE.Vector3(target.x, 0, target.z), 0.5), {
@@ -581,6 +586,7 @@ const CHOREO = {
         erin.pos.set(at.x, 0, at.z);
         erin.face(opp);
         erin.play('throw_r', 0.5);
+        say(erin, 'KABOOOM!', 0);
         world.cameraRig.playShots([{ ...twoShot(erin, opp, { dur: 0.7, dist: 3.2, height: 1.5, fov: 42 }), cut: true }]);
         world.fx.tracer(erin.chest(), opp.chestPos(), { color: 0xff7a2a, life: 0.3, width: 0.05 });
       });
@@ -605,6 +611,7 @@ const CHOREO = {
         beatrice.pos.set(at.x, 0, at.z);
         beatrice.face(opp);
         beatrice.play('point', 0.7);
+        say(beatrice, 'Orpheu, vai!', 1);
         world.cameraRig.playShots([{ ...overShoulder(beatrice, opp, { dur: 0.8, back: 1.6, side: 0.45, height: 1.6, fov: 40 }), cut: true }]);
         world.fx.burst(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), { count: 14, color: 0x8a7458, speed: 2, life: 0.6, size: 0.09, gravity: 3 });
         world.fx.tracer(beatrice.chest().add(new THREE.Vector3(0, 0.5, 0)), opp.chestPos().add(new THREE.Vector3(0, 0.55, 0)), { color: 0x8a7458, life: 0.35, width: 0.08 });
@@ -626,6 +633,7 @@ const CHOREO = {
         fernando.pos.set(at.x, 0, at.z);
         fernando.face(opp);
         fernando.play('point', 0.5);
+        world.ui && world.ui.subtitle && world.ui.subtitle({ name: 'LUCIANO CARVALHO', color: '#e8b818', text: 'Deixa comigo, Fê.', side: 0 });
         world.fx.flash(head(fernando), { color: 0xe8b818, size: 0.8, life: 0.2 });
       });
       for (let i = 0; i < 3; i++) {
@@ -647,6 +655,7 @@ const CHOREO = {
         tristan.pos.set(at.x, 0, at.z);
         tristan.face(opp);
         tristan.play('point', 0.9);
+        if (!fernando) say(tristan, 'QUEIMA!', 1);
       });
       for (let i = 0; i < 6; i++) {
         tl.add(S + 5.35 + i * 0.1, () => {
@@ -682,6 +691,7 @@ const CHOREO = {
     const actors = [morato, chico, xande, lirio, guizo, dara].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
+    const say = sayer(world);
     // rajada curta da submetralhadora (Dara) ou da Mac-10 (Chico): traçantes saindo do cano, o dano entra no último tiro
     const smgBurst = (actor, at, count, damage, tint) => {
       for (let i = 0; i < count; i++) {
@@ -705,6 +715,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(morato, -1.8, 6);
         morato.play('point', 0.65);
+        say(morato, 'Os Cinco, em formação. Agora!', 0);
         world.cameraRig.playShots([{ ...lowAngle(morato, { dur: 0.65, dist: 2.5, side: 0.8, fov: 44 }), cut: true }]);
       });
       tl.add(walkStart, () => {
@@ -734,6 +745,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(chico, -0.9, 4.5);
         chico.play('point', 0.55);
+        say(chico, 'Achei o sinal! Tá bem ali!', 1);
         world.cameraRig.playShots([{ ...twoShot(chico, opp, { dur: 0.65, dist: 3, height: 1.5, fov: 42 }), cut: true }]);
         world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x2ab8c8, radius: 1.2, life: 0.45 });
       });
@@ -758,6 +770,7 @@ const CHOREO = {
         xande.pos.set(startAt.x, 0, startAt.z);
         xande.face(opp);
         xande.play('skate_ride', 0.6);
+        say(xande, 'Chegou a hora de virar o jogo!', 0);
         start = xande.pos.clone();
         world.fx.tracer(xande.chest(), opp.chestPos(), { color: 0x5aff6a, life: 0.38, width: 0.12 });
       });
@@ -781,6 +794,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(lirio, 1.2, 2.5);
         lirio.play('hammer_charge', 0.65);
+        say(lirio, 'Leonora, comigo! Vamos nessa!', 1);
         world.cameraRig.playShots([{ ...lowAngle(lirio, { dur: 0.65, dist: 2.3, side: -0.7, fov: 43 }), cut: true }]);
         world.fx.ring(opp.pos.clone().setY(0.08), { color: 0xa51528, radius: 1.7, life: 0.8 });
         world.fx.tracer(lirio.chest(), opp.chestPos(), { color: 0xa51528, life: 0.5, width: 0.16 });
@@ -797,6 +811,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(guizo, 2.0, 3);
         guizo.play('point', 0.55);
+        say(guizo, 'Sorria! Você tá no Registro do Outro Lado!', 0);
         world.cameraRig.playShots([{ ...overShoulder(guizo, opp, { dur: 0.55, back: 1.8, side: 0.4, height: 1.65, fov: 42 }), cut: true }]);
         world.fx.flash(guizo.chest(), { color: 0x9a9a96, size: 0.55, life: 0.2 });
       });
@@ -812,6 +827,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(dara, -2.0, 2.4);
         dara.play('shoot_rifle', 0.35);
+        say(dara, 'Fica quieto que eu já te examino.', 1);
         world.cameraRig.playShots([{ ...twoShot(dara, opp, { dur: 0.75, dist: 2.8, height: 1.45, fov: 40 }), cut: true }]);
       });
       const [burst, punch] = splitDamage(damageOf(dara), 2);
@@ -2117,12 +2133,14 @@ const CHOREO = {
     const actors = [dante, balu, joui, arthur, carina, rubens].filter(Boolean);
     const shares = splitDamage(crewTotal, actors.length || 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
+    const say = sayer(world);
 
     if (dante) {
       tl.add(S, () => {
         if (!live()) return;
         tools.enter(dante, -1.7, 4.5);
         dante.play('taunt_roar', 0.65);
+        say(dante, 'Abutres. Ao trabalho.', 0);
         world.cameraRig.playShots([{ ...lowAngle(dante, { dur: 0.7, dist: 2.4, fov: 44 }), cut: true }]);
         world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x392d45, radius: 1.6, life: 0.6 });
       });
@@ -2138,6 +2156,7 @@ const CHOREO = {
         if (!live()) return;
         tools.enter(balu, 0.5, 2.8);
         balu.play('hammer_charge', 0.65);
+        say(balu, 'Agora o tio Balu vai mostrar serviço!', 1);
         world.cameraRig.playShots([{ ...twoShot(balu, opp, { dur: 0.75, dist: 2.8, height: 1.5, fov: 40 }), cut: true }]);
       });
       tl.add(S + 1.62, () => {
@@ -2156,6 +2175,7 @@ const CHOREO = {
         joui.pos.set(at.x, 0, at.z);
         joui.face(opp);
         joui.play('iai_slash', 0.5);
+        say(joui, 'Agora.', 0);
         world.cameraRig.playShots([{ ...twoShot(joui, opp, { dur: 0.7, dist: 2.4, height: 1.45, fov: 36 }), cut: true }]);
       });
       tl.add(S + 2.38, () => {
@@ -2175,6 +2195,7 @@ const CHOREO = {
         arthur.pos.set(at.x, 0, at.z);
         arthur.face(opp);
         arthur.play('run', 0.75);
+        say(arthur, 'Vamos lá!', 1);
         start = arthur.pos.clone();
         world.cameraRig.playShots([{ ...overShoulder(arthur, opp, { dur: 0.7, back: 2, side: 0.5, height: 1.7, fov: 42 }), cut: true }]);
         world.fx.burst(start.clone().lerp(new THREE.Vector3(target.x, 0, target.z), 0.5), {
@@ -2204,6 +2225,7 @@ const CHOREO = {
         carina.pos.set(at.x, 0, at.z);
         carina.face(opp);
         carina.play('flurry', 0.4);
+        say(carina, 'Minha vez!', 0);
         world.cameraRig.playShots([{ ...twoShot(carina, opp, { dur: 0.75, dist: 2.4, height: 1.45, fov: 38 }), cut: true }]);
       });
       tl.add(S + 3.95, () => {
@@ -2230,6 +2252,7 @@ const CHOREO = {
         for (const c of [0xff4ab0, 0x3a6aff, 0x4ae0ff, 0x4aff8a]) world.fx.burst(rubens.chest(), { count: 8, color: c, speed: 3, life: 0.35, size: 0.1 });
         world.audio.play('blink', { volume: 0.7 });
         rubens.play('hammer_v', 0.48);
+        say(rubens, 'Ainda bem que eu voltei.', 1);
         world.cameraRig.playShots([{ ...lowAngle(rubens, { dur: 0.7, dist: 2.2, fov: 42 }), cut: true }]);
       });
       tl.add(S + 4.68, () => {
@@ -2259,6 +2282,7 @@ const CHOREO = {
     const by = (id) => { const x = [f, ...crew].find((m) => linkId(m.def) === id); return x ? actorFor(x, f, guests) : null; };
     const kemi = by('kemi'), jae = by('jae'), lab = by('labirinto'), dalmo = by('dalmo'), aguiar = by('aguiar'), juan = by('juan');
     const cast = [kemi, jae, lab, dalmo, aguiar, juan].filter(Boolean);
+    const say = sayer(world);
     // dano: cada parte com o seu peso (os golpes da dupla somam mais)
     const W = { kemi: 2, jae: 2, lab: 2.5, dalmo: 1, aguiar: 1, juan: 1.5 };
     const wsum = (kemi ? W.kemi : 0) + (jae ? W.jae : 0) + (lab ? W.lab : 0) + (dalmo ? W.dalmo * 3 : 0) + (aguiar ? W.aguiar * 2 : 0) + (juan ? W.juan : 0) || 1;
@@ -2297,6 +2321,7 @@ const CHOREO = {
         kemi.show(END, s);
         place(kemi, s.x, s.z);
         kemi.play('shoot_sniper', 1.0);
+        say(kemi, 'Contrato aceito. Alvo marcado.', 0);
         world.cameraRig.playShots([{ ...overShoulder(kemi, opp, { dur: 0.95, back: 1.6, side: 0.7, height: 1.8, fov: 40 }), cut: true }]);
         world.fx.flash(kemi.chest(), { color: kemi.color, size: 0.6, life: 0.3 });
       });
@@ -2317,6 +2342,7 @@ const CHOREO = {
         jae.show(END - (t - S), s);
         place(jae, s.x, s.z);
         jae.play('thrust', 0.6);
+        say(jae, 'Shh. Não grita.', 1);
         world.audio.play('teleport', { volume: 0.6 });
         world.cameraRig.playShots([{ ...twoShot(jae, opp, { dur: 0.75, dist: 2.4, height: 1.4, push: 0.4, side: 1, fov: 38 }), cut: true }]);
       });
@@ -2335,6 +2361,7 @@ const CHOREO = {
         lab.show(END - (t - S), s);
         place(lab, s.x, s.z);
         lab.play('concentrate', 0.75);
+        say(lab, 'Você entrou no caminho errado.', 0);
         world.cameraRig.playShots([{ ...lowAngle(lab, { dur: 0.75, dist: 2.2, side: 1.1, fov: 48 }), cut: true }]);
         charge = world.fx.emitter({ rate: 90, follow: () => lab.chest().add(new THREE.Vector3(0, 0.1, 0)), particle: { color: lab.color, speed: 1.5, spread: 1.2, up: 0.4, life: 0.35, size: 0.14 } });
         world.audio.play('carga', { pitch: 0.8 });
@@ -2359,6 +2386,7 @@ const CHOREO = {
         if (dalmo) { const s = around(0, 1.3); dalmo.show(END - (t - S), s); place(dalmo, s.x, s.z); }
         if (aguiar) { const s = around(0.9, 1.5); aguiar.show(END - (t - S), s); place(aguiar, s.x, s.z); }
         if (juan) { const s = around(-0.9, 1.5); juan.show(END - (t - S), s); place(juan, s.x, s.z); }
+        say(dalmo || aguiar || juan, dalmo ? 'Agora você vai ver por que me chamam de Colosso.' : aguiar ? 'O caçador chegou ao fim da trilha.' : 'Eu escolho o que fazer com esse poder.', 1);
         world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.5, radius: 4.2, height: 1.8, a0: -0.5, a1: 0.7, lookH: 1.1, fov: 44 }), cut: true }]);
       });
       // Dalmo: três socos · Aguiar: dois cortes intercalados · Juan: o Descarnar entre eles
@@ -2418,6 +2446,7 @@ export function teamScene(f, world, TS) {
     guests.forEach((g) => g.reset());
     if (f.teamGuests === guests) f.teamGuests = null;
     if (inScene) { inScene = false; world.endCinematic(); }
+    world.ui && world.ui.subtitle && world.ui.subtitle(null);
   };
 
   f.vel.set(0, 0, 0);

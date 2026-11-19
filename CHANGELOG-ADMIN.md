@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v5.13.0 — Equipes Falam
+
+- Versão: `VERSION` 5.12.0 → **5.13.0**. Data: 2026-11-18. Dono: "siga o todo, próximo da lista de prioridade" → os
+  especiais em equipe restantes (Polimento dos personagens recentes).
+- `src/combat/teamSpecials.js`: `sayer` em `forca_d`, `os_cinco`, `abutres` e `mascarados` (não tinham nenhuma fala).
+  Uma fala por membro no início do golpe dele, alternando o lado da legenda. Reaproveitadas as falas de especial do
+  elenco (Kaiser, Joui, Dante, Arthur, Xande, Lírio, Guizo, Balu, Kemi, Jae, Labirinto, Dalmo, Aguiar, Juan), o
+  "KABOOOM!" da Erin e o "Deixa comigo, Fê." do Luciano (Brasa) e o "Ainda bem que eu voltei" do Rubens; as demais
+  (Morato, Chico, Dara, Carina, Beatrice, "Abutres. Ao trabalho.") = PROPOSTA. Na Força D o "QUEIMA!" do Tristan só
+  sai sem o Fernando (os dois entram com 0,25 s de diferença).
+- `teamScene` → `cleanup`: limpa a legenda no fim ou no cancelamento de qualquer especial em equipe.
+- Conferido no jogo (`devStart` + `tryTeamSpecial`): as quatro cenas mostram as falas em ordem e a legenda some no fim,
+  sem erro no console. `npm test` 119/119, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.12.0 — Alvira (Vampiros)
 
 - Versão: `VERSION` 5.11.1 → **5.12.0**. Data: 2026-11-18. Dono: "veja oque faltou o claude fazer sobre a nova personagem Alvira depois faça oque falta, de commit push".
