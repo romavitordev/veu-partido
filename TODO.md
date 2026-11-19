@@ -35,8 +35,27 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 > modo só pra isso ou adicionaremos fases completamente diferentes no outro lado. Esses mapas das ondas seriam Treb
 > Ciach, a Ilha de Tipora, e outros mapas que tivermos ideias futuramente."
 
-- [ ] **Decidir com o dono:** modo próprio no menu ou fases de outro tipo dentro do Outro Lado (aproveitando loja,
-  cartas, fusões e save de lá).
+> Esclarecido (2026-11-18): "a ilha de tipora, nao daria pra adicionar ao outro lado por não ter salas e opções de onde
+> ir, é um mapa aberto, então pensei nesse modo onde o player fica numa arena derrotando monstros que vão vindo e a cada
+> X ondas vem um boss, um bicho mais forte sozinho para ele derrotar." + Treb Ciach: "o player protegeria das
+> assombrações e protegeria a vila, tentando impedir que o numero de aldeões vivos chegue a zero."
+
+- [ ] **Como funciona:** um MAPA ABERTO (sem salas nem portas), o jogador fica na arena e os monstros chegam em ondas;
+  a cada X ondas vem um CHEFE (um bicho mais forte, sozinho). Modo próprio ou fases de outro tipo no Outro Lado
+  (aproveitando loja, cartas, fusões e save de lá): decidir com o dono.
+- [ ] **Regra de derrota por mapa:** em Treb Ciach, além da própria vida, há um contador de ALDEÕES VIVOS; as
+  Assombrações vão atrás deles e a partida acaba se chegar a zero.
+- [ ] **Treb Ciach AMPLIADO para o modo** (dono: "o mapa de treb ciach para esse modo seria ampliado para essa fase"):
+  pelo mapa do ep. 3 (`AV03_1h43_mapa_vilarejo.jpg`), a vila inteira com a fogueira no meio, uma casa por aldeão
+  nomeado (são ~15 casas: o contador de aldeões nasce daí), a Árvore Anciã ao norte e as entradas por onde as ondas
+  chegam (do pântano a leste e da floresta). PROPOSTA de jogo (a conversar com o dono):
+  - [ ] Cada casa com a lamparina da porta; entre as ondas o jogador acende as lamparinas (como no episódio, que conta
+    as acesas na tela) e a casa acesa fica protegida; casa apagada é alvo.
+  - [ ] As Assombrações vão para as casas e para os aldeões, não só para o jogador: é preciso escolher quem defender.
+  - [ ] O CHEFE a cada X ondas: PROPOSTA, as Assombrações de quem morreu (por exemplo a de Broén, que atacou o filho),
+    maiores e sozinhas; a onda final é a defesa na Árvore Anciã (barreira de fogo, como às 3h41).
+  - [ ] Inimigos com as fantasias do Samhain (crânio de cervo, bode, carneiro, vime): vivos e Assombrações parecidos,
+    e acertar um aldeão fantasiado custa caro.
 - [ ] **Treb Ciach (A Vigília ep. 3, "Samhain")**: o episódio é, no cânone, uma defesa por ondas. Base canônica
   (wiki, página do ep. 3): no festival de Samhain as Assombrações (silhuetas de fumaça azulada; o toque delas é uma
   "chama fria" que dissipa partes do corpo e transforma quem morre em mais uma) vagam pelo vilarejo; a Vigília passa
@@ -516,11 +535,29 @@ baixado sem o OK do dono.
   - [x] Refeito (v4.45.1): Samhain de dia nublado e pós-tempestade à noite azul, névoa em toda parte; a fogueira com
         o símbolo da roda de chifres e do crânio de cervo; casas de enxaimel, ruas de pedra, riacho e texturas.
   - [~] Conferir o ep. 3 de A Vigília (ao vivo em 2026-11-14) quando sair a gravação e ajustar o que mudar.
-        Conferido em 2026-11-18 pelo sumário detalhado da wiki (o vídeo não dá para assistir daqui). O que muda no
-        mapa (base canônica; forma visual PROPOSTA):
+        Conferido em 2026-11-18 no VOD do YouTube ("A VIGÍLIA - EPISÓDIO FINAL - Samhain", 5h28): o episódio inteiro
+        passado em miniaturas a cada 2,5 min e 24 prints em `Referencias visuais/Mapas/treb-ciach/episodios/AV03_*.jpg`
+        (o mapa do vilarejo em `AV03_1h43_mapa_vilarejo.jpg`), mais o sumário da wiki. O que se vê:
+        - O MAPA da província (1h43): a Vila no centro com uma casa por morador (Oishín, Maedb, Cuán, Bran, Sitriuk,
+          Broén, Blath, Brian, Idir e Zuri, Mugain, Fergus, Una e Ultan), a Árvore ao norte, o Pântano a leste com a
+          estrutura de pedra no meio, a Tenda Militar a oeste, o Lago a sudoeste com a casa do Marban, a Fazenda
+          (Eileen) no alto; estradas de terra ligando tudo.
+        - A fogueira (0h16, 3h08): alta, com a roda de chifres e o crânio no topo acesos em luz branca-azulada, e um
+          círculo ritual de espirais brilhando no chão em volta; as silhuetas giram dentro dele.
+        - As fantasias de Samhain (0h18, 3h43): mantos escuros, máscaras de crânio de cervo, bode e carneiro, cestos
+          de vime e palha na cabeça; vivos e mortos ficam iguais.
+        - A Assombração (2h51, 3h01): espectro de fumaça azul gelada, rosto e mãos brilhando.
+        - As ruas (0h58, 2h38, 2h48): cordões de lamparinas e bandeirolas entre as casas, guirlandas de chifres nas
+          fachadas, lamparina na porta de cada casa (o vídeo conta as lamparinas acesas na tela: 9/10, 15/20...).
+        - A Árvore Anciã (3h28, 3h31): tronco enorme e retorcido num campo de flores brancas e douradas; a defesa
+          final com a barreira de fogo no campo (3h41) e a árvore em chamas (4h03); depois, queimada e cinza (5h13).
+        - A Torre da Vigília (4h36, 5h08): redonda, de pedra, com poucas janelas, vista por cima das árvores.
+        O que muda no mapa (base canônica; forma visual PROPOSTA):
     - [ ] Lamparinas nas portas e em volta do vilarejo (a Chama de Proteção cerca o vilarejo todo): apagadas na noite
           do Samhain, acesas na versão do fim.
-    - [ ] Silhuetas fantasiadas/Assombrações azuladas vagando e girando em volta da fogueira (cenário, sem colisão).
+    - [ ] Silhuetas fantasiadas (crânios, vime, mantos) e Assombrações azuladas vagando e girando em volta da
+          fogueira (cenário, sem colisão); o círculo ritual de espirais brilhando no chão da fogueira.
+    - [ ] Cordões de lamparinas e bandeirolas entre as casas e guirlandas de chifres nas fachadas.
     - [ ] Tempestade com trovões sobre o vilarejo (já há raios rápidos no motor, v4.48.1).
     - [ ] A Árvore Anciã ao norte: campo florido (flores douradas), apiário e a porta de pedra com o símbolo da Vigília
           entre as raízes.
