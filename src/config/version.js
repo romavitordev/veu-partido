@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.13.0';
+export const VERSION = '5.14.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.14.0',
+    date: '2026-11-18',
+    title: 'A Roda dos Abutres',
+    items: [
+      'Especial em equipe da Equipe Abutres com final novo, a RODA DOS ABUTRES: depois dos golpes, os seis cercam o alvo e giram em volta dele como abutres no céu (vistos de cima). O Balu grita "VAMOS DAR UMA COÇA NELE!" e todos mergulham juntos.',
+    ],
+  },
   {
     v: '5.13.0',
     date: '2026-11-18',

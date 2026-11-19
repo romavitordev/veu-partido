@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v5.14.0 — A Roda dos Abutres
+
+- Versão: `VERSION` 5.13.0 → **5.14.0**. Data: 2026-11-18. Dono: "sim, comece um" (dar um momento próprio a um dos
+  especiais em equipe que eram só golpes em fila).
+- `CHOREO.abutres`: a RODA DOS ABUTRES (PROPOSTA, pelo nome da equipe; os golpes de antes ficam). Em S+4,95 todos
+  ficam num círculo de 2,7 m em volta do alvo e giram (`tl.each`, 3,2 rad/s) com a câmera do alto (`orbit` a 7,5 m) e
+  dois anéis roxos no chão; em S+5,6 o Balu grita "VAMOS DAR UMA COÇA NELE!" (a fala do pedido de 2026-11-02); em
+  S+5,85 o círculo fecha para 0,95 m em 0,2 s e cada um solta o golpe próprio; o mergulho leva um pedaço do dano
+  (`splitDamage` em n+1). A cena passa de 5,4 s para 6,1 s.
+- Conferido no jogo (Dante, Balu e Carina × Nubi): as falas em ordem, a roda vista de cima com os seis e o mergulho
+  fechando no alvo; sem erro no console. `npm test` 119/119, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.13.0 — Equipes Falam
 
 - Versão: `VERSION` 5.12.0 → **5.13.0**. Data: 2026-11-18. Dono: "siga o todo, próximo da lista de prioridade" → os

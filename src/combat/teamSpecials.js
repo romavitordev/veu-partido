@@ -2127,11 +2127,12 @@ const CHOREO = {
   },
 
   abutres({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
-    const END = S + 5.4;
+    const END = S + 6.3;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const dante = tools.get('dante'), balu = tools.get('balu'), joui = tools.get('joui'), arthur = tools.get('arthur'), carina = tools.get('carina'), rubens = tools.get('rubens');
     const actors = [dante, balu, joui, arthur, carina, rubens].filter(Boolean);
-    const shares = splitDamage(crewTotal, actors.length || 1);
+    // um pedaço a mais para o mergulho da roda (o último)
+    const shares = splitDamage(crewTotal, (actors.length || 1) + 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const say = sayer(world);
 
@@ -2262,16 +2263,51 @@ const CHOREO = {
       });
     }
 
-    const F = END;
-    tl.add(F - 0.45, () => {
-      if (!live()) return;
-      actors.forEach((actor, i) => {
-        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.65, 2.4);
-        actor.pos.set(at.x, 0, at.z);
+    // A RODA DOS ABUTRES (PROPOSTA; o nome da equipe): depois do martelo do Rubens, todos cercam o alvo e GIRAM em volta
+    // dele como abutres no céu (câmera do alto, a sombra roxa do Dante no chão); um grito do Balu e todos mergulham
+    // juntos, cada um com o golpe próprio, e o alvo some no meio deles
+    const RING0 = S + 4.95, DIVE = S + 5.85, F = S + 6.1;
+    const DIVE_ANIM = { dante: 'wave_punch', balu: 'hammer_diag', joui: 'iai_slash', arthur: 'slash_finisher', carina: 'flurry', rubens: 'hammer_v' };
+    const ring = { on: false, a0: 0 };
+    const ringPos = (k, ang, r) => ({ x: opp.pos.x + Math.sin(ang) * r, z: opp.pos.z + Math.cos(ang) * r, k });
+    tl.add(RING0, () => {
+      if (!live() || !actors.length) return;
+      ring.on = true;
+      ring.a0 = f.yaw + Math.PI;
+      actors.forEach((actor) => actor.play('run', 0.6));
+      world.fx.ring(opp.pos.clone().setY(0.06), { color: 0x392d45, radius: 2.9, life: 1.0 });
+      world.fx.ring(opp.pos.clone().setY(0.06), { color: 0x2a202e, radius: 2.2, life: 1.1 });
+      world.audio.play('swing', { volume: 0.6, pitch: 0.7 });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.0, radius: 2.2, height: 7.5, a0: 0, a1: 1.2, lookH: 0.4, fov: 50 }), cut: true }]);
+    });
+    tl.each((time) => {
+      if (!ring.on || !live() || time > F) return;
+      const n = actors.length;
+      let r = 2.7, spin = (time - RING0) * 3.2;
+      if (time >= DIVE) { const t = smooth(Math.min(1, (time - DIVE) / 0.2)); r = 2.7 + (0.95 - 2.7) * t; spin = (DIVE - RING0) * 3.2; }
+      actors.forEach((actor, k) => {
+        const p = ringPos(k, ring.a0 + spin + (k / n) * Math.PI * 2, r);
+        actor.pos.set(p.x, 0, p.z);
         actor.face(opp);
       });
-      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.75, radius: 4, height: 1.8, a0: -0.7, a1: 0.7 }), cut: true }]);
     });
+    tl.add(DIVE - 0.25, () => {
+      if (!live() || !actors.length) return;
+      if (balu) say(balu, 'VAMOS DAR UMA COÇA NELE!', 1); else say(actors[0], 'Agora!', 1);
+    });
+    tl.add(DIVE, () => {
+      if (!live() || !actors.length) return;
+      actors.forEach((actor) => actor.play(DIVE_ANIM[linkId(actor.def)] || 'heavy_punch', 0.45));
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.7, radius: 4.8, height: 2.9, a0: -0.4, a1: 0.4, lookH: 0.9, fov: 46 }), cut: true }]);
+    });
+    tl.add(DIVE + 0.2, () => {
+      if (!live() || !actors.length) return;
+      world.fx.burst(opp.chestPos(), { count: 36, color: 0x2a202e, speed: 3.4, spread: 1.6, life: 0.6, size: 0.2 });
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: 0xb8b3c2, radius: 1.8, life: 0.45 });
+      tools.impact(actors[0], shares[shares.length - 1], { sound: 'heavyPunch', color: 0x392d45 });
+    });
+    tl.add(F, () => { ring.on = false; });
+    tl.add(END, () => { ring.on = false; world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return F;
   },
 

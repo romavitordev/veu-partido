@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.14.0 — A Roda dos Abutres
+- Especial em equipe da Equipe Abutres com final novo, a RODA DOS ABUTRES: depois dos golpes, os seis cercam o alvo e giram em volta dele como abutres no céu (vistos de cima). O Balu grita "VAMOS DAR UMA COÇA NELE!" e todos mergulham juntos.
+
 ## v5.13.0 — Equipes Falam
 - Os especiais em equipe Força D, Os Cinco, Equipe Abutres e Execução dos Mascarados agora têm falas: cada membro diz a sua frase ao entrar no golpe, com a legenda na tela.
 

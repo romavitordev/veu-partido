@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.14.0 — A Roda dos Abutres
+
+### Alterado
+- `CHOREO.abutres`: a Roda dos Abutres (círculo girando + mergulho conjunto) antes do golpe final; 6,1 s.
+
 ## v5.13.0 — Equipes Falam
 
 ### Alterado
