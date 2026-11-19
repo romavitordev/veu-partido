@@ -425,9 +425,11 @@ export const DUNGEONS = {
     storyOrder: 4,
     name: 'Proteja Treb Ciach',
     place: 'Treb Ciach',
-    thumb: { from: 'treb_ciach' },
+    thumb: { from: 'treb_ciach_tempestade' },
     color: '#ffd84a',
-    arena: 'treb_ciach',
+    // a noite da TEMPESTADE nas três partes (dono, 2026-11-19: "o mapa está no de dia e não o pós tempestade, deveria ser
+    // o da tempestade, as 3 partes em tempestade")
+    arena: 'treb_ciach_tempestade',
     boss: null, // sem chefe-lutador: a última onda é a TEMPESTADE (Dungeon.startWave kind 'storm')
     bossName: 'AS ASSOMBRAÇÕES',
     restricted: [],

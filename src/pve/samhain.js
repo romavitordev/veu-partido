@@ -21,6 +21,7 @@ export const VILLAGE = {
   lampHp: { easy: 240, normal: 200, hard: 170, superhard: 150, annihilation: 130 },
   relight: 22, // vida por segundo que a lamparina recupera com alguém parado perto
   relightRange: 2.2,
+  rest: 0.35, // a chama que volta sozinha entre as ondas (fração da vida)
   safeRange: 3.2, // sem Assombração a esta distância da porta
   alertEvery: 6,
 };
@@ -183,6 +184,18 @@ export class SamhainVillage {
   }
 
   get alive() { return this.houses.filter((h) => h.alive).reduce((n, h) => n + h.villagers, 0); }
+
+  // o FÔLEGO entre as ondas: os aldeões avivam por dentro a chama das casas ainda acesas (+`VILLAGE.rest` da vida).
+  // Sem isso, com a vila mais longa da v5.24, a Tempestade apagava as últimas casas mesmo jogando bem. PROPOSTA.
+  rest() {
+    let n = 0;
+    for (const h of this.houses) {
+      if (!h.alive || h.hp >= h.maxHp) continue;
+      h.hp = Math.min(h.maxHp, h.hp + h.maxHp * VILLAGE.rest);
+      n++;
+    }
+    if (n) this.d.popup(0, 'OS ALDEÕES AVIVARAM AS CHAMAS', '#ffd84a');
+  }
 
   // os alvos das Assombrações: as casas ainda acesas
   targets() { return this.houses.filter((h) => h.alive); }

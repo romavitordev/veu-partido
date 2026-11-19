@@ -1261,6 +1261,7 @@ export class Dungeon {
     if (enc.storm) { if (this.D.waves.runner) this.startRunner(enc); else this.finishStorm(); return; }
     if (S.tree && enc.wave >= S.total) { this.finishTree(enc); return; }
     if (S.tree && this.tree) this.tree.rest();
+    if (this.village && !this.tree && !this.runner) this.village.rest();
     enc.done = true;
     this.hudRemove('pve-minor');
     this.hud.callout(`ONDA ${enc.wave} VENCIDA`, '#7dffb0');
