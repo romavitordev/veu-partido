@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v5.26.1 — A Assombração Refeita
+
+- Versão: `VERSION` 5.26.0 → **5.26.1**. Data: 2026-11-19.
+- Dono: "as assombrações azuis devem ter remodel" (item do TODO).
+- Feito pelo pipeline sem interface (`node tools/blender/build.mjs assombracao`) com renders de conferência (frente,
+  lado, 3/4, cabeça, mão); conferido no jogo com a fantasia rasgada na vila do Samhain.
+- PROPOSTA: o visual do espírito (o rosto, as garras, a saia, o rosto da nuca).
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.26.0 — O Dublê e o Racha
 
 - Versão: `VERSION` 5.25.1 → **5.26.0**. Data: 2026-11-19.

@@ -33,7 +33,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from mathutils import Vector
 
 from lib import reset, material, export_glb, hex_rgb, TAU
-from npc_lib import rod, curve, joint, add, finish
+from npc_lib import rod, curve, joint, add, finish, blob
 from npc_sculpt_lib import Sculpt, vcol_material, n3, white_vcols
 
 random.seed(73)
@@ -85,39 +85,86 @@ chest = joint('J_chest', (0, hipY, 0), body)
 top = (0, shY, shZ)
 
 # ================================================================ O ESPÍRITO (por baixo de tudo; aparece só sem a fantasia)
+# REMODEL (dono, 2026-11-19: "as assombrações azuis devem ter remodel"), pela arte do ep. 3 (`AV03_2h51_assombracao_azul`):
+# um VELHO encurvado e magro, rosto enrugado de sobrancelha pesada, órbitas fundas, bochechas chupadas e nariz adunco, a
+# boca entreaberta; o cabelo longo e ralo caindo para trás; a túnica de gola e botões; as MÃOS GRANDES de dedos longos e
+# ossudos com garras; sem pés — a parte de baixo vira fiapos de fumaça. Por cima do rosto, o ECO do rosto repetido
+# (`REV_1h56_concept_rosto_repetido`: a mesma cara escorregando para cima, borrada).
+def chest_disp(p):
+    x, y, z = p
+    rib = 0.0045 * math.sin(y * 58) if 0.24 < y < 0.5 and z > 0.03 else 0.0  # as costelas sob a túnica
+    return rib + 0.003 * n3(p, 18)
+
+
 S = Sculpt('torso_espirito')
-S.ell((0, -0.02, 0.0), (0.14, 0.1, 0.09))
-S.ell((0, 0.16, 0.0), (0.14, 0.13, 0.09))
-S.ell((0, 0.36, 0.02), (0.16, 0.14, 0.1))
-S.ell((0, 0.52, 0.03), (0.19, 0.11, 0.11))
-S.ell((0, 0.62, 0.04), (0.2, 0.05, 0.09))
-S.chain([(-0.14, 0.05, 0.08), (0, 0.0, 0.1), (0.14, 0.05, 0.08)], [0.02, 0.022, 0.02])  # o cinto da túnica
-S.build(chest, M['spirit'], 2000, res=0.008)
-add(chest, 'nucleo_espirito', rod([(0, 0.32, 0.07), (0, 0.42, 0.09), (0, 0.5, 0.07)], [0.04, 0.06, 0.035], seg=10), M['core'])
+S.ell((0, -0.02, 0.0), (0.12, 0.1, 0.08))
+S.ell((0, 0.15, 0.01), (0.12, 0.12, 0.08))
+S.ell((0, 0.35, 0.04), (0.15, 0.14, 0.1))  # o peito para a frente
+S.ell((0, 0.5, -0.04), (0.18, 0.12, 0.12))  # a corcunda
+S.ell((0, 0.61, 0.0), (0.21, 0.05, 0.09))  # os ombros erguidos
+for s_ in (1, -1):
+    S.ell((s_ * 0.06, 0.42, 0.11), (0.05, 0.05, 0.03), neg=True)  # o peito afundado entre as costelas
+S.build(chest, M['spirit'], 2400, res=0.008, disp=chest_disp)
+add(chest, 'nucleo_espirito', rod([(0, 0.32, 0.05), (0, 0.42, 0.065), (0, 0.5, 0.05)], [0.035, 0.05, 0.03], seg=10), M['core'])  # o coração de luz, por dentro
+# a túnica: a gola em volta do pescoço e a fileira de botões
+gola = [(math.sin(a) * 0.1, 0.63 + 0.015 * math.cos(a), 0.03 + math.cos(a) * 0.08) for a in [i / 10 * TAU for i in range(11)]]
+add(chest, 'gola_espirito', rod(gola, 0.016, seg=6), M['spirit'])
+for i in range(5):
+    y = 0.52 - i * 0.09
+    add(chest, f'botao{i}_espirito', blob((0, y, 0.115 + (0.02 if 0.25 < y < 0.45 else 0.0)), (0.012, 0.012, 0.008), seg=6, rings=4), M['core'])
 
 neck = joint('J_neck', (0, top[1] + 0.03, top[2] + 0.02), chest)
+
+
+def face(Sc, o=(0, 0, 0), k=1.0):
+    """a cara do velho (repetida no eco com deslocamento `o` e escala `k`)"""
+    P = lambda x, y, z: (o[0] + x * k, o[1] + y * k, o[2] + z * k)
+    R = lambda *r: tuple(v * k for v in r)
+    for s_ in (1, -1):  # as sobrancelhas pesadas, caídas para fora
+        Sc.chain([P(s_ * 0.008, 0.188, 0.078), P(s_ * 0.035, 0.192, 0.074), P(s_ * 0.06, 0.18, 0.058)], [0.012 * k, 0.014 * k, 0.009 * k])
+    Sc.ell(P(0, 0.1, 0.035), R(0.052, 0.075, 0.06))  # a cara comprida
+    for s_ in (1, -1):
+        Sc.ell(P(s_ * 0.05, 0.135, 0.058), R(0.024, 0.018, 0.024))  # as maçãs do rosto saltadas
+        Sc.ell(P(s_ * 0.05, 0.095, 0.078), R(0.02, 0.03, 0.02), neg=True)  # as bochechas chupadas
+        Sc.ell(P(s_ * 0.031, 0.162, 0.088), R(0.021, 0.016, 0.02), neg=True)  # as órbitas fundas
+    Sc.chain([P(0, 0.17, 0.085), P(0, 0.135, 0.108), P(0, 0.112, 0.102)], [0.011 * k, 0.016 * k, 0.01 * k])  # o nariz adunco
+    Sc.ell(P(0, 0.074, 0.088), R(0.024, 0.012, 0.02), neg=True)  # a boca entreaberta
+
+
+def wrinkles(p):
+    x, y, z = p
+    w = 0.0028 * math.sin(y * 150) if 0.2 < y < 0.26 and z > 0.02 else 0.0  # a testa enrugada
+    return w + 0.002 * n3(p, 30)
+
+
 H = Sculpt('cabeca_espirito')
-H.chain([(0, -0.04, -0.01), (0, 0.04, 0.0)], [0.055, 0.05])
-H.ell((0, 0.17, 0.0), (0.09, 0.115, 0.1))  # crânio
-H.ell((0, 0.11, 0.045), (0.07, 0.06, 0.07))  # a face
-# o ROSTO REPETIDO (o concept do Revelando 1h56): mais um queixo e mais um par de órbitas por cima, deslocados
-H.ell((0.012, 0.2, 0.06), (0.06, 0.045, 0.06))
-for s in (1, -1):
-    H.ell((s * 0.035, 0.16, 0.088), (0.022, 0.016, 0.02), neg=True)
-    H.ell((s * 0.035 + 0.012, 0.235, 0.09), (0.02, 0.014, 0.02), neg=True)
-H.build(neck, M['spirit'], 1600, res=0.005, smooth=3)
-for s in (1, -1):
-    add(neck, f'olho{s}_espirito', rod([(s * 0.035, 0.16, 0.075), (s * 0.035, 0.16, 0.085)], 0.012, seg=8), M['core'])
-    add(neck, f'olhoB{s}_espirito', rod([(s * 0.035 + 0.012, 0.235, 0.078), (s * 0.035 + 0.012, 0.235, 0.088)], 0.01, seg=8), M['core'])
-for i in range(16):  # o cabelo de espírito, arrepiado para trás (os fiapos de luz do 3h01)
-    a = random.uniform(-1.4, 1.4)
-    base = (math.sin(a) * 0.08, 0.25 + random.uniform(-0.01, 0.02), math.cos(a) * 0.06 - 0.02)
-    tip = (base[0] * 1.6, base[1] + random.uniform(0.02, 0.07), base[2] - random.uniform(0.12, 0.2))
-    add(neck, f'fiapo{i}_espirito', rod([base, ((base[0] + tip[0]) / 2, base[1] + 0.04, (base[2] + tip[2]) / 2), tip], [0.012, 0.008, 0.0015], seg=5), M['spirit'])
+H.chain([(0, -0.05, -0.02), (0, 0.03, 0.0)], [0.042, 0.04])  # o pescoço magro
+H.ell((0, 0.18, -0.01), (0.085, 0.11, 0.095))  # o crânio
+face(H)
+H.build(neck, M['spirit'], 2200, res=0.0045, smooth=2, disp=wrinkles)
+for s_ in (1, -1):
+    add(neck, f'olho{s_}_espirito', rod([(s_ * 0.031, 0.162, 0.066), (s_ * 0.031, 0.162, 0.072)], 0.008, seg=8), M['core'])  # no fundo da órbita
+# o ECO: a mesma cara escorregando para cima e um pouco para o lado
+E = Sculpt('rostoEco_espirito')
+face(E, o=(0.016, 0.075, -0.03), k=0.9)  # raso: sai da testa
+E.build(neck, M['spirit'], 900, res=0.005, smooth=3)
+for s_ in (1, -1):
+    add(neck, f'olhoB{s_}_espirito', rod([(s_ * 0.028 + 0.016, 0.22, 0.038), (s_ * 0.028 + 0.016, 0.22, 0.044)], 0.007, seg=8), M['core'])
+for i in range(26):  # o cabelo longo e ralo, caindo para trás e esvoaçando
+    a = random.uniform(-1.7, 1.7)
+    base = (math.sin(a) * 0.075, 0.25 + random.uniform(-0.02, 0.02) - abs(a) * 0.03, math.cos(a) * 0.05 - 0.035)
+    sw = random.uniform(-0.05, 0.05)
+    L = random.uniform(0.28, 0.46)
+    pts = [base,
+           (base[0] * 1.5 + sw * 0.3, base[1] - L * 0.2, base[2] - 0.09),
+           (base[0] * 1.9 + sw, base[1] - L * 0.55, base[2] - 0.16),
+           (base[0] * 2.2 - sw * 0.5, base[1] - L, base[2] - 0.2 - random.uniform(0, 0.08))]
+    add(neck, f'cabelo{i}_espirito', rod(pts, [0.009, 0.007, 0.004, 0.001], seg=4), M['spirit'])
 jaw = joint('J_jaw', (0, 0.1, 0.03), neck)
-J = Sculpt('mandibula_espirito')
-J.chain(curve((-0.045, 0.0, 0.0), (0, -0.03, 0.05), (0.045, 0.0, 0.0), 6), [0.016, 0.018, 0.02, 0.02, 0.018, 0.016], step=0.5)
-J.build(jaw, M['spirit'], 300, res=0.005, smooth=2)
+J = Sculpt('mandibula_espirito')  # o queixo ossudo, caído
+J.chain(curve((-0.042, 0.0, -0.005), (0, -0.04, 0.05), (0.042, 0.0, -0.005), 6), [0.013, 0.015, 0.017, 0.017, 0.015, 0.013], step=0.5)
+J.build(jaw, M['spirit'], 360, res=0.0045, smooth=2)
+# (a fumaça em volta sai em partículas no jogo: src/combat/assombracao.js)
 
 # ================================================================ ROUPA 1: o MANTO de capuz escuro, AMARRADO DE CORDAS
 rM = joint('J_roupaManto', (0, 0, 0), chest)
@@ -246,22 +293,28 @@ for i in range(8):
 # ================================================================ BRAÇOS: o espírito, as mangas de cada roupa e as LUVAS de couro
 def arm(s, name):
     sh = joint(f'J_sh{name}', (s * shX, top[1] - 0.05, top[2] - 0.03), chest)
-    U = Sculpt(f'braco{name}_espirito')
-    U.chain([(0, 0, 0), (0, -upL * 0.5, 0.0), (0, -upL, 0)], [upR, upR * 0.95, upR * 0.8], step=0.6)
+    U = Sculpt(f'braco{name}_espirito')  # magro, o osso marcando
+    U.chain([(0, 0, 0), (0, -upL * 0.5, 0.0), (0, -upL, 0)], [upR * 0.95, upR * 0.75, upR * 0.7], step=0.6)
     U.build(sh, M['spirit'], 500, res=0.006)
     el = joint(f'J_el{name}', (0, -upL, 0), sh)
     F = Sculpt(f'antebraco{name}_espirito')
-    F.chain([(0, 0.01, 0), (0, -foreL * 0.5, 0.0), (0, -foreL + 0.02, 0)], [foreR, foreR * 1.05, foreR * 0.8], step=0.6)
-    F.build(el, M['spirit'], 400, res=0.0055)
+    F.chain([(0, 0.01, 0), (0, -foreL * 0.5, 0.0), (0, -foreL + 0.02, 0)], [foreR * 0.9, foreR * 0.8, foreR * 0.65], step=0.6)
+    F.ell((0, 0.0, -0.005), (foreR * 0.9, 0.02, foreR * 0.9))  # o cotovelo ossudo
+    F.build(el, M['spirit'], 420, res=0.0055)
     hand = joint(f'J_hand{name}', (0, -foreL, 0), el)
-    hw = 0.04
+    hw = 0.05  # as MÃOS GRANDES da arte
     Hd = Sculpt(f'mao{name}_espirito')
-    Hd.ell((0, -0.035, 0.01), (hw, 0.045, hw * 0.45))
-    Hd.build(hand, M['spirit'], 300, res=0.0045, smooth=2)
+    Hd.ell((0, -0.045, 0.012), (hw, 0.055, hw * 0.4))
     for i in range(4):
-        a = (i - 1.5) * 0.32
-        x0 = math.sin(a) * hw
-        add(hand, f'dedo{i}_espirito', rod([(x0, -0.07, 0.015), (x0 * 1.5, -0.14, 0.04), (x0 * 1.8, -0.2, 0.07)], [0.011, 0.008, 0.002], seg=5), M['spirit'])
+        Hd.ell((math.sin((i - 1.5) * 0.3) * hw * 0.9, -0.09, 0.018), (0.012, 0.012, 0.012))  # os nós dos dedos
+    Hd.build(hand, M['spirit'], 420, res=0.004, smooth=2)
+    for i in range(4):  # os dedos longos e ossudos, curvando em garra
+        a = (i - 1.5) * 0.3
+        x0 = math.sin(a) * hw * 0.9
+        L = 0.2 - abs(i - 1.5) * 0.025
+        add(hand, f'dedo{i}_espirito', rod([(x0, -0.09, 0.018), (x0 * 1.3, -0.09 - L * 0.4, 0.035), (x0 * 1.5, -0.09 - L * 0.75, 0.07), (x0 * 1.55, -0.09 - L * 0.95, 0.12)],
+                                            [0.011, 0.009, 0.006, 0.0012], seg=6), M['spirit'])
+    add(hand, 'polegar_espirito', rod([(-s * hw * 0.8, -0.03, 0.03), (-s * hw * 1.4, -0.08, 0.075), (-s * hw * 1.5, -0.13, 0.11)], [0.012, 0.009, 0.0012], seg=6), M['spirit'])
     # MANTO: a manga larga de pano
     for tag, mat, color in (('Manto', M['cloak'], cloak_col),):
         ju = joint(f'J_manga{tag}{name}', (0, 0, 0), sh)
@@ -305,13 +358,28 @@ arm(-1, 'R')
 for s, name in ((1, 'L'), (-1, 'R')):
     hip = joint(f'J_hip{name}', (s * hipX, 0, 0), chest)
     Th = Sculpt(f'coxa{name}_espirito')
-    Th.chain([(0, 0.03, 0), (0, -thighL * 0.5, 0.01), (0, -thighL + 0.02, 0.0)], [thighR * 1.1, thighR, thighR * 0.8])
-    Th.build(hip, M['spirit'], 500, res=0.007)
+    Th.chain([(0, 0.03, 0), (0, -thighL * 0.4, -0.01), (0, -thighL * 0.7, -0.03)], [thighR * 0.8, thighR * 0.6, thighR * 0.35])
+    Th.build(hip, M['spirit'], 420, res=0.007)
     knee = joint(f'J_knee{name}', (0, -thighL, 0.0), hip)
-    for k in range(3):
-        ox = (k - 1) * 0.02
-        add(knee, f'fiapoPerna{k}_espirito', rod([(ox, 0.0, 0.0), (ox * 2, -shinL * 0.45, -0.04 - k * 0.01), (ox * 3, -shinL * 0.85, -0.12 - k * 0.03)],
-                                                  [0.045, 0.025, 0.002], seg=6), M['spirit'])
+    for k in range(5):  # sem pés: a perna se desfaz em fiapos de fumaça arrastando para trás
+        ox = (k - 2) * 0.018
+        sw = random.uniform(-0.04, 0.04)
+        add(knee, f'fiapoPerna{k}_espirito', rod([(ox, 0.2, -0.02), (ox * 2 + sw, -shinL * 0.3, -0.08 - k * 0.012), (ox * 3 - sw, -shinL * 0.65, -0.2 - k * 0.03), (ox * 3.5 + sw, -shinL * 0.9, -0.34 - k * 0.04)],
+                                                  [0.04, 0.03, 0.014, 0.001], seg=6), M['spirit'])
+# a SAIA da túnica: um sino de luz da cintura para baixo (a silhueta de manto da arte), e as tiras se desfazendo
+Sk = Sculpt('saia_espirito')
+Sk.chain([(0, 0.06, 0.0), (0, -0.15, -0.02), (0, -0.38, -0.05)], [0.13, 0.16, 0.19], step=0.4)
+Sk.ell((0, -0.62, -0.06), (0.3, 0.22, 0.3), neg=True)  # a barra aberta embaixo
+Sk.build(chest, M['spirit'], 1200, res=0.009, disp=lambda p: 0.006 * math.sin(math.atan2(p[0], p[2]) * 11) * max(0.0, 0.1 - p[1]))
+for i in range(12):
+    a = (i / 12) * TAU
+    r0 = 0.12
+    L = random.uniform(0.35, 0.6)
+    pts = [(math.sin(a) * r0, 0.02, math.cos(a) * r0 * 0.75),
+           (math.sin(a) * r0 * 1.35, -L * 0.4, math.cos(a) * r0 - 0.05),
+           (math.sin(a) * r0 * 1.6, -L * 0.75, math.cos(a) * r0 - 0.14),
+           (math.sin(a) * r0 * 1.7, -L, math.cos(a) * r0 - 0.24)]
+    add(chest, f'barra{i}_espirito', rod(pts, [0.03, 0.024, 0.012, 0.001], seg=5, flat=0.5), M['spirit'])
 
 white_vcols()
 finish()

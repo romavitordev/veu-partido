@@ -126,7 +126,7 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       no chão até eu acender a lanterna e devia ser maior para dar dano nas assombrações").
     - [x] (v5.25.0) A noite da tempestade nas 3 partes; domo/coluna/seta das casas; vila mais justa; a horda (cena e
       corredor); fagulhas seguras; o alçapão aberto e a cena de fechar; a Árvore mais longa; a caixa da Vigília.
-    - [ ] O REMODEL da Assombração azul (Blender MCP; dono: "as assombrações azuis devem ter remodel").
+    - [x] (v5.26.1) O REMODEL da Assombração azul (o espírito novo; dono: "as assombrações azuis devem ter remodel").
     - [x] (v5.25.1) A folhagem que tampava o corredor: era o morro de urze do mapa; cortado sobre o caminho.
     - [x] (v5.25.1) A horda ENCURRALA (arco com a brecha no corredor); sem golpes no corredor; lado mais rápido;
       a sniper e o Solo do Abutre do Arthur nos bichos; Templo do Ódio, Dystopia; Arma de Sangue com o Templo.

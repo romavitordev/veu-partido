@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.26.1 — A Assombração Refeita
+- OUTRO LADO: a ASSOMBRAÇÃO AZUL ganhou um espírito novo — quando a fantasia rasga sai uma figura magra e curvada, de costelas à mostra, rosto comprido de olhos fundos e boca aberta, um segundo rosto apagado saindo da nuca, cabelo longo caindo para trás, braços finos com mãos grandes de garras compridas e uma saia em sino que termina em farrapos, com fiapos saindo das pernas (antes era um boneco liso com a fumaça dos ombros parecendo chifres).
+
 ## v5.26.0 — O Dublê e o Racha
 - OUTRO LADO: os ESPECIAIS agora pegam nos bichos como no modo luta — o nome do especial na faixa, a cena e a animação inteiras no bicho que está na mira (antes, nas salas de bichos, o especial ia atrás do inimigo escondido da próxima sala: dava "alvo fora de alcance" ou rodava longe, sem acertar ninguém). As HABILIDADES que miram o adversário também vão no bicho da mira. RACHA (Dara) refeito: ela pula na van e dá três laços bem rápidos em volta do alvo, cantando pneu, e passa por cima dele três vezes; na terceira ele voa, a van freia de lado e ela pula da cabine. Os laços se ajustam ao espaço livre. CARROS DOS GOLPES (a van do Chico, o carro do Cristopher, o Racha): não nascem mais dentro de paredes e casas (travavam e explodiam na hora) e sempre somem no fim do golpe. TREB CIACH: a lamparina quase apagando fica AMARELA e falha, apagando e acendendo (antes piscava entre amarelo e vermelho); o aviso de casa atacada continua na coluna vermelha e na seta. Corrigido: a faixa com o nome do Solo do Abutre (Arthur) e do Headshot (Amália) só aparecia no fim da cena.
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.26.1 — A Assombração Refeita
+
+### Mudado
+- `tools/blender/npc_assombracao.py`: só o espírito (`*_espirito`) remodelado; a fantasia e as juntas iguais. Tronco
+  curvado de peito fundo com costelas (`chest_disp`), gola e botões-núcleo; `face()` (sobrancelhas caídas, maçãs,
+  bochechas e órbitas fundas, nariz adunco, boca aberta, rugas) na cabeça e no rosto-eco da nuca; 26 mechas de cabelo;
+  braços finos com cotovelo, mãos largas com nós e 4 garras + polegar; coxas finas com 5 fiapos por perna; saia em
+  sino (`saia_espirito`) com dobras e 12 farrapos na barra. Sem a fumaça dos ombros. `public/npcs/assombracao.glb`
+  refeito pelo `build.mjs` (~430 KB).
+
 ## v5.26.0 — O Dublê e o Racha
 
 ### Adicionado

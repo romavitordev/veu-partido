@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.26.0';
+export const VERSION = '5.26.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.26.1',
+    date: '2026-11-19',
+    title: 'A Assombração Refeita',
+    items: [
+      'OUTRO LADO: a ASSOMBRAÇÃO AZUL ganhou um espírito novo — quando a fantasia rasga sai uma figura magra e curvada, de costelas à mostra, rosto comprido de olhos fundos e boca aberta, um segundo rosto apagado saindo da nuca, cabelo longo caindo para trás, braços finos com mãos grandes de garras compridas e uma saia em sino que termina em farrapos, com fiapos saindo das pernas (antes era um boneco liso com a fumaça dos ombros parecendo chifres).',
+    ],
+  },
   {
     v: '5.26.0',
     date: '2026-11-19',
