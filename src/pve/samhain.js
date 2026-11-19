@@ -230,31 +230,40 @@ export class SamhainVillage {
 
   // A HORDA (dono, 2026-11-19: "uma onda de bichos que aparece em uma cutscene dele na parte 1, vindo uma horda de
   // assombrações de todos os lados, ele foge pra parte 2"): passada a tempestade, Assombrações saem da névoa por todos os
-  // lados e fecham o cerco em volta de quem joga; a câmera sobe para mostrar o círculo. Só cena (não atacam).
-  hordeScene(dur = 3.2) {
+  // lados e ENCURRALAM quem joga (dono: "nao deveriam cercar o personagem na cutscene, mas encurralar ele pra ele fugir
+  // pelo corredor"): um arco por trás e pelos lados que fecha, a única brecha é a entrada do corredor; o personagem
+  // recua, vira e dispara para lá. Só cena (não atacam).
+  hordeScene(dur = 3.2, exit = null) {
     const d = this.d;
     const p = d.player;
+    const cx = p.pos.x, cz = p.pos.z;
+    const ex = exit ? exit.x : 0, ez = exit ? exit.z : 0;
+    const aim = Math.atan2(ex - cx, ez - cz); // a direção da fuga (a entrada do corredor)
+    const gap = 1.25; // meia abertura do arco (rad): a brecha que sobra
     const n = 26;
     const list = [];
     for (let i = 0; i < n; i++) {
       const m = buildAssombracao();
-      const a = (i / n) * Math.PI * 2 + Math.random() * 0.2;
-      const r0 = 21 + Math.random() * 5;
-      m.root.position.set(p.pos.x + Math.sin(a) * r0, 0.06, p.pos.z + Math.cos(a) * r0);
+      const a = aim + gap + ((i + 0.5) / n) * (Math.PI * 2 - gap * 2) + (Math.random() - 0.5) * 0.12;
+      const r0 = 19 + Math.random() * 6;
+      const r1 = 5 + Math.random() * 1.6;
+      m.root.position.set(cx + Math.sin(a) * r0, 0.06, cz + Math.cos(a) * r0);
       m.root.rotation.y = a + Math.PI; // de frente para o meio
       d.world.scene.add(m.root);
-      list.push({ m, a, r0, seed: i * 1.7 });
+      list.push({ m, a, r0, r1, seed: i * 1.7 });
     }
-    this.horde = { list, t: 0, dur, cx: p.pos.x, cz: p.pos.z };
-    for (const q of d.players) { q.vel.set(0, 0, 0); q.setState('intro'); q.anim && q.anim.play('idle', { restart: true }); }
+    this.horde = { list, t: 0, dur, cx, cz, aim, ex, ez, ran: false };
+    for (const q of d.players) { q.vel.set(0, 0, 0); q.setState('intro'); q.yaw = aim + Math.PI; q.anim && q.anim.play('idle', { restart: true }); }
+    // a câmera por trás da horda (do lado oposto à brecha), alta, olhando por cima de quem joga para a saída
+    const back = aim + Math.PI;
     const cam = d.world.cameraRig;
     cam && cam.playShots([{
       dur: dur + 0.6,
       fov: 60,
-      pos: (k) => new THREE.Vector3(p.pos.x + Math.sin(k * 1.4) * (9 + k * 5), 5 + k * 7, p.pos.z + Math.cos(k * 1.4) * (9 + k * 5)),
-      look: () => new THREE.Vector3(p.pos.x, 0.8, p.pos.z),
+      pos: (k) => new THREE.Vector3(cx + Math.sin(back + 0.5 - k * 0.5) * (14 - k * 3), 7 + k * 2, cz + Math.cos(back + 0.5 - k * 0.5) * (14 - k * 3)),
+      look: () => new THREE.Vector3(p.pos.x + Math.sin(aim) * 3, 0.8, p.pos.z + Math.cos(aim) * 3),
     }]);
-    d.hud.callout('UMA HORDA DE TODOS OS LADOS: FUJA!', '#ff6a4a');
+    d.hud.callout('A HORDA ENCURRALOU VOCÊ: FUJA PELO CORREDOR!', '#ff6a4a');
     d.audio.play('fearGaze', { volume: 1, pitch: 0.4 });
     d.world.cameraRig && d.world.cameraRig.shake(0.2, 0.5);
   }
@@ -264,8 +273,18 @@ export class SamhainVillage {
     if (!H) return;
     H.t += dt;
     const k = Math.min(1, H.t / H.dur);
+    // quem joga: recua de costas para a brecha olhando a horda e, no meio da cena, vira e dispara para o corredor
+    const run = k > 0.5;
+    for (const q of this.d.players) {
+      if (run && !H.ran) { q.yaw = H.aim; q.anim && q.anim.play('run', { restart: true }); }
+      const sp = run ? 6.5 : 1.2;
+      if (Math.hypot(H.ex - q.pos.x, H.ez - q.pos.z) < 2) continue; // já na entrada do corredor
+      q.pos.x += Math.sin(H.aim) * sp * dt;
+      q.pos.z += Math.cos(H.aim) * sp * dt;
+    }
+    if (run) H.ran = true;
     for (const c of H.list) {
-      const r = c.r0 - (c.r0 - 4.5) * (1 - (1 - k) * (1 - k));
+      const r = c.r0 - (c.r0 - c.r1) * (1 - (1 - k) * (1 - k));
       c.m.root.position.x = H.cx + Math.sin(c.a) * r;
       c.m.root.position.z = H.cz + Math.cos(c.a) * r;
       c.m.root.position.y = 0.06 + Math.sin(H.t * 2.4 + c.seed) * 0.06;

@@ -1,5 +1,21 @@
 # Registro administrativo de alterações
 
+## v5.25.1 — A Brecha do Corredor
+
+- Versão: `VERSION` 5.25.0 → **5.25.1**. Data: 2026-11-19.
+- Dono: "nao pode ser possivel usar habilidades na parte 2 de treb ciach, ainda tem essa moita verde que tampa o
+  caminho. A sniper de arthur agora nao está funcionando nem o especial está … como o dystopia deveria se chamar
+  dystopia … arma de sangue + templo do ódio, deveria dar … a movimentação lateral da parte 2 está muito lenta, usei um
+  ataque de teste na parte 2 e a tela ficou preta. As assombrações nao deveriam cercar o personagem na cutscene, mas
+  encurralar ele pra ele fugir pelo corredor".
+- A "moita": raios da câmera no corredor acertavam `static_MAT_CLOTH_hill_moor` (#3c4937) a 0,3 m — um morro grande
+  que a limpeza por peça deixava. Depois do corte, o mais perto ficou a 4 m (fora do caminho).
+- A cena: conferida por números (nenhuma Assombração a menos de 90° da saída vista de quem joga; ele termina virado para
+  a entrada). A tela preta: provavelmente a cena de um golpe/especial no corredor; agora não há golpes lá.
+- Não conferido em jogo com controle humano: a sniper e o Solo do Abutre nos bichos, o lado mais rápido, a cena nova.
+- PROPOSTA: a abertura do arco, a velocidade do lado (×1,15) e o corte dos morros.
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.25.0 — A Horda e a Porta Aberta
 
 - Versão: `VERSION` 5.24.2 → **5.25.0**. Data: 2026-11-19.

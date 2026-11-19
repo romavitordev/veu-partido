@@ -93,7 +93,7 @@ export default {
     },
     {
       id: 'templo',
-      name: 'Ódio Incontrolável "Templo do Ódio"',
+      name: 'Templo do Ódio', // dono, 2026-11-19: os nomes como na série ("o dystopia deveria se chamar dystopia")
       input: 'carga+physical', // △ + ○ / Y + B
       type: 'hatredTemple',
       ritual: true,
@@ -109,7 +109,7 @@ export default {
     },
     {
       id: 'dystopia',
-      name: 'Paralisia de Sangue "Dystopia"',
+      name: 'Dystopia',
       input: 'block+carga', // R2 + △ / RT + Y
       type: 'bloodParalysis',
       ritual: true,
@@ -152,6 +152,7 @@ export default {
       input: 'block+jump', // R2 + × / RT + A
       type: 'bloodBlade',
       ritual: true,
+      hatredOk: true, // dá para usar com o Templo do Ódio ativo (dono: "a arma de sangue + templo do ódio, deveria dar")
       description: 'Paga com o próprio sangue e projeta uma lâmina de sangue do punho direito: por 8 s o físico vira cortes com ela, que alcançam mais longe e fazem sangrar.',
       healthCost: 40,
       energyCost: 0,

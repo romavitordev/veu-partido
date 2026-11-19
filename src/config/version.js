@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.25.0';
+export const VERSION = '5.25.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.25.1',
+    date: '2026-11-19',
+    title: 'A Brecha do Corredor',
+    items: [
+      'TREB CIACH: na cena depois da tempestade a horda não te cerca mais: ela vem por trás e pelos lados e te ENCURRALA, deixando só a entrada do corredor; você recua, vira e foge por ela. CORREDOR: o morro verde do mapa que cruzava o caminho (a câmera passava por dentro dele e tampava a vista) saiu de cima do caminho; dá para desviar de lado bem mais rápido; golpes e habilidades ficam bloqueados na fuga (só a esquiva), o que também acaba com a tela preta de usar um golpe ali. ARTHUR: a SNIPER e o especial SOLO DO ABUTRE voltaram a funcionar no Outro Lado (miram e acertam os bichos); os golpes com os nomes da série: TEMPLO DO ÓDIO e DYSTOPIA; e a ARMA DE SANGUE pode ser usada com o Templo do Ódio ativo.',
+    ],
+  },
   {
     v: '5.25.0',
     date: '2026-11-19',

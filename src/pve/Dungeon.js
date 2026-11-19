@@ -1049,7 +1049,7 @@ export class Dungeon {
     this.revivePlayers();
     // a cena da HORDA fechando o cerco (pve/samhain.js hordeScene) e só então a fuga
     const scene = this.village ? 3.2 : 0;
-    if (this.village) this.village.hordeScene(scene);
+    if (this.village) this.village.hordeScene(scene, LanternRun.entrance());
     else this.hud.callout('ELAS NÃO PARAM DE VIR', '#c8d8ff');
     this.world.after(scene, () => { if (!this.disposed) this.pveHud.fade(true, 0.6); });
     this.world.after(scene + 0.8, () => {

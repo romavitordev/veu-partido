@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { yawTo, distXZ } from '../../core/util.js';
 import { COMBAT } from '../../config/combat.js';
-import { applyHit } from '../damage.js';
+import { applyHit, npcDamage } from '../damage.js';
 import { trySpecialBlock } from './common.js';
 import { faceClose, overShoulder, socketClose, pullBack } from '../../camera/shots.js';
 
@@ -12,16 +12,32 @@ import { faceClose, overShoulder, socketClose, pullBack } from '../../camera/sho
 //   3. Mira de Elite: a câmera vai para a mira — mirar e atirar no mesmo turno;
 //   4. Golpe de Sorte: o tiro sai CRÍTICO (a margem de crítico dele é o dobro) e atravessa o alvo com a descarga roxa.
 // sp.damage (padrão COMBAT.specialDamage), sp.color (o verde do Rebirth), sp.critMult (o crítico), sp.showProp/hideProp.
+// OUTRO LADO: nas salas de bichos o adversário fica escondido (lurking) — o Solo do Abutre vai no BICHO da mira (ou o
+// mais perto), com a cena inteira (dono, 2026-11-19: "A sniper de arthur agora nao está funcionando nem o especial")
+function mobTarget(f, range) {
+  const ok = (n) => n && n.alive !== false && !n.isCloset && n.pos && n.state !== 'die' && distXZ(f.pos, n.pos) <= range;
+  const aim = f.aimYaw != null ? f.aimTarget(range) : null;
+  if (aim && !aim.def && ok(aim)) return aim;
+  return f.world.hostileNpcs(f).filter(ok).sort((a, b) => distXZ(f.pos, a.pos) - distXZ(f.pos, b.pos))[0] || null;
+}
+function targetOf(f, sp) {
+  const opp = f.opponent;
+  if (opp && opp.state !== 'ko' && opp.visible && !opp.lurking && distXZ(f.pos, opp.pos) <= (sp.range ?? 40)) return opp;
+  return mobTarget(f, sp.range ?? 40);
+}
+const chestOf = (o) => (o.chestPos ? o.chestPos() : new THREE.Vector3(o.pos.x, (o.pos.y || 0) + (o.height || 1.8) * 0.6, o.pos.z));
+
 export const eliteShot = {
   telegraph: () => ({ time: 0.8, anim: 'sniper_kneel', animDuration: 0.5, mark: 'laser' }),
   canStart(f, sp) {
-    const opp = f.opponent;
-    return !!opp && opp.state !== 'ko' && opp.visible && distXZ(f.pos, opp.pos) <= (sp.range ?? 40);
+    return !!targetOf(f, sp);
   },
 
   start(f, sp, world) {
-    const opp = f.opponent;
-    if (trySpecialBlock(world, f, opp, sp)) return { update: () => true, cancel() {} };
+    const opp = targetOf(f, sp);
+    if (!opp) return { update: () => true, cancel() {} };
+    const mob = !opp.def; // um bicho (npcs.js), não um lutador
+    if (!mob && trySpecialBlock(world, f, opp, sp)) return { update: () => true, cancel() {} };
     const color = sp.color ?? 0x3aff6a;
     const show = (v) => {
       if (sp.showProp && f.rig.props[sp.showProp]) f.rig.showProp(sp.showProp, v);
@@ -29,10 +45,10 @@ export const eliteShot = {
     };
     const muzzle = () => (f.rig.muzzle && f.rig.muzzle.parent && f.rig.muzzle.parent.visible ? f.rig.muzzle.getWorldPosition(new THREE.Vector3()) : f.chestPos());
     const hand = () => f.rig.sockets.handR.getWorldPosition(new THREE.Vector3());
-    world.beginCinematic(f, opp);
+    world.beginCinematic(f, mob ? null : opp);
     f.vel.set(0, 0, 0);
     f.yaw = yawTo(f.pos, opp.pos);
-    opp.anim.play('idle', { restart: true });
+    if (!mob) opp.anim.play('idle', { restart: true });
 
     // 1 — some na fumaça
     world.fx.burst(f.chestPos(), { count: 40, color: 0x2a2632, kind: 'smoke', speed: 2.2, life: 0.9, size: 0.9, grow: 1 });
@@ -68,32 +84,40 @@ export const eliteShot = {
           if (bolts % 6 === 0) world.audio.play('shockwave', { volume: 0.25, pitch: 1.8 });
         }
         // 3 — a mira se firma
-        if (!fired && t >= 2.1 && t < 2.85 && Math.random() < 0.6) world.fx.tracer(muzzle(), opp.chestPos(), { color, life: 0.05, width: 0.006 + (t - 2.1) * 0.012 });
+        if (!fired && t >= 2.1 && t < 2.85 && Math.random() < 0.6) world.fx.tracer(muzzle(), chestOf(opp), { color, life: 0.05, width: 0.006 + (t - 2.1) * 0.012 });
         // 4 — o disparo crítico
         if (!fired && t >= 2.85) {
           fired = true;
           const from = muzzle();
-          const to = opp.chestPos();
+          const to = chestOf(opp);
           f.anim.play('sniper_fire', { restart: true, duration: 0.7 });
           world.audio.play('sniper', { volume: 1.3 });
           world.fx.flash(from, { color, size: 3, life: 0.16 });
           world.fx.tracer(from, to, { color, life: 0.35, width: 0.07 });
           world.fx.tracer(from, to, { color: 0xffffff, life: 0.2, width: 0.025 });
           const base = sp.damage ?? COMBAT.specialDamage;
-          applyHit(world, f, opp, { damage: Math.round(base * (sp.critMult ?? 1)), kind: 'special', element: 'energia', reaction: false, ignoreInvuln: true, sound: 'heavyPunch', color, scale: 2.4 });
-          opp.notify('GOLPE DE SORTE — CRÍTICO!', true);
+          const dmg = Math.round(base * (sp.critMult ?? 1));
+          if (mob) {
+            opp.hitBy && opp.hitBy(f, npcDamage(f, dmg, 'special'), { kind: 'special' });
+            f.notify && f.notify('GOLPE DE SORTE — CRÍTICO!', true);
+          } else {
+            applyHit(world, f, opp, { damage: dmg, kind: 'special', element: 'energia', reaction: false, ignoreInvuln: true, sound: 'heavyPunch', color, scale: 2.4 });
+            opp.notify('GOLPE DE SORTE — CRÍTICO!', true);
+          }
           world.fx.distort(to, { color, radius: 3, life: 0.5 });
           for (let i = 0; i < 3; i++) world.after(i * 0.08, () => world.fx.ring(to, { color, radius: 0.6 + i * 0.7, life: 0.45, vertical: true, yaw: f.yaw }));
           world.fx.burst(to, { count: 50, color, speed: 6, life: 0.6, size: 0.18 });
           world.cameraRig.shake(0.7, 0.35);
-          world.cameraRig.playShots([faceClose(opp, { dur: 1.1, from: 2.4, to: 1.8, side: 0.3, height: 1.4 })]);
-          if (opp.state !== 'ko') opp.anim.play('launched', { restart: true });
+          if (!mob) {
+            world.cameraRig.playShots([faceClose(opp, { dur: 1.1, from: 2.4, to: 1.8, side: 0.3, height: 1.4 })]);
+            if (opp.state !== 'ko') opp.anim.play('launched', { restart: true });
+          }
         }
         if (!done && t >= 2.85 + 1.1) {
           done = true;
           show(false);
           world.endCinematic();
-          if (opp.state !== 'ko') opp.react({ dir: new THREE.Vector3().subVectors(opp.pos, f.pos).setY(0).normalize(), knockback: 7, hitstun: COMBAT.launchHitstun, launch: true, lowLaunch: true });
+          if (!mob && opp.state !== 'ko') opp.react({ dir: new THREE.Vector3().subVectors(opp.pos, f.pos).setY(0).normalize(), knockback: 7, hitstun: COMBAT.launchHitstun, launch: true, lowLaunch: true });
           return true;
         }
         return false;

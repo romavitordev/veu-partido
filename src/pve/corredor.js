@@ -57,6 +57,9 @@ const h = (v) => (v <= 0 ? 0 : v < 12 ? RUN.slope * v * v / 24 : RUN.slope * (v 
 const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 
 export class LanternRun {
+  // a entrada do caminho na borda da praça (a brecha da cena da horda, pve/samhain.js hordeScene)
+  static entrance() { return { x: Math.sin(RUN.angle) * RUN.start, z: Math.cos(RUN.angle) * RUN.start }; }
+
   constructor(d) {
     this.d = d;
     const w = d.world;
@@ -131,14 +134,34 @@ export class LanternRun {
       else { if (u < b[0]) b[0] = u; if (u > b[1]) b[1] = u; if (v < b[2]) b[2] = v; if (v > b[3]) b[3] = v; }
     }
     const drop = new Set();
+    const bigs = new Set();
     const W = RUN.half + 0.8;
     for (const [r, b] of box) {
-      const big = b[1] - b[0] > 16 || b[3] - b[2] > 16; // terreno, morros: ficam
+      const big = b[1] - b[0] > 16 || b[3] - b[2] > 16; // terreno, morros: ficam (só o pedaço sobre o caminho sai, abaixo)
       if (!big && b[1] > -W && b[0] < W && b[3] > -1 && b[2] < RUN.length) drop.add(r);
+      else if (big) bigs.add(r);
     }
-    if (!drop.size) return;
+    // os MORROS e as rochas grandes do mapa cruzam o caminho por cima do chão do corredor (dono: "essa moita verde que
+    // tampa o caminho" — era o morro de urze, a câmera passava por dentro): sai cada triângulo deles que fica na faixa
+    // do caminho + a folga da câmera e acima do chão do corredor
+    const WB = RUN.half + 4.5;
+    const c = new THREE.Vector3();
+    const above = (t) => {
+      c.set(0, 0, 0);
+      for (let k = 0; k < 3; k++) c.add(v3.fromBufferAttribute(pos, idx[t + k]).applyMatrix4(o.matrixWorld));
+      c.multiplyScalar(1 / 3);
+      const { u, v } = this.uv(c.x, c.z);
+      return Math.abs(u) < WB && v > -8 && v < RUN.length + 2 && c.y > h(Math.max(0, v)) - 0.4;
+    };
+    let cutBig = false;
     const keep = [];
-    for (let t = 0; t < idx.length; t += 3) if (!drop.has(find(idx[t]))) keep.push(idx[t], idx[t + 1], idx[t + 2]);
+    for (let t = 0; t < idx.length; t += 3) {
+      const r = find(idx[t]);
+      if (drop.has(r)) continue;
+      if (bigs.has(r) && above(t)) { cutBig = true; continue; }
+      keep.push(idx[t], idx[t + 1], idx[t + 2]);
+    }
+    if (!drop.size && !cutBig) return;
     this.cut.push({ geo, index: geo.index });
     geo.setIndex(keep);
   }

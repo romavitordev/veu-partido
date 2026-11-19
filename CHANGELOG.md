@@ -1,5 +1,23 @@
 # Changelog
 
+## v5.25.1 — A Brecha do Corredor
+
+### Mudado
+- `pve/samhain.js` `hordeScene(dur, exit)`: as 26 Assombrações num ARCO por trás e pelos lados (abertura de ±1,25 rad
+  voltada para `LanternRun.entrance()`), fechando a 5–6,6 m; quem joga recua, vira e corre para a entrada
+  (`updateHorde`); a câmera por trás da horda. `Dungeon.startRunner` passa a entrada.
+- `combat/Fighter.js`: no corredor (`runDir`) só a esquiva — golpes, habilidades e assistências bloqueados; o lado
+  não é mais normalizado com a frente (`RUN_SIDE` 1,15 × velocidade).
+- `characters/arthur.js`: `Templo do Ódio` e `Dystopia` (antes "Ódio Incontrolável …" e "Paralisia de Sangue …");
+  `Arma de Sangue` com `hatredOk` (o `noRituals` do Templo não a bloqueia).
+
+### Corrigido
+- `pve/corredor.js` `clearPath`: as peças GRANDES do mapa (morros, rochas) que cruzam o caminho perdem os triângulos na
+  faixa do caminho + 4,5 m acima do chão do corredor (o morro de urze verde ficava por cima e a câmera atravessava).
+- `Fighter.startChargeShot` (sniper): bichos não têm `chestPos` (TypeError) — mira no peito pela altura.
+- `specials/eliteShot.js` (Solo do Abutre): `canStart`/`start` miram o bicho na mira (`mobTarget`), dano por
+  `hitBy(npcDamage)`, cena sem o alvo nos bichos.
+
 ## v5.25.0 — A Horda e a Porta Aberta
 
 ### Adicionado

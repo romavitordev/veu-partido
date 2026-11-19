@@ -36,6 +36,7 @@ import { inscribe } from './kianPowers.js';
 import { startRagdoll } from '../physics/ragdoll.js';
 
 // estados em que o alvo continua "dentro do combo" (contadores de escala não zeram)
+const RUN_SIDE = 1.15; // o desvio de lado no corredor (× a velocidade de corrida)
 const COMBO_STATES = new Set(['hitstun', 'stun', 'pulled', 'grabbed', 'ko', 'downed']);
 // comandos que o buffer guarda
 const BUFFER_ACTIONS = ['physical', 'ranged', 'carga', 'dodge'];
@@ -792,7 +793,7 @@ export class Fighter {
     this.bufferInputs();
 
     // batalha em equipe: com uma assistência, os dois ombros e os dois lados do analógico direito selecionam o único parceiro
-    if (this.assists && !this.world.cinematic) {
+    if (this.assists && !this.world.cinematic && !this.runDir) { // no corredor (runDir) não chama ninguém
       const { assistSlots, switchSlots } = resolveTeamActionSlots(this.assists.length, this.input.pressed);
       for (const slot of assistSlots) {
         if (this.assists[slot] && this.assists[slot].call()) this.addTeamGauge(COMBAT.teamGauge.assist);
@@ -1284,6 +1285,12 @@ export class Fighter {
 
   handleCommands() {
     const inp = this.input;
+    // O CORREDOR DAS LAMPARINAS (pve/corredor.js, runDir): só a ESQUIVA — sem golpes, tiros nem habilidades (dono,
+    // 2026-11-19: "nao pode ser possivel usar habilidades na parte 2 de treb ciach"; um golpe lá deixava a tela preta)
+    if (this.runDir) {
+      if (this.wantsDodge()) { this.tryDodge(); return true; }
+      return false;
+    }
     if (this.tryQuick()) return true;
     if (this.tryChord()) return true;
     if (this.tryComboAbility()) return true;
@@ -1440,7 +1447,15 @@ export class Fighter {
     this.updateMount(dt, mag);
     const ride = this.riding ? this.def.mount.speedMult : 1;
     const speed = this.moveSpeed * buffSpeed * ride * (this.onGround ? 1 : 0.85) * this.world.speedFactor(this);
-    if (mag > 0.05) {
+    if (this.runDir) {
+      // CORRIDA AUTOMÁTICA: a frente sempre cheia e o desvio de lado RÁPIDO por cima (antes a soma era normalizada e o
+      // lado saía a ~2/3 da velocidade; dono: "a movimentação lateral da parte 2 está muito lenta")
+      const R = this.moveBasis().right;
+      const rl = Math.hypot(R.x, R.z) || 1;
+      const side = this.input.moveX * speed * RUN_SIDE;
+      this.vel.x = this.runDir.x * speed + (R.x / rl) * side;
+      this.vel.z = this.runDir.z * speed + (R.z / rl) * side;
+    } else if (mag > 0.05) {
       dir.normalize();
       this.vel.x = dir.x * speed * mag;
       this.vel.z = dir.z * speed * mag;
@@ -2682,7 +2697,7 @@ export class Fighter {
         if (!fired) {
           // o ponto da mira persegue o alvo devagar (trava de vez quando a mira enche)
           if (opp || free) {
-            if (opp) opp.chestPos(want);
+            if (opp) { if (opp.chestPos) opp.chestPos(want); else want.set(opp.pos.x, (opp.pos.y || 0) + (opp.height || 1.8) * 0.6, opp.pos.z); } // os bichos não têm chestPos
             else self.chestPos(want).addScaledVector(forwardFromYaw(self.aimYaw, new THREE.Vector3()), 25);
             if (!aimReady) { aim.copy(want); aimReady = true; }
             else if (lockT < 0) {
@@ -2991,7 +3006,7 @@ export class Fighter {
   useAbility(a) {
     if (this.meleeLocked()) return;
     // Templo do Ódio (cânone): sob o ódio não se conjura ritual
-    if (a.ritual && this.buffs.some((b) => b.noRituals)) { this.notify('ÓDIO: NÃO CONJURA RITUAIS'); return; }
+    if (a.ritual && !a.hatredOk && this.buffs.some((b) => b.noRituals)) { this.notify('ÓDIO: NÃO CONJURA RITUAIS'); return; }
     // ANULADO (especial do Gaius): nenhuma habilidade sai enquanto durar
     const lock = this.buffs.find((b) => b.noAbilities);
     if (lock) { this.notify(lock.lockMsg || 'HABILIDADES ANULADAS'); return; }
