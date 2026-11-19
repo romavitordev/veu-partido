@@ -513,9 +513,18 @@ test('Ondas de Tipora: fase de ondas sem portas, gigante sozinho a cada 3 e o Am
     assert.equal(plan.filter((w) => w.kind === 'boss').length, 1);
     for (const w of plan) {
       if (w.kind === 'giant') { assert.equal(w.n % D.waves.bossEvery, 0); assert.equal(w.count, 1, 'o gigante vem sozinho'); }
-      if (w.kind === 'horde') { assert.ok(w.count >= 2 && w.count <= 7); assert.ok(w.strongs < w.count); }
+      if (w.kind === 'horde') {
+        assert.ok(w.count >= 2 && w.count <= 9); assert.ok(w.strongs < w.count);
+        assert.equal(Object.values(w.foes).reduce((a, b) => a + b, 0), w.count, 'os tipos somam o tamanho da onda');
+        if (w.n === 1) assert.deepEqual(Object.keys(w.foes), ['zumbi'], 'a 1ª onda só de zumbis (para aprender)');
+        if (w.n >= 4) for (const t of ['javali', 'cao', 'cobra']) assert.ok(w.foes[t] > 0, `${diff} onda ${w.n}: os três infectados juntos (${t})`);
+      }
     }
   }
+  // mais difícil, mais animais e mais Zumbis de Tinta no total
+  const tally = (diff, keys) => wavePlan(D, diff).reduce((a, w) => a + keys.reduce((s, k) => s + ((w.foes || {})[k] || 0), 0), 0);
+  assert.ok(tally('annihilation', ['javali', 'cao', 'cobra']) > tally('easy', ['javali', 'cao', 'cobra']));
+  assert.ok(tally('hard', ['tinta']) > tally('easy', ['tinta']));
   // entrou entre a Mansão e a Torre, sem trancar a Torre de quem já a venceu
   assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador'] }, 'tipora'));
   assert.ok(!phaseUnlocked({ phases: ['degolificada', 'espreitador'] }, 'estrangeiro'));

@@ -1,5 +1,19 @@
 # Changelog
 
+## v5.21.0 — Os Infectados da Ilha
+
+### Adicionado
+- Modelos (Blender MCP): `npc_cobra_tinta.py` → `cobra_tinta.glb` (10 segmentos, juntas J_seg0..9/J_head/J_jaw) e `npc_zumbi_tinta.py` → `zumbi_tinta.glb` (juntas do Zumbi de Sangue fraco; sem rosto, buraco de mordida, cabelo cobrindo, pele escura, escorridos de tinta). `npcRig.js` registra os dois; `buildInkSnake` (models/beasts.js) e `buildInkZombie` (models/bloodZombie.js), com reserva procedural.
+- `combat/beasts.js`: `InkSnake` (`INK_SNAKE`: mordida e o bote que se enrola e aperta). `combat/npcs.js`: `InkZombie` (`BLOOD_ZOMBIE.ink`: cabeça baixa, curvado, braços pendurados via `armFwd/armOut/armSwing/elbow`; mordida com DERRETENDO; rastro e poça de tinta). `fx/inkFx.js`: `inkTrail`.
+- `dungeons.js`: `wavePlan` devolve `foes` por onda (zumbi, forte, tinta, javali, cao, cobra) com `WAVE_DIFF` por dificuldade; `tipora.xp` por tipo.
+- `Dungeon.js`: `spawnFoe(tipo, pos, {hpMul})` (`FOE_HP`), as ondas mistas e o XP por tipo em `onZombieSlain`.
+- `pve/amigo.js`: `AmigoBrain` — fúria com 50% da vida (nome TODO MUNDO VAI MORRER, ×1,25 de dano, explosão de tinta, bando por dificuldade e reforços com teto).
+- Teste das ondas: tipos somam o tamanho, 1ª só zumbis, os três animais da 4ª em diante, mais animais/tinta nas difíceis.
+
+### Alterado
+- `npc_bicho_lib.py`: javali e cão remodelados (pernas altas, corcunda, pescoço erguido); `INK_BEAST` alturas 1,5 / 1,2.
+- `BloodZombie.pose`: braços configuráveis por `cfg` (o padrão não muda).
+
 ## v5.20.0 — Dificuldades Trancadas
 
 ### Adicionado

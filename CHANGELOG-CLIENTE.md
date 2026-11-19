@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.21.0 — Os Infectados da Ilha
+- Proteja a Ilha de Tipora com TODOS os infectados da ilha: além dos Zumbis de Sangue, chegam os ZUMBIS DE TINTA (sem rosto, curvados, deixando um rastro de tinta; a mordida deixa você derretendo), JAVALIS, COBRAS (dão o bote e se enrolam em você) e LOBOS infectados. A 1ª onda é só de zumbis, os lobos chegam na 2ª e da 4ª em diante os três animais vêm juntos; quanto mais difícil, mais bichos. O AMIGO IMAGINÁRIO agora se transforma com metade da vida: vira TODO MUNDO VAI MORRER, bate mais forte e chama Zumbis de Tinta, cobras, javalis e lobos (que caem junto com ele). Javali e lobo de tinta com modelos novos.
+
 ## v5.20.0 — Dificuldades Trancadas
 - Outro Lado com as DIFICULDADES TRANCADAS por fase: Fácil e Normal sempre abertos; o Difícil de uma fase abre ao vencê-la no Normal, o Super Difícil ao vencê-la no Difícil e o Aniquilação ao vencê-la no Super Difícil (vencer no Fácil não abre o Difícil). A próxima fase continua abrindo com uma vitória em qualquer dificuldade, mas começa só com Fácil e Normal. A tela de dificuldade mostra o cadeado e o que falta; dificuldades que você já venceu continuam abertas. A fase de ondas de Tipora agora se chama PROTEJA A ILHA DE TIPORA.
 

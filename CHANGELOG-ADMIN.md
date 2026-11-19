@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v5.21.0 — Os Infectados da Ilha
+
+- Versão: `VERSION` 5.20.0 → **5.21.0**. Data: 2026-11-19. Dono: "Faltou as ondas de porcos infectados, cobras, e lobos.
+  Ondas onde tem os 3 tipos de infectados. Isso altera conforme a dificuldade selecionada" / "na sua forma transformada
+  pode ser TODO MUNDO VAI MORRER e ele fica com raiva, invoca esses zumbis de tinta e as cobras juntos aos outros
+  animais" / a descrição do Zumbi de Tinta (sem rosto, buraco de mordida com sangue, cabelo cobrindo, curvado, rastro
+  de tinta). Lançada depois do "Pode lançar", com Tipora completa (o dono pediu para segurar até lá).
+- PROPOSTA: as proporções das ondas (`WAVE_DIFF`), as vidas (`FOE_HP`), o limiar da fúria (50%), o bando e os reforços
+  por dificuldade, os números da cobra e do Zumbi de Tinta.
+- Conferido no jogo (Normal, save guardado e devolvido): a onda 4 nasceu com zumbi, Zumbi de Tinta, javali, cobra e
+  lobo; com 49% de vida o Amigo virou TODO MUNDO VAI MORRER e chamou 2 Zumbis de Tinta, cobra, javali e lobo. Os modelos
+  conferidos no Blender MCP (o Zumbi de Tinta já posado curvado). Não conferido: a fase inteira jogada do começo ao fim.
+- `npm test` 124/124, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.20.0 — Dificuldades Trancadas
 
 - Versão: `VERSION` 5.19.0 → **5.20.0**. Data: 2026-11-19. Dono: "Tranque as dificuldades, para jogar no dificil o

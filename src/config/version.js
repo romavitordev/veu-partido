@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.20.0';
+export const VERSION = '5.21.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.21.0',
+    date: '2026-11-19',
+    title: 'Os Infectados da Ilha',
+    items: [
+      'Proteja a Ilha de Tipora com TODOS os infectados da ilha: além dos Zumbis de Sangue, chegam os ZUMBIS DE TINTA (sem rosto, curvados, deixando um rastro de tinta; a mordida deixa você derretendo), JAVALIS, COBRAS (dão o bote e se enrolam em você) e LOBOS infectados. A 1ª onda é só de zumbis, os lobos chegam na 2ª e da 4ª em diante os três animais vêm juntos; quanto mais difícil, mais bichos. O AMIGO IMAGINÁRIO agora se transforma com metade da vida: vira TODO MUNDO VAI MORRER, bate mais forte e chama Zumbis de Tinta, cobras, javalis e lobos (que caem junto com ele). Javali e lobo de tinta com modelos novos.',
+    ],
+  },
   {
     v: '5.20.0',
     date: '2026-11-19',

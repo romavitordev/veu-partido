@@ -47,6 +47,34 @@ export function buildSphinx() {
 // ANIMAIS INFECTADOS PELA TINTA (invocação do Amigo Imaginário, tools/blender/npc_bicho_lib.py — escultura de
 // npc_sculpt_lib.py pelas miniaturas de O Segredo na Ilha: pelo eriçado, veias saltadas, flanco aberto com as costelas):
 // javali e cão selvagem de quatro patas. Juntas: body, torso, head, jaw, legs[FL, FR, BL, BR] (+ joelho) e tail.
+// a COBRA INFECTADA (tools/blender/npc_cobra_tinta.py): J_body, os 10 segmentos em cadeia (seg0 = o pescoço), a cabeça
+// e a mandíbula. Sem o .glb: uma corrente de cápsulas marrons com as mesmas juntas.
+export function buildInkSnake() {
+  const m = buildNpcModel('cobra_tinta', { outline: 0.01, noOutline: ['tooth', 'maw', 'glow', 'goo', 'lingua'] });
+  if (m) {
+    const J = m.joint;
+    return { root: m.root, joints: { body: J('body'), segs: Array.from({ length: 10 }, (_, i) => J('seg' + i)), head: J('head'), jaw: J('jaw') } };
+  }
+  const root = new THREE.Group();
+  const mk = (parent, pos) => { const o = new THREE.Object3D(); o.position.set(...pos); parent.add(o); return o; };
+  const body = mk(root, [0, 0.12, 0]);
+  const segs = [];
+  let prev = body;
+  for (let i = 0; i < 10; i++) {
+    const s = mk(prev, [0, 0, i ? -0.33 : 0]);
+    const g = new THREE.Mesh(new THREE.CylinderGeometry(0.1 - i * 0.008, 0.1 - i * 0.009, 0.36, 8), toon(0x5a4020));
+    g.rotation.x = Math.PI / 2;
+    g.position.z = -0.16;
+    s.add(g);
+    segs.push(s);
+    prev = s;
+  }
+  const head = mk(segs[0], [0, 0, 0.05]);
+  head.add(new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.1, 0.26), toon(0x4a3418)));
+  const jaw = mk(head, [0, -0.04, 0.02]);
+  return { root, joints: { body, segs, head, jaw } };
+}
+
 export function buildInkBeast(kind) {
   const m = buildNpcModel(kind === 'javali' ? 'javali_tinta' : 'cao_tinta', { outline: 0.012, noOutline: ['vein', 'tooth', 'ink', 'goo', 'glow', 'claw', 'bone'] });
   if (m) {

@@ -111,15 +111,21 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   ganhado essa mesma fase no normal, assim por diante"): Fácil e Normal sempre abertos; cada uma acima abre vencendo
   a fase na de baixo; a próxima fase abre com qualquer vitória e começa só com Fácil e Normal.
 - [x] **Nome da fase** (v5.20.0): "Proteja a Ilha de Tipora" (dono, 2026-11-19).
-- [ ] **Tipora mais fiel** (dono, 2026-11-19: "Faltou as ondas de porcos infectados, cobras, e lobos. Ondas onde tem os 3
+- [~] **Tipora mais fiel** (dono, 2026-11-19: "Faltou as ondas de porcos infectados, cobras, e lobos. Ondas onde tem os 3
   tipos de infectados. Isso altera conforme a dificuldade selecionada" / "Amigo imaginario vai ter que ser atualizado na
   forma boss para ser mais fiel ao canone, na sua forma transformada pode ser TODO MUNDO VAI MORRER e ele fica com
   raiva, invoca esses zumbis de tinta e as cobras juntos aos outros animais"):
-  - [~] Modelos no Blender MCP: javali e cão/lobo remodelados (pernas altas, corcunda, pescoço erguido) e a COBRA nova
-    (`npc_cobra_tinta.py`, 10 segmentos que ondulam) — falta escurecer a cobra e reforçar a infecção; ZUMBI DE TINTA.
-  - [ ] IA da cobra (rasteja ondulando, ergue e dá o bote) e ondas mistas (zumbis + javalis + cobras + lobos) pela
-    dificuldade; o Amigo sempre a última onda.
-  - [ ] Amigo chefe: na fúria (TODO MUNDO VAI MORRER) invoca Zumbis de Tinta, cobras e os outros animais.
+  - [x] Modelos no Blender MCP: javali e cão/lobo remodelados (pernas altas, corcunda, pescoço erguido), a COBRA nova
+    (`npc_cobra_tinta.py`, 10 segmentos, escura, costelas à mostra, presas) e o ZUMBI DE TINTA (`npc_zumbi_tinta.py`).
+  - [x] Zumbi de Tinta como o dono descreveu (2026-11-19): SEM ROSTO (buraco de mordida sangrando), o cabelo caído
+    cobrindo, pele escurecida, tinta escorrendo pelo corpo; no jogo a cabeça baixa, o corpo curvado, os braços
+    pendurados e um RASTRO DE TINTA no chão; a mordida deixa a vítima DERRETENDO.
+  - [x] IA da cobra (ondula, ergue o pescoço, dá o bote e se ENROLA na vítima) e ondas mistas pela dificuldade
+    (`wavePlan` → `foes`): 1ª só zumbis, lobos na 2ª, da 4ª em diante os três animais juntos; mais difícil = mais bichos,
+    mais animais e mais Zumbis de Tinta. O Amigo sempre a última onda.
+  - [x] Amigo chefe (`src/pve/amigo.js`): com metade da vida vira TODO MUNDO VAI MORRER (nome na barra, +25% de dano,
+    explosão de tinta) e invoca Zumbis de Tinta, cobras, javalis e lobos; reforços periódicos com teto; morrem com ele.
+  - [ ] Conferir jogando a fase inteira (dono) e ajustar os números; lançada a v5.21.0; falta só o dono jogar a fase inteira e pedir ajustes.
 
 ## Tela de carregamento e o jogo que não abria (pedido do dono, 2026-11-18)
 

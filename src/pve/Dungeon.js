@@ -14,7 +14,8 @@ import { PlayerInput } from '../input/InputManager.js';
 import { buildModel, isModelLoaded } from '../models/index.js';
 import { disposeRigResources } from '../models/glbRig.js';
 import { CpuController } from '../ai/CpuController.js';
-import { DanteClone, BloodZombie, GiantBloodZombie } from '../combat/npcs.js';
+import { DanteClone, BloodZombie, GiantBloodZombie, InkZombie } from '../combat/npcs.js';
+import { InkBeast, InkSnake } from '../combat/beasts.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
@@ -39,6 +40,7 @@ import amigoBossDef from '../characters/bosses/amigo.js';
 import estrangeiroDef from '../characters/estrangeiro.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
+import { AmigoBrain } from './amigo.js';
 import { SinoMechanics } from './sino.js';
 import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
@@ -95,6 +97,8 @@ const ALHEIO_HP = { civil: 140, combatente: 260, monstro: 420, interflorado: 110
 const DOPPEL_GUN = estrangeiroDef.abilities.find((a) => a.id === 'homensDeTerno');
 const NEST = estrangeiroDef.abilities.find((a) => a.id === 'ninhoInterflorados');
 const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (o bombeiro Jorge e os outros)
+// os INFECTADOS DA ILHA (Tipora): a vida-base de cada tipo nas ondas e nas invocações do Amigo (PROPOSTA)
+const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150 };
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
@@ -970,7 +974,8 @@ export class Dungeon {
 
   onZombieSlain(z) {
     this.stats.kills++;
-    this.giveXp(z.giant ? this.D.xp.gigante || this.D.xp.zumbiForte * 2 : z.strong ? this.D.xp.zumbiForte : this.D.xp.zumbi);
+    const X = this.D.xp;
+    this.giveXp(z.giant ? X.gigante || X.zumbiForte * 2 : z.foe && X[z.foe] ? X[z.foe] : z.strong ? X.zumbiForte : X.zumbi);
     this.tryHeal(z.pos, z.giant ? 2 : z.strong ? 1 : 0.6);
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
   }
@@ -1038,29 +1043,44 @@ export class Dungeon {
       return;
     }
     this.encounter = { room: S.M, done: false, koAt: this.world.time, zombies: true, wave: n, miniboss: kind === 'giant' };
-    const spawn = (pos, { strong = false, giant = false } = {}) => {
-      const hp = giant ? (W.giantHp || 900) : ZOMBIE_HP[strong ? 'strong' : 'weak'];
-      const Z = giant ? GiantBloodZombie : BloodZombie;
-      const z = new Z(e, this.world, pos, { strong, duration: Infinity, hp: Math.round(hp * this.scale.hp) });
-      z.onDestroyed = () => this.onZombieSlain(z);
-      this.world.addNpc(z);
-      this.copias.push(z);
-    };
     if (kind === 'giant') {
       // o minichefe vem SOZINHO (pedido do dono)
-      spawn(this.waveSpawnPoint(0, 1), { giant: true });
+      this.spawnFoe('gigante', this.waveSpawnPoint(0, 1));
       this.hud.callout('UM ZUMBI GIGANTE', '#ff6a3a');
       this.audio.play('fearGaze', { volume: 0.8, pitch: 0.45 });
     } else {
-      // a onda cresce: 2 → 7 zumbis; os FORTES entram a partir da 4ª (PROPOSTA; dungeons.js wavePlan)
-      const { count, strongs } = S.plan[n - 1];
-      for (let i = 0; i < count; i++) spawn(this.waveSpawnPoint(i, count), { strong: i < strongs });
-      this.hud.callout(`ONDA ${n}`, '#ffd84a');
+      // a onda cresce e MISTURA os infectados da ilha conforme a dificuldade (dungeons.js wavePlan)
+      const { count, foes } = S.plan[n - 1];
+      let i = 0;
+      for (const [type, q] of Object.entries(foes)) for (let k = 0; k < q; k++) this.spawnFoe(type, this.waveSpawnPoint(i++, count));
+      const beasts = ['javali', 'cao', 'cobra'].filter((t) => foes[t]).length;
+      this.hud.callout(beasts >= 3 ? `ONDA ${n}: JAVALIS, COBRAS E LOBOS` : foes.cao && !S.wolves ? `ONDA ${n}: OS LOBOS` : `ONDA ${n}`, '#ffd84a');
+      if (foes.cao) S.wolves = true;
       this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
     }
     e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
     this.hudAdd('pve-noboss'); // a barra de cima é do chefe: o dono escondido dos zumbis não aparece (os zumbis têm a própria)
     this.waveObjective();
+  }
+
+  // um infectado da ilha (as ondas e as invocações do Amigo): zumbi, forte, tinta, javali, cao, cobra ou gigante.
+  // Dono escondido (this.enemy), entra em this.copias, vale XP pelo tipo (D.xp[tipo]).
+  spawnFoe(type, pos, o = {}) {
+    const e = this.enemy;
+    const hpMul = (o.hpMul ?? 1) * this.scale.hp;
+    const base = type === 'gigante' ? (this.D.waves && this.D.waves.giantHp) || 900 : FOE_HP[type] || FOE_HP.zumbi;
+    const opts = { duration: Infinity, hp: Math.round(base * hpMul), strong: type === 'forte' };
+    let z;
+    if (type === 'gigante') z = new GiantBloodZombie(e, this.world, pos, opts);
+    else if (type === 'tinta') z = new InkZombie(e, this.world, pos, opts);
+    else if (type === 'javali' || type === 'cao') z = new InkBeast(e, this.world, pos, { ...opts, kind: type });
+    else if (type === 'cobra') z = new InkSnake(e, this.world, pos, opts);
+    else z = new BloodZombie(e, this.world, pos, opts);
+    z.foe = type;
+    z.onDestroyed = () => this.onZombieSlain(z);
+    this.world.addNpc(z);
+    this.copias.push(z);
+    return z;
   }
 
   onWaveCleared(enc) {
@@ -1333,8 +1353,9 @@ export class Dungeon {
     }
     if (this.D.waves) {
       this.pressure = new BossPressure(this, e, this.diff.counter ?? 7);
+      this.brain = new AmigoBrain(this); // a FÚRIA: TODO MUNDO VAI MORRER e as invocações (pve/amigo.js)
       this.bindHud();
-      this.pveHud.hint('O AMIGO IMAGINÁRIO: os TENTÁCULOS puxam de longe e o SINO paralisa — não fique parado na frente dele');
+      this.pveHud.hint('O AMIGO IMAGINÁRIO: os TENTÁCULOS puxam de longe e o SINO paralisa — com METADE da vida ele entra em FÚRIA e chama os bichos');
       this.hintT = 8;
       return;
     }

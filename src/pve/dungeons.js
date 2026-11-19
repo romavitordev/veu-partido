@@ -378,12 +378,12 @@ export const DUNGEONS = {
       giantHp: 900,
     },
     // a explicação (pedido do dono): no card da ESCOLHA A FASE e no aviso do começo da fase
-    about: 'FASE DE ONDAS: um mapa aberto, sem salas. Os Zumbis de Sangue chegam em ondas pela praça; a cada 3 ondas vem um ZUMBI GIGANTE sozinho, e na última, o AMIGO IMAGINÁRIO.',
-    aboutShort: 'Fase de ONDAS: sobreviva na praça; a cada 3 ondas um gigante, e na última o Amigo Imaginário',
+    about: 'FASE DE ONDAS: um mapa aberto, sem salas. Os infectados da ilha chegam em ondas pela praça — Zumbis de Sangue e de Tinta, javalis, cobras e lobos; a cada 3 ondas vem um ZUMBI GIGANTE sozinho, e na última, o AMIGO IMAGINÁRIO, que na fúria chama mais bichos.',
+    aboutShort: 'Fase de ONDAS: proteja a praça dos infectados da ilha; a cada 3 ondas um gigante, e na última o Amigo Imaginário',
     minDepth: 2, // a força dos inimigos de uma fase do meio da história (a Mansão)
     minions: 'zumbi',
     drops: { heal: { chance: 0.45, amount: 0.18 } },
-    xp: { zumbi: 16, zumbiForte: 38, gigante: 90, boss: 160 },
+    xp: { zumbi: 16, zumbiForte: 38, tinta: 22, javali: 26, cao: 14, cobra: 18, gigante: 90, boss: 160 },
     exploreHint: 'Prepare-se: a 1ª onda já vem',
     deathText: 'VOCÊ CAIU',
     endTitle: ['VOCÊ CAIU EM TIPORA', 'VOCÊS CAÍRAM EM TIPORA'],
@@ -702,18 +702,46 @@ export function chestChance(D, kind, count = 0) {
   return c[kind] ?? 0;
 }
 
-// o PLANO DAS ONDAS de uma fase de ondas (Tipora): uma entrada por onda, na ordem. kind 'horde' (o bando de zumbis, que
-// cresce de 2 a 7; os FORTES a partir da 4ª), 'giant' (a cada `bossEvery`: o Zumbi Gigante SOZINHO) ou 'boss' (a última)
+// o PLANO DAS ONDAS de uma fase de ondas (Tipora): uma entrada por onda, na ordem. kind 'horde' (o bando), 'giant' (a
+// cada `bossEvery`: o Zumbi Gigante SOZINHO) ou 'boss' (a última, SEMPRE o chefe). `foes`: { tipo: quantos } com os
+// tipos zumbi, forte (Zumbi de Sangue forte), tinta (Zumbi de Tinta), javali, cao (o lobo) e cobra.
+// MISTURA PELA DIFICULDADE (dono, 2026-11-19: "Ondas onde tem os 3 tipos de infectados. Isso altera conforme a
+// dificuldade selecionada"): a 1ª onda só de zumbis (para aprender), os lobos entram na 2ª, e da 4ª em diante toda
+// onda traz os TRÊS animais (javali, cobra e lobo); quanto mais difícil, mais bichos por onda, mais animais no bando e
+// mais Zumbis de Tinta. PROPOSTA: as proporções.
+const WAVE_DIFF = {
+  easy: { extra: 0, share: 0.3, tinta: 0, tintaFrom: 5 },
+  normal: { extra: 0, share: 0.4, tinta: 1, tintaFrom: 4 },
+  hard: { extra: 1, share: 0.5, tinta: 1, tintaFrom: 4 },
+  superhard: { extra: 1, share: 0.55, tinta: 2, tintaFrom: 4 },
+  annihilation: { extra: 2, share: 0.6, tinta: 2, tintaFrom: 3 },
+};
+const ANIMALS = ['cao', 'javali', 'cobra'];
 export function wavePlan(D, difficulty = 'normal') {
   const W = D && D.waves;
   if (!W) return [];
   const total = W.count[difficulty] ?? W.count.normal;
   const every = W.bossEvery || 3;
+  const X = WAVE_DIFF[difficulty] || WAVE_DIFF.normal;
   const out = [];
   for (let n = 1; n <= total; n++) {
-    if (n === total) out.push({ n, kind: 'boss', count: 1, strongs: 0 });
-    else if (n % every === 0) out.push({ n, kind: 'giant', count: 1, strongs: 0 });
-    else out.push({ n, kind: 'horde', count: Math.min(7, 2 + Math.ceil(n * 0.6)), strongs: n >= 4 ? Math.min(3, Math.floor((n - 1) / 3)) : 0 });
+    if (n === total) { out.push({ n, kind: 'boss', count: 1, strongs: 0, foes: { boss: 1 } }); continue; }
+    if (n % every === 0) { out.push({ n, kind: 'giant', count: 1, strongs: 0, foes: { gigante: 1 } }); continue; }
+    const count = Math.min(9, 2 + Math.ceil(n * 0.6) + X.extra);
+    let animals = n === 1 ? 0 : Math.max(1, Math.round(count * X.share));
+    if (n >= 4) animals = Math.max(animals, 3); // os três tipos juntos
+    animals = Math.min(animals, count - 1);
+    const tinta = n >= X.tintaFrom ? Math.min(X.tinta + (n >= 7 ? 1 : 0), count - animals - 1) : 0;
+    const zombies = count - animals - tinta;
+    const strongs = n >= 4 ? Math.min(3, Math.floor((n - 1) / 3), Math.max(0, zombies - 1)) : 0;
+    const foes = {};
+    const put = (k, v) => { if (v > 0) foes[k] = (foes[k] || 0) + v; };
+    put('zumbi', zombies - strongs);
+    put('forte', strongs);
+    put('tinta', tinta);
+    // os animais em rodízio: na 2ª onda só lobos; depois, a partir de um tipo diferente a cada onda
+    for (let i = 0; i < animals; i++) put(n === 2 ? 'cao' : ANIMALS[(n + i) % 3], 1);
+    out.push({ n, kind: 'horde', count, strongs, foes });
   }
   return out;
 }

@@ -5,8 +5,9 @@ import { buildModel } from '../models/index.js';
 import { disposeClonedRig } from '../models/glbRig.js';
 import { Animator } from '../anim/Animator.js';
 import { buildMarionette, updateMarionetteStrings } from '../models/marionette.js';
-import { buildBloodZombie } from '../models/bloodZombie.js';
+import { buildBloodZombie, buildInkZombie } from '../models/bloodZombie.js';
 import { addBloodPool } from './bloodPools.js';
+import { inkSplash, inkTrail } from '../fx/inkFx.js';
 import { resolveBody } from './positioning.js';
 
 // NPCs: entidades que existem no campo além dos dois lutadores (clones do Trinitá, a Marionete).
@@ -875,9 +876,11 @@ export class BloodZombie extends Marionette {
     let neck = C.neck;
     let jaw = 0.15 + Math.sin(t * 2.2) * 0.08;
     // braços: pendurados à frente (o forte apoia no chão), balançando ao contrário das pernas
-    const armBase = -chest - (this.strong ? 0.45 : 0.25);
-    let la = [armBase - s1 * 0.4 * walk, 0, 0.25], ra = [armBase + s1 * 0.4 * walk, 0, -0.25];
-    let le = this.strong ? -0.55 : -0.35, re = le;
+    // (o de Tinta: braços PENDURADOS retos, colados ao corpo — cfg.armFwd/armOut/elbow)
+    const armBase = -chest - (this.cfg.armFwd ?? (this.strong ? 0.45 : 0.25));
+    const out = this.cfg.armOut ?? 0.25, sw = this.cfg.armSwing ?? 0.4;
+    let la = [armBase - s1 * sw * walk, 0, out], ra = [armBase + s1 * sw * walk, 0, -out];
+    let le = this.cfg.elbow ?? (this.strong ? -0.55 : -0.35), re = le;
     let twist = 0;
     const a = this.atk;
     if (a && this.state === 'attack') {
@@ -1100,5 +1103,55 @@ export class GiantBloodZombie extends BloodZombie {
     if (d < A.claw.range - 0.2 && c.claw <= 0) return 'claw';
     if (d > 3.2 && d < 8 && c.bite <= 0) return 'bite';
     return null;
+  }
+}
+
+// o ZUMBI DE TINTA (O Segredo na Ilha; wiki "Zumbi de Tinta"): um morador tomado pela Tinta — garras e MORDIDA (a
+// mordida deixa a vítima derretendo um instante, como a Tinta). Sem rosto (um buraco de mordida sob o cabelo), curvado,
+// a cabeça baixa; deixa um RASTRO DE TINTA por onde anda e morre numa poça de tinta. PROPOSTA: os números.
+BLOOD_ZOMBIE.ink = {
+  ...BLOOD_ZOMBIE.weak,
+  name: 'ZUMBI DE TINTA', hp: 130, speed: 4.8, radius: 0.48, height: 1.9,
+  element: 'tinta', fxColor: 0x8a4a22, poolColor: 0x2a1006,
+  // a postura do dono: o corpo ENCURVADO, a CABEÇA PARA BAIXO (o cabelo cobre o buraco do rosto) e os BRAÇOS
+  // PENDURADOS, balançando pouco
+  crouch: { hip: -0.5, knee: 0.75, chest: 0.5, neck: 0.5 },
+  armFwd: -0.05, armOut: 0.1, armSwing: 0.22, elbow: -0.15,
+  attacks: {
+    claw: { ...BLOOD_ZOMBIE.weak.attacks.claw, damage: 13 },
+    bite: { ...BLOOD_ZOMBIE.weak.attacks.bite, damage: 18, melt: true },
+  },
+};
+
+export class InkZombie extends BloodZombie {
+  configFor() { return BLOOD_ZOMBIE.ink; }
+  buildModel() {
+    this.strong = false;
+    this.inkZombie = true;
+    this.isMarionette = false;
+    return buildInkZombie();
+  }
+  strike(a, tg, d) {
+    const ok = super.strike(a, tg, d);
+    // a mordida da Tinta: a vítima fica derretendo (mais lenta e mais fraca por 2 s)
+    if (ok && a.melt && tg.addBuff && tg.state !== 'ko') tg.addBuff({ type: 'lodoWeak', name: 'DERRETENDO (TINTA)', time: 2, duration: 2, mult: 0.9, affects: ['melee', 'ranged', 'ability'], speedMult: 0.85 });
+    return ok;
+  }
+  // o RASTRO de tinta: uma gota no chão a cada ~0,45 m andado
+  update(dt) {
+    const r = super.update(dt);
+    if (this.state === 'chase' || this.state === 'attack') {
+      const lx = this.trailX ?? this.pos.x, lz = this.trailZ ?? this.pos.z;
+      if (Math.hypot(this.pos.x - lx, this.pos.z - lz) > 0.45) {
+        this.trailX = this.pos.x; this.trailZ = this.pos.z;
+        inkTrail(this.world, this.pos);
+      }
+    }
+    return r;
+  }
+  // morre numa poça de TINTA (não de sangue)
+  vanishPose(k, restY) {
+    if (this.state === 'die' && !this.melted) { this.melted = true; inkSplash(this.world, new THREE.Vector3(this.pos.x, 0.05, this.pos.z), { size: 1.1, life: 4 }); }
+    super.vanishPose(k, restY);
   }
 }

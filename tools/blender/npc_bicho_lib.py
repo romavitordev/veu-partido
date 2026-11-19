@@ -47,11 +47,14 @@ def build(kind):
 
     # ---------------- proporções (juntas nas mesmas posições do modelo antigo)
     if boar:
-        legH, halfL, bodyR, humpH, headL = 0.5, 0.62, (0.34, 0.36), 0.18, 0.5
-        legR, legX = (0.075, 0.055), 0.2
+        # (2026-11-19, dono: "melhore os modelos dos outros animais") pela arte da wiki: pernas mais altas, a CORCUNDA
+        # alta nos ombros caindo para a anca estreita, a cabeça grande e baixa (era uma bolha oval de pernas curtas)
+        legH, halfL, bodyR, humpH, headL = 0.64, 0.6, (0.29, 0.3), 0.3, 0.6
+        legR, legX = (0.085, 0.06), 0.19
     else:
-        legH, halfL, bodyR, humpH, headL = 0.52, 0.42, (0.17, 0.2), 0.05, 0.36
-        legR, legX = (0.045, 0.03), 0.12
+        # (2026-11-19) de LOBO magro, como na arte: pernas altas, os ombros acima da anca, o pescoço erguido
+        legH, halfL, bodyR, humpH, headL = 0.68, 0.45, (0.16, 0.2), 0.12, 0.4
+        legR, legX = (0.045, 0.032), 0.11
     upper, lower = legH * 0.52, legH * 0.5
     FUR = 0.02 if boar else 0.013  # comprimento das mechas (deslocamento)
 
@@ -90,11 +93,13 @@ def build(kind):
         t = i / 8
         z = -halfL + t * 2 * halfL
         hump = humpH * math.sin(min(1.0, t * 1.3) * math.pi * 0.5) * (1 - max(0.0, t - 0.8) * 2)
-        r = bodyR[0] * (0.62 + 0.45 * math.sin(math.pi * (0.15 + t * 0.75))) * (1 if boar else 0.72 + 0.45 * t) + hump * 0.35  # o cão: peito fundo, cintura fina
+        r = bodyR[0] * (0.62 + 0.45 * math.sin(math.pi * (0.15 + t * 0.75))) * ((0.7 + 0.42 * t) if boar else 0.72 + 0.45 * t) + hump * 0.35  # peito fundo, anca/cintura fina
         spine.append((z, hump, r))
         S.ell((0, bodyR[1] * 0.1 + hump * 0.5, z), (r, r * bodyR[1] / bodyR[0], halfL * 0.32))
     S.ell((0, -bodyR[1] * 0.25, 0.05), (bodyR[0] * 0.8, bodyR[1] * 0.55, halfL * 0.8))  # barriga
     S.ell((0, bodyR[1] * 0.1 + humpH * 0.6, halfL * 0.85), (bodyR[0] * 0.8, bodyR[1] * 0.8, halfL * 0.35))  # o pescoço grosso
+    if not boar:  # o pescoço erguido do lobo, subindo até a nuca
+        S.chain([(0, bodyR[1] * 0.2 + humpH * 0.6, halfL * 0.9), (0, bodyR[1] * 0.3 + humpH * 0.6 + 0.12, halfL * 1.05)], [bodyR[0] * 0.75, bodyR[0] * 0.6], step=0.5)
     for s in (1, -1):  # ombros e ancas (onde as pernas encaixam)
         S.ell((s * legX, 0.0, halfL * 0.62), (legR[0] * 1.9, legR[0] * 2.6, legR[0] * 2.1))
         S.ell((s * legX, 0.02, -halfL * 0.62), (legR[0] * 2.0, legR[0] * 2.8, legR[0] * 2.3))
@@ -186,7 +191,7 @@ def build(kind):
         add(torso, f'goo{i}', rod([tuple(p), (p.x, p.y - ln * 0.6, p.z), (p.x, p.y - ln, p.z)], [0.018, 0.012, 0.003], seg=5), M['goo'])
 
     # ================================================================ CABEÇA
-    head = joint('J_head', (0, bodyR[1] * 0.3 + humpH * 0.6, halfL * 0.95), torso)
+    head = joint('J_head', (0, (bodyR[1] * -0.05 + humpH * 0.35) if boar else (bodyR[1] * 0.3 + humpH * 0.6 + 0.2), halfL * (1.0 if boar else 1.12)), torso)
     Hs = Sculpt('cabeca_' + kind)
     if boar:
         Hs.ell((0, 0.06, 0.02), (0.2, 0.2, 0.2))  # a nuca larga

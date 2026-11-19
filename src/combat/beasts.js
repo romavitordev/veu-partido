@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Marionette, BloodZombie } from './npcs.js';
 import { applyHit } from './damage.js';
 import { yawTo, angleDiff, DEG, forwardFromYaw } from '../core/util.js';
-import { buildExistido, buildInkBeast, buildSphinx } from '../models/beasts.js';
+import { buildExistido, buildInkBeast, buildInkSnake, buildSphinx } from '../models/beasts.js';
 import { startRiddle, canRiddle } from './riddle.js';
 import { inkSplash } from '../fx/inkFx.js';
 
@@ -154,7 +154,7 @@ export class ExistidoMorte extends BloodZombie {
 //  - CÃO: magro e rápido; mordidas e o salto no pescoço.
 export const INK_BEAST = {
   javali: {
-    name: 'JAVALI INFECTADO', hp: 170, duration: 12, speed: 4.4, radius: 0.7, height: 1.3,
+    name: 'JAVALI INFECTADO', hp: 170, duration: 12, speed: 4.4, radius: 0.7, height: 1.5,
     element: 'tinta', fxColor: 0x8a4a22, poolColor: 0x2a1006, noPool: true,
     attacks: {
       gore: { windup: 0.35, active: 0.14, recovery: 0.5, range: 1.9, arc: 120, damage: 22, cd: 1.6, knockback: 4 },
@@ -163,7 +163,7 @@ export const INK_BEAST = {
     firstCd: { gore: 0.4, charge: 0.6 },
   },
   cao: {
-    name: 'CÃO SELVAGEM INFECTADO', hp: 80, duration: 12, speed: 6.2, radius: 0.45, height: 0.9,
+    name: 'CÃO SELVAGEM INFECTADO', hp: 80, duration: 12, speed: 6.2, radius: 0.45, height: 1.2,
     element: 'tinta', fxColor: 0x8a4a22, poolColor: 0x2a1006, noPool: true,
     attacks: {
       bite: { windup: 0.2, active: 0.12, recovery: 0.35, range: 1.5, arc: 120, damage: 10, cd: 0.9, knockback: 1 },
@@ -252,6 +252,121 @@ export class InkBeast extends Marionette {
       l.hip.rotation.x = s * 0.6 * walk;
       if (l.knee) l.knee.rotation.x = Math.max(0, -s) * 0.7 * walk * (i < 2 ? -1 : 1);
     });
+    this.updateFlash();
+  }
+}
+
+// ================================================================== COBRA INFECTADA
+// O Segredo na Ilha (wiki "Cobras Infectadas"; dono, 2026-11-19: as criaturas da ilha). Cadáver de cobra tomado pela
+// Tinta: rasteja ondulando, ergue a frente do corpo, MORDE de perto e dá o BOTE de longe; se o bote pega, ela se ENROLA
+// em quem mordeu e aperta por um instante (apertar botões solta antes, como os outros agarrões de bicho). PROPOSTA: os
+// números e o enrolar.
+export const INK_SNAKE = {
+  name: 'COBRA INFECTADA', hp: 110, duration: 12, speed: 4.6, radius: 0.5, height: 0.9,
+  element: 'tinta', fxColor: 0x8a4a22, poolColor: 0x2a1006, noPool: true,
+  attacks: {
+    bite: { windup: 0.28, active: 0.12, recovery: 0.45, range: 2.1, arc: 110, damage: 14, cd: 1.3, knockback: 1.2 },
+    strike: { windup: 0.4, active: 0.22, recovery: 0.55, range: 2.0, arc: 90, damage: 18, cd: 5, knockback: 0, dash: 14, grabAt: 0.62, hold: 1.5, squeeze: 9, release: 10 },
+  },
+  firstCd: { bite: 0.4, strike: 1.2 },
+};
+
+export class InkSnake extends Marionette {
+  configFor() { return { ...INK_SNAKE, attacks: Object.fromEntries(Object.entries(INK_SNAKE.attacks).map(([k, v]) => [k, { ...v }])) }; }
+  buildModel() {
+    this.isMarionette = false;
+    this.isInkBeast = true;
+    this.kind = 'cobra';
+    return buildInkSnake();
+  }
+
+  chooseTarget() { this.target = this.owner.opponent; }
+
+  pickAttack(d) {
+    const c = this.cds;
+    if (d > 3 && d < 7.5 && c.strike <= 0) return 'strike';
+    if (d < this.cfg.attacks.bite.range - 0.1 && c.bite <= 0) return 'bite';
+    return null;
+  }
+
+  attackSound(name) { return name === 'strike' ? 'whip' : 'bloodClaw'; }
+  stepSpeed(d) { return this.cfg.speed * (d > 6 ? 1.3 : 1); }
+  restY() { return 0; }
+  bob() { return 0; }
+
+  riseTime() { return 0.6; }
+  risePose(k) {
+    const root = this.model.root;
+    root.position.set(this.pos.x, -0.6 * (1 - k), this.pos.z);
+    root.scale.setScalar(1);
+    if (Math.random() < 0.4) this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.15, this.pos.z), { count: 3, color: 0x4a1c0e, speed: 1.6, up: 2, life: 0.5, size: 0.12, gravity: 8 });
+  }
+  vanishPose(k) {
+    const root = this.model.root;
+    if (this.state !== 'die') { root.position.y = -k * 0.8; return; }
+    root.scale.set(1 + k * 0.3, Math.max(0.05, 1 - k * 0.95), 1 + k * 0.3);
+    if (!this.melted) { this.melted = true; inkSplash(this.world, new THREE.Vector3(this.pos.x, 0.05, this.pos.z), { size: 1.1, life: 4 }); }
+  }
+
+  swingFx(a) {
+    if (a.dash) return;
+    this.world.fx.slash(new THREE.Vector3(this.pos.x, 0.7, this.pos.z), this.yaw, { color: 0x6a3414, radius: a.range, arc: 1.6, life: 0.18, width: 0.2, roll: -0.1 });
+  }
+
+  // o bote pegou: ENROLA (prende a vítima onde ela está; a cobra fica em volta)
+  grab(tg) {
+    tg.cancelAction && tg.cancelAction();
+    tg.setState('grabbed');
+    tg.vel.set(0, 0, 0);
+    this.held = tg;
+    this.setState('drag');
+    this.world.audio.play('chainPull', { volume: 0.7, pitch: 0.7 });
+    tg.notify && tg.notify('A COBRA SE ENROLOU', true);
+  }
+  dragTick(dt, g, a) {
+    // aperta: dano por segundo, a vítima parada, a cobra rodeando-a
+    this.coil = (this.coil || 0) + dt;
+    const ang = this.coil * 4;
+    this.pos.x = g.pos.x + Math.sin(ang) * 0.55;
+    this.pos.z = g.pos.z + Math.cos(ang) * 0.55;
+    this.yaw = ang + Math.PI / 2;
+    g.vel.set(0, 0, 0);
+    this.squeezeT = (this.squeezeT || 0) + dt;
+    if (this.squeezeT >= 0.5) {
+      this.squeezeT = 0;
+      applyHit(this.world, this.owner, g, { damage: a.squeeze * 0.5, kind: 'ability', element: 'tinta', reaction: false, ignoreInvuln: true, knockback: 0, sound: 'bladeHit', color: this.cfg.fxColor, scale: 0.7 });
+    }
+  }
+
+  onDestroyed() {}
+
+  // o corpo ONDULA (uma onda correndo da cabeça à cauda); a frente se ergue; no bote, o pescoço recua e dispara
+  pose() {
+    const J = this.model.joints;
+    this.model.root.rotation.y = this.yaw;
+    const t = this.t;
+    const moving = this.state === 'chase' ? 1 : 0.35;
+    const ph = this.gait * 3.2 + t * 1.5;
+    let neck = -0.75; // a frente erguida (negativo = para cima)
+    let neck2 = -0.25;
+    let head = 0.65;
+    let jaw = 0.15 + Math.abs(Math.sin(t * 7)) * 0.08;
+    const a = this.atk;
+    if (a && this.state === 'attack') {
+      const st = this.stateT;
+      const k = Math.min(1, st / a.windup);
+      const after = st > a.windup;
+      if (after) { neck = -0.15; neck2 = 0.05; head = 0.25; jaw = 0.9; } // disparou para a frente, boca escancarada
+      else { neck = -0.75 - 0.4 * k; neck2 = -0.25 - 0.2 * k; head = 0.65 + 0.35 * k; jaw = 0.3 + 0.5 * k; } // recua o pescoço
+    }
+    if (this.state === 'drag') { neck = -0.3; neck2 = 0; head = 0.4; jaw = 0.6; }
+    J.segs.forEach((s, i) => {
+      const lat = Math.sin(ph - i * 0.85) * (0.3 + i * 0.02) * (i < 2 ? 0.4 : 1) * moving;
+      const coil = this.state === 'drag' ? 0.5 : 0;
+      s.rotation.set(i === 0 ? neck : i === 1 ? neck2 : i === 2 ? 0.55 : i === 3 ? 0.42 : 0, lat + (i > 1 ? coil : 0), 0);
+    });
+    if (J.head) J.head.rotation.x = head;
+    if (J.jaw) J.jaw.rotation.x = jaw;
     this.updateFlash();
   }
 }

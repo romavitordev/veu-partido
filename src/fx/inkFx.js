@@ -93,6 +93,17 @@ export function inkSplash(world, pos, o = {}) {
   });
 }
 
+// o RASTRO de tinta (o Zumbi de Tinta): uma mancha pequena e irregular no chão que some devagar
+export function inkTrail(world, pos, o = {}) {
+  const m = new THREE.Mesh(new THREE.CircleGeometry(0.2, 9), new THREE.MeshBasicMaterial({ color: o.color ?? INK, transparent: true, opacity: 0.8, depthWrite: false }));
+  m.rotation.set(-Math.PI / 2, 0, Math.random() * Math.PI * 2);
+  m.scale.set(0.7 + Math.random() * 0.6, 0.5 + Math.random() * 0.5, 1);
+  m.position.set(pos.x + (Math.random() - 0.5) * 0.25, 0.02, pos.z + (Math.random() - 0.5) * 0.25);
+  m.renderOrder = 2;
+  const life = o.life ?? 5;
+  world.fx._addMesh(m, life, (k) => { m.material.opacity = 0.8 * Math.min(1, k * 2.5); });
+}
+
 // o SINO fantasma: aparece sobre a criatura, balança e brilha a cada badalada (toll())
 export function ghostBell(world, followFn, o = {}) {
   const { life = 1.6, color = 0x5a3818, size = 0.55 } = o;
