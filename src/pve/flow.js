@@ -14,7 +14,7 @@ import { ensureModels, isModelLoaded } from '../models/index.js';
 import { renderPortraits } from '../ui/portraits.js';
 import { renderArenaThumbs } from '../ui/arenaThumbs.js';
 import { Dungeon } from './Dungeon.js';
-import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord } from './dungeons.js';
+import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord, diffUnlocked, clampDiff } from './dungeons.js';
 
 // o personagem pode entrar em TODAS as dungeons (nenhum chefe contra ele mesmo)
 const allowedEverywhere = (id) => !pveBanned(byId(id)) && DUNGEON_ORDER.every((d) => isAllowed(d, id));
@@ -262,28 +262,35 @@ export function createPveFlow(ctx) {
     const order = DIFF_IDS();
     const opts = Object.entries(PVE_DIFFICULTIES).map(([id, d]) => {
       const rec = phaseRecord(camp, phaseId, id);
+      // trancada até vencer ESTA fase na dificuldade de baixo (dungeons.js diffUnlocked); online fica tudo aberto
+      const open = online() || diffUnlocked(camp, phaseId, id);
+      const below = PVE_DIFFICULTIES[order[order.indexOf(id) - 1]];
       return {
         id: `diff:${id}`,
         label: d.label.toUpperCase(),
-        icon: rec ? '★' : '☠'.repeat(order.indexOf(id) + 1),
-        desc: `${rec ? `VENCIDA · recorde ${fmtTime(rec)} · ` : ''}${DIFF_DESC[id] || ''}`,
-        tag: `${rec ? '★ ' : ''}● ×${fmt(d.coin)}`,
-        tone: d.rage ? 'danger' : rec ? '' : id === 'normal' ? 'gold' : '',
+        icon: !open ? '🔒' : rec ? '★' : '☠'.repeat(order.indexOf(id) + 1),
+        desc: open ? `${rec ? `VENCIDA · recorde ${fmtTime(rec)} · ` : ''}${DIFF_DESC[id] || ''}` : `Vença esta fase no ${below ? below.label : 'anterior'} para abrir.`,
+        tag: open ? `${rec ? '★ ' : ''}● ×${fmt(d.coin)}` : 'TRANCADA',
+        tone: !open ? '' : d.rage ? 'danger' : rec ? '' : id === 'normal' ? 'gold' : '',
+        disabled: !open,
       };
     });
     menu('pvediff', 'DIFICULDADE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
       cols: 1,
-      subtitle: `<b>${D ? esc(D.place) : ''}</b> · ` + (D && D.waves ? `${esc(D.about)} Quanto mais difícil, mais ondas. ` : '') + 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. ★ = já venceu esta fase nessa dificuldade (com o recorde).',
+      subtitle: `<b>${D ? esc(D.place) : ''}</b> · ` + (D && D.waves ? `${esc(D.about)} Quanto mais difícil, mais ondas. ` : '') + 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. Fácil e Normal sempre abertos; cada uma acima abre ao vencer esta fase na de baixo. ★ = já venceu esta fase nessa dificuldade (com o recorde).',
     });
     // começa na última usada; senão, na mais fácil que ainda não venceu (senão, no Normal)
+    const ok = (i) => i >= 0 && !opts[i].disabled;
     const prev = game.pveDiff ? order.indexOf(game.pveDiff) : -1;
-    const todo = order.findIndex((id) => !phaseRecord(camp, phaseId, id));
-    game.screen.index = prev >= 0 ? prev : todo >= 0 ? todo : 1;
+    const todo = order.findIndex((id, i) => ok(i) && !phaseRecord(camp, phaseId, id));
+    game.screen.index = ok(prev) ? prev : todo >= 0 ? todo : 1;
     game.screen.render();
   }
 
   function beginPhase(id) {
-    const difficulty = game.pveDiff || 'normal';
+    // a dificuldade trancada nesta fase (o "PRÓXIMA FASE" com a mesma dificuldade) cai para a mais alta aberta
+    const difficulty = online() ? game.pveDiff || 'normal' : clampDiff(data.campaign, id, game.pveDiff || 'normal');
+    game.pveDiff = difficulty;
     if (online()) {
       net.attempt = newAttempt({ charId: game.pveChar, team: game.pveTeam || [], coop: game.pveCoopPick, difficulty, dungeon: id });
       net.attempt.depth = phaseDepth(id);
@@ -337,7 +344,7 @@ export function createPveFlow(ctx) {
       p1: def,
       p2: { id: D.boss, name: D.bossName || 'O ESPREITADOR', color: D.color },
       pvePlayers: coopDef ? [{ def, slot: 'P1' }, { def: coopDef, slot: 'P2' }] : null,
-      arena: { name: `${D.name} — ${D.place}` },
+      arena: { name: D.name.includes(D.place) ? D.name : `${D.name} — ${D.place}` },
       cpu: true, mode: 'pve', portraits,
     });
     loading.el.classList.add('pve-loading');
@@ -514,7 +521,7 @@ export function createPveFlow(ctx) {
       if (firstClear && nextId) badges.push(`FASE NOVA ABERTA: ${esc(DUNGEONS[nextId].place.toUpperCase())}`);
       game.pveAgain = { char: done.charId, team: done.team, coop: done.coop, difficulty: done.difficulty };
       const opts = [];
-      if (nextId) opts.push({ id: `again:${nextId}`, label: `PRÓXIMA FASE · ${DUNGEONS[nextId].place.toUpperCase()}`, icon: '▶', desc: 'Uma tentativa nova, do nível 1, com o mesmo personagem e a mesma dificuldade.', tone: 'gold', wide: true });
+      if (nextId) opts.push({ id: `again:${nextId}`, label: `PRÓXIMA FASE · ${DUNGEONS[nextId].place.toUpperCase()}`, icon: '▶', desc: clampDiff(data.campaign, nextId, done.difficulty) === done.difficulty ? 'Uma tentativa nova, do nível 1, com o mesmo personagem e a mesma dificuldade.' : `Uma tentativa nova, do nível 1, com o mesmo personagem, no ${PVE_DIFFICULTIES[clampDiff(data.campaign, nextId, done.difficulty)].label} (o ${PVE_DIFFICULTIES[done.difficulty].label} dela abre vencendo no de baixo).`, tone: 'gold', wide: true });
       opts.push({ id: `again:${done.dungeon}`, label: 'JOGAR DE NOVO', icon: '↻', desc: 'A mesma fase, para bater o recorde.', tone: nextId ? '' : 'gold', wide: !nextId });
       opts.push({ id: 'hub', label: 'VOLTAR AO OUTRO LADO', icon: '⌂', desc: `Gastar as moedas: ${data.coins} no total.`, wide: !nextId });
       opts.push({ id: 'main', label: 'MENU PRINCIPAL', foot: true });
@@ -798,5 +805,5 @@ export function createPveFlow(ctx) {
   // online: os bloqueados de cada lado (P1 pelos dados do anfitrião, P2 pelos do convidado)
   const lockedChars = () => (online() ? [lockedMap(net.data[0], ROSTER), lockedMap(net.data[1], ROSTER)] : lockedMap(data, ROSTER));
 
-  return { toHub, toEntry, toPlayers, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS[(DUNGEONS[attempt()?.dungeon] || DUNGEONS.espreitador).arena]?.name };
+  return { toHub, toDifficulty, toEntry, toPlayers, onlineRoom, beginOnline, selectBack, onSelect, update, quit, startDungeon, lockedChars, get data() { return data; }, arenaName: () => ARENAS[(DUNGEONS[attempt()?.dungeon] || DUNGEONS.espreitador).arena]?.name };
 }

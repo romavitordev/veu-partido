@@ -358,7 +358,7 @@ export const DUNGEONS = {
   tipora: {
     id: 'tipora',
     storyOrder: 2.5,
-    name: 'Ondas de Tipora',
+    name: 'Proteja a Ilha de Tipora', // (dono, 2026-11-19: "Ao invés de Ondas de Tipora chame algo como 'Proteja a Ilha de Tipora'")
     place: 'Ilha de Tipora',
     thumb: { arena: 'tipora', pos: [0, 6.5, 15], look: [0, 1.2, -2] }, // a prévia na ESCOLHA A FASE
     color: '#7ad0b8',
@@ -806,6 +806,22 @@ export function phaseUnlocked(campaign, id) {
   // (v5.19.0) uma fase nova entrou no meio da ordem (Tipora antes da Torre): quem já venceu a de depois não a perde
   return i === 0 || (i > 0 && (phaseCleared(campaign, DUNGEON_ORDER[i - 1]) || phaseCleared(campaign, id)));
 }
+// DIFICULDADES TRANCADAS (pedido do dono, 2026-11-19: "para jogar no dificil o player tem que ter ganhado essa mesma
+// fase no normal, assim por diante, apenas o normal e fácil são liberados, mas fácil nao libera o dificil"): por FASE,
+// o Fácil e o Normal estão sempre abertos; cada uma acima abre ao vencer ESSA fase na dificuldade logo abaixo (Normal →
+// Difícil → Superdifícil → Aniquilação). Uma dificuldade já vencida nunca tranca (saves de antes da regra).
+export function diffUnlocked(campaign, id, difficulty) {
+  const i = DIFF_ORDER.indexOf(difficulty);
+  if (i <= 1) return true;
+  return !!(phaseRecord(campaign, id, DIFF_ORDER[i - 1]) || DIFF_ORDER.slice(i).some((d) => phaseRecord(campaign, id, d)));
+}
+// a dificuldade mais alta aberta que não passa de `difficulty` (o "PRÓXIMA FASE" com a mesma dificuldade)
+export function clampDiff(campaign, id, difficulty) {
+  let i = Math.max(0, DIFF_ORDER.indexOf(difficulty));
+  while (i > 1 && !diffUnlocked(campaign, id, DIFF_ORDER[i])) i--;
+  return DIFF_ORDER[i];
+}
+
 // o recorde da fase (por dificuldade; `bestTimes[id]` é o melhor de todas)
 export function phaseRecord(campaign, id, difficulty = null) {
   const t = campaign.bestTimes || {};

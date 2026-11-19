@@ -523,3 +523,29 @@ test('Ondas de Tipora: fase de ondas sem portas, gigante sozinho a cada 3 e o Am
   const boss = (await import('../src/characters/bosses/amigo.js')).default;
   assert.ok(boss.boss && boss.stats.maxHealth > 1800 && !boss.special && !boss.awakening);
 });
+
+test('Dificuldades trancadas por fase: Fácil e Normal abertos; cada uma abre vencendo a de baixo NESTA fase', async () => {
+  const { diffUnlocked, clampDiff, phaseUnlocked } = await import('../src/pve/dungeons.js');
+  const camp = (times) => ({ phases: [], bestTimes: times });
+  const novo = camp({});
+  assert.ok(diffUnlocked(novo, 'degolificada', 'easy') && diffUnlocked(novo, 'degolificada', 'normal'));
+  assert.ok(!diffUnlocked(novo, 'degolificada', 'hard'));
+  // o Fácil não abre o Difícil (mas abre a próxima fase, só com Fácil e Normal)
+  const facil = camp({ degolificada: 300, 'degolificada:easy': 300 });
+  assert.ok(!diffUnlocked(facil, 'degolificada', 'hard'));
+  assert.ok(phaseUnlocked(facil, 'espreitador'));
+  // o Normal abre o Difícil dela, e só dela
+  const normal = camp({ degolificada: 300, 'degolificada:normal': 300 });
+  assert.ok(diffUnlocked(normal, 'degolificada', 'hard'));
+  assert.ok(!diffUnlocked(normal, 'degolificada', 'superhard'));
+  assert.ok(!diffUnlocked(normal, 'espreitador', 'hard'));
+  // em cadeia: Difícil → Superdifícil → Aniquilação
+  assert.ok(diffUnlocked(camp({ 'degolificada:hard': 1 }), 'degolificada', 'superhard'));
+  assert.ok(diffUnlocked(camp({ 'degolificada:superhard': 1 }), 'degolificada', 'annihilation'));
+  // quem já venceu uma dificuldade antes da regra não a perde
+  assert.ok(diffUnlocked(camp({ 'degolificada:hard': 1 }), 'degolificada', 'hard'));
+  // "PRÓXIMA FASE" no Difícil cai para a mais alta aberta (o Normal)
+  assert.equal(clampDiff(normal, 'espreitador', 'hard'), 'normal');
+  assert.equal(clampDiff(normal, 'degolificada', 'hard'), 'hard');
+  assert.equal(clampDiff(novo, 'degolificada', 'easy'), 'easy');
+});

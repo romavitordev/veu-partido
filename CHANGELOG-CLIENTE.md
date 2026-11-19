@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.20.0 — Dificuldades Trancadas
+- Outro Lado com as DIFICULDADES TRANCADAS por fase: Fácil e Normal sempre abertos; o Difícil de uma fase abre ao vencê-la no Normal, o Super Difícil ao vencê-la no Difícil e o Aniquilação ao vencê-la no Super Difícil (vencer no Fácil não abre o Difícil). A próxima fase continua abrindo com uma vitória em qualquer dificuldade, mas começa só com Fácil e Normal. A tela de dificuldade mostra o cadeado e o que falta; dificuldades que você já venceu continuam abertas. A fase de ondas de Tipora agora se chama PROTEJA A ILHA DE TIPORA.
+
 ## v5.19.0 — Ondas em Tipora
 - Outro Lado com a 1ª FASE DE ONDAS: a Ilha de Tipora (entre a Mansão e a Torre). Sem salas nem portas: os Zumbis de Sangue chegam em ondas pela praça, a cada 3 ondas vem um ZUMBI GIGANTE sozinho e a última onda é o AMIGO IMAGINÁRIO. A explicação aparece no card da fase, na escolha da dificuldade e no começo da fase; o canto da tela conta as ondas. Quanto mais difícil, mais ondas (7 no Fácil a 13 no Aniquilação). Quem já venceu a Torre continua com ela aberta.
 

@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v5.20.0 — Dificuldades Trancadas
+
+- Versão: `VERSION` 5.19.0 → **5.20.0**. Data: 2026-11-19. Dono: "Tranque as dificuldades, para jogar no dificil o
+  player tem que ter ganhado essa mesma fase no normal, assim por diante, apenas o normal e fácil são liberados, mas
+  fácil nao libera o dificil, para liberar a proxima fase tem que ter ganhado pelo menos no fácil para liberar, mas
+  apenas terá fácil e normal na proxima, tem que ganha-la no normal para liberar o dificil dela."
+- Conferido: a regra não se contradiz. A abertura da próxima fase já era por qualquer vitória (`phaseCleared`). Decisões
+  de implementação: uma dificuldade já vencida antes da regra nunca tranca; online (dois saves) fica tudo aberto; o
+  "PRÓXIMA FASE" com uma dificuldade ainda trancada lá cai para a mais alta aberta e avisa no botão.
+- Também: o nome "Proteja a Ilha de Tipora" (pedido do dono). Conferido no jogo: a dificuldade de Tipora num save novo
+  mostra Fácil e Normal abertos e Difícil, Super Difícil e Aniquilação trancados com o que falta.
+- Fora desta versão (em andamento, sem commit): javali e cão de tinta remodelados e a cobra infectada nova.
+- `npm test` 124/124, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.19.0 — Ondas em Tipora
 
 - Versão: `VERSION` 5.18.1 → **5.19.0**. Data: 2026-11-19. Dono: "Ondas em Tipora" (escolhido entre as opções do modo

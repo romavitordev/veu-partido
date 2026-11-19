@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.19.0';
+export const VERSION = '5.20.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.20.0',
+    date: '2026-11-19',
+    title: 'Dificuldades Trancadas',
+    items: [
+      'Outro Lado com as DIFICULDADES TRANCADAS por fase: Fácil e Normal sempre abertos; o Difícil de uma fase abre ao vencê-la no Normal, o Super Difícil ao vencê-la no Difícil e o Aniquilação ao vencê-la no Super Difícil (vencer no Fácil não abre o Difícil). A próxima fase continua abrindo com uma vitória em qualquer dificuldade, mas começa só com Fácil e Normal. A tela de dificuldade mostra o cadeado e o que falta; dificuldades que você já venceu continuam abertas. A fase de ondas de Tipora agora se chama PROTEJA A ILHA DE TIPORA.',
+    ],
+  },
   {
     v: '5.19.0',
     date: '2026-11-19',

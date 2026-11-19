@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.20.0 — Dificuldades Trancadas
+
+### Adicionado
+- `dungeons.js`: `diffUnlocked(campanha, fase, dificuldade)` (Fácil e Normal sempre; cada uma acima com o recorde da fase na de baixo, ou já vencida) e `clampDiff` (a mais alta aberta até a pedida).
+- `flow.js`: a tela de dificuldade tranca (🔒, "Vença esta fase no X para abrir", `disabled`) e começa numa aberta; `beginPhase` limita a dificuldade (o "PRÓXIMA FASE" cai para a aberta e avisa); online fica tudo aberto. `toDifficulty` exportado.
+- Teste "Dificuldades trancadas por fase".
+
+### Alterado
+- `tipora.name`: "Proteja a Ilha de Tipora"; a tela de carregamento não repete o lugar quando o nome já o contém.
+
 ## v5.19.0 — Ondas em Tipora
 
 ### Adicionado
