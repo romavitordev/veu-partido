@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.23.0 — O Fogo da Vigília
+
+### Adicionado
+- `ui/Screens.js` `LoadingScreen`: o rodapé de dicas (`tips` do modo + `tip.1…6` embaralhadas; ←/→, as setas `.ld-prev`/`.ld-next`, troca sozinha a cada 9 s), `waitStart()` (carregou: "Pressione A/× para começar" / "Toque para começar"; A/×, START, Enter, Espaço ou toque) e `update(input, dt)` chamado pelo `main.js` no estado `loading`. `main.js startMatch` e `pve/flow.js` esperam o A (LAN, Outro Lado online e torneio da CPU começam sozinhos). Chaves `load.ready`, `load.ready_touch`, `load.tip_n`, `load.loading` nos 13 idiomas. `dungeons.js`: `tips` da Tipora e do Samhain e `PVE_TIPS`.
+- `pve/itensSamhain.js` `SamhainItems`: o aldeão mensageiro (sai de uma casa acesa / do alçapão, larga o item no chão com a coluna de luz e volta), pegar passando por cima, □ arremessa; COMBUSTÍVEL (poça), TOCHA (encostar na poça ateia a barreira: empurra as Assombrações para a borda e queima), LANTERNA DO CRÂNIO DE PORCO (só depois do 1º fogo; acende dentro do fogo; o clarão chama `Assombracao.blind`). `combat/assombracao.js` `blind(time, from)`: o estado `blind` (recua da luz, para de atacar; Broén metade do tempo). Ligado em `Dungeon.js` (vila e Árvore; some no corredor).
+- Detalhes: `pve/arvore.js` (o alçapão: juntas, rebites, dobradiças, travas com cadeado e corrente, a runa completa, pedras-runa, musgo, crânios de porco nas estacas), `pve/samhain.js` (a gaiola da lamparina, o nabo entalhado que apaga com ela, a oferenda), `pve/corredor.js` (sulcos, cerca de estacas, flores, nabos acesos, marcos de pedra, o telhadinho das gaiolas).
+
+### Mudado
+- `treeWeaken`: 2% por lamparina até 25% (antes 3% até 45%) e sem tirar onda. A porta da Árvore: Fácil 2200, Normal 2150.
+- O começo das fases de ondas mostra só a frase curta (`exploreHint`); o `about` do Samhain virou um resumo de uma linha.
+- Celular (`styles.css`, `body.touch-ui`): a vida do Outro Lado no alto, o objetivo embaixo dela, o nível embaixo no meio, a barra dos aldeões abaixo da pausa, a dica no meio de cima, o marcador de dano longe dos botões; a tela de carregamento cabe no celular deitado. O corredor fala do joystick no toque.
+
+### Corrigido
+- Uma Assombração que sobrava da vila quebrava ao procurar as casas depois que elas sumiam (`houses()` agora devolve a lista da parte atual ou vazia).
+
 ## v5.22.0 — A Noite do Samhain em Treb Ciach
 
 ### Adicionado

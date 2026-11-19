@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.22.0';
+export const VERSION = '5.23.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.23.0',
+    date: '2026-11-19',
+    title: 'O Fogo da Vigília',
+    items: [
+      'Tela de carregamento nova: no rodapé, DICAS que você troca com ←/→ (ou as setas na tela) e que mudam sozinhas; no Outro Lado, primeiro as dicas da fase. Quando termina de carregar, aparece "Pressione A para começar" (no celular, "Toque para começar"): dá tempo de ler. O textão do começo das fases de ondas saiu. Treb Ciach ganhou os ITENS DA VIGÍLIA, na vila e na Árvore Anciã: de tempos em tempos um aldeão sai de onde as pessoas estão protegidas, larga um item no chão (a coluna de luz mostra onde) e volta para dentro; passe por cima para pegar. Primeiro o COMBUSTÍVEL (□/tiro derrama a poça perto da porta), depois a TOCHA (encoste na poça e o fogo vira uma BARREIRA que as Assombrações não atravessam e que queima quem encosta) e, depois do primeiro fogo, a LANTERNA DO CRÂNIO DE PORCO: acenda no fogo e arremesse; o clarão ofusca e fere as Assombrações em volta. As lamparinas do corredor agora enfraquecem as ondas da Árvore só um pouco (até 25%), e a porta da Árvore aguenta mais no Normal. Mais detalhes nas três partes: o alçapão com as travas, o cadeado, a corrente, as dobradiças e a runa completa, crânios de porco nas estacas; nas portas da vila a gaiola de ferro da lamparina, o nabo entalhado aceso (apaga junto com ela) e a oferenda; no corredor a cerca de estacas, os sulcos das carroças, flores, nabos acesos e marcos de pedra. No celular: a vida do Outro Lado foi para o alto da tela (saiu de baixo do polegar do joystick), o objetivo ficou maior e a barra dos aldeões, a dica e o marcador de dano não cobrem mais os botões.',
+    ],
+  },
   {
     v: '5.22.0',
     date: '2026-11-19',

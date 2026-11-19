@@ -185,6 +185,55 @@ export class LanternRun {
       M.compose(p.set(t.u, h(t.v) + t.k * 0.6, -t.v), q.identity(), s.set(t.k * 0.28, t.k * 0.8, t.k * 0.28)); crowns.setMatrixAt(i, M);
     });
     g.add(trunks, crowns);
+    // MAIS DETALHES NO CAMINHO (dono, 2026-11-19: "Melhore o mapa por completo com mais detalhes … as 3 partes"; PROPOSTA):
+    // os sulcos das carroças na terra, a cerca de estacas torta das duas beiradas (com falhas), as flores do campo, os
+    // nabos entalhados do Samhain acesos na beira e os montes de pedra (marcos) mais para dentro do mato
+    for (const ux of [-0.75, 0.75]) {
+      const geo = new THREE.PlaneGeometry(0.32, L + 20, 1, 160);
+      geo.rotateX(-Math.PI / 2);
+      geo.translate(ux, 0, -(L + 20) / 2 + 10);
+      const P = geo.attributes.position;
+      for (let i = 0; i < P.count; i++) P.setY(i, h(-P.getZ(i)) + 0.045);
+      g.add(new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color: 0x46372a })));
+    }
+    const fence = [];
+    for (const sd of [-1, 1]) for (let v = 0; v < L; v += 1.5) if (rnd(v * 2.3 + sd * 7) > 0.18) fence.push({ u: sd * (RUN.half + 1.5 + rnd(v + sd) * 0.25), v, tilt: (rnd(v * 4.1 + sd) - 0.5) * 0.25 });
+    const stakes = new THREE.InstancedMesh(new THREE.BoxGeometry(0.1, 1, 0.1), new THREE.MeshLambertMaterial({ color: 0x5a4430 }), fence.length);
+    const rails = new THREE.InstancedMesh(new THREE.BoxGeometry(0.06, 0.07, 1.55), new THREE.MeshLambertMaterial({ color: 0x6a5038 }), fence.length * 2);
+    fence.forEach((f, i) => {
+      e.set(f.tilt, 0, f.tilt * 0.6); q.setFromEuler(e);
+      M.compose(p.set(f.u, h(f.v) + 0.5, -f.v), q, s.set(1, 1.0 + rnd(i * 3.3) * 0.2, 1)); stakes.setMatrixAt(i, M);
+      for (const [k, y] of [[0, 0.42], [1, 0.82]]) {
+        e.set(rnd(i * 1.9 + k) * 0.12 - 0.06, 0, 0); q.setFromEuler(e);
+        M.compose(p.set(f.u, h(f.v + 0.75) + y, -(f.v + 0.75)), q, s.set(1, 1, rnd(i * 5 + k) < 0.12 ? 0.001 : 1)); rails.setMatrixAt(i * 2 + k, M);
+      }
+    });
+    const flowers = new THREE.InstancedMesh(new THREE.SphereGeometry(0.07, 5, 3), new THREE.MeshLambertMaterial({ color: 0xffffff }), 1400);
+    for (let i = 0; i < 1400; i++) {
+      const sd = rnd(i * 3.7) < 0.5 ? -1 : 1;
+      const v = -4 + rnd(i * 1.7) * (L - 4);
+      M.compose(p.set(sd * (RUN.half + 0.6 + rnd(i * 2.9) * 9), h(v) + 0.14, -v), q.identity(), s.set(1, 0.6, 1)); flowers.setMatrixAt(i, M);
+      flowers.setColorAt(i, new THREE.Color(rnd(i * 6.1) < 0.7 ? 0xf4f0e6 : 0xf2c230));
+    }
+    const turnips = [];
+    for (let v = 14; v < L - 6; v += 9 + rnd(v) * 6) turnips.push({ u: (rnd(v * 5.5) < 0.5 ? -1 : 1) * (RUN.half + 0.9), v });
+    const nabo = new THREE.InstancedMesh(new THREE.SphereGeometry(0.2, 8, 6), new THREE.MeshLambertMaterial({ color: 0xd8c8a0, emissive: 0x3a1a04 }), turnips.length);
+    const naboFace = new THREE.InstancedMesh(new THREE.CircleGeometry(0.11, 3), new THREE.MeshBasicMaterial({ color: 0xff9a2a }), turnips.length);
+    turnips.forEach((t, i) => {
+      M.compose(p.set(t.u, h(t.v) + 0.18, -t.v), q.identity(), s.set(1, 0.9, 1)); nabo.setMatrixAt(i, M);
+      // a cara entalhada virada para o caminho
+      e.set(0, t.u < 0 ? Math.PI / 2 : -Math.PI / 2, Math.PI); q.setFromEuler(e);
+      M.compose(p.set(t.u - Math.sign(t.u) * 0.2, h(t.v) + 0.2, -t.v), q, s.set(1, 1, 1)); naboFace.setMatrixAt(i, M);
+    });
+    const cairns = new THREE.InstancedMesh(rockGeo, new THREE.MeshLambertMaterial({ color: 0x6c6862 }), 60);
+    for (let i = 0; i < 20; i++) {
+      const sd = rnd(i * 8.8) < 0.5 ? -1 : 1;
+      const v = 10 + rnd(i * 3.1) * (L - 20);
+      const u = sd * (RUN.half + 4 + rnd(i * 4.7) * 5);
+      for (let k = 0; k < 3; k++) { M.compose(p.set(u + (k === 1 ? 0.1 : 0), h(v) + 0.25 + k * 0.38, -v), q.identity(), s.set(0.42 - k * 0.1, 0.28, 0.42 - k * 0.1)); cairns.setMatrixAt(i * 3 + k, M); }
+    }
+    stakes.castShadow = true;
+    g.add(stakes, rails, flowers, nabo, naboFace, cairns);
     // as lamparinas: postes, gaiolas e brasas instanciados; a chama acesa é criada quando alguém acende
     this.lamps = [];
     for (let i = 0, v = 6; v < L; i++, v += RUN.lampGap) this.lamps.push({ u: (i % 2 ? 1 : -1) * (RUN.half + 0.35), v, lit: false, i });
@@ -198,7 +247,13 @@ export class LanternRun {
       M.compose(p.set(l.u, y + 1.85, -l.v), q.identity(), s.set(1, 1, 1)); this.cages.setMatrixAt(l.i, M);
       this.embers.setMatrixAt(l.i, M);
     }
-    g.add(this.posts, this.cages, this.embers);
+    // o telhadinho de ferro em cima de cada gaiola e o braço que a segura
+    const caps = new THREE.InstancedMesh(new THREE.ConeGeometry(0.22, 0.16, 4), new THREE.MeshLambertMaterial({ color: 0x1e1814 }), n);
+    for (const l of this.lamps) {
+      e.set(0, Math.PI / 4, 0); q.setFromEuler(e);
+      M.compose(p.set(l.u, h(l.v) + 2.09, -l.v), q, s.set(1, 1, 1)); caps.setMatrixAt(l.i, M);
+    }
+    g.add(this.posts, this.cages, this.embers, caps);
     this.flameGeo = new THREE.SphereGeometry(0.15, 10, 8);
     this.haloGeo = new THREE.SphereGeometry(0.55, 12, 8);
     this.flameMat = new THREE.MeshBasicMaterial({ color: 0xffd84a });
@@ -244,7 +299,7 @@ export class LanternRun {
       look: () => new THREE.Vector3(p.pos.x, 1.2, p.pos.z).addScaledVector(this.D, -4),
     }]);
     d.hud.callout('CORRA PARA A ÁRVORE ANCIÃ!', '#ffd84a');
-    d.pveHud.hint('Desvie das faixas vermelhas e das pedras (←/→, esquiva) · passe rente às lamparinas para acendê-las: cada uma acesa enfraquece a Árvore');
+    d.pveHud.hint(`Desvie das faixas vermelhas e das pedras (${typeof document !== 'undefined' && document.body.classList.contains('touch-ui') ? 'joystick para os lados, ESQ' : '←/→, esquiva'}) · passe rente às lamparinas para acendê-las: cada uma acesa enfraquece um pouco a Árvore`);
     d.hintT = 7;
     d.audio.play('fearGaze', { volume: 0.9, pitch: 0.5 });
   }

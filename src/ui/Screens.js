@@ -1107,7 +1107,7 @@ export class StageSelectScreen {
 const TIP_COUNT = 6; // tip.1 … tip.6 nos arquivos de idioma
 
 export class LoadingScreen {
-  constructor(root, { p1, p2, pvePlayers = null, arena, cpu, portraits, thumb = null, mode = cpu ? 'cpu' : 'pvp' }) {
+  constructor(root, { p1, p2, pvePlayers = null, arena, cpu, portraits, thumb = null, mode = cpu ? 'cpu' : 'pvp', tips = [] }) {
     const slots = (MODES[mode] || MODES.pvp).slots;
     const playerPortrait = (def) => portraits[def.id] || `${import.meta.env.BASE_URL}sobre/elenco/${encodeURIComponent(def.id)}.webp`;
     const opponentPortrait = portraits[p2.id];
@@ -1133,14 +1133,74 @@ export class LoadingScreen {
       <div class="arena-name">${arena.name}</div>
       <div class="bar"><div class="fill"></div></div>
       <div class="ld-pct">0%</div>
-      <div class="tip">${t('load.tip', { tip: t(`tip.${1 + Math.floor(Math.random() * TIP_COUNT)}`) })}</div>`);
+      <div class="ld-ready" role="button" tabindex="0"></div>
+      <div class="ld-tips">
+        <button type="button" class="ld-arrow ld-prev" aria-label="‹">‹</button>
+        <div class="ld-tip"><small></small><span></span></div>
+        <button type="button" class="ld-arrow ld-next" aria-label="›">›</button>
+      </div>`);
     this.fill = this.el.querySelector('.fill');
     this.pct = this.el.querySelector('.ld-pct');
     this.opponentImage = this.el.querySelector('.side.r img');
+    // RODAPÉ DE DICAS (dono, 2026-11-19: "num roda pé da tela de carregamento poderia ter umas dicas … o player pode
+    // mudar a dica clicando pros lados e clicar A para sair quando carregar por completo"): primeiro as dicas do modo
+    // (as da fase, no Outro Lado), depois as gerais embaralhadas. ←/→ (ou as setas na tela) trocam; sozinhas trocam
+    // a cada 9 s. Carregou: "Pressione A para começar" (waitStart).
+    const general = Array.from({ length: TIP_COUNT }, (_, i) => t(`tip.${i + 1}`)).sort(() => Math.random() - 0.5);
+    this.tips = [...tips, ...general];
+    this.tipIndex = 0;
+    this.tipTimer = 0;
+    this.tipLabel = this.el.querySelector('.ld-tip small');
+    this.tipText = this.el.querySelector('.ld-tip span');
+    this.readyEl = this.el.querySelector('.ld-ready');
+    this.readyEl.textContent = t('load.loading');
+    this.el.querySelector('.ld-prev').addEventListener('click', (e) => { e.stopPropagation(); this.shiftTip(-1); });
+    this.el.querySelector('.ld-next').addEventListener('click', (e) => { e.stopPropagation(); this.shiftTip(1); });
+    // toque/clique em qualquer lugar (fora das setas) começa, quando já carregou
+    this.el.addEventListener('click', () => { if (this.ready) this.go(); });
+    this.renderTip();
+  }
+  renderTip() {
+    this.tipLabel.textContent = t('load.tip_n', { n: this.tipIndex + 1, t: this.tips.length });
+    this.tipText.innerHTML = this.tips[this.tipIndex];
+    this.tipText.classList.remove('ld-tip-in');
+    void this.tipText.offsetWidth;
+    this.tipText.classList.add('ld-tip-in');
+  }
+  shiftTip(d) {
+    this.tipIndex = (this.tipIndex + d + this.tips.length) % this.tips.length;
+    this.tipTimer = 0;
+    this.renderTip();
   }
   progress(k) {
     this.fill.style.width = `${Math.round(k * 100)}%`;
     this.pct.textContent = `${Math.round(k * 100)}%`;
+  }
+  // carregou: espera A/×, Enter, Espaço ou um toque. Devolve uma promessa (resolvida ao começar).
+  waitStart() {
+    const coarse = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+    this.readyEl.textContent = coarse ? t('load.ready_touch') : t('load.ready', { ok: OK });
+    this.el.classList.add('is-ready');
+    this.readyAt = performance.now();
+    this.ready = true;
+    return new Promise((r) => { this.resolveStart = r; });
+  }
+  go() {
+    if (!this.ready || performance.now() - this.readyAt < 250) return;
+    this.ready = false;
+    this.el.classList.remove('is-ready');
+    if (this.resolveStart) this.resolveStart();
+  }
+  // chamado a cada quadro pelo laço (main.js, estado 'loading')
+  update(input, dt = 1 / 60) {
+    this.tipTimer += dt;
+    if (this.tipTimer > 9) this.shiftTip(1);
+    for (const p of input.players) {
+      if (p.menu && p.menu.left) { this.shiftTip(-1); break; }
+      if (p.menu && p.menu.right) { this.shiftTip(1); break; }
+      if (this.ready && (confirm(p) || startGo(p, input))) { this.go(); break; }
+    }
+    if (this.ready && (input.keyPressedOnce('Enter') || input.keyPressedOnce('Space'))) this.go();
   }
   setOpponentPortrait(src) {
     if (src) {

@@ -710,6 +710,12 @@ table.moves td span { display: block; color: var(--muted); font-size: 12px; marg
 .dmg.p1 b { color: var(--p1); }
 .dmg.p2 b { color: var(--p2); }
 .dmg.pop b { animation: dmgPop .16s ease-out; }
+/* celular: os cantos são dos botões (direita) e do joystick (esquerda) — o marcador sobe e chega mais para o meio */
+body.touch-ui .dmg { top: 17%; }
+body.touch-ui .dmg.p1 { left: 30vw; }
+body.touch-ui .dmg.p2 { right: 21vw; }
+body.touch-ui .dmg b { font-size: 40px; }
+body.touch-ui .dmg small, body.touch-ui .dmg i { font-size: 13px; }
 @keyframes dmgPop { from { transform: scale(1.35); } to { transform: none; } }
 
 /* ---------------- seleção estilo Storm 4: grade P1 à esquerda, P2 à direita, lutadores 3D no centro ---------------- */
@@ -1540,6 +1546,20 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
   #hud.pve:not(.pve-coop) .panel.p2 { width: min(52vw, 640px); }
 }
 
+/* OUTRO LADO NO CELULAR (2026-11-19): a vida do jogador sobe para o canto de cima — embaixo ela ficava sob o polegar
+   do joystick; o lugar/objetivo/nível descem para baixo dela, com letra maior */
+body.touch-ui #hud.pve:not(.pve-coop) .panel.p1 { top: max(6px, env(safe-area-inset-top)); bottom: auto; left: max(10px, env(safe-area-inset-left)); width: min(34vw, 360px); }
+body.touch-ui #hud.pve:not(.pve-coop) .panel.p2 { width: min(34vw, 420px); }
+body.touch-ui #pvehud .pv-top { top: calc(max(6px, env(safe-area-inset-top)) + 84px); left: max(12px, env(safe-area-inset-left)); max-width: 34vw; }
+body.touch-ui #pvehud .pv-place { font-size: 11px; }
+body.touch-ui #pvehud .pv-obj { font-size: 13px; color: var(--pv-ink); }
+body.touch-ui #pvehud .pv-xp { top: auto; bottom: max(10px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
+body.touch-ui #pvehud .pv-ups { display: none; }
+body.touch-ui #pvehud .pv-ward { top: calc(max(8px, env(safe-area-inset-top)) + 36px); width: min(38vw, 340px); }
+body.touch-ui #pvehud .pv-ward small { font-size: 9px; letter-spacing: .1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.touch-ui #pvehud .pv-ward { padding: 6px 10px 7px; }
+body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 520px); font-size: 12px; }
+
 /* OUTRO LADO — as telas do modo (hub, dificuldade, árvore, resultado) */
 .pve-box { position: absolute; left: 50%; bottom: 7vh; transform: translateX(-50%); width: min(680px, calc(100% - 32px)); padding: 12px 18px; border: 1px solid rgba(255,255,255,.09); border-radius: 8px; background: rgba(10,10,12,.7); backdrop-filter: blur(4px); color: #d8d6d0; font-family: Inter, system-ui, sans-serif; font-size: 13px; line-height: 1.55; text-align: center; }
 .pve-box b { color: #f2c230; font-weight: 600; }
@@ -2023,3 +2043,35 @@ body:not(.static-bg) #netbadge { display: none; }
 @keyframes ldVs { from { opacity: 0; transform: skewX(-8deg) scale(1.6); } }
 @keyframes ldDrift { to { transform: scale(1.12) translateX(-1.5%); } }
 @media (prefers-reduced-motion: reduce) { #loading .ld-bg, #loading .side, #loading .vstext { animation: none; } }
+/* RODAPÉ DE DICAS + "Pressione A para começar" (2026-11-19) */
+#loading .ld-ready { min-height: 34px; padding: 6px 22px; font: 800 13px system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #8d82a6; border-radius: 999px; }
+#loading.is-ready { cursor: pointer; }
+#loading.is-ready .ld-ready { color: #fff; background: color-mix(in srgb, #9b4dff 34%, #0b0612); box-shadow: 0 0 0 1px #c89aff88, 0 0 22px #9b4dff88; animation: ldPulse 1.3s ease-in-out infinite; }
+#loading .ld-tips { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: stretch; gap: 0; padding: 10px max(12px, env(safe-area-inset-left)) calc(12px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right)); background: linear-gradient(0deg, #050308f2 40%, #05030800); }
+#loading .ld-tip { flex: 1; min-width: 0; min-height: 3.6em; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; text-align: center; padding: 0 8px; }
+#loading .ld-tip small { font: 800 10px system-ui, sans-serif; letter-spacing: .18em; color: #c89aff; }
+#loading .ld-tip span { max-width: 760px; font-size: clamp(13px, 1.6vw, 15px); line-height: 1.4; color: #e4dcf2; text-shadow: 0 1px 3px #000; }
+#loading .ld-tip span b { color: #ffd84a; }
+#loading .ld-tip span.ld-tip-in { animation: ldTip .35s ease-out; }
+#loading .ld-arrow { flex: none; width: 48px; min-height: 48px; border: 0; border-radius: 10px; background: #ffffff10; color: #d8c8ff; font: 700 30px/1 system-ui, sans-serif; cursor: pointer; touch-action: manipulation; }
+#loading .ld-arrow:hover, #loading .ld-arrow:focus-visible { background: #9b4dff44; color: #fff; outline: none; }
+#loading .bar, #loading .ld-pct, #loading .ld-ready { margin-bottom: 0; }
+#loading { padding-bottom: 96px; }
+@keyframes ldPulse { 50% { box-shadow: 0 0 0 1px #c89affcc, 0 0 34px #9b4dffcc; } }
+@keyframes ldTip { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { #loading.is-ready .ld-ready, #loading .ld-tip span.ld-tip-in { animation: none; } }
+/* celular deitado: a tela é baixa — retratos menores para caber VS, barra, aviso e o rodapé */
+@media (max-height: 480px) {
+  #loading { gap: 6px; padding-bottom: 74px; }
+  #loading .side img { width: min(18vw, 27vh, 150px); }
+  #loading .side small { display: none; }
+  #loading .ld-pct { margin-top: -4px; }
+  #loading .ld-ready { min-height: 28px; padding: 4px 18px; }
+  #loading .side b { font-size: clamp(18px, 3vw, 26px); }
+  #loading .vstext { font-size: clamp(38px, 7vw, 64px); }
+  #loading .arena-name { font-size: 18px; }
+  #loading .ld-tips { padding-top: 6px; }
+  #loading .ld-tip { min-height: 3em; }
+  #loading .ld-tip span { font-size: 12px; }
+  #loading .ld-arrow { width: 44px; min-height: 44px; }
+}

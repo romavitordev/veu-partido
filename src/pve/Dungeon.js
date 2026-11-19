@@ -20,6 +20,7 @@ import { Assombracao } from '../combat/assombracao.js';
 import { SamhainVillage } from './samhain.js';
 import { LanternRun } from './corredor.js';
 import { TreeDefense, TREE } from './arvore.js';
+import { SamhainItems } from './itensSamhain.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
@@ -999,7 +1000,14 @@ export class Dungeon {
     this.routeLen = total - 1; // a tela do fim: as ondas antes do chefe
     // TREB CIACH: a praça ampliada até as portas das casas, e a vila (as lamparinas e os aldeões; pve/samhain.js)
     if (W.bounds && this.world.arena) this.world.arena.radius = Math.max(this.world.arena.radius, W.bounds);
-    if (W.village) this.village = new SamhainVillage(this, W);
+    if (W.village) {
+      this.village = new SamhainVillage(this, W);
+      // os ITENS DA VIGÍLIA: o aldeão sai de uma casa acesa e deixa a caixa uns 7 m para dentro da praça
+      this.items = new SamhainItems(this, {
+        shelters: () => this.village ? this.village.houses.filter((h) => h.alive && h.villagers > 0).map((h) => ({ x: h.pos.x, z: h.pos.z })) : [],
+        dropAt: (s) => { const d = Math.hypot(s.x, s.z) || 1; const k = Math.max(0.45, (d - 7) / d); return { x: s.x * k, z: s.z * k }; },
+      });
+    }
     this.waveObjective();
   }
 
@@ -1018,6 +1026,7 @@ export class Dungeon {
   // a tempestade vencida: a FUGA pelo CORREDOR DAS LAMPARINAS até a Árvore Anciã (a parte 2; pve/corredor.js)
   startRunner(enc) {
     enc.done = true;
+    if (this.items) { this.items.dispose(); this.items = null; }
     this.hudRemove('pve-minor');
     this.revivePlayers();
     this.hud.callout('ELAS NÃO PARAM DE VIR', '#c8d8ff');
@@ -1054,6 +1063,14 @@ export class Dungeon {
     this.pickups = this.pickups.filter((k) => k.alive !== false && !(k instanceof Chest));
     this.tree = new TreeDefense(this, lit);
     this.tree.hpMul = 1 - treeWeaken(lit) * TREE.hpCut;
+    // os ITENS DA VIGÍLIA na Árvore: o aldeão sobe pelo alçapão e deixa a caixa no caminho, à frente da porta
+    if (this.items) this.items.dispose();
+    const hatch = this.tree.door.pos;
+    this.items = new SamhainItems(this, {
+      first: 8,
+      shelters: () => (this.tree ? [{ x: hatch.x, z: hatch.z + 0.6 }] : []),
+      dropAt: (s) => ({ x: s.x + (Math.random() - 0.5) * 7, z: s.z + 4.5 + Math.random() * 2.5 }),
+    });
     const plan = treePlan(this.run.difficulty, lit);
     const M = this.waves ? this.waves.M : this.mod;
     this.waves = { n: 0, total: plan.length, plan, wait: 6, M, tree: true };
@@ -1129,6 +1146,7 @@ export class Dungeon {
   updateWaves(dt) {
     const S = this.waves;
     if (this.village && this.phase !== 'dead') this.village.update(dt);
+    if (this.items && this.phase !== 'dead') this.items.update(dt);
     if (this.tree && this.phase !== 'dead') {
       this.tree.update(dt);
       const lab = this.tree.label();
@@ -1216,7 +1234,7 @@ export class Dungeon {
     let z;
     if (type === 'assombracao' || type === 'assombracaoForte' || type === 'broen') {
       // as ASSOMBRAÇÕES de Treb Ciach: vão atrás das casas acesas e não entram na Chama de Proteção
-      const targets = this.tree ? () => this.tree.targets() : this.village ? () => this.village.targets() : null;
+      const targets = this.tree || this.village ? () => (this.tree ? this.tree.targets() : this.village ? this.village.targets() : []) : null;
       z = new Assombracao(e, this.world, pos, { ...opts, houses: targets });
       z.fireGuard = !this.tree; // na Árvore não há a fogueira da praça
       if (type === 'broen') {
@@ -2294,6 +2312,7 @@ export class Dungeon {
       // um erro na interação (porta, gaveta, baú) não pode impedir o mundo de andar logo abaixo (travamentos, 2026-11-07)
       try { this.updateInteract(V, dt); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
       if (this.minis && this.minis.input) this.minis.input(V); // os sacos de farinha do Rastropoda (pega/arremessa)
+      if (this.items && this.phase !== 'dead') this.items.input(V); // os itens da Vigília no Samhain (pega/arremessa)
     }
     const prev = this.players.map((q) => [q.pos.x, q.pos.z]);
     w.update(dt);
@@ -2343,7 +2362,7 @@ export class Dungeon {
           for (const q of this.players) q.setState('idle');
           this.phase = 'explore';
           this.hud.banner(this.D.name.toUpperCase(), this.D.color);
-          if (this.D.waves) { this.pveHud.hint(this.D.about); this.hintT = 11; this.waveObjective(); break; }
+          if (this.D.waves) { this.pveHud.hint(this.D.exploreHint || this.D.aboutShort); this.hintT = 6; this.waveObjective(); break; }
           this.pveHud.hint(this.player.input?.source === 'gamepad' ? (this.D.exploreHint || 'Explore a mansão →') : 'Clique esq. golpe · clique dir. tiro · 1–5 habilidades · Z especial · G agarrão · E defesa · Shift esquiva · C (segure) sanidade · Q/R assistências · F trava a mira');
           this.hintT = 8;
         }
@@ -2652,6 +2671,7 @@ export class Dungeon {
     this.minis && this.minis.dispose();
     this.bilu && this.bilu.dispose();
     if (this.runner) { this.runner.dispose(); this.runner = null; }
+    if (this.items) { this.items.dispose(); this.items = null; }
     if (this.village) { this.village.dispose(); this.village = null; }
     if (this.tree) { this.tree.dispose(); this.tree = null; }
     this.maze && this.maze.dispose();

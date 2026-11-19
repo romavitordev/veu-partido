@@ -567,9 +567,9 @@ test('Árvore Anciã: as lamparinas do corredor enfraquecem as ondas (menos Asso
   const sum = (p) => p.reduce((n, w) => n + w.count, 0);
   assert.equal(none.length, 4);
   assert.ok(sum(some) < sum(none));
-  assert.equal(many.length, 3);
+  assert.equal(many.length, 4); // as lamparinas não tiram onda (só enfraquecem um pouco)
   assert.equal(treeWeaken(0), 0);
-  assert.equal(treeWeaken(100), 0.45);
+  assert.equal(treeWeaken(100), 0.25);
   for (const d of Object.keys(PVE_DIFFICULTIES)) for (const w of treePlan(d, 0)) assert.ok(w.count >= 2 && Object.values(w.foes).every((q) => q > 0));
   assert.ok(!treePlan('easy', 0).some((w) => w.foes.broen));
   assert.ok(none[none.length - 1].foes.broen === 1);

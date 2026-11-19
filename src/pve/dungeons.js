@@ -380,6 +380,13 @@ export const DUNGEONS = {
     // a explicação (pedido do dono): no card da ESCOLHA A FASE e no aviso do começo da fase
     about: 'FASE DE ONDAS: um mapa aberto, sem salas. Os infectados da ilha chegam em ondas pela praça — Zumbis de Sangue e de Tinta, javalis, cobras e lobos; a cada 3 ondas vem um ZUMBI GIGANTE sozinho, e na última, o AMIGO IMAGINÁRIO, que na fúria chama mais bichos.',
     aboutShort: 'Fase de ONDAS: proteja a praça dos infectados da ilha; a cada 3 ondas um gigante, e na última o Amigo Imaginário',
+    // as DICAS do rodapé da tela de carregamento (dono, 2026-11-19): a explicação da fase em pedaços curtos
+    tips: [
+      '<b>Fase de ondas:</b> não há salas nem portas. Os infectados da ilha chegam em ondas pela praça.',
+      'Zumbis de Sangue e de Tinta, javalis, cobras e lobos: fique de olho em quem vem pelas suas costas.',
+      'A cada 3 ondas vem um <b>ZUMBI GIGANTE</b> sozinho. Use o respiro entre as ondas para se recuperar.',
+      'Na última onda vem o <b>AMIGO IMAGINÁRIO</b>. Na fúria, ele chama mais bichos.',
+    ],
     minDepth: 2, // a força dos inimigos de uma fase do meio da história (a Mansão)
     minions: 'zumbi',
     drops: { heal: { chance: 0.45, amount: 0.18 } },
@@ -436,8 +443,20 @@ export const DUNGEONS = {
       runner: true, // vencida a tempestade: o corredor das lamparinas (pve/corredor.js) até a Árvore Anciã
       giant: 'broen', giantName: 'A ASSOMBRAÇÃO DE BROÉN', giantHp: 950,
     },
-    about: 'FASE DE ONDAS: a noite do Samhain. As ASSOMBRAÇÕES chegam em ondas pela praça e vão atrás de você e das CASAS: se a lamparina da porta apagar, os aldeões de dentro morrem — e se não sobrar nenhum aldeão vivo, você perde. Fique parado perto de uma porta para reacender a chama. No fim, a TEMPESTADE — e depois a fuga pelo CORREDOR DAS LAMPARINAS até a Árvore Anciã: desvie das faixas vermelhas e passe rente às lamparinas para acendê-las — cada uma acesa enfraquece a última defesa: proteger o ALÇAPÃO de pedra do arsenal entre as raízes da Árvore, onde os aldeões se esconderam, até as Assombrações pararem de vir. Se ele cair, você perde.',
+    about: 'FASE DE ONDAS em 3 partes: defenda as casas da vila das ASSOMBRAÇÕES, fuja pelo CORREDOR DAS LAMPARINAS e proteja o ALÇAPÃO da Árvore Anciã, onde os aldeões se esconderam.',
     aboutShort: 'Fase de ONDAS: proteja as casas e os aldeões das Assombrações, aguente a tempestade, fuja pelo corredor e defenda os aldeões escondidos na Árvore Anciã',
+    tips: [
+      '<b>1ª parte, a vila:</b> as Assombrações vão atrás de você e das CASAS. Se a lamparina de uma porta apagar, os aldeões de dentro morrem.',
+      'Fique parado perto de uma porta para <b>reacender a chama</b> da lamparina.',
+      'Se não sobrar nenhum aldeão vivo na vila, você perde. A cada 3 ondas vem a <b>Assombração de Broén</b>; no fim, a TEMPESTADE.',
+      '<b>2ª parte, o corredor:</b> o personagem corre sozinho. Desvie das faixas vermelhas e das pedras para os lados (←/→ ou o joystick) e com a esquiva.',
+      'No corredor, passe rente às <b>lamparinas</b> para acendê-las: cada uma acesa enfraquece um pouco as Assombrações da Árvore.',
+      '<b>3ª parte, a Árvore Anciã:</b> proteja o ALÇAPÃO do arsenal. A barra no topo mostra quão seguros estão os aldeões escondidos.',
+      'A porta se recupera um pouco entre as ondas. Se a barra ficar vermelha, volte para perto do alçapão.',
+      '<b>Itens da Vigília:</b> de tempos em tempos um aldeão sai do abrigo, larga um item no chão (a coluna de luz) e volta. Passe por cima para pegar.',
+      'Derrame o <b>COMBUSTÍVEL</b> (□/tiro) perto de uma porta e encoste a <b>TOCHA</b> na poça: o fogo vira uma barreira que as Assombrações não atravessam.',
+      'Depois do primeiro fogo vem a <b>LANTERNA DO CRÂNIO DE PORCO</b>: acenda no fogo e arremesse (□/tiro). O clarão ofusca as Assombrações em volta.',
+    ],
     minDepth: 3,
     minions: 'zumbi',
     drops: { heal: { chance: 0.45, amount: 0.18 } },
@@ -847,11 +866,13 @@ const TREE_DIFF = {
   superhard: { waves: 6, base: 6, strong: 2 },
   annihilation: { waves: 7, base: 7, strong: 2 },
 };
-export function treeWeaken(lamps = 0) { return Math.min(0.45, Math.max(0, lamps) * 0.03); }
+// as lamparinas acesas no corredor só ENFRAQUECEM UM POUCO as ondas da Árvore (dono, 2026-11-19: "é apenas um leve
+// enfraquecimento das ondas"): até 25% menos Assombrações (2% por lamparina), sem tirar onda nenhuma
+export function treeWeaken(lamps = 0) { return Math.min(0.25, Math.max(0, lamps) * 0.02); }
 export function treePlan(difficulty = 'normal', lamps = 0) {
   const X = TREE_DIFF[difficulty] || TREE_DIFF.normal;
   const cut = treeWeaken(lamps);
-  const total = Math.max(2, X.waves - (lamps >= 14 ? 1 : 0));
+  const total = X.waves;
   const out = [];
   for (let n = 1; n <= total; n++) {
     const last = n === total;
@@ -902,6 +923,13 @@ export function charTune(id) {
 // Aniquilação"). hp/dealt: vida e dano dos inimigos e do chefe; coin: multiplica as moedas (drops e recompensa do chefe);
 // rage: o chefe entra em FÚRIA mais cedo; counter: quantos golpes seguidos o chefe aguenta antes de REPELIR (anti-spam,
 // pve/bossRules.js). warnMult: quanto tempo os olhos avisam antes do bote do Espreitador. PROPOSTA: os números.
+// dicas gerais do Outro Lado no rodapé da tela de carregamento (depois das dicas da fase)
+export const PVE_TIPS = [
+  'As MOEDAS dos baús entram no save na hora: cair não leva as moedas que você já pegou.',
+  'Caiu? Com moedas dá para pagar e <b>voltar à luta</b>. O preço sobe a cada vez.',
+  'Dificuldades mais altas dão mais moedas. Cada uma abre ao vencer esta fase na dificuldade de baixo.',
+];
+
 export const PVE_DIFFICULTIES = {
   easy: { label: 'Fácil', cpu: 'normal', minion: 'normal', hp: 1, dealt: 0.95, drop: 1.2, warnMult: 1.25, coin: 0.7, counter: 9 },
   normal: { label: 'Normal', cpu: 'veryhard', minion: 'hard', hp: 1.25, dealt: 1.3, drop: 1, warnMult: 0.9, coin: 1, counter: 7 },

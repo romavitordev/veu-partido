@@ -15,7 +15,7 @@ import * as THREE from 'three';
 
 export const TREE = {
   radius: 22, // a clareira (o limite de quem anda)
-  doorHp: { easy: 2100, normal: 1950, hard: 1800, superhard: 1700, annihilation: 1600 },
+  doorHp: { easy: 2200, normal: 2150, hard: 1800, superhard: 1700, annihilation: 1600 },
   hpCut: 0.5, // a vida das Assombrações cai até a metade do corte das lamparinas (dungeons.js treeWeaken)
   regen: 0.18, // entre as ondas, o alçapão recupera 18% (os aldeões escoram por dentro)
   trunk: { x: 0, z: -10, r: 4.3 }, // o tronco: ~7 m de largura e ~10 m até se abrir (ep. 3, 3h30: uns 4 personagens de largura)
@@ -266,6 +266,115 @@ export class TreeDefense {
     bar.rotation.x = -Math.PI / 2;
     bar.position.set(0, 0.112, 0);
     this.slab.add(rune, bar);
+    // DETALHES DO ALÇAPÃO (dono, 2026-11-19: "os detalhes do alçapão (runa e travas)"; PROPOSTA de desenho):
+    // as juntas da pedra, a borda gasta, os rebites das cintas, as dobradiças em cima, as duas travas com o cadeado no
+    // meio, a corrente, a runa completa (anel entalhado, marcas dos quatro lados e os pontos) e as pedras-runa da soleira
+    const groove = new THREE.MeshBasicMaterial({ color: 0x3a3732 });
+    const edgeMat = lam(0xa49e90);
+    for (const sx of [-0.62, 0.62]) {
+      for (const gz of [-0.3, 0.3]) { const j = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.012, 0.03), groove); j.position.set(sx, 0.106, gz); this.slab.add(j); }
+      const crack = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.012, 0.42), groove);
+      crack.position.set(sx + 0.3 * Math.sign(sx), 0.106, -0.78);
+      crack.rotation.y = 0.5 * Math.sign(sx);
+      this.slab.add(crack);
+      const lip = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.05, 0.08), edgeMat);
+      lip.position.set(sx, 0.09, 0.98);
+      this.slab.add(lip);
+    }
+    const seam = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.014, 1.95), groove);
+    seam.position.set(0, 0.106, 0);
+    this.slab.add(seam);
+    const rivetGeo = new THREE.SphereGeometry(0.03, 6, 4);
+    for (const bz of [-0.55, 0.55]) for (let x = -1.15; x <= 1.16; x += 0.33) { const r = new THREE.Mesh(rivetGeo, iron); r.position.set(x, 0.155, bz); this.slab.add(r); }
+    // as dobradiças: chapas largas de ferro na borda de cima, presas na pedra do tronco
+    for (const hx of [-0.95, -0.3, 0.3, 0.95]) {
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.05, 0.5), iron);
+      plate.position.set(hx, 0.13, -0.78);
+      const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.26, 8), iron);
+      pin.rotation.z = Math.PI / 2;
+      pin.position.set(hx, 0.13, -1.0);
+      this.slab.add(plate, pin);
+    }
+    // as TRAVAS: dois ferrolhos atravessando a emenda e o cadeado pendurado entre eles, com a corrente
+    for (const tz of [-0.15, 0.32]) {
+      const bolt = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.07, 0.09), iron);
+      bolt.position.set(0, 0.17, tz);
+      const knob = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 6), iron);
+      knob.position.set(0.47, 0.19, tz);
+      for (const sx of [-0.36, 0.36]) {
+        const staple = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.016, 5, 10, Math.PI), iron);
+        staple.position.set(sx, 0.16, tz);
+        staple.rotation.y = Math.PI / 2;
+        this.slab.add(staple);
+      }
+      this.slab.add(bolt, knob);
+    }
+    const lockBody = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, 0.24), lam(0x5a4a2a));
+    lockBody.position.set(0, 0.2, 0.08);
+    const shackle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.018, 6, 12, Math.PI), iron);
+    shackle.rotation.x = -Math.PI / 2;
+    shackle.position.set(0, 0.2, -0.04);
+    this.slab.add(lockBody, shackle);
+    const link = new THREE.TorusGeometry(0.045, 0.012, 5, 8);
+    for (let i = 0; i < 9; i++) {
+      const l = new THREE.Mesh(link, iron);
+      l.position.set(-0.3 - i * 0.075, 0.16, 0.12 + Math.sin(i * 0.7) * 0.06);
+      l.rotation.set(Math.PI / 2, 0, i % 2 ? Math.PI / 2 : 0);
+      this.slab.add(l);
+    }
+    // a RUNA completa: o anel entalhado escuro por baixo, as quatro marcas e os três pontos (brilham com this.runeMat)
+    const carve = new THREE.Mesh(new THREE.RingGeometry(0.33, 0.48, 28), groove);
+    carve.rotation.x = -Math.PI / 2;
+    carve.position.set(0, 0.108, 0);
+    this.slab.add(carve);
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+      const tick = new THREE.Mesh(new THREE.PlaneGeometry(0.06, 0.2), this.runeMat);
+      tick.rotation.set(-Math.PI / 2, 0, -a);
+      tick.position.set(Math.sin(a) * 0.6, 0.112, Math.cos(a) * 0.6);
+      this.slab.add(tick);
+    }
+    for (const dz of [-0.2, 0, 0.2]) {
+      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.035, 10), this.runeMat);
+      dot.rotation.x = -Math.PI / 2;
+      dot.position.set(0.18, 0.112, dz);
+      this.slab.add(dot);
+    }
+    // as pedras-runa nos cantos da soleira (o mesmo brilho) e o musgo nas pedras
+    const moss = lam(0x3e5a2a);
+    for (const [x, z] of [[-1.45, 1.75], [1.45, 1.75], [-1.45, -0.3], [1.45, -0.3]]) {
+      const st = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.5, 0.42), stone);
+      st.position.set(x, 0.25, z);
+      const mark = new THREE.Mesh(new THREE.RingGeometry(0.07, 0.11, 14), this.runeMat);
+      mark.position.set(x, 0.3, z + 0.215);
+      const ms = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.06, 0.3), moss);
+      ms.position.set(x, 0.52, z - 0.05);
+      door.add(st, mark, ms);
+    }
+    for (const [x, z, w] of [[-0.8, 1.95, 0.7], [1.0, 1.95, 0.5], [-1.62, 0.6, 0.18]]) {
+      const ms = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, 0.16), moss);
+      ms.position.set(x, 0.29, z);
+      door.add(ms);
+    }
+    // os CRÂNIOS DE PORCO em estacas dos dois lados (Samhain; PROPOSTA de enfeite)
+    const bone = lam(0xe6dcc4);
+    for (const sx of [-2.3, 2.3]) {
+      const stake = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 1.7, 6), lam(0x4a3628));
+      stake.position.set(sx, 0.85, 1.4);
+      const sk = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), bone);
+      sk.scale.set(1, 0.86, 1.3);
+      sk.position.set(sx, 1.78, 1.45);
+      const sn = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.16, 8), bone);
+      sn.rotation.x = Math.PI / 2;
+      sn.position.set(sx, 1.75, 1.7);
+      door.add(stake, sk, sn);
+      for (const ex of [-0.07, 0.07]) {
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 4), groove);
+        eye.position.set(sx + ex, 1.82, 1.62);
+        door.add(eye);
+      }
+    }
+    for (const [x, z] of [[-2.3, 1.4], [2.3, 1.4]]) this.colliders.push({ x: T.x + x, z: door.position.z + z, r: 0.2 });
     door.add(hole, this.slab);
     g.add(door);
     this.doorGroup = door;

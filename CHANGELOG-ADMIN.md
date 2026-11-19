@@ -1,5 +1,26 @@
 # Registro administrativo de alterações
 
+## v5.23.0 — O Fogo da Vigília
+
+- Versão: `VERSION` 5.22.0 → **5.23.0**. Data: 2026-11-19.
+- Dono: "isso no jogo já está ultrapassado, poderia ter um jeito melhor de explicar pro jogador, talvez num roda pé da tela
+  de carregamento poderia ter umas dicas … o player pode mudar a dica clicando pros lados e clicar A para sair quando
+  carregar por completo"; "temos que melhorar a responsividade e jogabilidade dos outros dispositivos, como o mobile".
+- Dono sobre os itens: "a lanterna de porco que é como uma flashbang nos monstros, mas tem que atear fogo nela"; "o player
+  tem que achar oque a eileen usa pra atear fogo no chão … depois ele tem que achar a lanterna de porco"; "o gwayne acha um
+  combustivel … e quem coloca fogo é a eileen … pode ser algum npc que vem de tempos em tempos trazendo alguns itens";
+  "melhor o aldeão vir e dropar o item no chão e voltar pra dentro". E: "o efeito das lamparinas nas ondas é apenas um
+  leve enfraquecimento"; "Melhore o mapa por completo com mais detalhes nesses pontos, nao só o da arvore, as 3 partes".
+- Conferido no jogo: o rodapé (troca, sozinho, A/toque para começar) no PC e no celular deitado (740×360, toque); a HUD do
+  Outro Lado no celular (vila e Árvore); o ciclo inteiro dos itens (combustível → tocha → barreira → lanterna acesa →
+  clarão ofuscando 2 Assombrações).
+- Balanceamento da Árvore (`dev/samhainBattery.js`, CPU Difícil sem guardar o alçapão e sem usar itens), com o
+  enfraquecimento leve: Normal 8 venceu 2/2 (19%, 47%), Difícil 10 venceu 2/2 (31%, 7%); Normal 0 perdeu 2/2 → a porta
+  do Normal 1950 → 2150. Depois: Normal 0 venceu 2/3 (37%, 33%) e a 3ª chegou ao limite de 420 s com a porta em pé (6%).
+- PROPOSTA: o aldeão mensageiro (genérico, sem Gwayne/Eileen), a ordem dos itens, tempos, alcance e dano, e todos os
+  enfeites novos (alçapão, portas, corredor).
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.22.0 — A Noite do Samhain em Treb Ciach
 
 - Versão: `VERSION` 5.21.2 → **5.22.0**. Data: 2026-11-19. O MAPA NOVO DE TREB CIACH numa versão só (dono: "Quero que todo esse

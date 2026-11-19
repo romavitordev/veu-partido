@@ -110,7 +110,29 @@ export class Assombracao extends BloodZombie {
     return true;
   }
 
+  // OFUSCADA pelo clarão da lanterna do crânio de porco (pve/itensSamhain.js): larga o que fazia, recua cambaleando para
+  // longe da luz e fica parada até passar (Broén, a maior, aguenta metade do tempo)
+  blind(time, from) {
+    if (!this.alive || ['die', 'leave', 'rise'].includes(this.state)) return;
+    if (this.state === 'drag' || this.held) this.release(false);
+    this.atk = null;
+    this.setState('blind');
+    this.blindT = time * (this.giant ? 0.5 : 1);
+    this.blindFrom = { x: from.x, z: from.z };
+  }
+
   update(dt) {
+    if (this.state === 'blind' && this.alive) {
+      this.blindT -= dt;
+      const dx = this.pos.x - this.blindFrom.x;
+      const dz = this.pos.z - this.blindFrom.z;
+      const d = Math.hypot(dx, dz) || 1;
+      const push = Math.max(0, 1 - this.stateT / 0.7) * 4.5;
+      this.pos.x += (dx / d) * push * dt;
+      this.pos.z += (dz / d) * push * dt;
+      this.yaw = Math.atan2(-dx, -dz) + Math.sin(this.t * 7) * 0.35; // vira o rosto da luz, aos trancos
+      if (this.blindT <= 0) this.setState('chase');
+    }
     const r = super.update(dt);
     if (!this.alive) return r;
     // a Chama de Proteção: não entram no círculo da fogueira (rodam em volta, como no ep. 3)

@@ -15,7 +15,7 @@ import { renderPortraits, renderGroupPortrait } from '../ui/portraits.js';
 import { buildAssombracao } from '../models/assombracao.js';
 import { renderArenaThumbs } from '../ui/arenaThumbs.js';
 import { Dungeon } from './Dungeon.js';
-import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord, diffUnlocked, clampDiff } from './dungeons.js';
+import { DUNGEONS, DUNGEON_ORDER, PVE_TIPS, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord, diffUnlocked, clampDiff } from './dungeons.js';
 
 // o personagem pode entrar em TODAS as dungeons (nenhum chefe contra ele mesmo)
 const allowedEverywhere = (id) => !pveBanned(byId(id)) && DUNGEON_ORDER.every((d) => isAllowed(d, id));
@@ -347,6 +347,7 @@ export function createPveFlow(ctx) {
       pvePlayers: coopDef ? [{ def, slot: 'P1' }, { def: coopDef, slot: 'P2' }] : null,
       arena: { name: D.name.includes(D.place) ? D.name : `${D.name} — ${D.place}` },
       cpu: true, mode: 'pve', portraits,
+      tips: [...(D.tips || []), ...PVE_TIPS],
     });
     loading.el.classList.add('pve-loading');
     setScreen('loading', loading);
@@ -435,6 +436,8 @@ export function createPveFlow(ctx) {
     renderer.compile(dungeon.world.scene, dungeon.world.camera);
     loading.progress(1);
     await new Promise((r) => setTimeout(r, 350));
+    // carregou: "Pressione A para começar", com as dicas da fase no rodapé (online começa sozinho: os dois juntos)
+    if (!net0 && game.state === 'loading' && game.screen === loading) await loading.waitStart();
     if (game.state !== 'loading' || game.screen !== loading || (net0 && !online())) { dungeon.dispose(); return; }
     const begin = () => {
       input.players[0].cpu = null;

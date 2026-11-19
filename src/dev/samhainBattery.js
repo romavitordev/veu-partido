@@ -13,7 +13,7 @@ export async function treeRun(diff = 'normal', lamps = 0, char = 'joui') {
   const g = window.__game;
   g.pve.data.attempt = newAttempt({ charId: char, team: [], difficulty: diff, dungeon: 'samhain' });
   g.pve.startDungeon();
-  for (let w = 0; w < 250; w++) { if (g.state === 'fight' && g.match && g.match.world && g.match.player && g.match.phase) break; await pause(100); }
+  for (let w = 0; w < 250; w++) { if (g.screen && g.screen.ready && g.screen.go) { g.screen.readyAt = 0; g.screen.go(); } if (g.state === 'fight' && g.match && g.match.world && g.match.player && g.match.phase) break; await pause(100); }
   await pause(400);
   const m = g.match;
   for (let i = 0; i < 30 && m.phase === 'intro'; i++) g.step(60);
@@ -45,7 +45,7 @@ export async function fullRun(diff = 'normal', char = 'joui') {
   const g = window.__game;
   g.pve.data.attempt = newAttempt({ charId: char, team: [], difficulty: diff, dungeon: 'samhain' });
   g.pve.startDungeon();
-  for (let w = 0; w < 250; w++) { if (g.state === 'fight' && g.match && g.match.world && g.match.player && g.match.phase) break; await pause(100); }
+  for (let w = 0; w < 250; w++) { if (g.screen && g.screen.ready && g.screen.go) { g.screen.readyAt = 0; g.screen.go(); } if (g.state === 'fight' && g.match && g.match.world && g.match.player && g.match.phase) break; await pause(100); }
   await pause(400);
   const m = g.match;
   const slot = m.input.players[0];

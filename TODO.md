@@ -97,7 +97,27 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       ter uma 'barra de vida' pra mostrar o quão protegidas as pessoas que estão na arvore estão" — feito.
     - Balanceamento (`dev/samhainBattery.js`, CPU Difícil sem guardar o alçapão): Normal vence com 0 e com 8
       lamparinas; Difícil com 10 em ~metade; Muito Difícil e Aniquilação exigem guardar o alçapão.
-    - [ ] Óleo/fogo, a lanterna do crânio de porco e a barreira de fogo (3h41) como itens; a árvore em chamas no fim.
+    - [x] (v5.23.0) Óleo/fogo, a lanterna do crânio de porco e a barreira de fogo (3h41) como itens
+      (`pve/itensSamhain.js`). Dono (2026-11-19): "a lanterna de porco que é como uma flashbang nos monstros, mas tem
+      que atear fogo nela"; "o player tem que achar oque a eileen usa pra atear fogo no chão … criando uma area de fogo
+      no chão que protege a porta, depois ele tem que achar a lanterna"; "o gwayne acha um combustivel … e quem coloca
+      fogo é a eileen … pode ser algum npc que vem de tempos em tempos trazendo alguns itens". Feito na vila e na Árvore:
+      o ALDEÃO MENSAGEIRO sai de uma casa acesa (ou do alçapão), LARGA O ITEM NO CHÃO e volta (dono: "melhor o aldeão
+      vir e dropar o item no chão e voltar pra dentro e nao ter que clicar nele"): passar por cima pega, a coluna de luz
+      mostra onde; a
+      ordem é COMBUSTÍVEL (□ derrama a poça) → TOCHA (encostar na poça ateia a BARREIRA DE FOGO, que as Assombrações não
+      atravessam e que queima) → LANTERNA (só depois do 1º fogo; acende dentro do fogo; □ arremessa: o clarão ofusca
+      e fere quem está a 7,5 m; Broén aguenta metade). PROPOSTA: o aldeão, a ordem, os tempos e o dano. A porta da Árvore no Normal passou de 1950 para 2150 de vida (a CPU
+      perdeu 2 de 2 com 0 lamparinas depois do enfraquecimento mais leve).
+    - [x] (v5.23.0) Lamparinas do corredor: só um enfraquecimento LEVE (dono: "é apenas um leve enfraquecimento das
+      ondas"): 2% por lamparina, até 25%, sem tirar onda.
+    - [x] (v5.23.0) Mais detalhes nas 3 partes (dono: "Melhore o mapa por completo com mais detalhes"): o alçapão com as
+      juntas, os rebites, as dobradiças, as duas travas com o cadeado e a corrente, a runa completa e as pedras-runa da
+      soleira, e os crânios de porco nas estacas; a vila com a gaiola de ferro das lamparinas, o nabo entalhado aceso
+      (apaga com a lamparina) e a oferenda em cada porta; o corredor com os sulcos, a cerca de estacas, as flores, os
+      nabos acesos na beira, os marcos de pedra e o telhadinho das gaiolas. PROPOSTA: todo o desenho.
+    - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
+    - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).
   - [x] **Dificuldade** (v5.22.0: 6→10 ondas na vila, 35→70 s no corredor, 3→7 ondas na Árvore, mais fortes e mais dano): quanto mais alta, mais ondas na parte 1, mais tempo no corredor, mais ondas na árvore e bichos
     mais fortes.
 - [ ] **Treb Ciach AMPLIADO para o modo** (dono: "o mapa de treb ciach para esse modo seria ampliado para essa fase"):
@@ -121,8 +141,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   e se tranca no arsenal sob a pedra. PROPOSTA de fase:
   - [ ] (decidido pelo dono em 2026-11-19: o efeito de enfraquecer fica nas lamparinas do CORREDOR, valendo para a Árvore) Entre as ondas: acender lamparinas pelas casas (cada uma acesa enfraquece as próximas ondas); errar e acender
     a de um morto custa caro.
-  - [ ] Onda final na Árvore Anciã: proteger a porta de pedra do arsenal; óleo/fogo e a lanterna do crânio de porco
-    como itens; a árvore pega fogo no fim (cânone).
+  - [x] (v5.22.0/v5.23.0) Onda final na Árvore Anciã: proteger a porta de pedra do arsenal; óleo/fogo e a lanterna do crânio de porco
+    como itens. Falta a árvore pegando fogo no fim (cânone).
   - [x] Inimigo novo: Assombração (v5.22.0; do TAMANHO DE GENTE — dono: "no maximo algumas com uns 20cm mais alta por conta da roupa": o modelo a 0,93, a forte do mesmo tamanho, Broén 2% maior, flutuando só 6 cm: `npc_assombracao.py` no Blender MCP; o espírito azul dentro da FANTASIA — manto de capuz amarrado ou capa de palha, e máscara de raízes com galhada, corvo pintado, demônio de couro ou bode; a fraca deixa a fantasia caída no chão, a forte a quebra e segue como o espírito azul).
 - [x] **Ilha de Tipora** (v5.19.0, "Ondas em Tipora"): a praça aberta; ondas de Zumbis de Sangue (2 → 7, os fortes a
   partir da 4ª), o ZUMBI GIGANTE sozinho a cada 3 ondas (deixa um baú) e o AMIGO IMAGINÁRIO na última; 7/9/10/12/13
@@ -170,6 +190,18 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - [x] **Versão nova não baixa tudo de novo** (v5.7.0): o app instalado guardava os ~62 MB num cache com a versão no nome e apagava tudo a cada versão; agora guarda por impressão do arquivo e só troca o que mudou.
 - [ ] **Baixar só os lutadores escolhidos** (próximo passo): a seleção ainda espera todos os modelos porque os retratos saem dos modelos 3D; precisa de retratos prontos em imagem e download por personagem/cenário.
 - [x] **Tela de carregamento da luta** (antes da partida): cenário de fundo, retratos maiores, cor de cada lado e porcentagem — v5.5.0.
+- [x] **Dicas no rodapé e "Pressione A para começar"** (v5.23.0; dono, 2026-11-19: "isso no jogo já está ultrapassado …
+  num roda pé da tela de carregamento poderia ter umas dicas, deixando a tela de carregamento durar um pouco mais pra
+  carregar tudo. o player pode mudar a dica clicando pros lados e clicar A para sair quando carregar por completo"):
+  o rodapé com as dicas do modo (as da fase no Outro Lado) e as gerais, ←/→ ou as setas da tela trocam, sozinhas a cada
+  9 s; carregou, espera A/×, Enter, Espaço ou um toque (LAN, Outro Lado online e torneio da CPU começam sozinhos). O
+  textão da fase de ondas saiu do começo da fase e da escolha da dificuldade (lá ficou um resumo de uma linha).
+- [x] **Outro Lado no celular** (v5.23.0; dono: "temos que melhorar a responsividade e jogabilidade dos outros
+  dispositivos, como o mobile"): a vida sobe para o canto de cima (embaixo ficava sob o polegar do joystick), o
+  lugar/objetivo descem para baixo dela com letra maior, o nível vai para baixo no meio, a dica e a barra dos aldeões
+  não cobrem a pausa, o marcador de dano sai de cima dos botões; a tela de carregamento cabe no celular deitado; o
+  corredor fala do joystick no toque.
+- [ ] Celular: os 6 botões de habilidade + o anel ainda ocupam muito do lado direito; testar num aparelho de verdade.
 
 ## Outro Lado — fusões, segunda vida e chefes com brecha (pedido do dono, 2026-11-16)
 

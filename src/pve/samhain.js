@@ -69,6 +69,60 @@ class House {
     this.ring.rotation.x = -Math.PI / 2;
     this.ring.position.y = 0.05;
     g.add(post, this.flame, this.halo, this.ringBg, this.ring);
+    // MAIS DETALHES NA PORTA (dono, 2026-11-19; PROPOSTA de enfeite): a gaiola de ferro da lamparina (as quatro hastes,
+    // o telhadinho e o prato), o braço do poste, o NABO ENTALHADO do Samhain no chão (a cara acesa apaga junto com a
+    // lamparina) e a oferenda (a tigela com maçãs e o feixe de palha)
+    const iron = new THREE.MeshLambertMaterial({ color: 0x1e1a16 });
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.42, 0.025), iron);
+      bar.position.set(Math.cos(a) * 0.17, 1.9, Math.sin(a) * 0.17);
+      g.add(bar);
+    }
+    const cap = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.2, 4), iron);
+    cap.rotation.y = Math.PI / 4;
+    cap.position.y = 2.2;
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.05, 4), iron);
+    plate.rotation.y = Math.PI / 4;
+    plate.position.y = 1.68;
+    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 5, 10), iron);
+    hook.position.y = 2.33;
+    g.add(cap, plate, hook);
+    const toCenter = Math.atan2(-this.pos.x, -this.pos.z);
+    const deco = new THREE.Group();
+    deco.rotation.y = toCenter;
+    g.add(deco);
+    const nabo = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 8), new THREE.MeshLambertMaterial({ color: 0xd8c8a0 }));
+    nabo.scale.set(1, 0.9, 1);
+    nabo.position.set(0.75, 0.2, 0.35);
+    const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.22, 5), new THREE.MeshLambertMaterial({ color: 0x5a6a2a }));
+    leaves.position.set(0.75, 0.46, 0.35);
+    this.faceMat = new THREE.MeshBasicMaterial({ color: 0xff9a2a });
+    const eyeGeo = new THREE.CircleGeometry(0.045, 3);
+    for (const ex of [-0.07, 0.07]) {
+      const eye = new THREE.Mesh(eyeGeo, this.faceMat);
+      eye.position.set(0.75 + ex, 0.26, 0.35 + 0.215);
+      eye.rotation.z = Math.PI;
+      deco.add(eye);
+    }
+    const mouth = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.035), this.faceMat);
+    mouth.position.set(0.75, 0.15, 0.35 + 0.218);
+    deco.add(nabo, leaves, mouth);
+    const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.13, 0.1, 10), new THREE.MeshLambertMaterial({ color: 0x6a4a2c }));
+    bowl.position.set(-0.75, 0.05, 0.4);
+    deco.add(bowl);
+    for (const [ax, az] of [[-0.08, 0], [0.07, 0.04], [0, -0.07]]) {
+      const apple = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), new THREE.MeshLambertMaterial({ color: 0xa82a20 }));
+      apple.position.set(-0.75 + ax, 0.14, 0.4 + az);
+      deco.add(apple);
+    }
+    const straw = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 0.5, 7), new THREE.MeshLambertMaterial({ color: 0xc8a050 }));
+    straw.position.set(-1.05, 0.25, 0.05);
+    straw.rotation.z = 0.15;
+    const tie = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.02, 4, 10), new THREE.MeshLambertMaterial({ color: 0x8a2a20 }));
+    tie.rotation.x = Math.PI / 2;
+    tie.position.set(-1.04, 0.32, 0.05);
+    deco.add(straw, tie);
     v.d.world.scene.add(g);
     this.group = g;
     this.shown = 1;
@@ -103,8 +157,10 @@ class House {
       const f = 0.85 + Math.sin(t * 11 + this.index) * 0.08 + Math.sin(t * 23 + this.index * 2) * 0.05;
       this.halo.scale.setScalar(f * (0.6 + 0.4 * k));
       this.halo.material.opacity = 0.18 + 0.14 * k;
+      this.faceMat.color.setHex(0xff9a2a).multiplyScalar(0.75 + 0.25 * Math.sin(t * 9 + this.index * 3));
     } else {
       this.ringBg.material.opacity = 0.2;
+      this.faceMat.color.setHex(0x1a120c); // o nabo apagou com a lamparina
     }
   }
 

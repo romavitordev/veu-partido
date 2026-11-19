@@ -297,6 +297,12 @@ async function startMatch() {
   }
   loading.progress(1);
   if (game.state !== 'loading') { match.dispose(); return; }
+  // carregou: "Pressione A para começar" (as dicas do rodapé dão tempo de ler). Na LAN e no torneio rodado pela CPU
+  // começa sozinho (o outro computador não pode ficar esperando um botão daqui)
+  if (!game.net && !game.tourRun) {
+    await loading.waitStart();
+    if (game.state !== 'loading' || game.screen !== loading) { match.dispose(); return; }
+  }
   if (game.net) {
     // LAN: a luta só começa no MESMO quadro nos dois computadores — quando os dois avisarem que carregaram (tick)
     game.netLoaded = match;
@@ -1218,6 +1224,7 @@ function tick(dt) {
       break;
     }
     case 'loading':
+      if (game.screen && game.screen.update) game.screen.update(input, dt);
       // LAN: começa quando os dois computadores avisaram que carregaram (o aviso viaja junto com os comandos)
       if (game.net && game.netLoaded && input.netFrame && input.netFrame.every((v) => v.flags & 1)) {
         const m = game.netLoaded;
