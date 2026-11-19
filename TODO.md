@@ -28,6 +28,31 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - Uso de tokens: o plano Pro chegou a ~67% da janela de 5 horas e ~23% da semanal; parei com folga. Próximos itens grandes ficam para outra janela: os seis especiais em equipe restantes, abrir o menu antes de baixar tudo, os mapas novos.
 - Precisa de você: abrir o jogo no PC do amigo (se falhar, a tela mostra o motivo), testar o Explorar num celular de verdade.
 
+## Modo Ondas — proteger o lugar (pedido do dono, 2026-11-18)
+
+> "Adicione também no TODO que futuramente terá um modo tipo de Ondas, onde a pessoa tem que proteger o lugar de ondas
+> de bichos que vão vir. Isso porque alguns mapas não dariam para adicionar no modo outro lado, então ou criaremos um
+> modo só pra isso ou adicionaremos fases completamente diferentes no outro lado. Esses mapas das ondas seriam Treb
+> Ciach, a Ilha de Tipora, e outros mapas que tivermos ideias futuramente."
+
+- [ ] **Decidir com o dono:** modo próprio no menu ou fases de outro tipo dentro do Outro Lado (aproveitando loja,
+  cartas, fusões e save de lá).
+- [ ] **Treb Ciach (A Vigília ep. 3, "Samhain")**: o episódio é, no cânone, uma defesa por ondas. Base canônica
+  (wiki, página do ep. 3): no festival de Samhain as Assombrações (silhuetas de fumaça azulada; o toque delas é uma
+  "chama fria" que dissipa partes do corpo e transforma quem morre em mais uma) vagam pelo vilarejo; a Vigília passa
+  de porta em porta acendendo as lamparinas com a CHAMA DE PROTEÇÃO (nunca para um morto: a Tigela Amaldiçoada
+  distingue), acender as lamparinas de fora enfraquece a névoa e as Assombrações; as silhuetas giram em volta da
+  fogueira e vêm numa ONDA só até a ÁRVORE ANCIÃ, onde o grupo faz a última defesa (barreira de óleo em chamas, a
+  lanterna do crânio de porco quebrada no fogo afasta as Assombrações, o Sino Amaldiçoado atrai, o jarro de abelhas)
+  e se tranca no arsenal sob a pedra. PROPOSTA de fase:
+  - [ ] Entre as ondas: acender lamparinas pelas casas (cada uma acesa enfraquece as próximas ondas); errar e acender
+    a de um morto custa caro.
+  - [ ] Onda final na Árvore Anciã: proteger a porta de pedra do arsenal; óleo/fogo e a lanterna do crânio de porco
+    como itens; a árvore pega fogo no fim (cânone).
+  - [ ] Inimigo novo: Assombração (fumaça azul, agarra e dissipa; precisa de modelo no Blender MCP).
+- [ ] **Ilha de Tipora**: ondas em volta da praça e do sino (detalhes do cânone a pesquisar; tudo PROPOSTA até lá).
+- [ ] Outros mapas de ondas: anotar aqui conforme surgirem ideias.
+
 ## Tela de carregamento e o jogo que não abria (pedido do dono, 2026-11-18)
 
 - [x] **Tela própria de carregamento** (v5.2.0): barra real, %, MB/arquivos, dicas, aviso de conexão parada, erro com TENTAR DE NOVO (também WebGL e script).
@@ -490,7 +515,22 @@ baixado sem o OK do dono.
       pós-tempestade (AV ep. 2), no mesmo .glb (`arena_treb_ciach.py`). Versão básica; refinar com o tempo.
   - [x] Refeito (v4.45.1): Samhain de dia nublado e pós-tempestade à noite azul, névoa em toda parte; a fogueira com
         o símbolo da roda de chifres e do crânio de cervo; casas de enxaimel, ruas de pedra, riacho e texturas.
-  - [ ] Conferir o ep. 3 de A Vigília (ao vivo em 2026-11-14) quando sair a gravação e ajustar o que mudar.
+  - [~] Conferir o ep. 3 de A Vigília (ao vivo em 2026-11-14) quando sair a gravação e ajustar o que mudar.
+        Conferido em 2026-11-18 pelo sumário detalhado da wiki (o vídeo não dá para assistir daqui). O que muda no
+        mapa (base canônica; forma visual PROPOSTA):
+    - [ ] Lamparinas nas portas e em volta do vilarejo (a Chama de Proteção cerca o vilarejo todo): apagadas na noite
+          do Samhain, acesas na versão do fim.
+    - [ ] Silhuetas fantasiadas/Assombrações azuladas vagando e girando em volta da fogueira (cenário, sem colisão).
+    - [ ] Tempestade com trovões sobre o vilarejo (já há raios rápidos no motor, v4.48.1).
+    - [ ] A Árvore Anciã ao norte: campo florido (flores douradas), apiário e a porta de pedra com o símbolo da Vigília
+          entre as raízes.
+- [ ] **Mapas novos de A Vigília** (ideias a partir do ep. 3 e das páginas da wiki; PROPOSTA de forma):
+  - [ ] **Árvore Anciã em chamas**: a última defesa do ep. 3 (barreira de fogo, flores, a árvore queimando).
+  - [ ] **Arsenal da Vigília**: o salão sob a árvore (escada de pedra, mesa central, armas da época, símbolos da Vigília).
+  - [ ] **Torre da Vigília** por dentro: térreo com os cinco pilares das tabuletas, o símbolo no chão e lamparinas de luz
+        branca; 2º andar de névoa com três espantalhos em volta do crânio de porco no pedestal; 3º andar cilíndrico
+        com Skaths flutuando e as cinco camas de palha em volta do símbolo do primeiro ritual.
+  - [ ] **Treb Ciach hoje (2023)**: o vilarejo assombrado abandonado, casas em ruína tomadas pela vegetação.
   - [ ] **Outros mapas de Treb Ciach** (dono, 2026-11-14: "um pro pântano, um pro vilarejo, um pra outros lugares"):
         os lugares do mapa da wiki (`Referencias visuais/Mapas/treb-ciach/wiki/`) — Pântano dos Afogados (a porta de
         pedra na ilha), Árvore Anciã (campo florido, apiário), Igreja abandonada com o cemitério sem nomes, Lago com a
