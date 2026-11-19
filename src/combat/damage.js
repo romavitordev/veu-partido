@@ -58,6 +58,8 @@ export function applyHit(world, attacker, victim, o) {
   // Outro Lado: o inimigo ESCONDIDO da sala (o Devorado `lurking`) não é alvo — um especial que mira "o oponente" o
   // acertava e o fazia aparecer: o "Joui cinza parado" do labirinto (dono, 2026-11-14)
   if (victim.lurking) return 0;
+  // o DUBLÊ de um bicho (pve/duble.js) só leva habilidade/especial: golpe e tiro comuns já acertam o próprio bicho
+  if (victim.standIn && o.kind !== 'ability' && o.kind !== 'special') return 0;
   // dentro da CÁPSULA aberta durante a Presença (pve/sino.js): ninguém o ataca — nem os Homens de Terno
   if (victim.capsuleSafe) return 0;
   // golpe contra o chão (o.otg): acerta quem está CAÍDO, uma vez por queda (não vale na invulnerabilidade de levantar)

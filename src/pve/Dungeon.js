@@ -43,6 +43,7 @@ import degolificadaDef from '../characters/bosses/degolificada.js';
 import estrangeiroBossDef from '../characters/bosses/estrangeiro.js';
 import amigoBossDef from '../characters/bosses/amigo.js';
 import estrangeiroDef from '../characters/estrangeiro.js';
+import { SpecialStandIn } from './duble.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
 import { AmigoBrain, growBoss, AMIGO_SIZE, INK_DROP } from './amigo.js';
@@ -204,6 +205,9 @@ export class Dungeon {
     this.pickups = [];
     this.gates = [];
     this.copias = [];
+    this.standIn = new SpecialStandIn(this); // o dublê dos especiais nos bichos (pve/duble.js)
+    w.specialStandIn = (f, kind) => this.standIn.begin(f, kind);
+    w.cancelStandIn = () => this.standIn.end();
     this.doors = [];
     this.drawers = [];
     this.keys = 0; // as chaves no bolso (uma por porta com cadeado; a que sobra serve na próxima)
@@ -384,6 +388,7 @@ export class Dungeon {
   // monta o módulo `id`: só a área dele vale (o resto da casa fica atrás das portas), o jogador aparece na entrada, a
   // porta por onde entrou se fecha atrás dele e as saídas sorteiam o que há atrás de cada uma. `via` = a porta escolhida.
   enterModule(id, via) {
+    if (this.standIn) this.standIn.end();
     const w = this.world;
     const p = this.player;
     const M = this.D.modules[id];
@@ -1811,7 +1816,7 @@ export class Dungeon {
   cameraTargets() {
     const p = this.player;
     const e = this.enemy;
-    const active = e.visible && !e.lurking && e.state !== 'intro' && distXZ(p.pos, e.pos) < 16;
+    const active = e.visible && !e.lurking && !e.standIn && e.state !== 'intro' && distXZ(p.pos, e.pos) < 16;
     if (this.phase === 'exit') return [p, this.focusAt(p.pos.x + 3, p.pos.z)];
     if (active) return [p, e];
     let near = null; let nd = 11;
@@ -1896,7 +1901,7 @@ export class Dungeon {
   lockCandidates(p) {
     const e = this.enemy;
     const out = [];
-    if (e.visible && !e.lurking && e.state !== 'intro' && e.state !== 'ko' && distXZ(p.pos, e.pos) < LOCK_RANGE && this.sees(p.pos, e.pos)) out.push(e);
+    if (e.visible && !e.lurking && !e.standIn && e.state !== 'intro' && e.state !== 'ko' && distXZ(p.pos, e.pos) < LOCK_RANGE && this.sees(p.pos, e.pos)) out.push(e);
     for (const n of this.world.npcs) {
       if (!n.alive || n.isCloset || this.players.includes(n.owner) || !n.pos) continue;
       if (distXZ(n.pos, p.pos) < LOCK_RANGE && this.sees(p.pos, n.pos)) out.push(n);
@@ -1932,7 +1937,7 @@ export class Dungeon {
 
   validLock(t, p) {
     if (!t) return false;
-    if (t === this.enemy) return t.visible && !t.lurking && t.state !== 'ko' && t.state !== 'intro' && distXZ(t.pos, p.pos) < LOCK_RANGE + 3 && this.sees(p.pos, t.pos);
+    if (t === this.enemy) return t.visible && !t.lurking && !t.standIn && t.state !== 'ko' && t.state !== 'intro' && distXZ(t.pos, p.pos) < LOCK_RANGE + 3 && this.sees(p.pos, t.pos);
     return t.alive && distXZ(t.pos, p.pos) < LOCK_RANGE + 3 && this.sees(p.pos, t.pos);
   }
 
@@ -2020,7 +2025,7 @@ export class Dungeon {
       if (distXZ(p.pos, t) > 0.8) { out.yaw = Math.atan2(p.pos.x - t.x, p.pos.z - t.z); out.lockRate = 7; }
       return out;
     }
-    if (e.visible && !e.lurking && e.state !== 'intro' && distXZ(p.pos, e.pos) < 16) { out.focus = e.pos; return out; }
+    if (e.visible && !e.lurking && !e.standIn && e.state !== 'intro' && distXZ(p.pos, e.pos) < 16) { out.focus = e.pos; return out; }
     let near = null; let nd = 9;
     for (const n of this.world.npcs) {
       if (!n.alive || n.isCloset || this.players.includes(n.owner)) continue;
@@ -2346,6 +2351,7 @@ export class Dungeon {
     }
     const prev = this.players.map((q) => [q.pos.x, q.pos.z]);
     w.update(dt);
+    this.standIn.update(dt);
     if (this.coop) this.views[1].rig.update(dt, [this.player2]);
     this.players.forEach((q, i) => this.updateStairs(q, prev[i][0], prev[i][1]));
     if (this.pillars) this.pillars.update(dt);
@@ -2442,7 +2448,7 @@ export class Dungeon {
     this.pveHud.setTime(this.stats.time);
     if (this.coop) {
       const e = this.enemy;
-      const show = this.encounter && !this.encounter.done && e.visible && !e.lurking && e.state !== 'intro';
+      const show = this.encounter && !this.encounter.done && e.visible && !e.lurking && !e.standIn && e.state !== 'intro';
       this.pveHud.setEnemy(show ? e.def.name : null, e.health / e.maxHealth, e.def.hpBar && e.def.hpBar.style === 'signal');
     }
     this.hud.update(this);
@@ -2455,7 +2461,7 @@ export class Dungeon {
     const enc = this.encounter;
     if (enc && !enc.done && !enc.boss) {
       // o Devorado caiu: some, e a sala termina quando não sobra cópia
-      if (enc.koAt !== null && this.world.time - enc.koAt > 1.3 && !this.enemy.lurking) {
+      if (enc.koAt !== null && this.world.time - enc.koAt > 1.3 && !this.enemy.lurking && !this.enemy.standIn) {
         this.world.fx.burst(this.enemy.chestPos(v1).clone(), { count: 30, color: 0x6c6a66, kind: 'smoke', speed: 2, life: 0.7, size: 0.7, grow: 1 });
         this.lurk(null);
       }

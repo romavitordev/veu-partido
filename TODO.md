@@ -130,8 +130,10 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
     - [x] (v5.25.1) A folhagem que tampava o corredor: era o morro de urze do mapa; cortado sobre o caminho.
     - [x] (v5.25.1) A horda ENCURRALA (arco com a brecha no corredor); sem golpes no corredor; lado mais rápido;
       a sniper e o Solo do Abutre do Arthur nos bichos; Templo do Ódio, Dystopia; Arma de Sangue com o Templo.
-    - [ ] Os ESPECIAIS com a cena nos bichos do Outro Lado (dono: "os especiais … nao mostram a animação que deveria
-      nos bichos, só no boss"); a mira dos outros golpes (dono: "os golpes vao pra outros lados").
+    - [x] (v5.26.0) Os ESPECIAIS com a cena e o nome nos bichos (o dublê, pve/duble.js) e as habilidades na mira.
+    - [x] (v5.26.0) O Racha da Dara com 3 laços; os carros dos golpes sem travar na parede e sem ficar no mapa;
+      a lamparina fraca pisca só em amarelo.
+    - [ ] Conferir com controle humano: os especiais nos bichos na tela; o Racha e os carros nas arenas.
     - [ ] Conferir com controle humano: pegar brasas no corredor e a janela do RESGATE na Árvore.
     - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
     - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).

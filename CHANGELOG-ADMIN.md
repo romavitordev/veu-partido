@@ -1,5 +1,23 @@
 # Registro administrativo de alterações
 
+## v5.26.0 — O Dublê e o Racha
+
+- Versão: `VERSION` 5.25.1 → **5.26.0**. Data: 2026-11-19.
+- Dono: "pode seguir o todo"; "as lanternas quando estao quase apagando atualmente piscam em amarelho e vermelho, mas
+  deveria permanecer amarelo e piscar desligando e ligando. E o especial deve pegar assim como pega no modo de luta com
+  o nome do especial e a animação"; "o especial da dara … pegando a van e dirigindo bem rapido dando voltas e
+  atropelando o inimigo 3 vezes … arrume como esses carros de especiais vem no jogo, porque em algumas fases eles travam
+  na parede, outras eles permanecem no mapa mesmo depois de acabar o golpe".
+- Bateria (vila do Samhain, bicho a 3 m, jogador protegido): 53 personagens — 49 com a cena e o nome no bicho e dano;
+  sem dano só os de invocar/pacto (Marionete, Esfinge, Pacto do Diabo) e o Racha antigo (a van batia nas casas). 48
+  habilidades de 10 personagens sem erro, o dublê sempre voltando escondido com a vida cheia. Racha novo: 3 passadas
+  (228 de dano), nenhuma van sobrando na cena.
+- Não conferido com controle humano: a cena dos especiais nos bichos vista na tela, o Racha numa arena de luta, a van
+  do Chico/carro do Cristopher nas arenas onde travavam.
+- Ainda no TODO: o REMODEL da Assombração azul (Blender).
+- PROPOSTA: o dublê (regras de tempo e de quem segue quem), a rosácea do Racha e os números, o piscar da lamparina.
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.25.1 — A Brecha do Corredor
 
 - Versão: `VERSION` 5.25.0 → **5.25.1**. Data: 2026-11-19.

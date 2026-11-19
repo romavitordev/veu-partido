@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.25.1';
+export const VERSION = '5.26.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.26.0',
+    date: '2026-11-19',
+    title: 'O Dublê e o Racha',
+    items: [
+      'OUTRO LADO: os ESPECIAIS agora pegam nos bichos como no modo luta — o nome do especial na faixa, a cena e a animação inteiras no bicho que está na mira (antes, nas salas de bichos, o especial ia atrás do inimigo escondido da próxima sala: dava "alvo fora de alcance" ou rodava longe, sem acertar ninguém). As HABILIDADES que miram o adversário também vão no bicho da mira. RACHA (Dara) refeito: ela pula na van e dá três laços bem rápidos em volta do alvo, cantando pneu, e passa por cima dele três vezes; na terceira ele voa, a van freia de lado e ela pula da cabine. Os laços se ajustam ao espaço livre. CARROS DOS GOLPES (a van do Chico, o carro do Cristopher, o Racha): não nascem mais dentro de paredes e casas (travavam e explodiam na hora) e sempre somem no fim do golpe. TREB CIACH: a lamparina quase apagando fica AMARELA e falha, apagando e acendendo (antes piscava entre amarelo e vermelho); o aviso de casa atacada continua na coluna vermelha e na seta. Corrigido: a faixa com o nome do Solo do Abutre (Arthur) e do Headshot (Amália) só aparecia no fim da cena.',
+    ],
+  },
   {
     v: '5.25.1',
     date: '2026-11-19',

@@ -1438,6 +1438,8 @@ export class Fighter {
   }
 
   updateIdle(dt) {
+    // OUTRO LADO: o DUBLÊ do bicho num especial (pve/duble.js) fica parado — só leva o especial
+    if (this.standIn) { this.vel.x = 0; this.vel.z = 0; return; }
     if (this.handleCommands()) return;
     const inp = this.input;
     const dir = this.moveInputWorld(v1);
@@ -3036,8 +3038,10 @@ export class Fighter {
       this.seq = conjureSeq(this, mist, () => impl.start(this, a, this.world));
       return;
     }
+    // OUTRO LADO: a habilidade que mira "o adversário" vai no bicho da mira (o dublê, pve/duble.js)
+    const dubbed = this.world.specialStandIn ? this.world.specialStandIn(this, 'ability') : false;
     const seq = impl.start(this, a, this.world);
-    if (!seq) return; // falhou (ex.: sem posição/alvo válido) — não gasta nada
+    if (!seq) { if (dubbed && this.world.cancelStandIn) this.world.cancelStandIn(); return; } // falhou (ex.: sem posição/alvo válido) — não gasta nada
     this.payCost(cost, blood);
     (this.lastAbilityUse || (this.lastAbilityUse = {}))[a.id] = this.world.time;
     this.lastAbilityId = a.id; // OUTRO LADO: o dano da habilidade conta para a carta do kit dela (damage.js)
@@ -3114,7 +3118,10 @@ export class Fighter {
     }
     const impl = SPECIALS[sp.type];
     if (!impl) return;
+    // OUTRO LADO: na sala de bichos o inimigo escondido vira o DUBLÊ do bicho na mira, e o especial roda nele (pve/duble.js)
+    if (this.world.specialStandIn) this.world.specialStandIn(this);
     if (impl.canStart && !impl.canStart(this, sp, this.world)) {
+      if (this.world.specialStandIn) this.world.cancelStandIn && this.world.cancelStandIn();
       this.notify(impl.blockMsg || 'ALVO FORA DE ALCANCE');
       return;
     }

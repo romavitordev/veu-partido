@@ -152,9 +152,9 @@ export default {
     energyCost: 50,
     cooldown: 14,
     color: CYAN,
-    behind: 6, // a van surge atrás dela, dentro da praça da Ilha de Tipora
-    speed: 26,
-    shares: [0.45, 0.55],
+    loop: 6.5, // o raio máximo dos laços (encolhe até caber entre as paredes)
+    speed: 24,
+    shares: [0.3, 0.3, 0.4], // as três passadas por cima do alvo
   },
 
   // TRANSFORMAÇÃO NINGUÉM FICA PRA TRÁS (proposta): a médica que não larga mais ninguém — mais rápida, as habilidades

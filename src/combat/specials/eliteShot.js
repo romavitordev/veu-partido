@@ -64,10 +64,11 @@ export const eliteShot = {
     let fired = false;
     let bolts = 0;
     let done = false;
-    world.after(0.3, () => world.specialBanner(f, sp, sp.name));
+    let bannered = false; // a faixa do nome no próprio especial: os timers do mundo param durante a cena
     return {
       update(dt) {
         t += dt;
+        if (!bannered && t >= 0.3) { bannered = true; world.specialBanner(f, sp, sp.name); }
         // reaparece ajoelhado, já com o rifle
         if (t >= 0.55 && !f.rig.root.visible) {
           f.rig.root.visible = true;

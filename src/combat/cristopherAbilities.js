@@ -3,7 +3,7 @@ import { Timeline, yawTo, forwardFromYaw } from '../core/util.js';
 import { ABILITY_TYPES } from './abilities.js';
 import { applyHit } from './damage.js';
 import { part, glowMat } from '../models/rig.js';
-import { vehicleBlocked } from './vehicleCollision.js';
+import { vehicleBlocked, clearStart, trackVehicle } from './vehicleCollision.js';
 
 // ------------------------------------------------------------------ CRISTOPHER "CRIS" COHEN (Ordo Realitas, OSNF)
 // DIREÇÃO AVANÇADA (wiki): "por ter feito vários filmes de ação, Cristopher tem um talento nato em dirigir e realizava
@@ -190,8 +190,10 @@ Object.assign(ABILITY_TYPES, {
       world.audio.play('ready', { volume: 0.9, pitch: a.vehicle === 'van' ? 1.2 : 1.6 }); // o assobio (ou o rádio chamando a van)
       const F = forwardFromYaw(f.yaw);
       const R = new THREE.Vector3(Math.cos(f.yaw), 0, -Math.sin(f.yaw));
-      const start = new THREE.Vector3(f.pos.x - F.x * (a.behind ?? 11), 0, f.pos.z - F.z * (a.behind ?? 11));
       const aim = opp.pos.clone().setY(0);
+      // a pista livre: nascia atrás dele mesmo dentro de uma parede e batia na hora (vehicleCollision.js)
+      const s0 = clearStart(world.arena, a.vehicle, { x: f.pos.x - F.x * (a.behind ?? 11), z: f.pos.z - F.z * (a.behind ?? 11) }, aim);
+      const start = new THREE.Vector3(s0.x, 0, s0.z);
       const dir = aim.clone().sub(start).setY(0).normalize();
       const car = a.vehicle === 'van' ? vanDosCinco() : stuntCar(a.carColor);
       car.position.copy(start);
@@ -200,9 +202,10 @@ Object.assign(ABILITY_TYPES, {
       let hit = false;
       let gone = false;
       let travelled = 0;
+      let track = null;
       const total = start.distanceTo(aim) + (a.overshoot ?? 10);
       tl.add(a.delay ?? 0.35, () => {
-        world.scene.add(car);
+        track = trackVehicle(world, car, 6);
         world.audio.play('shockwave', { volume: 0.8, pitch: 0.55 }); // o motor roncando
       });
       // ele se joga para o lado quando o carro chega (a cena de dublê)
@@ -257,7 +260,7 @@ Object.assign(ABILITY_TYPES, {
           }
           return false;
         },
-        dispose() { world.scene.remove(car); },
+        dispose() { if (track) track.remove(); },
       });
       tl.end((a.delay ?? 0.35) + 0.75);
       return seqFrom(tl, { cancel: () => { f.vel.set(0, 0, 0); } });

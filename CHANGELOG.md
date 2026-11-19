@@ -1,5 +1,32 @@
 # Changelog
 
+## v5.26.0 — O Dublê e o Racha
+
+### Adicionado
+- `pve/duble.js` `SpecialStandIn`: nas salas de bichos o inimigo escondido (`lurking`) vira o DUBLÊ do bicho da mira
+  (`pickMob`: `aimTarget` ou o mais perto à frente): visível para o jogo, malha escondida, vida 99999 e `cpuEdge` neutro.
+  A cada quadro o dano que ele levou vai para o bicho (`flush`, metade nos bichos a 2,4 m); empurrado/puxado/no ar, o
+  bicho segue o dublê; parado, o dublê segue o bicho. Fim: 0,2 s (especial) ou 1,2 s (habilidade, ou até os projéteis
+  dela pousarem) depois da ação; volta para onde estava com a vida de antes (`lurk`). Ligado por `World.specialStandIn`
+  em `Fighter.trySpecial` (antes do `canStart`) e `Fighter.useAbility`; `World.cancelStandIn` quando falha.
+- `combat/vehicleCollision.js`: `clearStart` (aproxima o ponto de partida do alvo até achar chão livre; tenta o lado
+  oposto), `clearLane` e `trackVehicle` (o carro entra na cena por um vigia que o tira em qualquer fim; limite 6–9 s).
+
+### Mudado
+- `specials/racha.js` reescrito: cena (`beginCinematic`), a van numa rosácea r = R·cos(3θ) em volta do alvo (três
+  passadas pelo centro: `shares` 0,3/0,3/0,4; a 3ª lança), `R` até `sp.loop` 6,5 m encolhendo até caber (mín. 2,8),
+  velocidade `min(sp.speed, 8 + 3R)`; câmera alta girando. `characters/dara.js`: `loop`, `speed` 24, `shares` de 3.
+- `stuntCar` (Chico/Cristopher): `clearStart` + `trackVehicle`.
+- `pve/samhain.js` `House.update`: abaixo de 35% a chama/halo/domo/nabo FALHAM (liga/desliga, mais rápido quanto mais
+  fraca), sempre amarelos; o anel da vida sempre amarelo; o domo não fica mais vermelho quando atacada.
+- `pve/Dungeon.js`: o dublê fora da trava de mira, do foco da câmera e da barra do inimigo; a sala de ondas não
+  re-esconde o inimigo no meio do dublê; `enterModule` encerra o dublê.
+
+### Corrigido
+- `damage.js applyHit`: o dublê só leva `ability`/`special` (golpe e tiro comuns já acertam o bicho: sem dano dobrado).
+- `specials/eliteShot.js` e `specials/headshot.js`: a faixa do nome saía por `world.after`, que fica parado durante a
+  cena — agora sai de dentro do especial.
+
 ## v5.25.1 — A Brecha do Corredor
 
 ### Mudado

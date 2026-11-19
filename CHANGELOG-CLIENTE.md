@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.26.0 — O Dublê e o Racha
+- OUTRO LADO: os ESPECIAIS agora pegam nos bichos como no modo luta — o nome do especial na faixa, a cena e a animação inteiras no bicho que está na mira (antes, nas salas de bichos, o especial ia atrás do inimigo escondido da próxima sala: dava "alvo fora de alcance" ou rodava longe, sem acertar ninguém). As HABILIDADES que miram o adversário também vão no bicho da mira. RACHA (Dara) refeito: ela pula na van e dá três laços bem rápidos em volta do alvo, cantando pneu, e passa por cima dele três vezes; na terceira ele voa, a van freia de lado e ela pula da cabine. Os laços se ajustam ao espaço livre. CARROS DOS GOLPES (a van do Chico, o carro do Cristopher, o Racha): não nascem mais dentro de paredes e casas (travavam e explodiam na hora) e sempre somem no fim do golpe. TREB CIACH: a lamparina quase apagando fica AMARELA e falha, apagando e acendendo (antes piscava entre amarelo e vermelho); o aviso de casa atacada continua na coluna vermelha e na seta. Corrigido: a faixa com o nome do Solo do Abutre (Arthur) e do Headshot (Amália) só aparecia no fim da cena.
+
 ## v5.25.1 — A Brecha do Corredor
 - TREB CIACH: na cena depois da tempestade a horda não te cerca mais: ela vem por trás e pelos lados e te ENCURRALA, deixando só a entrada do corredor; você recua, vira e foge por ela. CORREDOR: o morro verde do mapa que cruzava o caminho (a câmera passava por dentro dele e tampava a vista) saiu de cima do caminho; dá para desviar de lado bem mais rápido; golpes e habilidades ficam bloqueados na fuga (só a esquiva), o que também acaba com a tela preta de usar um golpe ali. ARTHUR: a SNIPER e o especial SOLO DO ABUTRE voltaram a funcionar no Outro Lado (miram e acertam os bichos); os golpes com os nomes da série: TEMPLO DO ÓDIO e DYSTOPIA; e a ARMA DE SANGUE pode ser usada com o Templo do Ódio ativo.
 

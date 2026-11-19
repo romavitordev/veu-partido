@@ -164,19 +164,25 @@ class House {
       this.shown = k;
       this.ring.geometry.dispose();
       this.ring.geometry = new THREE.RingGeometry(0.85, 1.0, 40, 1, Math.PI / 2, Math.max(0.001, Math.PI * 2 * k));
-      this.ringMat.color.setHex(k > 0.5 ? 0xffd84a : k > 0.25 ? 0xff9a3a : 0xff4a3a);
+      this.ringMat.color.setHex(0xffd84a); // sempre amarela: o tamanho do arco mostra quanto falta
     }
     const lit = this.state !== 'ko';
-    this.flame.visible = lit;
-    this.halo.visible = lit;
-    // o domo: brilha com a chama; fraco, pisca; apagada, some. Atacada: fica vermelho e a coluna pulsa
+    // QUASE APAGANDO (dono, 2026-11-19: "deveria permanecer amarelo e piscar desligando e ligando"): abaixo de 35% a
+    // chama falha — apaga e acende, sempre amarela, cada vez mais seguido quanto mais fraca. Atacada, o aviso é a coluna
+    // vermelha e a seta (não o domo).
     const hitAgo = t - (this.hitAt ?? -99);
     const attacked = lit && hitAgo < 2.5;
-    this.dome.visible = lit;
+    let on = true;
+    if (lit && k < 0.35) {
+      const rate = 5 + (1 - k / 0.35) * 7;
+      on = Math.sin(t * rate + this.index) + 0.45 * Math.sin(t * rate * 2.3 + this.index * 5) > -0.35;
+    }
+    this.flame.visible = lit && on;
+    this.halo.visible = lit && on;
+    this.dome.visible = lit && on;
     if (lit) {
-      const weakBlink = k < 0.35 ? 0.5 + 0.5 * Math.sin(t * 12) : 1;
-      this.domeMat.color.setHex(attacked ? 0xff3a2a : k > 0.5 ? 0xffc84a : 0xff8a2a);
-      this.domeMat.opacity = (attacked ? 0.2 + 0.1 * Math.sin(t * 16) : 0.05 + 0.1 * k) * weakBlink;
+      this.domeMat.color.setHex(0xffc84a);
+      this.domeMat.opacity = attacked ? 0.12 + 0.06 * k : 0.05 + 0.1 * k;
       this.dome.scale.setScalar(0.75 + 0.25 * k);
     }
     const pulse = attacked ? (1 - hitAgo / 2.5) * (0.6 + 0.4 * Math.sin(t * 10)) : 0;
@@ -189,7 +195,8 @@ class House {
       const f = 0.85 + Math.sin(t * 11 + this.index) * 0.08 + Math.sin(t * 23 + this.index * 2) * 0.05;
       this.halo.scale.setScalar(f * (0.6 + 0.4 * k));
       this.halo.material.opacity = 0.18 + 0.14 * k;
-      this.faceMat.color.setHex(0xff9a2a).multiplyScalar(0.75 + 0.25 * Math.sin(t * 9 + this.index * 3));
+      if (on) this.faceMat.color.setHex(0xff9a2a).multiplyScalar(0.75 + 0.25 * Math.sin(t * 9 + this.index * 3));
+      else this.faceMat.color.setHex(0x1a120c); // a chama falhou: o nabo apaga junto
     } else {
       this.ringBg.material.opacity = 0.2;
       this.faceMat.color.setHex(0x1a120c); // o nabo apagou com a lamparina
