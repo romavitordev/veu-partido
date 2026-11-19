@@ -42,7 +42,8 @@ def mcp_build(name, root=r"E:/arena paranormal/tools/blender", kind="char"):
         f = getattr(m, '__file__', None)
         if f and os.path.normcase(os.path.dirname(os.path.abspath(f))) == rn:
             del sys.modules[k]
-    out = os.path.join(os.path.dirname(os.path.dirname(root)), 'public', 'npcs' if kind == 'npc' else 'models', name + '.glb')
+    # kind 'arena' (arena_*.py → public/arenas/<nome>.glb)
+    out = os.path.join(os.path.dirname(os.path.dirname(root)), 'public', {'npc': 'npcs', 'arena': 'arenas'}.get(kind, 'models'), name + '.glb')
     old_argv, real = sys.argv, bpy.ops.wm
     sys.argv = ['blender', '--', out]
     bpy.ops.wm = _WM(real)

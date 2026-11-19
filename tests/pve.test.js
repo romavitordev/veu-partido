@@ -454,3 +454,27 @@ test('chefes com brecha: o Espreitador mais duro e os minibosses tontos depois d
   assert.ok(E.fresta.lunge.miss >= 0.8);
   for (const M of [RASTROPODA, BILU]) assert.ok(M.daze.taken > 1 && Object.values(M.daze).every((x) => x > 1));
 });
+
+// o ALMOXARIFADO da Escola (sala sem saída, kind 'stash'; pedido do dono, 2026-11-16): nunca é a única porta, nunca sai
+// de outra sala sem saída, aparece no máximo uma vez por tentativa e nunca leva cadeado; o pátio da cantina é sala de luta
+test('Escola: o almoxarifado sem saída e o pátio da cantina na rota', () => {
+  const D = DUNGEONS.degolificada;
+  assert.equal(D.modules.almoxarifado.kind, 'stash');
+  assert.deepEqual(Object.keys(D.modules.almoxarifado.exits), ['back']);
+  assert.equal(D.modules.patio.kind, 'fight');
+  let seed = 7;
+  const rng = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  let stashSeen = 0;
+  let patioSeen = 0;
+  for (let k = 0; k < 3000; k++) {
+    const cur = ['corredor', 'historia', 'laboratorio', 'arquivos', 'patio'][k % 5];
+    const out = rollExits(D, cur, { step: 1, total: 5, visited: k % 2 ? ['almoxarifado'] : [], rng });
+    assert.ok(out.length >= 1);
+    assert.ok(out.some((e) => e.kind !== 'stash'), 'o almoxarifado nunca é o único caminho');
+    if (k % 2) assert.ok(!out.some((e) => e.to === 'almoxarifado'), 'uma vez por tentativa');
+    stashSeen += out.filter((e) => e.kind === 'stash').length;
+    patioSeen += out.filter((e) => e.to === 'patio').length;
+  }
+  assert.ok(stashSeen > 0 && patioSeen > 0);
+  assert.equal(rollExits(D, 'almoxarifado', { step: 1, total: 5, rng }).some((e) => e.kind === 'stash'), false);
+});

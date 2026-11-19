@@ -83,11 +83,12 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - [x] v4.53.2: o travamento do baú. `Dungeon.openReward` (a escolha "Moedas ou vida" do baú sem nada para subir)
   perdeu o `const who` na v4.44.0; o ReferenceError deixava `choosing = true` e o jogo parado. Teste em
   `tests/pve-interaction.test.js`.
-- [ ] **Escola Nostradamus: mais variedade de salas.** Hoje é corredor, salas de aula e laboratório. Ideias do dono:
-  - [ ] um **pátio** com pilastras e as **mesas da cantina** (luta em volta das colunas);
-  - [ ] um **almoxarifado sem saída**: só a porta por onde se entrou; pega o loot e volta para a sala anterior para
+- [x] **Escola Nostradamus: mais variedade de salas.** (v5.16.0) Hoje é corredor, salas de aula e laboratório. Ideias do dono:
+  - [x] um **pátio** com pilastras e as **mesas da cantina** (luta em volta das colunas);
+  - [x] um **almoxarifado sem saída**: só a porta por onde se entrou; pega o loot e volta para a sala anterior para
     seguir (precisa da rota aceitar sala-beco: a porta de volta vira a saída e a sala anterior mantém as portas).
-  - [ ] PROPOSTA: biblioteca (estantes como cobertura), banheiro, sala dos professores, quadra coberta.
+  - [~] PROPOSTA: biblioteca (estantes como cobertura), banheiro, sala dos professores, quadra coberta. Feitos na
+    v5.16.0: banheiro e sala dos professores; faltam biblioteca de estantes e quadra coberta.
 - [x] **Personagem brilhando em branco enquanto anda** (dono: "às vezes os personagens bugam e ficam brilhando em
   toda fase, assim como essa foto do Chris, já ocorreu com o Xande" + "os personagens andavam, com o brilho da
   iluminação local fixa no seu corpo") — v4.53.4. Era a `lamp` do Dungeon (PointLight 7, a 2,4 m do chão bem em cima

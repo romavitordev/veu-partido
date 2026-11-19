@@ -1,5 +1,17 @@
 # Changelog
 
+## v5.16.0 — A Escola Cresce
+
+### Adicionado
+- `dungeons.js` (Escola): módulos `patio` (luta), `professores` (luta), `banheiro` (espreita) e `almoxarifado` (`kind: 'stash'`, peso 0,45, uma porta só).
+- `Dungeon.enterModule`: sala sem saída; ao entrar guarda a sala de antes (`stashFrom`: portas, cadeados, chave) e a porta de volta (`kind: 'return'`) a restaura sem contar sala.
+- `arena_escola.py` / `escola.glb`: pátio da cantina, almoxarifado, sala dos professores e banheiro (feitos e conferidos no Blender MCP); `mcp_build(kind='arena')`.
+- Teste "Escola: o almoxarifado sem saída e o pátio da cantina na rota".
+
+### Alterado
+- `rollExits`/`rollLock`: o almoxarifado nunca é a única porta, nem sai de outro almoxarifado, e não leva cadeado.
+- `sobre.html`: salas da Escola, momentos dos especiais de equipe, card de fusões; retratos de Alvira, Franco, Alê e Caio.
+
 ## v5.15.0 — A Névoa da Força D
 
 ### Alterado

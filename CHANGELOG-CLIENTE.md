@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.16.0 — A Escola Cresce
+- Escola Nostradamus com quatro salas novas no Outro Lado: o pátio da cantina (luta entre pilastras e mesas), a sala dos professores, o banheiro e o almoxarifado, uma sala sem saída e sem luta, cheia de baús, cuja porta leva de volta para a sala de antes.
+- Página Sobre atualizada: as salas novas da Escola, os momentos dos especiais de equipe, as fusões de poderes e os retratos de Alvira, Franco, Alê e Caio no elenco.
+
 ## v5.15.0 — A Névoa da Força D
 - Especial em equipe da Força D com final novo, a NÉVOA DA FORÇA D: o Kaiser fecha a Cinerária em volta do alvo, cada membro sai da névoa, golpeia e some de novo, e no fim a névoa abre com a Força D formada atrás do Kaiser.
 

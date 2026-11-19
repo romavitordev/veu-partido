@@ -455,4 +455,156 @@ box('saida_endglow', (103.95, 1.4, 0), (0.04, 2.4, 1.6), M['moon'])
 box('saida_exitsign', (103.9, 2.85, 0), (0.06, 0.2, 0.6), M['exit'])
 cyl('saida_bulb', (98, 2.7, 0), 0.06, 0.12, M['bulb'], seg=8)
 
+# =============================================================== O PÁTIO DA CANTINA (x 0…20, z −36…−20) — PROPOSTA
+# pedido do dono (2026-11-16): "um pátio com pilastras, mesas de cantina". O claustro do antigo mosteiro virou o pátio
+# coberto da cantina: duas fileiras de PILASTRAS de pedra (a luta em volta delas), as mesas compridas com bancos nas
+# bordas e o balcão da cantina no leste. Entrada no oeste (z −28); saídas do jogo: norte (x 10), leste (z −28), sul (x 10).
+closed_room('patio', 0, 20, -36, -20, floor='concrete')
+for i, x in enumerate((5.0, 10.0, 15.0)):
+    for j, z in enumerate((-32.0, -24.0)):
+        n = f'patio_pillar{i}{j}'
+        box(f'{n}_base', (x, 0.15, z), (0.85, 0.3, 0.85), M['stone'])
+        cyl(f'{n}_shaft', (x, 0.3, z), 0.3, 2.5, M['stone'], seg=14)
+        box(f'{n}_cap', (x, 2.9, z), (0.8, 0.25, 0.8), M['stone'])
+        col_cyl(n, (x, 0, z), 0.42, 3.0)
+# os arcos de pedra ligando as pilastras (lá em cima, para dar o claustro)
+for j, z in enumerate((-32.0, -24.0)):
+    for i, x in enumerate((7.5, 12.5)):
+        box(f'patio_lintel{i}{j}', (x, 3.05, z), (4.6, 0.3, 0.5), M['stone'])
+
+
+def cantina_table(name, x, z):
+    """a mesa comprida da cantina (2,4 × 0,8) com os dois bancos corridos, comprida em x"""
+    box(f'{name}_top', (x, 0.75, z), (2.4, 0.05, 0.8), M['woodlt'])
+    for s in (-1, 1):
+        box(f'{name}_leg{s}', (x + s * 1.0, 0.37, z), (0.08, 0.74, 0.7), M['steel'])
+        box(f'{name}_bench{s}', (x, 0.44, z + s * 0.62), (2.3, 0.05, 0.3), M['wood'])
+        for t in (-1, 1):
+            box(f'{name}_bleg{s}{t}', (x + t * 0.95, 0.21, z + s * 0.62), (0.05, 0.42, 0.26), M['steel'])
+    col_box(name, (x, 0.4, z), (2.4, 0.8, 1.9))
+    # o que ficou nas mesas: as bandejas e os copos
+    for k in range(3):
+        box(f'{name}_tray{k}', (x - 0.8 + k * 0.8 + random.uniform(-0.1, 0.1), 0.785, z + random.uniform(-0.2, 0.2)), (0.42, 0.02, 0.3), M['steel'], rot_y=random.uniform(-0.3, 0.3))
+
+
+for k, x in enumerate((3.2, 7.0, 13.0, 16.8)):
+    cantina_table(f'patio_tableN{k}', x, -34.3)
+    cantina_table(f'patio_tableS{k}', x, -21.7)
+# o BALCÃO da cantina na parede leste (ao norte da saída), as panelas e a placa do cardápio
+box('patio_counter', (19.3, 0.55, -32.6), (1.0, 1.1, 4.2), M['metal'])
+box('patio_counter_top', (19.2, 1.12, -32.6), (1.2, 0.05, 4.3), M['steel'])
+col_box('patio_counter', (19.3, 0.55, -32.6), (1.2, 1.1, 4.3))
+for k in range(3):
+    cyl(f'patio_pot{k}', (19.3, 1.14, -34.0 + k * 1.3), 0.22, 0.3, M['steel'], seg=12)
+plane('DECAL_patio_menu', (19.87, 2.2, -32.6), (2.4, 0.8), M['board'], rot_y=-math.pi / 2)
+for j in range(4):
+    box(f'patio_menu_line{j}', (19.85, 2.4 - j * 0.15, -32.6), (0.005, 0.03, 1.6 - j * 0.25), M['chalk'])
+# a máquina de refrigerante (acesa) e a lixeira, no canto sul do balcão
+box('patio_soda', (19.4, 0.95, -22.0), (0.8, 1.9, 0.9), M['red'])
+box('patio_soda_panel', (18.99, 1.2, -22.0), (0.02, 0.9, 0.6), M['lamp'])
+col_box('patio_soda', (19.4, 0.95, -22.0), (0.8, 1.9, 0.9))
+cyl('patio_bin', (0.6, 0, -21.0), 0.25, 0.7, M['metal'], seg=10)
+col_cyl('patio_bin', (0.6, 0, -21.0), 0.3, 0.7)
+# o incêndio também passou aqui: a fuligem perto da porta e as bandejas caídas no meio
+cyl('patio_scorch', (2.4, 0.004, -28.0), 1.6, 0.008, M['soot'], seg=18)
+for k in range(5):
+    box(f'patio_floortray{k}', (6 + k * 2.1 + random.uniform(-0.4, 0.4), 0.01, -28 + random.uniform(-1.6, 1.6)), (0.42, 0.02, 0.3), M['steel'], rot_y=random.uniform(0, TAU))
+cyl('patio_blood', (11.2, 0.005, -27.2), 0.6, 0.008, M['blood'], seg=14)
+# as janelas altas do claustro e as luminárias
+for i, x in enumerate((3.5, 16.5)):
+    window(f'patio_winN{i}', x, -35.87, 0.0, w=2.0)
+    window(f'patio_winS{i}', x, -20.13, math.pi, w=2.0)
+for i, x in enumerate((5, 10, 15)):
+    lamp(f'patio_lamp{i}', x, -28, flicker=(i == 1), w=1.6)
+
+# =============================================================== O ALMOXARIFADO (x 26…34, z −32…−25) — PROPOSTA
+# pedido do dono (2026-11-16): "uma sala de almoxarifado que só tem a porta por onde você veio, você pega o loot dela e
+# volta pra sala anterior". SEM SAÍDA: a única porta é a do oeste (z −28,5), por onde se entra e se volta.
+closed_room('almox', 26, 34, -32, -25, floor='concrete')
+# as estantes de aço nas paredes, cheias de caixas, baldes e produtos de limpeza
+
+
+def steel_rack(name, x, z, length, along_x=True):
+    w, d = (length, 0.55) if along_x else (0.55, length)
+    for y in (0.08, 0.7, 1.32, 1.94):
+        box(f'{name}_shelf{y}', (x, y, z), (w, 0.04, d), M['steel'])
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            ox, oz = (sx * (w / 2 - 0.03), sz * (d / 2 - 0.03))
+            box(f'{name}_post{sx}{sz}', (x + ox, 1.05, z + oz), (0.04, 2.1, 0.04), M['steel'])
+    for k in range(int(length / 0.5)):
+        t = -length / 2 + 0.3 + k * 0.5
+        for y in (0.1, 0.72, 1.34):
+            if random.random() < 0.7:
+                h = random.uniform(0.25, 0.45)
+                px, pz = (x + t, z) if along_x else (x, z + t)
+                box(f'{name}_box{k}_{y}', (px, y + h / 2 + 0.02, pz), (0.4, h, 0.4), M['wood'] if random.random() < 0.6 else M['paper'], rot_y=random.uniform(-0.15, 0.15))
+    col_box(name, (x, 1.05, z), (w, 2.1, d))
+
+
+steel_rack('almox_rackN', 31.0, -31.6, 4.2)
+steel_rack('almox_rackS', 30.6, -25.4, 5.6)
+steel_rack('almox_rackE', 33.6, -28.5, 3.6, along_x=False)
+# o arquivo de aço do zelador (as gavetas são do jogo) e o carrinho de limpeza com o balde
+box('almox_cabinet', (27.4, 0.66, -31.55), (1.0, 1.32, 0.6), M['metal'])
+col_box('almox_cabinet', (27.4, 0.66, -31.55), (1.0, 1.32, 0.6))
+box('almox_cart', (29.4, 0.45, -28.6), (0.9, 0.6, 0.5), M['red'])
+cyl('almox_bucket', (29.0, 0.75, -28.6), 0.17, 0.3, M['metal'], seg=10)
+cyl('almox_mop', (29.8, 0.75, -28.5), 0.015, 1.3, M['woodlt'], seg=5, rot_z=0.25)
+col_box('almox_cart', (29.4, 0.45, -28.6), (0.95, 0.9, 0.55))
+lamp('almox_lamp', 30, -28.5, flicker=True, w=1.0)
+
+# =============================================================== A SALA DOS PROFESSORES (x 40…52, z −32…−22) — PROPOSTA
+# a mesa comprida de reunião no meio (a luta em volta dela), os escaninhos dos professores, o sofá e a cafeteira.
+# Entrada no oeste (z −29,5); saídas do jogo: norte (x 46,6), leste (z −27), sul (x 45,4).
+closed_room('profs', 40, 52, -32, -22, floor='floor')
+box('profs_table', (46.5, 0.74, -27.0), (4.6, 0.06, 1.3), M['wood'])
+for s in (-1, 1):
+    for t in (-1, 1):
+        box(f'profs_table_leg{s}{t}', (46.5 + s * 2.1, 0.37, -27.0 + t * 0.5), (0.08, 0.74, 0.08), M['wood'])
+col_box('profs_table', (46.5, 0.4, -27.0), (4.6, 0.8, 1.3))
+for k, x in enumerate((44.9, 46.5, 48.1)):
+    for s in (-1, 1):
+        box(f'profs_chair{k}{s}_seat', (x, 0.45, -27.0 + s * 1.0), (0.45, 0.05, 0.45), M['steel'])
+        box(f'profs_chair{k}{s}_back', (x, 0.72, -27.0 + s * 1.22), (0.45, 0.5, 0.04), M['steel'])
+scatter_papers('profs_paper', 46.5, -27.0, 8, 1.6)
+box('profs_cubbies', (41.8, 1.1, -31.7), (3.0, 2.2, 0.4), M['wood'])
+for i in range(5):
+    for j in range(4):
+        box(f'profs_cubby{i}{j}', (40.6 + i * 0.6, 0.4 + j * 0.5, -31.48), (0.5, 0.4, 0.02), M['black'])
+col_box('profs_cubbies', (41.8, 1.1, -31.7), (3.0, 2.2, 0.45))
+box('profs_sofa', (50.6, 0.35, -23.0), (2.2, 0.7, 0.9), M['red'])
+box('profs_sofa_back', (50.6, 0.75, -22.6), (2.2, 0.6, 0.25), M['red'])
+col_box('profs_sofa', (50.6, 0.4, -22.9), (2.2, 0.8, 1.0))
+box('profs_coffee_table', (51.5, 0.5, -31.5), (1.0, 1.0, 0.6), M['wood'])
+cyl('profs_coffee', (51.4, 1.0, -31.5), 0.1, 0.3, M['steel'], seg=10)
+col_box('profs_coffee_table', (51.5, 0.5, -31.5), (1.0, 1.0, 0.6))
+plane('DECAL_profs_board', (51.87, 1.8, -29.6), (2.4, 1.0), M['paper'], rot_y=-math.pi / 2)
+window('profs_win0', 43.5, -21.87, math.pi)
+window('profs_win1', 49.5, -21.87, math.pi)
+for i, x in enumerate((44, 49)):
+    lamp(f'profs_lamp{i}', x, -27, flicker=(i == 0))
+
+# =============================================================== O BANHEIRO (x 58…68, z −32…−24) — PROPOSTA
+# corredor de passagem (sem luta): as cabines no sul, as pias e o ESPELHO trincado no norte, a água no chão.
+# Entrada no oeste (z −28); saídas do jogo: norte (x 65), leste (z −28), sul (x 66,8, depois das cabines).
+closed_room('banheiro', 58, 68, -32, -24, floor='tile')
+for k in range(4):
+    x = 59.0 + k * 1.5
+    box(f'banheiro_stall{k}', (x + 0.75, 1.0, -24.95), (0.05, 2.0, 1.6), M['metal'])
+    box(f'banheiro_stalldoor{k}', (x, 1.0, -25.75), (1.3, 1.8, 0.04), M['metal'], rot_y=(0.5 if k == 2 else 0.0))
+    box(f'banheiro_toilet{k}', (x, 0.22, -24.6), (0.4, 0.44, 0.55), M['tile'])
+col_box('banheiro_stalls', (61.25, 1.0, -24.95), (6.4, 2.0, 1.7))
+for k in range(3):
+    x = 60.0 + k * 1.6
+    box(f'banheiro_sink{k}', (x, 0.85, -31.7), (0.6, 0.15, 0.45), M['tile'])
+    cyl(f'banheiro_sinkpipe{k}', (x, 0, -31.75), 0.05, 0.8, M['steel'], seg=6)
+box('banheiro_mirror', (61.6, 1.65, -31.87), (4.6, 1.0, 0.03), M['glass'])
+for k in range(5):  # o espelho trincado
+    box(f'DECAL_banheiro_crack{k}', (60.6 + k * 0.25, 1.7 + (k % 2) * 0.12, -31.85), (0.7, 0.01, 0.005), M['chalk'], rot_x=0.0, rot_y=0.0, rot_z=0.6 * (k - 2))
+col_box('banheiro_sinks', (61.6, 0.5, -31.7), (5.0, 1.0, 0.5))
+cyl('banheiro_puddle', (63.5, 0.004, -28.4), 1.3, 0.006, M['glass'], seg=18)
+box('DECAL_banheiro_writing', (67.87, 1.6, -30.5), (0.004, 0.5, 1.6), M['blood'])
+lamp('banheiro_lamp', 63, -28, flicker=True, w=1.2)
+
 finalize(OUT)

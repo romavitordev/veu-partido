@@ -1,5 +1,22 @@
 # Registro administrativo de alterações
 
+## v5.16.0 — A Escola Cresce
+
+- Versão: `VERSION` 5.15.0 → **5.16.0**. Data: 2026-11-18. Dono: lista colada ("Escola Nostradamus com mais variedade
+  de salas (pátio com cantina, almoxarifado sem saída e outras)") e "aproveite pra atualizar o site do Sobre".
+- Escola: 4 salas novas no `escola.glb`, à direita das atuais (x 0…68, z −36…−20), feitas no Blender MCP:
+  PÁTIO DA CANTINA (6 pilastras com vigas, 4 mesas, balcão com cardápio, máquina de refrigerante), ALMOXARIFADO
+  (3 estantes de aço, armário, carrinho, balde e esfregão), SALA DOS PROFESSORES (mesa de reunião, escaninhos, sofá;
+  PROPOSTA) e BANHEIRO (4 cabines, pias e espelho rachado, poça; PROPOSTA, sala de espreita).
+- Almoxarifado sem saída (`kind: 'stash'`): sem luta, todos os pontos de baú com sorte (como o cofre), 2 gavetas;
+  a única porta volta à sala de antes no mesmo estado (portas sorteadas, cadeados ainda fechados, a chave se ainda
+  estava na gaveta), sem baú novo e sem contar sala. Nunca é a única porta, aparece no máximo uma vez por descida.
+- Sobre: eyebrow do Outro Lado na v5.16.0, Escola com as salas novas, especiais de equipe com momento próprio, card
+  "Fusões de poderes" (grade de 2 colunas); os 4 retratos que faltavam no elenco renderizados no jogo (webp 0,82).
+- Conferido no jogo: almoxarifado (3 baús, 2 gavetas, a volta na porta certa com as portas de antes), pátio e
+  professores com zumbis, banheiro com espreita; sem erro no console. `npm test` 120/120, `npm run check`,
+  `vite build` e `npm run moves` ok.
+
 ## v5.15.0 — A Névoa da Força D
 
 - Versão: `VERSION` 5.14.0 → **5.15.0**. Data: 2026-11-18. Dono: "sim, Força D" (momento próprio do especial da Força D).

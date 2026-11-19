@@ -377,11 +377,26 @@ export class Dungeon {
     const w = this.world;
     const p = this.player;
     const M = this.D.modules[id];
+    // a SALA SEM SAÍDA (o almoxarifado da Escola, kind 'stash'; pedido do dono, 2026-11-16): ao entrar, guarda a sala de
+    // onde se veio (as portas que ela tinha, os cadeados ainda fechados e se a chave ainda estava na gaveta); a única
+    // porta do almoxarifado leva de volta para lá (via.kind 'return'), sem contar sala nem sortear nada de novo
+    const back = via && via.kind === 'return' ? via.ret : null;
+    let stashFrom = null;
+    if (M.kind === 'stash' && via && !back) {
+      stashFrom = {
+        id: this.modId,
+        slot: via.slot,
+        exits: (this.exits || []).filter((e) => e !== via),
+        padded: this.doors.filter((d) => d.exit && d.exit !== via && d.padlock).map((d) => d.exit),
+        twoLocks: this.twoLocks,
+        keyLeft: this.drawers.some((d) => !d.opened && d.content && d.content.kind === 'key'),
+      };
+    }
     this.modId = id;
     this.mod = M;
     this.via = via;
-    if (M.kind !== 'start') this.step++;
-    this.visited.push(id);
+    if (M.kind !== 'start' && M.kind !== 'stash' && !back) this.step++;
+    if (!back) this.visited.push(id);
     w.arena.bounds.rects = M.rects;
     this.cullRooms(M.rects);
     this.setupStairs(M);
@@ -417,38 +432,53 @@ export class Dungeon {
     for (const c of this.copias) if (c.alive) c.kill();
     this.copias = [];
     this.revivePlayers();
-    p.pos.set(M.entry.x, 0, M.entry.z);
+    // de volta do almoxarifado: aparece na porta por onde tinha saído, olhando para dentro da sala
+    const bs = back ? M.exits[back.slot] : null;
+    const at = bs ? { x: bs.x + Math.sin(bs.face) * 1.3, z: bs.z + Math.cos(bs.face) * 1.3, yaw: bs.face } : M.entry;
+    p.pos.set(at.x, 0, at.z);
     p.vel.set(0, 0, 0);
-    p.yaw = M.entry.yaw;
-    for (const n of w.npcs) if (n.owner === p && n.alive && n.pos) n.pos.set(M.entry.x, 0, M.entry.z);
-    w.cameraRig.yaw = M.entry.yaw - Math.PI;
+    p.yaw = at.yaw;
+    for (const n of w.npcs) if (n.owner === p && n.alive && n.pos) n.pos.set(at.x, 0, at.z);
+    w.cameraRig.yaw = at.yaw - Math.PI;
     w.cameraRig.update(0, [p], true);
     const p2 = this.player2;
     if (p2) {
       // o P2 entra ao lado do P1 (à direita de quem entra)
-      const rx = Math.cos(M.entry.yaw);
-      const rz = -Math.sin(M.entry.yaw);
-      p2.pos.set(M.entry.x + rx * 1.1, 0, M.entry.z + rz * 1.1);
+      const rx = Math.cos(at.yaw);
+      const rz = -Math.sin(at.yaw);
+      p2.pos.set(at.x + rx * 1.1, 0, at.z + rz * 1.1);
       resolveBody(w.arena, p2.pos, p2.radius);
       p2.vel.set(0, 0, 0);
-      p2.yaw = M.entry.yaw;
+      p2.yaw = at.yaw;
       for (const n of w.npcs) if (n.owner === p2 && n.alive && n.pos) n.pos.copy(p2.pos);
-      if (this.views && this.views[1]) { this.views[1].rig.yaw = M.entry.yaw - Math.PI; this.views[1].rig.update(0, [p2], true); }
+      if (this.views && this.views[1]) { this.views[1].rig.yaw = at.yaw - Math.PI; this.views[1].rig.update(0, [p2], true); }
     }
     // a porta de entrada: começa aberta e se fecha atrás de quem chegou
     if (M.entry.door) {
-      const d = new RoomDoor(w, M.entry.door, { locked: true, open: via ? 1 : 0 });
+      const d = new RoomDoor(w, M.entry.door, { locked: true, open: via && !back ? 1 : 0 });
       d.entry = true;
       this.doors.push(d);
     }
     // as saídas: cada uma com a sala sorteada e quantos monstros tem (o número aparece na porta)
     // os minibosses que SEMPRE vêm (a Torre): se a rota ia acabar antes deles, ela cresce uma sala
-    const owed = this.minisOwed();
-    if (owed.length && M.kind !== 'boss' && this.step >= this.routeLen) this.routeLen = this.step + 1;
-    this.exits = rollExits(this.D, id, { step: this.step, total: this.routeLen, visited: this.visited, prevCount: via ? via.count : 0 });
-    this.forceMiniRooms(this.exits, M);
-    const padded = rollLock(this.D, id, this.exits);
-    this.twoLocks = padded.length > 1;
+    let padded;
+    if (back) {
+      // a sala de antes, como estava (a porta do almoxarifado fica fechada)
+      this.exits = back.exits;
+      padded = back.padded;
+      this.twoLocks = back.twoLocks;
+    } else if (M.kind === 'stash') {
+      this.exits = stashFrom ? [{ slot: 'back', to: stashFrom.id, kind: 'return', count: 0, ret: stashFrom }] : [];
+      padded = [];
+      this.twoLocks = false;
+    } else {
+      const owed = this.minisOwed();
+      if (owed.length && M.kind !== 'boss' && this.step >= this.routeLen) this.routeLen = this.step + 1;
+      this.exits = rollExits(this.D, id, { step: this.step, total: this.routeLen, visited: this.visited, prevCount: via ? via.count : 0 });
+      this.forceMiniRooms(this.exits, M);
+      padded = rollLock(this.D, id, this.exits);
+      this.twoLocks = padded.length > 1;
+    }
     for (const slot of Object.keys(M.exits)) {
       const spot = M.exits[slot];
       const e = this.exits.find((x) => x.slot === slot);
@@ -458,7 +488,10 @@ export class Dungeon {
       this.doors.push(d);
     }
     // as GAVETAS: a chave do cadeado (se houver) numa delas, ao acaso; nas outras, moedas ou nada
-    if (M.drawers) {
+    if (M.drawers && back) {
+      // na volta as gavetas já foram mexidas: só a chave, se ela ainda não tinha sido pega
+      if (back.keyLeft) this.drawers.push(new Drawer(w, M.drawers[0], { kind: 'key' }));
+    } else if (M.drawers) {
       const L = this.D.locks || {};
       const keyAt = padded.length ? Math.floor(Math.random() * M.drawers.length) : -1; // UMA chave, mesmo com dois cadeados
       M.drawers.forEach((s, i) => {
@@ -470,9 +503,12 @@ export class Dungeon {
     }
     // o baú (opcional): mais provável nas salas com mais monstros
     // a sala antes do chefe sempre tem baú: o respiro antes do clímax (skill level-design)
-    const lastBefore = M.kind !== 'boss' && M.kind !== 'start' && this.step >= this.routeLen;
+    const lastBefore = M.kind !== 'boss' && M.kind !== 'start' && M.kind !== 'stash' && this.step >= this.routeLen;
     const hidden = via && via.padlock;
-    if (hidden === 'vault') {
+    if (back) {
+      // de volta: nenhum baú novo na sala de antes
+    } else if (M.kind === 'stash' || hidden === 'vault') {
+      // o almoxarifado e a sala de baús atrás do cadeado: todos os pontos de baú, com mais sorte
       // a sala de baús atrás do cadeado: todos os pontos de baú, com mais sorte
       for (const s of M.chests || []) this.spawnChest(s, (this.D.locks || {}).luck || 0.6);
     } else if (!hidden && M.chests && M.chests.length && (lastBefore || Math.random() < chestChance(this.D, M.kind, via ? via.count : 0))) {
@@ -480,7 +516,8 @@ export class Dungeon {
     }
     // a fresta das salas de espreita
     if (M.peek && !this.cracks[id]) this.cracks[id] = new PeekingCrack(w, M.peek);
-    this.spawnProps(M);
+    if (back) { for (const x of this.props) x.dispose(); this.props = []; } else this.spawnProps(M);
+    this.backFromStash = !!back;
     this.lurk(M);
   }
 
@@ -762,7 +799,12 @@ export class Dungeon {
       this.pveHud.setObjective(M.objective || (M.kind === 'fight' ? 'Derrote os monstros' : 'Escolha uma porta'));
     }
     this.activeCrack = this.cracks[this.modId] || null;
-    if (this.via && this.via.padlock === 'vault' && M.kind !== 'boss') {
+    if (this.backFromStash || M.kind === 'stash') {
+      // o almoxarifado e a volta dele: sem luta, as portas abertas
+      this.encounter = null;
+      this.unlockExits(M.kind === 'stash' ? M.hint : null);
+      if (M.kind === 'stash') this.hintT = 6;
+    } else if (this.via && this.via.padlock === 'vault' && M.kind !== 'boss') {
       this.encounter = null;
       this.unlockExits(null);
     } else if (M.kind === 'fight') this.startEncounter(M, this.via ? this.via.count : 2);

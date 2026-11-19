@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.15.0';
+export const VERSION = '5.16.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.16.0',
+    date: '2026-11-18',
+    title: 'A Escola Cresce',
+    items: [
+      'Escola Nostradamus com quatro salas novas no Outro Lado: o pátio da cantina (luta entre pilastras e mesas), a sala dos professores, o banheiro e o almoxarifado, uma sala sem saída e sem luta, cheia de baús, cuja porta leva de volta para a sala de antes.',
+      'Página Sobre atualizada: as salas novas da Escola, os momentos dos especiais de equipe, as fusões de poderes e os retratos de Alvira, Franco, Alê e Caio no elenco.',
+    ],
+  },
   {
     v: '5.15.0',
     date: '2026-11-18',

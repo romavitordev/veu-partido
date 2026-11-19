@@ -247,6 +247,62 @@ export const DUNGEONS = {
         chests: [{ x: 55.1, z: 51.7 }],
         drawers: [{ x: 51, y: 0.66, z: 57.11, face: Math.PI, locker: true }], // o escaninho no vão da fileira
       },
+      // o PÁTIO DA CANTINA (pedido do dono, 2026-11-16: "um pátio com pilastras, mesas de cantina"; PROPOSTA: o claustro
+      // do antigo mosteiro): sala de luta grande (20 × 16) com duas fileiras de pilastras para lutar em volta
+      patio: {
+        kind: 'fight', floor: 0, title: 'Pátio da cantina',
+        rects: [{ minX: 0.3, maxX: 19.7, minZ: -35.7, maxZ: -20.3 }],
+        entry: { x: 1.2, z: -28, yaw: Math.PI / 2, door: { x: 0.02, z: -28, face: Math.PI / 2, w: 1.4 } },
+        spawn: { x: 14, z: -28 },
+        exits: {
+          left: { x: 10, z: -35.98, face: 0, w: 1.4 },
+          front: { x: 19.98, z: -28, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 10, z: -20.02, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 1.1, z: -35.0 }, { x: 18.6, z: -21.0 }],
+        drawers: [{ x: 18.74, y: 0.55, z: -31.6, face: -Math.PI / 2 }, { x: 18.74, y: 0.55, z: -33.6, face: -Math.PI / 2 }], // o balcão
+      },
+      // o ALMOXARIFADO SEM SAÍDA (pedido do dono, 2026-11-16: "só tem a porta por onde você veio, você pega o loot dela e
+      // volta pra sala anterior para ir para a próxima"): kind 'stash' (Dungeon.enterModule): não conta como sala da rota,
+      // a única porta (`back`, a da entrada) leva de volta à sala anterior, com as portas que ela tinha
+      almoxarifado: {
+        kind: 'stash', floor: 0, title: 'Almoxarifado', objective: 'Pegue o que quiser e volte',
+        weight: 0.45, // sai menos que uma sala comum (PROPOSTA)
+        hint: 'O almoxarifado não tem outra saída: pegue o que quiser e VOLTE pela porta',
+        rects: [{ minX: 26.3, maxX: 33.7, minZ: -31.7, maxZ: -25.3 }],
+        entry: { x: 27.2, z: -28.5, yaw: Math.PI / 2 },
+        exits: { back: { x: 26.02, z: -28.5, face: Math.PI / 2, w: 1.4 } },
+        chests: [{ x: 27.0, z: -26.1 }, { x: 32.5, z: -27.6 }, { x: 31.0, z: -30.6 }],
+        drawers: [{ x: 27.15, y: 0.5, z: -31.24, face: 0 }, { x: 27.65, y: 0.95, z: -31.24, face: 0 }], // o arquivo do zelador
+      },
+      // a SALA DOS PROFESSORES (PROPOSTA; ideias do TODO, 2026-11-16): a mesa de reunião no meio, os escaninhos e o sofá
+      professores: {
+        kind: 'fight', floor: 0, title: 'Sala dos professores',
+        rects: [{ minX: 40.3, maxX: 51.7, minZ: -31.7, maxZ: -22.3 }],
+        entry: { x: 41.2, z: -29.5, yaw: Math.PI / 2, door: { x: 40.02, z: -29.5, face: Math.PI / 2, w: 1.4 } },
+        spawn: { x: 49, z: -27 },
+        exits: {
+          left: { x: 46.6, z: -31.98, face: 0, w: 1.4 },
+          front: { x: 51.98, z: -27, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 45.4, z: -22.02, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 41.0, z: -23.0 }, { x: 51.2, z: -30.4 }],
+        drawers: [{ x: 41.0, y: 0.6, z: -31.47, face: 0 }, { x: 42.2, y: 1.1, z: -31.47, face: 0 }, { x: 42.8, y: 0.6, z: -31.47, face: 0 }], // os escaninhos
+      },
+      // o BANHEIRO (PROPOSTA): corredor de passagem, sem luta, com o espelho trincado e a escrita na parede
+      banheiro: {
+        kind: 'stalk', floor: 0, title: 'Banheiro', objective: 'Escolha uma porta',
+        hint: 'O espelho está trincado… e alguém escreveu na parede · escolha uma porta',
+        rects: [{ minX: 58.3, maxX: 67.7, minZ: -31.7, maxZ: -24.3 }],
+        entry: { x: 59.0, z: -28, yaw: Math.PI / 2, door: { x: 58.02, z: -28, face: Math.PI / 2, w: 1.4 } },
+        exits: {
+          left: { x: 65, z: -31.98, face: 0, w: 1.4 },
+          front: { x: 67.98, z: -28, face: -Math.PI / 2, w: 1.4 },
+          right: { x: 66.8, z: -24.02, face: Math.PI, w: 1.4 },
+        },
+        chests: [{ x: 67.2, z: -24.9 }],
+        drawers: [],
+      },
       // a sala do chefe: a BIBLIOTECA (calma, com o fichário) → a PASSAGEM SECRETA → o BUNKER (a luta começa ao entrar)
       biblioteca: {
         kind: 'boss', floor: 0, title: 'Biblioteca', objective: 'Desça ao bunker',
@@ -518,6 +574,8 @@ export function rollExits(D, curId, { step = 0, total = 3, visited = [], prevCou
   const okFor = (ex, id) => {
     const m = D.modules[id];
     if (id === curId || used.has(id) || m.kind === 'start' || m.kind === 'boss') return false;
+    // a sala sem saída (o almoxarifado): uma vez por tentativa e nunca saindo de outra sala sem saída
+    if (m.kind === 'stash' && (cur.kind === 'stash' || visited.includes(id))) return false;
     return ex.stairs ? m.floor !== cur.floor : true; // a escada sempre troca de andar
   };
   for (const slot of chosen) {
@@ -564,7 +622,7 @@ export function rollLock(D, curId, exits, rng = Math.random) {
   const L = D.locks;
   const cur = D.modules[curId];
   if (!L || !cur.drawers || !cur.drawers.length || exits.length < 2 || rng() >= L.chance) return [];
-  const ok = exits.filter((e) => e.kind !== 'boss' && !cur.exits[e.slot].stairs);
+  const ok = exits.filter((e) => e.kind !== 'boss' && e.kind !== 'stash' && !cur.exits[e.slot].stairs);
   if (!ok.length) return [];
   const n = Math.min(ok.length, exits.length - 1, exits.length >= 3 && rng() < (L.double ?? 0.5) ? 2 : 1);
   const out = [];
