@@ -1,4 +1,4 @@
-// OS ITENS DA VIGÍLIA no Samhain (vila e Árvore Anciã). Pedidos do dono, 2026-11-19:
+// OS ITENS DA VIGÍLIA no Samhain (só na Árvore Anciã, a parte 3). Pedidos do dono, 2026-11-19:
 //   "pode ter alguns itens que podem ser encontrados na fase como a lanterna de porco que é como uma flashbang nos
 //    monstros, mas tem que atear fogo nela"; "para fontes de fogo pra lanterna o player tem que achar oque a eileen usa
 //    pra atear fogo no chão … criando uma area de fogo no chão que protege a porta, depois ele tem que achar a lanterna

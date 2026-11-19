@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v5.24.1 — Itens Só na Árvore
+
+- Versão: `VERSION` 5.24.0 → **5.24.1**. Data: 2026-11-19.
+- Dono: "Os itens como a tocha, e a lanterna de porco só devem aparecer na parte 3 e nao na 1". O combustível também
+  saiu da vila (sem a tocha ele não serve para nada).
+- Conferido: na fase inteira (bateria), os itens existem na Árvore; a única criação de `SamhainItems` é a do `startTree`.
+- `npm test`, `npm run check` e `vite build` ok.
+
 ## v5.24.0 — A Noite Inteira em Treb Ciach
 
 - Versão: `VERSION` 5.23.0 → **5.24.0**. Data: 2026-11-19.

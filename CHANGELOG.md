@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.24.1 — Itens Só na Árvore
+
+### Mudado
+- `Dungeon.js startWaves`: a vila não cria mais `SamhainItems` (o único mensageiro é o do `startTree`, saindo do
+  alçapão). As dicas do Samhain falam "só na Árvore" e "perto do alçapão". A nota da v5.24.0 no menu foi corrigida.
+
 ## v5.24.0 — A Noite Inteira em Treb Ciach
 
 A fase do Samhain fechada numa versão só: no menu do jogo e no `CHANGELOG-CLIENTE.md` as notas da v5.22.0 e da v5.23.0

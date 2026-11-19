@@ -1004,11 +1004,8 @@ export class Dungeon {
     if (W.bounds && this.world.arena) this.world.arena.radius = Math.max(this.world.arena.radius, W.bounds);
     if (W.village) {
       this.village = new SamhainVillage(this, W);
-      // os ITENS DA VIGÍLIA: o aldeão sai de uma casa acesa e deixa a caixa uns 7 m para dentro da praça
-      this.items = new SamhainItems(this, {
-        shelters: () => this.village ? this.village.houses.filter((h) => h.alive && h.villagers > 0).map((h) => ({ x: h.pos.x, z: h.pos.z })) : [],
-        dropAt: (s) => { const d = Math.hypot(s.x, s.z) || 1; const k = Math.max(0.45, (d - 7) / d); return { x: s.x * k, z: s.z * k }; },
-      });
+      // os ITENS DA VIGÍLIA só na Árvore (dono, 2026-11-19: "Os itens como a tocha, e a lanterna de porco só devem
+      // aparecer na parte 3 e nao na 1"): na vila não há mensageiro
     }
     this.waveObjective();
   }

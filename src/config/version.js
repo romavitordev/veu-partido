@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.24.0';
+export const VERSION = '5.24.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -12,11 +12,19 @@ export function formatVersion(version) {
 
 export const CHANGELOG = [
   {
+    v: '5.24.1',
+    date: '2026-11-19',
+    title: 'Itens Só na Árvore',
+    items: [
+      'Os ITENS DA VIGÍLIA (combustível, tocha e lanterna do crânio de porco) agora aparecem só na 3ª parte, na Árvore Anciã: o aldeão mensageiro sai do alçapão. Na vila não há mais itens; lá a luta é por níveis.',
+    ],
+  },
+  {
     v: '5.24.0',
     date: '2026-11-19',
     title: 'A Noite Inteira em Treb Ciach',
     items: [
-      'A fase A NOITE DO SAMHAIN EM TREB CIACH (Outro Lado), completa numa versão só, em três partes. 1) PROTEJA A VILA: as ASSOMBRAÇÕES chegam em ondas pela praça da Chama de Proteção atrás de você e das casas; a lamparina da porta é a vida da casa (fique parado perto dela para reacender) e, sem nenhum aldeão vivo, a tentativa acaba. A cada 3 ondas vem a Assombração de Broén e, no fim, a TEMPESTADE. A vila ficou mais longa (duas ondas a mais) e é a ÚNICA parte com XP dos abates e com baús: suba o máximo de níveis aqui. 2) O CORREDOR DAS LAMPARINAS: a fuga entre as árvores, correndo sozinho; desvie das pedras e das faixas vermelhas do bote das Assombrações e passe rente às lamparinas apagadas para acendê-las. Nas beiradas brilham as BRASAS DA CHAMA, bem onde as Assombrações atacam: cada uma vale quase meio nível. Nada interrompe a corrida: os níveis ficam GUARDADOS e você os RESGATA ao chegar na Árvore. 3) A ÁRVORE ANCIÃ: os aldeões se esconderam no arsenal embaixo dela e as Assombrações vêm atrás do ALÇAPÃO; se a barra no alto zerar, você perde. Aqui não há XP nem baús e a cura cai menos: você sobrevive com o que juntou. Cada lamparina acesa no corredor enfraquece um pouco as ondas da Árvore (até 25%). ITENS DA VIGÍLIA (vila e Árvore): de tempos em tempos um aldeão sai de onde as pessoas estão protegidas, larga um item no chão (a coluna de luz mostra onde) e volta; passe por cima para pegar. O COMBUSTÍVEL (□/tiro derrama a poça), a TOCHA (encoste na poça e o fogo vira uma BARREIRA que as Assombrações não atravessam e que queima) e, depois do primeiro fogo, a LANTERNA DO CRÂNIO DE PORCO: acenda no fogo e arremesse; o clarão ofusca e fere as Assombrações em volta. As Assombrações usam fantasias de palha, couro e corda com máscaras de raízes, corvo, demônio e bode: as fracas deixam a fantasia no chão, as fortes a quebram e continuam como o espírito azul. Detalhes nas três partes: o alçapão com travas, cadeado, corrente e a runa; nas portas da vila a gaiola da lamparina, o nabo entalhado aceso e a oferenda; no corredor a cerca de estacas, os sulcos, flores e marcos de pedra. Tela de carregamento nova em todo o jogo: DICAS no rodapé (←/→ ou as setas na tela) e "Pressione A para começar" (no celular, "Toque para começar"). No celular, a HUD do Outro Lado saiu de baixo dos polegares. (Esta versão junta e substitui as notas da v5.22.0 e da v5.23.0.)',
+      'A fase A NOITE DO SAMHAIN EM TREB CIACH (Outro Lado), completa numa versão só, em três partes. 1) PROTEJA A VILA: as ASSOMBRAÇÕES chegam em ondas pela praça da Chama de Proteção atrás de você e das casas; a lamparina da porta é a vida da casa (fique parado perto dela para reacender) e, sem nenhum aldeão vivo, a tentativa acaba. A cada 3 ondas vem a Assombração de Broén e, no fim, a TEMPESTADE. A vila ficou mais longa (duas ondas a mais) e é a ÚNICA parte com XP dos abates e com baús: suba o máximo de níveis aqui. 2) O CORREDOR DAS LAMPARINAS: a fuga entre as árvores, correndo sozinho; desvie das pedras e das faixas vermelhas do bote das Assombrações e passe rente às lamparinas apagadas para acendê-las. Nas beiradas brilham as BRASAS DA CHAMA, bem onde as Assombrações atacam: cada uma vale quase meio nível. Nada interrompe a corrida: os níveis ficam GUARDADOS e você os RESGATA ao chegar na Árvore. 3) A ÁRVORE ANCIÃ: os aldeões se esconderam no arsenal embaixo dela e as Assombrações vêm atrás do ALÇAPÃO; se a barra no alto zerar, você perde. Aqui não há XP nem baús e a cura cai menos: você sobrevive com o que juntou. Cada lamparina acesa no corredor enfraquece um pouco as ondas da Árvore (até 25%). ITENS DA VIGÍLIA (só na Árvore): de tempos em tempos um aldeão sai do alçapão, larga um item no chão (a coluna de luz mostra onde) e volta; passe por cima para pegar. O COMBUSTÍVEL (□/tiro derrama a poça), a TOCHA (encoste na poça e o fogo vira uma BARREIRA que as Assombrações não atravessam e que queima) e, depois do primeiro fogo, a LANTERNA DO CRÂNIO DE PORCO: acenda no fogo e arremesse; o clarão ofusca e fere as Assombrações em volta. As Assombrações usam fantasias de palha, couro e corda com máscaras de raízes, corvo, demônio e bode: as fracas deixam a fantasia no chão, as fortes a quebram e continuam como o espírito azul. Detalhes nas três partes: o alçapão com travas, cadeado, corrente e a runa; nas portas da vila a gaiola da lamparina, o nabo entalhado aceso e a oferenda; no corredor a cerca de estacas, os sulcos, flores e marcos de pedra. Tela de carregamento nova em todo o jogo: DICAS no rodapé (←/→ ou as setas na tela) e "Pressione A para começar" (no celular, "Toque para começar"). No celular, a HUD do Outro Lado saiu de baixo dos polegares. (Esta versão junta e substitui as notas da v5.22.0 e da v5.23.0.)',
     ],
   },
   {
