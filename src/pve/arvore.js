@@ -12,6 +12,7 @@
 // A PORTA DE PEDRA DO ARSENAL entre as raízes é o alvo (como as casas da parte 1: `isHouse`): se ela cair, a tentativa
 // acaba. Cenário procedural provisório (PROPOSTA: refazer a árvore no Blender MCP). PROPOSTA: todos os números.
 import * as THREE from 'three';
+import { makeLightning } from '../arena/nightLife.js';
 
 export const TREE = {
   radius: 22, // a clareira (o limite de quem anda)
@@ -187,15 +188,17 @@ export class TreeDefense {
     const fog = w.scene.fog;
     this.fog = fog ? { c: fog.color.clone(), dens: fog.density, near: fog.near, far: fog.far } : null;
     if (fog) {
-      fog.color.setHex(0x2c3540);
+      fog.color.setHex(0x0c1a24); // a noite da TEMPESTADE, como a vila e o corredor (dono: "as 3 partes em tempestade")
       if (fog.density !== undefined) fog.density = 0.03;
       else { fog.near = 14; fog.far = 70; }
     }
-    this.hemi = new THREE.HemisphereLight(0x9fb2d0, 0x2a2418, 1.0);
-    this.moon = new THREE.DirectionalLight(0xb8c8e8, 0.7);
+    this.hemi = new THREE.HemisphereLight(0x5a8ab8, 0x0a1014, 0.95);
+    this.moon = new THREE.DirectionalLight(0x8ad0ff, 0.8);
     this.moon.position.set(-14, 26, 10);
     w.scene.add(this.hemi, this.moon);
     this.build();
+    // os relâmpagos da tempestade no céu da clareira
+    this.sky = makeLightning(this.group, { interval: [4, 9], distance: 110, top: 80, bottom: 18, intensity: 2.4, skyOpacity: 0.3 });
     a.colliders = this.colliders;
     // a PORTA (o alvo das Assombrações)
     this.door = new TreeDoor(this, TREE.doorHp[diff] ?? TREE.doorHp.normal);
@@ -375,7 +378,24 @@ export class TreeDefense {
       }
     }
     for (const [x, z] of [[-2.3, 1.4], [2.3, 1.4]]) this.colliders.push({ x: T.x + x, z: door.position.z + z, r: 0.2 });
-    door.add(hole, this.slab);
+    // a PORTA ABERTA (dono, 2026-11-19: "a porta que devo proteger na arvore deve estar aberta e eu tenho que aguentar até
+    // a ultima onda onde aparece a cutscene onde conseguimos fechar a porta"): a laje gira na dobradiça de cima e fica
+    // erguida, encostada no tronco; o buraco mostra a luz quente dos aldeões lá embaixo. No fim ela fecha (closeDoor).
+    this.hinge = new THREE.Group();
+    this.hinge.position.set(0, 0.947, -0.11);
+    this.slab.position.set(0, -0.13, 1.0);
+    this.slab.rotation.x = 0;
+    this.hinge.add(this.slab);
+    this.hingeOpen = -1.3;
+    this.hingeClosed = 0.42;
+    this.hinge.rotation.x = this.hingeOpen;
+    const below = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 1.6), new THREE.MeshBasicMaterial({ color: 0xff9a3a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+    below.rotation.x = -Math.PI / 2 + 0.42;
+    below.position.set(0, 0.43, 0.72);
+    this.belowGlow = below;
+    this.holeLight = new THREE.PointLight(0xffa040, 3, 6, 1.6);
+    this.holeLight.position.set(0, 0.2, 0.9);
+    door.add(hole, below, this.holeLight, this.hinge);
     g.add(door);
     this.doorGroup = door;
     // as COLMEIAS de palha em fileiras dos dois lados do campo
@@ -519,8 +539,23 @@ export class TreeDefense {
     const c = this.door.chestPos();
     this.w.fx.burst(c, { count: 40, color: 0x8a857a, speed: 5, up: 3, life: 0.9, size: 0.2, gravity: 9 });
     this.w.fx.burst(c, { count: 30, color: 0x2a2c30, kind: 'smoke', speed: 2, up: 1.5, life: 1.2, size: 0.9, grow: 1 });
-    this.slab.visible = false;
+    this.hinge.visible = false;
     this.d.onTreeLost();
+  }
+
+  // A CENA FINAL: venceu a última onda, o alçapão FECHA com todos lá dentro (a laje desce, as travas batem, a runa acende)
+  closeDoor(dur = 2.6) {
+    const d = this.d;
+    this.closing = { t: 0, dur: 1.1, banged: false };
+    const P = this.door.pos;
+    d.world.cameraRig && d.world.cameraRig.playShots([{
+      dur,
+      fov: 50,
+      pos: (k) => new THREE.Vector3(P.x + 3.2 - k * 1.2, 2.6 + k * 0.6, P.z + 5.5 - k * 1.2),
+      look: () => new THREE.Vector3(P.x, 0.6, P.z - 1),
+    }]);
+    for (const q of d.players) { q.vel.set(0, 0, 0); q.setState('intro'); q.anim && q.anim.play('idle', { restart: true }); }
+    d.hud.callout('O ALÇAPÃO SE FECHOU: TODOS A SALVO', '#ffd84a');
   }
 
   update(dt) {
@@ -532,7 +567,26 @@ export class TreeDefense {
       this.d.pveHud.setWard(k, 'Os aldeões escondidos na Árvore', this.wardHit);
       this.wardHit = false;
     }
+    this.sky && this.sky.update(dt);
     this.flame.intensity = 2.6 + Math.sin(this.t * 9) * 0.25 + Math.sin(this.t * 23) * 0.15;
+    const C = this.closing;
+    if (C) {
+      C.t += dt;
+      const k = Math.min(1, C.t / C.dur);
+      this.hinge.rotation.x = this.hingeOpen + (this.hingeClosed - this.hingeOpen) * k * k; // cai pesada
+      this.belowGlow.material.opacity = 0.55 * (1 - k);
+      this.holeLight.intensity = 3 * (1 - k);
+      if (k >= 1 && !C.banged) {
+        C.banged = true;
+        const c = this.door.chestPos();
+        this.w.fx.burst(c, { count: 30, color: 0x8a857a, kind: 'smoke', speed: 2.5, up: 1, life: 0.8, size: 0.7, grow: 1 });
+        this.w.fx.burst(c, { count: 30, color: 0xffd860, speed: 4, up: 3, life: 0.7, size: 0.16 });
+        this.d.audio.play('explosion', { volume: 0.7, pitch: 0.5 });
+        this.w.cameraRig && this.w.cameraRig.shake(0.25, 0.35);
+        this.runeMat.color.setHex(0xfff0a0);
+        this.runeMat.opacity = 1;
+      }
+    }
   }
 
   dispose() {

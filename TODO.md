@@ -124,6 +124,13 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
     - [x] (v5.24.1) Os itens da Vigília só na Árvore (dono: "só devem aparecer na parte 3 e nao na 1").
     - [x] (v5.24.2) O fogo maior, que queima de verdade e fica aceso até a lanterna acender (dono: "o fogo deveria ficar
       no chão até eu acender a lanterna e devia ser maior para dar dano nas assombrações").
+    - [x] (v5.25.0) A noite da tempestade nas 3 partes; domo/coluna/seta das casas; vila mais justa; a horda (cena e
+      corredor); fagulhas seguras; o alçapão aberto e a cena de fechar; a Árvore mais longa; a caixa da Vigília.
+    - [ ] O REMODEL da Assombração azul (Blender MCP; dono: "as assombrações azuis devem ter remodel").
+    - [ ] A árvore/folhagem que tampa a vista do caminho do corredor (dono: "tem alguma arvore, algo verde que fica
+      na visão do caminho da parte 2") — achar olhando a tela.
+    - [ ] Os ESPECIAIS com a cena nos bichos do Outro Lado (dono: "os especiais … nao mostram a animação que deveria
+      nos bichos, só no boss"); a mira dos outros golpes (dono: "os golpes vao pra outros lados").
     - [ ] Conferir com controle humano: pegar brasas no corredor e a janela do RESGATE na Árvore.
     - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
     - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).

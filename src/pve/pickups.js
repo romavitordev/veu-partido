@@ -4,7 +4,7 @@
 //  permanente só entram ao coletar).
 import * as THREE from 'three';
 
-const PICK_COLORS = { heal: 0x7dffb0, coins: 0xffc040, xp: 0x6ad1ff, proof: 0xc8d8f0, reward: 0xf2c230 };
+const PICK_COLORS = { heal: 0x7dffb0, coins: 0xffc040, xp: 0x6ad1ff, proof: 0xc8d8f0, reward: 0xf2c230, ink: 0xd8702a };
 const small = (k) => k === 'heal' || k === 'coins' || k === 'xp';
 
 export class Pickup {
@@ -25,7 +25,7 @@ export class Pickup {
       neck.position.y = 0.2;
       const halo = new THREE.Mesh(new THREE.SphereGeometry(0.34, 12, 8), new THREE.MeshBasicMaterial({ color: 0x7dffb0, transparent: true, opacity: 0.18, depthWrite: false, toneMapped: false }));
       g.add(glass, neck, halo);
-    } else if (kind === 'coins' || kind === 'xp' || kind === 'proof') {
+    } else if (kind === 'coins' || kind === 'xp' || kind === 'proof' || kind === 'ink') {
       // MOEDAS (o disco dourado), EXPERIÊNCIA (o cristal azul) e a PROVA da Degolificada (o papel com o brilho do Medo)
       const col = PICK_COLORS[kind];
       const geo = kind === 'coins' ? new THREE.CylinderGeometry(0.17, 0.17, 0.05, 16) : kind === 'xp' ? new THREE.OctahedronGeometry(0.17, 0) : new THREE.BoxGeometry(0.34, 0.44, 0.03);
@@ -151,7 +151,7 @@ export const CHEST_TIERS = [0xffc040, 0xffc040, 0x7dffb0, 0x9ad8ff];
 // acender e apagar não recompila os materiais), um facho sobe e os itens saem flutuando (1 a 3 ícones das melhorias).
 // onOpen(p, chest) → [{ icon, colorCss }] (o que saiu: o Dungeon decide e aplica)
 export class Chest {
-  constructor(world, { pos, yaw = 0, onOpen, manual = false, luck = 0, light = null, fadeAfter = 0 }) {
+  constructor(world, { pos, yaw = 0, onOpen, manual = false, luck = 0, light = null, fadeAfter = 0, skin = null }) {
     this.world = world;
     this.onOpen = onOpen;
     this.manual = manual; // abre pelo botão de interagir (Outro Lado), não ao encostar
@@ -166,8 +166,11 @@ export class Chest {
     this.anim = null;
     this.pos = new THREE.Vector3(pos.x, 0, pos.z);
     const g = new THREE.Group();
-    const wood = new THREE.MeshToonMaterial({ color: 0x5a3a20 });
-    const gold = new THREE.MeshToonMaterial({ color: 0xc89a2a, emissive: 0x2a1a00 });
+    // `skin` 'vigilia' (o Samhain; dono, 2026-11-19: "os baus de loot poderiam ser customizados dessa fase"; PROPOSTA de
+    // desenho): a CAIXA DE SUPRIMENTOS DA VIGÍLIA — tábuas claras, cintas de ferro, corda, palha e a Chama de Proteção
+    const vig = skin === 'vigilia';
+    const wood = new THREE.MeshToonMaterial({ color: vig ? 0x7a5c36 : 0x5a3a20 });
+    const gold = vig ? new THREE.MeshToonMaterial({ color: 0x2c2a28 }) : new THREE.MeshToonMaterial({ color: 0xc89a2a, emissive: 0x2a1a00 });
     const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.5, 0.6), wood);
     base.position.y = 0.25;
     g.add(base);
@@ -190,6 +193,20 @@ export class Chest {
     lock.position.set(0, -0.02, 0.62);
     lid.add(top, lock);
     g.add(lid);
+    if (vig) {
+      const rope = new THREE.MeshToonMaterial({ color: 0xb89a62 });
+      for (const z of [-0.18, 0.18]) { const c = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.04, 0.04), rope); c.position.set(0, 0.36, z === 0.18 ? 0.31 : -0.31); g.add(c); }
+      for (const y of [0.12, 0.38]) { const plank = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.015, 0.012), new THREE.MeshBasicMaterial({ color: 0x3a2a18 })); plank.position.set(0, y, 0.306); g.add(plank); }
+      const straw = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.22, 6), new THREE.MeshToonMaterial({ color: 0xd8b860 }));
+      straw.position.set(0.32, 0.6, 0.12);
+      straw.rotation.z = -0.5;
+      g.add(straw);
+      const mark = new THREE.Mesh(new THREE.RingGeometry(0.08, 0.12, 16), new THREE.MeshBasicMaterial({ color: 0xffd84a, toneMapped: false }));
+      mark.position.set(0, 0.26, 0.307);
+      const flame = new THREE.Mesh(new THREE.CircleGeometry(0.05, 3), mark.material);
+      flame.position.set(0, 0.27, 0.308);
+      g.add(mark, flame);
+    }
     // o brilho que chama de longe (no breu da mansão)
     const glow = new THREE.Mesh(new THREE.SphereGeometry(0.75, 14, 10), new THREE.MeshBasicMaterial({ color: 0xffc040, transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false }));
     glow.position.y = 0.4;

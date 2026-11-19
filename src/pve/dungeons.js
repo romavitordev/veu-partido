@@ -430,6 +430,7 @@ export const DUNGEONS = {
     // a noite da TEMPESTADE nas três partes (dono, 2026-11-19: "o mapa está no de dia e não o pós tempestade, deveria ser
     // o da tempestade, as 3 partes em tempestade")
     arena: 'treb_ciach_tempestade',
+    chestSkin: 'vigilia', // os baús da vila são as caixas de suprimentos da Vigília (pve/pickups.js Chest)
     boss: null, // sem chefe-lutador: a última onda é a TEMPESTADE (Dungeon.startWave kind 'storm')
     bossName: 'AS ASSOMBRAÇÕES',
     restricted: [],
@@ -834,11 +835,12 @@ export function wavePlan(D, difficulty = 'normal') {
 // com a dificuldade; a cada `bossEvery` a de Broén sozinha; a ÚLTIMA é a TEMPESTADE, a leva enorme de uma vez.
 // PROPOSTA: as quantidades.
 const SAMHAIN_DIFF = {
-  easy: { extra: 0, strong: 0, storm: 9 },
-  normal: { extra: 0, strong: 1, storm: 11 },
-  hard: { extra: 1, strong: 1, storm: 13 },
-  superhard: { extra: 1, strong: 2, storm: 15 },
-  annihilation: { extra: 2, strong: 2, storm: 17 },
+  // a TEMPESTADE menor (dono, 2026-11-19: "o final da parte 1 no modo normal está muito dificil, tem muitos bichos")
+  easy: { extra: 0, strong: 0, storm: 6 },
+  normal: { extra: 0, strong: 1, storm: 8 },
+  hard: { extra: 1, strong: 1, storm: 10 },
+  superhard: { extra: 1, strong: 2, storm: 13 },
+  annihilation: { extra: 2, strong: 2, storm: 15 },
 };
 function samhainPlan(W, difficulty) {
   const total = W.count[difficulty] ?? W.count.normal;
@@ -866,11 +868,13 @@ function samhainPlan(W, difficulty) {
 // a última onda nem vem; a vida delas cai pela metade desse corte (Dungeon.spawnFoe, `tree.hpMul`). A última onda traz a
 // Assombração de Broén junto (Normal para cima). PROPOSTA: as quantidades.
 const TREE_DIFF = {
-  easy: { waves: 3, base: 4, strong: 0 },
-  normal: { waves: 4, base: 5, strong: 1 },
-  hard: { waves: 5, base: 5, strong: 1 },
-  superhard: { waves: 6, base: 6, strong: 2 },
-  annihilation: { waves: 7, base: 7, strong: 2 },
+  // a ÁRVORE mais longa (dono, 2026-11-19: "A fase 3 durou muito pouco comparada a fase 1"): quase o dobro de ondas,
+  // começando menores. PROPOSTA: os números.
+  easy: { waves: 7, base: 3, strong: 0 },
+  normal: { waves: 8, base: 4, strong: 1 },
+  hard: { waves: 9, base: 4, strong: 1 },
+  superhard: { waves: 10, base: 5, strong: 2 },
+  annihilation: { waves: 11, base: 6, strong: 2 },
 };
 // as lamparinas acesas no corredor só ENFRAQUECEM UM POUCO as ondas da Árvore (dono, 2026-11-19: "é apenas um leve
 // enfraquecimento das ondas"): até 25% menos Assombrações (2% por lamparina), sem tirar onda nenhuma
@@ -882,9 +886,9 @@ export function treePlan(difficulty = 'normal', lamps = 0) {
   const out = [];
   for (let n = 1; n <= total; n++) {
     const last = n === total;
-    const count0 = Math.min(13, X.base + n + (last ? 3 : 0));
+    const count0 = Math.min(14, X.base + n + (last ? 3 : 0));
     const count = Math.max(2, Math.round(count0 * (1 - cut)));
-    const strongs = Math.min(count - 1, Math.round((n >= 2 ? X.strong + Math.floor(n / 2) : 0) * (1 - cut)));
+    const strongs = Math.min(count - 1, Math.round((n >= 3 ? X.strong + Math.floor(n / 3) : 0) * (1 - cut)));
     const foes = { assombracao: count - strongs };
     if (strongs) foes.assombracaoForte = strongs;
     if (last && difficulty !== 'easy') foes.broen = 1;

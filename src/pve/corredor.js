@@ -43,6 +43,13 @@ export const RUN = {
   relicEvery: [5.5, 7.5],
   relicFirst: 4,
   relicXp: 0.45,
+  // as FAGULHAS (dono, 2026-11-19: "tem que ter pelo menos algo pegavel na parte 2, atualmente tudo pegavel fica no meio
+  // do ataque"): uma a cada duas recompensas aparece no MEIO do caminho, sem bote, valendo menos. PROPOSTA.
+  sparkXp: 0.2,
+  // a HORDA atrás (dono: "tem que ficar desviando das assombrações das laterais enquanto a horda (visual nao ataca de
+  // verdade) vem atrás"): só cena, colada nas costas de quem foge
+  horde: 14,
+  hordeGap: 7.5,
 };
 
 const RED = 0xff3a2a;
@@ -281,6 +288,29 @@ export class LanternRun {
       this.placeCrowd(c, 2 + i * 2.2);
       this.crowd.push(c);
     }
+    this.horde = [];
+    for (let i = 0; i < RUN.horde; i++) {
+      const m = buildAssombracao();
+      g.add(m.root);
+      m.root.rotation.y = Math.PI; // correndo para a frente do caminho (-z do grupo)
+      this.horde.push({ m, seed: i * 2.31, u: (rnd(i * 5.1) * 2 - 1) * (RUN.half + 0.6), back: rnd(i * 7.7) * 4.5, v: -RUN.hordeGap - rnd(i * 7.7) * 4.5 });
+    }
+  }
+
+  // a horda vem colada atrás (não ataca): balança, estica os braços e solta a fumaça azul
+  updateHorde(P, dt) {
+    const T = this.w.time;
+    for (const c of this.horde) {
+      const want = P.v - RUN.hordeGap - c.back - (this.done ? 0 : Math.sin(T * 0.7 + c.seed) * 0.8);
+      c.v += (want - c.v) * Math.min(1, dt * 3);
+      const r = c.m.root;
+      r.position.set(c.u + Math.sin(T * 1.3 + c.seed) * 0.3, h(Math.max(0, c.v)) + 0.06 + Math.abs(Math.sin(T * 5 + c.seed)) * 0.08, -c.v);
+      const J = c.m.joints;
+      if (J && J.armR && J.armR.sh) J.armR.sh.rotation.x = -1.2 + Math.sin(T * 6 + c.seed) * 0.3;
+      if (J && J.armL && J.armL.sh) J.armL.sh.rotation.x = -1.2 + Math.sin(T * 6 + c.seed + 2) * 0.3;
+      if (J && J.chest) J.chest.rotation.x = 0.35;
+      if (Math.random() < dt * 2) this.w.fx.burst(this.group.localToWorld(new THREE.Vector3(r.position.x, r.position.y + 0.3, r.position.z)), { count: 2, color: 0x5ad0ff, kind: 'smoke', speed: 0.5, up: 1, life: 0.7, size: 0.6, grow: 1 });
+    }
   }
 
   placeCrowd(c, v) {
@@ -310,7 +340,7 @@ export class LanternRun {
       look: () => new THREE.Vector3(p.pos.x, 1.2, p.pos.z).addScaledVector(this.D, -4),
     }]);
     d.hud.callout('CORRA PARA A ÁRVORE ANCIÃ!', '#ffd84a');
-    d.pveHud.hint(`Desvie das faixas vermelhas e das pedras (${typeof document !== 'undefined' && document.body.classList.contains('touch-ui') ? 'joystick para os lados, ESQ' : '←/→, esquiva'}) · passe rente às lamparinas para acendê-las: cada uma acesa enfraquece um pouco a Árvore`);
+    d.pveHud.hint(`Desvie das faixas vermelhas e das pedras (${typeof document !== 'undefined' && document.body.classList.contains('touch-ui') ? 'joystick para os lados, ESQ' : '←/→, esquiva'}) · passe rente às lamparinas para acendê-las · a horda vem atrás: não pare`);
     d.hintT = 7;
     d.audio.play('fearGaze', { volume: 0.9, pitch: 0.5 });
   }
@@ -330,6 +360,7 @@ export class LanternRun {
     const P = this.local(p.pos);
     this.lamp.position.copy(p.pos).addScaledVector(this.D, 2.5).setY(p.pos.y + 3);
     this.updateCrowd(P);
+    this.updateHorde(P, dt);
     if (!this.started) {
       if (this.t >= RUN.countdown) {
         this.started = true;
@@ -371,7 +402,8 @@ export class LanternRun {
     this.relicNext -= dt;
     if (this.relicNext <= 0 && this.t < this.time - 4) {
       this.relicNext = RUN.relicEvery[0] + Math.random() * (RUN.relicEvery[1] - RUN.relicEvery[0]);
-      this.spawnRelic(p, P);
+      this.relicSafe = !this.relicSafe;
+      if (this.relicSafe) this.spawnSpark(P); else this.spawnRelic(p, P);
     }
     for (const r of this.relics) {
       if (r.gone) continue;
@@ -455,13 +487,26 @@ export class LanternRun {
     this.relics.push({ u, v, g, gone: false });
   }
 
+  // uma FAGULHA no meio do caminho, sem bote (vale menos que a brasa)
+  spawnSpark(P) {
+    const v = P.v + 14;
+    const g = new THREE.Group();
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), new THREE.MeshBasicMaterial({ color: 0xfff0b0 }));
+    const glow = new THREE.Mesh(new THREE.SphereGeometry(0.36, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffd060, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, depthWrite: false }));
+    g.add(core, glow);
+    const u = (Math.random() * 2 - 1) * (RUN.half - 1.6);
+    g.position.set(u, h(v) + 0.75, -v);
+    this.group.add(g);
+    this.relics.push({ u, v, g, gone: false, xp: RUN.sparkXp });
+  }
+
   takeRelic(r) {
     const d = this.d;
     r.gone = true;
     this.group.remove(r.g);
     this.relicsTaken++;
     const before = d.pendingUps || 0;
-    d.giveXp(Math.round(xpForLevel(d.run.level) * RUN.relicXp));
+    d.giveXp(Math.round(xpForLevel(d.run.level) * (r.xp ?? RUN.relicXp)));
     const at = this.group.localToWorld(new THREE.Vector3(r.u, h(r.v) + 0.8, -r.v));
     this.w.fx.burst(at, { count: 22, color: 0xffd060, speed: 3, up: 2, life: 0.5, size: 0.16 });
     d.audio.play('pickup', { volume: 0.9, pitch: 1.3 });
@@ -560,6 +605,7 @@ export class LanternRun {
     // os modelos das Assombrações dividem a geometria do .glb: só a do cenário é liberada
     const keep = new Set();
     for (const c of this.crowd) c.m.root.traverse((o) => keep.add(o));
+    for (const c of this.horde) c.m.root.traverse((o) => keep.add(o));
     for (const m of this.pool) m.root.traverse((o) => keep.add(o));
     for (const hz of this.hazards) hz.ghost.root.traverse((o) => keep.add(o));
     this.group.traverse((o) => { if (keep.has(o)) return; if (o.geometry && o.geometry !== this.flameGeo && o.geometry !== this.haloGeo) o.geometry.dispose(); if (o.material && o.material !== this.flameMat && o.material !== this.haloMat) o.material.dispose(); });

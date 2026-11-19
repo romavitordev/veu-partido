@@ -45,7 +45,7 @@ import amigoBossDef from '../characters/bosses/amigo.js';
 import estrangeiroDef from '../characters/estrangeiro.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
-import { AmigoBrain, growBoss, AMIGO_SIZE } from './amigo.js';
+import { AmigoBrain, growBoss, AMIGO_SIZE, INK_DROP } from './amigo.js';
 import { SinoMechanics } from './sino.js';
 import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
@@ -987,6 +987,25 @@ export class Dungeon {
     if (!this.tree) this.giveXp(z.giant ? X.gigante || X.zumbiForte * 2 : z.foe && X[z.foe] ? X[z.foe] : z.strong ? X.zumbiForte : X.zumbi);
     this.tryHeal(z.pos, (z.giant ? 2 : z.strong ? 1 : 0.6) * (this.tree ? 0.5 : 1));
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
+    if (z.summoned && Math.random() < INK_DROP.chance) this.dropInk(z.pos);
+  }
+
+  // a TINTA SECA (pve/amigo.js INK_DROP): devolve sanidade e, por um tempo, os golpes no Amigo racham a casca de tinta
+  dropInk(pos) {
+    const k = new Pickup(this.world, { kind: 'ink', pos: { x: pos.x, z: pos.z }, onTake: () => {
+      for (const pl of this.players) {
+        if (pl.state === 'ko') continue;
+        if (pl.energy !== undefined) pl.energy = Math.min(pl.maxEnergy, pl.energy + pl.maxEnergy * INK_DROP.sanity);
+      }
+      const b = this.enemy;
+      if (b && b.cpuEdge && b.state !== 'ko' && !this.inkCrack) {
+        this.inkCrack = true;
+        b.cpuEdge = { ...b.cpuEdge, taken: (b.cpuEdge.taken ?? 1) * INK_DROP.mult };
+        this.world.after(INK_DROP.time, () => { this.inkCrack = false; if (b.cpuEdge) b.cpuEdge = { ...b.cpuEdge, taken: (b.cpuEdge.taken ?? 1) / INK_DROP.mult }; });
+      }
+      this.hud.callout('TINTA SECA: A CASCA DELE RACHA', '#d8702a');
+    } });
+    this.pickups.push(k);
   }
 
   // ------------------------------------------------ FASE DE ONDAS (a Ilha de Tipora; pedido do dono, 2026-11-18/19)
@@ -1028,10 +1047,14 @@ export class Dungeon {
     if (this.items) { this.items.dispose(); this.items = null; }
     this.hudRemove('pve-minor');
     this.revivePlayers();
-    this.hud.callout('ELAS NÃO PARAM DE VIR', '#c8d8ff');
-    this.pveHud.fade(true, 0.6);
-    this.world.after(0.8, () => {
+    // a cena da HORDA fechando o cerco (pve/samhain.js hordeScene) e só então a fuga
+    const scene = this.village ? 3.2 : 0;
+    if (this.village) this.village.hordeScene(scene);
+    else this.hud.callout('ELAS NÃO PARAM DE VIR', '#c8d8ff');
+    this.world.after(scene, () => { if (!this.disposed) this.pveHud.fade(true, 0.6); });
+    this.world.after(scene + 0.8, () => {
       if (this.disposed || this.phase === 'dead') return;
+      if (this.village) this.village.clearHorde();
       this.runner = new LanternRun(this);
       this.runner.start();
       this.enemy.cpuEdge = { dealt: 1, taken: 1 }; // o dano do corredor já vem pela fração da vida
@@ -1105,8 +1128,13 @@ export class Dungeon {
   // a última onda da Árvore vencida: a fase acaba como a queda de um chefe (a recompensa onde se está)
   finishTree(enc) {
     enc.done = true;
-    this.finishStorm();
-    this.hud.callout('A ÁRVORE ANCIÃ RESISTIU', '#ffd84a');
+    // a cena de fechar o alçapão (pve/arvore.js closeDoor) e só então a vitória
+    if (this.tree) this.tree.closeDoor(2.6);
+    this.world.after(2.6, () => {
+      if (this.disposed || this.phase === 'dead') return;
+      this.finishStorm();
+      this.hud.callout('A ÁRVORE ANCIÃ RESISTIU', '#ffd84a');
+    });
   }
 
   // a TEMPESTADE (a última onda do Samhain) vencida: a fase acaba como a queda de um chefe (a recompensa onde se está)
@@ -1245,7 +1273,7 @@ export class Dungeon {
         z.model.root.scale.multiplyScalar(1.02);
       }
     } else if (type === 'gigante') z = new GiantBloodZombie(e, this.world, pos, opts);
-    else if (type === 'tinta') z = new InkZombie(e, this.world, pos, opts);
+    else if (type === 'tinta') z = new InkZombie(e, this.world, pos, { ...opts, spitter: Math.random() < 0.4 }); // 40% cospem tinta de longe
     else if (type === 'javali' || type === 'cao') z = new InkBeast(e, this.world, pos, { ...opts, kind: type });
     else if (type === 'cobra') z = new InkSnake(e, this.world, pos, opts);
     else z = new BloodZombie(e, this.world, pos, opts);
@@ -1568,7 +1596,7 @@ export class Dungeon {
   spawnChest(s, luck = 0, o = {}) {
     const pos = new THREE.Vector3(s.x, 0, s.z);
     resolveBody(this.world.arena, pos, 0.6);
-    const c = new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, manual: true, luck, light: this.chestLight, fadeAfter: o.fadeAfter || (this.D.waves ? this.D.waves.chestFade || 6 : 0), onOpen: (pp, ch) => this.openChest(ch) });
+    const c = new Chest(this.world, { pos, yaw: Math.random() * Math.PI * 2, manual: true, luck, light: this.chestLight, skin: this.D.chestSkin || null, fadeAfter: o.fadeAfter || (this.D.waves ? this.D.waves.chestFade || 6 : 0), onOpen: (pp, ch) => this.openChest(ch) });
     this.pickups.push(c);
     return c;
   }

@@ -12,13 +12,15 @@
 import * as THREE from 'three';
 import { makeLightning } from '../arena/nightLife.js';
 import { distXZ } from '../core/util.js';
+import { buildAssombracao } from '../models/assombracao.js';
 
 // as casas do mapa: [ângulo, raio, largura, fundo] (arena_treb_ciach.py HOUSES) e os aldeões de cada uma (são ~15 nomeados)
 const HOUSES = [[0.62, 26.5, 8.5, 5.0], [1.05, 28.5, 7.0, 4.6], [2.1, 26.5, 9.0, 5.2], [2.62, 28.5, 7.5, 4.8],
   [Math.PI, 31, 11, 6.0], [4.45, 26.5, 8.0, 5.0], [5.0, 28.5, 9.5, 5.2], [5.62, 26.5, 7.0, 4.6]];
 const VILLAGERS = [2, 2, 2, 2, 3, 2, 1, 1];
+const ARROW_V = new THREE.Vector3();
 export const VILLAGE = {
-  lampHp: { easy: 240, normal: 200, hard: 170, superhard: 150, annihilation: 130 },
+  lampHp: { easy: 300, normal: 250, hard: 205, superhard: 170, annihilation: 140 }, // mais vida (a vila ficou mais longa)
   relight: 22, // vida por segundo que a lamparina recupera com alguém parado perto
   relightRange: 2.2,
   rest: 0.35, // a chama que volta sozinha entre as ondas (fração da vida)
@@ -70,6 +72,18 @@ class House {
     this.ring.rotation.x = -Math.PI / 2;
     this.ring.position.y = 0.05;
     g.add(post, this.flame, this.halo, this.ringBg, this.ring);
+    // OS INDICADORES (dono, 2026-11-19: "Deve ter mais um indicador visual que as casas nao estao protegidas pelo fogo …
+    // é bem dificil de distinguir qual casa está sendo atacada"): o DOMO da Chama de Proteção sobre a porta (forte com
+    // a lamparina cheia, some quando ela apaga) e a COLUNA VERMELHA que pulsa sobre a casa atacada, vista de longe
+    this.domeMat = new THREE.MeshBasicMaterial({ color: 0xffc84a, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+    this.dome = new THREE.Mesh(new THREE.SphereGeometry(2.3, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), this.domeMat);
+    this.beaconMat = new THREE.MeshBasicMaterial({ color: 0xff2a1a, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    this.beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.6, 14, 12, 1, true), this.beaconMat);
+    this.beacon.position.y = 7;
+    this.mark = new THREE.Mesh(new THREE.ConeGeometry(0.45, 0.9, 4), new THREE.MeshBasicMaterial({ color: 0xff3a2a, transparent: true, opacity: 0, depthWrite: false }));
+    this.mark.rotation.x = Math.PI; // a seta para baixo, em cima da casa
+    this.mark.position.y = 4.2;
+    g.add(this.dome, this.beacon, this.mark);
     // MAIS DETALHES NA PORTA (dono, 2026-11-19; PROPOSTA de enfeite): a gaiola de ferro da lamparina (as quatro hastes,
     // o telhadinho e o prato), o braço do poste, o NABO ENTALHADO do Samhain no chão (a cara acesa apaga junto com a
     // lamparina) e a oferenda (a tigela com maçãs e o feixe de palha)
@@ -136,6 +150,7 @@ class House {
   hurt(dmg) {
     if (this.state === 'ko') return;
     this.hp = Math.max(0, this.hp - dmg);
+    this.hitAt = this.v.t;
     this.v.onHouseHit(this);
     if (this.hp <= 0) {
       this.state = 'ko';
@@ -154,6 +169,22 @@ class House {
     const lit = this.state !== 'ko';
     this.flame.visible = lit;
     this.halo.visible = lit;
+    // o domo: brilha com a chama; fraco, pisca; apagada, some. Atacada: fica vermelho e a coluna pulsa
+    const hitAgo = t - (this.hitAt ?? -99);
+    const attacked = lit && hitAgo < 2.5;
+    this.dome.visible = lit;
+    if (lit) {
+      const weakBlink = k < 0.35 ? 0.5 + 0.5 * Math.sin(t * 12) : 1;
+      this.domeMat.color.setHex(attacked ? 0xff3a2a : k > 0.5 ? 0xffc84a : 0xff8a2a);
+      this.domeMat.opacity = (attacked ? 0.2 + 0.1 * Math.sin(t * 16) : 0.05 + 0.1 * k) * weakBlink;
+      this.dome.scale.setScalar(0.75 + 0.25 * k);
+    }
+    const pulse = attacked ? (1 - hitAgo / 2.5) * (0.6 + 0.4 * Math.sin(t * 10)) : 0;
+    this.beaconMat.opacity = 0.32 * pulse;
+    this.mark.material.opacity = pulse > 0 ? 0.95 : 0;
+    this.mark.position.y = 4.2 + Math.sin(t * 6) * 0.25;
+    this.mark.rotation.y = t * 2;
+    this.attacked = attacked;
     if (lit) {
       const f = 0.85 + Math.sin(t * 11 + this.index) * 0.08 + Math.sin(t * 23 + this.index * 2) * 0.05;
       this.halo.scale.setScalar(f * (0.6 + 0.4 * k));
@@ -197,6 +228,93 @@ export class SamhainVillage {
     if (n) this.d.popup(0, 'OS ALDEÕES AVIVARAM AS CHAMAS', '#ffd84a');
   }
 
+  // A HORDA (dono, 2026-11-19: "uma onda de bichos que aparece em uma cutscene dele na parte 1, vindo uma horda de
+  // assombrações de todos os lados, ele foge pra parte 2"): passada a tempestade, Assombrações saem da névoa por todos os
+  // lados e fecham o cerco em volta de quem joga; a câmera sobe para mostrar o círculo. Só cena (não atacam).
+  hordeScene(dur = 3.2) {
+    const d = this.d;
+    const p = d.player;
+    const n = 26;
+    const list = [];
+    for (let i = 0; i < n; i++) {
+      const m = buildAssombracao();
+      const a = (i / n) * Math.PI * 2 + Math.random() * 0.2;
+      const r0 = 21 + Math.random() * 5;
+      m.root.position.set(p.pos.x + Math.sin(a) * r0, 0.06, p.pos.z + Math.cos(a) * r0);
+      m.root.rotation.y = a + Math.PI; // de frente para o meio
+      d.world.scene.add(m.root);
+      list.push({ m, a, r0, seed: i * 1.7 });
+    }
+    this.horde = { list, t: 0, dur, cx: p.pos.x, cz: p.pos.z };
+    for (const q of d.players) { q.vel.set(0, 0, 0); q.setState('intro'); q.anim && q.anim.play('idle', { restart: true }); }
+    const cam = d.world.cameraRig;
+    cam && cam.playShots([{
+      dur: dur + 0.6,
+      fov: 60,
+      pos: (k) => new THREE.Vector3(p.pos.x + Math.sin(k * 1.4) * (9 + k * 5), 5 + k * 7, p.pos.z + Math.cos(k * 1.4) * (9 + k * 5)),
+      look: () => new THREE.Vector3(p.pos.x, 0.8, p.pos.z),
+    }]);
+    d.hud.callout('UMA HORDA DE TODOS OS LADOS: FUJA!', '#ff6a4a');
+    d.audio.play('fearGaze', { volume: 1, pitch: 0.4 });
+    d.world.cameraRig && d.world.cameraRig.shake(0.2, 0.5);
+  }
+
+  updateHorde(dt) {
+    const H = this.horde;
+    if (!H) return;
+    H.t += dt;
+    const k = Math.min(1, H.t / H.dur);
+    for (const c of H.list) {
+      const r = c.r0 - (c.r0 - 4.5) * (1 - (1 - k) * (1 - k));
+      c.m.root.position.x = H.cx + Math.sin(c.a) * r;
+      c.m.root.position.z = H.cz + Math.cos(c.a) * r;
+      c.m.root.position.y = 0.06 + Math.sin(H.t * 2.4 + c.seed) * 0.06;
+      const J = c.m.joints;
+      if (J && J.armR && J.armR.sh) J.armR.sh.rotation.x = -1.1 + Math.sin(H.t * 3 + c.seed) * 0.2;
+      if (J && J.armL && J.armL.sh) J.armL.sh.rotation.x = -1.0 + Math.sin(H.t * 2.7 + c.seed) * 0.2;
+      if (Math.random() < dt * 1.5) this.d.world.fx.burst(c.m.root.position.clone().setY(0.3), { count: 2, color: 0x5ad0ff, kind: 'smoke', speed: 0.6, up: 1, life: 0.8, size: 0.6, grow: 1 });
+    }
+  }
+
+  clearHorde() {
+    const H = this.horde;
+    if (!H) return;
+    for (const c of H.list) this.d.world.scene.remove(c.m.root); // a geometria é do .glb compartilhado: não libera
+    this.horde = null;
+  }
+
+  // a SETA NA BORDA DA TELA para a casa atacada que está fora da vista
+  updateArrow() {
+    const w = this.d.world;
+    const cam = w.camera;
+    const el = w.renderer && w.renderer.domElement;
+    if (!cam || !el) return;
+    if (!this.arrow) {
+      const a = document.createElement('div');
+      a.className = 'pv-house-arrow';
+      a.textContent = '▲';
+      (el.parentElement || document.body).appendChild(a);
+      this.arrow = a;
+    }
+    const h = this.houses.filter((x) => x.attacked).sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+    if (!h) { this.arrow.style.display = 'none'; return; }
+    const s = ARROW_V.set(h.pos.x, 2, h.pos.z).project(cam);
+    const behind = s.z > 1;
+    const on = !behind && Math.abs(s.x) < 0.92 && Math.abs(s.y) < 0.9;
+    if (on) { this.arrow.style.display = 'none'; return; }
+    let x = behind ? -s.x : s.x;
+    let y = behind ? -s.y : s.y;
+    if (behind && Math.abs(y) < 0.2) y = -1; // atrás: aponta para baixo
+    const m = Math.max(Math.abs(x), Math.abs(y)) || 1;
+    x = (x / m) * 0.9;
+    y = (y / m) * 0.86;
+    const W = el.clientWidth, H = el.clientHeight;
+    this.arrow.style.display = 'block';
+    this.arrow.style.left = `${(x + 1) / 2 * W}px`;
+    this.arrow.style.top = `${(1 - y) / 2 * H}px`;
+    this.arrow.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(x, y)}rad)`;
+  }
+
   // os alvos das Assombrações: as casas ainda acesas
   targets() { return this.houses.filter((h) => h.alive); }
 
@@ -238,6 +356,8 @@ export class SamhainVillage {
       if (Math.random() < dt * 8) d.world.fx.burst(h.chestPos(new THREE.Vector3()).setY(1.9), { count: 2, color: 0xffd84a, speed: 0.8, up: 1.2, life: 0.5, size: 0.08 });
     }
     if (this.storm) this.updateStorm(dt);
+    this.updateHorde(dt);
+    this.updateArrow();
   }
 
   // A TEMPESTADE do fim (o ep. 3: a tempestade impossível): o céu escurece, relâmpagos e raios caindo na praça
@@ -281,6 +401,8 @@ export class SamhainVillage {
 
   dispose() {
     for (const h of this.houses) h.dispose();
+    if (this.arrow) { this.arrow.remove(); this.arrow = null; }
+    this.clearHorde();
     const S = this.storm;
     if (S) {
       for (const [o, i0] of S.lights) o.intensity = i0;

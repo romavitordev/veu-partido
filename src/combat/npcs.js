@@ -1073,9 +1073,11 @@ BLOOD_ZOMBIE.giant = {
   ...BLOOD_ZOMBIE.strong,
   name: 'ZUMBI DE SANGUE GIGANTE', hp: 900, speed: 3.7, radius: 1.05, height: 3.6,
   attacks: {
-    claw: { ...BLOOD_ZOMBIE.strong.attacks.claw, range: 3.3, damage: 30, cd: 1.5 },
-    slam: { ...BLOOD_ZOMBIE.strong.attacks.slam, range: 3.6, damage: 52, cd: 4.5 },
-    bite: { ...BLOOD_ZOMBIE.strong.attacks.bite, range: 2.8, damage: 38, cd: 6 },
+    // mais dano e o ARREMESSO longe (dono, 2026-11-19: "esses zumbis de sangue enormes deviam dar mais dano e te
+    // arremessar pra longe"). PROPOSTA: os números.
+    claw: { ...BLOOD_ZOMBIE.strong.attacks.claw, range: 3.3, damage: 40, cd: 1.5, knockback: 4.5 },
+    slam: { ...BLOOD_ZOMBIE.strong.attacks.slam, range: 3.6, damage: 68, cd: 4.5, knockback: 11, knockdown: true },
+    bite: { ...BLOOD_ZOMBIE.strong.attacks.bite, range: 2.8, damage: 48, cd: 6, knockback: 6 },
   },
 };
 
@@ -1123,11 +1125,16 @@ BLOOD_ZOMBIE.ink = {
   },
 };
 
+const INK_SPIT = { range: 11, keep: 6, windup: 0.5, cd: 3.2, speed: 13, damage: 9, sanity: 0.14 };
+const INK_GLOB_MAT = new THREE.MeshBasicMaterial({ color: 0x1a0a04 });
+
 export class InkZombie extends BloodZombie {
   configFor() { return BLOOD_ZOMBIE.ink; }
-  buildModel() {
+  buildModel(o) {
     this.strong = false;
     this.inkZombie = true;
+    this.spitter = !!(o && o.spitter);
+    this.globs = [];
     this.isMarionette = false;
     return buildInkZombie();
   }
@@ -1137,8 +1144,66 @@ export class InkZombie extends BloodZombie {
     if (ok && a.melt && tg.addBuff && tg.state !== 'ko') tg.addBuff({ type: 'lodoWeak', name: 'DERRETENDO (TINTA)', time: 2, duration: 2, mult: 0.9, affects: ['melee', 'ranged', 'ability'], speedMult: 0.85 });
     return ok;
   }
+  // o que CUSPE TINTA de longe (dono, 2026-11-19: "devia ter alguns zumbis de tinta que jogam tinta em você à distancia
+  // e essa tinta tira sua sanidade e um pouco de vida"; PROPOSTA: quanto e de quanto em quanto): fica a 6–11 m, prepara
+  // 0,5 s (a cabeça sobe, a tinta borbulha na boca) e solta a bola de tinta no alvo; acertou → um pouco de vida, uma
+  // mordida na SANIDADE e o derretendo. Os outros continuam no corpo a corpo.
+  stepSpeed(d) {
+    if (this.spitter && d < INK_SPIT.keep) return 0; // cuspidor: não chega perto
+    return super.stepSpeed(d);
+  }
+
+  updateSpit(dt) {
+    const S = INK_SPIT;
+    this.spitCd = (this.spitCd ?? 1.5 + Math.random() * 2) - dt;
+    const tg = this.target;
+    if (this.spitWind != null) {
+      this.spitWind -= dt;
+      if (tg) this.yaw = yawTo(this.pos, tg.pos);
+      if (Math.random() < dt * 20) this.world.fx.burst(new THREE.Vector3(this.pos.x, 1.5, this.pos.z), { count: 1, color: 0x1a0a04, speed: 0.6, up: 0.6, life: 0.3, size: 0.09 });
+      if (this.spitWind <= 0) { this.spitWind = null; if (tg && tg.state !== 'ko') this.spit(tg); }
+    } else if (tg && this.state === 'chase' && this.spitCd <= 0 && tg.state !== 'ko') {
+      const d = distXZ(this.pos, tg.pos);
+      if (d > 3.5 && d < S.range) { this.spitWind = S.windup; this.spitCd = S.cd + Math.random(); this.world.audio.play('drain', { volume: 0.45, pitch: 0.6 }); }
+    }
+    for (let i = this.globs.length - 1; i >= 0; i--) {
+      const g = this.globs[i];
+      g.t += dt;
+      g.mesh.position.addScaledVector(g.vel, dt);
+      g.vel.y -= 9 * dt;
+      const tgt = g.tg;
+      const hit = tgt && tgt.state !== 'ko' && tgt.chestPos().distanceTo(g.mesh.position) < 0.9;
+      if (hit || g.mesh.position.y <= 0.05 || g.t > 2.5) {
+        if (hit) {
+          applyHit(this.world, this.owner, tgt, { damage: S.damage, kind: 'ability', element: 'tinta', knockback: 0.4, hitstun: 0.15, sound: 'clawHit', color: 0x2a1006, scale: 0.8 });
+          if (tgt.energy !== undefined) tgt.energy = Math.max(0, tgt.energy - (tgt.maxEnergy || 100) * S.sanity);
+          if (tgt.addBuff && tgt.state !== 'ko') tgt.addBuff({ type: 'lodoWeak', name: 'TINTA (SANIDADE)', time: 2, duration: 2, mult: 0.92, affects: ['melee', 'ranged', 'ability'], speedMult: 0.85 });
+        }
+        inkSplash(this.world, new THREE.Vector3(g.mesh.position.x, 0.05, g.mesh.position.z), { size: 0.7, life: 3 });
+        this.world.scene.remove(g.mesh);
+        g.mesh.geometry.dispose();
+        this.globs.splice(i, 1);
+      }
+    }
+  }
+
+  spit(tg) {
+    const S = INK_SPIT;
+    const from = new THREE.Vector3(this.pos.x, 1.5, this.pos.z);
+    const to = tg.chestPos();
+    const T = Math.max(0.35, from.distanceTo(to) / S.speed);
+    const vel = new THREE.Vector3((to.x - from.x) / T, (to.y - from.y) / T + 4.5 * T, (to.z - from.z) / T); // um arco curto
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), INK_GLOB_MAT);
+    mesh.position.copy(from);
+    this.world.scene.add(mesh);
+    this.globs.push({ mesh, vel, tg, t: 0 });
+    this.world.audio.play('swing', { volume: 0.5, pitch: 0.6 });
+  }
+
   // o RASTRO de tinta: uma gota no chão a cada ~0,45 m andado
   update(dt) {
+    if (this.spitter && this.alive && this.state !== 'die') this.updateSpit(dt);
+    else if (this.globs && this.globs.length) this.updateSpit(dt);
     const r = super.update(dt);
     if (this.state === 'chase' || this.state === 'attack') {
       const lx = this.trailX ?? this.pos.x, lz = this.trailZ ?? this.pos.z;
@@ -1149,6 +1214,12 @@ export class InkZombie extends BloodZombie {
     }
     return r;
   }
+  dispose() {
+    for (const g of this.globs || []) { this.world.scene.remove(g.mesh); g.mesh.geometry.dispose(); }
+    this.globs = [];
+    super.dispose();
+  }
+
   // morre numa poça de TINTA (não de sangue)
   vanishPose(k, restY) {
     if (this.state === 'die' && !this.melted) { this.melted = true; inkSplash(this.world, new THREE.Vector3(this.pos.x, 0.05, this.pos.z), { size: 1.1, life: 4 }); }

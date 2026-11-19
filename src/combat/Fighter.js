@@ -2671,13 +2671,19 @@ export class Fighter {
     this.seq = {
       update(dt) {
         t += dt;
-        const opp = self.opponent;
+        // OUTRO LADO (câmera livre): o alvo é quem está na MIRA (o bicho mais alinhado), não o `opponent` — lá ele é o
+        // inimigo escondido da próxima sala, e o laser ia atrás dele (dono, 2026-11-19: "quando atiro com a sniper do
+        // arthur ao inves do tiro ir no personagem mais proximo … ele vai pra um lado nada haver"). Sem ninguém na
+        // mira, o laser vai reto para onde a câmera aponta.
+        const free = self.aimYaw != null;
+        const opp = free ? self.aimTarget(40, 0.32) : self.opponent;
         self.vel.x = 0;
         self.vel.z = 0;
         if (!fired) {
           // o ponto da mira persegue o alvo devagar (trava de vez quando a mira enche)
-          if (opp) {
-            opp.chestPos(want);
+          if (opp || free) {
+            if (opp) opp.chestPos(want);
+            else self.chestPos(want).addScaledVector(forwardFromYaw(self.aimYaw, new THREE.Vector3()), 25);
             if (!aimReady) { aim.copy(want); aimReady = true; }
             else if (lockT < 0) {
               const d = want.distanceTo(aim);

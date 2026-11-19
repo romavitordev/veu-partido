@@ -21,8 +21,8 @@ const base = {
   leg: [0.5, 0.48], crouch: { hip: -0.05, knee: 0.1, chest: 0.22, neck: -0.12 },
   armFwd: 1.05, armOut: 0.18, armSwing: 0.12, elbow: -0.25, // os braços estendidos para a frente, os dedos abertos
   attacks: {
-    claw: { windup: 0.38, active: 0.14, recovery: 0.45, range: 1.9, arc: 140, damage: 13, cd: 1.3, knockback: 1, chill: true },
-    bite: { windup: 0.45, active: 0.2, recovery: 0.5, range: 1.7, arc: 120, damage: 20, cd: 4.5, knockback: 2.5, dash: 9 },
+    claw: { windup: 0.38, active: 0.14, recovery: 0.45, range: 1.9, arc: 140, damage: 18, cd: 1.2, knockback: 1, chill: true },
+    bite: { windup: 0.45, active: 0.2, recovery: 0.5, range: 1.7, arc: 120, damage: 26, cd: 4.0, knockback: 2.5, dash: 9 },
   },
   firstCd: { claw: 0.5, bite: 1.5 },
 };
@@ -31,13 +31,14 @@ export const ASSOMBRACAO = {
   strong: {
     ...base, name: 'ASSOMBRAÇÃO FORTE', hp: 300, speed: 3.3, radius: 0.55, height: 2.0, scale: 1.0, // do tamanho de gente: a força aparece na roupa que quebra, não no tamanho
     attacks: {
-      claw: { ...base.attacks.claw, damage: 20, range: 2.2 },
-      bite: { ...base.attacks.bite, damage: 30, range: 2.0 },
+      claw: { ...base.attacks.claw, damage: 24, range: 2.2 },
+      bite: { ...base.attacks.bite, damage: 36, range: 2.0 },
     },
   },
-  // a forma AZUL depois que a fantasia quebra: mais rápida, e o toque solta raios
-  bare: { speedMul: 1.35, dealtMul: 1.25, hpFrac: 0.55 },
-  houseChance: { weak: 0.6, strong: 0.35 }, // a chance de ir atrás de uma casa em vez de quem joga
+  // a forma AZUL depois que a fantasia quebra: mais rápida, e o toque solta raios. Bate bem mais que a de fantasia (dono,
+  // 2026-11-19: "as assombrações azuis … devem dar mais dano que a fantasia")
+  bare: { speedMul: 1.35, dealtMul: 1.6, hpFrac: 0.55 },
+  houseChance: { weak: 0.45, strong: 0.3 }, // as primeiras ondas também vêm atrás de quem joga (dono: "quase nao se toma dano nas primeiras ondas") // a chance de ir atrás de uma casa em vez de quem joga
   fireRadius: 5.6, // a CHAMA DE PROTEÇÃO: não chegam mais perto do centro da fogueira que isto
 };
 

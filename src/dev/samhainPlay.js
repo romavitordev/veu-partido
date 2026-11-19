@@ -7,6 +7,7 @@ import { newAttempt } from '../pve/save.js';
 import { CpuController } from '../ai/CpuController.js';
 
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
+const CHUNK = 6; // quadros por passo do roteiro (o andar do "jogador" acompanha)
 
 export async function start(diff = 'normal', char = 'joui') {
   const g = window.__game;
@@ -26,7 +27,7 @@ export async function start(diff = 'normal', char = 'joui') {
   const p = () => m.player;
   const ev = (t) => S.ev.push(`${S.s}s ${t}`);
   const foes = () => (m.copias || []).filter((c) => c.alive && c.state !== 'die');
-  const walk = (x, z, sp = 6.5) => { const dx = x - p().pos.x, dz = z - p().pos.z, d = Math.hypot(dx, dz); if (d < 0.05) return 0; const k = Math.min(1, sp / 60 / d); p().pos.x += dx * k; p().pos.z += dz * k; return d; };
+  const walk = (x, z, sp = 6.5) => { const dx = x - p().pos.x, dz = z - p().pos.z, d = Math.hypot(dx, dz); if (d < 0.05) return 0; const k = Math.min(1, (sp * CHUNK) / 60 / d); p().pos.x += dx * k; p().pos.z += dz * k; return d; };
 
   function tick() {
     const now = m.tree ? 'arvore' : m.runner ? 'corredor' : 'vila';
@@ -51,10 +52,11 @@ export async function start(diff = 'normal', char = 'joui') {
       const r = R.relics.filter((x) => !x.gone && x.v > P.v - 0.5 && x.v < P.v + 9).sort((a, b) => a.v - b.v)[0];
       if (r) {
         if (!r.seen) { r.seen = true; S.relSeen++; }
-        const du = Math.max(-0.06, Math.min(0.06, r.u - P.u));
+        const du = Math.max(-0.06 * CHUNK, Math.min(0.06 * CHUNK, r.u - P.u));
         p().pos.x += R.R.x * du; p().pos.z += R.R.z * du;
       }
       if (S.hpRun0 != null && p().health < S.hpRun0) S.runDmg += S.hpRun0 - p().health;
+      p().health = p().maxHealth; // a CPU não desvia: conta como quem desvia (o dano fica em runDmg)
       S.hpRun0 = p().health;
       S.relTaken = R.relicsTaken;
     }
@@ -93,7 +95,7 @@ export async function start(diff = 'normal', char = 'joui') {
     for (let i = 0; i < secs && m.phase !== 'dead' && !(m.phase === 'bossDown' && m.tree); i++) {
       const I = m.items;
       const before = I && I.fires.length ? foes().map((z) => [z, z.hp ?? z.health]) : null;
-      for (let f = 0; f < 60; f++) { g.step(1); tick(); }
+      for (let f = 0; f < 60; f += CHUNK) { g.step(CHUNK); tick(); }
       S.s++;
       if (before) {
         const f = I.fires[0];

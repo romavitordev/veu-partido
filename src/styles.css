@@ -2075,3 +2075,9 @@ body:not(.static-bg) #netbadge { display: none; }
   #loading .ld-tip span { font-size: 12px; }
   #loading .ld-arrow { width: 44px; min-height: 44px; }
 }
+
+/* Samhain: a seta na borda da tela para a casa atacada fora da vista */
+.pv-house-arrow { position: absolute; z-index: 30; pointer-events: none; display: none; color: #ff3a2a; font-size: 34px;
+  line-height: 1; text-shadow: 0 0 10px #ff2a1a, 0 0 2px #000; animation: pvHouseArrow 0.6s ease-in-out infinite alternate; }
+@keyframes pvHouseArrow { from { opacity: 0.55; } to { opacity: 1; } }
+body.touch-ui .pv-house-arrow { font-size: 28px; }

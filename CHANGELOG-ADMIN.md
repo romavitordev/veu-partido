@@ -1,5 +1,30 @@
 # Registro administrativo de alterações
 
+## v5.25.0 — A Horda e a Porta Aberta
+
+- Versão: `VERSION` 5.24.2 → **5.25.0**. Data: 2026-11-19.
+- Dono (jogou com o Chris no Normal e o Henri no Fácil): "o mapa está no de dia e não o pós tempestade … as 3 partes em
+  tempestade"; "A fase 3 durou muito pouco"; "tem que ter pelo menos algo pegavel na parte 2, atualmente tudo pegavel
+  fica no meio do ataque"; "Deve ter mais um indicador visual que as casas nao estao protegidas pelo fogo … é bem dificil
+  de distinguir qual casa está sendo atacada"; "o final da parte 1 no modo normal está muito dificil"; "a porta … deve
+  estar aberta … até a ultima onda onde aparece a cutscene onde conseguimos fechar a porta"; "o player tem que estar
+  fugindo de uma onda de bichos que aparece em uma cutscene"; "os baus de loot poderiam ser customizados dessa fase";
+  "as assombrações azuis … devem dar mais dano que a fantasia, os primeiros assombrações estao muito fracos"; Tipora:
+  "zumbis de sangue enormes deviam dar mais dano e te arremessar pra longe, devia ter alguns zumbis de tinta que jogam
+  tinta"; "Amigo imaginario aparentemente nao tem aquela fraqueza … matar as criaturas que ele invoca devia ter a chance
+  de dropar algo relacionado a tinta"; "a mira parece meio bugada … a sniper do arthur".
+- Teste (`dev/samhainPlay.js`, Normal, CPU Difícil + roteiro): antes, a vila caía na tempestade (15 → 0). Depois: vila
+  460 s (5 aldeões no começo da tempestade, venceu), corredor 63 s (5 brasas/fagulhas), Árvore (7 ondas) 220 s com a porta
+  no mínimo em 85% → a Árvore passou a 8 ondas maiores: 285 s, porta mínima 73%, a cena do alçapão fechando rodou.
+- Não conferido: o visual (o painel do navegador estava oculto: domo, coluna, seta, horda, alçapão aberto, caixa da
+  Vigília, o cuspe de tinta); a mira da sniper e a brecha do Amigo em jogo; o cuspidor e os gigantes em Tipora.
+- Não feito nesta versão: a animação dos ESPECIAIS nos bichos do Outro Lado (cada especial tem só o golpe nos bichos,
+  sem a cena — são 27 especiais) e o REMODEL da Assombração azul (Blender MCP); a árvore/folhagem que tampa a vista do
+  corredor (não achei o objeto sem ver a tela).
+- PROPOSTA: todos os números, o domo/coluna/seta, a horda, as fagulhas, o alçapão aberto e a cena, a caixa da Vigília,
+  o cuspe, a brecha e a Tinta Seca.
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.24.2 — A Barreira que Queima
 
 - Versão: `VERSION` 5.24.1 → **5.24.2**. Data: 2026-11-19.

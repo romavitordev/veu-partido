@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.24.2';
+export const VERSION = '5.25.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.25.0',
+    date: '2026-11-19',
+    title: 'A Horda e a Porta Aberta',
+    items: [
+      'TREB CIACH agora é a noite da TEMPESTADE nas três partes (céu escuro, névoa azul e relâmpagos). VILA: as casas mostram a proteção — um DOMO da Chama de Proteção sobre cada porta, que enfraquece e pisca com a lamparina; a casa atacada ganha uma COLUNA VERMELHA pulsando e uma seta em cima, e uma SETA na borda da tela aponta para ela quando está fora da vista. Entre as ondas os aldeões avivam as chamas, as lamparinas aguentam mais e a TEMPESTADE final traz menos Assombrações; em compensação as Assombrações batem mais forte desde a primeira onda, e a forma AZUL (sem a fantasia) bate bem mais que a de fantasia. Os baús da vila são as CAIXAS DE SUPRIMENTOS DA VIGÍLIA. Vencida a tempestade, uma cena: a HORDA sai da névoa por todos os lados e você foge. CORREDOR: a horda vem colada atrás de você (só assusta), e além das brasas da beirada aparecem FAGULHAS no meio do caminho, fáceis de pegar (valem menos). ÁRVORE ANCIÃ: o ALÇAPÃO fica ABERTO, com a luz dos aldeões lá embaixo; aguente as ondas (agora mais e maiores: a parte 3 dura bem mais) e, na última, a cena do alçapão FECHANDO com todos a salvo. ILHA DE TIPORA: os ZUMBIS DE SANGUE GIGANTES batem mais forte e o golpe no chão ARREMESSA longe; alguns ZUMBIS DE TINTA ficam de longe e CUSPEM TINTA (tira um pouco de vida e da SANIDADE). AMIGO IMAGINÁRIO: agora tem a BRECHA — de tempos em tempos a tinta dele se esgota (ela borbulha embaixo dele antes): ele afunda na poça, fica atordoado e leva mais dano; na fúria, isso acontece depois de cada leva de bichos. Os bichos que ele invoca às vezes deixam TINTA SECA: devolve sanidade e racha a casca dele (mais dano por 10 s). MIRA: a SNIPER do Arthur no Outro Lado mira no bicho que está na mira da câmera (antes o laser ia atrás do inimigo escondido da próxima sala e o tiro saía para o lado errado). Corrigido: começar uma fase de ondas logo ao abrir o jogo podia dar "cenário não carregado".',
+    ],
+  },
   {
     v: '5.24.2',
     date: '2026-11-19',

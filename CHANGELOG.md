@@ -1,5 +1,38 @@
 # Changelog
 
+## v5.25.0 — A Horda e a Porta Aberta
+
+### Adicionado
+- `pve/samhain.js` `House`: o domo da Chama (`dome`, cor/opacidade pela vida, pisca abaixo de 35%, vermelho atacado), a
+  coluna vermelha (`beacon`) e a seta (`mark`) por 2,5 s depois de `hurt` (`hitAt`); `SamhainVillage.updateArrow` (a
+  `.pv-house-arrow` na borda da tela para a casa atacada fora da vista; `styles.css`), `rest()` (`VILLAGE.rest` 0,35 da
+  vida entre as ondas; `Dungeon.onWaveCleared`), `hordeScene`/`updateHorde`/`clearHorde` (26 Assombrações fechando o
+  cerco, câmera subindo; `Dungeon.startRunner` espera 3,2 s).
+- `pve/corredor.js`: a horda atrás (`RUN.horde` 14, `hordeGap` 7,5; `updateHorde`, só visual) e as fagulhas
+  (`spawnSpark`, no meio, sem bote, `RUN.sparkXp` 0,2; alternam com as brasas).
+- `pve/arvore.js`: o alçapão ABERTO (`hinge` na dobradiça, `hingeOpen` −1,3; a luz quente embaixo `belowGlow`/`holeLight`),
+  `closeDoor()` (a laje cai, as travas batem, a runa acende, câmera) chamado por `Dungeon.finishTree` 2,6 s antes da
+  vitória; névoa/luz da tempestade e `makeLightning` na clareira.
+- `pve/pickups.js` `Chest` `skin: 'vigilia'` (a caixa de suprimentos; `dungeons.js` `chestSkin`); `Pickup` `kind: 'ink'`.
+- `combat/npcs.js` `InkZombie` cuspidor (`spitter`, 40% dos `tinta` em `Dungeon.spawnFoe`; `INK_SPIT`: 6–11 m, 0,5 s de
+  preparo, bola em arco, 9 de dano, −14% da sanidade, derretendo).
+- `pve/amigo.js`: a brecha (`TIRED`: a cada 15 s antes da fúria, depois de cada leva na fúria; aviso de 1 s, `stun` 2,8/3,2 s,
+  dano recebido ×1,6) e a TINTA SECA dos invocados (`INK_DROP` 35%: +25% de sanidade, ×1,4 no dano do Amigo por 10 s;
+  `Dungeon.dropInk`).
+- `dev/samhainPlay.js`: a partida de teste roteirizada (CPU luta; o roteiro reacende, pega brasas e usa os itens).
+
+### Mudado
+- Samhain: `arena: 'treb_ciach_tempestade'` nas três partes. `SAMHAIN_DIFF.storm` 6/8/10/13/15 (antes 9/11/13/15/17).
+  `VILLAGE.lampHp` 300/250/205/170/140. `ASSOMBRACAO`: garra 18 (forte 24), mordida 26 (forte 36), azul `dealtMul` 1,6,
+  `houseChance` 0,45/0,3. `TREE_DIFF` 7/8/9/10/11 ondas (base 3/4/4/5/6, teto 14; fortes a partir da 3ª).
+- `BLOOD_ZOMBIE.giant`: garra 40 (empurra 4,5), pancada 68 (arremessa 11, derruba), mordida 48 (empurra 6).
+
+### Corrigido
+- `Fighter.startChargeShot` (sniper do Arthur): com a câmera livre o laser seguia `opponent` (no Outro Lado, o inimigo
+  escondido da próxima sala); agora `aimTarget(40, 0,32)` ou reto para `aimYaw`.
+- `arena/index.js preloadPveArena`: as fases de ondas (mapas de luta e variantes) não pré-carregavam o .glb — começar
+  rápido dava "Cenário não carregado".
+
 ## v5.24.2 — A Barreira que Queima
 
 ### Corrigido

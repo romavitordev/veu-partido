@@ -209,7 +209,11 @@ ARENAS.escola_luta = {
   create: () => createGLBArena(ESCOLA_LUTA),
 };
 export async function preloadPveArena(id) {
-  return preloadArena(PVE_ARENAS[id]);
+  // as fases de ONDAS usam mapas de luta (Tipora, Treb Ciach e as variantes de horário, que dividem o .glb): antes só
+  // carregavam se o menu já tivesse baixado o mapa — começar rápido dava "Cenário não carregado"
+  const cfg = PVE_ARENAS[id] || GLB_ARENAS[id] || Object.values(GLB_ARENAS).find((c) => (VARIANTS[c.id] || []).includes(id));
+  if (!cfg) return null;
+  return preloadArena(cfg);
 }
 
 export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'passaros', 'passaros_noite', 'treb_ciach', 'treb_ciach_tempestade', 'mansao_luta', 'escola_luta'];

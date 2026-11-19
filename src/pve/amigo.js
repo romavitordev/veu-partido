@@ -28,6 +28,14 @@ const SUMMON = {
 };
 const REINFORCE = ['tinta', 'cobra', 'javali', 'cao', 'tinta', 'cobra'];
 export const RAGE_NAME = 'TODO MUNDO VAI MORRER';
+// A BRECHA (dono, 2026-11-16: "todos os bosses têm que ter suas fraquezas também, momentos na batalha onde o player pode
+// atacar, o player tem que aprender quando é esse momento sozinho"; 2026-11-19: "Amigo imaginario aparentemente nao tem
+// aquela fraqueza"): a tinta dele SE ESGOTA — antes da fúria, de tempos em tempos (a tinta borbulha embaixo dele 1 s antes);
+// na fúria, depois de cada leva de bichos invocados. Ele afunda na própria poça, atordoado, e leva mais dano. PROPOSTA.
+const TIRED = { every: 15, warn: 1.0, time: 2.8, rageTime: 3.2, taken: 1.6 };
+// a TINTA SECA que os invocados deixam (dono: "matar as criaturas que ele invoca devia ter a chance de dropar algo
+// relacionado a tinta que ajude o player"): devolve sanidade e os golpes no Amigo racham a casca de tinta (mais dano)
+export const INK_DROP = { chance: 0.35, sanity: 0.25, time: 10, mult: 1.4 };
 export const AMIGO_SIZE = SIZE;
 
 // muda o tamanho do chefe (o modelo, o raio do corpo e a área de acerto), de forma que os poderes respeitem
@@ -51,6 +59,38 @@ export class AmigoBrain {
     this.next = 0;
     this.k = 0;
     this.S = SUMMON[d.run && d.run.difficulty] || SUMMON.normal;
+    this.tiredAt = TIRED.every; // a primeira brecha
+    this.tired = 0;
+    this.warn = 0;
+  }
+
+  // a brecha: avisa (a tinta borbulha), afunda e fica atordoado levando mais dano
+  updateTired(dt) {
+    const d = this.d, b = this.boss;
+    if (this.tired > 0) {
+      this.tired -= dt;
+      if (Math.random() < dt * 10) d.world.fx.burst(new THREE.Vector3(b.pos.x + (Math.random() - 0.5) * 1.6, 0.3, b.pos.z + (Math.random() - 0.5) * 1.6), { count: 1, color: 0x2a1006, speed: 0.4, up: 1.2, life: 0.6, size: 0.25 });
+      if (this.tired <= 0 && b.cpuEdge) b.cpuEdge = { ...b.cpuEdge, taken: (b.cpuEdge.taken ?? 1) / TIRED.taken };
+      return;
+    }
+    if (this.warn > 0) {
+      this.warn -= dt;
+      if (Math.random() < dt * 14) d.world.fx.burst(new THREE.Vector3(b.pos.x + (Math.random() - 0.5) * 2, 0.1, b.pos.z + (Math.random() - 0.5) * 2), { count: 2, color: 0x3a1a0a, speed: 0.6, up: 2, life: 0.5, size: 0.2 });
+      if (this.warn <= 0) this.startTired(this.raged ? TIRED.rageTime : TIRED.time);
+      return;
+    }
+    if (!this.raged && this.t >= this.tiredAt) { this.tiredAt = this.t + TIRED.every; this.warn = TIRED.warn; }
+  }
+
+  startTired(time) {
+    const d = this.d, b = this.boss;
+    if (!b || b.state === 'ko') return;
+    this.tired = time;
+    b.stun && b.stun(time, 'stagger');
+    if (b.cpuEdge) b.cpuEdge = { ...b.cpuEdge, taken: (b.cpuEdge.taken ?? 1) * TIRED.taken };
+    inkSplash(d.world, new THREE.Vector3(b.pos.x, 0.05, b.pos.z), { size: 2.2, life: time + 1 });
+    d.hud.callout('A TINTA DELE SE ESGOTOU: ATAQUE!', '#ffd84a');
+    d.audio.play('drain', { volume: 0.9, pitch: 0.5 });
   }
 
   get boss() { return this.d.enemy; }
@@ -61,6 +101,7 @@ export class AmigoBrain {
     const b = this.boss;
     if (!b || b.state === 'ko') return;
     this.t += dt;
+    this.updateTired(dt);
     if (!this.raged) {
       if (b.health <= b.maxHealth * RAGE_AT) this.enrage();
       return;
@@ -69,7 +110,10 @@ export class AmigoBrain {
       this.next = this.t + this.S.every;
       const alive = this.d.copias.filter((c) => c.alive).length;
       const n = Math.min(this.S.add, this.S.cap - alive);
-      if (n > 0) this.summon(Array.from({ length: n }, () => REINFORCE[this.k++ % REINFORCE.length]), 'ELE CHAMA MAIS BICHOS');
+      if (n > 0) {
+        this.summon(Array.from({ length: n }, () => REINFORCE[this.k++ % REINFORCE.length]), 'ELE CHAMA MAIS BICHOS');
+        if (this.tired <= 0 && this.warn <= 0) this.warn = TIRED.warn + 0.8; // chamar os bichos esgota a tinta dele
+      }
     }
   }
 
@@ -89,7 +133,8 @@ export class AmigoBrain {
     inkSplash(d.world, new THREE.Vector3(b.pos.x, 0.05, b.pos.z), { size: 2.6, life: 6 });
     d.world.fx.burst(new THREE.Vector3(b.pos.x, 1.6, b.pos.z), { count: 50, color: 0x2a0e06, speed: 7, up: 2, life: 0.9, size: 0.22, gravity: 9 });
     this.summon(this.S.burst, null);
-    d.pveHud.hint('Na FÚRIA ele chama os infectados da ilha: derrube o AMIGO e todos eles caem junto');
+    this.warn = TIRED.warn + 1.2;
+    d.pveHud.hint('Na FÚRIA ele chama os infectados da ilha: depois de cada leva a tinta dele SE ESGOTA (ataque!). Os bichos às vezes deixam TINTA SECA');
     d.hintT = 7;
   }
 
@@ -103,7 +148,8 @@ export class AmigoBrain {
       const pos = new THREE.Vector3(b.pos.x + Math.sin(a) * r, 0, b.pos.z + Math.cos(a) * r);
       resolveBody(d.world.arena, pos, 0.9);
       inkSplash(d.world, new THREE.Vector3(pos.x, 0.05, pos.z), { size: 0.9, life: 3 });
-      d.spawnFoe(type, pos, { hpMul: 0.8 });
+      const z = d.spawnFoe(type, pos, { hpMul: 0.8 });
+      if (z) z.summoned = true; // a TINTA SECA (Dungeon.onZombieSlain)
     });
     if (text) d.hud.callout(text, '#ff6a3a');
   }
