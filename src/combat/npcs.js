@@ -1061,3 +1061,44 @@ export class InterfloradoNest {
     this.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
   }
 }
+
+// o ZUMBI DE SANGUE GIGANTE: o minichefe das ondas da Ilha de Tipora (pedido do dono, 2026-11-18: "a cada X ondas vem
+// um boss, um bicho mais forte sozinho"; o gigante é PROPOSTA). É o Zumbi Forte 1,45× maior, mais lento e mais pesado,
+// com a vida própria (o Dungeon passa `hp`). O modelo é o mesmo, escalado na raiz.
+const GIANT_SCALE = 1.45;
+BLOOD_ZOMBIE.giant = {
+  ...BLOOD_ZOMBIE.strong,
+  name: 'ZUMBI DE SANGUE GIGANTE', hp: 900, speed: 3.7, radius: 1.05, height: 3.6,
+  attacks: {
+    claw: { ...BLOOD_ZOMBIE.strong.attacks.claw, range: 3.3, damage: 30, cd: 1.5 },
+    slam: { ...BLOOD_ZOMBIE.strong.attacks.slam, range: 3.6, damage: 52, cd: 4.5 },
+    bite: { ...BLOOD_ZOMBIE.strong.attacks.bite, range: 2.8, damage: 38, cd: 6 },
+  },
+};
+
+export class GiantBloodZombie extends BloodZombie {
+  configFor() { return BLOOD_ZOMBIE.giant; }
+  buildModel(o) {
+    const m = super.buildModel({ ...o, strong: true });
+    this.giant = true;
+    return m;
+  }
+  restY() { return super.restY() * GIANT_SCALE; }
+  risePose(k, restY) {
+    super.risePose(k, restY);
+    this.model.root.scale.setScalar(GIANT_SCALE);
+  }
+  vanishPose(k, restY) {
+    super.vanishPose(k, restY);
+    this.model.root.scale.multiplyScalar(GIANT_SCALE);
+  }
+  // os golpes saem no alcance do corpo grande
+  pickAttack(d) {
+    const c = this.cds;
+    const A = this.cfg.attacks;
+    if (d < 3.2 && c.slam <= 0 && Math.random() < 0.4) return 'slam';
+    if (d < A.claw.range - 0.2 && c.claw <= 0) return 'claw';
+    if (d > 3.2 && d < 8 && c.bite <= 0) return 'bite';
+    return null;
+  }
+}

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.18.1';
+export const VERSION = '5.19.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.19.0',
+    date: '2026-11-19',
+    title: 'Ondas em Tipora',
+    items: [
+      'Outro Lado com a 1ª FASE DE ONDAS: a Ilha de Tipora (entre a Mansão e a Torre). Sem salas nem portas: os Zumbis de Sangue chegam em ondas pela praça, a cada 3 ondas vem um ZUMBI GIGANTE sozinho e a última onda é o AMIGO IMAGINÁRIO. A explicação aparece no card da fase, na escolha da dificuldade e no começo da fase; o canto da tela conta as ondas. Quanto mais difícil, mais ondas (7 no Fácil a 13 no Aniquilação). Quem já venceu a Torre continua com ela aberta.',
+    ],
+  },
   {
     v: '5.18.1',
     date: '2026-11-18',

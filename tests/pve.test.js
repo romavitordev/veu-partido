@@ -114,7 +114,7 @@ test('salvamento: dado quebrado ou de outra versão não derruba', () => {
 });
 
 test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a profundidade escala', () => {
-  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador', 'estrangeiro']);
+  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador', 'tipora', 'estrangeiro']);
   assert.deepEqual(DUNGEON_ORDER, Object.values(DUNGEONS).filter((d) => !d.hidden).sort((a, b) => a.storyOrder - b.storyOrder).map((d) => d.id));
   assert.equal(new Set(Object.values(DUNGEONS).map((d) => d.storyOrder)).size, Object.keys(DUNGEONS).length, 'cada fase futura precisa de uma posição cronológica própria');
   assert.deepEqual(validDungeons(1), ['degolificada']);
@@ -495,4 +495,31 @@ test('Fusões: 12, cada receita com passivas que existem e nenhuma receita repet
     const m = U.computeMods([f.id]);
     assert.ok(m, f.id);
   }
+});
+
+test('Ondas de Tipora: fase de ondas sem portas, gigante sozinho a cada 3 e o Amigo Imaginário na última', async () => {
+  const { wavePlan, phaseUnlocked } = await import('../src/pve/dungeons.js');
+  const D = DUNGEONS.tipora;
+  assert.ok(D.waves && D.about && D.aboutShort, 'a explicação da fase (menu e começo)');
+  assert.equal(D.boss, 'amigo');
+  assert.deepEqual(Object.keys(D.modules.praca.exits), []);
+  assert.equal(D.modules.praca.kind, 'waves');
+  let prev = 0;
+  for (const diff of Object.keys(PVE_DIFFICULTIES)) {
+    const plan = wavePlan(D, diff);
+    assert.ok(plan.length >= prev, `${diff}: mais difícil, mais ondas`);
+    prev = plan.length;
+    assert.equal(plan[plan.length - 1].kind, 'boss', `${diff}: a última é o chefe`);
+    assert.equal(plan.filter((w) => w.kind === 'boss').length, 1);
+    for (const w of plan) {
+      if (w.kind === 'giant') { assert.equal(w.n % D.waves.bossEvery, 0); assert.equal(w.count, 1, 'o gigante vem sozinho'); }
+      if (w.kind === 'horde') { assert.ok(w.count >= 2 && w.count <= 7); assert.ok(w.strongs < w.count); }
+    }
+  }
+  // entrou entre a Mansão e a Torre, sem trancar a Torre de quem já a venceu
+  assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador'] }, 'tipora'));
+  assert.ok(!phaseUnlocked({ phases: ['degolificada', 'espreitador'] }, 'estrangeiro'));
+  assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador', 'estrangeiro'] }, 'estrangeiro'));
+  const boss = (await import('../src/characters/bosses/amigo.js')).default;
+  assert.ok(boss.boss && boss.stats.maxHealth > 1800 && !boss.special && !boss.awakening);
 });

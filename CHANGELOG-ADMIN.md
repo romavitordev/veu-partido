@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v5.19.0 — Ondas em Tipora
+
+- Versão: `VERSION` 5.18.1 → **5.19.0**. Data: 2026-11-19. Dono: "Ondas em Tipora" (escolhido entre as opções do modo
+  Ondas), com a decisão de 2026-11-18: "essas fases de ondas como treb ciach e ilha de tipora serão fases do modo outro
+  lado, e terá uma explicação de como funciona a fase, tanto no menu de seleção quanto na propria fase".
+- Cânone: as criaturas da ilha (wiki, imagem enviada pelo dono em 2026-11-19): Zumbis de Sangue, Amigo Imaginário,
+  Zumbi de Tinta, Javalis Infectados, Cobras Infectadas e Cachorros Selvagens Infectados. Nesta versão só os que já têm
+  modelo (Zumbis de Sangue e o Amigo); os outros quatro ficam no TODO (modelos no Blender MCP).
+- PROPOSTA: o Zumbi Gigante como minichefe, o Amigo como chefe da última onda, as quantidades e a posição na ordem
+  (O Segredo na Ilha, 2021, antes de Sinais do Outro Lado, 2022).
+- Conferido no jogo (CPU Difícil no lugar do Joui, vida reposta abaixo de 30%): Fácil com 7 ondas (3, 4, gigante, 5, 5,
+  gigante, chefe), o Amigo caiu aos 274 s, recompensa → fim → tela "FASE CONCLUÍDA" abrindo a Torre. Prints da onda 1,
+  do gigante e do chefe. O save do Outro Lado foi guardado antes e devolvido depois.
+- `npm test` 123/123, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.18.1 — CPU Contorna
 
 - Versão: `VERSION` 5.18.0 → **5.18.1**. Data: 2026-11-18. Dono: "vi que os cpu x cpu ficam presos na fogueira, eles

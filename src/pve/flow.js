@@ -8,6 +8,7 @@ import { ROSTER } from '../characters/index.js';
 import espreitadorDef from '../characters/bosses/espreitador.js';
 import degolificadaDef from '../characters/bosses/degolificada.js';
 import estrangeiroDef from '../characters/bosses/estrangeiro.js';
+import amigoBossDef from '../characters/bosses/amigo.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels, isModelLoaded } from '../models/index.js';
 import { renderPortraits } from '../ui/portraits.js';
@@ -31,7 +32,7 @@ import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, 
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = (id) => ROSTER.find((c) => c.id === id);
-const BOSS_DEFS = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroDef };
+const BOSS_DEFS = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroDef, amigo: amigoBossDef };
 
 export function createPveFlow(ctx) {
   const { game, screens, audio, input, hud, renderer, portraits, setScreen, setOverlay, endMatch, toMainMenu, toSelect } = ctx;
@@ -220,7 +221,7 @@ export function createPveFlow(ctx) {
       const done = phaseCleared(camp, id);
       let desc = `Vença ${i > 0 ? DUNGEONS[DUNGEON_ORDER[i - 1]].place : 'a anterior'} para abrir.`;
       if (open) {
-        desc = `Chefe: ${D.bossName}`;
+        desc = D.waves ? `${D.aboutShort}` : `Chefe: ${D.bossName}`;
         if (won.length) desc += ` · vencida no ${won.map((d) => PVE_DIFFICULTIES[d].label).join(', ')}`;
         else if (!done) desc += ' · ainda não vencida';
         if (recAll) desc += ` · recorde ${fmtTime(recAll)}`;
@@ -230,7 +231,7 @@ export function createPveFlow(ctx) {
         label: `${i + 1}. ${D.place.toUpperCase()}`,
         icon: open ? (done ? '★' : '▶') : '🔒',
         desc,
-        tag: open ? (done ? `★ ${won.length || 1}/${DIFF_IDS().length}` : 'NOVA') : 'TRANCADA',
+        tag: open ? (done ? `★ ${won.length || 1}/${DIFF_IDS().length}` : D.waves ? 'ONDAS' : 'NOVA') : 'TRANCADA',
         tone: open && !done ? 'gold' : '',
         disabled: !open,
         pic: { key: id, src: phaseThumb(id) },
@@ -238,7 +239,7 @@ export function createPveFlow(ctx) {
     });
     menu('pvephase', 'ESCOLHA A FASE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
       cols: 3,
-      subtitle: 'Cada fase é uma tentativa inteira: começa no nível 1, passa por várias salas e termina no chefe. Depois você escolhe a dificuldade; a estrela marca em quantas já venceu.',
+      subtitle: 'Cada fase é uma tentativa inteira: começa no nível 1, passa por várias salas e termina no chefe. As fases de ONDAS são um mapa aberto: sobreviva às ondas até o chefe. Depois você escolhe a dificuldade; a estrela marca em quantas já venceu.',
     });
     const last = game.pvePhase ? opts.findIndex((o) => o.id === `phase:${game.pvePhase}` && !o.disabled) : -1;
     const first = opts.findIndex((o) => !o.disabled && o.tone === 'gold');
@@ -272,7 +273,7 @@ export function createPveFlow(ctx) {
     });
     menu('pvediff', 'DIFICULDADE', opts.concat([{ id: 'back', label: 'VOLTAR' }]), {
       cols: 1,
-      subtitle: `<b>${D ? esc(D.place) : ''}</b> · ` + 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. ★ = já venceu esta fase nessa dificuldade (com o recorde).',
+      subtitle: `<b>${D ? esc(D.place) : ''}</b> · ` + (D && D.waves ? `${esc(D.about)} Quanto mais difícil, mais ondas. ` : '') + 'Muda a força dos inimigos e do chefe, a chance de cura e as MOEDAS que você ganha. ★ = já venceu esta fase nessa dificuldade (com o recorde).',
     });
     // começa na última usada; senão, na mais fácil que ainda não venceu (senão, no Normal)
     const prev = game.pveDiff ? order.indexOf(game.pveDiff) : -1;
@@ -442,7 +443,7 @@ export function createPveFlow(ctx) {
     }
     const bossCls = won ? 'done' : s.boss ? 'here' : '';
     segs.push(`<i class="boss ${bossCls}" title="${esc(D.bossName || 'Chefe')}">☠</i>`);
-    const where = won ? `${esc(D.bossName || 'O chefe')} caiu` : s.boss ? `Caiu diante de ${esc(D.bossName || 'o chefe')}` : room ? `Caiu na sala ${room} de ${rooms}` : 'Caiu na entrada';
+    const where = won ? `${esc(D.bossName || 'O chefe')} caiu` : s.boss ? `Caiu diante de ${esc(D.bossName || 'o chefe')}` : room ? `Caiu na ${s.waves ? 'onda' : 'sala'} ${room} de ${rooms}` : s.waves ? 'Caiu antes da 1ª onda' : 'Caiu na entrada';
     let recTxt = 'sem recorde ainda';
     if (recordNew) recTxt = record ? `antes ${fmtTime(record)}` : 'primeira vitória';
     else if (record) recTxt = `recorde ${fmtTime(record)}`;

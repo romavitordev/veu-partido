@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.19.0 — Ondas em Tipora
+- Outro Lado com a 1ª FASE DE ONDAS: a Ilha de Tipora (entre a Mansão e a Torre). Sem salas nem portas: os Zumbis de Sangue chegam em ondas pela praça, a cada 3 ondas vem um ZUMBI GIGANTE sozinho e a última onda é o AMIGO IMAGINÁRIO. A explicação aparece no card da fase, na escolha da dificuldade e no começo da fase; o canto da tela conta as ondas. Quanto mais difícil, mais ondas (7 no Fácil a 13 no Aniquilação). Quem já venceu a Torre continua com ela aberta.
+
 ## v5.18.1 — CPU Contorna
 - A CPU não fica mais presa em obstáculos como a fogueira de Treb Ciach: quando há algo no caminho até o adversário, ela contorna pelo lado livre, e se empacar numa quina troca de lado.
 

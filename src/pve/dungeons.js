@@ -347,6 +347,65 @@ export const DUNGEONS = {
       ],
     },
   },
+  // A ILHA DE TIPORA — a 1ª FASE DE ONDAS (pedido do dono, 2026-11-18/19: "o player fica numa arena derrotando monstros
+  // que vão vindo e a cada X ondas vem um boss, um bicho mais forte sozinho para ele derrotar"; "essas fases de ondas
+  // como treb ciach e ilha de tipora serão fases do modo outro lado, e terá uma explicação de como funciona a fase,
+  // tanto no menu de seleção quanto na propria fase"). Sem salas nem portas: o mapa aberto da praça (arena 'tipora').
+  // Cânone (wiki "O Segredo na Ilha"): os Zumbis de Sangue, os cachorros e javalis infectados e o AMIGO IMAGINÁRIO são
+  // as criaturas da ilha. PROPOSTA: as ondas só de Zumbis de Sangue (cachorros e javalis precisam de modelo), o ZUMBI
+  // GIGANTE como minichefe a cada 3 ondas, o Amigo Imaginário na onda final e as quantidades por dificuldade.
+  // O Segredo na Ilha (2021) vem antes de Sinais do Outro Lado (2022): entra entre a Mansão e a Torre.
+  tipora: {
+    id: 'tipora',
+    storyOrder: 2.5,
+    name: 'Ondas de Tipora',
+    place: 'Ilha de Tipora',
+    thumb: { arena: 'tipora', pos: [0, 6.5, 15], look: [0, 1.2, -2] }, // a prévia na ESCOLHA A FASE
+    color: '#7ad0b8',
+    arena: 'tipora',
+    boss: 'amigo',
+    bossName: 'O AMIGO IMAGINÁRIO',
+    // o Amigo continua escolhível (a seleção vem antes da fase; restringir aqui o tiraria do Outro Lado inteiro)
+    restricted: [],
+    // a FASE DE ONDAS (Dungeon.startWaves): `count` = quantas ondas por dificuldade (a última é o chefe); a cada
+    // `bossEvery` ondas vem o minichefe sozinho; `rest` = o respiro entre as ondas (s); `spawnRadius` = onde nascem
+    waves: {
+      count: { easy: 7, normal: 9, hard: 10, superhard: 12, annihilation: 13 },
+      bossEvery: 3,
+      rest: 4.5,
+      firstDelay: 6,
+      spawnRadius: 13,
+      giantHp: 900,
+    },
+    // a explicação (pedido do dono): no card da ESCOLHA A FASE e no aviso do começo da fase
+    about: 'FASE DE ONDAS: um mapa aberto, sem salas. Os Zumbis de Sangue chegam em ondas pela praça; a cada 3 ondas vem um ZUMBI GIGANTE sozinho, e na última, o AMIGO IMAGINÁRIO.',
+    aboutShort: 'Fase de ONDAS: sobreviva na praça; a cada 3 ondas um gigante, e na última o Amigo Imaginário',
+    minDepth: 2, // a força dos inimigos de uma fase do meio da história (a Mansão)
+    minions: 'zumbi',
+    drops: { heal: { chance: 0.45, amount: 0.18 } },
+    xp: { zumbi: 16, zumbiForte: 38, gigante: 90, boss: 160 },
+    exploreHint: 'Prepare-se: a 1ª onda já vem',
+    deathText: 'VOCÊ CAIU',
+    endTitle: ['VOCÊ CAIU EM TIPORA', 'VOCÊS CAÍRAM EM TIPORA'],
+    killsLabel: 'Zumbis',
+    bossDownText: 'O AMIGO IMAGINÁRIO CAIU',
+    route: { rooms: [0, 0], monsters: [0, 0] },
+    start: 'praca',
+    bossModule: 'praca',
+    modules: {
+      praca: {
+        kind: 'waves', floor: 0, title: 'Praça', objective: 'Sobreviva às ondas',
+        // sem `rects`: vale o limite redondo da arena (raio 17)
+        entry: { x: 0, z: 9, yaw: Math.PI },
+        spawn: { x: 0, z: -9 }, // onde o chefe aparece
+        exits: {},
+        chests: [{ x: -7, z: 4 }, { x: 7, z: 4 }, { x: 0, z: -6 }],
+        drawers: [],
+      },
+    },
+    exit: { door: { x: 60, z: 0, hidden: true } }, // sem porta: depois da recompensa a fase acaba (Dungeon.unlockExit)
+    chests: { chance: { waves: 0 }, coinsBoss: 16 },
+  },
   // TORRE DA TV VARMINHO (pedido do dono, 2026-11-13: "a nova fase do Outro Lado: Torre de Transmissão, onde o boss será
   // o Estrangeiro"; estudo em docs/TORRE-TRANSMISSAO.md). Lançada na v4.42.0 (dev: B = await
   // import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')).
@@ -643,6 +702,22 @@ export function chestChance(D, kind, count = 0) {
   return c[kind] ?? 0;
 }
 
+// o PLANO DAS ONDAS de uma fase de ondas (Tipora): uma entrada por onda, na ordem. kind 'horde' (o bando de zumbis, que
+// cresce de 2 a 7; os FORTES a partir da 4ª), 'giant' (a cada `bossEvery`: o Zumbi Gigante SOZINHO) ou 'boss' (a última)
+export function wavePlan(D, difficulty = 'normal') {
+  const W = D && D.waves;
+  if (!W) return [];
+  const total = W.count[difficulty] ?? W.count.normal;
+  const every = W.bossEvery || 3;
+  const out = [];
+  for (let n = 1; n <= total; n++) {
+    if (n === total) out.push({ n, kind: 'boss', count: 1, strongs: 0 });
+    else if (n % every === 0) out.push({ n, kind: 'giant', count: 1, strongs: 0 });
+    else out.push({ n, kind: 'horde', count: Math.min(7, 2 + Math.ceil(n * 0.6)), strongs: n >= 4 ? Math.min(3, Math.floor((n - 1) / 3)) : 0 });
+  }
+  return out;
+}
+
 // `hidden`: em produção (fora da ordem da história e do sorteio)
 export const DUNGEON_ORDER = Object.values(DUNGEONS)
   .filter((dungeon) => !dungeon.hidden)
@@ -728,7 +803,8 @@ export function phaseCleared(campaign, id) {
 }
 export function phaseUnlocked(campaign, id) {
   const i = DUNGEON_ORDER.indexOf(id);
-  return i === 0 || (i > 0 && phaseCleared(campaign, DUNGEON_ORDER[i - 1]));
+  // (v5.19.0) uma fase nova entrou no meio da ordem (Tipora antes da Torre): quem já venceu a de depois não a perde
+  return i === 0 || (i > 0 && (phaseCleared(campaign, DUNGEON_ORDER[i - 1]) || phaseCleared(campaign, id)));
 }
 // o recorde da fase (por dificuldade; `bestTimes[id]` é o melhor de todas)
 export function phaseRecord(campaign, id, difficulty = null) {

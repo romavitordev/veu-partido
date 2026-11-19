@@ -1,5 +1,19 @@
 # Changelog
 
+## v5.19.0 — Ondas em Tipora
+
+### Adicionado
+- `dungeons.js`: fase `tipora` (`storyOrder` 2,5, `minDepth` 2, arena `tipora`, chefe `amigo`), módulo único `praca` com `kind: 'waves'` (sem `rects`: vale o raio da arena), `waves` (`count` por dificuldade 7/9/10/12/13, `bossEvery` 3, `rest`, `firstDelay`, `spawnRadius`, `giantHp`), `about`/`aboutShort` (a explicação). `wavePlan(D, dificuldade)`: `horde` (2 → 7 zumbis, fortes a partir da 4ª), `giant` (sozinho) e `boss` (a última).
+- `Dungeon.js`: `startWaves`, `updateWaves`, `startWave`, `onWaveCleared` (baú depois do gigante), `waveObjective` (HUD "Onda N de T"), `wavesBossIntro` (o Amigo sobe de uma poça de tinta do outro lado da praça); `unlockExit` sem porta (a fase acaba); `stats.waves`.
+- `combat/npcs.js`: `GiantBloodZombie` (`BLOOD_ZOMBIE.giant`, Zumbi Forte 1,45×).
+- `characters/bosses/amigo.js`: o Amigo Imaginário de chefe (sem especial e sem transformação, 2100 de vida).
+- `flow.js`: card da fase com `aboutShort` e a etiqueta ONDAS; a explicação na escolha da dificuldade; tela do fim "Caiu na onda N de T".
+- Teste "Ondas de Tipora".
+
+### Alterado
+- `phaseUnlocked`: uma fase vencida continua aberta mesmo que entre uma fase nova antes dela (a Torre depois de Tipora).
+- `Dungeon.enterModule` / `spawnProps`: módulo sem `rects` (o limite redondo da arena e os barris no miolo da praça).
+
 ## v5.18.1 — CPU Contorna
 
 ### Corrigido

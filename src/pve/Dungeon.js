@@ -14,12 +14,12 @@ import { PlayerInput } from '../input/InputManager.js';
 import { buildModel, isModelLoaded } from '../models/index.js';
 import { disposeRigResources } from '../models/glbRig.js';
 import { CpuController } from '../ai/CpuController.js';
-import { DanteClone, BloodZombie } from '../combat/npcs.js';
+import { DanteClone, BloodZombie, GiantBloodZombie } from '../combat/npcs.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
 import { applyHit } from '../combat/damage.js';
-import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune } from './dungeons.js';
+import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune, wavePlan } from './dungeons.js';
 import { RoomDoor, Drawer, InteractPrompt, makeArrow, aimArrow } from './roomDoors.js';
 import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices, kitUpgrades, slotsOf } from './upgrades.js';
 import { torreRoomCables, pulseCables, disposeCables } from './cables.js';
@@ -35,6 +35,7 @@ import { DegolificadaBrain, DegolificadaIntro } from './degolificada.js';
 import espreitadorDef from '../characters/bosses/espreitador.js';
 import degolificadaDef from '../characters/bosses/degolificada.js';
 import estrangeiroBossDef from '../characters/bosses/estrangeiro.js';
+import amigoBossDef from '../characters/bosses/amigo.js';
 import estrangeiroDef from '../characters/estrangeiro.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
@@ -87,7 +88,7 @@ function dress(m, outfit) {
   }
 }
 
-const BOSSES = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroBossDef };
+const BOSSES = { espreitador: espreitadorDef, degolificada: degolificadaDef, estrangeiro: estrangeiroBossDef, amigo: amigoBossDef };
 // os ALHEIOS da Torre da TV Varminho (pve/dungeons.js DUNGEONS.estrangeiro; docs/TORRE-TRANSMISSAO.md): vida de cada um
 // (×dificuldade) e a pistola de plasma dos Homens de Terno do kit do Estrangeiro. PROPOSTA: os números (sem bateria).
 const ALHEIO_HP = { civil: 140, combatente: 260, monstro: 420, interflorado: 110 };
@@ -397,7 +398,7 @@ export class Dungeon {
     this.via = via;
     if (M.kind !== 'start' && M.kind !== 'stash' && !back) this.step++;
     if (!back) this.visited.push(id);
-    w.arena.bounds.rects = M.rects;
+    if (M.rects) w.arena.bounds.rects = M.rects; // a fase de ONDAS (Tipora) não tem salas: vale o limite redondo da arena
     this.cullRooms(M.rects);
     this.setupStairs(M);
     if (this.pillars) { this.pillars.dispose(); this.pillars = null; }
@@ -529,7 +530,9 @@ export class Dungeon {
     for (const x of this.bossBoxes) x.dispose();
     this.bossBoxes = [];
     if (M.pillars || M.maze) return; // o precipício e o labirinto: nada no chão
-    const R = M.rects[M.kind === 'boss' ? 1 : 0] || M.rects[0];
+    // a fase de ONDAS não tem salas: os barris vão no miolo da praça
+    const rects = M.rects || [{ minX: -9, maxX: 9, minZ: -9, maxZ: 9 }];
+    const R = rects[M.kind === 'boss' ? 1 : 0] || rects[0];
     if (!R) return;
     const avoid = [M.entry, ...Object.values(M.exits || {}), ...(M.chests || []), ...(M.drawers || [])];
     const n = 1 + Math.floor(Math.random() * 3);
@@ -807,7 +810,8 @@ export class Dungeon {
     } else if (this.via && this.via.padlock === 'vault' && M.kind !== 'boss') {
       this.encounter = null;
       this.unlockExits(null);
-    } else if (M.kind === 'fight') this.startEncounter(M, this.via ? this.via.count : 2);
+    } else if (M.kind === 'waves') this.startWaves(M);
+    else if (M.kind === 'fight') this.startEncounter(M, this.via ? this.via.count : 2);
     else if (M.kind === 'boss' && M.bossTrigger) {
       // a sala do chefe começa calma (a biblioteca): a luta só quando alguém passa do gatilho (o bunker)
       this.encounter = null;
@@ -966,9 +970,144 @@ export class Dungeon {
 
   onZombieSlain(z) {
     this.stats.kills++;
-    this.giveXp(z.strong ? this.D.xp.zumbiForte : this.D.xp.zumbi);
-    this.tryHeal(z.pos, z.strong ? 1 : 0.6);
+    this.giveXp(z.giant ? this.D.xp.gigante || this.D.xp.zumbiForte * 2 : z.strong ? this.D.xp.zumbiForte : this.D.xp.zumbi);
+    this.tryHeal(z.pos, z.giant ? 2 : z.strong ? 1 : 0.6);
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
+  }
+
+  // ------------------------------------------------ FASE DE ONDAS (a Ilha de Tipora; pedido do dono, 2026-11-18/19)
+  // Mapa aberto, sem portas: as ondas de Zumbis de Sangue chegam pela borda da praça; a cada `bossEvery` ondas vem o
+  // ZUMBI GIGANTE sozinho (o minichefe) e a última onda é o chefe da fase. Entre as ondas, um respiro de alguns segundos.
+  startWaves(M) {
+    const W = this.D.waves;
+    const plan = wavePlan(this.D, this.run.difficulty);
+    const total = plan.length;
+    this.waves = { n: 0, total, plan, wait: W.firstDelay ?? 5, M };
+    this.encounter = null;
+    this.step = 0;
+    this.routeLen = total - 1; // a tela do fim: as ondas antes do chefe
+    this.waveObjective();
+  }
+
+  waveKind(n) {
+    const S = this.waves;
+    return (S.plan[Math.min(n, S.total) - 1] || { kind: 'boss' }).kind;
+  }
+
+  waveObjective() {
+    const S = this.waves;
+    if (!S || !this.pveHud) return;
+    const next = S.n + 1;
+    const fighting = this.encounter && !this.encounter.done;
+    const n = fighting ? S.n : next;
+    const tag = this.waveKind(n) === 'boss' ? ' (FINAL)' : this.waveKind(n) === 'giant' ? ' (GIGANTE)' : '';
+    this.pveHud.setObjective(fighting ? `Onda ${n} de ${S.total}${tag}` : `Próxima: onda ${n} de ${S.total}${tag}`);
+  }
+
+  updateWaves(dt) {
+    const S = this.waves;
+    if (!S || S.n >= S.total || this.transit) return;
+    if (this.encounter && !this.encounter.done) return;
+    S.wait -= dt;
+    if (S.wait <= 0) this.startWave(S.n + 1);
+  }
+
+  // onde os zumbis nascem: na borda da praça, longe de quem joga
+  waveSpawnPoint(i, count) {
+    const W = this.D.waves;
+    const p = this.player;
+    const away = Math.atan2(-p.pos.x, -p.pos.z) + (Math.random() - 0.5) * 1.6; // do outro lado da praça
+    const ang = away + (count > 1 ? ((i / (count - 1)) - 0.5) * 2.2 : 0);
+    const r = (W.spawnRadius || 13) - Math.random() * 1.5;
+    const pos = new THREE.Vector3(Math.sin(ang) * r, 0, Math.cos(ang) * r);
+    resolveBody(this.world.arena, pos, 1.0);
+    return pos;
+  }
+
+  startWave(n) {
+    const S = this.waves;
+    const W = this.D.waves;
+    const kind = this.waveKind(n);
+    S.n = n;
+    this.step = Math.min(n, S.total - 1);
+    const e = this.enemy;
+    if (kind === 'boss') {
+      this.hud.callout('ONDA FINAL', '#ff4a3a');
+      this.startBoss(S.M);
+      this.waveObjective();
+      return;
+    }
+    this.encounter = { room: S.M, done: false, koAt: this.world.time, zombies: true, wave: n, miniboss: kind === 'giant' };
+    const spawn = (pos, { strong = false, giant = false } = {}) => {
+      const hp = giant ? (W.giantHp || 900) : ZOMBIE_HP[strong ? 'strong' : 'weak'];
+      const Z = giant ? GiantBloodZombie : BloodZombie;
+      const z = new Z(e, this.world, pos, { strong, duration: Infinity, hp: Math.round(hp * this.scale.hp) });
+      z.onDestroyed = () => this.onZombieSlain(z);
+      this.world.addNpc(z);
+      this.copias.push(z);
+    };
+    if (kind === 'giant') {
+      // o minichefe vem SOZINHO (pedido do dono)
+      spawn(this.waveSpawnPoint(0, 1), { giant: true });
+      this.hud.callout('UM ZUMBI GIGANTE', '#ff6a3a');
+      this.audio.play('fearGaze', { volume: 0.8, pitch: 0.45 });
+    } else {
+      // a onda cresce: 2 → 7 zumbis; os FORTES entram a partir da 4ª (PROPOSTA; dungeons.js wavePlan)
+      const { count, strongs } = S.plan[n - 1];
+      for (let i = 0; i < count; i++) spawn(this.waveSpawnPoint(i, count), { strong: i < strongs });
+      this.hud.callout(`ONDA ${n}`, '#ffd84a');
+      this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
+    }
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+    this.hudAdd('pve-noboss'); // a barra de cima é do chefe: o dono escondido dos zumbis não aparece (os zumbis têm a própria)
+    this.waveObjective();
+  }
+
+  onWaveCleared(enc) {
+    const S = this.waves;
+    enc.done = true;
+    this.hudRemove('pve-minor');
+    this.hud.callout(`ONDA ${enc.wave} VENCIDA`, '#7dffb0');
+    this.revivePlayers();
+    // o gigante deixa um baú (o respiro com recompensa antes das próximas)
+    if (enc.miniboss && this.mod.chests && this.mod.chests.length) {
+      const p = this.player;
+      const s = this.mod.chests.slice().sort((a, b) => distXZ(a, p.pos) - distXZ(b, p.pos))[0];
+      const c = this.spawnChest(s, (this.D.locks || {}).luck || 0.6);
+      this.world.fx.burst(new THREE.Vector3(c.pos.x, 0.6, c.pos.z), { count: 24, color: 0x6c6a66, kind: 'smoke', speed: 1.6, life: 0.7, size: 0.5, grow: 1 });
+    }
+    S.wait = this.D.waves.rest ?? 4;
+    this.waveObjective();
+  }
+
+  // a cena curta do chefe das ondas: ele se ergue de uma poça de tinta do outro lado da praça (ninguém luta nela)
+  wavesBossIntro(r) {
+    const e = this.enemy;
+    const w = this.world;
+    const p = this.player;
+    const sp = r.spawn || { x: 0, z: -9 };
+    // do lado oposto de quem joga
+    const len = Math.hypot(p.pos.x, p.pos.z) || 1;
+    const at = new THREE.Vector3(-p.pos.x / len * Math.abs(sp.z), 0, -p.pos.z / len * Math.abs(sp.z));
+    resolveBody(w.arena, at, e.radius || 0.8);
+    e.pos.copy(at);
+    e.vel.set(0, 0, 0);
+    e.yaw = Math.atan2(p.pos.x - at.x, p.pos.z - at.z);
+    e.setVisible(true);
+    e.setState('intro');
+    e.anim.play('idle', { restart: true });
+    w.fx.burst(new THREE.Vector3(at.x, 0.4, at.z), { count: 50, color: 0x2a120a, kind: 'smoke', speed: 2.6, life: 1.1, size: 1, grow: 1 });
+    this.audio.play('bellToll', { volume: 0.9, pitch: 0.8 });
+    this.hud.callout(this.D.bossName, this.D.color);
+    let t = 0;
+    return {
+      c: null,
+      update: (dt) => {
+        t += dt;
+        if (t < 0.9 && Math.random() < 0.5) w.fx.burst(new THREE.Vector3(at.x, 0.2, at.z), { count: 4, color: 0x5a1e10, speed: 1.6, up: 2, life: 0.5, size: 0.3 });
+        return t > 1.8;
+      },
+    };
   }
 
   // as salas de luta da TORRE: Doppelgangers (Civis com a pistola de plasma, Combatentes no soco), a forma monstruosa no
@@ -1151,6 +1290,11 @@ export class Dungeon {
       this.bossIntro = new EstrangeiroIntro(this, r.spawn, { x: 82, y: 4.4, z: 0 });
       return;
     }
+    if (this.D.waves) {
+      // a ONDA FINAL de Tipora: o Amigo Imaginário se ergue de uma poça de tinta do outro lado da praça
+      this.bossIntro = this.wavesBossIntro(r);
+      return;
+    }
     // ele sai do armário mais perto da porta: primeiro a CENA (pve/espreitadorIntro.js), depois a luta
     const c0 = this.closets.slice().sort((a, b) => distXZ(a.pos, this.player.pos) - distXZ(b.pos, this.player.pos))[0];
     this.bossIntro = new EspreitadorIntro(this, c0);
@@ -1185,6 +1329,13 @@ export class Dungeon {
       this.bindHud();
       this.pveHud.hint('Quando ele soltar A PRESENÇA, corra para a CÁPSULA que se abrir: lá dentro você está protegido e o SINO o deixa EXPOSTO');
       this.hintT = 9;
+      return;
+    }
+    if (this.D.waves) {
+      this.pressure = new BossPressure(this, e, this.diff.counter ?? 7);
+      this.bindHud();
+      this.pveHud.hint('O AMIGO IMAGINÁRIO: os TENTÁCULOS puxam de longe e o SINO paralisa — não fique parado na frente dele');
+      this.hintT = 8;
       return;
     }
     for (const c of this.closets) { if (c.open) { c.alive = true; w.addNpc(c); } }
@@ -1849,6 +2000,14 @@ export class Dungeon {
   unlockExit() {
     const d = this.exitDoor;
     if (d.unlocked) return;
+    if (this.D.waves) {
+      // a fase de ONDAS não tem porta: a ilha sobreviveu, e a fase acaba
+      d.unlocked = true;
+      this.hud.callout(`${this.D.place.toUpperCase()} SOBREVIVEU`, this.D.color);
+      this.pveHud.setObjective('Fase vencida');
+      this.world.after(1.6, () => { if (this.phase !== 'exit' && this.phase !== 'over' && this.phase !== 'dead') this.startExit(); });
+      return;
+    }
     // a TORRE: depois do Estrangeiro, a saída é uma CÁPSULA (pedido do dono, 2026-11-13: "deitar numa cápsula para
     // passar para a próxima fase") — a porta fica trancada
     if (this.sino && !this.sino.exitCap) {
@@ -1987,6 +2146,7 @@ export class Dungeon {
           for (const q of this.players) q.setState('idle');
           this.phase = 'explore';
           this.hud.banner(this.D.name.toUpperCase(), this.D.color);
+          if (this.D.waves) { this.pveHud.hint(this.D.about); this.hintT = 11; this.waveObjective(); break; }
           this.pveHud.hint(this.player.input?.source === 'gamepad' ? (this.D.exploreHint || 'Explore a mansão →') : 'Clique esq. golpe · clique dir. tiro · 1–5 habilidades · Z especial · G agarrão · E defesa · Shift esquiva · C (segure) sanidade · Q/R assistências · F trava a mira');
           this.hintT = 8;
         }
@@ -2044,6 +2204,7 @@ export class Dungeon {
 
   updateRooms() {
     const p = this.player;
+    if (this.waves) this.updateWaves(this.lastDt);
     const enc = this.encounter;
     if (enc && !enc.done && !enc.boss) {
       // o Devorado caiu: some, e a sala termina quando não sobra cópia
@@ -2051,7 +2212,8 @@ export class Dungeon {
         this.world.fx.burst(this.enemy.chestPos(v1).clone(), { count: 30, color: 0x6c6a66, kind: 'smoke', speed: 2, life: 0.7, size: 0.7, grow: 1 });
         this.lurk(null);
       }
-      if (enc.koAt !== null && this.enemy.lurking && !this.copias.length) {
+      if (enc.koAt !== null && this.enemy.lurking && !this.copias.length && enc.wave) this.onWaveCleared(enc);
+      else if (enc.koAt !== null && this.enemy.lurking && !this.copias.length) {
         enc.done = true;
         this.hudRemove('pve-minor');
         this.hud.callout('SALA LIMPA', '#7dffb0');
@@ -2202,7 +2364,7 @@ export class Dungeon {
     if (this.phase === 'over') return;
     this.phase = 'over';
     // onde a tentativa parou (a tela do fim mostra a rota até o chefe) e o nível alcançado
-    Object.assign(this.stats, { room: this.step, rooms: this.routeLen, boss: !!(this.mod && this.mod.kind === 'boss'), level: this.run.level || 1 });
+    Object.assign(this.stats, { room: this.step, rooms: this.routeLen, boss: !!(this.mod && this.mod.kind === 'boss') || !!(this.waves && this.waves.n >= this.waves.total), waves: !!this.waves, level: this.run.level || 1 });
     // online: no próximo quadro da simulação (igual nos dois computadores); local: fora do quadro atual
     if (this.net) { this.endQueued = { result, stats: this.stats, run: this.run }; return; }
     setTimeout(() => { if (!this.disposed) this.onEnd && this.onEnd({ result, stats: this.stats, run: this.run }); }, 0);
