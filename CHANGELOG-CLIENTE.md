@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.15.0 — A Névoa da Força D
+- Especial em equipe da Força D com final novo, a NÉVOA DA FORÇA D: o Kaiser fecha a Cinerária em volta do alvo, cada membro sai da névoa, golpeia e some de novo, e no fim a névoa abre com a Força D formada atrás do Kaiser.
+
 ## v5.14.0 — A Roda dos Abutres
 - Especial em equipe da Equipe Abutres com final novo, a RODA DOS ABUTRES: depois dos golpes, os seis cercam o alvo e giram em volta dele como abutres no céu (vistos de cima). O Balu grita "VAMOS DAR UMA COÇA NELE!" e todos mergulham juntos.
 

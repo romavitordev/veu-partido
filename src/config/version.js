@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.14.0';
+export const VERSION = '5.15.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.15.0',
+    date: '2026-11-18',
+    title: 'A Névoa da Força D',
+    items: [
+      'Especial em equipe da Força D com final novo, a NÉVOA DA FORÇA D: o Kaiser fecha a Cinerária em volta do alvo, cada membro sai da névoa, golpeia e some de novo, e no fim a névoa abre com a Força D formada atrás do Kaiser.',
+    ],
+  },
   {
     v: '5.14.0',
     date: '2026-11-18',

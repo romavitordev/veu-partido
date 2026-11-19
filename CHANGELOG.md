@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.15.0 — A Névoa da Força D
+
+### Alterado
+- `CHOREO.forca_d`: a Névoa da Força D (Cinerária do Kaiser, golpes de dentro da névoa, a equipe formada no fim).
+
 ## v5.14.0 — A Roda dos Abutres
 
 ### Alterado

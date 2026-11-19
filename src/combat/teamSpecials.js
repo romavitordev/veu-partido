@@ -469,15 +469,16 @@ function splitDamage(total, count) {
 // COREOGRAFIAS PRÓPRIAS DAS LIGAÇÕES (link.choreo). Recebem a cena e devolvem o instante do golpe final.
 const CHOREO = {
   forca_d({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
-    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 6.4 });
+    const tools = choreographyTools({ f, opp, world, crew, guests, live, end: S + 8.3 });
     const kaiser = tools.get('kaiser'), joui = tools.get('joui'), dante = tools.get('dante'), arthur = tools.get('arthur');
     const erin = tools.get('erin'), beatrice = tools.get('beatrice'), fernando = tools.get('fernando'), tristan = tools.get('tristan');
     const actors = [kaiser, joui, dante, arthur, erin, beatrice, fernando, tristan].filter(Boolean);
-    const shares = splitDamage(crewTotal, actors.length || 1);
+    // um pedaço a mais para os ataques de dentro da névoa (o último)
+    const shares = splitDamage(crewTotal, (actors.length || 1) + 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const say = sayer(world);
     const head = (actor) => actor.chest().add(new THREE.Vector3(0, 0.55, 0));
-    const END = S + 6.4;
+    const END = S + 8.3;
 
     if (kaiser) {
       tl.add(S, () => {
@@ -669,17 +670,89 @@ const CHOREO = {
       }
     }
 
-    const F = S + 6.4;
-    tl.add(F - 0.45, () => {
-      if (!live()) return;
-      actors.forEach((actor, i) => {
-        if (!actor) return;
-        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.75, 2.3);
+    // A NÉVOA DA FORÇA D (PROPOSTA; base canônica: a CINERÁRIA do Kaiser, a névoa que ele abre nos rituais, e a fala
+    // dele "a névoa fecha o caminho"). O Kaiser fecha a névoa em volta do alvo; de dentro dela cada membro sai, golpeia e
+    // some de novo, de um lado diferente; a névoa abre para fora e a Força D aparece formada atrás do Kaiser
+    const FOG = S + 6.0;
+    const FOG_C = 0xc8bfd8, FOG_DARK = 0x948aa8, KAISER_C = 0xa46bff;
+    const STRIKE = { kaiser: 'heavy_punch', joui: 'iai_slash', dante: 'wave_punch', arthur: 'slash_finisher', erin: 'dual_cross', beatrice: 'slash_h', fernando: 'heavy_punch', tristan: 'slash_h' };
+    const step = Math.min(0.17, 1.0 / Math.max(1, actors.length));
+    const fogAt = (ang, r) => new THREE.Vector3(opp.pos.x + Math.sin(ang) * r, 0.9, opp.pos.z + Math.cos(ang) * r);
+    const puff = (count = 1) => {
+      for (let q = 0; q < count; q++) {
+        const ang = Math.random() * Math.PI * 2;
+        world.fx.burst(fogAt(ang, 1.4 + Math.random() * 2.2), { kind: 'smoke', count: 4, color: Math.random() < 0.6 ? FOG_C : FOG_DARK, speed: 0.3, spread: 1, up: 0.1, life: 1.8, size: 2.0, grow: 1.1, drag: 1, jitter: 0.6 });
+      }
+    };
+    let fogOn = false;
+    tl.add(FOG, () => {
+      if (!live() || !actors.length) return;
+      fogOn = true;
+      const who = kaiser || actors[0];
+      if (kaiser) { kaiser.play('breath', 0.7); say(kaiser, 'Cinerária.', 0); world.showBanner('CINERÁRIA', KAISER_C); }
+      else say(who, 'Agora!', 0);
+      world.audio.play('ritual', { volume: 0.7, pitch: 0.8 });
+      world.fx.ring(opp.pos.clone().setY(0.06), { color: KAISER_C, radius: 3.4, life: 0.9 });
+      puff(40);
+      // todos somem na névoa (cada um num lado do círculo)
+      actors.forEach((actor, n) => {
+        const ang = f.yaw + (n / actors.length) * Math.PI * 2;
+        actor.pos.set(opp.pos.x + Math.sin(ang) * 3.6, 0, opp.pos.z + Math.cos(ang) * 3.6);
+        actor.face(opp);
+      });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.5, radius: 2.6, height: 1.3, a0: -0.9, a1: 0.9, lookH: 1.2, fov: 50 }), cut: true }]);
+    });
+    tl.each((time) => { if (fogOn && live() && time < FOG + 1.5) puff(3); });
+    actors.forEach((actor, n) => {
+      const t = FOG + 0.35 + n * step;
+      const ang = f.yaw + (n * 2.4); // ângulo dourado: cada um sai de um lado bem diferente
+      tl.add(t, () => {
+        if (!live()) return;
+        actor.pos.set(opp.pos.x + Math.sin(ang) * 1.05, 0, opp.pos.z + Math.cos(ang) * 1.05);
+        actor.face(opp);
+        actor.play(STRIKE[linkId(actor.def)] || 'heavy_punch', 0.3);
+        world.fx.burst(actor.chest(), { kind: 'smoke', count: 6, color: FOG_DARK, speed: 1.2, life: 0.5, size: 0.6, grow: 0.6 });
+        world.fx.slash(opp.chestPos(), ang + Math.PI, { color: 0xd7c8ef, radius: 0.9, arc: 1.8, life: 0.2, width: 0.14, roll: (n % 2 ? 0.8 : -0.8) });
+        world.audio.play('swing', { volume: 0.5, pitch: 0.9 + n * 0.04 });
+        opp.anim.play('hit', { restart: true, blend: 0.03 });
+      });
+      tl.add(t + step * 0.9, () => {
+        if (!live()) return;
+        // volta para a névoa
+        actor.pos.set(opp.pos.x + Math.sin(ang) * 3.6, 0, opp.pos.z + Math.cos(ang) * 3.6);
+        actor.face(opp);
+      });
+    });
+    const OPEN = FOG + 0.35 + actors.length * step + 0.15;
+    tl.add(OPEN - 0.1, () => {
+      if (!live() || !actors.length) return;
+      tools.impact(kaiser || actors[0], shares[shares.length - 1], { sound: 'heavyPunch', color: KAISER_C });
+    });
+    // a névoa abre e a Força D aparece formada (o Kaiser na frente, os outros em leque atrás dele)
+    tl.add(OPEN, () => {
+      if (!live() || !actors.length) return;
+      fogOn = false;
+      for (let q = 0; q < 14; q++) {
+        const ang = (q / 14) * Math.PI * 2;
+        world.fx.burst(fogAt(ang, 1.2), { kind: 'smoke', count: 2, color: FOG_C, speed: 2.6, dir: new THREE.Vector3(Math.sin(ang) * 1.5, 0.1, Math.cos(ang) * 1.5), life: 0.9, size: 0.9, grow: 1.2 });
+      }
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: FOG_C, radius: 3.8, life: 0.6 });
+      const lead = kaiser || actors[0];
+      const rest = actors.filter((a) => a !== lead);
+      const lp = tools.around(lead, 0, 2.2);
+      lead.pos.set(lp.x, 0, lp.z);
+      lead.face(opp);
+      lead.play('point', 0.6);
+      rest.forEach((actor, n) => {
+        const side = n % 2 ? 1 : -1, row = Math.floor(n / 2) + 1;
+        const at = tools.around(actor, side * (0.32 + row * 0.16), 2.2 + row * 0.75);
         actor.pos.set(at.x, 0, at.z);
         actor.face(opp);
       });
-      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.7, radius: 4, height: 1.8, a0: -0.6, a1: 0.6 }), cut: true }]);
+      world.cameraRig.playShots([{ ...pullBack(lead, opp, { dur: 1.0, from: 3.0, to: 7.0, height: 2.3 }), cut: true }]);
     });
+    const F = OPEN + 0.55;
+    tl.add(END, () => { fogOn = false; world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return F;
   },
 

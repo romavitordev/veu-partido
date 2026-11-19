@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v5.15.0 — A Névoa da Força D
+
+- Versão: `VERSION` 5.14.0 → **5.15.0**. Data: 2026-11-18. Dono: "sim, Força D" (momento próprio do especial da Força D).
+- `CHOREO.forca_d`: a NÉVOA DA FORÇA D (PROPOSTA; base canônica: a CINERÁRIA do Kaiser e a fala "a névoa fecha o
+  caminho"; os golpes de antes ficam). Em S+6,0 o Kaiser diz "Cinerária.", a névoa (fumaça clara, `kind: 'smoke'`,
+  renovada por 1,5 s) fecha em volta do alvo e todos somem nela a 3,6 m; cada membro sai a 1,05 m de um lado diferente,
+  golpeia (`STRIKE` por id) e volta para a névoa, em ~1 s para o grupo todo; a névoa abre para fora e a equipe aparece
+  em leque atrás do Kaiser (`pullBack`). A névoa leva um pedaço do dano (`splitDamage` em n+1). A cena passa de 6,4 s
+  para ~7,5 s com os oito.
+- A primeira névoa (cinza-escura) sumia no cenário vermelho do Ferro Velho; clareada e engrossada depois do 1º print.
+- Conferido no jogo (Kaiser, Joui e Dante × Nubi): falas em ordem, a névoa visível, os golpes e a equipe formada no
+  fim; sem erro no console. `npm test` 119/119, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.14.0 — A Roda dos Abutres
 
 - Versão: `VERSION` 5.13.0 → **5.14.0**. Data: 2026-11-18. Dono: "sim, comece um" (dar um momento próprio a um dos
