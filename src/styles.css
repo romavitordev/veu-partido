@@ -1495,6 +1495,16 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 #pvehud .pv-move { position: absolute; right: 18px; bottom: 18px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--pv-mute); text-shadow: 0 1px 4px rgba(0,0,0,.9); opacity: 0; }
 #pvehud .pv-move::before { content: ''; display: inline-block; width: 14px; height: 1px; margin: 0 8px 3px 0; background: currentColor; vertical-align: middle; }
 #pvehud .pv-move.on { animation: pvMove 2.2s ease-out forwards; }
+/* a PROTEÇÃO dos aldeões escondidos na Árvore Anciã (o Samhain, parte 3): a barra no alto, no centro */
+#pvehud .pv-ward { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: min(46vw, 460px); display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; padding: 8px 12px 9px; background: var(--pv-glass); border: 1px solid var(--pv-line); border-radius: 8px; }
+#pvehud .pv-ward small { grid-column: 1 / -1; font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--pv-ink); }
+#pvehud .pv-ward .pv-wbar { height: 9px; border-radius: 5px; background: rgba(255,255,255,.08); overflow: hidden; }
+#pvehud .pv-ward .pv-wbar i { display: block; height: 100%; background: linear-gradient(90deg, #f2c230, #ffe08a); transition: width .25s ease-out; }
+#pvehud .pv-ward[data-lv="warn"] .pv-wbar i { background: linear-gradient(90deg, #e0782a, #ffb060); }
+#pvehud .pv-ward[data-lv="low"] .pv-wbar i { background: linear-gradient(90deg, #c8302a, #ff6a50); }
+#pvehud .pv-ward b { font-size: 12px; font-weight: 700; color: var(--pv-ink); min-width: 3.2em; text-align: right; }
+#pvehud .pv-ward.hit .pv-wbar { animation: pvWardHit .3s ease-out; }
+@keyframes pvWardHit { 0% { box-shadow: 0 0 0 2px rgba(150,210,255,.9); filter: brightness(1.8); } 100% { box-shadow: none; filter: none; } }
 @keyframes pvMove { 0% { opacity: 0; transform: translateX(6px); } 10%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 /* o que saiu do baú */
 #pvehud .pv-loot { position: absolute; left: 50%; top: 15%; transform: translateX(-50%); min-width: 200px; padding: 10px 14px; border-radius: 8px; background: var(--pv-glass); backdrop-filter: blur(4px); border: 1px solid var(--pv-line); display: flex; flex-direction: column; gap: 5px; opacity: 0; }

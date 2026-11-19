@@ -337,10 +337,10 @@ export class CameraRig {
       if (c.lockRate) this.pitch = (this.pitch || 0) * Math.max(0, 1 - dt * 3); // travado: a inclinação volta ao normal
     }
     const k = snap ? 1 : Math.min(1, dt * K.distanceDamping);
-    const wantDist = c.focus ? K.fightDistance : K.distance;
+    const wantDist = c.dist ?? (c.focus ? K.fightDistance : K.distance);
     this.distance += (wantDist - this.distance) * k;
     const pitch = c.free ? this.pitch || 0 : 0;
-    this.height += (K.height + pitch * 1.6 - this.height) * k;
+    this.height += ((c.height ?? K.height) + pitch * 1.6 - this.height) * k;
     const sy = Math.sin(this.yaw);
     const cy = Math.cos(this.yaw);
     // o alvo: o peito do jogador, puxado um pouco para o inimigo (ou para a frente, explorando)

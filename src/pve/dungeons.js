@@ -406,6 +406,64 @@ export const DUNGEONS = {
     exit: { door: { x: 60, z: 0, hidden: true } }, // sem porta: depois da recompensa a fase acaba (Dungeon.unlockExit)
     chests: { chance: { waves: 0 }, coinsBoss: 16 },
   },
+  // A NOITE DO SAMHAIN EM TREB CIACH — a 2ª FASE DE ONDAS (A Vigília ep. 3; dono, 2026-11-18: "o player protegeria das
+  // assombrações e protegeria a vila, tentando impedir que o numero de aldeões vivos chegue a zero"; a fase em 3 partes:
+  // a praça da Chama de Proteção, o corredor das lamparinas e a Árvore Anciã). Esta é a PARTE 1, a praça: ondas de
+  // ASSOMBRAÇÕES fantasiadas (combat/assombracao.js) indo atrás de quem joga e das CASAS (pve/samhain.js: a lamparina da
+  // porta e os aldeões de dentro); a cada 3 ondas a ASSOMBRAÇÃO DE BROÉN sozinha (PROPOSTA: a do aldeão que atacou o
+  // filho) e, no fim, a TEMPESTADE com a leva enorme. As partes 2 e 3 ainda não existem: vencida a leva, a fase acaba.
+  // A Vigília (2025) é a série mais nova: depois do Estrangeiro. PROPOSTA: tudo o que é número.
+  samhain: {
+    id: 'samhain',
+    storyOrder: 4,
+    name: 'Proteja Treb Ciach',
+    place: 'Treb Ciach',
+    thumb: { from: 'treb_ciach' },
+    color: '#ffd84a',
+    arena: 'treb_ciach',
+    boss: null, // sem chefe-lutador: a última onda é a TEMPESTADE (Dungeon.startWave kind 'storm')
+    bossName: 'AS ASSOMBRAÇÕES',
+    restricted: [],
+    waves: {
+      foes: 'samhain',
+      count: { easy: 6, normal: 7, hard: 8, superhard: 9, annihilation: 10 },
+      bossEvery: 3, chestEvery: 2, chestFade: 6,
+      rest: 6, // um respiro maior: dá tempo de reacender as lamparinas
+      firstDelay: 8,
+      spawnRadius: 21,
+      bounds: 23, // a praça AMPLIADA até as portas das casas (o mapa de luta para no raio 18,5)
+      village: true,
+      runner: true, // vencida a tempestade: o corredor das lamparinas (pve/corredor.js) até a Árvore Anciã
+      giant: 'broen', giantName: 'A ASSOMBRAÇÃO DE BROÉN', giantHp: 950,
+    },
+    about: 'FASE DE ONDAS: a noite do Samhain. As ASSOMBRAÇÕES chegam em ondas pela praça e vão atrás de você e das CASAS: se a lamparina da porta apagar, os aldeões de dentro morrem — e se não sobrar nenhum aldeão vivo, você perde. Fique parado perto de uma porta para reacender a chama. No fim, a TEMPESTADE — e depois a fuga pelo CORREDOR DAS LAMPARINAS até a Árvore Anciã: desvie das faixas vermelhas e passe rente às lamparinas para acendê-las — cada uma acesa enfraquece a última defesa: proteger o ALÇAPÃO de pedra do arsenal entre as raízes da Árvore, onde os aldeões se esconderam, até as Assombrações pararem de vir. Se ele cair, você perde.',
+    aboutShort: 'Fase de ONDAS: proteja as casas e os aldeões das Assombrações, aguente a tempestade, fuja pelo corredor e defenda os aldeões escondidos na Árvore Anciã',
+    minDepth: 3,
+    minions: 'zumbi',
+    drops: { heal: { chance: 0.45, amount: 0.18 } },
+    xp: { assombracao: 18, assombracaoForte: 42, gigante: 100, boss: 160 },
+    exploreHint: 'Prepare-se: as Assombrações vêm da névoa',
+    deathText: 'VOCÊ CAIU',
+    endTitle: ['VOCÊ CAIU EM TREB CIACH', 'VOCÊS CAÍRAM EM TREB CIACH'],
+    killsLabel: 'Assombrações',
+    bossDownText: 'A TEMPESTADE PASSOU',
+    wonText: 'A Árvore Anciã resistiu',
+    route: { rooms: [0, 0], monsters: [0, 0] },
+    start: 'praca',
+    bossModule: 'praca',
+    modules: {
+      praca: {
+        kind: 'waves', floor: 0, title: 'Praça da Chama', objective: 'Proteja as casas',
+        entry: { x: 0, z: 9, yaw: Math.PI },
+        spawn: { x: 0, z: -12 },
+        exits: {},
+        chests: [{ x: -9, z: 6 }, { x: 9, z: 6 }, { x: 0, z: -10 }],
+        drawers: [],
+      },
+    },
+    exit: { door: { x: 80, z: 0, hidden: true } },
+    chests: { chance: { waves: 0 }, coinsBoss: 18 },
+  },
   // TORRE DA TV VARMINHO (pedido do dono, 2026-11-13: "a nova fase do Outro Lado: Torre de Transmissão, onde o boss será
   // o Estrangeiro"; estudo em docs/TORRE-TRANSMISSAO.md). Lançada na v4.42.0 (dev: B = await
   // import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')).
@@ -720,6 +778,7 @@ const ANIMALS = ['cao', 'javali', 'cobra'];
 export function wavePlan(D, difficulty = 'normal') {
   const W = D && D.waves;
   if (!W) return [];
+  if (W.foes === 'samhain') return samhainPlan(W, difficulty);
   const total = W.count[difficulty] ?? W.count.normal;
   const every = W.bossEvery || 3;
   const X = WAVE_DIFF[difficulty] || WAVE_DIFF.normal;
@@ -742,6 +801,67 @@ export function wavePlan(D, difficulty = 'normal') {
     // os animais em rodízio: na 2ª onda só lobos; depois, a partir de um tipo diferente a cada onda
     for (let i = 0; i < animals; i++) put(n === 2 ? 'cao' : ANIMALS[(n + i) % 3], 1);
     out.push({ n, kind: 'horde', count, strongs, foes });
+  }
+  return out;
+}
+
+// as ondas do SAMHAIN (Treb Ciach): só Assombrações — as fortes (que quebram a fantasia) entram na 3ª onda e crescem
+// com a dificuldade; a cada `bossEvery` a de Broén sozinha; a ÚLTIMA é a TEMPESTADE, a leva enorme de uma vez.
+// PROPOSTA: as quantidades.
+const SAMHAIN_DIFF = {
+  easy: { extra: 0, strong: 0, storm: 9 },
+  normal: { extra: 0, strong: 1, storm: 11 },
+  hard: { extra: 1, strong: 1, storm: 13 },
+  superhard: { extra: 1, strong: 2, storm: 15 },
+  annihilation: { extra: 2, strong: 2, storm: 17 },
+};
+function samhainPlan(W, difficulty) {
+  const total = W.count[difficulty] ?? W.count.normal;
+  const every = W.bossEvery || 3;
+  const X = SAMHAIN_DIFF[difficulty] || SAMHAIN_DIFF.normal;
+  const out = [];
+  for (let n = 1; n <= total; n++) {
+    if (n === total) {
+      const strongs = Math.round(X.storm * 0.25);
+      out.push({ n, kind: 'storm', count: X.storm, strongs, foes: { assombracao: X.storm - strongs, assombracaoForte: strongs } });
+      continue;
+    }
+    if (n % every === 0) { out.push({ n, kind: 'giant', count: 1, strongs: 0, foes: { broen: 1 } }); continue; }
+    const count = Math.min(9, 2 + Math.ceil(n * 0.7) + X.extra);
+    const strongs = n >= 3 ? Math.min(count - 1, X.strong + Math.floor((n - 1) / 4)) : 0;
+    const foes = { assombracao: count - strongs };
+    if (strongs) foes.assombracaoForte = strongs;
+    out.push({ n, kind: 'horde', count, strongs, foes });
+  }
+  return out;
+}
+
+// A ÁRVORE ANCIÃ (a parte 3 do Samhain): ondas com FIM que o jogador não vê. As LAMPARINAS acesas no corredor
+// (`run.samhainLamps`) cortam: cada uma tira 3% (até 45%) das Assombrações de cada onda e das fortes, e a partir de 14
+// a última onda nem vem; a vida delas cai pela metade desse corte (Dungeon.spawnFoe, `tree.hpMul`). A última onda traz a
+// Assombração de Broén junto (Normal para cima). PROPOSTA: as quantidades.
+const TREE_DIFF = {
+  easy: { waves: 3, base: 4, strong: 0 },
+  normal: { waves: 4, base: 5, strong: 1 },
+  hard: { waves: 5, base: 5, strong: 1 },
+  superhard: { waves: 6, base: 6, strong: 2 },
+  annihilation: { waves: 7, base: 7, strong: 2 },
+};
+export function treeWeaken(lamps = 0) { return Math.min(0.45, Math.max(0, lamps) * 0.03); }
+export function treePlan(difficulty = 'normal', lamps = 0) {
+  const X = TREE_DIFF[difficulty] || TREE_DIFF.normal;
+  const cut = treeWeaken(lamps);
+  const total = Math.max(2, X.waves - (lamps >= 14 ? 1 : 0));
+  const out = [];
+  for (let n = 1; n <= total; n++) {
+    const last = n === total;
+    const count0 = Math.min(13, X.base + n + (last ? 3 : 0));
+    const count = Math.max(2, Math.round(count0 * (1 - cut)));
+    const strongs = Math.min(count - 1, Math.round((n >= 2 ? X.strong + Math.floor(n / 2) : 0) * (1 - cut)));
+    const foes = { assombracao: count - strongs };
+    if (strongs) foes.assombracaoForte = strongs;
+    if (last && difficulty !== 'easy') foes.broen = 1;
+    out.push({ n, kind: 'horde', count: count + (foes.broen || 0), strongs, foes });
   }
   return out;
 }

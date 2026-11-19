@@ -16,11 +16,15 @@ import { disposeRigResources } from '../models/glbRig.js';
 import { CpuController } from '../ai/CpuController.js';
 import { DanteClone, BloodZombie, GiantBloodZombie, InkZombie } from '../combat/npcs.js';
 import { InkBeast, InkSnake } from '../combat/beasts.js';
+import { Assombracao } from '../combat/assombracao.js';
+import { SamhainVillage } from './samhain.js';
+import { LanternRun } from './corredor.js';
+import { TreeDefense, TREE } from './arvore.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
 import { applyHit } from '../combat/damage.js';
-import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune, wavePlan } from './dungeons.js';
+import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune, wavePlan, treePlan, treeWeaken } from './dungeons.js';
 import { RoomDoor, Drawer, InteractPrompt, makeArrow, aimArrow } from './roomDoors.js';
 import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices, kitUpgrades, slotsOf } from './upgrades.js';
 import { torreRoomCables, pulseCables, disposeCables } from './cables.js';
@@ -98,7 +102,7 @@ const DOPPEL_GUN = estrangeiroDef.abilities.find((a) => a.id === 'homensDeTerno'
 const NEST = estrangeiroDef.abilities.find((a) => a.id === 'ninhoInterflorados');
 const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (o bombeiro Jorge e os outros)
 // os INFECTADOS DA ILHA (Tipora): a vida-base de cada tipo nas ondas e nas invocações do Amigo (PROPOSTA)
-const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150 };
+const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150, assombracao: 140, assombracaoForte: 300 };
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
@@ -665,6 +669,8 @@ export class Dungeon {
   }
 
   canAffordRevive() {
+    if (this.villageLost) return false; // os aldeões morreram: não há o que salvar pagando
+    if (this.treeLost) return false; // a porta da Árvore caiu
     const price = this.revivePrice();
     return this.players.some((q, i) => this.coinsOf(i) >= price);
   }
@@ -991,7 +997,111 @@ export class Dungeon {
     this.encounter = null;
     this.step = 0;
     this.routeLen = total - 1; // a tela do fim: as ondas antes do chefe
+    // TREB CIACH: a praça ampliada até as portas das casas, e a vila (as lamparinas e os aldeões; pve/samhain.js)
+    if (W.bounds && this.world.arena) this.world.arena.radius = Math.max(this.world.arena.radius, W.bounds);
+    if (W.village) this.village = new SamhainVillage(this, W);
     this.waveObjective();
+  }
+
+  // a vila caiu: nenhum aldeão vivo — a tentativa acaba (sem voltar à vida com moedas)
+  onVillageLost() {
+    if (this.phase === 'dead') return;
+    this.villageLost = true;
+    this.deadFrom = 'fight';
+    this.phase = 'dead';
+    this.phaseTime = 0;
+    this.hud.callout('NENHUM ALDEÃO SOBREVIVEU', '#ff4a3a');
+    this.audio.play('ko', { volume: 1.2 });
+    this.pveHud.hint(null);
+  }
+
+  // a tempestade vencida: a FUGA pelo CORREDOR DAS LAMPARINAS até a Árvore Anciã (a parte 2; pve/corredor.js)
+  startRunner(enc) {
+    enc.done = true;
+    this.hudRemove('pve-minor');
+    this.revivePlayers();
+    this.hud.callout('ELAS NÃO PARAM DE VIR', '#c8d8ff');
+    this.pveHud.fade(true, 0.6);
+    this.world.after(0.8, () => {
+      if (this.disposed || this.phase === 'dead') return;
+      this.runner = new LanternRun(this);
+      this.runner.start();
+      this.enemy.cpuEdge = { dealt: 1, taken: 1 }; // o dano do corredor já vem pela fração da vida
+      for (const v of this.views) v.rig && v.rig.update(0, [v.p], true);
+      this.pveHud.fade(false, 0.6);
+    });
+  }
+
+  // chegou na árvore: as lamparinas acesas ficam na tentativa e enfraquecem a parte 3, a DEFESA DA ÁRVORE ANCIÃ
+  onRunnerDone(lit) {
+    this.run.samhainLamps = lit;
+    this.stats.lamps = lit;
+    this.hud.callout(`A ÁRVORE ANCIÃ · ${lit} ${lit === 1 ? 'LAMPARINA ACESA' : 'LAMPARINAS ACESAS'}`, '#ffd84a');
+    this.pveHud.fade(true, 0.7);
+    this.world.after(0.9, () => {
+      if (this.disposed || this.phase === 'dead') return;
+      this.startTree(lit);
+      this.pveHud.fade(false, 0.8);
+    });
+  }
+
+  // a PARTE 3 (pve/arvore.js): a clareira da Árvore Anciã no centro do mundo; as ondas recomeçam do zero, com fim, sem
+  // mostrar o total; a porta de pedra do arsenal é o alvo e, se cair, a tentativa acaba
+  startTree(lit) {
+    if (this.runner) { this.runner.dispose(); this.runner = null; }
+    if (this.village) { this.villagersLeft = this.village.alive; this.village.dispose(); this.village = null; }
+    for (const k of this.pickups) if (k instanceof Chest && k.dispose) k.dispose(); // os baús da praça ficam na vila
+    this.pickups = this.pickups.filter((k) => k.alive !== false && !(k instanceof Chest));
+    this.tree = new TreeDefense(this, lit);
+    this.tree.hpMul = 1 - treeWeaken(lit) * TREE.hpCut;
+    const plan = treePlan(this.run.difficulty, lit);
+    const M = this.waves ? this.waves.M : this.mod;
+    this.waves = { n: 0, total: plan.length, plan, wait: 6, M, tree: true };
+    this.encounter = null;
+    this.phase = 'explore';
+    for (const [i, p] of this.players.entries()) {
+      p.runDir = null;
+      p.pos.set(i ? 1.4 : 0, 0, 15);
+      p.vel.set(0, 0, 0);
+      p.yaw = Math.PI; // de frente para a árvore (-z)
+      if (p.state === 'ko') continue;
+      p.setState('idle');
+    }
+    for (const v of this.views) v.rig && v.rig.update(0, [v.p], true);
+    this.tree.intro();
+    this.waveObjective();
+  }
+
+  // a porta do arsenal caiu: a tentativa acaba (sem voltar à vida com moedas)
+  onTreeLost() {
+    if (this.phase === 'dead') return;
+    this.treeLost = true;
+    this.deadFrom = 'fight';
+    this.phase = 'dead';
+    this.phaseTime = 0;
+    this.hud.callout('A PORTA DO ARSENAL CAIU', '#ff4a3a');
+    this.audio.play('ko', { volume: 1.2 });
+    this.pveHud.hint(null);
+  }
+
+  // a última onda da Árvore vencida: a fase acaba como a queda de um chefe (a recompensa onde se está)
+  finishTree(enc) {
+    enc.done = true;
+    this.finishStorm();
+    this.hud.callout('A ÁRVORE ANCIÃ RESISTIU', '#ffd84a');
+  }
+
+  // a TEMPESTADE (a última onda do Samhain) vencida: a fase acaba como a queda de um chefe (a recompensa onde se está)
+  finishStorm() {
+    const p = this.player;
+    this.encounter.done = true;
+    this.hudRemove('pve-minor');
+    this.bossDeadAt = p.pos.clone();
+    this.phase = 'bossDown';
+    this.phaseTime = 0;
+    this.revivePlayers();
+    this.hud.callout(this.D.bossDownText || 'A ONDA FINAL CAIU', '#ffd84a');
+    this.pveHud.hint(null);
   }
 
   waveKind(n) {
@@ -1005,12 +1115,25 @@ export class Dungeon {
     const next = S.n + 1;
     const fighting = this.encounter && !this.encounter.done;
     const n = fighting ? S.n : next;
-    const tag = this.waveKind(n) === 'boss' ? ' (FINAL)' : this.waveKind(n) === 'giant' ? ' (GIGANTE)' : '';
-    this.pveHud.setObjective(fighting ? `Onda ${n} de ${S.total}${tag}` : `Próxima: onda ${n} de ${S.total}${tag}`);
+    const k = this.waveKind(n);
+    if (S.tree && this.tree) {
+      // as ondas da Árvore têm fim, mas o total não aparece (TODO: "o jogador não sabe quantas faltam")
+      this.pveHud.setObjective(`${fighting ? `Onda ${n}` : 'A próxima onda vem aí'} · ${this.tree.label()}`);
+      return;
+    }
+    const tag = k === 'boss' || k === 'storm' ? ' (FINAL)' : k === 'giant' ? ' (GIGANTE)' : '';
+    const vil = this.village ? ` · ${this.village.label()}` : '';
+    this.pveHud.setObjective((fighting ? `Onda ${n} de ${S.total}${tag}` : `Próxima: onda ${n} de ${S.total}${tag}`) + vil);
   }
 
   updateWaves(dt) {
     const S = this.waves;
+    if (this.village && this.phase !== 'dead') this.village.update(dt);
+    if (this.tree && this.phase !== 'dead') {
+      this.tree.update(dt);
+      const lab = this.tree.label();
+      if (lab !== this.treeShown) { this.treeShown = lab; this.waveObjective(); }
+    }
     if (!S || S.n >= S.total || this.transit) return;
     if (this.encounter && !this.encounter.done) return;
     S.wait -= dt;
@@ -1021,6 +1144,7 @@ export class Dungeon {
   waveSpawnPoint(i, count) {
     const W = this.D.waves;
     const p = this.player;
+    if (this.tree) return this.tree.spawnPoint(i, count);
     const away = Math.atan2(-p.pos.x, -p.pos.z) + (Math.random() - 0.5) * 1.6; // do outro lado da praça
     const ang = away + (count > 1 ? ((i / (count - 1)) - 0.5) * 2.2 : 0);
     const r = (W.spawnRadius || 13) - Math.random() * 1.5;
@@ -1042,19 +1166,36 @@ export class Dungeon {
       this.waveObjective();
       return;
     }
-    this.encounter = { room: S.M, done: false, koAt: this.world.time, zombies: true, wave: n, miniboss: kind === 'giant' };
+    this.encounter = { room: S.M, done: false, koAt: this.world.time, zombies: true, wave: n, miniboss: kind === 'giant', storm: kind === 'storm' };
     if (kind === 'giant') {
       // o minichefe vem SOZINHO (pedido do dono)
-      this.spawnFoe('gigante', this.waveSpawnPoint(0, 1));
-      this.hud.callout('UM ZUMBI GIGANTE', '#ff6a3a');
+      this.spawnFoe(W.giant || 'gigante', this.waveSpawnPoint(0, 1));
+      this.hud.callout(W.giantName || 'UM ZUMBI GIGANTE', '#ff6a3a');
       this.audio.play('fearGaze', { volume: 0.8, pitch: 0.45 });
+    } else if (kind === 'storm') {
+      // A TEMPESTADE: troveja e a leva enorme vem de uma vez, por todos os lados
+      const { count, foes } = S.plan[n - 1];
+      this.village && this.village.startStorm();
+      let i = 0;
+      for (const [type, q] of Object.entries(foes)) for (let k = 0; k < q; k++) {
+        const pos = this.waveSpawnPoint(0, 1);
+        const a = (i++ / count) * Math.PI * 2 + Math.random() * 0.4;
+        const r = (W.spawnRadius || 13) - Math.random() * 2;
+        pos.set(Math.sin(a) * r, 0, Math.cos(a) * r);
+        resolveBody(this.world.arena, pos, 1.0);
+        this.spawnFoe(type, pos);
+      }
+      this.hud.callout('A TEMPESTADE', '#c8d8ff');
+      this.audio.play('fearGaze', { volume: 0.9, pitch: 0.4 });
     } else {
       // a onda cresce e MISTURA os infectados da ilha conforme a dificuldade (dungeons.js wavePlan)
       const { count, foes } = S.plan[n - 1];
       let i = 0;
       for (const [type, q] of Object.entries(foes)) for (let k = 0; k < q; k++) this.spawnFoe(type, this.waveSpawnPoint(i++, count));
       const beasts = ['javali', 'cao', 'cobra'].filter((t) => foes[t]).length;
-      this.hud.callout(beasts >= 3 ? `ONDA ${n}: JAVALIS, COBRAS E LOBOS` : foes.cao && !S.wolves ? `ONDA ${n}: OS LOBOS` : `ONDA ${n}`, '#ffd84a');
+      if (this.tree) this.hud.callout(`ONDA ${n}: ELAS VÊM PARA A ÁRVORE`, '#ffd84a');
+      else if (this.village) this.hud.callout(`ONDA ${n}: AS ASSOMBRAÇÕES`, '#ffd84a');
+      else this.hud.callout(beasts >= 3 ? `ONDA ${n}: JAVALIS, COBRAS E LOBOS` : foes.cao && !S.wolves ? `ONDA ${n}: OS LOBOS` : `ONDA ${n}`, '#ffd84a');
       if (foes.cao) S.wolves = true;
       this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
     }
@@ -1067,11 +1208,24 @@ export class Dungeon {
   // Dono escondido (this.enemy), entra em this.copias, vale XP pelo tipo (D.xp[tipo]).
   spawnFoe(type, pos, o = {}) {
     const e = this.enemy;
-    const hpMul = (o.hpMul ?? 1) * this.scale.hp;
-    const base = type === 'gigante' ? (this.D.waves && this.D.waves.giantHp) || 900 : FOE_HP[type] || FOE_HP.zumbi;
-    const opts = { duration: Infinity, hp: Math.round(base * hpMul), strong: type === 'forte' };
+    const hpMul = (o.hpMul ?? 1) * this.scale.hp * (this.tree && this.tree.hpMul ? this.tree.hpMul : 1);
+    const W = this.D.waves || {};
+    const giant = type === 'gigante' || type === W.giant;
+    const base = giant ? W.giantHp || 900 : FOE_HP[type] || FOE_HP.zumbi;
+    const opts = { duration: Infinity, hp: Math.round(base * hpMul), strong: type === 'forte' || type === 'assombracaoForte' || type === 'broen' };
     let z;
-    if (type === 'gigante') z = new GiantBloodZombie(e, this.world, pos, opts);
+    if (type === 'assombracao' || type === 'assombracaoForte' || type === 'broen') {
+      // as ASSOMBRAÇÕES de Treb Ciach: vão atrás das casas acesas e não entram na Chama de Proteção
+      const targets = this.tree ? () => this.tree.targets() : this.village ? () => this.village.targets() : null;
+      z = new Assombracao(e, this.world, pos, { ...opts, houses: targets });
+      z.fireGuard = !this.tree; // na Árvore não há a fogueira da praça
+      if (type === 'broen') {
+        // A ASSOMBRAÇÃO DE BROÉN (PROPOSTA): uma forte com a roupa um pouco mais alta (~20 cm a mais que gente, como o
+        // dono pediu: "no maximo algumas com uns 20cm mais alta por conta da roupa"), o minichefe das ondas pela vida
+        z.giant = true;
+        z.model.root.scale.multiplyScalar(1.02);
+      }
+    } else if (type === 'gigante') z = new GiantBloodZombie(e, this.world, pos, opts);
     else if (type === 'tinta') z = new InkZombie(e, this.world, pos, opts);
     else if (type === 'javali' || type === 'cao') z = new InkBeast(e, this.world, pos, { ...opts, kind: type });
     else if (type === 'cobra') z = new InkSnake(e, this.world, pos, opts);
@@ -1085,6 +1239,9 @@ export class Dungeon {
 
   onWaveCleared(enc) {
     const S = this.waves;
+    if (enc.storm) { if (this.D.waves.runner) this.startRunner(enc); else this.finishStorm(); return; }
+    if (S.tree && enc.wave >= S.total) { this.finishTree(enc); return; }
+    if (S.tree && this.tree) this.tree.rest();
     enc.done = true;
     this.hudRemove('pve-minor');
     this.hud.callout(`ONDA ${enc.wave} VENCIDA`, '#7dffb0');
@@ -1096,7 +1253,7 @@ export class Dungeon {
     S.sinceChest = (S.sinceChest || 0) + 1;
     const W = this.D.waves;
     const due = enc.miniboss || S.sinceChest >= (W.chestEvery || 2);
-    const P = this.mod.chests || [];
+    const P = (this.tree ? this.tree.chests : this.mod.chests) || [];
     const waiting = this.pickups.filter((k) => k instanceof Chest && k.alive && !k.opened);
     if (due && P.length && waiting.length < 2) {
       S.sinceChest = 0;
@@ -1108,6 +1265,10 @@ export class Dungeon {
       this.hud.callout(`ONDA ${enc.wave} VENCIDA · UM BAÚ`, '#7dffb0');
     }
     S.wait = this.D.waves.rest ?? 4;
+    if (this.village) {
+      const dim = this.village.targets().filter((h) => h.hp < h.maxHp * 0.98).length;
+      if (dim > 0) { this.pveHud.hint(`${dim} ${dim > 1 ? 'lamparinas fracas' : 'lamparina fraca'}: fique parado perto da porta para reacender a chama`); this.hintT = S.wait; }
+    }
     this.waveObjective();
   }
 
@@ -1801,6 +1962,8 @@ export class Dungeon {
     const e = this.enemy;
     // CÂMERA LIVRE: o jogador gira a câmera (mouse / analógico direito) e o personagem mira para onde ela aponta
     const out = { player: p, focus: null, free: !this.bossIntro && this.phase !== 'exit', look: V.inp.look };
+    // o corredor: a câmera atrás, olhando o caminho (o jogador não gira a câmera)
+    if (this.runner && !this.runner.done) { out.free = false; out.yaw = this.runner.yaw; out.lockRate = 8; out.dist = 6.4; out.height = 3.6; return out; }
     // TRAVADA: a câmera fica atrás do jogador olhando o alvo (o corpo mira nele; o mouse só troca de alvo)
     if (V.lockT && out.free) {
       const t = V.lockT.pos;
@@ -2110,7 +2273,8 @@ export class Dungeon {
       return;
     }
     if (!this.choosing && this.pendingRewards && this.pendingRewards.length && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) this.openReward(this.pendingRewards.shift());
-    else if (this.pendingUps > 0 && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) {
+    // no CORREDOR das lamparinas ninguém sobe de nível no meio da corrida (dono, 2026-11-19): as escolhas esperam a chegada
+    else if (this.pendingUps > 0 && !(this.runner && !this.runner.done) && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) {
       this.openLevelUp();
       return;
     }
@@ -2238,6 +2402,7 @@ export class Dungeon {
   updateRooms() {
     const p = this.player;
     if (this.waves) this.updateWaves(this.lastDt);
+    if (this.runner) this.runner.update(this.lastDt);
     const enc = this.encounter;
     if (enc && !enc.done && !enc.boss) {
       // o Devorado caiu: some, e a sala termina quando não sobra cópia
@@ -2397,7 +2562,7 @@ export class Dungeon {
     if (this.phase === 'over') return;
     this.phase = 'over';
     // onde a tentativa parou (a tela do fim mostra a rota até o chefe) e o nível alcançado
-    Object.assign(this.stats, { room: this.step, rooms: this.routeLen, boss: !!(this.mod && this.mod.kind === 'boss') || !!(this.waves && this.waves.n >= this.waves.total), waves: !!this.waves, level: this.run.level || 1 });
+    Object.assign(this.stats, { room: this.step, rooms: this.routeLen, boss: !!(this.mod && this.mod.kind === 'boss') || !!(this.waves && this.waves.n >= this.waves.total), waves: !!this.waves, villageLost: !!this.villageLost, treeLost: !!this.treeLost, tree: !!this.tree, treeWave: this.tree && this.waves ? this.waves.n : 0, level: this.run.level || 1 });
     // online: no próximo quadro da simulação (igual nos dois computadores); local: fora do quadro atual
     if (this.net) { this.endQueued = { result, stats: this.stats, run: this.run }; return; }
     setTimeout(() => { if (!this.disposed) this.onEnd && this.onEnd({ result, stats: this.stats, run: this.run }); }, 0);
@@ -2486,6 +2651,9 @@ export class Dungeon {
     this.sino && this.sino.disposeAll();
     this.minis && this.minis.dispose();
     this.bilu && this.bilu.dispose();
+    if (this.runner) { this.runner.dispose(); this.runner = null; }
+    if (this.village) { this.village.dispose(); this.village = null; }
+    if (this.tree) { this.tree.dispose(); this.tree = null; }
     this.maze && this.maze.dispose();
     for (const k of this.pickups) k.dispose();
     for (const c of this.closets) c.dispose();

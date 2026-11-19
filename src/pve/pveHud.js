@@ -153,6 +153,26 @@ export class PveHud {
     el.classList.add('on');
   }
 
+  // A PROTEÇÃO de quem se escondeu (a Árvore Anciã do Samhain: os aldeões no arsenal sob a árvore; pedido do dono,
+  // 2026-11-19: "uma barra de vida pra mostrar o quão protegidas as pessoas que estão na arvore estão"). k de 0 a 1;
+  // null = some. `hit` pisca a barra.
+  setWard(k, label = '', hit = false) {
+    let el = this.q('.pv-ward');
+    if (k == null) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'pv-ward';
+      el.innerHTML = '<small></small><div class="pv-wbar"><i></i></div><b></b>';
+      this.el.appendChild(el);
+    }
+    const pct = Math.max(0, Math.min(1, k));
+    el.querySelector('small').textContent = label;
+    el.querySelector('i').style.width = `${(pct * 100).toFixed(1)}%`;
+    el.querySelector('b').textContent = `${Math.ceil(pct * 100)}%`;
+    el.dataset.lv = pct > 0.5 ? 'ok' : pct > 0.25 ? 'warn' : 'low';
+    if (hit) { el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit'); }
+  }
+
   // o nome do golpe de uma criatura: pequeno, no canto (pedido do dono, 2026-11-06)
   moveName(text) {
     let el = this.q('.pv-move');

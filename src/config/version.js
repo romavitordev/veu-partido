@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.21.2';
+export const VERSION = '5.22.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.22.0',
+    date: '2026-11-19',
+    title: 'A Noite do Samhain em Treb Ciach',
+    items: [
+      'Fase nova no Outro Lado: A NOITE DO SAMHAIN EM TREB CIACH, em três partes. 1) PROTEJA A VILA: as ASSOMBRAÇÕES chegam em ondas pela praça da Chama de Proteção e vão atrás de você e das casas; se a lamparina da porta apagar, os aldeões de dentro morrem, e sem nenhum aldeão vivo a tentativa acaba (fique parado perto de uma porta para reacender a chama). A cada 3 ondas vem a Assombração de Broén e, no fim, a TEMPESTADE com uma leva enorme de uma vez. 2) O CORREDOR DAS LAMPARINAS: a fuga pelo caminho que sai da praça e sobe entre as árvores, cheio de Assombrações dos lados; o personagem corre sozinho, você desvia das pedras e das faixas vermelhas onde elas vão dar o bote e passa rente às lamparinas apagadas para acendê-las. 3) A ÁRVORE ANCIÃ: a clareira de margaridas e colmeias de palha em volta da árvore enorme de tronco retorcido; os aldeões se esconderam no arsenal embaixo dela e as Assombrações vêm atrás do ALÇAPÃO de pedra entre as raízes. A barra no alto mostra o quanto eles estão protegidos: se ela zerar, você perde. As ondas da Árvore têm fim, mas você não sabe quantas faltam, e cada lamparina acesa no corredor deixa as Assombrações mais fracas e em menor número. Na tela de carregamento da fase, três Assombrações juntas. As Assombrações, do tamanho de gente, usam fantasias de palha, couro e corda com máscaras de raízes, corvo, demônio e bode: as fracas deixam a fantasia caída no chão, as fortes a quebram e continuam como o espírito azul.',
+    ],
+  },
   {
     v: '5.21.2',
     date: '2026-11-19',

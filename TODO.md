@@ -48,7 +48,7 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   três de salas, com a loja, as cartas, as fusões e o save de lá.
 - [x] **Explicação da fase** (v5.19.0: `about`/`aboutShort` no card, na dificuldade e no começo; "Onda N de T" no HUD): no menu de seleção das fases (o card da fase diz que é de ondas e qual é o objetivo, por
   exemplo "proteja os aldeões") e dentro da própria fase (um aviso no começo e o objetivo/contadores no HUD).
-- [ ] **Regra de derrota por mapa:** em Treb Ciach, além da própria vida, há um contador de ALDEÕES VIVOS; as
+- [x] **Regra de derrota por mapa** (v5.22.0: `pve/samhain.js`, 15 aldeões em 8 casas; zerou, a tentativa acaba sem voltar à vida): em Treb Ciach, além da própria vida, há um contador de ALDEÕES VIVOS; as
   Assombrações vão atrás deles e a partida acaba se chegar a zero.
 - [ ] **A FASE DE TREB CIACH NO OUTRO LADO: 3 PARTES** (dono, 2026-11-18):
   > "primeiro ficaram até x rodadas derrotando ali proximo a chama de proteção mesmo, mas vai começar a trovejar muito
@@ -61,26 +61,53 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   > maior a dificuldade, mais tempo ele tem que aguentar nessas partes e mais fortes são os bichos. Imaginei a parte do
   > corredor como aqueles jogos onde o boneco fica correndo e ele tem que desviar dos ataques, como um temple run, ou
   > subway surfers."
-  - [ ] **Parte 1 — a praça da Chama de Proteção** (o `treb_ciach` atual): X ondas em volta da fogueira; no fim
+  - [x] **Parte 1 — a praça da Chama de Proteção** (v5.22.0, fase `samhain` "Proteja Treb Ciach"; 6/7/8/9/10 ondas do Fácil ao Aniquilação, a última é a TEMPESTADE com 9–17 Assombrações de uma vez; depois da tempestade vem o corredor) (o `treb_ciach` atual): X ondas em volta da fogueira; no fim
     começa a trovejar forte (os raios do motor, v4.48.1) e vem uma leva enorme de Assombrações de uma vez.
   - [ ] **Cutscene**: a massa de Assombrações chegando e o jogador fugindo para o caminho (como às 3h28–3h31 do ep. 3).
-  - [ ] **Parte 2 — o CORREDOR DAS LAMPARINAS** (estilo corrida sem fim: o personagem corre sozinho para a frente e o
+  - [x] **Parte 2 — o CORREDOR DAS LAMPARINAS** (v5.22.0: `pve/corredor.js`; corrida automática `Fighter.runDir`, 35/45/55/62/70 s do Fácil ao Aniquilação, avisos vermelhos no chão com o bote das Assombrações dos lados ou do alto, 10–24% da vida por acerto, a esquiva passa; o cenário procedural provisório — PROPOSTA refazer no Blender MCP; vencido o corredor começa a Árvore) (estilo corrida sem fim: o personagem corre sozinho para a frente e o
     jogador desvia de lado/pula/abaixa): um caminho de terra com lamparinas da Chama de Proteção dos dois lados; as
     Assombrações atacam de trás e dos lados com golpes que dão MUITO dano; aguentar por um tempo até chegar na árvore.
     Precisa de um mapa novo (o caminho em faixa longa) e de um controle novo de corrida automática.
-  - [ ] **Parte 3 — a ÁRVORE ANCIÃ** (mapa novo, como na série: o tronco enorme e retorcido, o campo de flores brancas
+    - **A função das LAMPARINAS** (dono, 2026-11-19): "quanto mais lamparinas o player acender na parte do corredor,
+      mais fraco vai ficar a parte da arvore. Vai ser essa a função das lanternas" — acender as lamparinas do corredor
+      enfraquece as ondas da Árvore Anciã (parte 3). Na parte 1 a lamparina da porta é só a vida da casa.
+      - [x] v5.22.0: as lamparinas apagadas nas beiradas; passar rente acende; o total fica em `run.samhainLamps`.
+      - [x] v5.22.0: `run.samhainLamps` na parte 3 (`treePlan`/`treeWeaken`: cada lamparina tira 3%, até 45%, das
+        Assombrações de cada onda e metade disso da vida; 14 ou mais tiram a última onda).
+    - Referências da Árvore Anciã (2026-11-19, `Referencias visuais/Mapas/treb-ciach/episodios/` AV01_0h55–1h52 e AV03_3h27–3h31; o ep. 2 não mostra o campo):
+      clareira oval ao norte da Vila (lado leste) cercada de floresta e névoa; campo levemente elevado de margaridas brancas
+      e flores amarelas, arbustos vermelhos nas beiradas; fileiras de colmeias de palha trançada; poste de madeira com
+      lanterna de ferro; a Árvore enorme, escura, tronco de fibras torcidas em espiral, galhos nus longos e retorcidos
+      abrindo para os lados, raízes grossas com a abertura (o "olho") na base.
+    - **Ajustes do dono na 1ª versão (2026-11-19)**, feitos: sem baús no corredor; o caminho SAI da praça (a abertura
+      entre as casas a noroeste, a vila fica atrás); mais claro; pedras no chão para desviar (tropeçar: 4% da vida e
+      uma travada); uma subida leve; "cheio de assombrações" dos lados (18 recicladas, só olham e esticam os braços;
+      quem ataca é o bote); "só nao devia ter arvores no caminho em si, só dos lados. No maximo pedras" (as peças do
+      mapa fundido em cima do caminho são cortadas na entrada e voltam no fim); "o player nao vai upar de nivel no meio
+      desse corredor, só depois que acabar" (as escolhas de nível esperam a chegada).
+  - [x] **Parte 3 — a ÁRVORE ANCIÃ** (v5.22.0: `pve/arvore.js`; a clareira no centro do mundo com a vila baixada;
+    a árvore procedural na escala do ep. 3 — ~7 m de tronco, ~10 m até se abrir, galhos de 14–20 m; o ALÇAPÃO de pedra
+    rente ao chão como porta de porão; a barra "Os aldeões escondidos na Árvore" no alto; 3/4/5/6/7 ondas do Fácil ao
+    Aniquilação, sem o total na tela, Broén na última; vida do alçapão 2100→1600 e +18% entre as ondas; PROPOSTA:
+    refazer a árvore no Blender MCP) (mapa novo, como na série: o tronco enorme e retorcido, o campo de flores brancas
     e douradas, a porta de pedra do arsenal entre as raízes; prints `AV03_3h28`, `3h31`, `3h41`, `4h03`): proteger a
     ENTRADA da árvore enquanto derrota as ondas, que agora têm FIM, mas o jogador não sabe quantas faltam.
-  - [ ] **Dificuldade**: quanto mais alta, mais ondas na parte 1, mais tempo no corredor, mais ondas na árvore e bichos
+    - Dono (2026-11-19): "A arvore deve ser bem maior e mais grossa, use a da série como referencia, compare com o
+      tamanho dos personagens e a porta que deve ser protegida deve ser quase uma porta de porão, mais pro chão. Deve
+      ter uma 'barra de vida' pra mostrar o quão protegidas as pessoas que estão na arvore estão" — feito.
+    - Balanceamento (`dev/samhainBattery.js`, CPU Difícil sem guardar o alçapão): Normal vence com 0 e com 8
+      lamparinas; Difícil com 10 em ~metade; Muito Difícil e Aniquilação exigem guardar o alçapão.
+    - [ ] Óleo/fogo, a lanterna do crânio de porco e a barreira de fogo (3h41) como itens; a árvore em chamas no fim.
+  - [x] **Dificuldade** (v5.22.0: 6→10 ondas na vila, 35→70 s no corredor, 3→7 ondas na Árvore, mais fortes e mais dano): quanto mais alta, mais ondas na parte 1, mais tempo no corredor, mais ondas na árvore e bichos
     mais fortes.
 - [ ] **Treb Ciach AMPLIADO para o modo** (dono: "o mapa de treb ciach para esse modo seria ampliado para essa fase"):
   pelo mapa do ep. 3 (`AV03_1h43_mapa_vilarejo.jpg`), a vila inteira com a fogueira no meio, uma casa por aldeão
   nomeado (são ~15 casas: o contador de aldeões nasce daí), a Árvore Anciã ao norte e as entradas por onde as ondas
   chegam (do pântano a leste e da floresta). PROPOSTA de jogo (a conversar com o dono):
-  - [ ] Cada casa com a lamparina da porta; entre as ondas o jogador acende as lamparinas (como no episódio, que conta
+  - [x] (v5.22.0: a lamparina é a vida da casa; parado perto da porta, sem Assombração por perto, a chama volta) Cada casa com a lamparina da porta; entre as ondas o jogador acende as lamparinas (como no episódio, que conta
     as acesas na tela) e a casa acesa fica protegida; casa apagada é alvo.
-  - [ ] As Assombrações vão para as casas e para os aldeões, não só para o jogador: é preciso escolher quem defender.
-  - [ ] O CHEFE a cada X ondas: PROPOSTA, as Assombrações de quem morreu (por exemplo a de Broén, que atacou o filho),
+  - [x] (v5.22.0) As Assombrações vão para as casas e para os aldeões, não só para o jogador: é preciso escolher quem defender.
+  - [x] (v5.22.0: a ASSOMBRAÇÃO DE BROÉN, sozinha a cada 3 ondas e na última da Árvore, com muito mais vida e do tamanho de gente) O CHEFE a cada X ondas: PROPOSTA, as Assombrações de quem morreu (por exemplo a de Broén, que atacou o filho),
     maiores e sozinhas; a onda final é a defesa na Árvore Anciã (barreira de fogo, como às 3h41).
   - [ ] Inimigos com as fantasias do Samhain (crânio de cervo, bode, carneiro, vime): vivos e Assombrações parecidos,
     e acertar um aldeão fantasiado custa caro.
@@ -92,16 +119,16 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   fogueira e vêm numa ONDA só até a ÁRVORE ANCIÃ, onde o grupo faz a última defesa (barreira de óleo em chamas, a
   lanterna do crânio de porco quebrada no fogo afasta as Assombrações, o Sino Amaldiçoado atrai, o jarro de abelhas)
   e se tranca no arsenal sob a pedra. PROPOSTA de fase:
-  - [ ] Entre as ondas: acender lamparinas pelas casas (cada uma acesa enfraquece as próximas ondas); errar e acender
+  - [ ] (decidido pelo dono em 2026-11-19: o efeito de enfraquecer fica nas lamparinas do CORREDOR, valendo para a Árvore) Entre as ondas: acender lamparinas pelas casas (cada uma acesa enfraquece as próximas ondas); errar e acender
     a de um morto custa caro.
   - [ ] Onda final na Árvore Anciã: proteger a porta de pedra do arsenal; óleo/fogo e a lanterna do crânio de porco
     como itens; a árvore pega fogo no fim (cânone).
-  - [ ] Inimigo novo: Assombração (fumaça azul, agarra e dissipa; precisa de modelo no Blender MCP).
+  - [x] Inimigo novo: Assombração (v5.22.0; do TAMANHO DE GENTE — dono: "no maximo algumas com uns 20cm mais alta por conta da roupa": o modelo a 0,93, a forte do mesmo tamanho, Broén 2% maior, flutuando só 6 cm: `npc_assombracao.py` no Blender MCP; o espírito azul dentro da FANTASIA — manto de capuz amarrado ou capa de palha, e máscara de raízes com galhada, corvo pintado, demônio de couro ou bode; a fraca deixa a fantasia caída no chão, a forte a quebra e segue como o espírito azul).
 - [x] **Ilha de Tipora** (v5.19.0, "Ondas em Tipora"): a praça aberta; ondas de Zumbis de Sangue (2 → 7, os fortes a
   partir da 4ª), o ZUMBI GIGANTE sozinho a cada 3 ondas (deixa um baú) e o AMIGO IMAGINÁRIO na última; 7/9/10/12/13
   ondas do Fácil ao Aniquilação. Entre a Mansão e a Torre (O Segredo na Ilha, 2021). PROPOSTA: o gigante, o Amigo como
   chefe da última onda e as quantidades.
-  - [ ] **As outras criaturas da ilha** (cânone, imagem da wiki enviada pelo dono em 2026-11-19: "essas são as
+  - [x] **As outras criaturas da ilha** (v5.21.0) (cânone, imagem da wiki enviada pelo dono em 2026-11-19: "essas são as
     criaturas da ilha"): ZUMBI DE TINTA (o humano tomado pela tinta), JAVALIS INFECTADOS, COBRAS INFECTADAS e
     CACHORROS SELVAGENS INFECTADOS. Cada um precisa de modelo no Blender MCP (e de IA própria: o cachorro rápido em
     matilha, o javali na investida, a cobra que dá o bote e prende); depois entram nas ondas de Tipora no lugar de parte

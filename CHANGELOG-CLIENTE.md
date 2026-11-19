@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.22.0 — A Noite do Samhain em Treb Ciach
+- Fase nova no Outro Lado: A NOITE DO SAMHAIN EM TREB CIACH, em três partes. 1) PROTEJA A VILA: as ASSOMBRAÇÕES chegam em ondas pela praça da Chama de Proteção e vão atrás de você e das casas; se a lamparina da porta apagar, os aldeões de dentro morrem, e sem nenhum aldeão vivo a tentativa acaba (fique parado perto de uma porta para reacender a chama). A cada 3 ondas vem a Assombração de Broén e, no fim, a TEMPESTADE com uma leva enorme de uma vez. 2) O CORREDOR DAS LAMPARINAS: a fuga pelo caminho que sai da praça e sobe entre as árvores, cheio de Assombrações dos lados; o personagem corre sozinho, você desvia das pedras e das faixas vermelhas onde elas vão dar o bote e passa rente às lamparinas apagadas para acendê-las. 3) A ÁRVORE ANCIÃ: a clareira de margaridas e colmeias de palha em volta da árvore enorme de tronco retorcido; os aldeões se esconderam no arsenal embaixo dela e as Assombrações vêm atrás do ALÇAPÃO de pedra entre as raízes. A barra no alto mostra o quanto eles estão protegidos: se ela zerar, você perde. As ondas da Árvore têm fim, mas você não sabe quantas faltam, e cada lamparina acesa no corredor deixa as Assombrações mais fracas e em menor número. Na tela de carregamento da fase, três Assombrações juntas. As Assombrações, do tamanho de gente, usam fantasias de palha, couro e corda com máscaras de raízes, corvo, demônio e bode: as fracas deixam a fantasia caída no chão, as fortes a quebram e continuam como o espírito azul.
+
 ## v5.21.2 — Agarrões na Medida
 - Os golpes do AMIGO IMAGINÁRIO que agarram (Derreter, Agarrão e Dissolver) acompanham o tamanho novo dele: a vítima fica na frente do manto, presa pela garra sob o capuz, em vez de sumir dentro do corpo da criatura.
 

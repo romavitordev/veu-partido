@@ -1,5 +1,28 @@
 # Registro administrativo de alterações
 
+## v5.22.0 — A Noite do Samhain em Treb Ciach
+
+- Versão: `VERSION` 5.21.2 → **5.22.0**. Data: 2026-11-19. O MAPA NOVO DE TREB CIACH numa versão só (dono: "Quero que todo esse
+  mapa novo de treb ciach lance numa unica versão com uma unica changelog explicando tudo"): parte 1 (a vila), parte 2 (o
+  corredor) e parte 3 (a Árvore Anciã). Referências: o REVELANDO, os eps. 1–3 de A Vigília e o mapa da wiki em
+  `Referencias visuais/Mapas/treb-ciach/` (a Árvore: AV01_0h55–1h52 e AV03_3h27–3h31; o ep. 2 não mostra o campo).
+- Dono sobre a Árvore: "bem maior e mais grossa, use a da série como referencia, compare com o tamanho dos personagens";
+  "a porta que deve ser protegida deve ser quase uma porta de porão, mais pro chão"; "uma barra de vida pra mostrar o quão
+  protegidas as pessoas que estão na arvore estão". Escala medida no ep. 3 (3h30): o tronco ~4 personagens de largura.
+- Conferido no jogo: a vila (perde sem reacender; vence com as casas protegidas), o corredor (45 s no Normal, as lamparinas
+  acendem, as escolhas de nível esperam a chegada), a passagem corredor → Árvore (fade, sem erros, o cenário volta), a
+  derrota na Árvore ("A porta do arsenal caiu", sem voltar à vida com moedas) e a vitória (a recompensa).
+- BALANCEAMENTO da Árvore (`dev/samhainBattery.js`, a CPU Difícil lutando SEM guardar o alçapão): Normal vence com 0
+  lamparinas (fim 22%) e com 8 (27–51%); Difícil com 10 em metade das vezes; Muito Difícil e Aniquilação perdem sem
+  guardar o alçapão (de propósito: ali é preciso defendê-lo). Antes do ajuste o Normal perdia com 0 e com 8.
+- Dono: "porque a assombração estava tão grande? Elas tem que ter tamanho normal, no maximo algumas com uns 20cm mais
+  alta por conta da roupa": o modelo a 0,93 (`ASSOMBRACAO_FIT`), a forte do mesmo tamanho, Broén 2% maior (antes 1,18 e
+  1,71), flutuando 6 cm (antes 18), a multidão do corredor 0,96–1,05 (antes até 1,2). Medido no jogo: a mais alta, com a
+  máscara de chifres, fica ~20 cm acima do personagem. A bateria da Árvore repetida depois: o equilíbrio se manteve.
+- PROPOSTA: a Assombração de Broén, todas as quantidades, a vida das lamparinas e do alçapão, o reacender, os tempos e
+  o dano do corredor, o corte das lamparinas; o corredor e a clareira são procedurais provisórios (refazer no Blender MCP).
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.21.2 — Agarrões na Medida
 
 - Versão: `VERSION` 5.21.1 → **5.21.2**. Data: 2026-11-19. O que ficou pendente na v5.21.1 (as animações de golpe com o

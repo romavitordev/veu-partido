@@ -1374,6 +1374,8 @@ export class Fighter {
   moveInputWorld(out) {
     const b = this.moveBasis();
     out.set(0, 0, 0);
+    // CORRIDA AUTOMÁTICA (o corredor das lamparinas, pve/corredor.js): sempre para a frente; o comando só desvia de lado
+    if (this.runDir) return out.copy(this.runDir).addScaledVector(b.right, this.input.moveX * 0.9);
     out.addScaledVector(b.right, this.input.moveX);
     out.addScaledVector(b.forward, this.input.moveY);
     // Controle Mental (Gal): o corpo obedece ao contrário

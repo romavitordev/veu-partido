@@ -11,7 +11,8 @@ import estrangeiroDef from '../characters/bosses/estrangeiro.js';
 import amigoBossDef from '../characters/bosses/amigo.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels, isModelLoaded } from '../models/index.js';
-import { renderPortraits } from '../ui/portraits.js';
+import { renderPortraits, renderGroupPortrait } from '../ui/portraits.js';
+import { buildAssombracao } from '../models/assombracao.js';
 import { renderArenaThumbs } from '../ui/arenaThumbs.js';
 import { Dungeon } from './Dungeon.js';
 import { DUNGEONS, DUNGEON_ORDER, PVE_DIFFICULTIES, isAllowed, diffLabel, phaseDepth, phaseUnlocked, phaseCleared, phaseRecord, diffUnlocked, clampDiff } from './dungeons.js';
@@ -364,7 +365,17 @@ export function createPveFlow(ctx) {
         console.warn('Outro Lado: retrato do chefe', e);
       }
     }
-    loading.setOpponentPortrait(portraits[D.boss]);
+    // fase sem chefe único (o Samhain): três Assombrações juntas, cada uma com uma máscara
+    if (!D.boss && D.waves && D.waves.foes === 'samhain' && !portraits._samhain) {
+      try {
+        const gang = [['Manto', 'Corvo'], ['Palha', 'Raizes'], ['Manto', 'Bode']].map(([outfit, mask]) => buildAssombracao({ outfit, mask }));
+        portraits._samhain = renderGroupPortrait(gang.map((g) => g.root), renderer);
+        // (os clones dividem a geometria do .glb das Assombrações: nada a liberar aqui; o retrato fica em cache)
+      } catch (e) {
+        console.warn('Outro Lado: retrato das Assombrações', e);
+      }
+    }
+    loading.setOpponentPortrait(D.boss ? portraits[D.boss] : portraits._samhain);
     loading.progress(0.8);
     if (game.state !== 'loading' || game.screen !== loading) return;
     if (net0 && !online()) return; // a conexão caiu durante o carregamento
@@ -450,7 +461,7 @@ export function createPveFlow(ctx) {
     }
     const bossCls = won ? 'done' : s.boss ? 'here' : '';
     segs.push(`<i class="boss ${bossCls}" title="${esc(D.bossName || 'Chefe')}">☠</i>`);
-    const where = won ? `${esc(D.bossName || 'O chefe')} caiu` : s.boss ? `Caiu diante de ${esc(D.bossName || 'o chefe')}` : room ? `Caiu na ${s.waves ? 'onda' : 'sala'} ${room} de ${rooms}` : s.waves ? 'Caiu antes da 1ª onda' : 'Caiu na entrada';
+    const where = won ? (D.wonText ? esc(D.wonText) : `${esc(D.bossName || 'O chefe')} caiu`) : s.villageLost ? `Nenhum aldeão sobreviveu (onda ${room} de ${rooms + 1})` : s.treeLost ? `A porta do arsenal caiu (onda ${s.treeWave} na Árvore Anciã)` : s.tree ? `Caiu defendendo a Árvore Anciã (onda ${s.treeWave})` : s.boss ? `Caiu diante de ${esc(D.bossName || 'o chefe')}` : room ? `Caiu na ${s.waves ? 'onda' : 'sala'} ${room} de ${rooms}` : s.waves ? 'Caiu antes da 1ª onda' : 'Caiu na entrada';
     let recTxt = 'sem recorde ainda';
     if (recordNew) recTxt = record ? `antes ${fmtTime(record)}` : 'primeira vitória';
     else if (record) recTxt = `recorde ${fmtTime(record)}`;

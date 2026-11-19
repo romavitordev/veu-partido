@@ -16,6 +16,7 @@ export const NPC_MODELS = {
   cao_tinta: 'npcs/cao_tinta.glb',
   cobra_tinta: 'npcs/cobra_tinta.glb', // a Cobra Infectada (as ondas de Tipora e a fúria do Amigo)
   zumbi_tinta: 'npcs/zumbi_tinta.glb', // o Zumbi de Tinta (O Segredo na Ilha)
+  assombracao: 'npcs/assombracao.glb', // a Assombração fantasiada (A Vigília; tools/blender/npc_assombracao.py)
   esfinge: 'npcs/esfinge.glb', // o Carniçal da Esfinge (especial da Nubi)
   rastropoda: 'npcs/rastropoda.glb', // o Rastropoda (miniboss da Torre; tools/blender/npc_rastropoda.py)
   bilu: 'npcs/bilu.glb', // o Bilu (o quarto escuro da Torre; tools/blender/npc_bilu.py)

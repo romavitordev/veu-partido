@@ -114,7 +114,7 @@ test('salvamento: dado quebrado ou de outra versão não derruba', () => {
 });
 
 test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a profundidade escala', () => {
-  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador', 'tipora', 'estrangeiro']);
+  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador', 'tipora', 'estrangeiro', 'samhain']);
   assert.deepEqual(DUNGEON_ORDER, Object.values(DUNGEONS).filter((d) => !d.hidden).sort((a, b) => a.storyOrder - b.storyOrder).map((d) => d.id));
   assert.equal(new Set(Object.values(DUNGEONS).map((d) => d.storyOrder)).size, Object.keys(DUNGEONS).length, 'cada fase futura precisa de uma posição cronológica própria');
   assert.deepEqual(validDungeons(1), ['degolificada']);
@@ -557,4 +557,20 @@ test('Dificuldades trancadas por fase: Fácil e Normal abertos; cada uma abre ve
   assert.equal(clampDiff(normal, 'espreitador', 'hard'), 'normal');
   assert.equal(clampDiff(normal, 'degolificada', 'hard'), 'hard');
   assert.equal(clampDiff(novo, 'degolificada', 'easy'), 'easy');
+});
+
+test('Árvore Anciã: as lamparinas do corredor enfraquecem as ondas (menos Assombrações, menos ondas a partir de 14)', async () => {
+  const { treePlan, treeWeaken } = await import('../src/pve/dungeons.js');
+  const none = treePlan('normal', 0);
+  const some = treePlan('normal', 10);
+  const many = treePlan('normal', 16);
+  const sum = (p) => p.reduce((n, w) => n + w.count, 0);
+  assert.equal(none.length, 4);
+  assert.ok(sum(some) < sum(none));
+  assert.equal(many.length, 3);
+  assert.equal(treeWeaken(0), 0);
+  assert.equal(treeWeaken(100), 0.45);
+  for (const d of Object.keys(PVE_DIFFICULTIES)) for (const w of treePlan(d, 0)) assert.ok(w.count >= 2 && Object.values(w.foes).every((q) => q > 0));
+  assert.ok(!treePlan('easy', 0).some((w) => w.foes.broen));
+  assert.ok(none[none.length - 1].foes.broen === 1);
 });
