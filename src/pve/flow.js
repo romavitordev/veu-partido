@@ -11,7 +11,7 @@ import estrangeiroDef from '../characters/bosses/estrangeiro.js';
 import amigoBossDef from '../characters/bosses/amigo.js';
 import { ARENAS, preloadPveArena } from '../arena/index.js';
 import { ensureModels, isModelLoaded } from '../models/index.js';
-import { renderPortraits, renderGroupPortrait } from '../ui/portraits.js';
+import { renderPortraits, renderGroupPortrait, renderNpcPortrait } from '../ui/portraits.js';
 import { buildAssombracao } from '../models/assombracao.js';
 import { renderArenaThumbs } from '../ui/arenaThumbs.js';
 import { Dungeon } from './Dungeon.js';
@@ -366,6 +366,11 @@ export function createPveFlow(ctx) {
         console.warn('Outro Lado: retrato do chefe', e);
       }
     }
+    // O Quibungo nÃ£o Ã© lutador do elenco: renderiza o GLB da fera no mesmo padrÃ£o visual dos retratos do carregamento.
+    if (D.waves && D.waves.foes === 'sertao' && !portraits.quibungo) {
+      try { portraits.quibungo = await renderNpcPortrait('quibungo', renderer); }
+      catch (e) { console.warn('Outro Lado: retrato do Quibungo', e); }
+    }
     // fase sem chefe único (o Samhain): três Assombrações juntas, cada uma com uma máscara
     if (!D.boss && D.waves && D.waves.foes === 'samhain' && !portraits._samhain) {
       try {
@@ -376,7 +381,7 @@ export function createPveFlow(ctx) {
         console.warn('Outro Lado: retrato das Assombrações', e);
       }
     }
-    loading.setOpponentPortrait(D.boss ? portraits[D.boss] : portraits._samhain);
+    loading.setOpponentPortrait(D.waves && D.waves.foes === 'sertao' ? portraits.quibungo : D.boss ? portraits[D.boss] : portraits._samhain);
     loading.progress(0.8);
     if (game.state !== 'loading' || game.screen !== loading) return;
     if (net0 && !online()) return; // a conexão caiu durante o carregamento

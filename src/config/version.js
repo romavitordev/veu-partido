@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.38.0';
+export const VERSION = '5.39.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.39.0',
+    date: '2026-11-20',
+    title: 'O Bestiário da Coroa de Espinhos',
+    items: [
+      'SERTÃO DO QUIBUNGO: ondas com Araras Devoradas, Felinos Devorados e o chefe Quibungo; no Aniquilação também aparecem as variantes Infernais. O chefe entra pela mata, ruge, usa quatro braços e a língua da bocarra nas costas, enfurece na metade da vida e recebe 1,5× dano de fogo.',
+      'O carregamento agora mostra o retrato renderizado do Quibungo. A entrada do Amigo Imaginário foi refeita com poça de tinta, tentáculos, sino fantasma e planos de câmera.',
+    ],
+  },
   {
     v: '5.38.0',
     date: '2026-11-20',

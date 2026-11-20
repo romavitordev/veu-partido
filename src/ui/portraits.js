@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { buildModel } from '../models/index.js';
 import { disposeRigResources } from '../models/glbRig.js';
 import { Animator } from '../anim/Animator.js';
+import { buildNpcModel, ensureNpcModels } from '../models/npcRig.js';
 
 // Gera retratos dos personagens renderizando o modelo 3D uma vez (dataURL).
 // Quando houver artes oficiais, basta trocar por <img> das artes.
@@ -99,6 +100,66 @@ export function renderPortraits(roster, renderer, { w = 300, h = 400, anim: anim
         target.dispose();
       }
     }
+  }
+}
+
+// Retrato de um NPC feito no Blender (um modelo fora do elenco jogável), usado no carregamento das fases de ondas.
+export async function renderNpcPortrait(id, renderer, { w = 300, h = 400, turn = 0.35 } = {}) {
+  await ensureNpcModels([id]);
+  const rig = buildNpcModel(id, { outline: 0.016, noOutline: ['vein', 'fang', 'claw', 'gum', 'maw', 'spine', 'glow'] });
+  if (!rig) return null;
+
+  const target = new THREE.WebGLRenderTarget(w, h, { samples: 4 });
+  target.texture.colorSpace = THREE.SRGBColorSpace;
+  const scene = new THREE.Scene();
+  scene.add(new THREE.HemisphereLight(0xc8b8ff, 0x201830, 1.3));
+  const key = new THREE.DirectionalLight(0xffffff, 2.4);
+  key.position.set(2, 3, 4);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xa46bff, 2.5);
+  rim.position.set(-3, 2, -3);
+  scene.add(rim);
+  const root = rig.root;
+  root.rotation.y = turn;
+  scene.add(root);
+  root.updateMatrixWorld(true);
+  const bounds = new THREE.Box3().setFromObject(root);
+  const size = bounds.getSize(new THREE.Vector3());
+  const center = bounds.getCenter(new THREE.Vector3());
+  const span = Math.max(size.x, size.y, size.z, 1);
+  const cam = new THREE.PerspectiveCamera(28, w / h, 0.1, span * 8);
+  const distance = (span * 0.62) / Math.tan(THREE.MathUtils.degToRad(cam.fov / 2));
+  cam.position.set(center.x + distance * 0.16, center.y + size.y * 0.08, center.z + distance);
+  cam.lookAt(center.x, center.y, center.z);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const pixels = new Uint8Array(w * h * 4);
+  const prevTarget = renderer.getRenderTarget();
+  const prevClear = renderer.getClearAlpha();
+  const prevClearColor = renderer.getClearColor(new THREE.Color());
+  renderer.setClearColor(0x000000, 0);
+  try {
+    renderer.setRenderTarget(target);
+    renderer.clear();
+    renderer.render(scene, cam);
+    renderer.readRenderTargetPixels(target, 0, 0, w, h, pixels);
+    const img = ctx.createImageData(w, h);
+    for (let y = 0; y < h; y++) img.data.set(pixels.subarray((h - 1 - y) * w * 4, (h - y) * w * 4), y * w * 4);
+    paintBackground(ctx, w, h);
+    const tmp = document.createElement('canvas');
+    tmp.width = w;
+    tmp.height = h;
+    tmp.getContext('2d').putImageData(img, 0, 0);
+    ctx.drawImage(tmp, 0, 0);
+    return canvas.toDataURL('image/png');
+  } finally {
+    renderer.setRenderTarget(prevTarget);
+    renderer.setClearColor(prevClearColor, prevClear);
+    target.dispose();
+    disposeRigResources(root);
   }
 }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.39.0 — O Bestiário da Coroa de Espinhos
+
+### Adicionado
+- Sertão do Quibungo: ondas com Araras Devoradas, Felinos Devorados e o chefe Quibungo; no Aniquilação também aparecem as variantes Infernais. O chefe entra pela mata, ruge, usa quatro braços e a língua da bocarra nas costas, enfurece na metade da vida e recebe 1,5× dano de fogo.
+- Retrato do Quibungo renderizado a partir do GLB no carregamento. A entrada do Amigo Imaginário ganhou poça de tinta, tentáculos, sino fantasma e planos de câmera.
+
 ## v5.38.0 — O Morro do Quibungo
 
 ### Adicionado

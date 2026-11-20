@@ -49,6 +49,7 @@ import { SpecialStandIn } from './duble.js';
 import { PillarRoom } from './pillars.js';
 import { EstrangeiroBrain } from './estrangeiro.js';
 import { AmigoBrain, growBoss, AMIGO_SIZE, INK_DROP } from './amigo.js';
+import { inkSplash, inkTentacle, ghostBell } from '../fx/inkFx.js';
 import { SinoMechanics } from './sino.js';
 import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
@@ -1330,7 +1331,7 @@ export class Dungeon {
     this.waveObjective();
   }
 
-  // a cena curta do chefe das ondas: ele se ergue de uma poça de tinta do outro lado da praça (ninguém luta nela)
+  // o Amigo Imaginário emerge da tinta: poça, tentáculos, sino e aproximação de câmera antes da luta.
   wavesBossIntro(r) {
     const e = this.enemy;
     const w = this.world;
@@ -1347,7 +1348,24 @@ export class Dungeon {
     e.setVisible(true);
     e.setState('intro');
     e.anim.play('idle', { restart: true });
+    const spot = new THREE.Vector3(at.x, 0.04, at.z);
+    inkSplash(w, spot, { size: 2.2, life: 3.2 });
     w.fx.burst(new THREE.Vector3(at.x, 0.4, at.z), { count: 50, color: 0x2a120a, kind: 'smoke', speed: 2.6, life: 1.1, size: 1, grow: 1 });
+    const bell = ghostBell(w, () => e.chestPos().add(new THREE.Vector3(0, 1.6, 0)), { life: 2.8, size: 0.8 });
+    const tendrils = [];
+    const target = () => e.chestPos();
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      const from = new THREE.Vector3(at.x + Math.sin(a) * 1.5, 0.03, at.z + Math.cos(a) * 1.5);
+      tendrils.push(inkTentacle(w, from, target, { grow: 0.45, hold: 1.8, retract: 0.35, radius: 0.12, arc: 1.2, coil: true }));
+    }
+    const focus = () => e.chestPos();
+    w.cameraRig.playShots([
+      { dur: 0.85, pos: () => new THREE.Vector3(at.x + 5.2, 2.0, at.z + 5.2), look: focus },
+      { dur: 1.05, pos: () => new THREE.Vector3(at.x + 3.3, 2.4, at.z + 3.0), look: focus },
+      { dur: 1.0, pos: () => new THREE.Vector3(at.x - 3.8, 2.7, at.z + 2.4), look: focus },
+    ]);
+    w.beginCinematic(e, null);
     this.audio.play('bellToll', { volume: 0.9, pitch: 0.8 });
     this.hud.callout(this.D.bossName, this.D.color);
     let t = 0;
@@ -1355,8 +1373,18 @@ export class Dungeon {
       c: null,
       update: (dt) => {
         t += dt;
-        if (t < 0.9 && Math.random() < 0.5) w.fx.burst(new THREE.Vector3(at.x, 0.2, at.z), { count: 4, color: 0x5a1e10, speed: 1.6, up: 2, life: 0.5, size: 0.3 });
-        return t > 1.8;
+        if (t > 0.8 && !this.wavesInkRaised) {
+          this.wavesInkRaised = true;
+          w.fx.burst(new THREE.Vector3(at.x, 0.8, at.z), { count: 34, color: 0x5a2410, speed: 3, up: 2.5, life: 0.7, size: 0.3, gravity: 5 });
+          bell.toll();
+          this.audio.play('bellToll', { volume: 0.8, pitch: 0.65 });
+        }
+        if (t < 1.6 && Math.random() < 0.5) w.fx.burst(new THREE.Vector3(at.x, 0.2, at.z), { count: 4, color: 0x5a1e10, speed: 1.6, up: 2, life: 0.5, size: 0.3 });
+        if (t <= 2.9) return false;
+        tendrils.forEach((h) => h.release());
+        w.endCinematic();
+        this.wavesInkRaised = false;
+        return true;
       },
     };
   }
