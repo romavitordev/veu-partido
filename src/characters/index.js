@@ -90,11 +90,11 @@ export const ROSTER = [
   // quem é de DUAS equipes (2026-10-27): `origin` é a equipe em que ele fica na seleção (e a cor do retrato); `teams`
   // lista as outras — aparecem como etiqueta extra no cartão e na ficha (ex.: o Arnaldo, Portador E Ordo Realitas)
   juanPortador, arnaldo, // Portadores (Sangue, Energia)
-  celestine, // Ordo Calamitas (2026-11-20, dono: fica junto a eles, sem a etiqueta de Portadores)
-  gaius, // Ordo Calamitas (Calamidade, 67 d.C.) — o Gaius; no RB/LB, o AMPHITRUO (a versão transformada)
-  amalia, // Ordo Calamitas — A Flecha, a arqueira (Calamidade)
-  veritus, veritus_rancor, nero, faustus, marius, remus, // Ordo Calamitas (v5.32.0): o líder (e o Sacrifício do Rancor, a versão de Hexatombe), o imperador e os guerreiros jogados nos episódios
-  cascadia, cornelius, karise, marcellus, // ...e os outros membros da Ordo Calamitas (personagens do mestre)
+  // ORDO CALAMITAS na grade (dono, 2026-11-20): os membros sem versão em cima; na última linha Nero, Veritus (⇄ Rancor) e
+  // o GAIUS (⇄ Amphitruo) por último — colado nos Portadores/Relíquias. A Celestine fica junto a eles, sem a etiqueta de
+  // Portadores; Amalia é A Flecha; Cascadia, Cornelius, Karise e Marcellus são personagens do mestre
+  celestine, amalia, faustus, marius, remus, cascadia, cornelius, karise, marcellus,
+  nero, veritus, veritus_rancor, gaius,
   ferreiro, oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (o Ferreiro desde 2026-11-20; Sangue, Morte, Conhecimento, Energia)
   estrangeiro, amigo, carnical, degolificada, espreitador, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
 ];

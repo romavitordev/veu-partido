@@ -96,10 +96,10 @@ export const JAE_KIT = {
       name: 'Shhh...',
       input: 'carga+ranged', // △ → □
       type: 'shadowVeil',
-      description: 'Leva o dedo aos lábios e some nas sombras (4 s): quase invisível e mais rápida, o adversário perde o rastro dela. O primeiro ataque sai do escuro e pega o alvo DESPREVENIDO. Sem rastro: especiais que grudam no alvo e projéteis teleguiados NÃO a acham. Tomar dano a revela.',
+      description: 'Leva o dedo aos lábios e some nas sombras (até 6 s): quase invisível e mais rápida, o adversário perde o rastro dela. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. Teleguiados não a acham. O primeiro ataque dela sai do escuro e pega o alvo DESPREVENIDO.',
       energyCost: 20,
       cooldown: 12,
-      duration: 4,
+      duration: 6,
       opacity: 0.12,
       speedMult: 1.15,
       surprise: 0.6,

@@ -394,7 +394,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Bater e Reposicionar** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 34 · alcance 1.9 m
   Entra com o mangual quebrando a guarda e, no mesmo movimento, rola para as costas do alvo: ele fica DESPREVENIDO e sem chance de revidar.
 - **Furtividade** — △ + L2 / Y + LT · custo 20 · cooldown 14 s
-  Sai da vista do adversário (3 s): quase invisível e um pouco mais rápida; o primeiro ataque pega o alvo DESPREVENIDO (Ataque Furtivo). Tomar dano a revela.
+  Sai da vista do adversário (até 5 s): quase invisível e um pouco mais rápida. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo DESPREVENIDO (Ataque Furtivo).
 - **Pergaminho da Pertinácia** — R2 + △ / RT + Y · custo 0 · cooldown 24 s
   Lê o Pergaminho da Pertinácia: recupera 30 de sanidade e as esquivas, e por 6 s aguenta um golpe sem recuar.
 - **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
@@ -1484,7 +1484,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Punhal X** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 38 · alcance 1.9 m
   Avança com o Punhal X num corte em X: quem é acertado fica CEGO por um instante — não consegue se defender nem se virar, e fica desprevenido.
 - **Shhh...** — △ + □ / Y + X · custo 20 · cooldown 12 s
-  Leva o dedo aos lábios e some nas sombras (4 s): quase invisível e mais rápida, o adversário perde o rastro dela. O primeiro ataque sai do escuro e pega o alvo DESPREVENIDO. Sem rastro: especiais que grudam no alvo e projéteis teleguiados NÃO a acham. Tomar dano a revela.
+  Leva o dedo aos lábios e some nas sombras (até 6 s): quase invisível e mais rápida, o adversário perde o rastro dela. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. Teleguiados não a acham. O primeiro ataque dela sai do escuro e pega o alvo DESPREVENIDO.
 - **Assassinato Furtivo** — △ + L2 / Y + LT · custo 25 · cooldown 10 s
   Some e surge pelas costas do alvo já apunhalando: ele fica desprevenido e o golpe entra com o bônus de assassina.
 - **Zona dos Sussurros** — R2 + △ / RT + Y · custo 25 · cooldown 18 s
@@ -2274,51 +2274,6 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
-## GAIUS
-
-*O mais velho da Ordo Calamitas: reclama da idade, mas sabe muito bem a força que tem* · arma: A maça pequena de ferro
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Maçada | 32 | 2 m |  |
-| ○ 2 | Revés da Maça | 32 | 2 m |  |
-| ○ 3 | Empurrão do Veterano | 26 | 1.7 m |  |
-| ○ 4 | Maça de Cima | 44 | 2.1 m |  |
-| ○ 5 | Ainda Dou Conta | 62 | 2.3 m | finalizador: lança |
-| Frente + ○ | Passo Pesado | 38 | 2.2 m |  |
-| Trás + ○ | Recuo e Contragolpe | 36 | 2.2 m | invulnerável no começo |
-| Lado + ○ | Maçada Larga | 34 | 2.3 m |  |
-| No ar + ○ | Queda da Maça | 38 | 2.2 m | desce com impacto |
-| ↑ + ○ (no combo) | Maça para Cima | 40 | 2.1 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Esmagar | 48 | 2.1 m | finalizador: derruba |
-
-### Principal (□ / X): Maça Arremessada
-
-- Dano 34 · alcance 13 m · cooldown 2.8 s · custo 0
-
-### Habilidades
-
-- **Golpe do Veterano** — △ + ○ / Y + B · custo 30 · cooldown 12 s · dano 88 · alcance 2.2 m
-  Firma os pés, ergue a maça e desce com tudo — gasta muito da defesa e derruba. Preparação longa (aguenta um golpe pequeno depois de firmar); errar deixa ele aberto.
-- **Anular** — △ + L2 / Y + LT · custo 25 · cooldown 18 s
-  Já viu de tudo e sabe desmanchar um poder: por 3 s as HABILIDADES usadas contra ele não causam dano (golpes físicos, tiros e especiais ainda doem).
-- **Carga do Veterano** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 52 · alcance 2.2 m
-  Abaixa o ombro e avança com a maça por baixo — quebra a defesa e empurra longe.
-- **Cansado, Mas Firme** — R2 + △ / RT + Y · custo 20 · cooldown 18 s
-  Respira fundo e se planta: por 6 s recebe 25% menos dano, é empurrado bem menos e aguenta 2 golpes sem recuar.
-
-### Especial: Ciente da Própria Força
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: A Relíquia de Energia
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
-
----
-
 ## AMALIA
 
 *A Flecha: a arqueira da Ordo Calamitas — fala pouco, acerta sempre* · arma: O grande arco verde e as flechas flamejantes
@@ -2361,143 +2316,6 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Transformação: Memória Revivida
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (distância, habilidades), +8% de velocidade, recargas 30% mais rápidas, cura 10% na hora.
-
----
-
-## VERITUS
-
-*O líder da Ordo Calamitas, guardião das Relíquias — e, por baixo do elmo, um segredo de Conhecimento* · arma: A espada longa do líder
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Corte do Líder | 32 | 2.5 m |  |
-| ○ 2 | Revés Longo | 32 | 2.5 m |  |
-| ○ 3 | Ponta da Espada | 30 | 2.8 m |  |
-| ○ 4 | Corte de Cima | 44 | 2.5 m |  |
-| ○ 5 | Ordem da Calamidade | 64 | 2.7 m | finalizador: lança |
-| Frente + ○ | Passo do Comandante | 38 | 2.4 m |  |
-| Trás + ○ | Guarda do Líder | 0 | 0 m | contra-ataque (revida 56) |
-| Lado + ○ | Roda da Espada Longa | 34 | 2.6 m |  |
-| No ar + ○ | Espada do Alto | 38 | 2.5 m | desce com impacto |
-| ↑ + ○ (no combo) | Espada para Cima | 40 | 2.5 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Golpe de Juízo | 50 | 2.5 m | finalizador: derruba |
-
-### Principal (□ / X): Corte de Energia
-
-- Dano 32 · alcance 16 m · cooldown 2.8 s · custo 0
-
-### Habilidades
-
-- **Sacrifício** — △ + L2 / Y + LT · custo 0 · cooldown 18 s
-  Cede 1 PONTO DE EXISTÊNCIA (10% da vida; precisa sobrar 1). Na equipe, as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche; sozinho, a sanidade, a guarda e as esquivas enchem e ele bate 15% mais forte por 6 s.
-- **Líder da Ordo** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
-  Ergue a espada e dá a ordem: por 7 s recebe 20% menos dano, aguenta 2 golpes sem recuar e os golpes saem 15% mais fortes; na equipe, as assistências ficam prontas.
-- **Ponta de Losango** — △ + ○ / Y + B · custo 26 · cooldown 11 s · dano 70 · alcance 2.6 m
-  Avança com a ponta em losango da espada longa: a estocada QUEBRA A DEFESA de quem está bloqueando e empurra longe.
-- **Proteger o Imperador** — R2 + × / RT + A · custo 22 · cooldown 20 s
-  Planta a espada na frente: por 6 s recebe 35% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
-- **Passiva — Resistente:** −8% de dano físico e de tiros e projéteis recebido
-
-### Especial: O Sacrifício do Líder
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: A Revelação
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
-
----
-
-## SACRIFÍCIO DO RANCOR
-
-*O sacrifício que venceu o Hexatombe: o Kian, marcado pelo Rancor, que ganhou o Trono e nunca o usou* · arma: Os punhos enfaixados, os rituais do Kian e o Estigma do Rancor
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Jab | 22 | 1.7 m |  |
-| ○ 2 | Direto | 26 | 1.8 m |  |
-| ○ 3 | Gancho | 30 | 1.8 m |  |
-| ○ 4 | Joelhada | 28 | 1.5 m |  |
-| ○ 5 | Sobrevivente | 58 | 2 m | finalizador: lança |
-| Frente + ○ | Avanço de Ombro | 36 | 2 m |  |
-| Trás + ○ | Passo e Cruzado | 32 | 1.9 m | invulnerável no começo |
-| Lado + ○ | Gancho Largo | 32 | 2 m |  |
-| No ar + ○ | Queda do Sacrifício | 36 | 2 m | desce com impacto |
-| ↑ + ○ (no combo) | Uppercut | 38 | 1.8 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Pisão do Ritual | 44 | 1.9 m | finalizador: derruba |
-
-### Principal (□ / X): Sangue do Estigma
-
-- Dano 30 · alcance 15 m · cooldown 2.6 s · custo 0
-
-### Habilidades
-
-- **Teletransporte do Rancor** — R2 + × / RT + A · custo 20 · cooldown 7 s
-  O Teletransporte do Kian tingido pelo Rancor: some e reaparece; sem direção, surge ao lado do adversário já socando.
-- **Lâmina do Medo do Rancor** — △ + ○ / Y + B · custo 40 · cooldown 22 s · dano 130 · alcance 2.8 m
-  A Lâmina do Medo em vermelho: o golpe curto que quebra a defesa e deixa o alvo SANGRANDO (o Rancor). Errar deixa ele exposto.
-- **Toque da Morte** — △ + L2 / Y + LT · custo 40 · cooldown 50 s · dano 30 · alcance 1.3 m
-  Toca o alvo e o envelhece: definha, fica lento e mais FRACO até o fim do round. Curtíssimo alcance; dá para esquivar. Recarga muito longa.
-- **Levitação do Rancor** — R2 + △ / RT + Y · custo 30 · cooldown 15 s · dano 17 · alcance 18 m
-  Ergue a mão e as pedras do chão sobem em volta dele, encharcadas de sangue; depois voam uma a uma contra o alvo.
-- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
-
-### Especial: Sob a Lua de Sangue
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: O Primeiro Ocultista
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +6% de velocidade, recargas 60% mais rápidas, cura 10% na hora.
-
----
-
-## NERO
-
-*Nero, o imperador de Roma e líder da Ordo Calamitas — superior, cheio de regras, e as mãos tremem quando mente* · arma: A espada longa e curva e o escudo redondo
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Corte Imperial | 28 | 2.3 m |  |
-| ○ 2 | Revés Curvo | 28 | 2.3 m |  |
-| ○ 3 | Escudada | 26 | 1.7 m |  |
-| ○ 4 | Corte Diagonal | 34 | 2.3 m |  |
-| ○ 5 | Sentença do Imperador | 60 | 2.5 m | finalizador: lança |
-| Frente + ○ | Avanço do Escudo | 36 | 2 m |  |
-| Trás + ○ | Recuo Real | 34 | 2.4 m | invulnerável no começo |
-| Lado + ○ | Meia-Lua | 32 | 2.4 m |  |
-| No ar + ○ | Espada do Alto | 36 | 2.3 m | desce com impacto |
-| ↑ + ○ (no combo) | Corte Ascendente | 38 | 2.3 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Ajoelhe-se | 46 | 2.3 m | finalizador: derruba |
-
-### Principal (□ / X): Meia-Lua de Energia
-
-- Dano 30 · alcance 16 m · cooldown 2.6 s · custo 0
-
-### Habilidades
-
-- **Imperador** — △ + L2 / Y + LT · custo 24 · cooldown 15 s · alcance 10 m
-  A ordem do imperador: os estados BONS do adversário (força, proteção, velocidade) passam para Nero. Sem nenhum, o adversário AJOELHA por 1 s e 30 de sanidade dele vão para Nero.
-- **Conspirador** — △ + ○ / Y + B · custo 20 · cooldown 16 s · alcance 12 m
-  Oferece a conspiração por 4 s: se o adversário bater nele (trair), GANHA 1 ponto de existência, mas fica MARCADO como traidor por 12 s e Nero bate 40% mais forte nele. Se ninguém trair, o ponto fica com Nero.
-- **Escudo Imperial** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
-  Avança atrás do escudo redondo e corta por cima: quebra a defesa e empurra longe.
-- **Regras do Imperador** — R2 + △ / RT + Y · custo 26 · cooldown 18 s · alcance 12 m
-  Um decreto por 6 s, na ordem: SEM VINHO (nada cura e a sanidade volta pela metade), FORMALIDADE (lento e sem esquiva), SILÊNCIO (sem habilidades).
-
-### Especial: Roma em Chamas
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: Memória Revivida
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades), +6% de velocidade, recargas 20% mais rápidas, cura 12% na hora.
 
 ---
 
@@ -2758,7 +2576,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Estudar o Alvo** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 16 m
   Estuda o adversário: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.
 - **Sombra da Ordo** — R2 + × / RT + A · custo 20 · cooldown 14 s
-  Puxa o capuz e sai da vista (3 s): quase invisível e mais rápida; o primeiro ataque pega o alvo DESPREVENIDO. Tomar dano a revela.
+  Puxa o capuz e sai da vista (até 5 s): quase invisível e mais rápida. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo DESPREVENIDO.
 - **Leque de Adagas** — R2 + △ / RT + Y · custo 22 · cooldown 10 s
   Gira para trás, intocável no salto, e solta quatro adagas em leque no adversário.
 - **Passiva:** golpes físicos pelas costas causam +25%
@@ -2815,6 +2633,188 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Transformação: Memória Revivida
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +8% de velocidade, recargas 25% mais rápidas, cura 10% na hora.
+
+---
+
+## NERO
+
+*Nero, o imperador de Roma e líder da Ordo Calamitas — superior, cheio de regras, e as mãos tremem quando mente* · arma: A espada longa e curva e o escudo redondo
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte Imperial | 28 | 2.3 m |  |
+| ○ 2 | Revés Curvo | 28 | 2.3 m |  |
+| ○ 3 | Escudada | 26 | 1.7 m |  |
+| ○ 4 | Corte Diagonal | 34 | 2.3 m |  |
+| ○ 5 | Sentença do Imperador | 60 | 2.5 m | finalizador: lança |
+| Frente + ○ | Avanço do Escudo | 36 | 2 m |  |
+| Trás + ○ | Recuo Real | 34 | 2.4 m | invulnerável no começo |
+| Lado + ○ | Meia-Lua | 32 | 2.4 m |  |
+| No ar + ○ | Espada do Alto | 36 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte Ascendente | 38 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Ajoelhe-se | 46 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Meia-Lua de Energia
+
+- Dano 30 · alcance 16 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Imperador** — △ + L2 / Y + LT · custo 24 · cooldown 15 s · alcance 10 m
+  A ordem do imperador: os estados BONS do adversário (força, proteção, velocidade) passam para Nero. Sem nenhum, o adversário AJOELHA por 1 s e 30 de sanidade dele vão para Nero.
+- **Conspirador** — △ + ○ / Y + B · custo 20 · cooldown 16 s · alcance 12 m
+  Oferece a conspiração por 4 s: se o adversário bater nele (trair), GANHA 1 ponto de existência, mas fica MARCADO como traidor por 12 s e Nero bate 40% mais forte nele. Se ninguém trair, o ponto fica com Nero.
+- **Escudo Imperial** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
+  Avança atrás do escudo redondo e corta por cima: quebra a defesa e empurra longe.
+- **Regras do Imperador** — R2 + △ / RT + Y · custo 26 · cooldown 18 s · alcance 12 m
+  Um decreto por 6 s, na ordem: SEM VINHO (nada cura e a sanidade volta pela metade), FORMALIDADE (lento e sem esquiva), SILÊNCIO (sem habilidades).
+
+### Especial: Roma em Chamas
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Memória Revivida
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades), +6% de velocidade, recargas 20% mais rápidas, cura 12% na hora.
+
+---
+
+## VERITUS
+
+*O líder da Ordo Calamitas, guardião das Relíquias — e, por baixo do elmo, um segredo de Conhecimento* · arma: A espada longa do líder
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte do Líder | 32 | 2.5 m |  |
+| ○ 2 | Revés Longo | 32 | 2.5 m |  |
+| ○ 3 | Ponta da Espada | 30 | 2.8 m |  |
+| ○ 4 | Corte de Cima | 44 | 2.5 m |  |
+| ○ 5 | Ordem da Calamidade | 64 | 2.7 m | finalizador: lança |
+| Frente + ○ | Passo do Comandante | 38 | 2.4 m |  |
+| Trás + ○ | Guarda do Líder | 0 | 0 m | contra-ataque (revida 56) |
+| Lado + ○ | Roda da Espada Longa | 34 | 2.6 m |  |
+| No ar + ○ | Espada do Alto | 38 | 2.5 m | desce com impacto |
+| ↑ + ○ (no combo) | Espada para Cima | 40 | 2.5 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Golpe de Juízo | 50 | 2.5 m | finalizador: derruba |
+
+### Principal (□ / X): Corte de Energia
+
+- Dano 32 · alcance 16 m · cooldown 2.8 s · custo 0
+
+### Habilidades
+
+- **Sacrifício** — △ + L2 / Y + LT · custo 0 · cooldown 18 s
+  Cede 1 PONTO DE EXISTÊNCIA (10% da vida; precisa sobrar 1). Na equipe, as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche; sozinho, a sanidade, a guarda e as esquivas enchem e ele bate 15% mais forte por 6 s.
+- **Líder da Ordo** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
+  Ergue a espada e dá a ordem: por 7 s recebe 20% menos dano, aguenta 2 golpes sem recuar e os golpes saem 15% mais fortes; na equipe, as assistências ficam prontas.
+- **Ponta de Losango** — △ + ○ / Y + B · custo 26 · cooldown 11 s · dano 70 · alcance 2.6 m
+  Avança com a ponta em losango da espada longa: a estocada QUEBRA A DEFESA de quem está bloqueando e empurra longe.
+- **Proteger o Imperador** — R2 + × / RT + A · custo 22 · cooldown 20 s
+  Planta a espada na frente: por 6 s recebe 35% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
+- **Passiva — Resistente:** −8% de dano físico e de tiros e projéteis recebido
+
+### Especial: O Sacrifício do Líder
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: A Revelação
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## SACRIFÍCIO DO RANCOR
+
+*O sacrifício que venceu o Hexatombe: o Kian, marcado pelo Rancor, que ganhou o Trono e nunca o usou* · arma: Os punhos enfaixados, os rituais do Kian e o Estigma do Rancor
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Jab | 22 | 1.7 m |  |
+| ○ 2 | Direto | 26 | 1.8 m |  |
+| ○ 3 | Gancho | 30 | 1.8 m |  |
+| ○ 4 | Joelhada | 28 | 1.5 m |  |
+| ○ 5 | Sobrevivente | 58 | 2 m | finalizador: lança |
+| Frente + ○ | Avanço de Ombro | 36 | 2 m |  |
+| Trás + ○ | Passo e Cruzado | 32 | 1.9 m | invulnerável no começo |
+| Lado + ○ | Gancho Largo | 32 | 2 m |  |
+| No ar + ○ | Queda do Sacrifício | 36 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Uppercut | 38 | 1.8 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão do Ritual | 44 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Sangue do Estigma
+
+- Dano 30 · alcance 15 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Teletransporte do Rancor** — R2 + × / RT + A · custo 20 · cooldown 7 s
+  O Teletransporte do Kian tingido pelo Rancor: some e reaparece; sem direção, surge ao lado do adversário já socando.
+- **Lâmina do Medo do Rancor** — △ + ○ / Y + B · custo 40 · cooldown 22 s · dano 130 · alcance 2.8 m
+  A Lâmina do Medo em vermelho: o golpe curto que quebra a defesa e deixa o alvo SANGRANDO (o Rancor). Errar deixa ele exposto.
+- **Toque da Morte** — △ + L2 / Y + LT · custo 40 · cooldown 50 s · dano 30 · alcance 1.3 m
+  Toca o alvo e o envelhece: definha, fica lento e mais FRACO até o fim do round. Curtíssimo alcance; dá para esquivar. Recarga muito longa.
+- **Levitação do Rancor** — R2 + △ / RT + Y · custo 30 · cooldown 15 s · dano 17 · alcance 18 m
+  Ergue a mão e as pedras do chão sobem em volta dele, encharcadas de sangue; depois voam uma a uma contra o alvo.
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
+
+### Especial: Sob a Lua de Sangue
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Primeiro Ocultista
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +6% de velocidade, recargas 60% mais rápidas, cura 10% na hora.
+
+---
+
+## GAIUS
+
+*O mais velho da Ordo Calamitas: reclama da idade, mas sabe muito bem a força que tem* · arma: A maça pequena de ferro
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Maçada | 32 | 2 m |  |
+| ○ 2 | Revés da Maça | 32 | 2 m |  |
+| ○ 3 | Empurrão do Veterano | 26 | 1.7 m |  |
+| ○ 4 | Maça de Cima | 44 | 2.1 m |  |
+| ○ 5 | Ainda Dou Conta | 62 | 2.3 m | finalizador: lança |
+| Frente + ○ | Passo Pesado | 38 | 2.2 m |  |
+| Trás + ○ | Recuo e Contragolpe | 36 | 2.2 m | invulnerável no começo |
+| Lado + ○ | Maçada Larga | 34 | 2.3 m |  |
+| No ar + ○ | Queda da Maça | 38 | 2.2 m | desce com impacto |
+| ↑ + ○ (no combo) | Maça para Cima | 40 | 2.1 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Esmagar | 48 | 2.1 m | finalizador: derruba |
+
+### Principal (□ / X): Maça Arremessada
+
+- Dano 34 · alcance 13 m · cooldown 2.8 s · custo 0
+
+### Habilidades
+
+- **Golpe do Veterano** — △ + ○ / Y + B · custo 30 · cooldown 12 s · dano 88 · alcance 2.2 m
+  Firma os pés, ergue a maça e desce com tudo — gasta muito da defesa e derruba. Preparação longa (aguenta um golpe pequeno depois de firmar); errar deixa ele aberto.
+- **Anular** — △ + L2 / Y + LT · custo 25 · cooldown 18 s
+  Já viu de tudo e sabe desmanchar um poder: por 3 s as HABILIDADES usadas contra ele não causam dano (golpes físicos, tiros e especiais ainda doem).
+- **Carga do Veterano** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 52 · alcance 2.2 m
+  Abaixa o ombro e avança com a maça por baixo — quebra a defesa e empurra longe.
+- **Cansado, Mas Firme** — R2 + △ / RT + Y · custo 20 · cooldown 18 s
+  Respira fundo e se planta: por 6 s recebe 25% menos dano, é empurrado bem menos e aguenta 2 golpes sem recuar.
+
+### Especial: Ciente da Própria Força
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: A Relíquia de Energia
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
 
 ---
 
@@ -3084,7 +3084,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Comandar** — △ + ○ / Y + B · custo 35 · cooldown 18 s · alcance 11 m
   Entra na mente do alvo (um anel verde fecha no chão em volta dele antes — dá para esquivar): por alguns segundos ele anda sozinho até o Estrangeiro e não consegue se defender. Quem é controlado pode RESISTIR: cada botão apertado encurta o controle.
 - **Oblívio** — △ + □ / Y + X · custo 22 · cooldown 14 s
-  O alvo ESQUECE que ele está ali (4 s): quase invisível e mais rápido. O primeiro ataque pega o alvo desprevenido. Tomar dano o revela.
+  O alvo ESQUECE que ele está ali (até 6 s): quase invisível e mais rápido. FURTIVO: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo desprevenido.
 - **Aparição** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 7 s
   Some numa interferência de sinal e reaparece atrás do alvo, como nas abduções.
 - **Abdução** — R2 + △ / RT + Y · custo 25 · cooldown 14 s · dano 40 · alcance 14 m

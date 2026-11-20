@@ -532,7 +532,9 @@ kbd { display: inline-block; padding: 0 5px; border: 1px solid #5a5268; border-b
   100% { transform: scale(1.12); box-shadow: 0 0 18px #ffd84a; border-color: #ffd84a; color: #fff; }
 }
 
-#stage .stages { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 6px; width: 100%; margin: 0 auto; overflow: hidden; padding: 4px; }
+/* a grade cabe na ALTURA também: 2 fileiras de cartões 16:10 em 8 colunas ocupam largura/6,4 de altura, então a largura
+   não passa de (altura livre) × 6,4 — sem isso, em telas baixas (notebook com zoom, janela pequena) a 2ª fileira cortava */
+#stage .stages { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-auto-rows: auto; gap: 6px; width: min(100%, max(440px, calc((100dvh - 270px) * 6.4))); margin: 0 auto; overflow: hidden; padding: 4px; }
 .stagecard.off { display: none !important; }
 .stagecard { position: relative; aspect-ratio: 16 / 10; border: 2px solid #2a2433; border-radius: 3px; overflow: hidden; background: #15111c; cursor: pointer; transition: transform .12s ease-out, border-color .12s, box-shadow .12s, filter .12s; filter: brightness(.72) saturate(.85); }
 .stagecard img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -547,12 +549,17 @@ kbd { display: inline-block; padding: 0 5px; border: 1px solid #5a5268; border-b
 .stage-confirm { display: none; position: relative; z-index: 1; margin: 6px auto; min-height: 44px; padding: 8px 24px; border: 2px solid #ffd84a; border-radius: 6px; background: linear-gradient(180deg, rgba(255,216,74,.25), rgba(80,50,10,.5)); box-shadow: 0 0 18px rgba(255,216,74,.3); color: #fff; font: 800 15px Inter, sans-serif; letter-spacing: .1em; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 body.touch-capable #stage .stage-confirm { display: block; }
 @media (max-width: 760px), (max-height: 520px) {
-  #stage .stages { grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); max-height: none; }
+  #stage .stages { width: min(100%, max(360px, calc((100dvh - 150px) * 6.4))); }
   #stage .stage-side-arrow { width: 22px; height: 42px; font-size: 13px; }
   #stage .sdesc, #stage .hint { display: none; }
   #stage .stagecard .sn { font-size: 10px; }
 }
-@media (max-width: 480px) { #stage .stages { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+/* celular em pé: 4 colunas × 4 fileiras (a página continua de 16; Screens.js lê as colunas da grade) */
+@media (max-width: 760px) and (orientation: portrait) {
+  #stage .stages { grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; }
+  #stage .stagecard .sn { font-size: 11px; }
+  #stage .stitle { font-size: 30px; }
+}
 
 /* tela de carregamento */
 #loading { gap: 18px; background: radial-gradient(ellipse at center, #2a1840, #050308 70%); }
@@ -1712,6 +1719,10 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 .pve-hub { display: flex; align-items: center; justify-content: center; padding: 16px; background: radial-gradient(ellipse at 50% 30%, #2a0f1acc, #060307ee 70%); font-family: Inter, system-ui, sans-serif; color: #e8e2d4; }
 .pve-hub button { font: inherit; color: inherit; cursor: pointer; }
 .pve-hub .ph-wrap { width: min(720px, 100%); display: flex; flex-direction: column; gap: 14px; }
+/* telas do Outro Lado mais altas que a janela: ROLAM (antes o .screen escondia o excesso e a centralização cortava o
+   título em cima e o VOLTAR embaixo). margin:auto centraliza quando cabe e encosta no topo quando não cabe */
+.pve-hub { overflow-y: auto; overscroll-behavior: contain; justify-content: flex-start; } /* margin:auto centraliza quando cabe; quando não cabe, começa no topo (o center cortava o título) */
+.pve-hub > .ph-wrap { flex: none; margin: auto; }
 .pve-hub .ph-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .pve-hub .ph-top small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .3em; color: #b06a7a; }
 .pve-hub h1 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: clamp(44px, 8vw, 72px); line-height: .9; letter-spacing: .06em; color: #f4ece0; text-shadow: 0 0 30px #e0204a55; }
@@ -1811,6 +1822,20 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 .pve-choice .ph-foot { justify-content: flex-end; }
 .pve-choice .ph-sm button.on { color: #ffd84a; background: #2a1a10e6; }
 @media (max-width: 560px) { .pve-choice .pc-grid { grid-template-columns: 1fr; } .pve-choice .pc-grid button { min-height: 0; } }
+/* a ESCOLHA A FASE em telas baixas: mais larga (3 colunas cabem) e com a prévia mais achatada, para os 6 cartões e o
+   VOLTAR caberem sem rolar num notebook */
+@media (max-height: 820px) and (min-width: 900px) {
+  .pve-choice .ph-wrap:has(.pc-grid button.pic) { width: min(1040px, 100%); gap: 10px; }
+  .screen.pve-choice .pc-grid button.pic figure { aspect-ratio: 21 / 8; } /* .screen: vence a regra 16/9 que vem depois */
+  .screen.pve-choice .pc-grid button.pic { min-height: 0; padding-bottom: 12px; }
+  .pve-choice:has(.pc-grid button.pic) h1 { font-size: clamp(34px, 5vh, 52px); }
+  .pve-choice:has(.pc-grid button.pic) .pc-sub { font-size: 13px; }
+}
+@media (max-height: 640px) and (min-width: 900px) {
+  .screen.pve-choice .pc-grid button.pic figure { aspect-ratio: 3 / 1; }
+  .pve-choice:has(.pc-grid button.pic) .pc-sub { display: none; }
+  .pve-choice .pc-grid button.pic small { font-size: 12px; }
+}
 
 /* AS CENAS DA TORRE (pve/torreIntros.js): o véu de TRANSMISSÃO — neve, linhas de varredura, o corte de chiado (.hit) e,
    pela lente da câmera do tripé (.rec), o REC piscando, o contador e a moldura verde */

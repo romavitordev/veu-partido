@@ -100,10 +100,10 @@ export default {
       name: 'Oblívio',
       input: 'carga+ranged', // △ → □
       type: 'shadowVeil',
-      description: 'O alvo ESQUECE que ele está ali (4 s): quase invisível e mais rápido. O primeiro ataque pega o alvo desprevenido. Tomar dano o revela.',
+      description: 'O alvo ESQUECE que ele está ali (até 6 s): quase invisível e mais rápido. FURTIVO: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo desprevenido.',
       energyCost: 22,
       cooldown: 14,
-      duration: 4,
+      duration: 6,
       opacity: 0.12,
       speedMult: 1.12,
       surprise: 0.6,

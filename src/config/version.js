@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.39.1';
+export const VERSION = '5.40.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.40.0',
+    date: '2026-11-20',
+    title: 'A Tinta e as Sombras',
+    items: [
+      'Furtividade refeita: quem fica invisível (Shhh... da Jae, Furtividade da Carina, Oblívio, Sombra da Ordo e Zona das Sombras) desvia dos 2 próximos ataques ou de um especial, que gasta a furtividade inteira. Um combo de várias batidas conta como um ataque. Atacar não revela mais, e o primeiro ataque ainda pega o alvo desprevenido.',
+      'Entrada do Amigo Imaginário: a tinta escorre do alto da tela até cobri-la inteira; o rosto dele aparece em lampejos, encarando quem joga, e a luta começa.',
+      'Quibungo: a língua da bocarra das costas virou um ataque de verdade, que sobe por cima dele como aviso, estica até o alvo e puxa de longe. O modelo não tem mais olhos.',
+      'Seleção de fases do Outro Lado e seleção de mapas ajustadas a telas baixas e ao celular: título, cartões e VOLTAR não cortam mais. O cartão do Sertão mostra “Sertão do Quibungo”.',
+      'Seleção de personagem: na Ordo Calamitas, os membros sem versão ficam em cima e a última linha é Nero, Veritus e Gaius, com o Gaius por último, ao lado das Relíquias.',
+    ],
+  },
   {
     v: '5.39.1',
     date: '2026-11-20',

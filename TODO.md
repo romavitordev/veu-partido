@@ -629,6 +629,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **A tinta e as sombras** — v5.40.0: furtividade que desvia de 2 ataques ou 1 especial, a tinta na tela na entrada do Amigo, a língua do Quibungo (sem olhos) e as seleções de fases e mapas responsivas.
 - [x] **O morro do Quibungo** — v5.38.0: mapa novo do sertão (HEX ep. 5), noite e dia.
 - [x] **Os visitantes do Samhain** — v5.37.1: 20 aldeões em Treb Ciach, cinco casas com um visitante que é a segunda chance.
 - [x] **O Carniçal de lodo** — v5.37.0: modelo novo com musculatura, fibras, tendões e caveira suja; retrato atualizado.
@@ -1460,7 +1461,7 @@ Para cada personagem, produzir a análise `habilidade atual → código real →
 
 - [x] **3.17 Park Jae-Yoon (`src/characters/jae.js`; forma `forms/jae_x.js`):** auditado em 2026-11-01 (wiki "Park Jae-Yoon"): Assassinato Furtivo, Zona dos Sussurros, Punhal X e, com o Capuz de X, Assassinato Cruel e Zona das Sombras (armadilha de Conhecimento, 3 m) batem. Sem mudanças.
   - Confirmar distinção entre Jae sem máscara e X/Capuz de X com mudança de comportamento.
-  - Furtividade deve criar janela tática curta com aviso sonoro/visual e resposta, sem invisibilidade injusta.
+  - [x] Furtividade deve criar janela tática curta com aviso sonoro/visual e resposta, sem invisibilidade injusta. (v5.40.0: 2 cargas de esquiva ou 1 especial, com fumaça e aviso a cada desvio)
   - Diferenciar punhaladas rápidas, arremesso e ataque surpresa em alcance e recuperação.
   - Confirmar pronome e nome consistentes na UI (Jae, X, Park Jae-Yoon).
   - Testar furtividade contra CPU, lock-on, ataque pelas costas e esquiva.

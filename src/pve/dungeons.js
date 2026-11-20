@@ -500,6 +500,7 @@ export const DUNGEONS = {
     storyOrder: 3.5, // Hexatombe (2025): antes de A Vigília
     name: 'Sertão do Quibungo',
     place: 'Coroa de Espinhos',
+    cardName: 'Sertão do Quibungo', // o cartão da ESCOLHA A FASE (o lugar, Coroa de Espinhos, fica na HUD da luta)
     thumb: { from: 'sertao' },
     color: '#ff4a2a',
     arena: 'sertao',
@@ -1003,7 +1004,7 @@ export function treePlan(difficulty = 'normal', lamps = 0) {
   return out;
 }
 
-  // `hidden`: fora da ordem da história e do sorteio
+// `hidden`: fora da ordem da história e do sorteio
 export const DUNGEON_ORDER = Object.values(DUNGEONS)
   .filter((dungeon) => !dungeon.hidden)
   .sort((a, b) => a.storyOrder - b.storyOrder)

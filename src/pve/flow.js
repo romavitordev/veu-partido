@@ -229,7 +229,7 @@ export function createPveFlow(ctx) {
       }
       return {
         id: `phase:${id}`,
-        label: `${i + 1}. ${D.place.toUpperCase()}`,
+        label: `${i + 1}. ${(D.cardName || D.place).toUpperCase()}`, // cardName: quando o lugar não é o nome da fase (o Sertão)
         icon: open ? (done ? '★' : '▶') : '🔒',
         desc,
         tag: open ? (done ? `★ ${won.length || 1}/${DIFF_IDS().length}` : D.waves ? 'ONDAS' : 'NOVA') : 'TRANCADA',
@@ -366,7 +366,7 @@ export function createPveFlow(ctx) {
         console.warn('Outro Lado: retrato do chefe', e);
       }
     }
-    // O Quibungo nÃ£o Ã© lutador do elenco: renderiza o GLB da fera no mesmo padrÃ£o visual dos retratos do carregamento.
+    // O Quibungo não é lutador do elenco: renderiza o GLB da fera no mesmo padrão visual dos retratos do carregamento.
     if (D.waves && D.waves.foes === 'sertao' && !portraits.quibungo) {
       try { portraits.quibungo = await renderNpcPortrait('quibungo', renderer); }
       catch (e) { console.warn('Outro Lado: retrato do Quibungo', e); }

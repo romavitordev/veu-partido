@@ -391,11 +391,13 @@ BLOOD_ZOMBIE.quibungo = {
     claw: { windup: 0.38, active: 0.14, recovery: 0.45, range: 3.6, arc: 150, damage: 36, cd: 1.4, knockback: 4.5 },
     flurry: { windup: 0.45, active: 0.1, recovery: 0.6, range: 3.4, arc: 160, damage: 15, cd: 5.5, knockback: 1.5, hits: [0.45, 0.62, 0.79, 0.96] },
     slam: { windup: 0.75, active: 0.14, recovery: 0.8, range: 4.4, arc: 360, damage: 60, cd: 6, knockback: 9, knockdown: true },
-    tongue: { windup: 0.6, active: 0.2, recovery: 0.6, range: 10, arc: 40, damage: 20, cd: 6.5, knockback: 0, pull: 7 },
+    // a LÍNGUA da bocarra das costas (dono, 2026-11-20: "o quimbungo nao ataca com a lingua das costas ainda"): sobe por
+    // cima dele e chicoteia até o alvo — de longe PUXA para perto; de perto vale como uma chicotada que derruba
+    tongue: { windup: 0.55, active: 0.25, recovery: 0.55, range: 11, arc: 50, damage: 22, cd: 4.5, knockback: 0, pull: 7 },
     leap: { windup: 0.7, active: 0.55, recovery: 0.75, range: 3.6, arc: 180, damage: 48, cd: 9, knockback: 7, knockdown: true, dash: 15 },
     roar: { windup: 0.3, active: 1.2, recovery: 0.4, range: 99, arc: 360, damage: 0, cd: 999, knockback: 0, self: true },
   },
-  firstCd: { claw: 0.5, flurry: 2.5, slam: 3.5, tongue: 2, leap: 4, roar: 999 },
+  firstCd: { claw: 0.5, flurry: 2.5, slam: 3.5, tongue: 1.2, leap: 4, roar: 999 },
   enrage: { at: 0.5, speed: 1.3, cd: 0.7 },
 };
 
@@ -468,8 +470,9 @@ export class Quibungo extends BloodZombie {
   pickAttack(d) {
     const c = this.cds;
     const A = this.cfg.attacks;
+    if (d > 4 && d < A.tongue.range - 0.5 && c.tongue <= 0) return 'tongue';
     if (d > 6.5 && d < 13 && c.leap <= 0 && Math.random() < 0.5) return 'leap';
-    if (d > 4.5 && d < A.tongue.range && c.tongue <= 0) return 'tongue';
+    if (d > 2.2 && c.tongue <= 0 && Math.random() < 0.3) return 'tongue';
     if (d < 3.6 && c.slam <= 0 && Math.random() < 0.35) return 'slam';
     if (d < 3.2 && c.flurry <= 0 && Math.random() < 0.45) return 'flurry';
     if (d < A.claw.range - 0.3 && c.claw <= 0) return 'claw';
@@ -493,7 +496,71 @@ export class Quibungo extends BloodZombie {
       this.world.audio.play('fearGaze', { volume: 1, pitch: 0.28 });
     }
     if (this.enraged && this.state === 'chase') for (const k in this.cds) this.cds[k] = Math.max(0, this.cds[k] - dt * (1 / this.cfg.enrage.cd - 1));
-    return super.update(dt);
+    const r = super.update(dt);
+    if (this.alive) this.updateTongue();
+    return r;
+  }
+
+  // A LÍNGUA DO ATAQUE: um tubo de carne que sai da bocarra das costas, sobe por cima dele (o aviso), estica até o alvo
+  // e volta. A língua do modelo some enquanto isso (ela "virou" este tubo).
+  updateTongue() {
+    const a = this.state === 'attack' && this.atk && this.atk.pull ? this.atk : null;
+    const J = this.model.joints;
+    const g1 = J.tongue && J.tongue[0];
+    if (!a) {
+      if (this.lash) this.lash.visible = false;
+      if (g1) g1.visible = true;
+      return;
+    }
+    if (!this.lash) {
+      const mat = new THREE.MeshToonMaterial({ color: 0x8a2a4a, emissive: 0x2a0610 });
+      const g = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.7, 1, 10, 1).translate(0, 0.5, 0), mat);
+      const tip = new THREE.Mesh(new THREE.SphereGeometry(1.5, 10, 8), mat);
+      g.add(body, tip);
+      g.userData = { body, tip };
+      this.world.scene.add(g);
+      this.lash = g;
+    }
+    const st = this.stateT;
+    const from = (g1 || this.model.root).getWorldPosition(new THREE.Vector3());
+    const tg = a.caught || this.target;
+    const goal = tg ? tg.chestPos() : from.clone().add(forwardFromYaw(this.yaw, new THREE.Vector3()).multiplyScalar(6));
+    if (st < a.windup && tg) a.aim = goal.clone(); // mira até o fim do aviso; depois de lançada, dá para esquivar
+    const aim = a.caught ? goal : a.aim || goal;
+    const up = from.clone().add(new THREE.Vector3(0, 2.4, 0)).addScaledVector(forwardFromYaw(this.yaw, new THREE.Vector3()), -0.6);
+    let tip;
+    if (st < a.windup) tip = from.clone().lerp(up, Math.min(1, st / (a.windup * 0.7))); // sobe por cima, se debatendo
+    else if (st < a.windup + a.active) tip = up.clone().lerp(aim, Math.min(1, (st - a.windup) / (a.active * 0.6)));
+    else tip = aim.clone().lerp(from, Math.min(1, (st - a.windup - a.active) / (a.recovery * 0.8)));
+    if (st < a.windup) tip.x += Math.sin(st * 30) * 0.15;
+    const dir = tip.clone().sub(from);
+    const len = Math.max(0.05, dir.length());
+    const L = this.lash;
+    L.visible = true;
+    L.position.copy(from);
+    L.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+    const r = 0.11;
+    L.userData.body.scale.set(r, len, r);
+    L.userData.tip.scale.setScalar(r);
+    L.userData.tip.position.set(0, len, 0);
+    if (g1) g1.visible = false;
+    // quem foi pego vem junto com a língua de volta
+    if (a.caught && st > a.windup + a.active && a.caught.state !== 'ko') {
+      const c = a.caught;
+      const toMe = new THREE.Vector3(this.pos.x - c.pos.x, 0, this.pos.z - c.pos.z);
+      if (toMe.length() > this.radius + 1.4) { c.pos.x = tip.x; c.pos.z = tip.z; }
+    }
+  }
+
+  dispose() {
+    if (this.lash) {
+      this.world.scene.remove(this.lash);
+      this.lash.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
+      this.lash.userData.body.material.dispose();
+      this.lash = null;
+    }
+    super.dispose();
   }
 
   strike(a, tg, d) {
@@ -510,8 +577,11 @@ export class Quibungo extends BloodZombie {
       // a LÍNGUA da bocarra das costas: acerta de longe e PUXA o alvo para perto
       const inArc = Math.abs(angleDiff(this.yaw, yawTo(this.pos, tg.pos))) <= (a.arc * DEG) / 2;
       if (!(d - tg.radius <= a.range && inArc && Math.abs(tg.pos.y - this.pos.y) < 2.6) || tg.isInvulnerable()) return true;
-      const dir = new THREE.Vector3(this.pos.x - tg.pos.x, 0, this.pos.z - tg.pos.z).normalize();
-      applyHit(this.world, this.owner, tg, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: a.pull, dir, sound: 'whip', color: 0x8a2a4a, scale: 1.2 });
+      // de longe puxa para perto; de perto a chicotada derruba para trás
+      const far = d > 4;
+      const dir = far ? new THREE.Vector3(this.pos.x - tg.pos.x, 0, this.pos.z - tg.pos.z).normalize() : forwardFromYaw(this.yaw, new THREE.Vector3());
+      applyHit(this.world, this.owner, tg, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: far ? a.pull : 4, launch: !far, lowLaunch: !far, dir, sound: 'whip', color: 0x8a2a4a, scale: 1.2 });
+      a.caught = tg;
       tg.notify && tg.notify('A LÍNGUA DO QUIBUNGO', true);
       return true;
     }
@@ -521,10 +591,7 @@ export class Quibungo extends BloodZombie {
   swingFx(a, i) {
     const W = this.world;
     if (a.self) return;
-    if (a.pull) {
-      if (this.target) W.fx.tracer(new THREE.Vector3(this.pos.x, 4.2, this.pos.z), this.target.chestPos(), { color: 0x8a2a4a, life: 0.3, width: 0.16 });
-      return;
-    }
+    if (a.pull) return; // a língua é uma peça de verdade (updateTongue)
     if (a.name === 'slam' || a.name === 'leap') {
       W.cameraRig && W.cameraRig.shake(0.4, 0.35);
       W.fx.ring(new THREE.Vector3(this.pos.x, 0.08, this.pos.z), { color: DUST, radius: a.range + 0.6, life: 0.5, inner: 0.7 });

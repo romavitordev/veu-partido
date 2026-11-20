@@ -391,6 +391,7 @@ export class Fighter {
     if (s !== 'idle') this.locoWas = null; // freada/arrancada só entre passos de locomoção
     if (this.state === 'downed' && s !== 'downed') this.otgTaken = false;
     if (s !== 'attack' && s !== 'ability') this.superArmor = null;
+    if (s !== this.state) this.actionNo = (this.actionNo || 0) + 1; // cada ação nova (damage.js veilEvade: um ataque = uma carga)
     // preparo do especial interrompido por qualquer outro estado (golpe, projétil, agarrão...)
     if (this.state === 'specialStart' && s !== 'special' && s !== 'specialStart') this.interruptSpecial();
     // montaria (skate): só continua andando/pulando ou no dash; qualquer outra ação desce
@@ -3261,7 +3262,10 @@ export class Fighter {
       }
     }
     // o alvo sumiu nas sombras (Shhh... da Jae): o especial que gruda nele não acha ninguém
+    // (FURTIVIDADE: desviar de um especial gasta a furtividade inteira — abilities.js veilFighter)
     if (STICKY_SPECIALS.has(p.sp.type) && this.opponent && this.opponent.untrackable(this)) {
+      const vb = this.opponent.findBuff('veil');
+      if (vb) { vb.dodges = 0; vb.time = 0; }
       this.whiffSpecial('hidden');
       return;
     }
@@ -3276,7 +3280,7 @@ export class Fighter {
     this.pendingSpecial = null;
     this.notify(reason === 'hidden' ? 'PERDEU O RASTRO' : 'ERROU', true);
     if (opp && reason === 'evaded') opp.notify('DESVIOU!', true);
-    if (opp && reason === 'hidden') opp.notify('SHHH...', true);
+    if (opp && reason === 'hidden') opp.notify('DESVIOU DO ESPECIAL!', true);
     this.world.fx.burst(this.chestPos(), { count: 18, color: 0x8a8090, kind: 'smoke', speed: 2, life: 0.5, size: 0.35 });
     this.stun(TELEGRAPH.missRecovery, 'breath');
     this.whiffRecovery = true; // errar o especial não se cancela com a Substituição

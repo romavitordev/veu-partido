@@ -4492,41 +4492,47 @@ export function deafFighter(world, victim, time) {
   victim.notify('SURDO!', true);
 }
 
-// "SHHH...": a Jae some nas sombras — quase invisível, mais rápida e sem contorno; o adversário perde o rastro dela.
-// O primeiro ataque que ela começa sai do escuro: o alvo fica DESPREVENIDO (bônus de assassina) e ela reaparece.
-// Dentro da Zona dos Sussurros atacar não a revela (a ficha: "não sofre penalidade em Furtividade após ações
-// chamativas"). Tomar dano sempre revela.
+// FURTIVIDADE (todas as habilidades que deixam invisível: Shhh... da Jae, Furtividade da Carina, Oblívio, Sombra da
+// Ordo, a Zona das Sombras da Jae X). Pedido do dono (2026-11-20): "ao usar, o seu personagem desvia dos proximos 2
+// ataques ou um especial, caso alguém queria usar um especial em você invisivel, você irá desviar, ou ele bate duas
+// vezes e usa o especial depois".
+//  - quase invisível, mais rápido, o adversário perde o rastro (a mira e os teleguiados não acham, Fighter.untrackable);
+//  - CARGAS: os 2 próximos ataques que o acertariam passam direto (damage.js veilEvade) — um ataque de vários golpes
+//    conta uma vez; um ESPECIAL mirado nele também erra, mas gasta a furtividade inteira;
+//  - acabaram as cargas (ou o tempo), ele reaparece. Atacar NÃO revela: o primeiro ataque sai do escuro e pega o alvo
+//    DESPREVENIDO (bônus de assassina). Dano que passa direto (veneno, queimadura) ainda revela.
 export function veilFighter(world, f, a) {
-  const time = a.duration ?? 4;
+  const time = a.duration ?? 6;
+  const dodges = a.dodges ?? 2;
   const cur = f.findBuff('veil');
-  if (cur) { cur.time = Math.max(cur.time, time); return; }
+  if (cur) { cur.time = Math.max(cur.time, time); cur.dodges = Math.max(cur.dodges || 0, dodges); return; }
   // stealth: a transparência depende de QUEM está vendo (Fighter.stealthOpacity) — quem controla a Jae a vê como
   // silhueta com um anel no chão; o adversário (CPU ou outra tela no online) quase não a vê
-  const buff = { type: 'veil', name: 'SHHH...', time, duration: time, opacity: a.opacity ?? 0.12, stealth: true, speedMult: a.speedMult ?? 1.15, noLock: !!a.noLock }; // noLock (Shhh... da Jae): especiais que grudam e projéteis teleguiados não a acham
+  const buff = { type: 'veil', name: 'FURTIVO', time, duration: time, dodges, opacity: a.opacity ?? 0.12, stealth: true, speedMult: a.speedMult ?? 1.15, noLock: true };
   f.addBuff(buff);
   world.fx.shadowDisc(f.pos, { radius: 1.1, life: 0.6 });
   world.fx.burst(f.chestPos(), { count: 22, color: 0x0a0608, kind: 'smoke', speed: 1.6, up: 0.8, life: 0.7, size: 0.7, grow: 1 });
+  f.notify(`FURTIVO: DESVIA ${dodges} GOLPES`, false);
   const ACT = ['attack', 'ability', 'ranged', 'grab', 'specialStart', 'special'];
   let busy = ACT.includes(f.state); // a própria habilidade que o escondeu não conta
+  let struck = false;
   let hp = f.health;
-  const reveal = () => {
-    if (buff.time <= 0) return;
-    buff.time = 0;
-    world.fx.burst(f.chestPos(), { count: 16, color: 0x0a0608, kind: 'smoke', speed: 2.2, life: 0.5, size: 0.6 });
-  };
   world.addTicker({
     update() {
-      if (buff.time <= 0 || !f.buffs.includes(buff)) return true;
-      if (f.state === 'ko' || f.health < hp - 0.01) { reveal(); return true; }
+      if (buff.time <= 0 || !f.buffs.includes(buff)) {
+        if (f.state !== 'ko') world.fx.burst(f.chestPos(), { count: 16, color: 0x0a0608, kind: 'smoke', speed: 2.2, life: 0.5, size: 0.6 });
+        return true;
+      }
+      if (f.state === 'ko' || f.health < hp - 0.01) { buff.time = 0; return false; }
       hp = f.health;
       const now = ACT.includes(f.state);
-      if (now && !busy) {
+      if (now && !busy && !struck) {
+        struck = true;
         const opp = f.opponent;
         if (opp && opp.state !== 'ko' && !hasPassive(opp, 'precognition')) opp.surprised = Math.max(opp.surprised || 0, a.surprise ?? 0.5);
-        if (!f.findBuff('whisperZone')) reveal();
       }
       busy = now;
-      return buff.time <= 0;
+      return false;
     },
   });
 }

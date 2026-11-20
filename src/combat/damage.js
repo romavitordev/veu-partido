@@ -53,6 +53,36 @@ export function npcDamage(attacker, dmg, kind, abilityId = null) {
   return dmg * k;
 }
 
+// FURTIVIDADE: cada carga do buff `veil` desvia um ATAQUE (os vários golpes de um mesmo ataque — um combo de
+// várias batidas, uma rajada — contam uma vez só); um ESPECIAL é desviado inteiro e gasta a furtividade toda. Assim
+// quem quer usar o especial no furtivo erra o especial, ou bate duas vezes antes e só então usa o especial.
+// A Identificação Macabra (Aghata) acha o verdadeiro: não se desvia dela.
+function veilEvade(world, attacker, victim, o) {
+  if (!attacker || attacker === victim || !victim.findBuff || o.kind === 'status') return false;
+  const sp = o.kind === 'special';
+  // a ação de quem bate: no combo, cada batida nova tem a sua lista de acertos; fora dele, o número da ação (Fighter.setState)
+  const key = attacker.state === 'attack' && attacker.combo ? attacker.combo.hits : attacker.actionNo || null;
+  const ev = victim.veilEvaded;
+  // o mesmo ataque que já foi desviado: os outros golpes dele também passam direto
+  if (ev && ev.by === attacker) {
+    if (ev.special && sp && ev.key != null && attacker.actionNo === ev.key) return true;
+    if (!ev.special && !sp && ((key && key === ev.key && world.time - ev.at < 1.2) || world.time - ev.at < 0.3)) return true;
+  }
+  const b = victim.findBuff('veil');
+  if (!b || !(b.time > 0) || !(b.dodges > 0)) return false;
+  if (hasPassive(attacker, 'macabreId')) return false;
+  if (sp) b.dodges = 0;
+  else b.dodges -= 1;
+  if (b.dodges <= 0) b.time = 0;
+  victim.veilEvaded = { by: attacker, key: sp ? attacker.actionNo : key, special: sp, at: world.time };
+  const c = victim.chestPos();
+  world.fx.burst(c, { count: 18, color: 0x0a0608, kind: 'smoke', speed: 2.4, up: 0.6, life: 0.5, size: 0.5, grow: 1 });
+  if (world.audio) world.audio.play('swing', { volume: 0.6, pitch: 0.8 });
+  victim.notify(sp ? 'DESVIOU DO ESPECIAL!' : b.dodges > 0 ? `ESQUIVOU! (${b.dodges})` : 'ESQUIVOU!', true);
+  if (attacker.notify) attacker.notify('NÃO ACHOU!', true);
+  return true;
+}
+
 export function applyHit(world, attacker, victim, o) {
   if (!victim || victim.state === 'ko') return 0;
   // Outro Lado: o inimigo ESCONDIDO da sala (o Devorado `lurking`) não é alvo — um especial que mira "o oponente" o
@@ -69,6 +99,9 @@ export function applyHit(world, attacker, victim, o) {
     if (victim.state === 'dodge' && victim.dodge) victim.dodge.threat = true; // a esquiva desviou de algo: gasta a carga
     return 0;
   }
+
+  // FURTIVIDADE (abilities.js veilFighter): o furtivo desvia dos 2 próximos ataques ou de um especial
+  if (!o.thorns && (o.kind === 'special' || !o.ignoreInvuln) && veilEvade(world, attacker, victim, o)) return 0;
 
   // PERCEPÇÃO ANACRÔNICA (Anfitrião): ele já sabe o que vai acontecer — de tempos em tempos desvia sozinho de um golpe
   // (não vale contra especiais nem no meio de uma cena)

@@ -1004,7 +1004,7 @@ export class StageSelectScreen {
     }
     for (const p of input.players) {
       const n = this.list.length;
-      const cols = STAGE_COLS;
+      const cols = this.cols();
       const page = Math.floor(this.index / STAGE_PAGE_SIZE);
       const pageStart = page * STAGE_PAGE_SIZE;
       const pageCount = Math.min(STAGE_PAGE_SIZE, n - pageStart);
@@ -1047,30 +1047,17 @@ export class StageSelectScreen {
         }
       }
 
+      // cima/baixo andam uma fileira (8 colunas no PC, 4 no celular em pé) e dão a volta dentro da página
+      const rows = Math.ceil(pageCount / cols);
       if (p.menu.up) {
-        if (row > 0) {
-          this.move(this.index - cols);
-        } else {
-          let targetInPage = cols + col;
-          if (targetInPage < pageCount) {
-            this.move(pageStart + targetInPage);
-          } else {
-            this.move(pageStart + Math.max(0, pageCount - 1));
-          }
-        }
+        let r = row > 0 ? row - 1 : rows - 1;
+        while (r > 0 && r * cols + col >= pageCount) r--;
+        this.move(pageStart + Math.min(pageCount - 1, r * cols + col));
       }
 
       if (p.menu.down) {
-        if (row === 0) {
-          let targetInPage = cols + col;
-          if (targetInPage < pageCount) {
-            this.move(pageStart + targetInPage);
-          } else {
-            this.move(pageStart + col);
-          }
-        } else {
-          this.move(pageStart + col);
-        }
+        const r = row + 1 < rows && (row + 1) * cols + col < pageCount ? row + 1 : row + 1 < rows ? row + 1 : 0;
+        this.move(pageStart + Math.min(pageCount - 1, r * cols + col));
       }
 
       if (confirm(p)) return this.choose();
@@ -1086,8 +1073,11 @@ export class StageSelectScreen {
     if (input.keyPressedOnce('Escape')) return 'back';
     return null;
   }
+  // as colunas que a grade tem AGORA (o CSS troca 8 → 4 no celular em pé)
   cols() {
-    return STAGE_COLS;
+    const g = this.el.querySelector('.stages');
+    const n = g ? getComputedStyle(g).gridTemplateColumns.split(' ').filter(Boolean).length : 0;
+    return n > 0 ? n : STAGE_COLS;
   }
   move(i) {
     if (i === this.index || i < 0 || i >= this.list.length) return;

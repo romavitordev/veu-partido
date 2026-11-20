@@ -46,7 +46,7 @@ export default {
       name: 'Zona das Sombras',
       input: 'carga+ranged', // △ → □
       type: 'shadowTrap',
-      description: 'Arma uma armadilha de Conhecimento quase invisível no chão (3 m) e some nas sombras. Quem pisa toma dano de Conhecimento e fica CEGO e SURDO — perde o rastro dela.',
+      description: 'Arma uma armadilha de Conhecimento quase invisível no chão (3 m) e some nas sombras (furtiva: desvia dos 2 próximos ataques ou de um especial). Quem pisa toma dano de Conhecimento e fica CEGO e SURDO — perde o rastro dela.',
       energyCost: 25,
       cooldown: 12,
       radius: 1.6,
@@ -54,7 +54,7 @@ export default {
       blind: 1.6,
       deaf: 3.5,
       life: 16,
-      veil: { duration: 2.5, opacity: 0.12, speedMult: 1.15, surprise: 0.6 },
+      veil: { duration: 4, opacity: 0.12, speedMult: 1.15, surprise: 0.6 },
       element: 'conhecimento',
       color: 0xe0b030,
     },

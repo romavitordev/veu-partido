@@ -60,7 +60,7 @@ export default {
   abilities: [
     { ...byId.facaNoOlho, cooldown: 6, projectile: { ...byId.facaNoOlho.projectile, damage: 36, onHit: { ...byId.facaNoOlho.projectile.onHit, stun: 0.7 } } },
     { ...byId.baterReposicionar, description: 'Entra com o nunchaku dourado quebrando a guarda e, no mesmo movimento, rola para as costas do alvo: ele fica DESPREVENIDO e sem chance de revidar.', damage: 42, cooldown: 8, color: GOLD, hitSound: 'punch' },
-    { ...byId.furtividade, duration: 4, color: GOLD },
+    { ...byId.furtividade, duration: 6, color: GOLD },
     byId.pergaminhoPertinacia,
     {
       // R2 + × GRIMÓRIO DE ARNALDO (cânone: completou o grimório, os olhos ficaram brancos e ela tomou os rituais do Kian)

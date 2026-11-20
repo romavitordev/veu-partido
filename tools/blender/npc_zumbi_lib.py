@@ -256,9 +256,9 @@ def build(strong, quibungo=False, felino=False):
             x = random.uniform(-0.1, 0.1)
             add(jaw, f'drip{i}', rod([(x, -0.1, 0.36), (x, -0.18, 0.37), (x * 1.05, -0.24 - i * 0.04, 0.37)], [0.012, 0.009, 0.005], seg=5), M['vein'])
         if Q:
-            # os OLHOS pequenos e acesos do Quibungo e as MANDÍBULAS dos lados (as várias bocas): abrem para os lados
+            # as MANDÍBULAS dos lados (as várias bocas): abrem para os lados. SEM OLHOS, como o Zumbi de Sangue (dono,
+            # 2026-11-20: "acho que o quimbungo nao tem olhos")
             for sd, nm in ((1, 'L'), (-1, 'R')):
-                add(neck, f'eye{nm}', rod([(sd * 0.12, 0.12, 0.33), (sd * 0.135, 0.12, 0.37)], 0.026, seg=8), M['eye'])
                 md = joint(f'J_mand{nm}', (sd * 0.2, -0.05, 0.2), neck)
                 Md = Sculpt(f'mand{nm}_quibungo')
                 Md.chain([(0, 0, -0.05), (sd * 0.04, -0.03, 0.12), (sd * 0.0, -0.02, 0.26)], [0.07, 0.06, 0.04], step=0.5)

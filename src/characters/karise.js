@@ -108,10 +108,10 @@ export default {
       name: 'Sombra da Ordo',
       input: 'block+jump', // R2 + ×
       type: 'shadowVeil',
-      description: 'Puxa o capuz e sai da vista (3 s): quase invisível e mais rápida; o primeiro ataque pega o alvo DESPREVENIDO. Tomar dano a revela.',
+      description: 'Puxa o capuz e sai da vista (até 5 s): quase invisível e mais rápida. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo DESPREVENIDO.',
       energyCost: 20,
       cooldown: 14,
-      duration: 3,
+      duration: 5,
       opacity: 0.18,
       speedMult: 1.15,
       surprise: 0.6,
