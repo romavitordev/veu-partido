@@ -1,5 +1,20 @@
 # Registro administrativo de alterações
 
+## v5.31.0 — A Missa Completa
+
+- Versão: `VERSION` 5.30.0 → **5.31.0**. Data: 2026-11-20.
+- Dono: capa do Velisar melhor; especiais próprios para Alvira, Velisar e Zéfero; Zéfero mais animalesco, curvado,
+  quase de quatro, com a corrente no pescoço arrastando; cadeiras da igreja viradas para a mesa; o especial dos
+  Vampiros com todos juntos (Zéfero solto da coleira, Alvira crava a arma, Raziel devora e arranca um membro só no
+  fim da partida, Velisar voando do alto com a capa aberta contra a luz, Sabara crava as espadas e morde). Referência
+  da cena do Velisar: a imagem com a capa aberta em asas.
+- PROPOSTA: falas e nomes dos especiais próprios.
+- Testado no navegador (passos manuais): os três especiais próprios; a Missa de Sangue completa; o braço arrancado
+  só no ponto de partida; sem erros no console.
+- O passe pelo Blender MCP ao vivo ficou pendente: o servidor do addon não estava ligado (porta 9876). Os modelos foram
+  refeitos pelo Blender sem interface (`build.mjs`).
+- `npm test` (125), `npm run check`, `vite build` (em outra pasta) e `npm run moves` ok.
+
 ## v5.30.0 — O Ator e o Espécime
 
 - Versão: `VERSION` 5.29.0 → **5.30.0**. Data: 2026-11-19.

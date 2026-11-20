@@ -1,5 +1,27 @@
 # Changelog
 
+## v5.31.0 — A Missa Completa
+
+### Adicionado
+- `src/combat/specials/vampireSpecials.js`: tipos `bellAbsolution` (Alvira), `silentFilm` (Velisar: overlay DOM
+  `.silent-film` com backdrop-filter sépia, granulação, riscos e cartelas) e `specimenHunt` (Zéfero); registrados em
+  `specials/index.js`.
+- `src/models/props.js` `addZeferoProps`: corrente Verlet de 24 elos (InstancedMesh) presa na coleira, arrastando no chão.
+- `src/anim/razielClips.js`: pose ZEF (agachado, quase de quatro), `run_zefero` (galope) e `idle_zefero` novo.
+- `src/combat/teamSpecials.js` `vampiros` refeito (11 partes): coleira (`fx.chain`) → bote do Zéfero; Velisar voando com
+  `batWings()` (asas de membrana montadas na cena, câmera de baixo atrás do alvo, contraluz); espadas da Sabara;
+  cajado da Alvira; banquete do Raziel. Os golpes da cena nunca derrubam (com folga de ×1,6); quem derruba é o golpe
+  final comum. `tearArm()` só quando `world.isMatchPoint(f)` (lido antes do golpe) e o alvo caiu — via `world.after`,
+  porque o KO cancela a timeline.
+- `src/game/Match.js`: `world.isMatchPoint(fi)`. `src/game/World.js` `resetRound`: `rig.restoreLimb()` antes do reset.
+
+### Mudado
+- `tools/blender/char_velisar.py`: gola de asa de morcego (13 varetas), cachecol em tubo, saia mais larga com 18 pontas,
+  colete; `char_zefero.py`: a corrente modelada virou só o aro da coleira (a corrente é física no jogo).
+- `tools/blender/arena_igreja.py`: o encosto das cadeiras do lado oposto à mesa (as cadeiras olham para a mesa).
+- `tools/check-roster.mjs`: restaurado (o commit "Vampiros UPD snapshot" levou o arquivo corrompido com um trecho do
+  CHANGELOG) e com a checagem dos três especiais próprios.
+
 ## v5.30.0 — O Ator e o Espécime
 
 ### Adicionado

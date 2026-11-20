@@ -2,6 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.31.0 — A Missa Completa
+- MISSA DE SANGUE refeita com os cinco Vampiros: o sino toca e o ZÉFERO, preso na coleira, é solto por quem segura a corrente e ataca; o VELISAR desce voando do alto com a capa aberta em asas de morcego, contra a luz, e dá a investida; a SABARA crava as duas espadas e morde; a ALVIRA crava o cajado; e o RAZIEL devora. Só no golpe que fecha a partida o Raziel arranca o braço do adversário.
+- Especiais próprios: ALVIRA — A Absolvição do Sino (cordas de sangue erguem o alvo, as hastes cravam e ela bebe); VELISAR — Cinema Mudo (a tela vira filme antigo em sépia, com cartelas, cortes secos e o beijo final); ZÉFERO — Caça ao Espécime (a corrente arrebenta e ele dá botes e devora).
+- ZÉFERO mais animalesco: anda curvado, quase de quatro, corre galopando e arrasta pelo chão a corrente presa na coleira.
+- VELISAR com a capa remodelada: gola alta de asa de morcego que sobe atrás da cabeça e cai pelos ombros, cauda longa atrás, colete e cachecol novos.
+- Igreja Antiga: as cadeiras do banquete agora estão viradas para a mesa.
+
 ## v5.30.0 — O Ator e o Espécime
 - VELISAR jogável (Vampiros): o ator do cinema mudo de 2 metros, com a túnica ocre até o chão e o sobretudo preto de babados de asa de morcego. Garras longas, Navalhas no □, OLHAR DA CURIOSIDADE MÓRBIDA (quem olha nos olhos dele vira servo por um instante; quem não olha fica cego), ARMADILHA SANGUINÁRIA (planta um corpo que explode em sangue, dentes e navalhas quando o adversário chega perto), Sugar o Sangue, Voo do Vampiro, especial O BEIJO SANGRENTO e despertar Lorde Ruthven.
 - ZÉFERO jogável (Vampiros): o espécime do Velisar, com o grilhão de espinhos e a corrente no pescoço. Garras e dentes, o BOTE no □, MORDIDA FAMINTA (bebe tudo de quem está morrendo), ROSNADO (paralisa de medo), SOLTO DA CORRENTE, FARO DE SANGUE, especial ESPÉCIME e despertar Sem Coleira. Rápido e faminto, mas aguenta pouco.

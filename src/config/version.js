@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.30.0';
+export const VERSION = '5.31.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.31.0',
+    date: '2026-11-20',
+    title: 'A Missa Completa',
+    items: [
+      'MISSA DE SANGUE refeita com os cinco Vampiros: o sino toca e o ZÉFERO, preso na coleira, é solto por quem segura a corrente e ataca; o VELISAR desce voando do alto com a capa aberta em asas de morcego, contra a luz, e dá a investida; a SABARA crava as duas espadas e morde; a ALVIRA crava o cajado; e o RAZIEL devora. Só no golpe que fecha a partida o Raziel arranca o braço do adversário.',
+      'Especiais próprios: ALVIRA — A Absolvição do Sino (cordas de sangue erguem o alvo, as hastes cravam e ela bebe); VELISAR — Cinema Mudo (a tela vira filme antigo em sépia, com cartelas, cortes secos e o beijo final); ZÉFERO — Caça ao Espécime (a corrente arrebenta e ele dá botes e devora).',
+      'ZÉFERO mais animalesco: anda curvado, quase de quatro, corre galopando e arrasta pelo chão a corrente presa na coleira.',
+      'VELISAR com a capa remodelada: gola alta de asa de morcego que sobe atrás da cabeça e cai pelos ombros, cauda longa atrás, colete e cachecol novos.',
+      'Igreja Antiga: as cadeiras do banquete agora estão viradas para a mesa.',
+    ],
+  },
   {
     v: '5.30.0',
     date: '2026-11-19',
