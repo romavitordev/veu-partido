@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.34.1 — Cada Arma no Seu Jeito
+
+### Alterado
+- `src/anim/weaponClips.js` (novo): golpes de maça (`mace_side`, `mace_back`, `mace_over`, `mace_up`, `mace_final`),
+  de mangual (`flail_side`, `flail_back`, `flail_diag`, `flail_over`, `flail_up`, `flail_spin`, `flail_air`) e de arco
+  pela mão esquerda (`bow_swipe`, `bow_backhand`, `bow_rise`, `bow_spin`); `WEAPON_HIT` diz onde cada um acerta.
+- Gaius, Carina e Amália trocaram os cortes de espada por eles; as janelas `active` foram movidas para o acerto de cada
+  clipe novo (mesma largura, mesmo dano). Os rastros da Amália espelhados.
+
 ## v5.34.0 — A Lança e o Metal
 
 ### Adicionado

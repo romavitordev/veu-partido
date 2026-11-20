@@ -15,6 +15,7 @@ import { addFormClips } from './formClips.js';
 import { addVictoryClips } from './victoryClips.js';
 import { addCharClips } from './charClips.js';
 import { addSpearClips } from './spearClips.js';
+import { addWeaponClips } from './weaponClips.js';
 import { addIdleClips } from './idleClips.js';
 import { addPowerClips } from './powerClips.js';
 import { addRazielClips } from './razielClips.js';
@@ -696,6 +697,7 @@ addFormClips(CLIPS, k, mirrorPose);
 addVictoryClips(CLIPS, k);
 addCharClips(CLIPS, k);
 addSpearClips(CLIPS, k, GUARD);
+addWeaponClips(CLIPS, k, GUARD);
 addIdleClips(CLIPS, k);
 addPowerClips(CLIPS, k);
 addRazielClips(CLIPS, k); // o Raziel (Vampiros)

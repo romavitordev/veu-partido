@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.34.1 — Cada Arma no Seu Jeito
+- GAIUS bate como quem usa uma MAÇA: arma o golpe com o cotovelo dobrado atrás do ombro e desce com o peso do corpo (de lado, de revés, por cima, de baixo e o esmagamento final), em vez dos cortes de espada.
+- CARINA gira o MANGUAL: o braço faz o círculo por cima da cabeça para dar embalo e chicoteia; a bola na corrente segue sozinha. Bola lateral, de volta, em diagonal, o helicóptero por cima, a bola de baixo e o Giro do Mangual com o corpo inteiro.
+- AMÁLIA bate com o ARCO na mão esquerda (antes os golpes saíam da mão direita, vazia): o golpe e o revés com a ponta do arco, o arco para cima e o giro.
+
 ## v5.34.0 — A Lança e o Metal
 - LANÇAS com golpes de lança de verdade: a estocada com a lança deitada, a cravada POR CIMA (ela vira na mão e desce no adversário), o golpe POR BAIXO que sobe na diagonal, a INVESTIDA com o corpo inteiro, a lança cravada do alto e a haste varrida. O Cornelius ganhou todos; a Antena do Labirinto, a estocada e a investida.
 - ARREMESSO CARREGADO: segure o □ do Cornelius para armar a lança atrás da cabeça — uma barrinha curta aparece em cima dele e, no máximo, fica branca e pisca. Solto no máximo, o arremesso dá até 1,8× o dano, voa mais rápido e quebra a defesa. Um toque rápido continua sendo o arremesso normal.

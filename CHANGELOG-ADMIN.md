@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v5.34.1 — Cada Arma no Seu Jeito
+
+- Versão: `VERSION` 5.34.0 → **5.34.1**. Data: 2026-11-20.
+- Dono: "arrume isso depois pode dar commit push e fazer a tag" (a maça do Gaius, o mangual da Carina e o arco da
+  Amália usavam cortes de espada).
+- Testado no navegador: folhas das poses de acerto dos três (a maça abaixava demais e foi erguida); combo em luta contra
+  o Marius sem erros (Gaius 142, Carina 108, Amália 99 de dano).
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.34.0 — A Lança e o Metal
 
 - Versão: `VERSION` 5.33.0 → **5.34.0**. Data: 2026-11-20.

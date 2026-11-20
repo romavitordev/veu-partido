@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.34.0';
+export const VERSION = '5.34.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.34.1',
+    date: '2026-11-20',
+    title: 'Cada Arma no Seu Jeito',
+    items: [
+      'GAIUS bate como quem usa uma MAÇA: arma o golpe com o cotovelo dobrado atrás do ombro e desce com o peso do corpo (de lado, de revés, por cima, de baixo e o esmagamento final), em vez dos cortes de espada.',
+      'CARINA gira o MANGUAL: o braço faz o círculo por cima da cabeça para dar embalo e chicoteia; a bola na corrente segue sozinha. Bola lateral, de volta, em diagonal, o helicóptero por cima, a bola de baixo e o Giro do Mangual com o corpo inteiro.',
+      'AMÁLIA bate com o ARCO na mão esquerda (antes os golpes saíam da mão direita, vazia): o golpe e o revés com a ponta do arco, o arco para cima e o giro.',
+    ],
+  },
   {
     v: '5.34.0',
     date: '2026-11-20',

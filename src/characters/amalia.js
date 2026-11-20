@@ -34,17 +34,17 @@ export default {
     name: 'Arco e Chutes',
     // de perto o arco vira arma: as pontas brancas cortam, e os chutes abrem espaço para atirar
     strikes: [
-      { name: 'Corte do Arco', anim: 'slash_h', dur: 0.3, active: [0.1, 0.18], damage: 26, range: 2.0, arc: 120, knockback: 1.0, lunge: 0.9, sound: 'swing', hitSound: 'blade', trail: { color: BOW, tilt: 0.05 } },
-      { name: 'Revés do Arco', anim: 'slash_h_back', dur: 0.3, active: [0.1, 0.18], damage: 26, range: 2.0, arc: 120, knockback: 1.0, lunge: 0.9, sound: 'swing', hitSound: 'blade', trail: { color: BOW, flip: true } },
+      { name: 'Corte do Arco', anim: 'bow_swipe', dur: 0.3, active: [0.11, 0.19], damage: 26, range: 2.0, arc: 120, knockback: 1.0, lunge: 0.9, sound: 'swing', hitSound: 'blade', trail: { color: BOW, tilt: 0.05, flip: true } },
+      { name: 'Revés do Arco', anim: 'bow_backhand', dur: 0.3, active: [0.11, 0.19], damage: 26, range: 2.0, arc: 120, knockback: 1.0, lunge: 0.9, sound: 'swing', hitSound: 'blade', trail: { color: BOW } },
       { name: 'Chute Frontal', anim: 'kick_front', dur: 0.36, active: [0.14, 0.22], damage: 30, range: 1.9, arc: 90, knockback: 2.2, lunge: 0.6, sound: 'swing', hitSound: 'kick' },
       { name: 'Chute Giratório', anim: 'spin_kick', dur: 0.44, active: [0.16, 0.28], damage: 36, range: 2.0, arc: 200, knockback: 1.8, lunge: 0.7, sound: 'swing', hitSound: 'kick' },
       { name: 'Flecha à Queima-Roupa', anim: 'bow_shot', dur: 0.62, active: [0.36, 0.46], damage: 58, range: 3.2, arc: 60, lunge: 0.3, finisher: 'launch', hitstop: 0.1, element: 'energia', sound: 'sniper', hitSound: 'impact', impactFx: 'sigil', impactScale: 1.6, trail: { color: CYAN, wide: true } },
     ],
-    up: { name: 'Arco para Cima', anim: 'slash_up', dur: 0.44, active: [0.15, 0.27], damage: 38, range: 2.0, arc: 120, lunge: 0.8, finisher: 'launchHigh', launcher: true, sound: 'swing', hitSound: 'blade', trail: { color: BOW, tilt: -1.3 } },
+    up: { name: 'Arco para Cima', anim: 'bow_rise', dur: 0.44, active: [0.16, 0.28], damage: 38, range: 2.0, arc: 120, lunge: 0.8, finisher: 'launchHigh', launcher: true, sound: 'swing', hitSound: 'blade', trail: { color: BOW, tilt: -1.3 } },
     down: { name: 'Pisão', anim: 'stomp', dur: 0.48, active: [0.2, 0.3], damage: 42, range: 1.9, arc: 120, lunge: 0.6, finisher: 'knockdown', sound: 'swing', hitSound: 'heavyPunch' },
     forward: { name: 'Avanço Rasteiro', anim: 'side_kick', dur: 0.42, active: [0.13, 0.24], damage: 34, range: 2.1, arc: 100, knockback: 2.6, motion: [{ t: [0, 0.2], fwd: 4.6, stopClose: true }], sound: 'swing', hitSound: 'kick' },
     back: { name: 'Salto e Flecha', anim: 'bow_shot', dur: 0.6, active: [0.34, 0.44], damage: 32, range: 4.5, arc: 50, knockback: 1.6, iframes: [0, 0.22], motion: [{ t: [0, 0.22], back: 3.4 }], element: 'energia', sound: 'sniper', hitSound: 'impact', trail: { color: CYAN, wide: true } },
-    side: { name: 'Giro do Arco', anim: 'slash_h', dur: 0.46, active: [0.13, 0.3], damage: 32, range: 2.2, arc: 280, knockback: 1.6, motion: [{ t: [0, 0.25], side: 2.4 }], sound: 'swing', hitSound: 'blade', trail: { color: BOW, wide: true } },
+    side: { name: 'Giro do Arco', anim: 'bow_spin', dur: 0.46, active: [0.17, 0.34], damage: 32, range: 2.2, arc: 280, knockback: 1.6, motion: [{ t: [0, 0.25], side: 2.4 }], sound: 'swing', hitSound: 'blade', trail: { color: BOW, wide: true } },
     air: { name: 'Flecha do Alto', anim: 'air_kick', dur: 0.44, active: [0.16, 0.3], damage: 34, range: 2.2, arc: 100, knockback: 3, slam: 16, vertical: 2.4, sound: 'swing', hitSound: 'kick' },
   },
 
