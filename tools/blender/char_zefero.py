@@ -56,8 +56,10 @@ hc = b.body(M, TP, arm_r=(0.046, 0.04, 0.034), leg_r=(0.07, 0.056, 0.042), head_
 for side in ('L', 'R'):
     s_, e_ = sk['s' + side], sk['e' + side]
     d = (e_ - s_)
-    p0, p1 = s_ - d * 0.08, s_ + d * 0.42
-    b.add(f'sleeve{side}', rod([p0, s_.lerp(p1, 0.5), p1], [0.075 * H, 0.068 * H, 0.062 * H], 12, caps=False), shirt, region='arm' + side, subdiv=1)
+    p0, p1 = s_ - d * 0.12, s_ + d * 0.42
+    # (passe no Blender MCP, 2026-11-20: o tubo reto deixava o ombro quadrado; agora a manga sai de dentro do tronco e bufa)
+    sl = b.add(f'sleeve{side}', rod([p0, s_ - d * 0.05, s_.lerp(p1, 0.55), p1], [0.034 * H, 0.05 * H, 0.056 * H, 0.05 * H], 12, caps=False), shirt, region='arm' + side, subdiv=1)
+    relief(sl, lambda q, c=s_: 0.005 * H * ridge(math.atan2(q.x - c.x, q.y - c.y) * 5 + n3(q, 7) * 2, 2))
     fr = []
     dn = d.normalized()
     ax = dn.orthogonal().normalized()
@@ -95,6 +97,24 @@ for k in range(9):
     c = Vector((c.x, c.y * 0.97, c.z))
     spl.append(ellipsoid(tuple(c), (rr * 0.45, rr * 0.08, rr * random.uniform(1.6, 2.6)), 8, 6))
 b.add('shirtBlood', merge(*spl), blood, region='torso', subdiv=0)
+
+# a barra da camisa rasgada, em pontas tortas sobre a calça
+fr = []
+for k in range(15):
+    a = k / 15 * TAU + random.uniform(-0.1, 0.1)
+    base = Vector((math.sin(a) * 0.158 * H, -math.cos(a) * 0.128 * H, hz + 0.02 * H))
+    ln = random.uniform(0.04, 0.09) * H
+    fr.append(cone(tuple(base), tuple(base + Vector((math.sin(a) * 0.015 * H, -math.cos(a) * 0.012 * H, -ln))), random.uniform(0.022, 0.03) * H, 4))
+b.add('shirtHem', merge(*fr), shirt, region='skirt', subdiv=0)
+# a CORCUNDA: as costas altas e arqueadas debaixo da camisa (o bicho curvado) e as vértebras marcando o pano
+HUMP = (0.09, 1.33, 0.1, 0.14)  # centro y, z; raio y, z (×H)
+b.add('hump', ellipsoid((0, HUMP[0] * H, HUMP[1] * H), (0.14 * H, HUMP[2] * H, HUMP[3] * H), 16, 10), shirt, region='chest', subdiv=1)
+vb = []
+for k in range(6):
+    zr = -0.11 + k * 0.042  # ao longo da corcunda, rente à superfície dela
+    y = HUMP[0] + HUMP[2] * math.sqrt(max(0.0, 1 - (zr / HUMP[3]) ** 2)) - 0.004
+    vb.append(ellipsoid((0, y * H, (HUMP[1] + zr) * H), (0.02 * H, 0.014 * H, 0.015 * H), 8, 6))
+b.add('spine', merge(*vb), shirt, region='chest', subdiv=0)
 
 # ================================================================ os SUSPENSÓRIOS
 for s in (1, -1):
@@ -152,12 +172,17 @@ b.add('collarRing', rod([(math.cos(a) * 0.02 * H, -0.09 * H, cz - 0.03 * H + mat
 
 # ================================================================ o CABELO escuro bagunçado no alto da cabeça
 tufts = []
-for k in range(9):
+for k in range(26):
+    # raiz no couro cabeludo (calota de cima e de trás), ponta para fora e para cima, torta
     a = random.uniform(0, TAU)
-    rr = random.uniform(0.0, 0.05) * H
-    base = Vector((hc.x + math.sin(a) * rr, hc.y + 0.01 * H + math.cos(a) * rr * 0.8, hc.z + 0.13 * H))
-    tip = base + Vector((random.uniform(-0.05, 0.05) * H, random.uniform(-0.04, 0.04) * H, random.uniform(0.03, 0.06) * H))
-    tufts.append(cone(tuple(base), tuple(tip), random.uniform(0.022, 0.032) * H, 5))
+    el = random.uniform(0.35, 1.25)  # 0 = topo
+    dirv = Vector((math.sin(a) * math.sin(el) * 0.85, math.cos(a) * math.sin(el) * 0.6 + 0.25, math.cos(el))).normalized()
+    if dirv.y < -0.25:
+        continue  # nada caindo na testa
+    base = Vector((hc.x, hc.y + 0.01 * H, hc.z + 0.03 * H)) + Vector((dirv.x * 0.11 * H, dirv.y * 0.12 * H, dirv.z * 0.13 * H))
+    ln = random.uniform(0.05, 0.11) * H
+    tip = base + (dirv + Vector((random.uniform(-0.4, 0.4), random.uniform(-0.2, 0.4), 0.3))).normalized() * ln
+    tufts.append(cone(tuple(base), tuple(tip), random.uniform(0.02, 0.03) * H, 5))
 tufts.append(ellipsoid((hc.x, hc.y + 0.012 * H, hc.z + 0.115 * H), (0.075 * H, 0.08 * H, 0.04 * H), 12, 8))
 b.add('hair', merge(*tufts), hair, region='head', subdiv=0)
 
@@ -169,15 +194,20 @@ for side in ('L', 'R'):
     d = (h_ - e_).normalized()
     side_v = d.cross(Vector((0, 0, 1))).normalized() if abs(d.z) < 0.99 else Vector((1, 0, 0))
     cl = []
-    for k in range(4):
-        base = h_ + d * 0.06 * H + side_v * ((k - 1.5) * 0.014 * H)
-        cl.append(cone(tuple(base), tuple(base + d * 0.05 * H + Vector((0, -0.015 * H, 0))), 0.006 * H, 5))
+    # a mão do bicho: dedos ossudos e compridos, cada um com uma garra curva (três trechos de rod afinando)
+    b.add(f'paw{side}', ellipsoid(tuple(h_ + d * 0.035 * H), (0.04 * H, 0.03 * H, 0.045 * H), 10, 8), skin, region='e' + side, subdiv=1)
+    for k in range(5):
+        base = h_ + d * 0.06 * H + side_v * ((k - 2) * 0.016 * H)
+        mid = base + d * 0.06 * H + Vector((0, -0.01 * H, 0))
+        tip = mid + d * 0.06 * H + Vector((0, -0.035 * H, -0.01 * H))
+        cl.append(rod([base, mid], [0.009 * H, 0.008 * H], 5))
+        cl.append(cone(tuple(mid), tuple(tip), 0.008 * H, 5))
     b.add(f'claws{side}', merge(*cl), claw, region='e' + side, subdiv=0)
     f_ = sk['foot' + side]
     tc = []
     for k in range(5):
         base = Vector((f_.x + (k - 2) * 0.016 * H, f_.y - 0.11 * H, 0.012 * H))
-        tc.append(cone(tuple(base), tuple(base + Vector((0, -0.035 * H, -0.008 * H))), 0.006 * H, 4))
+        tc.append(cone(tuple(base), tuple(base + Vector((0, -0.06 * H, -0.012 * H))), 0.009 * H, 4))
     b.add(f'toeClaws{side}', merge(*tc), claw, region='leg' + side, subdiv=0)
 
 b.export(OUT)

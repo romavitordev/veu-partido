@@ -58,7 +58,8 @@ Vh = lambda x, y, z: HC + Vector((x * H, y * H, z * H))
 
 # ================================================================ a TÚNICA ocre até o chão, abrindo em pontas rasgadas
 SK = [(hz + 0.06 * H, 0.158, 0.122, 0.0), (hz - 0.08 * H, 0.17, 0.138, 0.004), (hz - 0.35 * H, 0.19, 0.16, 0.01),
-      (hz - 0.62 * H, 0.22, 0.19, 0.02), (0.14 * H, 0.3, 0.28, 0.03), (0.05 * H, 0.4, 0.38, 0.05), (0.008 * H, 0.5, 0.48, 0.07)]
+      (hz - 0.62 * H, 0.21, 0.19, 0.025), (0.14 * H, 0.24, 0.23, 0.045), (0.05 * H, 0.27, 0.28, 0.07), (0.008 * H, 0.3, 0.33, 0.1)]
+# (passe no Blender MCP, 2026-11-20: a barra abria 1,7 m e virava um vulcão de pontas; agora cai reta e arrasta atrás)
 so = b.add('tunicSkirt', tube([(0, cy * H, z, rx * H, ry * H) for z, rx, ry, cy in SK], 48, cap_start=False, cap_end=False), tunic, region='skirt', subdiv=1)
 relief(so, lambda p: (0.003 + 0.014 * max(0.0, min(1.0, (hz - p.z) / (0.9 * H)))) * H * ridge(math.atan2(p.x, -p.y) * 6 + n3(p, 4) * 1.5, 2))
 b.add('tunicSkirtIn', tube([(0, cy * H, z, rx * H * 0.96, ry * H * 0.96) for z, rx, ry, cy in SK[3:]], 48, cap_start=False, cap_end=False), tunic_dk, region='skirt', subdiv=0)
@@ -67,10 +68,11 @@ tips = []
 for i in range(18):
     a = i / 18 * TAU + random.uniform(-0.08, 0.08)
     r0x, r0y = SK[-1][1] * H, SK[-1][2] * H
-    ln = random.uniform(0.1, 0.26) * H * (1.3 if math.cos(a) < -0.3 else 1.0)  # a cauda arrasta mais atrás
+    back = max(0.0, -math.cos(a))  # 0 na frente, 1 atrás
+    ln = random.uniform(0.02, 0.05) * H + back ** 1.5 * random.uniform(0.12, 0.2) * H  # a cauda arrasta atrás
     base = Vector((math.sin(a) * r0x * 0.97, SK[-1][3] * H - math.cos(a) * r0y * 0.97, 0.012 * H))
     tip = Vector((math.sin(a) * (r0x + ln), SK[-1][3] * H - math.cos(a) * (r0y + ln), 0.003 * H))
-    tips.append(cone(tuple(base), tuple(tip), 0.05 * H, 4))
+    tips.append(cone(tuple(base), tuple(tip), 0.04 * H, 4))
 b.add('tunicTips', merge(*tips), tunic, region='skirt', subdiv=0)
 
 # ================================================================ a GOLA ALTA: o cachecol ocre enrolado no pescoço

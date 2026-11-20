@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v5.31.1 — O Passe no Blender
+
+- Versão: `VERSION` 5.31.0 → **5.31.1**. Data: 2026-11-20.
+- Dono: "liguei o MCP do blender, faça o passe nos modelos".
+- Passe ao vivo: 4 vistas (frente, costas, lado, 3/4) a cada rodada no Blender MCP; conferido no jogo de perto.
+- `npm test` (125), `npm run check`, `vite build` (em outra pasta) ok.
+
 ## v5.31.0 — A Missa Completa
 
 - Versão: `VERSION` 5.30.0 → **5.31.0**. Data: 2026-11-20.

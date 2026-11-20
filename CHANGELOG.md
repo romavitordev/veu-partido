@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.31.1 — O Passe no Blender
+
+### Mudado
+- `tools/blender/char_zefero.py` (passe no Blender MCP ao vivo, `mcp_build.py`): `hump` (corcunda, `HUMP`) e `spine`
+  (vértebras rentes à corcunda), `shirtHem` (15 pontas), mangas por `rod` de 4 raios saindo de dentro do tronco com
+  `relief`, `paw` + 5 dedos (rod + cone curvo) por mão, garras dos pés 0,06·H, cabelo por 26 espetos com raiz na calota.
+- `tools/blender/char_velisar.py`: barra `SK` de 1,0 m (antes 1,7 m) com o centro puxado para trás; as pontas da barra
+  curtas na frente e compridas atrás (`back ** 1.5`).
+- `public/models/velisar.glb`, `zefero.glb` reconstruídos (`build.mjs`, meshopt).
+
 ## v5.31.0 — A Missa Completa
 
 ### Adicionado

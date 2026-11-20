@@ -629,6 +629,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **Passe no Blender MCP (Velisar e Zéfero)** — v5.31.1: Zéfero com corcunda, cabelo espetado, mãos de bicho e barra rasgada; túnica do Velisar caindo reta com cauda.
 - [x] **A Missa Completa (Vampiros)** — v5.31.0: especiais próprios da Alvira, do Velisar e do Zéfero; a Missa de Sangue com os cinco (coleira do Zéfero, Velisar voando com a capa aberta, espadas da Sabara, cajado da Alvira, Raziel devorando e arrancando o braço só no fim da partida); Zéfero curvado com a corrente arrastando; capa nova do Velisar; cadeiras da igreja viradas para a mesa.
 - [x] **Velisar e Zéfero (Vampiros)** — v5.30.0: os dois que faltavam; a equipe dos Vampiros fica completa (Raziel, Sabara, Alvira, Velisar, Zéfero) e os dois entram na Missa de Sangue.
 - [ ] **Futuro: equipe dos COURAÇAS** (pedido do dono, 2026-11-13), os donos do Ferro Velho (o cenário "Base dos

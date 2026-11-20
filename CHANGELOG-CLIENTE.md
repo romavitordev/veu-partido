@@ -2,6 +2,10 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.31.1 — O Passe no Blender
+- ZÉFERO remodelado: corcunda com as vértebras marcando a camisa, cabelo preto espetado e bagunçado, mãos de bicho com garras longas e curvas, garras maiores nos pés, mangas bufantes (sem o ombro quadrado) e a barra da camisa rasgada.
+- VELISAR: a túnica cai reta até o chão e arrasta numa cauda atrás, em vez de abrir num leque de pontas em volta dos pés.
+
 ## v5.31.0 — A Missa Completa
 - MISSA DE SANGUE refeita com os cinco Vampiros: o sino toca e o ZÉFERO, preso na coleira, é solto por quem segura a corrente e ataca; o VELISAR desce voando do alto com a capa aberta em asas de morcego, contra a luz, e dá a investida; a SABARA crava as duas espadas e morde; a ALVIRA crava o cajado; e o RAZIEL devora. Só no golpe que fecha a partida o Raziel arranca o braço do adversário.
 - Especiais próprios: ALVIRA — A Absolvição do Sino (cordas de sangue erguem o alvo, as hastes cravam e ela bebe); VELISAR — Cinema Mudo (a tela vira filme antigo em sépia, com cartelas, cortes secos e o beijo final); ZÉFERO — Caça ao Espécime (a corrente arrebenta e ele dá botes e devora).

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.31.0';
+export const VERSION = '5.31.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.31.1',
+    date: '2026-11-20',
+    title: 'O Passe no Blender',
+    items: [
+      'ZÉFERO remodelado: corcunda com as vértebras marcando a camisa, cabelo preto espetado e bagunçado, mãos de bicho com garras longas e curvas, garras maiores nos pés, mangas bufantes (sem o ombro quadrado) e a barra da camisa rasgada.',
+      'VELISAR: a túnica cai reta até o chão e arrasta numa cauda atrás, em vez de abrir num leque de pontas em volta dos pés.',
+    ],
+  },
   {
     v: '5.31.0',
     date: '2026-11-20',
