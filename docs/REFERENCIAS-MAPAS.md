@@ -27,6 +27,7 @@ Levantamento de 2026-11-09 para a seção "Cenários de luta" do TODO. Pedido do
 | Circo dos PSIKOLERA | Hexatombe ep. 4, 7 e 8 | 16 imagens, 4 prints | Dia de sol na caatinga; vermelho, azul e amarelo de circo | **2ª escolha** |
 | Acampamento dos Pássaros | Hexatombe ep. 3 e 4 | 8 renders 3D, 5 barracas, 3 prints | Névoa vermelha densa, fogueira | Forte, mas fica parecido com o Ferro Velho |
 | Sertão / arena final | Hexatombe ep. 10 | 3 prints, mapa, artes conceituais | Lua de Sangue enorme; roxo e vermelho | Boa, mas tem pouco material visual |
+| Sertão do Quibungo (o morro da emboscada) | Hexatombe ep. 5 | 19 prints 1080p | Noite azul de lua cheia, névoa, lamparinas vermelhas e fogo | **Feito** (`arena_sertao.py`, noite e dia) |
 | Acampamento Lua da Benquerença | Natal Macabro pt. 1 | 14 renders 3D, 2 mapas em panfleto | Noite azul-petróleo, cabanas de madeira | Boa; atenção, já existe o "Acampamento Varminho" |
 | Granja Abobrinha | Sinais do Outro Lado ep. 1 | 9 fotos de cômodos, vista aérea, 2 agroglifos | Pôr do sol laranja e verde; estilo cartunesco | Boa, mas o estilo destoa do resto |
 | Mansão Leone | Calamidade ep. 1 | 3 plantas, 2 mapas, 9 cômodos (vista de cima) | Madeira, tapete vermelho, sangue | Muito parecida com a Mansão Endiabrada |
@@ -198,6 +199,37 @@ Levantamento de 2026-11-09 para a seção "Cenários de luta" do TODO. Pedido do
 - Clareira circular de terra avermelhada e cercas de mandacaru e xique-xique.
 - A Lua de Sangue grande no céu, e a Igreja Antiga no morro ao longe.
 - É fácil de modelar (terreno, plantas, céu) e o impacto visual é forte.
+
+## 4b. Sertão do Quibungo: o morro da emboscada (Cristino, Jae e Labirinto)
+
+**Fontes**
+- Wiki: [Quibungo](https://ordemparanormal.fandom.com/pt-br/wiki/Quibungo) (primeira aparição: HEX ep. 3, 2h18m50s, de
+  longe, no alto de um morro) e [Hexatombe - Episódio 5](https://ordemparanormal.fandom.com/pt-br/wiki/Hexatombe_-_Episódio_5)
+  (o resumo da luta).
+- Episódio (a luta inteira, HEX ep. 5):
+  - [2h05: a mata e o Cristino com a lamparina](https://youtu.be/zsOSZ_r9mhg?t=7500).
+  - [2h10–2h14: o Quibungo na mata, a placa, a lua](https://youtu.be/zsOSZ_r9mhg?t=7800).
+  - [2h18: a trilha com as lamparinas no chão](https://youtu.be/zsOSZ_r9mhg?t=8280).
+  - [2h36–2h41: a trilha de fogo descendo o morro](https://youtu.be/zsOSZ_r9mhg?t=9400).
+  - [2h43: a explosão dos barris](https://youtu.be/zsOSZ_r9mhg?t=9800).
+- Prints: `Referencias visuais/Mapas/sertao-quibungo/episodios/HEX05_*.jpg` (pasta fora do git).
+
+**Canon**
+- A caatinga da Coroa de Espinhos à noite: mata seca de galhos retorcidos, capim alto e seco, névoa azul densa e a lua
+  cheia grande e branca.
+- A trilha de terra clara que sobe o morro; a placa de madeira com setas e a lamparina vermelha pendurada.
+- Jae e Labirinto espalham lamparinas no caminho; o Cristino junta outras num amontoado ao lado dos barris.
+- O tiro acende a primeira, o Quibungo pula de lamparina em lamparina pegando fogo, Labirinto erra a Rajada Caótica e o
+  Cristino atira nos barris: a explosão derruba a criatura.
+- Um casebre de tábuas aparece na mata.
+
+**O que foi feito (PROPOSTA)**
+- Arena no alto do morro (r 18), plana, com o chão descendo em volta; a trilha entra por +z e desce para -z, na direção
+  da lua.
+- A placa com a lamparina e os troncos caídos e os barris com o amontoado de lamparinas como obstáculos.
+- Lamparinas em fila na beira da clareira e descendo a trilha; na noite, as de baixo pegam fogo (a trilha de fogo).
+- Mata fechada de árvores secas, mandacarus e xique-xiques; o casebre na descida.
+- Duas versões: **noite** (a do episódio) e **dia** (caatinga clara de sol, sem lua e sem fogo).
 
 ## 5. Acampamento Lua da Benquerença (Natal Macabro)
 

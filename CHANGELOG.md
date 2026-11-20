@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.38.0 — O Morro do Quibungo
+
+### Adicionado
+- Cenário `sertao` / `sertao_dia` (`tools/blender/arena_sertao.py` → `public/arenas/sertao.glb`, meshopt ~2,9 MB): morro
+  com clareira (r 18), trilha, placa com lamparina (`FLICKER_signLamp`), barris e troncos (colisores), lamparinas,
+  casebre, mata seca, mandacarus, xique-xiques e a lua (`moon_full`). Registrado em configs, index, decalques, acústica,
+  grade e `vehicleBattery`; texturas `caatinga_earth`, `trail_sand`, `cactus`, `dead_wood`, `barrel_wood`.
+- `cfg.materials[nome].fog = false` (glbArena): o material ignora a névoa (a lua no céu).
+
 ## v5.37.1 — Os Visitantes do Samhain
 
 ### Alterado

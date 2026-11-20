@@ -86,7 +86,7 @@ async function one(arenaId, C, place) {
 }
 
 // as variantes de horário dividem o mesmo mapa: só os originais
-const BASE = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'palco', 'tipora', 'ferro_velho', 'circo', 'passaros', 'treb_ciach', 'mansao_luta', 'escola_luta'];
+const BASE = ['orfanato', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'palco', 'tipora', 'ferro_velho', 'circo', 'passaros', 'sertao', 'treb_ciach', 'mansao_luta', 'escola_luta'];
 export async function run(arenas = BASE) {
   out.length = 0;
   const places = [];

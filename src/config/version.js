@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.37.1';
+export const VERSION = '5.38.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.38.0',
+    date: '2026-11-20',
+    title: 'O Morro do Quibungo',
+    items: [
+      'MAPA NOVO — SERTÃO DO QUIBUNGO (Hexatombe): o alto do morro na caatinga onde Cristino, Jae e Labirinto armaram a emboscada para o Quibungo. À NOITE, a do episódio: lua cheia, névoa azul na mata seca, a placa com a lamparina vermelha, as lamparinas em fila, os barris e a trilha de fogo descendo o morro. De DIA: a caatinga clara de sol com mandacarus e xique-xiques.',
+    ],
+  },
   {
     v: '5.37.1',
     date: '2026-11-20',

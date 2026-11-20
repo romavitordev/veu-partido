@@ -1,5 +1,15 @@
 # Registro administrativo de alterações
 
+## v5.38.0 — O Morro do Quibungo
+
+- Versão: `VERSION` 5.37.1 → **5.38.0**. Data: 2026-11-20.
+- Dono: "prepare um novo mapa, o sertão onde teve a luta contra o quimbungo, busque referências nos episódios"; depois
+  "pode lançar o mapa por enquanto" (vai virar uma fase nova do Outro Lado).
+- Referências: HEX ep. 5, 2h05–2h48 (19 prints em `Referencias visuais/Mapas/sertao-quibungo/`); seção 4b em
+  docs/REFERENCIAS-MAPAS.md. Disposição dos objetos e a versão de dia: PROPOSTA.
+- Testado no navegador (Explorar, as duas versões, console sem erros); `npm test` (125), `npm run check`, `npm run moves`,
+  `vite build` (em outra pasta) ok.
+
 ## v5.37.1 — Os Visitantes do Samhain
 
 - Versão: `VERSION` 5.37.0 → **5.37.1**. Data: 2026-11-20.

@@ -151,6 +151,8 @@ export const DECALS = {
   circo_noite: { items: [['blood', 3, 0.8, 1.4], ['scratch', 3, 1.4, 2.2], ['puddle', 2, 1.2, 2.0], ['scorch', 1, 1.0, 1.4]] },
   passaros: { items: [['leaves', 7, 1.2, 2.0], ['dirt', 3, 1.8, 2.8]], leaves: LEAF_GREEN },
   passaros_noite: { items: [['leaves', 5, 1.2, 2.0], ['puddle', 3, 1.4, 2.4], ['mud', 2, 1.8, 2.6]], leaves: LEAF_GREEN },
+  sertao: { items: [['dirt', 2, 1.6, 2.4], ['crack', 4, 1.2, 2.0]] }, // a terra seca do morro
+  sertao_dia: { items: [['dirt', 2, 1.6, 2.4], ['crack', 5, 1.2, 2.2]] },
   treb_ciach: { items: [['leaves', 7, 1.2, 2.0], ['mud', 3, 1.8, 2.8], ['scorch', 1, 1.0, 1.4]], leaves: LEAF_AUTUMN }, // o Samhain
   treb_ciach_tempestade: { items: [['puddle', 6, 1.4, 2.8], ['mud', 4, 2, 3], ['leaves', 3, 1.0, 1.6]], leaves: LEAF_AUTUMN },
   mansao_luta: { items: [['blood', 2, 0.6, 1.2], ['scratch', 3, 1.0, 1.8]] }, // o assoalho do quarto

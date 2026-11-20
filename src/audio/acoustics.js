@@ -31,6 +31,8 @@ export const ACOUSTICS = {
   acampamento: { time: 0.5, wet: 0.05, damp: 0.6 },
   passaros: { time: 0.5, wet: 0.05, damp: 0.6 },
   passaros_noite: { time: 0.5, wet: 0.05, damp: 0.6 },
+  sertao: OUTDOOR,
+  sertao_dia: OUTDOOR,
 };
 
 export const acousticsFor = (arenaId) => ACOUSTICS[arenaId] || OUTDOOR;

@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.38.0 — O Morro do Quibungo
+- MAPA NOVO — SERTÃO DO QUIBUNGO (Hexatombe): o alto do morro na caatinga onde Cristino, Jae e Labirinto armaram a emboscada para o Quibungo. À NOITE, a do episódio: lua cheia, névoa azul na mata seca, a placa com a lamparina vermelha, as lamparinas em fila, os barris e a trilha de fogo descendo o morro. De DIA: a caatinga clara de sol com mandacarus e xique-xiques.
+
 ## v5.37.1 — Os Visitantes do Samhain
 - TREB CIACH: a vila agora tem 20 ALDEÕES (os 15 moradores e 5 VISITANTES do Samhain). Cinco casas recebem um visitante: na primeira vez que a lamparina delas apaga, morre só ele e a chama volta com metade da vida — uma segunda chance; na segunda vez morrem os moradores.
 

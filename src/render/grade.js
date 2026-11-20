@@ -23,6 +23,8 @@ export const GRADE = {
   circo_noite: { sat: 1.08, contrast: 1.1, gain: [1.0, 0.95, 1.05], lift: [0.012, 0, 0.02] }, // néon e escuro
   passaros: { sat: 1.02, contrast: 1.03, gain: [1.03, 1.02, 0.96], lift: [0.004, 0.006, 0] },
   passaros_noite: { sat: 0.88, contrast: 1.06, gain: [0.95, 0.99, 1.07], lift: [0, 0.006, 0.02] },
+  sertao: { sat: 0.86, contrast: 1.08, gain: [0.94, 0.98, 1.08], lift: [0, 0.004, 0.02] }, // a noite azul de lua
+  sertao_dia: { sat: 0.96, contrast: 1.05, gain: [1.05, 1.01, 0.94], lift: [0.01, 0.006, 0] }, // sol seco
   treb_ciach: { sat: 0.9, contrast: 1.06, gain: [1.04, 0.98, 0.94], lift: [0.01, 0.004, 0.006] }, // o Samhain
   treb_ciach_tempestade: { sat: 0.8, contrast: 1.06, gain: [0.95, 0.99, 1.05], lift: [0, 0.006, 0.016] },
   mansao_luta: { sat: 0.9, contrast: 1.08, gain: [1.05, 0.98, 0.9], lift: [0.01, 0.004, 0] }, // a luz amarela

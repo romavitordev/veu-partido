@@ -880,3 +880,64 @@ export const PASSAROS_NOITE = {
   stars: { count: 600, radius: 170, size: 0.8 },
   mist: { ...PASSAROS.mist, color: 0x6a1a18, opacity: 0.22 },
 };
+
+// SERTÃO DO QUIBUNGO (Hexatombe, ep. 5, 2h05–2h48): o alto do morro na caatinga da Coroa de Espinhos onde Cristino,
+// Jae e Labirinto armaram a emboscada para o Quibungo — a trilha de terra clara, a placa com a lamparina vermelha,
+// as lamparinas em fila, os barris que explodiram e a mata seca em volta. A NOITE (lua cheia, névoa azul) é a do
+// episódio; o DIA é PROPOSTA. Referências: Referencias visuais/Mapas/sertao-quibungo/.
+export const SERTAO = {
+  id: 'sertao',
+  name: 'Sertão do Quibungo (Noite)',
+  glb: 'arenas/sertao.glb',
+  materials: { lantern_glow: { emissiveIntensity: 1.8 }, moon_full: { emissiveIntensity: 1.4, fog: false } },
+  bounds: { radius: 18 },
+  spawns: [{ x: 0, z: -8 }, { x: 0, z: 8 }],
+  sky: 0x1c2448,
+  skyGradient: [[0, '#0a0e22'], [0.45, '#1c2448'], [0.8, '#34407a'], [1, '#4a5490']],
+  fog: { color: 0x2a3466, density: 0.028 },
+  lights: [
+    { type: 'hemi', sky: 0x8a98e0, ground: 0x2a2430, intensity: 1.1 },
+    { type: 'ambient', color: 0x4a5490, intensity: 0.45 },
+    { type: 'dir', color: 0xc8d4ff, intensity: 1.5, pos: [10, 34, -60], shadow: true, area: 26 }, // a lua cheia sobre a trilha
+    { type: 'point', color: 0xff4a2a, intensity: 6, distance: 6, pos: [-12.2, 2.1, -9.2], flicker: true }, // a lamparina da placa
+    { type: 'point', color: 0xff6a2a, intensity: 10, distance: 9, pos: [9.5, 0.6, -4.2], flicker: true }, // o amontoado ao pé dos barris
+    { type: 'point', color: 0xff8a3a, intensity: 30, distance: 16, decay: 1.5, pos: [-3.5, 1.0, -27], flicker: true }, // a trilha de fogo
+  ],
+  // a trilha de fogo descendo o morro (as lamparinas que o tiro do Cristino acendeu)
+  fires: [{ pos: [-4.62, -0.1, -22], scale: 0.7 }, { pos: [-2.06, -1.0, -28], scale: 0.6 }, { pos: [-4.59, -2.35, -34], scale: 0.55 }, { pos: [-1.19, -2.9, -40], scale: 0.5 }],
+  particles: [
+    { color: 0xffa040, count: 30, area: 8, height: 5, rise: 1.2, drift: 0.5, size: 0.06, opacity: 0.8, center: [-3, -1, -30] }, // brasas da trilha
+    { color: 0xb8c4ff, count: 90, area: 34, height: 4, rise: 0.02, drift: 0.4, size: 0.04, opacity: 0.25 }, // poeira ao luar
+  ],
+  // a NÉVOA azul densa da mata (todos os prints)
+  mist: {
+    color: 0x6a78c0, count: 60, inner: 4, radius: 28, height: 1.6, size: 8, opacity: 0.26, swirl: 0.02,
+    banks: [
+      { at: [0, -40], radius: 18, count: 18, y: -4, height: 5, size: 13, opacity: 0.45 },
+      { at: [-30, -10], radius: 12, count: 12, y: -2, height: 4, size: 11, opacity: 0.35 },
+      { at: [28, 12], radius: 12, count: 12, y: -2, height: 4, size: 11, opacity: 0.35 },
+    ],
+  },
+  stars: { count: 400, radius: 170, size: 0.7 },
+  camera: { radius: 23, maxY: 15 },
+};
+
+// o sertão de dia (PROPOSTA): a caatinga seca sob o sol forte, céu claro e poeira; sem lua, sem fogo
+export const SERTAO_DIA = {
+  ...SERTAO,
+  id: 'sertao_dia',
+  name: 'Sertão do Quibungo (Dia)',
+  materials: { moon_full: { hide: true }, lantern_glow: { emissiveIntensity: 0.5 } },
+  sky: 0xd8c8a8,
+  skyGradient: [[0, '#8ab0d8'], [0.5, '#b8cce0'], [0.85, '#e0d4b8'], [1, '#e8c898']],
+  fog: { color: 0xd8c4a0, density: 0.014 },
+  lights: [
+    { type: 'hemi', sky: 0xfff0d8, ground: 0x7a5a3a, intensity: 1.6 },
+    { type: 'ambient', color: 0xfff0e0, intensity: 0.35 },
+    { type: 'dir', color: 0xfff0d0, intensity: 2.6, pos: [18, 40, 12], shadow: true, area: 26 }, // o sol a pino
+  ],
+  fires: [],
+  particles: [{ color: 0xc8a878, count: 120, area: 34, height: 3, rise: 0.02, drift: 0.7, size: 0.05, opacity: 0.35 }], // poeira
+  mist: { ...SERTAO.mist, color: 0xe0cca8, opacity: 0.12 },
+  stars: null,
+};

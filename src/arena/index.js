@@ -1,10 +1,10 @@
 import { createGLBArena, preloadArena } from './glbArena.js';
-import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE, TREB_CIACH, TREB_CIACH_TEMPESTADE, PASSAROS, PASSAROS_NOITE } from './configs.js';
+import { ORFANATO, SUVACO, COLISEU, SANTO_BERCO, ACAMPAMENTO, IGREJA, PALCO, TIPORA, MANSAO, ESCOLA, TORRE, MANSAO_LUTA, ESCOLA_LUTA, FERRO_VELHO, CIRCO, FERRO_VELHO_DIA, CIRCO_NOITE, IGREJA_DIA, ORFANATO_NOITE, TREB_CIACH, TREB_CIACH_TEMPESTADE, PASSAROS, PASSAROS_NOITE, SERTAO, SERTAO_DIA } from './configs.js';
 
 // cenários do Blender carregados no início do jogo
-const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO, treb_ciach: TREB_CIACH, passaros: PASSAROS };
+const GLB_ARENAS = { orfanato: ORFANATO, suvaco: SUVACO, coliseu: COLISEU, santo_berco: SANTO_BERCO, acampamento: ACAMPAMENTO, igreja: IGREJA, palco: PALCO, tipora: TIPORA, mansao_luta: MANSAO_LUTA, escola_luta: ESCOLA_LUTA, ferro_velho: FERRO_VELHO, circo: CIRCO, treb_ciach: TREB_CIACH, passaros: PASSAROS, sertao: SERTAO };
 // variantes de horário (mesmo .glb, outra luz): não carregam de novo, só seguem a disponibilidade do original
-const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'], treb_ciach: ['treb_ciach_tempestade'], passaros: ['passaros_noite'] };
+const VARIANTS = { orfanato: ['orfanato_noite'], ferro_velho: ['ferro_velho_dia'], circo: ['circo_noite'], igreja: ['igreja_dia'], treb_ciach: ['treb_ciach_tempestade'], passaros: ['passaros_noite'], sertao: ['sertao_dia'] };
 export async function preloadArenas() {
   await Promise.all(Object.values(GLB_ARENAS).map((cfg) => preloadArena(cfg).catch((e) => {
     console.warn('Cenário indisponível:', cfg.id, e);
@@ -147,6 +147,22 @@ export const ARENAS = {
     thumbCamera: { pos: [1.5, 2.6, 17], look: [0, 2, -20] },
     create: () => createGLBArena(PASSAROS_NOITE),
   },
+  sertao: {
+    name: 'Sertão do Quibungo (Noite)',
+    description: 'O alto do morro na caatinga de Hexatombe onde armaram a emboscada para o Quibungo: a lua cheia, a névoa azul na mata seca, a placa com a lamparina vermelha, as lamparinas em fila, os barris e a trilha de fogo descendo o morro.',
+    colors: ['#1c2448', '#9a8468', '#ff4a2a'],
+    available: true,
+    thumbCamera: { pos: [1, 2.4, 16], look: [0, 3, -30] },
+    create: () => createGLBArena(SERTAO),
+  },
+  sertao_dia: {
+    name: 'Sertão do Quibungo (Dia)',
+    description: 'O mesmo morro da caatinga sob o sol forte: a terra clara da trilha, os mandacarus e xique-xiques, as árvores secas e os barris ainda lá.',
+    colors: ['#b8cce0', '#9a8468', '#4a5a44'],
+    available: true,
+    thumbCamera: { pos: [1, 2.4, 16], look: [0, 3, -30] },
+    create: () => createGLBArena(SERTAO_DIA),
+  },
   treb_ciach: {
     name: 'Vilarejo de Treb Ciach (Samhain)',
     description: 'O vilarejo irlandês de A Vigília no dia do Samhain, sob o céu cinza e na névoa: a praça entre as casas compridas de enxaimel e palha, as ruas de pedra, o riacho com a ponte e, no centro, a grande fogueira de toras e ossos com a chama de proteção amarela e o símbolo de ossos com o crânio de cervo no topo.',
@@ -216,5 +232,5 @@ export async function preloadPveArena(id) {
   return preloadArena(cfg);
 }
 
-export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'passaros', 'passaros_noite', 'treb_ciach', 'treb_ciach_tempestade', 'mansao_luta', 'escola_luta'];
+export const ARENA_ORDER = ['orfanato', 'orfanato_noite', 'suvaco', 'coliseu', 'santo_berco', 'acampamento', 'igreja', 'igreja_dia', 'palco', 'tipora', 'ferro_velho', 'ferro_velho_dia', 'circo', 'circo_noite', 'passaros', 'passaros_noite', 'sertao', 'sertao_dia', 'treb_ciach', 'treb_ciach_tempestade', 'mansao_luta', 'escola_luta'];
 export const DEFAULT_ARENA = 'ferro_velho';

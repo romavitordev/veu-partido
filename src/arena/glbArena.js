@@ -192,6 +192,7 @@ export function createGLBArena(cfg) {
             if (over.emissive !== undefined) c.emissive = new THREE.Color(over.emissive);
             if (over.emissiveIntensity !== undefined) c.emissiveIntensity = over.emissiveIntensity;
             if (over.hide) o.visible = false;
+            if (over.fog === false) c.fog = false; // a lua no céu: a névoa da arena não a apaga
             return c;
           };
           o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);

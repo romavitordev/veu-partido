@@ -1022,6 +1022,39 @@ export const ARENA_TEXTURES = {
     noise(g, s, ['#3a1a10', '#b06a50'], 2000, [1, 3], 0.35);
   }, { roughness: 0.9 }),
 
+  // ---------------- Sertão do Quibungo (Hexatombe ep. 5): caatinga seca, a trilha de terra clara, mandacaru
+  caatinga_earth: () => tex(512, 6, (g, s) => {
+    g.fillStyle = '#4a3a2c'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#36281e', '#5a4836', '#6a5a44', '#2e2218'], 14000, [1, 4], 0.45);
+    g.strokeStyle = 'rgba(120,104,80,0.35)'; g.lineWidth = 1; // folhas e gravetos secos
+    for (let i = 0; i < 700; i++) { const x = rnd(0, s), y = rnd(0, s), a = rnd(0, Math.PI * 2), L = rnd(2, 7); g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * L, y + Math.sin(a) * L); g.stroke(); }
+  }, { roughness: 1 }),
+  trail_sand: () => tex(512, 6, (g, s) => {
+    g.fillStyle = '#9a8468'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#867056', '#b09a7c', '#7a6650', '#c0aa8a'], 14000, [1, 4], 0.4);
+    for (let i = 0; i < 26; i++) { // rachaduras da terra seca
+      g.strokeStyle = `rgba(70,56,40,${rnd(0.15, 0.35)})`; g.lineWidth = rnd(0.8, 1.6);
+      let x = rnd(0, s), y = rnd(0, s); g.beginPath(); g.moveTo(x, y);
+      for (let k = 0; k < 6; k++) { x += rnd(-14, 14); y += rnd(-14, 14); g.lineTo(x, y); }
+      g.stroke();
+    }
+    noise(g, s, ['#5a4a3a', '#e0d0b0'], 900, [2, 4], 0.5); // pedrinhas
+  }, { roughness: 1 }),
+  cactus: () => tex(128, 0.6, (g, s) => {
+    g.fillStyle = '#4a5a44'; g.fillRect(0, 0, s, s);
+    for (let x = 0; x < s; x += 16) { // as costelas do mandacaru com os espinhos
+      g.fillStyle = 'rgba(30,40,28,0.5)'; g.fillRect(x, 0, 3, s);
+      g.fillStyle = 'rgba(120,140,110,0.35)'; g.fillRect(x + 7, 0, 3, s);
+      g.fillStyle = 'rgba(220,210,180,0.7)';
+      for (let y = rnd(0, 8); y < s; y += 10) g.fillRect(x + 1, y, 1, 2);
+    }
+  }, { roughness: 0.8 }),
+  dead_wood: () => tex(256, 1.5, (g, s) => {
+    g.fillStyle = '#4a4038'; g.fillRect(0, 0, s, s);
+    for (let i = 0; i < 70; i++) { g.strokeStyle = `rgba(${Math.random() < 0.5 ? '30,24,20' : '110,100,90'},${rnd(0.2, 0.45)})`; g.lineWidth = rnd(1, 2.5); const x = rnd(0, s); g.beginPath(); g.moveTo(x, 0); g.bezierCurveTo(x + rnd(-6, 6), s * 0.3, x + rnd(-6, 6), s * 0.7, x + rnd(-4, 4), s); g.stroke(); }
+  }, { roughness: 0.95 }),
+  barrel_wood: () => planks('#5a3a24', '#2e1e12', 0.9),
+
   // ---------------- Treb Ciach (A Vigília; o mapa da wiki e AV ep. 1 5h08/5h39)
   // a grama irlandesa: verde escuro e úmido, trevos e talos
   irish_grass: () => tex(256, 3, (g, s) => {
