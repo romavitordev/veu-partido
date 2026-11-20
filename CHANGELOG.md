@@ -1,5 +1,17 @@
 # Changelog
 
+## v5.35.0 — O Sobre em Dia
+
+### Adicionado
+- `ensureNpcModels(ids)` (models/npcRig.js): carrega só os modelos de invocação pedidos.
+- `public/sobre/elenco/velisar.webp` e `zefero.webp`.
+
+### Alterado
+- Chico, Lírio e Guizo: `element: 'transmissao'`; `tools/check-roster.mjs` passa a exigir os quatro dos Cinco em Transmissão.
+- `sobre.html`: seção Outro Lado com as 5 fases (`DUNGEON_ORDER`), cards Febre do Ouro e resgate no coop, textos de
+  armas, pontos de existência, equipes e arenas; `src/sobre.js` gera os retratos do Amigo e o grupo das Assombrações
+  (`renderGroupPortrait`).
+
 ## v5.34.1 — Cada Arma no Seu Jeito
 
 ### Alterado

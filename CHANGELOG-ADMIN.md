@@ -1,5 +1,14 @@
 # Registro administrativo de alterações
 
+## v5.35.0 — O Sobre em Dia
+
+- Versão: `VERSION` 5.34.1 → **5.35.0**. Data: 2026-11-20.
+- Dono: "atualize a pagina de sobre"; "e na verdade chico, lirio, guizo, também são de transmissão".
+- Testado no navegador: os 5 retratos de chefe carregam, filtro Transmissão com Dara, Chico, Lírio, Guizo e o
+  Estrangeiro, sem erros no console, sem rolagem lateral no celular (375 px).
+- `npm test` (125), `npm run check` ("Tudo certo."), `vite build` (em outra pasta) ok.
+- Fora deste lançamento: o Carniçal (remodelagem pausada) e as mudanças do Outro Lado em andamento em outra sessão.
+
 ## v5.34.1 — Cada Arma no Seu Jeito
 
 - Versão: `VERSION` 5.34.0 → **5.34.1**. Data: 2026-11-20.

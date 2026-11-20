@@ -23,7 +23,7 @@ export default {
   model: 'chico',
   color: '#e0b828',
   origin: 'Os Cinco',
-  element: 'energia',
+  element: 'transmissao', // o dono (2026-11-20): Os Cinco são de Transmissão, como a Dara; os rituais seguem com o próprio elemento
   energyColor: YELLOW,
   info: {
     weapon: 'A Mac-10 dos fios coloridos, os punhos, a chave inglesa, o scanner de Energia e a van',

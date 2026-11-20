@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.34.1';
+export const VERSION = '5.35.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.35.0',
+    date: '2026-11-20',
+    title: 'O Sobre em Dia',
+    items: [
+      'CHICO, LÍRIO e GUIZO agora são de TRANSMISSÃO, como a Dara: Os Cinco inteiros ficam fora do ciclo dos elementos e são neutros contra todos (os rituais de cada um continuam com o próprio elemento).',
+      'PÁGINA SOBRE atualizada: o Outro Lado com as 5 fases na ordem da história (Escola Nostradamus, Mansão Endiabrada, Proteja a Ilha de Tipora, Torre da TV Varminho e Proteja Treb Ciach), com os retratos do Amigo Imaginário e das Assombrações, as dificuldades trancadas, a Febre do Ouro e o resgate no coop.',
+      'Também na página Sobre: os retratos do Velisar e do Zéfero no elenco, as armas de cada um (lança com arremesso carregado, maça, mangual e arco), os pontos de existência da Ordo Calamitas, a Missa de Sangue com os cinco Vampiros e a lista completa das arenas.',
+    ],
+  },
   {
     v: '5.34.1',
     date: '2026-11-20',

@@ -457,7 +457,8 @@ ok(lir && ['heavyBlow', 'caiDentro', 'bloodBind', 'curseWeapon', 'heavyProtectio
 ok(lir && lir.melee.ground && lir.melee.ground.otg && lir.melee.strikes.some((s) => s.armor) && lir.assistAuto && lir.grip.twoHand, 'Lírio: golpe no chão, resistência em golpes pesados, Cai Dentro automático na equipe e Leonora com as duas mãos');
 const dara = get('dara');
 ok(dara && dara.origin === 'Os Cinco' && dara.element === 'transmissao', 'Dara: elemento Transmissão');
-ok(ROSTER.filter((c) => c.origin === 'Os Cinco' && c.id !== 'dara').every((c) => c.element !== 'transmissao'), 'Os Cinco: nenhum outro elemento-base de Transmissão');
+// o dono (2026-11-20): "chico, lirio, guizo, também são de transmissão" (os rituais seguem com o próprio elemento)
+ok(['dara', 'chico', 'lirio', 'guizo'].every((id) => get(id) && get(id).element === 'transmissao'), 'Os Cinco: Dara, Chico, Lírio e Guizo de Transmissão');
 {
   // as submetralhadoras do cânone (wiki, Arsenal de cada um) são o □; o que era □ virou habilidade
   const chico = get('chico');

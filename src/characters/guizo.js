@@ -207,7 +207,7 @@ export default {
   model: 'guizo',
   color: '#a01c34',
   origin: 'Os Cinco',
-  element: 'morte', // a maioria dos rituais dele é de Morte (tempo e espirais)
+  element: 'transmissao', // o dono (2026-11-20): Os Cinco são de Transmissão, como a Dara; os rituais seguem com o próprio elemento
   energyColor: MORTE,
   info: {
     weapon: 'Faca de detalhes dourados e a câmera',

@@ -51,22 +51,29 @@ async function buildBossPortraits() {
   const status = document.getElementById('boss-portrait-status');
   let renderer;
   try {
-    const [THREE, { renderPortraits }, { ensureModels }, espreitador, degolificada, estrangeiro] = await Promise.all([
+    const [THREE, { renderPortraits, renderGroupPortrait }, { ensureModels }, { ensureNpcModels }, { buildAssombracao }, espreitador, degolificada, estrangeiro, amigo] = await Promise.all([
       import('three'),
       import('./ui/portraits.js'),
       import('./models/index.js'),
+      import('./models/npcRig.js'),
+      import('./models/assombracao.js'),
       import('./characters/bosses/espreitador.js'),
       import('./characters/bosses/degolificada.js'),
       import('./characters/bosses/estrangeiro.js'),
+      import('./characters/bosses/amigo.js'),
     ]);
-    const bosses = [espreitador.default, degolificada.default, estrangeiro.default];
-    await ensureModels(bosses.map((boss) => boss.model));
+    const bosses = [espreitador.default, degolificada.default, estrangeiro.default, amigo.default];
+    await Promise.all([ensureModels(bosses.map((boss) => boss.model)), ensureNpcModels(['assombracao'])]);
     renderer = new THREE.WebGLRenderer({ canvas: document.createElement('canvas'), antialias: true, alpha: true });
     const portraits = {
       ...renderPortraits([espreitador.default], renderer),
       ...renderPortraits([degolificada.default], renderer, { turn: 0.35 }),
       ...renderPortraits([estrangeiro.default], renderer, { turn: -0.25 }),
+      ...renderPortraits([amigo.default], renderer, { turn: 0.3 }),
     };
+    // Treb Ciach não tem chefe único: três Assombrações juntas, como na tela de carregamento da fase (pve/flow.js)
+    const gang = [['Manto', 'Corvo'], ['Palha', 'Raizes'], ['Manto', 'Bode']].map(([outfit, mask]) => buildAssombracao({ outfit, mask }));
+    portraits.samhain = renderGroupPortrait(gang.map((g) => g.root), renderer, { w: 240, h: 320 });
     for (const img of bossRosterEl.querySelectorAll('.boss-portrait')) {
       const src = portraits[img.dataset.boss];
       if (src) img.src = src;

@@ -34,6 +34,13 @@ export const NPC_MODELS = {
 };
 const loaded = {};
 
+// só os ids pedidos (a página Sobre precisa só das Assombrações, não das armas e invocações todas)
+export async function ensureNpcModels(ids) {
+  await Promise.all(ids.filter((id) => NPC_MODELS[id] && !loaded[id]).map(async (id) => {
+    loaded[id] = await loadGLBRetry(import.meta.env.BASE_URL + NPC_MODELS[id]);
+  }));
+}
+
 export async function preloadNpcModels() {
   await Promise.all(Object.entries(NPC_MODELS).map(async ([id, url]) => {
     try {

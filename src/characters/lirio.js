@@ -13,7 +13,7 @@ export default {
   model: 'lirio',
   color: '#2c6fc8',
   origin: 'Os Cinco',
-  element: 'sangue', // Amarras de Sangue e a Leonora amaldiçoada com Sangue
+  element: 'transmissao', // o dono (2026-11-20): Os Cinco são de Transmissão, como a Dara; os rituais seguem com o próprio elemento
   energyColor: 0xd8c8a0, // impactos de cor de pó/osso: a força dele é física, não paranormal
   info: {
     weapon: 'Leonora (marreta de madeira com espinhos) e o canivete de osso da avó',

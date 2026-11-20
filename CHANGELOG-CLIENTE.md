@@ -2,6 +2,11 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.35.0 — O Sobre em Dia
+- CHICO, LÍRIO e GUIZO agora são de TRANSMISSÃO, como a Dara: Os Cinco inteiros ficam fora do ciclo dos elementos e são neutros contra todos (os rituais de cada um continuam com o próprio elemento).
+- PÁGINA SOBRE atualizada: o Outro Lado com as 5 fases na ordem da história (Escola Nostradamus, Mansão Endiabrada, Proteja a Ilha de Tipora, Torre da TV Varminho e Proteja Treb Ciach), com os retratos do Amigo Imaginário e das Assombrações, as dificuldades trancadas, a Febre do Ouro e o resgate no coop.
+- Também na página Sobre: os retratos do Velisar e do Zéfero no elenco, as armas de cada um (lança com arremesso carregado, maça, mangual e arco), os pontos de existência da Ordo Calamitas, a Missa de Sangue com os cinco Vampiros e a lista completa das arenas.
+
 ## v5.34.1 — Cada Arma no Seu Jeito
 - GAIUS bate como quem usa uma MAÇA: arma o golpe com o cotovelo dobrado atrás do ombro e desce com o peso do corpo (de lado, de revés, por cima, de baixo e o esmagamento final), em vez dos cortes de espada.
 - CARINA gira o MANGUAL: o braço faz o círculo por cima da cabeça para dar embalo e chicoteia; a bola na corrente segue sozinha. Bola lateral, de volta, em diagonal, o helicóptero por cima, a bola de baixo e o Giro do Mangual com o corpo inteiro.
