@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.31.2 — Uma Cartela de Cada Vez
+
+### Corrigido
+- `src/combat/specials/vampireSpecials.js` `silentFilm`: sem `world.specialBanner` quando a tela de filme existe (a faixa
+  do especial ficava por cima da primeira cartela); cartela de título (`sp.name`) 0,25–1,0 s, tela preta 0,15 s,
+  cartela da fala 1,15–2,35 s; o resto da cena empurrado por `D = 0.9`. `silentScreen().card()` sobe o véu para
+  `z-index` 9000 enquanto a cartela está na tela (o HUD — legenda falada, "EM TRANSE" — ficava por cima) e volta a 40.
+
 ## v5.31.1 — O Passe no Blender
 
 ### Mudado

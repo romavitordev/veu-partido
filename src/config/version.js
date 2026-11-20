@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.31.1';
+export const VERSION = '5.31.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.31.2',
+    date: '2026-11-20',
+    title: 'Uma Cartela de Cada Vez',
+    items: [
+      'VELISAR — O Beijo Sangrento: os textos não se sobrepõem mais. O nome do especial virou a cartela de título do filme mudo, depois vem a fala numa cartela própria, e cada cartela cobre a tela inteira sozinha, sem nenhum outro texto por cima; a cena só começa depois que a última sai.',
+    ],
+  },
   {
     v: '5.31.1',
     date: '2026-11-20',

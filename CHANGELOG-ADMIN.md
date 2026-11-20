@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v5.31.2 — Uma Cartela de Cada Vez
+
+- Versão: `VERSION` 5.31.1 → **5.31.2**. Data: 2026-11-20.
+- Dono: "vi que o especial do velisar está incrível, mas alguns textos sobrepõem outros, aparecem antes de sumir o outro".
+- Testado no navegador: registro quadro a quadro dos textos na tela durante o especial (uma cartela por vez, nada junto)
+  e prints das duas cartelas.
+- `npm test` (125), `npm run check`, `vite build` (em outra pasta) ok.
+
 ## v5.31.1 — O Passe no Blender
 
 - Versão: `VERSION` 5.31.0 → **5.31.1**. Data: 2026-11-20.

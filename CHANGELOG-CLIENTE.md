@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.31.2 — Uma Cartela de Cada Vez
+- VELISAR — O Beijo Sangrento: os textos não se sobrepõem mais. O nome do especial virou a cartela de título do filme mudo, depois vem a fala numa cartela própria, e cada cartela cobre a tela inteira sozinha, sem nenhum outro texto por cima; a cena só começa depois que a última sai.
+
 ## v5.31.1 — O Passe no Blender
 - ZÉFERO remodelado: corcunda com as vértebras marcando a camisa, cabelo preto espetado e bagunçado, mãos de bicho com garras longas e curvas, garras maiores nos pés, mangas bufantes (sem o ombro quadrado) e a barra da camisa rasgada.
 - VELISAR: a túnica cai reta até o chão e arrasta numa cauda atrás, em vez de abrir num leque de pontas em volta dos pés.

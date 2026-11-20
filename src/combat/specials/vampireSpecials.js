@@ -233,7 +233,10 @@ function silentScreen(world) {
   return {
     on() { root.style.opacity = '1'; },
     off() { root.style.opacity = '0'; },
-    card(text) { if (text) { box.textContent = text; card.style.display = 'flex'; } else card.style.display = 'none'; },
+    // a cartela cobre a tela INTEIRA, por cima de todo o HUD (nenhum outro texto aparece junto com ela)
+    card(text) {
+      if (text) { box.textContent = text; card.style.display = 'flex'; root.style.zIndex = '9000'; } else { card.style.display = 'none'; root.style.zIndex = '40'; }
+    },
     tick(dt) {
       t += dt;
       if (t < 0.05) return;
@@ -261,6 +264,11 @@ export const silentFilm = {
     const parts = splitDamage(sp.damage ?? COMBAT.specialDamage, [0.08, ...Array(cuts).fill(0.09), 0.24, 0.32]);
     const film = silentScreen(world);
     const tl = new Timeline();
+    // as CARTELAS vêm uma de cada vez, cada uma sozinha na tela (pedido do dono, 2026-11-20: "alguns textos sobrepõem
+    // outros, aparecem antes de sumir o outro"): o nome do especial é a cartela de título do filme (sem a faixa comum
+    // por cima), um instante de tela preta, a fala, e só depois que ela sai a cena anda. D = o tempo que as cartelas
+    // empurram o resto.
+    const D = 0.9;
     world.beginCinematic(f, opp);
     f.vel.set(0, 0, 0);
     f.yaw = yawTo(f.pos, opp.pos);
@@ -270,7 +278,7 @@ export const silentFilm = {
     film && film.on();
     world.audio.play('fearGaze', { volume: 0.6, pitch: 0.7 });
     world.cameraRig.playShots([
-      faceClose(f, { dur: 1.7, from: 2.4, to: 1.5, side: -0.25, height: 1.95, fov: 34 }),
+      faceClose(f, { dur: 1.7 + D, from: 2.4, to: 1.5, side: -0.25, height: 1.95, fov: 34 }),
       faceClose(opp, { dur: 0.6, from: 1.9, to: 1.6, side: 0.3, height: 1.55 }),
       orbit(opp, { dur: 1.4, radius: 4.6, height: 2.2, a0: -1.2, a1: 1.0, lookH: 1.2, fov: 44 }),
       twoShot(f, opp, { dur: 1.0, dist: 2.8, height: 1.7, side: 1, fov: 36 }),
@@ -281,13 +289,16 @@ export const silentFilm = {
     tl.each((time, dt) => {
       if (film) film.tick(dt);
       proj += dt;
-      if (proj >= 0.09 && time < 4.3) { proj = 0; world.audio.play('tick', { volume: 0.12, pitch: 0.55 + Math.random() * 0.1 }); }
+      if (proj >= 0.09 && time < 4.3 + D) { proj = 0; world.audio.play('tick', { volume: 0.12, pitch: 0.55 + Math.random() * 0.1 }); }
     });
-    tl.add(0.2, () => world.specialBanner(f, { ...sp, banner: null }, sp.name));
-    tl.add(0.45, () => film && film.card(sp.banner || 'Vocês viram um passarinho passando por aqui?'));
-    tl.add(1.45, () => film && film.card(null));
+    if (film) {
+      tl.add(0.25, () => film.card(sp.name));
+      tl.add(1.0, () => film.card(null));
+      tl.add(1.15, () => film.card(sp.banner || 'Vocês viram um passarinho passando por aqui?'));
+      tl.add(1.45 + D, () => film.card(null));
+    } else tl.add(0.2, () => world.specialBanner(f, sp, sp.name)); // sem a tela de filme: a faixa e a fala comuns
     // o OLHAR: o alvo em transe
-    tl.add(1.7, () => {
+    tl.add(1.7 + D, () => {
       const head = jointPos(opp, 'hd');
       world.fx.distort(head, { color, radius: 1.6, life: 0.6 });
       world.fx.ring(head, { color, radius: 0.7, life: 0.6, vertical: true, yaw: opp.yaw });
@@ -298,7 +309,7 @@ export const silentFilm = {
     });
     // os CORTES SECOS: some e aparece de outro lado a cada golpe (quadros faltando), um clarão de luz de projetor
     for (let i = 0; i < cuts; i++) {
-      tl.add(2.3 + i * 0.32, () => {
+      tl.add(2.3 + D + i * 0.32, () => {
         if (opp.state === 'ko') return;
         const s = spotAround(world, f, opp, (i % 2 ? 1 : -1) * (0.9 + i * 0.6), 1.25);
         f.pos.set(s.x, f.pos.y, s.z);
@@ -307,7 +318,7 @@ export const silentFilm = {
         world.screenFlash && world.screenFlash('#f4e8c8', 0.05);
         world.audio.play('clawHit', { volume: 0.8 });
       });
-      tl.add(2.3 + i * 0.32 + 0.09, () => {
+      tl.add(2.3 + D + i * 0.32 + 0.09, () => {
         if (opp.state === 'ko') return;
         hit(world, f, opp, parts[1 + i], { color, sound: 'clawHit' });
         specialHitFx(world, f, opp, { kind: 'claw', flip: !!(i % 2) }, color);
@@ -315,9 +326,9 @@ export const silentFilm = {
         if (opp.state !== 'ko') { opp.anim.play('hit', { restart: true, blend: 0.02 }); opp.poseHold = 0.06; }
       });
     }
-    tl.add(2.3 + cuts * 0.32 + 0.05, () => film && film.card(sp.kissCard || 'Um beijo.'));
+    tl.add(2.3 + D + cuts * 0.32 + 0.05, () => film && film.card(sp.kissCard || 'Um beijo.'));
     // O BEIJO: de frente, a mordida no pescoço
-    tl.add(2.3 + cuts * 0.32 + 0.75, () => {
+    tl.add(2.3 + D + cuts * 0.32 + 0.75, () => {
       film && film.card(null);
       const F = forwardFromYaw(yawTo(opp.pos, f.pos));
       f.pos.set(opp.pos.x + F.x * 0.9, f.pos.y, opp.pos.z + F.z * 0.9);
@@ -329,7 +340,7 @@ export const silentFilm = {
       gore(world, opp, color);
     });
     // a COR VOLTA com o sangue: o último golpe e a reverência para a plateia
-    const fin = 2.3 + cuts * 0.32 + 1.45;
+    const fin = 2.3 + D + cuts * 0.32 + 1.45;
     tl.add(fin, () => {
       film && film.off();
       world.screenFlash && world.screenFlash('#7a0010', 0.22);
