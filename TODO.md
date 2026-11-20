@@ -629,6 +629,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **O Carniçal de lodo** — v5.37.0: modelo novo com musculatura, fibras, tendões e caveira suja; retrato atualizado.
 - [x] **A noite mais justa** — v5.36.0: Treb Ciach rebalanceado, corredor e cartas sem tela dividida no coop, resgate com dano, sem cartas após o chefe final e gacha de 3 h com o preço certo.
 - [x] **Sobre em dia** — v5.35.0: página Sobre com as 5 fases do Outro Lado e Os Cinco de Transmissão.
 - [x] **Cada arma no seu jeito** — v5.34.1: golpes de maça (Gaius), de mangual (Carina) e de arco pela mão esquerda (Amália).

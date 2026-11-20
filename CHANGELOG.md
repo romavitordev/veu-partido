@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.37.0 — O Carniçal de Lodo
+
+### Alterado
+- `tools/blender/char_carnical.py`: perfil muscular radial por osso (`muscle()`: deltoide, bíceps, tríceps, antebraço,
+  quadríceps, vasto medial, panturrilha) no lugar do afinamento; deslocamentos de peitoral, trapézio e dorsal; fibras com
+  perfil de corda (`rope`); abdômen em grade; cor por vértice sulco → lodo → crista; zona vermelha só nas costas e
+  ombros; tendões ondulados; caveira com terra. `public/models/carnical.glb` (meshopt, ~660 KB) e o retrato
+  `public/sobre/elenco/carnical.webp` refeitos.
+
 ## v5.36.0 — A Noite Mais Justa
 
 ### Alterado

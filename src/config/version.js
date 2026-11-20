@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.36.0';
+export const VERSION = '5.37.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.37.0',
+    date: '2026-11-20',
+    title: 'O Carniçal de Lodo',
+    items: [
+      'CARNIÇAL remodelado: corpo de lodo com músculos de verdade (ombros, bíceps, antebraços, peito, coxas e panturrilhas), fibras torcidas como cordas, abdômen em gomos, tendões que serpenteiam pelos braços, o vermelho de carne só nas costas e nos ombros e a caveira com terra e sujeira. O retrato do Sobre foi atualizado.',
+    ],
+  },
   {
     v: '5.36.0',
     date: '2026-11-20',

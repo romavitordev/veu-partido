@@ -1,5 +1,12 @@
 # Registro administrativo de alterações
 
+## v5.37.0 — O Carniçal de Lodo
+
+- Versão: `VERSION` 5.36.0 → **5.37.0**. Data: 2026-11-20.
+- Dono: "termine o modelo do carniçal e suba ele."
+- Construído pelo Blender MCP (`mcp_build`), comparado com as referências; renders de retrato, frente e costas no jogo.
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.36.0 — A Noite Mais Justa
 
 - Versão: `VERSION` 5.35.0 → **5.36.0**. Data: 2026-11-20.

@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.37.0 — O Carniçal de Lodo
+- CARNIÇAL remodelado: corpo de lodo com músculos de verdade (ombros, bíceps, antebraços, peito, coxas e panturrilhas), fibras torcidas como cordas, abdômen em gomos, tendões que serpenteiam pelos braços, o vermelho de carne só nas costas e nos ombros e a caveira com terra e sujeira. O retrato do Sobre foi atualizado.
+
 ## v5.36.0 — A Noite Mais Justa
 - TREB CIACH mais justo: na VILA (parte 1) as Assombrações começam mais fracas e chegam à força total na penúltima onda (você chega sem nível); do Difícil para cima as lamparinas aguentam mais, o reacender é mais rápido e a tempestade é um pouco menor. Na ÁRVORE ANCIÃ (parte 3) vêm mais Assombrações (e uma forte a mais do Normal para cima) e a porta recupera bem menos entre as ondas.
 - COOP LOCAL: o CORREDOR DAS LAMPARINAS (parte 2) é uma tela só, com os dois correndo lado a lado, e as CARTAS DE MELHORIA abrem por cima da tela inteira em vez de ficarem cortadas pela divisão.

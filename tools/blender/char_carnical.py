@@ -27,14 +27,14 @@ hz = sk['hips'].z
 
 lodo = vcol_material('lodo_carnical', rough=0.38)  # piche molhado: o brilho mostra as estrias (remodelagem 2026-11-06)
 bone = material('face_skull_carnical', '#ffffff', 0.6)  # a caveira rachada com o Símbolo Espiral (textura)
-tendon = material('tendon_carnical', '#b8ab94', 0.7)  # os tendões pálidos soltos
+tendon = material('tendon_carnical', '#8f8574', 0.7)  # os tendões pálidos soltos (mais apagados: brancos demais viravam riscos no jogo)
 claw = material('claw_carnical', '#0c0a0e', 0.35)
 brain = material('glow_brain_carnical', '#c27472', 0.55, emission='#3a0a0a', strength=0.5)  # rosado como na arte
 ember = material('glow_ombro_carnical', '#7a1410', 0.5, emission='#9a1a12', strength=1.6)
 bone['preview'] = '#cbb68f'
 
-C = {k: Vector(hex_rgb(v)) for k, v in {'lodo': '#17161a', 'crest': '#5e5a64', 'ember': '#8a1a16'}.items()}  # cristas pálidas e o vermelho da referência
-AMP = 0.007 * H
+C = {k: Vector(hex_rgb(v)) for k, v in {'lodo': '#17161a', 'crest': '#706b77', 'ember': '#8a1a16', 'groove': '#070608'}.items()}  # cristas pálidas e o vermelho da referência
+AMP = 0.009 * H
 
 
 def V(x, y, z):
@@ -56,8 +56,13 @@ def fibers(a, b_, n, twist, amp=AMP):
         q = p - (a + ax * t * L)
         th = math.atan2(q.x, q.y)
         k = 0.55 + 0.45 * (n3(p, 1.1) * 0.5 + 0.5)
-        return amp * k * (ridge(n * th + twist * t + n3(p, 1.8) * 1.6, 2) - 0.35)
+        return amp * k * (rope(n * th + twist * t + n3(p, 1.8) * 1.6) - 0.35)
     return f
+
+
+def rope(x):
+    """o FEIXE de Lodo: corda arredondada com o sulco estreito e fundo entre as cordas (arte do Livro de Regras)"""
+    return 0.6 * ridge(x, 1.5) + 0.4 * (1 - ridge(x + math.pi, 8))
 
 
 def glow_zone(p):
@@ -111,16 +116,37 @@ d = WR - co[m, 2]
 co[m, 2] = WR - d * (1 + 0.75 * d / D)
 cx = np.sign(co[m, 0]) * sk['sL'].x
 co[m, 0] = cx + (co[m, 0] - cx) * (1 - 0.15 * np.clip(d / D, 0, 1))
-# REMODELAGEM 2026-11-06 (pedido do dono: "remodel completo"): os membros SECOS, de tendão — cada vértice é puxado
-# para o eixo do seu osso pelos pesos (as juntas misturam sem degrau); a coxa e o braço perdem o volume de homem comum
-SLIM = {'s': 0.8, 'e': 0.78, 'hand': 0.92, 'l': 0.84, 'k': 0.8, 'foot': 1.0}
+# REMODELAGEM 2026-11-20 (pedido do dono: "melhore o modelo do carniçal"): a arte e o lineart do Livro de Regras são uma
+# FIGURA DE MÚSCULOS (écorché) — deltoides grandes, bíceps e antebraço cheios, coxas pesadas com o vasto medial,
+# panturrilhas altas — e não os membros secos de tendão da remodelagem de 2026-11-06. Cada vértice é empurrado para
+# fora do eixo do seu osso por um perfil de músculo ao longo do osso (as juntas misturam pelos pesos, sem degrau).
 CHILD = {'s': 'e', 'e': 'hand', 'hand': 'handTip', 'l': 'k', 'k': 'foot', 'foot': 'toe'}
 
 
-def seg_pt(p, a, c):
+def seg_t(p, a, c):
     ab = c - a
-    t = max(0.0, min(1.0, (p - a).dot(ab) / max(1e-9, ab.length_squared)))
-    return a + ab * t
+    return max(0.0, min(1.0, (p - a).dot(ab) / max(1e-9, ab.length_squared)))
+
+
+def g(t, c, w):
+    return math.exp(-((t - c) / w) ** 2)
+
+
+def muscle(base, t, r, sx):
+    """fator do raio: r = direção radial (unitária, mundo), sx = lado (+1 esq.)"""
+    fr = lim(-r.y)  # frente
+    bk = lim(r.y)  # trás
+    lat = lim(r.x * sx)  # por fora
+    med = lim(-r.x * sx)  # por dentro
+    if base == 's':  # DELTOIDE em cima (frente, fora e trás), BÍCEPS na frente, TRÍCEPS atrás
+        return 1 + 0.3 * g(t, 0.08, 0.16) * (0.5 + 0.5 * lat) + 0.2 * g(t, 0.55, 0.2) * fr + 0.16 * g(t, 0.45, 0.25) * bk
+    if base == 'e':  # o antebraço cheio perto do cotovelo e fino no pulso
+        return 1 + 0.2 * g(t, 0.22, 0.2) * (0.5 + 0.5 * max(lat, fr)) - 0.12 * lim((t - 0.6) / 0.4)
+    if base == 'l':  # QUADRÍCEPS na frente, VASTO MEDIAL dentro sobre o joelho, posteriores atrás
+        return 1 + 0.18 * g(t, 0.4, 0.3) * (0.4 + 0.6 * fr) + 0.16 * g(t, 0.8, 0.12) * med * (0.4 + 0.6 * fr) + 0.1 * g(t, 0.45, 0.3) * bk
+    if base == 'k':  # PANTURRILHA alta (gêmeos atrás) e o tornozelo fino
+        return 1 + 0.32 * g(t, 0.25, 0.16) * (0.3 + 0.7 * bk) + 0.06 * g(t, 0.3, 0.2) * fr - 0.15 * lim((t - 0.7) / 0.3)
+    return 1.0
 
 
 for i, wv in enumerate(heat):
@@ -128,14 +154,27 @@ for i, wv in enumerate(heat):
     acc, tot = Vector((0, 0, 0)), 0.0
     for n, a in wv.items():
         base = n[:-1]
-        if base not in SLIM or n[-1] not in 'LR' or a < 1e-3:
+        if base not in ('s', 'e', 'l', 'k') or n[-1] not in 'LR' or a < 1e-3:
             continue
-        q = seg_pt(p, sk[n], sk[CHILD[base] + n[-1]])
-        acc += (q + (p - q) * SLIM[base]) * a
+        A, B = sk[n], sk[CHILD[base] + n[-1]]
+        t = seg_t(p, A, B)
+        q = A.lerp(B, t)
+        rv = p - q
+        f = muscle(base, t, rv.normalized() if rv.length > 1e-6 else Vector((0, 0, 0)), 1 if n[-1] == 'L' else -1)
+        acc += (q + rv * f) * a
         tot += a
     if tot > 0.05:
         rest = 1 - min(1.0, tot)
         co[i] = tuple(acc / max(tot, 1e-6) * min(1.0, tot) + p * rest)
+# o TRONCO de écorché: peitorais altos e projetados, trapézio subindo ao pescoço, dorsais abrindo o V
+x_, y_, z_ = co[:, 0], co[:, 1], co[:, 2]
+ax_ = np.abs(x_)
+pec = np.exp(-((z_ - 1.47 * H) / (0.065 * H)) ** 2) * np.exp(-((ax_ - 0.09 * H) / (0.07 * H)) ** 2) * (y_ < 0)
+co[:, 1] -= 0.022 * H * pec
+trap = np.exp(-((z_ - 1.55 * H) / (0.04 * H)) ** 2) * np.exp(-((ax_ - 0.1 * H) / (0.05 * H)) ** 2) * (y_ > -0.02 * H)
+co[:, 2] += 0.022 * H * trap
+lat_ = np.exp(-((z_ - 1.36 * H) / (0.08 * H)) ** 2) * np.clip((ax_ - 0.1 * H) / (0.06 * H), 0, 1) * (y_ > -0.04 * H) * (ax_ < 0.22 * H)
+co[:, 0] += np.sign(x_) * 0.018 * H * lat_
 # os PÉS de criatura: compridos para a frente (os dedos viram garras, abaixo)
 for i, wv in enumerate(heat):
     a = sum(x for n, x in wv.items() if n.startswith('foot'))
@@ -161,8 +200,9 @@ def red_zone(p):
     """o vermelho por baixo do lodo: trapézio e costas altas, a parte de trás dos ombros e as dorsais (referência)"""
     ax, z = abs(p.x), p.z / H
     back = lim((p.y + 0.01 * H) / (0.05 * H))
-    trap = lim(1 - abs(z - 1.53) / 0.09) * lim(1 - ax / (0.25 * H)) * (0.15 + 0.85 * back)
-    delt = lim(1 - math.hypot(ax - 0.27 * H, p.z - 1.5 * H) / (0.08 * H)) * (0.25 + 0.75 * back)
+    # o vermelho fica nos ombros, nas costas e nos flancos (arte do Livro de Regras): na frente do peito virava mancha
+    trap = lim(1 - abs(z - 1.53) / 0.09) * lim(1 - ax / (0.25 * H)) * back
+    delt = lim(1 - math.hypot(ax - 0.27 * H, p.z - 1.5 * H) / (0.08 * H)) * (0.1 + 0.9 * back)
     lat = lim(1 - abs(ax - 0.165 * H) / (0.05 * H)) * lim(1 - abs(z - 1.3) / 0.13) * (0.3 + 0.7 * back)
     return min(1.0, max(trap, delt, lat))
 
@@ -176,8 +216,12 @@ def torso_fn(p):
     elif p.y < -0.05 * H and z > 1.36 and ax < 0.24 * H:  # peitorais em leque
         # amplitude baixa: sob a luz roxa das arenas as estrias fortes viravam listras
         v = ridge(math.atan2(p.z - 1.54 * H, ax + 0.02 * H) * 40 + w) * 0.55
-    elif p.y < -0.05 * H and z <= 1.36 and ax < 0.09 * H:  # o abdômen (a forma vem da base): fibras verticais finas
-        v = ridge(p.x / H * 120 + w) * 0.7
+    elif p.y < -0.05 * H and z <= 1.38 and ax < 0.09 * H:  # o ABDÔMEN de écorché: gomos (sulco do meio e três de través)
+        v = 0.5 + 0.3 * ridge(p.x / H * 140 + w, 2)
+        v -= 1.1 * lim(1 - ax / (0.008 * H))  # a linha alba
+        for zc in (1.17, 1.25, 1.32):
+            v -= 0.9 * lim(1 - abs(z - zc - 0.01 * (ax / H) * 10) / 0.012)
+        v = max(v, -0.6)
     elif p.y > 0.0 and ax < 0.03 * H:  # o sulco da coluna
         return -AMP * 0.8
     else:  # flancos e costas: diagonais subindo aos ombros (as costelas aparecem)
@@ -195,10 +239,10 @@ FIB = {}
 for s_, sg in (('L', 1), ('R', -1)):
     sh_, e_, h_ = sk['s' + s_], sk['e' + s_], sk['hand' + s_]
     l_, k_, f_ = sk['l' + s_], sk['k' + s_], sk['foot' + s_]
-    FIB['up' + s_] = fibers(sh_ + V(0, 0, 0.06), e_, 9, 1.6 * sg)
-    FIB['lo' + s_] = fibers(e_, h_, 8, -1.4 * sg)
-    FIB['th' + s_] = fibers(l_ + V(0, 0, 0.06), k_, 10, 1.8 * sg)
-    FIB['sh' + s_] = fibers(k_, f_ + V(0, 0, 0.07), 8, -1.4 * sg)
+    FIB['up' + s_] = fibers(sh_ + V(0, 0, 0.06), e_, 7, 1.6 * sg, AMP * 1.4)
+    FIB['lo' + s_] = fibers(e_, h_, 6, -1.4 * sg, AMP * 1.4)
+    FIB['th' + s_] = fibers(l_ + V(0, 0, 0.06), k_, 7, 1.8 * sg, AMP * 1.5)  # menos cordas, mais fundas: a coxa lia lisa
+    FIB['sh' + s_] = fibers(k_, f_ + V(0, 0, 0.07), 6, -1.4 * sg, AMP * 1.5)
 
 
 def body_fn(p, bone):
@@ -229,7 +273,7 @@ for v, dd in zip(me.vertices, disp):
     v.co = v.co + v.normal * dd
 me.update()
 dec = body.modifiers.new('dec', 'DECIMATE')
-dec.ratio = 0.62
+dec.ratio = 0.8  # menos decimação: os sulcos entre os feixes de Lodo ficam
 bpy.context.view_layer.objects.active = body
 bpy.ops.object.modifier_apply(modifier=dec.name)
 wts = read_weights(body)
@@ -253,8 +297,9 @@ for pl in bo.data.polygons:
 def body_col(p):
     fn = body_fn(p, DOM.get(key(p), 'hips'))
     k = lim(fn / AMP + 0.35) ** 2
-    # cristas pouco mais claras que o Lodo: com mais contraste o corpo ficava listrado no jogo
-    c = C['lodo'].lerp(C['crest'], k * 0.4)
+    # o sulco entre os feixes quase preto e a corda acinzentada no meio (arte do Livro de Regras): com os feixes
+    # largos de 2026-11-20 o contraste lê como músculo, não como listra
+    c = C['groove'].lerp(C['lodo'], lim(k * 3)).lerp(C['crest'], lim(k - 0.3) * 0.9)
     r = red_zone(p)
     return c.lerp(C['ember'].lerp(C['crest'], k * 0.3), r * 0.6) if r > 0 else c
 
@@ -306,10 +351,10 @@ for side in ('L', 'R'):
             for i in range(9):
                 t = i / 8
                 c = p0.lerp(p1, t)
-                ang = a0 + k * 2.1 + turn * t
+                ang = a0 + k * 2.1 + turn * t + 0.45 * math.sin(t * 9 + k * 2)  # serpenteiam pelo braço (antes: retos)
                 rad = arm_r(side, c) * (1.0 + 0.08 * math.sin(t * math.pi))  # rente, um pouco solto no meio
                 pts.append(c + Vector((s * math.cos(ang) * rad, math.sin(ang) * rad, 0)))
-                rr.append((0.003 + 0.0025 * math.sin(t * math.pi)) * H)
+                rr.append((0.0018 + 0.0016 * math.sin(t * math.pi)) * H)  # finos como na arte
             td.append(rod(pts, rr, 5))
     b.add('tendons' + side, merge(*td), tendon, region='body', weight_fn=weights('arm' + side), subdiv=0)
 
@@ -348,7 +393,7 @@ def skull_paint(o, dark_back=True):
     """osso sujo: cavidades (normal para dentro) escuras, mais sujo atrás e no alto (onde o Lodo agarra)"""
     me = o.data
     ca = me.color_attributes.get('Col') or me.color_attributes.new('Col', 'FLOAT_COLOR', 'POINT')
-    base, dirt, hole = Vector(hex_rgb('#a2977f')), Vector(hex_rgb('#5e5040')), Vector(hex_rgb('#140d0c'))
+    base, dirt, hole = Vector(hex_rgb('#7d6a50')), Vector(hex_rgb('#3f3022')), Vector(hex_rgb('#0f0a08'))  # podre, amarronzado (wiki)
     for v in me.vertices:
         out = (v.co - CEN).normalized()
         cav = lim(0.35 - v.normal.dot(out)) ** 1.4  # dentro das órbitas, do nariz e entre os dentes
