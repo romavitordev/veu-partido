@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.36.0 — A Noite Mais Justa
+
+### Alterado
+- Samhain: `VILLAGE.lampHp` (Difícil+ 240/215/185) e `relight` 30 (samhain.js); `SAMHAIN_DIFF.storm` Difícil+ 9/11/13,
+  `TREE_DIFF` base +2 e uma forte a mais do Normal para cima, teto da onda 18 (dungeons.js); `TREE.regen` 0,07 (arvore.js);
+  rampa de vida das Assombrações na vila 70% → 100% (`Dungeon.spawnFoe`).
+- Coop local: `Dungeon.render` sem divisão com `runner` ativo e com `choosing` (cartas/recompensa).
+- `Dungeon.endRunUps()`: na queda do chefe/fim da Árvore e na recompensa zera `pendingUps` e trava novos (`runOver`).
+- Resgate (`pve/coopRescue.js`): `RESCUE.taken` 0,6 (`victim.rescueTaken` em damage.js), `armor` 2 golpes (`armorHits`),
+  `decay` do progresso guardado (`rescueProg`), `shout` (empurrão, recarga 8 s); `Fighter.isInvulnerable` deixa quem
+  resgata em 'intro' apanhar.
+- Gacha: `SHOP_WINDOW_MS` 3 h; o hub usa `SPIN_PRICE`.
+
 ## v5.35.0 — O Sobre em Dia
 
 ### Adicionado

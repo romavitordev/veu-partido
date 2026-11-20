@@ -1126,6 +1126,7 @@ export class Dungeon {
     this.bossDeadAt = p.pos.clone();
     this.phase = 'bossDown';
     this.phaseTime = 0;
+    this.endRunUps();
     this.revivePlayers();
     this.hud.callout(this.D.bossDownText || 'A ONDA FINAL CAIU', '#ffd84a');
     this.pveHud.hint(null);
@@ -1236,7 +1237,11 @@ export class Dungeon {
   // Dono escondido (this.enemy), entra em this.copias, vale XP pelo tipo (D.xp[tipo]).
   spawnFoe(type, pos, o = {}) {
     const e = this.enemy;
-    const hpMul = (o.hpMul ?? 1) * this.scale.hp * (this.tree && this.tree.hpMul ? this.tree.hpMul : 1);
+    let hpMul = (o.hpMul ?? 1) * this.scale.hp * (this.tree && this.tree.hpMul ? this.tree.hpMul : 1);
+    // a VILA (parte 1 do Samhain) começa mais fraca: quem joga chega sem nível nenhum e sobe aqui; a vida das Assombrações
+    // vai de 70% na 1ª onda a 100% na penúltima (dono, 2026-11-20: "parece que as assombrações da parte 1 são mais fortes
+    // que a da parte 3" — a base é a mesma, mas na Árvore já se chega com todos os níveis). PROPOSTA.
+    if (this.village && !this.tree && this.waves && this.waves.total > 2) hpMul *= 0.7 + 0.3 * Math.min(1, Math.max(0, (this.waves.n - 1) / (this.waves.total - 2)));
     const W = this.D.waves || {};
     const giant = type === 'gigante' || type === W.giant;
     const base = giant ? W.giantHp || 900 : FOE_HP[type] || FOE_HP.zumbi;
@@ -1704,6 +1709,7 @@ export class Dungeon {
       this.bossDeadAt = at;
       this.phase = 'bossDown';
       this.phaseTime = 0;
+      this.endRunUps();
       if (this.bossGate) this.openGate(this.bossGate);
       this.hud.callout(this.D.bossDownText || 'O ESPREITADOR CAIU', '#ffd84a');
       this.pveHud.hint(null);
@@ -1745,7 +1751,7 @@ export class Dungeon {
     n = Math.round(n * (this.mods.xpMult || 1));
     const ups = gainXp(this.run, n);
     this.popup(0, `+${n} XP`, '#ffd84a');
-    this.pendingUps = (this.pendingUps || 0) + ups;
+    if (!this.runOver) this.pendingUps = (this.pendingUps || 0) + ups;
     this.pveHud.setRun(this.run, this.run.depth);
   }
 
@@ -2493,8 +2499,17 @@ export class Dungeon {
     if (this.exitDoor.unlocked && this.players.some((q) => q.state !== 'ko' && q.pos.x > this.D.exit.door.x + 0.4) && this.phase !== 'exit') this.startExit();
   }
 
+  // a fase ACABOU (uma fase por tentativa): nem os níveis guardados nem o XP do chefe abrem mais cartas de melhoria — a
+  // tentativa termina na porta de saída e as melhorias se perderiam (dono, 2026-11-20: "não precisaria escolher o poder
+  // já que já acabou")
+  endRunUps() {
+    this.runOver = true;
+    this.pendingUps = 0;
+  }
+
   takeReward() {
     this.giveXp(this.D.xp.boss);
+    this.endRunUps();
     // a recompensa do chefe em moedas (economy.js bossBounty + o bônus da dungeon); a dificuldade e a Ganância multiplicam
     const extra = this.D.chests && this.D.chests.coinsBoss ? Math.round(this.D.chests.coinsBoss * (1 + 0.25 * (this.run.depth - 1))) : 0;
     this.giveCoins(bossBounty(this.run.depth) + extra);
@@ -2701,7 +2716,12 @@ export class Dungeon {
     const cine = !!(w.cinematic || w.cameraRig.shots);
     // um no CAIXÃO (dono, 2026-11-19: "a tela volta a ser de um player só"): a tela inteira é de quem ficou vivo
     const solo = this.coop && !this.net && this.views ? this.views.find((V) => !V.p.coffin && this.players.some((q) => q.coffin)) : null;
-    const full = !this.coop || this.net || this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over' || !!solo;
+    // o CORREDOR das lamparinas (parte 2 do Samhain): os dois correm lado a lado no mesmo caminho — uma tela só (dono,
+    // 2026-11-20: "Parte 2 de treb ciach no coop local deve virar uma tela só, sem divisão é o suficiente")
+    const run = !!(this.runner && !this.runner.done);
+    // as CARTAS de melhoria (e a recompensa) por cima da tela inteira: na tela dividida o menu ficava cortado
+    const menu = !!this.choosing;
+    const full = !this.coop || this.net || this.bossIntro || cine || run || menu || this.phase === 'exit' || this.phase === 'over' || !!solo;
     if (this.coop && !this.net && this.pveHud && this.pveHud.split === full) this.pveHud.setSplit(!full);
     if (this.coop && !this.net) this.hud.root.classList.toggle('pve-solo', full);
     if (solo && solo.i === 1 && !(this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over')) {

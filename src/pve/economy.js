@@ -2,8 +2,8 @@
 //  RARIDADE de cada personagem (pela força no cânone, a mesma ordem de unlocks.js UNLOCK_TIERS): comum, raro, épico e
 //  lendário. Os 4 do começo (preço 0) já vêm liberados e não entram na loja.
 //  LOJA (comprar direto): qualquer bloqueado, pelo preço da raridade — o caminho certo, porém mais caro.
-//  GACHA: uma vitrine de 6 personagens (2 comuns, 2 raros, 1 épico, 1 lendário; antes 10 — o dono achou demais) que TROCA A CADA 4 HORAS (igual para
-//  todo mundo: o sorteio usa o número da janela de 4 h como semente). Um giro custa SPIN_PRICE e sorteia a raridade pelas
+//  GACHA: uma vitrine de 6 personagens (2 comuns, 2 raros, 1 épico, 1 lendário; antes 10 — o dono achou demais) que TROCA A CADA 3 HORAS (igual para
+//  todo mundo: o sorteio usa o número da janela de 3 h como semente). Um giro custa SPIN_PRICE e sorteia a raridade pelas
 //  chances; dentro da raridade, um dos personagens da vitrine. Personagem repetido devolve DUP_REFUND moedas.
 //  Aos DOMINGOS o lendário sobe de 0,1% para 0,5%.
 // Renda (para calibrar os preços, PROPOSTA — medir com a bateria): no Normal uma dungeon rende ~40 moedas dos drops +
@@ -24,7 +24,7 @@ const TIER_RARITY = { 60: 'comum', 110: 'comum', 170: 'raro', 250: 'raro', 350: 
 // giro mais caro e épico mais raro (pedido do dono, 2026-11-13: "muito fácil de pegar um épico"; antes 150 e 9,9%)
 export const SPIN_PRICE = 200;
 export const DUP_REFUND = 60;
-export const SHOP_WINDOW_MS = 4 * 60 * 60 * 1000;
+export const SHOP_WINDOW_MS = 3 * 60 * 60 * 1000; // 3 h (dono, 2026-11-20: "pode diminuir o cooldown de 4h pra 3h"; antes 4 h)
 // chances do giro (somam 1). Domingo: o lendário pega 0,4% a mais, tirado do comum
 export const SPIN_ODDS = { comum: 0.71, raro: 0.25, epico: 0.039, lendario: 0.001 };
 export const SUNDAY_LEGENDARY = 0.005;
@@ -44,7 +44,7 @@ export function spinOdds(date = new Date()) {
   return { ...SPIN_ODDS, comum: SPIN_ODDS.comum - extra, lendario: SUNDAY_LEGENDARY };
 }
 
-// gerador com semente (mulberry32) — a vitrine é a mesma em qualquer computador na mesma janela de 4 h
+// gerador com semente (mulberry32) — a vitrine é a mesma em qualquer computador na mesma janela de 3 h
 function seeded(seed) {
   let a = seed >>> 0;
   return () => {

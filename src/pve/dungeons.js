@@ -838,9 +838,10 @@ const SAMHAIN_DIFF = {
   // a TEMPESTADE menor (dono, 2026-11-19: "o final da parte 1 no modo normal está muito dificil, tem muitos bichos")
   easy: { extra: 0, strong: 0, storm: 6 },
   normal: { extra: 0, strong: 1, storm: 8 },
-  hard: { extra: 1, strong: 1, storm: 10 },
-  superhard: { extra: 1, strong: 2, storm: 13 },
-  annihilation: { extra: 2, strong: 2, storm: 15 },
+  // (2026-11-20: a tempestade do Difícil para cima um pouco menor — a parte 1 era a que derrubava; antes 10/13/15)
+  hard: { extra: 1, strong: 1, storm: 9 },
+  superhard: { extra: 1, strong: 2, storm: 11 },
+  annihilation: { extra: 2, strong: 2, storm: 13 },
 };
 function samhainPlan(W, difficulty) {
   const total = W.count[difficulty] ?? W.count.normal;
@@ -870,11 +871,13 @@ function samhainPlan(W, difficulty) {
 const TREE_DIFF = {
   // a ÁRVORE mais longa (dono, 2026-11-19: "A fase 3 durou muito pouco comparada a fase 1"): quase o dobro de ondas,
   // começando menores. PROPOSTA: os números.
-  easy: { waves: 7, base: 3, strong: 0 },
-  normal: { waves: 8, base: 4, strong: 1 },
-  hard: { waves: 9, base: 4, strong: 1 },
-  superhard: { waves: 10, base: 5, strong: 2 },
-  annihilation: { waves: 11, base: 6, strong: 2 },
+  // MAIS ASSOMBRAÇÕES (dono, 2026-11-20: "a parte 3 está fácil até demais, deveria vir mais assombrações"): +2 em cada
+  // onda e uma forte a mais do Normal para cima (antes base 3/4/4/5/6 e fortes 0/1/1/2/2). PROPOSTA.
+  easy: { waves: 7, base: 5, strong: 0 },
+  normal: { waves: 8, base: 6, strong: 2 },
+  hard: { waves: 9, base: 6, strong: 2 },
+  superhard: { waves: 10, base: 7, strong: 3 },
+  annihilation: { waves: 11, base: 8, strong: 3 },
 };
 // as lamparinas acesas no corredor só ENFRAQUECEM UM POUCO as ondas da Árvore (dono, 2026-11-19: "é apenas um leve
 // enfraquecimento das ondas"): até 25% menos Assombrações (2% por lamparina), sem tirar onda nenhuma
@@ -886,7 +889,7 @@ export function treePlan(difficulty = 'normal', lamps = 0) {
   const out = [];
   for (let n = 1; n <= total; n++) {
     const last = n === total;
-    const count0 = Math.min(14, X.base + n + (last ? 3 : 0));
+    const count0 = Math.min(18, X.base + n + (last ? 3 : 0));
     const count = Math.max(2, Math.round(count0 * (1 - cut)));
     const strongs = Math.min(count - 1, Math.round((n >= 3 ? X.strong + Math.floor(n / 3) : 0) * (1 - cut)));
     const foes = { assombracao: count - strongs };

@@ -7,6 +7,11 @@
 //  · o amigo pode pagar METADE do preço da ressurreição para reviver do caixão — segurando bem mais tempo que o
 //    resgate. O caixão abre, sai uma luz de dentro e o jogador volta.
 // A sala limpa (ou a próxima sala) ainda põe de pé quem está caído — mas não quem já está no caixão.
+// QUEM RESGATA APANHA (dono, 2026-11-20: "o player não toma dano ao salvar um amigo, isso deveria ter mais sentido, porém
+// vai ficar muito difícil de reviver com os monstros atacando"; PROPOSTA de equilíbrio):
+//  · ao começar a levantar o amigo, um BRADO curto empurra quem estiver colado (recarga própria, não dá para abusar);
+//  · segurando, leva só parte do dano (`taken`) e aguenta os primeiros golpes sem soltar (`armor`);
+//  · um golpe forte interrompe, mas o PROGRESSO FICA (cai devagar, `decay` por segundo): volte e termine.
 import * as THREE from 'three';
 import { applyHit } from '../combat/damage.js';
 import { resolveBody } from '../combat/positioning.js';
@@ -19,6 +24,10 @@ export const RESCUE = {
   coffinHold: 5.0, // segurar para reviver do caixão (mais lento)
   coffinPrice: 0.5, // fração do preço da ressurreição
   push: { radius: 4.5, knockback: 12 },
+  taken: 0.6, // fração do dano que quem resgata leva
+  armor: { hits: 2 }, // golpes que não interrompem a cada vez que começa a segurar
+  decay: 0.35, // segundos de progresso perdidos por segundo sem ninguém segurando
+  shout: { radius: 3.2, knockback: 7, cooldown: 8 }, // o brado ao começar
 };
 
 const v1 = new THREE.Vector3();
@@ -86,6 +95,8 @@ export class CoopRescue {
       }
       if (D.t <= 0) this.toCoffin(pl);
     }
+    // o progresso de um resgate interrompido cai devagar enquanto ninguém segura
+    for (const pl of d.players) if (pl.rescueProg > 0 && !pl.beingSaved) pl.rescueProg = Math.max(0, pl.rescueProg - RESCUE.decay * dt);
     for (const c of this.opening.slice()) this.tickOpening(c, dt);
     // o caixão acompanha o corpo (a troca de sala leva os dois jogadores para a entrada)
     for (const pl of d.players) if (pl.coffin && !pl.coffin.opening) pl.coffin.g.position.set(pl.pos.x, 0, pl.pos.z);
@@ -118,19 +129,34 @@ export class CoopRescue {
       V.prompt.progress?.(0);
       return true;
     }
+    // um golpe tirou quem resgatava da pose (hitstun, derrubado): o resgate solta, o progresso fica guardado
+    if (V.rescue && q.state !== 'intro') {
+      this.release(V);
+      d.popup(V.i, 'RESGATE INTERROMPIDO', '#ff8a4a');
+    }
     // segurando: o botão não vira defesa nem golpe
     held.block = false; pr.block = false; pr.physical = false; pr.interact = false;
     V.interactLatch = true;
+    if (!V.rescue && !['idle', 'walk', 'run', 'block'].includes(q.state)) return true; // ainda apanhando: espera se recompor
     if (!V.rescue || V.rescue.target !== mate) {
       this.release(V);
-      V.rescue = { target: mate, t: 0 };
+      V.rescue = { target: mate, t: mate.rescueProg || 0 };
       q.cancelAction && q.cancelAction();
       q.setState('intro');
       q.vel.set(0, 0, 0);
       q.anim.play('help_hand', { restart: true });
       q.rescue = true;
+      q.rescueTaken = RESCUE.taken;
+      // (armorHits e não superArmor: o setState de qualquer reação apaga a superArmor dos golpes)
+      q.rescueArmor = { prev: q.armorHits || 0 };
+      q.armorHits = (q.armorHits || 0) + RESCUE.armor.hits;
+      mate.beingSaved = true;
       if (mate.downed) mate.downed.saving = true;
       d.audio.play('select', { volume: 0.6, pitch: coffin ? 0.6 : 0.9 });
+      if (!(q.shoutCd > this.w.time)) {
+        q.shoutCd = this.w.time + RESCUE.shout.cooldown;
+        this.shout(q);
+      }
     }
     const R = V.rescue;
     R.t += dt;
@@ -145,7 +171,9 @@ export class CoopRescue {
     // pronto
     V.prompt.progress?.(0);
     V.rescue = null;
-    q.rescue = false;
+    this.unguard(q);
+    mate.beingSaved = false;
+    mate.rescueProg = 0;
     if (coffin) {
       d.wallet.spend(V.i, price);
       d.pveHud.setCoins(d.coinsTotal ? d.coinsTotal() : 0);
@@ -167,10 +195,34 @@ export class CoopRescue {
     if (!R) return;
     V.rescue = null;
     const q = V.p;
-    q.rescue = false;
+    this.unguard(q);
+    R.target.beingSaved = false;
+    R.target.rescueProg = R.t; // o progresso fica (e cai devagar no tick)
     if (R.target.downed) R.target.downed.saving = false;
     if (q.state === 'intro' && !q.bed) { q.setState('idle'); q.anim.play('idle', { restart: true }); }
     V.prompt.progress?.(0);
+  }
+
+  // quem resgatava volta ao normal (a resistência do resgate sai; a de um golpe pesado, não é dela)
+  unguard(q) {
+    q.rescue = false;
+    q.rescueTaken = null;
+    if (q.rescueArmor) { q.armorHits = Math.min(q.armorHits || 0, q.rescueArmor.prev); q.rescueArmor = null; }
+  }
+
+  // o BRADO de quem começa a levantar o amigo: um empurrão curto em quem está colado (sem dano)
+  shout(q) {
+    const w = this.w;
+    const S = RESCUE.shout;
+    w.fx.ring(new THREE.Vector3(q.pos.x, 0.08, q.pos.z), { color: 0x7dffb0, radius: S.radius, life: 0.45 });
+    for (const e of w.fighters || []) {
+      if (this.d.players.includes(e) || e.state === 'ko' || distXZ(e.pos, q.pos) > S.radius) continue;
+      applyHit(w, q, e, { damage: 1, kind: 'ability', knockback: S.knockback, hitstun: 0.45, unblockable: true, sound: 'impact', color: 0x7dffb0, scale: 0.9 });
+    }
+    for (const n of w.npcs || []) {
+      if (!n.alive || this.d.players.includes(n.owner) || n.isCloset || !n.pos || !n.takeDamage || distXZ(n.pos, q.pos) > S.radius) continue;
+      applyHit(w, q, n, { damage: 1, kind: 'ability', knockback: S.knockback, hitstun: 0.45, unblockable: true, reaction: true, sound: 'impact', color: 0x7dffb0, scale: 0.7 });
+    }
   }
 
   coffinPrice() {
@@ -287,6 +339,9 @@ export class CoopRescue {
   // a volta paga (a tela do fim): tudo zera
   clear(pl) {
     pl.downed = null;
+    pl.rescueProg = 0;
+    pl.beingSaved = false;
+    this.unguard(pl);
     pl.crawling = false;
     if (pl.anim) pl.anim.speed = 1;
     if (pl.coffin) { this.removeCoffin(pl); pl.setVisible(true); }

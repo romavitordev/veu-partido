@@ -18,7 +18,7 @@ export const TREE = {
   radius: 22, // a clareira (o limite de quem anda)
   doorHp: { easy: 2200, normal: 2150, hard: 1900, superhard: 1750, annihilation: 1600 },
   hpCut: 0.5, // a vida das Assombrações cai até a metade do corte das lamparinas (dungeons.js treeWeaken)
-  regen: 0.18, // entre as ondas, o alçapão recupera 18% (os aldeões escoram por dentro)
+  regen: 0.07, // entre as ondas, o alçapão recupera 7% (os aldeões escoram por dentro; dono, 2026-11-20: "a arvore deveria carregar a vida mais devagar"; antes 18%)
   trunk: { x: 0, z: -10, r: 4.3 }, // o tronco: ~7 m de largura e ~10 m até se abrir (ep. 3, 3h30: uns 4 personagens de largura)
   spawnR: 21,
 };

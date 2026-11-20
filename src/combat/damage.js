@@ -146,6 +146,8 @@ export function applyHit(world, attacker, victim, o) {
   }
   // (typeof: takenMult 0 também vale — o ANULAR do Gaius zera o dano das habilidades)
   for (const b of victim.buffs || []) if (typeof b.takenMult === 'number' && (!b.takenKinds || b.takenKinds.includes(o.kind))) mult *= b.takenMult;
+  // RESGATANDO no coop (pve/coopRescue.js RESCUE.taken): apanha, mas menos — dá para levantar o amigo no meio da luta
+  if (victim.rescue && typeof victim.rescueTaken === 'number') mult *= victim.rescueTaken;
   // fraquezas da forma (Deus da Morte: fogo e Energia)
   const weak = weaknessMult(victim, attacker, o);
   if (weak > 1 && !o.noWeakFx) victim.notify('FRAQUEZA!', true);

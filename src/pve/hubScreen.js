@@ -3,6 +3,7 @@
 // Em cima: as MOEDAS e o resumo da campanha. No meio: o cartão da TENTATIVA (quem, profundidade, nível, dificuldade) com
 // o botão principal (CONTINUAR ou COMEÇAR). Embaixo: LOJA, MELHORIAS e, pequeno no canto, DADOS (backup, reiniciar e
 // apagar ficam lá dentro, atrás de confirmação). Devolve: 'continue' | 'new' | 'unlock' | 'tree' | 'found' | 'data' | 'back'.
+import { SPIN_PRICE } from './economy.js';
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export class PveHubScreen {
@@ -42,7 +43,7 @@ export class PveHubScreen {
         </section>
         <nav class="ph-grid">
           ${a ? '<button data-id="new"><b>NOVA TENTATIVA</b><small>abandona a atual</small></button>' : ''}
-          <button data-id="unlock"><b>LOJA · GACHA</b><small>${info.owned}/${info.total} personagens · giro ● 150</small></button>
+          <button data-id="unlock"><b>LOJA · GACHA</b><small>${info.owned}/${info.total} personagens · giro ● ${SPIN_PRICE}</small></button>
           <button data-id="tree"><b>MELHORIAS</b><small>${info.treeRanks} grau(s) · balcão da Aghata</small></button>
           <button data-id="found"><b>DESCOBERTAS</b><small>${info.found || 0}/${info.foundTotal || 0} fusões de poderes</small></button>
         </nav>

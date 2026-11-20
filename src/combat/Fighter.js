@@ -191,7 +191,8 @@ export class Fighter {
   }
 
   isInvulnerable() {
-    return this.state === 'special' || this.state === 'ko' || this.state === 'intro' || this.state === 'downed' || !this.visible || this.invuln > 0;
+    // quem está RESGATANDO o amigo no coop (pve/coopRescue.js) fica em 'intro' para não andar, mas apanha
+    return this.state === 'special' || this.state === 'ko' || (this.state === 'intro' && !this.rescue) || this.state === 'downed' || !this.visible || this.invuln > 0;
   }
 
   damageMultiplier(kind) {

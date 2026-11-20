@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.35.0';
+export const VERSION = '5.36.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.36.0',
+    date: '2026-11-20',
+    title: 'A Noite Mais Justa',
+    items: [
+      'TREB CIACH mais justo: na VILA (parte 1) as Assombrações começam mais fracas e chegam à força total na penúltima onda (você chega sem nível); do Difícil para cima as lamparinas aguentam mais, o reacender é mais rápido e a tempestade é um pouco menor. Na ÁRVORE ANCIÃ (parte 3) vêm mais Assombrações (e uma forte a mais do Normal para cima) e a porta recupera bem menos entre as ondas.',
+      'COOP LOCAL: o CORREDOR DAS LAMPARINAS (parte 2) é uma tela só, com os dois correndo lado a lado, e as CARTAS DE MELHORIA abrem por cima da tela inteira em vez de ficarem cortadas pela divisão.',
+      'RESGATE NO COOP: quem levanta o amigo agora APANHA. Para dar conta: ao começar, um brado curto empurra quem está colado; segurando, leva menos dano e aguenta os primeiros golpes; se for interrompido, o progresso fica guardado (cai devagar) e dá para voltar e terminar.',
+      'FIM DA FASE: depois que o chefe cai (ou a Árvore resiste), não aparece mais a escolha de melhoria — a tentativa já acabou.',
+      'GACHA: a vitrine troca a cada 3 HORAS (antes 4) e o botão da loja mostra o preço real do giro (● 200; mostrava 150).',
+    ],
+  },
   {
     v: '5.35.0',
     date: '2026-11-20',

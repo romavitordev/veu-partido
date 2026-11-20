@@ -1,5 +1,5 @@
 // OUTRO LADO — a LOJA DE PERSONAGENS (pedido do dono, 2026-11-12), duas abas:
-//  GACHA: a vitrine de 6 personagens (2 comuns, 2 raros, 1 épico, 1 lendário) que troca a cada 4 horas; um giro custa
+//  GACHA: a vitrine de 6 personagens (2 comuns, 2 raros, 1 épico, 1 lendário) que troca a cada 3 horas; um giro custa
 //   SPIN_PRICE e sorteia pelas chances (lendário 0,1%, 0,5% aos domingos). Repetido devolve moedas. Só moedas do jogo.
 //  COMPRAR: qualquer bloqueado direto, pelo preço da raridade — o caminho certo, porém mais caro que o giro.
 // Devolve para o flow.js: 'spin', 'buy:<id>' ou 'back'. O resultado do giro volta por showSpin().
@@ -77,7 +77,7 @@ export class PveUnlockScreen {
     });
   }
 
-  // a vitrine da janela de 4 h (troca sozinha com a tela aberta)
+  // a vitrine da janela de 3 h (troca sozinha com a tela aberta)
   buildBanner() {
     const box = this.el.querySelector('.pu-banner');
     box.innerHTML = this.banner.slots.map((s, i) => this.tileHtml(this.byId[s.id], i, 'g')).join('');

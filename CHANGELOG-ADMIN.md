@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v5.36.0 — A Noite Mais Justa
+
+- Versão: `VERSION` 5.35.0 → **5.36.0**. Data: 2026-11-20.
+- Dono: feedback de Treb Ciach no coop (parte 2 em tela só, menu de melhorias sobre a divisão, parte 1 difícil demais
+  no Difícil/Super Difícil e parte 3 fácil, a árvore recuperando rápido), sem escolha de poder depois do chefe final,
+  dano ao resgatar sem ficar impossível, gacha de 4 h para 3 h e o preço errado no botão. "Sim, lance".
+- Testado no navegador (coop local, Treb Ciach Normal): cartas em tela cheia, corredor em tela única, plano da Árvore
+  7-8-8-9-10-11-12-17, resgate com 3 Assombrações em volta (apanhou, foi interrompido, retomou e levantou), XP depois
+  do fim sem cartas; console sem erros. Números de equilíbrio: PROPOSTA.
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.35.0 — O Sobre em Dia
 
 - Versão: `VERSION` 5.34.1 → **5.35.0**. Data: 2026-11-20.

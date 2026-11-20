@@ -20,8 +20,10 @@ const HOUSES = [[0.62, 26.5, 8.5, 5.0], [1.05, 28.5, 7.0, 4.6], [2.1, 26.5, 9.0,
 const VILLAGERS = [2, 2, 2, 2, 3, 2, 1, 1];
 const ARROW_V = new THREE.Vector3();
 export const VILLAGE = {
-  lampHp: { easy: 300, normal: 250, hard: 205, superhard: 170, annihilation: 140 }, // mais vida (a vila ficou mais longa)
-  relight: 22, // vida por segundo que a lamparina recupera com alguém parado perto
+  // Difícil para cima mais vida e o reacender mais rápido (dono, 2026-11-20: "ganhamos poucas vezes no dificil e nenhuma no
+  // super dificil, mas a parte 1 que está dificultando muito"; antes 205/170/140 e 22 por segundo). PROPOSTA.
+  lampHp: { easy: 300, normal: 250, hard: 240, superhard: 215, annihilation: 185 },
+  relight: 30, // vida por segundo que a lamparina recupera com alguém parado perto
   relightRange: 2.2,
   rest: 0.35, // a chama que volta sozinha entre as ondas (fração da vida)
   safeRange: 3.2, // sem Assombração a esta distância da porta
