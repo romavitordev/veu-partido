@@ -126,6 +126,19 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 .bar.health.hb-existida.low .fill { background: linear-gradient(180deg, #fff4b8 0%, #ffd84a 45%, #d49810 85%, #6a4a06 100%); filter: drop-shadow(0 0 6px #f2c230); }
 .bar.health .bar-lbl { position: absolute; right: 6px; top: 1px; font-size: 9px; font-weight: 800; letter-spacing: .15em; color: #fff8d0; text-shadow: 1px 1px 2px #000; pointer-events: none; z-index: 2; font-family: 'Bebas Neue', sans-serif; }
 .panel.p2 .bar.health .bar-lbl { right: auto; left: 6px; }
+/* Existência (a ORDO CALAMITAS, pedido do dono 2026-11-20): a barra azul da existência — o azul das auras das memórias
+   revividas, com o brilho correndo e as marcas dos "pontos de existência" */
+.bar.health.hb-existencia { border-color: #04122a; box-shadow: 0 0 0 1px #1a4a8a, 0 0 12px rgba(74,150,255,.6), inset 0 -2px 6px rgba(0,0,0,.5); }
+.bar.health.hb-existencia .fill { background: repeating-linear-gradient(90deg, transparent 0 20px, rgba(0,16,48,.4) 20px 22px, transparent 22px 48px), linear-gradient(180deg, #c8e4ff 0%, #4a9aff 45%, #1a58c0 85%, #06214a 100%); background-size: 60px 100%, 100% 100%; }
+.bar.health.hb-existencia .trail { background: linear-gradient(180deg, #f0f8ff, #8ac0ff); }
+.bar.health.hb-existencia .fx { background: linear-gradient(100deg, transparent 30%, rgba(200,230,255,.6) 50%, transparent 70%); background-size: 220% 100%; animation: hbSweep 2.6s ease-in-out infinite; mix-blend-mode: screen; }
+.bar.health.hb-existencia.low .fill { filter: drop-shadow(0 0 6px #4a9aff) brightness(1.15); }
+.bar.health.hb-existencia .bar-lbl { color: #e0f0ff; }
+/* Vampiros (pedido do dono, 2026-11-20): vermelho vivo; transformados viram o sangue coagulado (.hb-vampire) */
+.bar.health.hb-vampRed { border-color: #2a0006; box-shadow: 0 0 0 1px #6a0010, 0 0 9px rgba(220,30,50,.5); }
+.bar.health.hb-vampRed .fill { background: linear-gradient(180deg, #ff8a8a 0%, #e0202e 45%, #8a0614 85%, #3a0006 100%); }
+.bar.health.hb-vampRed .trail { background: linear-gradient(180deg, #ffd0d0, #ff6a6a); }
+.bar.health.hb-vampRed.low .fill { animation: hbPulse .6s ease-in-out infinite; }
 /* Transmissão (O Estrangeiro): verde de sinal, linhas de varredura e chiado */
 .bar.health.hb-signal { box-shadow: 0 0 0 1px #0e5a1a, 0 0 10px rgba(90,255,106,.5); }
 .bar.health.hb-signal .fill { background: linear-gradient(180deg, #c8ffc8, #3adf5a 55%, #0a6a1e); animation: hbFlicker 2.8s steps(1) infinite; }

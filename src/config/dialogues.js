@@ -37,6 +37,16 @@ export const CHARACTER_NAMES = {
   celestine: 'Celestine',
   gaius: 'Gaius',
   amalia: 'Amalia',
+  veritus: 'Veritus',
+  veritus_rancor: 'Veritus',
+  nero: 'Nero',
+  faustus: 'Faustus',
+  marius: 'Marius',
+  remus: 'Remus',
+  cascadia: 'Cascadia',
+  cornelius: 'Cornelius',
+  karise: 'Karise',
+  marcellus: 'Marcellus',
   carnical: 'Carniçal',
   degolificada: 'A Degolificada',
   espreitador: 'O Espreitador',
@@ -63,7 +73,7 @@ export const CHARACTER_NAMES = {
   zefero: 'Zéfero',
 };
 
-export const BASE_CHARACTER = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', anfitriao: 'arnaldo', aguiar_mutilador: 'aguiar', erin_caos: 'erin', labirinto_elmo: 'labirinto', jae_x: 'jae', colosso: 'dalmo', guizo_et: 'guizo', kian_calamidade: 'kian', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina', luciano: 'fernando' };
+export const BASE_CHARACTER = { deus_morte: 'ferreiro', diabo: 'juan', fantasma: 'kemi', anfitriao: 'arnaldo', aguiar_mutilador: 'aguiar', erin_caos: 'erin', labirinto_elmo: 'labirinto', jae_x: 'jae', colosso: 'dalmo', guizo_et: 'guizo', kian_calamidade: 'kian', juan_odio: 'juan', guizo_bombado: 'guizo', guizo_velho: 'guizo', cristino_desertor: 'cristino', dante_aberto: 'dante', raziel_verdadeiro: 'raziel', celestine_magistrada: 'celestine', amphitruo: 'anfitriao', carina_leone: 'carina', luciano: 'fernando', veritus_rancor: 'veritus' };
 
 export const INTRO_IDS = Object.keys(CHARACTER_NAMES);
 // as equipes de cada lutador (a principal e as outras), pela ficha; o Anfitrião é o das Relíquias
@@ -371,6 +381,56 @@ const INTRO_EXCHANGES = {
   'amalia+celestine': [
     { starter: 'celestine', line: 'Gata! Sobrou eu e você de novo. Igual no último jogo.', response: 'amalia', responseLine: 'Cabeça no lugar, Celestine. Dessa vez é sério.' },
     { starter: 'amalia', line: 'Celestine. Fica quieta e luta.', response: 'celestine', responseLine: 'Ah, Gata, você fala tão pouco que cada frase parece ameaça.' },
+  ],
+  // ORDO CALAMITAS (v5.32.0) — as relações dos episódios 5 e 6 de Calamidade (lore/ORDO-CALAMITAS.md); falas PROPOSTA
+  // no tom de cada um, com as citações (cânone) marcadas
+  'nero+veritus': [
+    { starter: 'nero', line: 'Veritus. Formalidade. Na minha frente, ajoelhe-se antes de lutar.', response: 'veritus', responseLine: 'A Ordo serve a Roma, imperador. Mas hoje a espada fala por mim.' },
+    { starter: 'veritus', line: 'Imperador. Fique atrás de mim.', response: 'nero', responseLine: 'Atrás? Eu sou o imperador de Roma! ...Mas fico. Por enquanto.' },
+  ],
+  'faustus+nero': [
+    { starter: 'nero', line: 'Faustus, meu aprendiz. Lembre-se de quem te ensinou a segurar o gládio.', response: 'faustus', responseLine: 'Eu lembro, meu imperador. Júpiter também lembra.' },
+    { starter: 'faustus', line: 'Imperador! Vou te mostrar o que aprendi.', response: 'nero', responseLine: 'Mostre. E não me faça me arrepender de ter te ensinado.' },
+  ],
+  'faustus+marius': [
+    { starter: 'faustus', line: 'Grandão... eu nunca te agradeci.', response: 'marius', responseLine: 'Obrigado... por tudo.' },
+    { starter: 'marius', line: 'Faustus. Junto.', response: 'faustus', responseLine: 'Junto, irmão. Que Júpiter olhe por nós dois.' },
+  ],
+  'marius+remus': [
+    { starter: 'remus', line: 'Grandão! Fica do meu lado, que ninguém olha pra mim com você aqui.', response: 'marius', responseLine: '...Tá.' },
+    { starter: 'marius', line: 'Remus. Não some.', response: 'remus', responseLine: 'Sumir? Eu? Só quando for conveniente, grandão.' },
+  ],
+  'celestine+remus': [
+    { starter: 'remus', line: 'Celestine. Esse sorriso aqui não é pra você.', response: 'celestine', responseLine: 'Ah, Remus, nem precisava. Eu já sei que é falso.' },
+    { starter: 'celestine', line: 'Remus, querido. Ainda brincando de ser simpático?', response: 'remus', responseLine: 'Só com quem merece, Celestine. Você não está na lista.' },
+  ],
+  'cascadia+celestine': [
+    { starter: 'celestine', line: 'Cascadia! Saudade de mim?', response: 'cascadia', responseLine: 'Não lembro de ter perguntado, Celestine.' },
+    { starter: 'cascadia', line: 'Celestine. Para de sorrir e luta.', response: 'celestine', responseLine: 'Mas eu luto melhor sorrindo, Cascadia.' },
+  ],
+  'amalia+cascadia': [
+    { starter: 'cascadia', line: 'Amalia. Fica perto de mim, menina.', response: 'amalia', responseLine: 'Fico. Você é a única que não grita.' },
+    { starter: 'amalia', line: 'Cascadia. Pela esquerda.', response: 'cascadia', responseLine: 'Pela esquerda. Pelo Caesar.' },
+  ],
+  'amalia+karise': [
+    { starter: 'karise', line: 'Não é nada pessoal, Amalia!', response: 'amalia', responseLine: 'Eu sei. Por isso eu não erro.' },
+    { starter: 'amalia', line: 'Karise. Tira a mascarilha.', response: 'karise', responseLine: 'E estragar a surpresa? Nunca, Amalia.' },
+  ],
+  'amalia+marcellus': [
+    { starter: 'amalia', line: 'Marcellus.', response: 'marcellus', responseLine: 'A-Amalia! Oi! Eu... eu tô do seu lado, tá? Por favor.' },
+    { starter: 'marcellus', line: 'A-Amalia, se precisar de mim, eu tô aqui, tá?', response: 'amalia', responseLine: 'Tô vendo, Marcellus. Respira.' },
+  ],
+  'cornelius+marius': [
+    { starter: 'cornelius', line: 'Você não me responde! Você sabe que eu tenho pavio curto.', response: 'marius', responseLine: '...' },
+    { starter: 'marius', line: 'Cornelius.', response: 'cornelius', responseLine: 'Finalmente uma palavra! Agora levanta esse escudo.' },
+  ],
+  'gaius+veritus': [
+    { starter: 'gaius', line: 'Veritus, meu velho. Ainda guardando as Relíquias?', response: 'veritus', responseLine: 'Todas elas, Gaius. Até a que te come por dentro.' },
+    { starter: 'veritus', line: 'Gaius. A Ordo ainda precisa do seu escudo.', response: 'gaius', responseLine: 'Então segura a espada direito, Veritus. Eu seguro o resto.' },
+  ],
+  'remus+veritus': [
+    { starter: 'veritus', line: 'Remus. Sem traição hoje.', response: 'remus', responseLine: 'Eu? Trair o líder? Que ideia, Veritus. Por quê? Gostou do que viu?' },
+    { starter: 'remus', line: 'Líder! Que bom te ver de armadura nova.', response: 'veritus', responseLine: 'Guarde o charme, Remus. Ele não funciona comigo.' },
   ],
   'amalia+gaius': [
     { starter: 'gaius', line: 'Amalia, a menina das flechas. Ainda acerta uma mosca a cem passos?', response: 'amalia', responseLine: 'Duzentos. E você ainda reclama das costas.' },
@@ -3745,7 +3805,8 @@ export function battleLines(speakerId, opponentId, event) {
 }
 
 export function victoryLines(winner, loser, loserName = CHARACTER_NAMES[loser] || loser) {
-  if (winner !== 'anfitriao') winner = BASE_CHARACTER[winner] || winner;
+  // uma versão com falas próprias (o Sacrifício do Rancor) fala por elas; as outras, pelas do personagem base
+  if (winner !== 'anfitriao' && !VICTORY_LINES[winner]?.[BASE_CHARACTER[loser] || loser]) winner = BASE_CHARACTER[winner] || winner;
   // quem derruba o ANFITRIÃO (o das Relíquias ou o Amphitruo) fala com ele — não com o Arnaldo nem com o Gaius
   if ((loser === 'anfitriao' || loser === 'amphitruo') && winner !== 'anfitriao' && VICTORY_VS_HOST[winner]) return VICTORY_VS_HOST[winner];
   loser = BASE_CHARACTER[loser] || loser;
@@ -5137,4 +5198,192 @@ export function introLines(idA, idB) {
     [scene.starter, scene.line],
     [scene.response, scene.responseLine],
   ];
+}
+
+// ORDO CALAMITAS (v5.32.0): as falas de vitória dos dez novos e contra eles. As relações dos episódios de Calamidade
+// são escritas à mão (abaixo); o resto sai dos repertórios de cada um, sorteado por confronto (sempre as mesmas duas
+// para o mesmo par). Falas = PROPOSTA, no tom de cada um
+const ORDO_NEW = ['veritus', 'veritus_rancor', 'nero', 'faustus', 'marius', 'remus', 'cascadia', 'cornelius', 'karise', 'marcellus'];
+const VICTORY_ORDO = {
+  veritus: {
+    nero: ['Perdoe-me, imperador. A espada não escolhe.', 'Levante-se, Nero. A Ordo ainda te serve.'],
+    veritus_rancor: ['Eu já fui você. E sobrevivi a nós dois.', 'O Hexatombe ficou para trás, Veritus.'],
+    faustus: ['Bom gládio, Faustus. Falta disciplina.', 'Guarde o "te vejo no inferno" para os inimigos.'],
+    marius: ['Força não é tudo, Marius.', 'Levante, grandão. A Ordo precisa de você inteiro.'],
+    remus: ['Sem traição hoje, Remus. Eu avisei.', 'Seu sorriso não me engana.'],
+    cascadia: ['Leal até o fim, Cascadia. Mas não o bastante.', 'Diga a Caesar que eu lutei limpo.'],
+    cornelius: ['Pavio curto, guarda baixa.', 'Respira, Cornelius. A Ordo precisa da sua lança.'],
+    karise: ['Eu sempre sei onde você está, Karise.', 'Espiã boa. Não boa o bastante.'],
+    marcellus: ['Coragem, Marcellus. Você chegou longe.', 'Seu irmão estaria orgulhoso.'],
+    celestine: ['Menos ouro, mais disciplina, Celestine.', 'A Ordo ainda te espera.'],
+    gaius: ['Descanse, velho amigo.', 'Seu escudo ainda é o melhor de Roma, Gaius.'],
+    amalia: ['Boa mira, Amalia. Eu só fui mais rápido.', 'A Ordo precisa da sua flecha. Levante.'],
+  },
+  veritus_rancor: {
+    veritus: ['A armadura não te protege de mim. Eu sou você.', 'Lembra do Hexatombe? Eu nunca esqueci.'],
+    nero: ['O Trono foi meu presente, imperador. Não seu.', 'Ajoelhe-se. O sobrevivente manda agora.'],
+    faustus: ['Você ainda não viu o inferno, Faustus. Eu vi.', 'Arriscou tudo? Eu já perdi tudo.'],
+    marius: ['Sanguinário? Eu nasci de um ritual de sangue.', 'Fica no chão, grandão.'],
+    remus: ['Traia o ritual, Remus. Ninguém sobrevive.', 'Esse sorriso some rápido.'],
+    celestine: ['O ouro não comprou minha vida no ritual.', 'Fica quieta, Celestine.'],
+    gaius: ['Você não estava lá, Gaius. Ninguém estava.', 'O velho cai. O sobrevivente fica.'],
+    amalia: ['Flechas não ferem quem já morreu uma vez.', 'Menina, eu sobrevivi a coisa pior.'],
+  },
+  nero: {
+    veritus: ['Ajoelhe-se, Veritus. Diante do seu imperador.', 'O líder da Ordo serve a Roma. Serve a mim.'],
+    veritus_rancor: ['Nem o sobrevivente do Hexatombe escapa do imperador.', 'O Trono é de Roma, Veritus.'],
+    faustus: ['Aprendiz. Você ainda segura o gládio torto.', 'Volte quando for digno de me enfrentar, Faustus.'],
+    marius: ['O maior de Roma ajoelhado. Como deve ser.', 'Obedeça, Marius.'],
+    remus: ['Traidor de quem, Remus? Do imperador? Nunca.', 'AJOELHE-SE, Remus!'],
+    cascadia: ['Caesar não manda aqui. Eu mando.', 'Leal ao homem errado, Cascadia.'],
+    cornelius: ['Grite menos, Cornelius. Um imperador está falando.', 'Seu escudo agora é meu tapete.'],
+    karise: ['Espiando o imperador? Que ousadia.', 'Tire essa mascarilha diante de Roma.'],
+    marcellus: ['Um duelo com o imperador? Que coragem tola.', 'Chame o seu irmão, Marcellus.'],
+    celestine: ['Todo o ouro do mundo pertence a Roma, Celestine.', 'Ajoelhe-se, gata.'],
+    gaius: ['O velho escudo de Roma. Ajoelhado.', 'Roma agradece seus serviços, Gaius.'],
+    amalia: ['A flecha não atinge o imperador.', 'Ajoelhe-se, Amalia.'],
+  },
+  faustus: {
+    nero: ['Aprendi direitinho, meu imperador!', 'Júpiter me perdoe, mas foi gostoso.'],
+    veritus: ['Derrubei o líder! Júpiter tá comigo hoje!', 'Desculpa, Veritus. Era eu ou você.'],
+    veritus_rancor: ['Te vejo no inferno, Veritus. Ah, você já foi.', 'Sobrevivente, é? Hoje não.'],
+    marius: ['Grandão... obrigado por tudo. Mas eu ganhei.', 'Levanta, irmão. Te pago uma bebida.'],
+    remus: ['Pela frente, Remus. Assim que se faz.', 'Nem tenta sorrir, eu te conheço.'],
+    cornelius: ['Pavio curto, Cornelius? Eu tenho capacete.', 'Bom escudo. Melhor gládio.'],
+    marcellus: ['Duelo bonito, Marcellus. Meu foi mais.', 'Vai, chama o seu irmão.'],
+    celestine: ['Ganhei de você, Celestine! Paga o que deve!', 'Nada de ouro, só gládio.'],
+    gaius: ['Desculpa, velho. Júpiter quis assim.', 'Te vejo no Coliseu, Gaius.'],
+    amalia: ['Flecha boa, Amalia. Capacete melhor.', 'Te vejo no inferno! Brincadeira.'],
+  },
+  marius: {
+    faustus: ['...Desculpa, Faustus.', 'Obrigado... por tudo, irmão.'],
+    nero: ['...Perdão, imperador.', '...'],
+    veritus: ['...Levanta, líder.', 'Obrigado... pela luta.'],
+    remus: ['...Não some, Remus.', '...Fica.'],
+    cornelius: ['...', 'Cornelius. Calma.'],
+    celestine: ['...Desculpa, Celestine.', '...'],
+    gaius: ['...Velho. Descansa.', 'Obrigado, Gaius.'],
+    amalia: ['...Amalia. Tá bem?', '...'],
+  },
+  remus: {
+    veritus: ['Sem traição, líder. Só uma facada pela frente.', 'Gostou do que viu, Veritus?'],
+    nero: ['Ajoelhado, imperador? Combina com você.', 'Calma, Nero. Foi nada pessoal.'],
+    marius: ['Desculpa, grandão. Você ficou no caminho.', 'Ninguém olhou pra mim. Perfeito.'],
+    faustus: ['Te vejo no inferno, Faustus. Eu chego primeiro.', 'Pelas costas é mais rápido.'],
+    celestine: ['Esse sorriso aqui é só pra você, Celestine.', 'Falso? Eu? Que absurdo.'],
+    gaius: ['Velho, você confiou em mim. Que fofo.', 'Descansa, Gaius. Eu cuido do resto.'],
+    amalia: ['Flecha boa. Costas desprotegidas.', 'Não fica brava, Amalia.'],
+  },
+  cascadia: {
+    celestine: ['Eu não perguntei nada, Celestine.', 'Fica quieta e levanta.'],
+    amalia: ['Fica perto de mim da próxima vez, menina.', 'Por Caesar. E por você.'],
+    nero: ['Caesar não se ajoelha. Eu também não.', 'Perdão, imperador. Pelo Caesar.'],
+    veritus: ['Por Caesar, Veritus.', 'Leal a quem merece.'],
+    gaius: ['Por Caesar. Desculpe, Gaius.', 'Velho escudo. Velha lâmina.'],
+  },
+  cornelius: {
+    marius: ['Agora você me responde, Marius!', 'Eu avisei que tinha pavio curto!'],
+    nero: ['Imperador ou não, eu avisei!', 'Grita agora, Nero!'],
+    veritus: ['De ferro, Veritus. Eu sou de ferro.', 'A Ordo fica comigo hoje.'],
+    celestine: ['Fala menos, Celestine!', 'Escudo na cara. Simples.'],
+    gaius: ['Seu escudo é velho, Gaius. O meu é maior.', 'Sem ofensa, velho.'],
+    amalia: ['Flecha no escudo não conta!', 'De ferro, menina.'],
+  },
+  karise: {
+    amalia: ['Não é nada pessoal, Amalia!', 'Eu te vi antes de você me ver.'],
+    nero: ['Nada pessoal, majestade!', 'O imperador nunca me viu chegar.'],
+    veritus: ['Eu sei todos os seus segredos, líder.', 'Nada pessoal, Veritus!'],
+    celestine: ['Ouro, Celestine? Eu sei onde você esconde.', 'Nada pessoal!'],
+    gaius: ['Nada pessoal, velho!', 'Silêncio. Ninguém viu.'],
+  },
+  marcellus: {
+    amalia: ['A-Amalia, desculpa! Tá tudo bem?', 'Eu... eu consegui. Desculpa!'],
+    nero: ['D-desculpa, imperador! Foi sem querer!', 'Meu irmão vai me matar.'],
+    veritus: ['Eu ganhei do líder? Eu ganhei do líder!', 'Desculpa, Veritus!'],
+    celestine: ['Desculpa, Celestine! Não conta pra ninguém!', 'Eu... eu duelei bem?'],
+    gaius: ['Desculpa, senhor Gaius!', 'Duelo encerrado... eu acho.'],
+  },
+  celestine: {
+    veritus: ['Menos sermão, mais ouro, líder.', 'Nada pessoal, Veritus. Mentira, foi um pouco.'],
+    veritus_rancor: ['Estigma bonito. Meu ouro é mais.', 'Volta pra armadura, querido.'],
+    nero: ['Ajoelha você, imperador. Miau.', 'Esse louro aí é de ouro? Quero.'],
+    faustus: ['Te vejo no inferno, Faustus. Paga antes.', 'Bonito o capacete. Me vende?'],
+    marius: ['Grandão fofo. Caiu igual.', 'Desculpa, Marius. Foi por ouro.'],
+    remus: ['Falso como o seu sorriso, Remus.', 'Esse charme não compra nada.'],
+    cascadia: ['Saudade de mim agora, Cascadia?', 'Eu perguntei, sim. E ganhei.'],
+    cornelius: ['Grita mais, Cornelius. Adoro.', 'O escudo era grande. O ego também.'],
+    karise: ['Te achei, espiã. Paga a multa.', 'Mascarilha linda. Fica comigo.'],
+    marcellus: ['Calma, garoto. Respira.', 'Fala pro seu irmão que eu mandei um beijo.'],
+  },
+  gaius: {
+    veritus: ['Ainda guardando as Relíquias, velho amigo?', 'Levante, Veritus. Roma precisa de você.'],
+    veritus_rancor: ['Eu não estava lá, Veritus. Mas estou aqui.', 'Descanse esse estigma, filho.'],
+    nero: ['Roma não se curva nem ao imperador.', 'Ave, Nero. E adeus.'],
+    faustus: ['Gládio torto, Faustus. Eu ensino.', 'Te vejo no Coliseu, garoto.'],
+    marius: ['Forte como um touro. E cai igual.', 'Levanta, Marius. Eu ajudo.'],
+    remus: ['Eu confiei em você, Remus. Errei.', 'Pelas costas não, rapaz.'],
+    cascadia: ['Leal, Cascadia. Sempre foi.', 'Diga a Caesar que eu mandei saudades.'],
+    cornelius: ['Escudo grande, guarda baixa.', 'Respira, Cornelius. Roma é paciente.'],
+    karise: ['Eu ouvi seus passos, menina.', 'Espiã boa. Velho atento.'],
+    marcellus: ['Bom duelo, garoto. Cuide do seu irmão.', 'Coragem não falta. Técnica, sim.'],
+  },
+  amalia: {
+    veritus: ['Uma flecha. Pro líder.', 'Fique no chão, Veritus.'],
+    veritus_rancor: ['O estigma é alvo fácil.', 'Sobreviveu ao ritual. Não à flecha.'],
+    nero: ['Flechada no imperador.', 'Ajoelhe-se você.'],
+    faustus: ['Capacete não para flecha.', 'Te vejo no inferno, Faustus.'],
+    marius: ['Alvo grande.', 'Desculpa, Marius.'],
+    remus: ['Sem traição. Só flecha.', 'Para de sorrir.'],
+    cascadia: ['Pela esquerda, Cascadia.', 'Fica perto de mim da próxima.'],
+    cornelius: ['Acertei por cima do escudo.', 'Para de gritar.'],
+    karise: ['Te vi. Uma flecha.', 'Nada pessoal, Karise.'],
+    marcellus: ['Respira, Marcellus.', 'Tô bem. Levanta.'],
+  },
+};
+// os repertórios: as falas de cada um da Ordo quando vence; e as de quem vence UM deles
+const ORDO_WIN_POOL = {
+  veritus: [(n) => `Pela Ordo Calamitas, ${n}.`, () => 'Sacrifício é a minha função. A vitória, também.', () => 'A espada da Ordo não erra.', (n) => `Descanse, ${n}. A guerra é minha.`, () => 'Pelo Imperador. Pela Ordo.', (n) => `Levante-se quando puder, ${n}.`, () => 'As Relíquias continuam guardadas.', () => 'Ninguém passa pelo líder da Ordo.'],
+  veritus_rancor: [() => 'Eu sobrevivi ao Hexatombe. Você não sobreviveu a mim.', () => 'Rancor. Ansiedade. Frustração. Ira. Você foi só mais uma.', (n) => `O Estigma arde, ${n}. E você caiu.`, () => 'O único sobrevivente continua de pé.', (n) => `Fica no chão, ${n}. O ritual acabou.`, () => 'O Trono foi meu presente. Isso aqui é troco.', () => 'As faixas sangram. Eu não paro.'],
+  nero: [(n) => `AJOELHE-SE, ${n}!`, () => 'Roma é minha. A arena também.', () => 'Diante do imperador, todos se curvam.', (n) => `Uma ordem, ${n}: fique no chão.`, () => 'As regras do imperador valem para todos.', () => 'Nada pessoal. Política.', (n) => `Roma agradece sua derrota, ${n}.`],
+  faustus: [(n) => `Te vejo no inferno, ${n}!`, () => 'Júpiter tá comigo hoje!', () => 'Arrisquei tudo. Valeu a pena.', (n) => `Sem capacete e ainda assim, ${n}.`, () => 'Gládio na mão, Júpiter no céu.', (n) => `Desculpa, ${n}. Era eu ou você.`, () => 'Isso foi pelo Coliseu!'],
+  marius: [() => '...', () => '...Desculpa.', () => 'Obrigado... pela luta.', (n) => `...${n}. Levanta.`, () => '...Acabou.', () => '(abaixa as manoplas, em silêncio)'],
+  remus: [(n) => `Nada pessoal, ${n}. Mentira.`, () => 'Gostou do que viu?', () => 'Pelas costas é mais rápido.', (n) => `Confia em mim da próxima vez, ${n}.`, () => 'Garra afiada, sorriso no rosto.', (n) => `Ah, ${n}... você acreditou em mim.`],
+  cascadia: [() => 'Por Caesar.', (n) => `Fica no chão, ${n}.`, () => 'Duas lâminas. Uma vontade.', () => 'Leal até o fim.', () => 'Não lembro de ter perguntado nada.', (n) => `Caesar manda lembranças, ${n}.`],
+  cornelius: [() => 'Eu avisei que tinha pavio curto!', () => 'De ferro! Eu sou de ferro!', (n) => `Responde agora, ${n}!`, () => 'Escudo na frente, lança atrás. Simples!', (n) => `Fica bravo no chão, ${n}!`, () => 'Fúria romana!'],
+  karise: [(n) => `Não é nada pessoal, ${n}!`, () => 'Imperceptível. Como sempre.', (n) => `Eu sei tudo sobre você, ${n}.`, () => 'Duas pontas, nenhum erro.', () => 'Você nem me viu chegar.', () => 'Sumi. Ganhei. Sumi de novo.'],
+  marcellus: [() => 'E-eu consegui? Eu consegui!', (n) => `Desculpa, ${n}! Foi o duelo!`, () => 'Meu irmão vai acreditar nisso?', () => 'Duelo encerrado. Eu acho.', (n) => `Obrigado pelo duelo, ${n}!`, () => 'A rapieira não tremeu. Só eu.'],
+};
+const ORDO_LOSE_POOL = {
+  veritus: [() => 'Até o líder da Ordo cai.', () => 'Guarda essa espada, Veritus.', () => 'Nem a armadura dourada segurou.', () => 'A Ordo Calamitas vai precisar de outro líder.', () => 'Sacrifício demais pra um homem só.', () => 'Fica no chão, Veritus.'],
+  veritus_rancor: [() => 'Sobreviveu ao Hexatombe. Não a mim.', () => 'Esse estigma nas costas não te salvou.', () => 'Rancor nenhum segura um golpe desses.', () => 'Fica no chão, sobrevivente.', () => 'As faixas não estancam tudo, Veritus.', () => 'O Trono te deu de presente. Eu tirei.'],
+  nero: [() => 'Ajoelhe-se você, Nero.', () => 'O imperador no chão. Que vista.', () => 'Roma não te salvou hoje.', () => 'Guarda a coroa de louros, majestade.', () => 'Nem todo mundo obedece imperador.', () => 'Fala mais baixo, Nero.'],
+  faustus: [() => 'Te vejo no inferno, Faustus. Mas não hoje.', () => 'Júpiter olhou pro outro lado.', () => 'Coloca o capacete de volta, gladiador.', () => 'Arriscou tudo e ficou sem nada.', () => 'Volta pra arena, Faustus.', () => 'Bom gládio. Braço cansado.'],
+  marius: [() => 'O grandão caiu.', () => 'Tamanho não é tudo, Marius.', () => 'Nem as manoplas seguraram.', () => 'Desculpa, Marius. Você parecia gente boa.', () => 'Fica no chão, grandão.', () => 'Quanto maior, mais barulho na queda.'],
+  remus: [() => 'Traiu o lado errado, Remus.', () => 'Não sorri, Remus. Acabou.', () => 'Garras afiadas, lealdade nenhuma.', () => 'Nem pelas costas você me pegou.', () => 'Esse charme não funciona comigo.', () => 'Pensa em quem você vai trair amanhã.'],
+  cascadia: [() => 'O khopesh pesou hoje, Cascadia.', () => 'Caesar vai sentir sua falta.', () => 'Duas lâminas. Nenhuma me acertou.', () => 'Lealdade não para golpe.', () => 'Fica no chão, Cascadia.', () => 'Volta pro seu Caesar.'],
+  cornelius: [() => 'Pavio curto, queda rápida.', () => 'Escudo grande. Não o bastante.', () => 'Respira, Cornelius. Acabou.', () => 'Gritar não ajuda a lutar.', () => 'A lança ficou curta.', () => 'Fica bravo no chão, Cornelius.'],
+  karise: [() => 'Achei a espiã.', () => 'Tira essa mascarilha, Karise.', () => 'Imperceptível? Eu te vi.', () => 'Nada pessoal, Karise.', () => 'Duas pontas e nenhuma acertou.', () => 'Sem sombra pra se esconder agora.'],
+  marcellus: [() => 'Respira, Marcellus. Acabou.', () => 'A rapieira é bonita. O duelo é meu.', () => 'Vai chamar seu irmão agora?', () => 'Duelo encerrado, Marcellus.', () => 'Calma, garoto. Levanta devagar.', () => 'Volta quando a mão parar de tremer.'],
+};
+// quem não fala (ou só rosna) vence a Ordo do próprio jeito
+const ORDO_MUTE_WIN = {
+  amigo: [(n) => `...${n}... vou desenhar... você...`, () => '...brincar... de novo...', () => '...Roma... no papel...', () => '(rabisca uma armadura de joelhos)'],
+  carnical: [() => '...CARNE... DE ROMA...', () => '(rosna e arrasta o corpo)', () => '...COME...', () => '...SANGUE... NOBRE...'],
+  degolificada: [() => '(os fios apertam o pescoço do romano)', () => '(silêncio)', () => '(o cabelo se fecha devagar)', () => '(a cabeça pende; os fios relaxam)'],
+  espreitador: [() => '(o olho encara a armadura caída)', () => '(não pisca)', () => '(some na fresta)', () => '(o olho segue o brilho do metal)'],
+  zefero: [() => '(morde o metal da armadura)', () => '(rosna)', () => '(arrasta o romano pelo pé)', () => '(lambe o sangue do chão)'],
+};
+const ordoSeed = (a, b) => { let h = 7; for (const ch of a + '|' + b) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+const twoOf = (pool, a, b, name) => { const k = ordoSeed(a, b); const i = k % pool.length; let j = (k >>> 5) % pool.length; if (j === i) j = (i + 1) % pool.length; return [pool[i](name), pool[j](name)]; };
+for (const [w, m] of Object.entries(VICTORY_ORDO)) VICTORY_LINES[w] = { ...(VICTORY_LINES[w] || {}), ...m };
+const ORDO_IDS = INTRO_IDS.filter((id) => !BASE_CHARACTER[id] || id === 'veritus_rancor'); // as formas falam pela ficha base
+for (const winner of ORDO_IDS) {
+  for (const loser of ORDO_IDS) {
+    if (winner === loser || !(ORDO_NEW.includes(winner) || ORDO_NEW.includes(loser))) continue;
+    const table = (VICTORY_LINES[winner] ||= {});
+    if (Array.isArray(table[loser]) && table[loser].length >= 2) continue;
+    const name = CHARACTER_NAMES[loser] || loser;
+    const pool = ORDO_NEW.includes(winner) ? ORDO_WIN_POOL[winner] : ORDO_MUTE_WIN[winner] || ORDO_LOSE_POOL[loser];
+    table[loser] = twoOf(pool, winner, loser, name);
+  }
 }

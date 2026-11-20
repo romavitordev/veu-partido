@@ -42,6 +42,16 @@ import zefero from './zefero.js';
 import celestine from './celestine.js';
 import gaius from './gaius.js';
 import amalia from './amalia.js';
+import veritus from './veritus.js';
+import veritus_rancor from './veritus_rancor.js';
+import nero from './nero.js';
+import faustus from './faustus.js';
+import marius from './marius.js';
+import remus from './remus.js';
+import cascadia from './cascadia.js';
+import cornelius from './cornelius.js';
+import karise from './karise.js';
+import marcellus from './marcellus.js';
 import carnical from './carnical.js';
 import dara from './dara.js';
 import carina from './carina.js';
@@ -81,7 +91,9 @@ export const ROSTER = [
   // lista as outras — aparecem como etiqueta extra no cartão e na ficha (ex.: a Celestine, Portadora E Ordo Calamitas)
   juanPortador, arnaldo, ferreiro, celestine, // Portadores (Sangue, Energia, Morte, Conhecimento) — a Celestine também é da Ordo Calamitas
   gaius, // Ordo Calamitas (Calamidade, 67 d.C.) — o Gaius; no RB/LB, o AMPHITRUO (a versão transformada)
-  amalia, // Ordo Calamitas — A Flecha, a arqueira (Calamidade). Faustus, Marius, Remus, Cascadia, Cornelius... depois
+  amalia, // Ordo Calamitas — A Flecha, a arqueira (Calamidade)
+  veritus, veritus_rancor, nero, faustus, marius, remus, // Ordo Calamitas (v5.32.0): o líder (e o Sacrifício do Rancor, a versão de Hexatombe), o imperador e os guerreiros jogados nos episódios
+  cascadia, cornelius, karise, marcellus, // ...e os outros membros da Ordo Calamitas (personagens do mestre)
   oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (Sangue, Morte, Conhecimento, Energia)
   estrangeiro, amigo, carnical, degolificada, espreitador, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
 ];
@@ -92,6 +104,7 @@ export const VERSION_GROUPS = [
   ['juan', 'juan_odio'], // Henri → Juan (Portador)
   ['gaius', 'anfitriao'], // Gaius → Amphitruo (o Anfitrião das Relíquias tem a aparência dele; o do Arnaldo é só transformação)
   ['ferreiro', 'deus_morte'], // Ferreiro → O Deus da Morte
+  ['veritus', 'veritus_rancor'], // Veritus → o Sacrifício do Rancor (Hexatombe: sem armadura, o Estigma nas costas)
 ];
 
 // índices no ROSTER das versões do lutador do índice i (ele mesmo incluído; só ele quando não tem outras)

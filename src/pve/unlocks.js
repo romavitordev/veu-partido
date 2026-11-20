@@ -10,7 +10,8 @@ export const UNLOCK_TIERS = [
   { price: 170, ids: ['erin', 'aghata', 'rubens', 'dante', 'nubi', 'fernando', 'tristan', 'ivete', 'eloy', 'cindy', 'caio', 'franco', 'ale', 'alvira', 'velisar', 'zefero'] }, // Eloy e Cindy (PSIKOLERA, 2026-11-14)
   { price: 250, ids: ['joui', 'kaiser', 'kian', 'gal_sal', 'dalmo', 'aguiar', 'cristino', 'damir', 'boris', 'sabara'] }, // Sabara (Vampiros, 2026-11-14)
   { price: 350, ids: ['jae', 'kemi', 'labirinto', 'juan', 'raziel', 'arnaldo', 'ferreiro', 'celestine'] },
-  { price: 500, ids: ['gaius', 'amalia', 'juan_odio', 'magistrada'] },
+  { price: 350, ids: ['cascadia', 'cornelius', 'karise', 'marcellus', 'marius', 'remus'] }, // Ordo Calamitas (v5.32.0)
+  { price: 500, ids: ['gaius', 'amalia', 'juan_odio', 'magistrada', 'faustus', 'nero', 'veritus', 'veritus_rancor'] },
   { price: 700, ids: ['o_diabo', 'deus_morte', 'anfitriao'] },
 ];
 // A EQUIPE OUTRO LADO não entra no modo (pedido do dono, 2026-11-06): o Estrangeiro, o Amigo Imaginário, o Carniçal e

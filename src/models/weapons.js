@@ -1921,11 +1921,11 @@ const FLAME_GEO = (() => {
   return new THREE.LatheGeometry(pts, 8);
 })();
 const _flameQ = new THREE.Quaternion();
-export function energyFlames(color = 0x3ae8ff, { count = 5, radius = 0.08, height = 0.24, width = 0.07, lean = 0 } = {}) {
+export function energyFlames(color = 0x3ae8ff, { count = 5, radius = 0.08, height = 0.24, width = 0.07, lean = 0, inner = 0x5ae0f0 } = {}) {
   const g = new THREE.Group();
   // somadas umas às outras estouram para o branco: o turquesa vai mais escuro e a de dentro mais fraca
   const outer = glowMat(new THREE.Color(color).multiplyScalar(0.62), 0.5);
-  const inner = glowMat(0x5ae0f0, 0.32);
+  const innerMat = glowMat(inner, 0.32); // o miolo (turquesa por padrão; a Ordo passa o tom da aura de cada um)
   for (let i = 0; i < count; i++) {
     const a = (i / count) * Math.PI * 2 + Math.random() * 0.6;
     const r = radius * (0.6 + Math.random() * 0.4);
@@ -1936,7 +1936,7 @@ export function energyFlames(color = 0x3ae8ff, { count = 5, radius = 0.08, heigh
     tongue.rotation.set(tilt[0], 0, tilt[1]);
     const o = new THREE.Mesh(FLAME_GEO, outer);
     o.scale.set(width, h, width);
-    const n = new THREE.Mesh(FLAME_GEO, inner);
+    const n = new THREE.Mesh(FLAME_GEO, innerMat);
     n.scale.set(width * 0.45, h * 0.6, width * 0.45);
     tongue.add(o, n);
     const phase = Math.random() * 10;

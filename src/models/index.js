@@ -1,4 +1,5 @@
 import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps, addCarinaProps, addCarinaLeoneProps, addRubensProps, addBeatriceProps, addBeatriceExistidaProps, addEspreitadorProps, addDegolificadaProps, addFernandoProps, addLucianoProps, addTristanProps, addIveteProps, addBorisProps, addDamirProps, addArtemisProps, addEloyProps, addSabaraProps, addAlviraProps, addCindyProps, addCaioProps, addFrancoProps, addAleProps, addZeferoProps } from './props.js';
+import { addVeritusProps, addVeritusRancorProps, addNeroProps, addFaustusProps, addMariusProps, addRemusProps, addCascadiaProps, addCorneliusProps, addKariseProps, addMarcellusProps } from './ordoProps.js';
 import { loadGLBRetry as loadWithRetry, rigFromGLB } from './glbRig.js';
 import { preloadNpcModels } from './npcRig.js';
 
@@ -71,6 +72,16 @@ const BLENDER_MODELS = {
   seita: { url: 'models/seita.glb', props: addSeitaProps }, // membro da Seita das Máscaras (as invocações da Magistrada)
   gaius: { url: 'models/gaius.glb', props: addGaiusProps }, // Gaius (Ordo Calamitas, Calamidade, 67 d.C.)
   amalia: { url: 'models/amalia.glb', props: addAmaliaProps }, // Amalia, a arqueira da Ordo Calamitas (Calamidade, 67 d.C.)
+  veritus: { url: 'models/veritus.glb', props: addVeritusProps }, // Ordo Calamitas (v5.32.0)
+  veritus_rancor: { url: 'models/veritus_rancor.glb', props: addVeritusRancorProps }, // Ordo Calamitas (v5.32.0)
+  nero: { url: 'models/nero.glb', props: addNeroProps }, // Ordo Calamitas (v5.32.0)
+  faustus: { url: 'models/faustus.glb', props: addFaustusProps }, // Ordo Calamitas (v5.32.0)
+  marius: { url: 'models/marius.glb', props: addMariusProps }, // Ordo Calamitas (v5.32.0)
+  remus: { url: 'models/remus.glb', props: addRemusProps }, // Ordo Calamitas (v5.32.0)
+  cascadia: { url: 'models/cascadia.glb', props: addCascadiaProps }, // Ordo Calamitas (v5.32.0)
+  cornelius: { url: 'models/cornelius.glb', props: addCorneliusProps }, // Ordo Calamitas (v5.32.0)
+  karise: { url: 'models/karise.glb', props: addKariseProps }, // Ordo Calamitas (v5.32.0)
+  marcellus: { url: 'models/marcellus.glb', props: addMarcellusProps }, // Ordo Calamitas (v5.32.0)
   interflorado: { url: 'models/interflorado.glb', props: null }, // Interflorado aflorado (o Ninho do Estrangeiro; fora da seleção)
   doppel: { url: 'models/doppel.glb', props: addDoppelProps }, // Doppelganger, um dos Homens de Terno (as invocações do Estrangeiro)
 };

@@ -4321,6 +4321,9 @@ function applySelfBuff(f, a, world) {
     if (ready) f.notify('AGENTES, AGORA!', true);
   }
   if (a.armor) f.armorHits = (f.armorHits || 0) + a.armor; // estabilidade: aguenta golpes sem recuar
+  // a.props [[peça, visível], ...]: troca peças do modelo enquanto dura (o Faustus tira o elmo — Tirar Capacete / Arriscar
+  // Tudo); tudo volta no fim
+  const swaps = (a.props || []).filter(([p]) => f.rig && f.rig.props && f.rig.props[p]).map(([p, v]) => { const was = f.rig.props[p].visible; f.rig.showProp(p, v); return [p, was]; });
   // a.redAura (Joui — Tomado pelo Ódio): a aura vermelha dos Mascarados em volta do corpo enquanto dura, e o
   // clarão vermelho ao ativar; a.meleeBleed: os golpes físicos fazem sangrar (damage.js)
   const aura = a.redAura ? world.fx.emitter({ rate: 34, follow: () => f.chestPos(), particle: { color: a.redAura, speed: 1, up: 1.2, spread: 0.6, life: 0.55, size: 0.2 } }) : null;
@@ -4329,7 +4332,7 @@ function applySelfBuff(f, a, world) {
     world.screenFlash && world.screenFlash('#3a0606', 0.12);
     world.audio.play('maskOn', { volume: 0.6, pitch: 0.9 });
   }
-  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
+  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); for (const [p, v] of swaps) f.rig.showProp(p, v); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
   f.notify(a.label || a.name.toUpperCase(), true);
 }
 

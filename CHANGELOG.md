@@ -1,5 +1,26 @@
 # Changelog
 
+## v5.32.0 — A Ordo Calamitas Completa
+
+### Adicionado
+- 10 lutadores da Ordo Calamitas em `src/characters/`: `faustus`, `marius`, `remus`, `cascadia`, `cornelius`, `karise`,
+  `marcellus`, `nero`, `veritus` e `veritus_rancor` (`baseId: 'veritus'`, par em `VERSION_GROUPS`).
+- Modelos: `tools/blender/ordo_lib.py` (couraça, ombreiras, pano do Símbolo, pteruges, saias, capas, cachecol, botas e
+  sandálias, cabelos, barba, capuz e os ELMOS paramétricos `helmet_closed` / `helmet_gladiator` / `helmet_galea` como
+  `prop_helmet`) e `char_<id>.py` para os dez → `public/models/<id>.glb`.
+- Armas e peças em código: `src/models/ordoWeapons.js`, `src/models/ordoProps.js` (aura por personagem; o Estigma do
+  Sacrifício do Rancor num plano com textura de canvas no socket `back`).
+- `projectiles.js`: visuais `khopesh`, `pilum`, `doubleDagger`. Texturas `face_<id>` e `tabard_<id>` (`ordoTabard`).
+- `applySelfBuff` aceita `props: [[nome, visível]]` (restaura no fim); `useAbility` aceita `lifeCost`; `devour` aceita
+  `label`; `energyFlames` aceita `inner`.
+- Falas: `INTRO_EXCHANGES` das relações de Calamidade, `VICTORY_ORDO` + repertórios (`ORDO_WIN_POOL`, `ORDO_LOSE_POOL`,
+  `ORDO_MUTE_WIN`) sorteados por confronto; `victoryLines` usa as falas próprias de uma versão quando existem.
+- Retratos `public/sobre/elenco/<id>.webp` dos dez.
+
+### Alterado
+- `HUD.hpBarOf`: Ordo Calamitas → `hb-existencia` (azul); Vampiros → `hb-vampRed`, e `vampire` com o buff `awakened`.
+- `teamLinks.ORDO_CALAMITAS` = Veritus, Nero, Celestine, Gaius, Amalia, Faustus, Marius e Remus.
+
 ## v5.31.2 — Uma Cartela de Cada Vez
 
 ### Corrigido

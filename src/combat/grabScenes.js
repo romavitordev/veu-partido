@@ -256,6 +256,17 @@ export const GRAB_SCENES = {
 GRAB_SCENES.gaius = scene({ ...S('slash_h', 0.32), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('slash_h_back', 0.32), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'slash_v', fx: 'slam', sound: 'heavyPunch' });
 // AMALIA: chuta, gira o arco e crava a flecha à queima-roupa
 GRAB_SCENES.amalia = scene({ ...S('kick_front', 0.3), fx: { kind: 'punch' }, sound: 'kick' }, { ...S('slash_h', 0.3), fx: { kind: 'slash' }, sound: 'blade' }, { anim: 'bow_shot', fx: 'slam', sound: 'sniper' });
+// ORDO CALAMITAS (v5.32.0): cada um agarra com a arma dele
+GRAB_SCENES.veritus = scene({ ...S('slash_h', 0.34), fx: { kind: 'slash' }, sound: 'blade' }, { ...S('slash_h_back', 0.34), fx: { kind: 'slash', flip: true }, sound: 'blade' }, { anim: 'slash_finisher', fx: 'slam', sound: 'slashFinal' });
+GRAB_SCENES.veritus_rancor = scene({ ...S('body_blow', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('hook_l', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'meteor_punch', fx: 'slam', sound: 'heavyPunch', bleed: { dps: 4, duration: 2 } });
+GRAB_SCENES.nero = scene({ ...S('shoulder_bash', 0.32), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('slash_h', 0.32), fx: { kind: 'slash' }, sound: 'blade' }, { anim: 'slash_v', fx: 'slam', sound: 'slashFinal' });
+GRAB_SCENES.faustus = scene({ ...S('slash_h', 0.3), fx: { kind: 'slash' }, sound: 'blade' }, { ...S('onearm_elbow', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'ver_thrust', fx: 'slam', sound: 'slashFinal' });
+GRAB_SCENES.marius = scene({ ...S('body_blow', 0.32), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('hook_l', 0.32), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'meteor_punch', fx: 'slam', sound: 'heavyPunch' });
+GRAB_SCENES.remus = scene({ ...S('hook_r', 0.26), fx: { kind: 'claw' }, sound: 'bladeHit' }, { ...S('hook_l', 0.26), fx: { kind: 'claw', flip: true }, sound: 'bladeHit' }, { anim: 'uppercut', fx: 'slam', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } });
+GRAB_SCENES.cascadia = scene({ ...S('dual_r', 0.28), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('dual_l', 0.28), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'dual_both', fx: 'slam', sound: 'slashFinal' });
+GRAB_SCENES.cornelius = scene({ ...S('shoulder_bash', 0.32), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('thrust', 0.3), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'arn_lunge', fx: 'slam', sound: 'slashFinal' });
+GRAB_SCENES.karise = scene({ ...S('knife_1', 0.24), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('knife_2', 0.24), fx: { kind: 'slash', flip: true }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'slam', sound: 'slashFinal', bleed: { dps: 4, duration: 2 } });
+GRAB_SCENES.marcellus = scene({ ...S('thrust', 0.24), fx: { kind: 'stab' }, sound: 'bladeHit' }, { ...S('ver_thrust', 0.24), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'arn_lunge', fx: 'slam', sound: 'slashFinal' });
 GRAB_SCENES.amphitruo = GRAB_SCENES.anfitriao;
 GRAB_SCENES.kian_calamidade = GRAB_SCENES.kian; // a forma de Calamidade agarra igual (só mais forte)
 GRAB_SCENES.magistrada = GRAB_SCENES.arnaldo; // a bengala em esgrima, como a espada do Arnaldo

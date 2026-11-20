@@ -114,6 +114,27 @@ export function addVictoryClips(CLIPS, k) {
     vic_amalia: pose({ sp: [-0.2, 0, 0], hd: [-0.35, 0.1, 0], sL: [-2.4, -0.2, 0.45], eL: [-0.1, 0, 0], sR: [-2.2, 0.6, -0.1], eR: [-2.2, 0, 0], lL: [-0.1, 0, 0.16], lR: [0.1, 0, -0.16] }),
     // Gaius: a mão nas costas doloridas e a maça pendurada na outra — cansado, mas confiante
     vic_gaius: pose({ sp: [0.18, 0, 0], hd: [-0.05, 0, 0.1], sL: [0.35, 0, 0.35], eL: [-1.9, 0, 0], sR: [-0.25, 0, -0.3], eR: [-0.4, 0, 0], lL: [-0.05, 0, 0.1], kL: [0.12, 0, 0] }),
+    // ORDO CALAMITAS (v5.32.0)
+    // Veritus: a espada longa cravada na frente, as duas mãos no pomo — o líder de pé
+    vic_veritus: pose({ sp: [0.02, 0, 0], hd: [-0.08, 0, 0], sR: [-0.85, 0.45, -0.1], eR: [-1.0, 0, 0], sL: [-0.85, -0.45, 0.1], eL: [-1.0, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.05, 0, -0.12] }),
+    // o Sacrifício do Rancor: os braços abertos e a cabeça para trás — o único que saiu vivo do ritual
+    vic_veritus_rancor: pose({ sp: [-0.15, 0, 0], hd: [-0.5, 0, 0], sR: [-0.5, 0, -1.15], eR: [-0.4, 0, 0], sL: [-0.5, 0, 1.15], eL: [-0.4, 0, 0], lL: [-0.08, 0, 0.18], lR: [0.08, 0, -0.18] }),
+    // Nero: o queixo erguido, a espada apontada para o chão e a outra mão nas costas (o imperador)
+    vic_nero: pose({ sp: [-0.06, 0, 0], hd: [-0.3, 0.15, 0], sR: [-0.35, 0.1, -0.25], eR: [-0.25, 0, 0], sL: [0.45, 0, 0.25], eL: [-1.5, 0, 0], lL: [-0.05, 0, 0.1], lR: [0.06, 0, -0.1] }),
+    // Faustus: o gládio erguido para o céu e a outra mão no peito, segurando o colar — reza a Júpiter
+    vic_faustus: pose({ sp: [-0.1, 0, 0], hd: [-0.45, 0, 0], sR: [-2.7, 0.15, -0.15], eR: [-0.2, 0, 0], sL: [-0.6, -0.9, 0.3], eL: [-2.0, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.05, 0, -0.12] }),
+    // Marius: as manoplas soltas, a cabeça baixa — "obrigado por tudo"
+    vic_marius: pose({ sp: [0.15, 0, 0], hd: [0.35, 0, 0], sR: [-0.2, 0, -0.25], eR: [-0.5, 0, 0], sL: [-0.2, 0, 0.25], eL: [-0.5, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.05, 0, -0.12] }),
+    // Remus: a mão na cintura e as garras da outra junto do rosto, a cabeça de lado — o sorriso
+    vic_remus: pose({ sp: [0.02, 0.15, 0], hd: [0, -0.25, 0.22], sL: [0.3, 0, 0.45], eL: [-1.9, 0, 0], sR: [-1.6, 0.6, -0.3], eR: [-1.8, 0, 0], lL: [-0.05, 0, 0.18], lR: [0.12, 0, -0.05], kR: [0.3, 0, 0] }),
+    // Cascadia: as duas lâminas abaixadas, os ombros caídos, a cabeça tombada — cansada
+    vic_cascadia: pose({ sp: [0.12, 0, 0], hd: [0.2, 0, 0.18], sR: [-0.3, 0.2, -0.35], eR: [-0.2, 0, 0], sL: [-0.3, -0.2, 0.35], eL: [-0.2, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.05, 0, -0.12] }),
+    // Cornelius: a lança erguida, o escudo na frente e o grito
+    vic_cornelius: pose({ sp: [-0.12, 0, 0], hd: [-0.35, 0, 0], sR: [-2.8, 0, -0.1], eR: [-0.2, 0, 0], sL: [-1.2, 0.4, 0.3], eL: [-1.2, 0, 0], lL: [-0.2, 0, 0.18], lR: [0.2, 0, -0.18] }),
+    // Karise: agachada, as adagas abertas dos dois lados, a cabeça baixa no capuz
+    vic_karise: pose({ h: -0.12, sp: [0.25, 0, 0], hd: [0.1, 0, 0], sR: [-0.6, 0.3, -0.55], eR: [-0.4, 0, 0], sL: [-0.6, -0.3, 0.55], eL: [-0.4, 0, 0], lL: [-0.35, 0, 0.2], kL: [0.55, 0, 0], lR: [0.25, 0, -0.2], kR: [0.4, 0, 0] }),
+    // Marcellus: a saudação do esgrimista — a rapieira de pé na frente do rosto
+    vic_marcellus: pose({ sp: [0, 0, 0], hd: [-0.05, 0, 0], sR: [-1.45, 0.35, -0.1], eR: [-1.65, 0, 0], sL: [0.35, 0, 0.3], eL: [-1.2, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.18, 0, -0.1] }),
     // Celestine: uma machadinha atrás da cabeça, a outra pendurada na corrente, o quadril de lado e a cabeça tombada
     // (debochada)
     vic_celestine: pose({ hip: [0, -0.2, 0.08], sp: [-0.05, 0.1, 0], hd: [-0.1, -0.25, -0.15], sR: [-2.5, 0.3, -0.7], eR: [-2.0, 0, 0], sL: [-0.4, 0, 0.7], eL: [-0.3, 0, 0], lL: [-0.15, 0, 0.12], kL: [0.25, 0, 0] }),

@@ -47,6 +47,16 @@ export const BALANCE = {
   juan_odio: { dealt: 0.82, taken: 1.1 }, // 91 → 91% (a linha só passou a valer com a correção do balanceOf) → 58% → 61%
   anfitriao: { dealt: 0.92, taken: 1.05 }, // 75 → 89% (usava a linha do Gaius; idem) → 64% → 63%
   amalia: { dealt: 0.93, taken: 1.04 }, // 71 → 59% → 54% → 64%
+  veritus: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  veritus_rancor: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  nero: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  faustus: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  marius: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  remus: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  cascadia: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  cornelius: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  karise: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
+  marcellus: { dealt: 1, taken: 1 }, // Ordo Calamitas (v5.32.0): neutro até a próxima telemetria
   chico: { dealt: 0.9, taken: 1.05 }, // 70 → 62% → 67% → 57%
   gaius: { dealt: 1.15, taken: 0.9 }, // 20 → 46% → 39% → 50%
   xande: { dealt: 1.05, taken: 0.97 }, // 37 → 32% → 41% → 42%

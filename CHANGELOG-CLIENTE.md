@@ -2,6 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.32.0 — A Ordo Calamitas Completa
+- ORDO CALAMITAS completa: entram FAUSTUS (o gládio e o elmo de gladiador), MARIUS (as manoplas, o grandão do elmo fechado), REMUS (as garras, a capa branca no ombro), CASCADIA (khopesh e espada reta), CORNELIUS (lança, escudo e o elmo com crista), KARISE (a espiã das adagas de ponta dupla), MARCELLUS (a rapieira de cabo dourado), o imperador NERO (espada curva, escudo e o manto cinza) e o líder VERITUS (a espada longa e o elmo fechado).
+- VERITUS ganha uma segunda versão: o SACRIFÍCIO DO RANCOR, o Veritus do Hexatombe, sem armadura, com os braços enfaixados e o Estigma brilhando nas costas (troque com RB/LB na seleção).
+- Cada um tem o kit da própria ficha (Arriscar Tudo e Tirar Capacete do Faustus, Sanguinário do Marius, Traiçoeiro do Remus, De Ferro do Cornelius, Espiã e Imperceptível da Karise, Duelo do Marcellus, Imperador do Nero, Sacrifício do Veritus), especial próprio, transformação, falas contra o elenco inteiro e retrato.
+- Especial de equipe da Ordo Calamitas: Nero, Veritus, Amalia, Celestine, Faustus, Gaius, Marius e Remus.
+- Barras de vida: a Ordo Calamitas agora usa a barra AZUL da existência; os Vampiros, vermelha; e transformados, vermelha com sangue.
+
 ## v5.31.2 — Uma Cartela de Cada Vez
 - VELISAR — O Beijo Sangrento: os textos não se sobrepõem mais. O nome do especial virou a cartela de título do filme mudo, depois vem a fala numa cartela própria, e cada cartela cobre a tela inteira sozinha, sem nenhum outro texto por cima; a cena só começa depois que a última sai.
 

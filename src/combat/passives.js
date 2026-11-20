@@ -373,7 +373,7 @@ export const PASSIVES = {
       const heal = Math.round(dealt * (passive.ratio ?? 0.5));
       attacker.health = Math.min(attacker.maxHealth, attacker.health + heal);
       world.fx.burst(attacker.chestPos(), { count: 8, color: 0xc01828, speed: 1.4, life: 0.45, size: 0.14 });
-      if (!attacker.devourTold || world.time - attacker.devourTold > 4) { attacker.devourTold = world.time; attacker.notify('DEVORAR', true); }
+      if (!attacker.devourTold || world.time - attacker.devourTold > 4) { attacker.devourTold = world.time; attacker.notify(passive.label || 'DEVORAR', true); }
     },
   },
   // Kemi — Sede de Vingança (o poder de intenção da Lena no corpo dela): ao cair abaixo de passive.below de vida pela

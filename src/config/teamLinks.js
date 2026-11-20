@@ -22,9 +22,10 @@ export const MASCARADOS = ['dalmo', 'aguiar', 'jae', 'kemi', 'labirinto', 'juan'
 // Arthur, o Kaiser e o Joui MAIS NOVOS. O especial da Equipe E só entra quando existirem essas versões jovens; até lá o
 // Thiago e a Liz podem entrar no elenco como lutadores da Ordem, sem ligação de equipe.
 export const FORCA_D = ['arthur', 'kaiser', 'joui', 'dante', 'erin', 'beatrice', 'fernando', 'tristan']; // o Fernando (e o Luciano, a outra ficha) desde 2026-11-08; o Tristan desde 2026-11-09
-// ORDO CALAMITAS (Calamidade, 67 d.C.): os guerreiros dos jogos de Amphitruo — Celestine, Gaius e Amalia hoje; Faustus,
-// Marius, Remus e Cascadia entram quando estiverem no elenco
-export const ORDO_CALAMITAS = ['celestine', 'gaius', 'amalia', 'faustus', 'marius', 'remus', 'cascadia'];
+// ORDO CALAMITAS (Calamidade, 67 d.C.): no especial em equipe só entram os que tiveram JOGADORES nos episódios (Celestine,
+// Gaius, Amalia, Faustus, Marius e Remus) e os dois líderes, o Veritus e o Nero (pedido do dono, 2026-11-20). Cascadia,
+// Cornelius, Karise e Marcellus são da Ordo, mas ficam fora do especial. O Sacrifício do Rancor conta como o Veritus.
+export const ORDO_CALAMITAS = ['veritus', 'nero', 'celestine', 'gaius', 'amalia', 'faustus', 'marius', 'remus'];
 
 export const TEAM_LINKS = {
   // Grupo dos Mascarados (3 ou mais na equipe): os seis cercam o alvo
@@ -84,8 +85,9 @@ export const TEAM_LINKS = {
     priority: 1,
     sceneProps: { arthur: { show: ['bloodBlade'] } },
   },
-  // Ordo Calamitas: vale com 3 da equipe; cada um com o golpe próprio (a corrente da Celestine, o gládio do Gaius, a
-  // Flecha Flamejante da Amalia)
+  // Ordo Calamitas: vale com 3 da equipe; cada um com o golpe próprio (a espada longa do Veritus, a espada curva do Nero, a
+  // corrente da Celestine, a maça do Gaius, a Flecha Flamejante da Amalia, o gládio do Faustus, as manoplas do Marius e as
+  // garras do Remus)
   ordo_calamitas: {
     id: 'ordo_calamitas',
     kind: 'group',

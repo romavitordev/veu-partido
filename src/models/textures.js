@@ -272,6 +272,32 @@ function calamitasSymbol(g, cx, cy, k = 1) {
   g.restore();
 }
 
+// ORDO CALAMITAS (v5.32.0): os OLHOS ACESOS das memórias revividas (o brilho em volta da íris na cor da aura) e o PANO
+// do peito com o Símbolo (a cor de fundo de cada um; sy achata o Símbolo conforme o comprimento do pano)
+function auraEyes(g, rgb, k = 1) {
+  for (const s of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + s * 32, EYE_Y + 4, 2, CX + s * 32, EYE_Y + 4, 18 * k);
+    gr.addColorStop(0, `rgba(${rgb},0.75)`); gr.addColorStop(0.45, `rgba(${rgb},0.3)`); gr.addColorStop(1, `rgba(${rgb},0)`);
+    g.fillStyle = gr; g.beginPath(); g.arc(CX + s * 32, EYE_Y + 4, 18 * k, 0, Math.PI * 2); g.fill();
+  }
+}
+function scar(g, x0, y0, x1, y1, dark = 'rgba(60,30,24,0.7)', light = 'rgba(200,150,130,0.45)') {
+  g.lineCap = 'round';
+  g.strokeStyle = dark; g.lineWidth = 3.5; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+  g.strokeStyle = light; g.lineWidth = 1.4; g.beginPath(); g.moveTo(x0 + 1, y0); g.lineTo(x1 + 1, y1); g.stroke();
+}
+function ordoTabard(bg, light, fringe, seed, sy = 0.62, y = 110) {
+  return () => canvasTex(256, 512, (g, w, h) => {
+    g.fillStyle = bg; g.fillRect(0, 0, w, h);
+    const rnd = seeded(seed);
+    for (let i = 0; i < 60; i++) { g.fillStyle = rnd() < 0.5 ? `rgba(0,0,0,${0.08 + rnd() * 0.12})` : `rgba(${light},${0.08 + rnd() * 0.12})`; g.fillRect(0, rnd() * h, w, 1 + rnd() * 3); }
+    g.strokeStyle = 'rgba(0,0,0,0.45)'; g.lineWidth = 6; g.strokeRect(6, -10, w - 12, h - 30);
+    g.fillStyle = fringe;
+    for (let x = 0; x < w; x += 9) g.fillRect(x, h - 26 + rnd() * 10, 5, 30);
+    g.save(); g.translate(w / 2, y); g.scale(1, sy); calamitasSymbol(g, 0, 0, 1.15); g.restore();
+  });
+}
+
 // ALVIRA: pálida, as ATADURAS costuradas sobre onde ficavam os olhos (a faixa de pano com os pontos e o sangue seco
 // vazando por baixo) e o SORRISO ENORME de dentes afiados, quase de orelha a orelha (as artes de Hexatombe)
 const ALVIRA_FACE = {
@@ -3680,6 +3706,141 @@ export const MATERIAL_TEXTURES = {
     for (let x = 0; x < w; x += 9) g.fillRect(x, h - 26 + rnd() * 10, 5, 30);
     // o pano é ~3× mais comprido que largo e a textura só 2×: o Símbolo vai achatado aqui para sair redondo no corpo
     g.save(); g.translate(w / 2, 110); g.scale(1, 0.65); calamitasSymbol(g, 0, 0, 1.15); g.restore();
+  }),
+  // ============================================================== ORDO CALAMITAS (v5.32.0) — lore/ORDO-CALAMITAS.md
+  // FAUSTUS: homem negro, as CICATRIZES no rosto (wiki), a barba rala e os olhos AZUIS acesos da memória (a aura rosa e azul)
+  face_faustus: face((g) => {
+    stubble(g, 'rgba(14,8,6,0.45)', 1400, { y0: 150, y1: 222, w: 78 });
+    scar(g, CX + 18, EYE_Y - 34, CX + 40, EYE_Y + 30, 'rgba(26,12,8,0.8)', 'rgba(150,100,84,0.5)');
+    scar(g, CX - 50, NOSE_Y - 4, CX - 30, MOUTH_Y + 6, 'rgba(26,12,8,0.8)', 'rgba(150,100,84,0.5)');
+    scar(g, CX - 8, EYE_Y - 44, CX + 6, EYE_Y - 26, 'rgba(26,12,8,0.7)', 'rgba(150,100,84,0.4)');
+    auraEyes(g, '90,160,255');
+  }, {
+    skin: '#4e3022',
+    eye: { iris: '#5aa0ff', irisLight: '#d8ecff', tilt: -0.02 },
+    brow: { angry: 2, thick: 5, color: '#120a08' },
+    mouth: { mouthW: 17, lip: 'rgba(50,24,18,0.6)' },
+  }),
+  tabard_faustus: ordoTabard('#3e3a42', '110,96,116', '#1c1a20', 71),
+  // MARIUS: as cicatrizes de QUEIMADURA do incêndio de Roma (wiki), o olhar quieto e os olhos vermelhos da aura
+  face_marius: face((g) => {
+    burnPatches(g, [[CX - 44, EYE_Y + 26, 28, 22], [CX + 52, NOSE_Y + 16, 22, 30], [CX + 6, EYE_Y - 44, 34, 14]], 5);
+    stubble(g, 'rgba(40,24,16,0.35)', 1100, { y0: 150, y1: 222, w: 78 });
+    auraEyes(g, '255,70,50');
+  }, {
+    skin: '#b88a6a',
+    eye: { iris: '#ff4a3a', irisLight: '#ffd0c8', tilt: 0.0 },
+    brow: { angry: 1, thick: 6, color: '#2a1810' },
+    mouth: { mouthW: 16, lip: 'rgba(110,60,50,0.5)' },
+  }),
+  tabard_marius: ordoTabard('#3a2422', '130,80,70', '#1a100e', 72, 0.55, 100),
+  // REMUS: o Cativante — pele clara, o SORRISO CONSTANTE, os olhos verdes acesos e os cílios marcados
+  face_remus: face((g) => {
+    stubble(g, 'rgba(60,36,20,0.18)', 700, { y0: 160, y1: 222, w: 70 });
+    auraEyes(g, '90,255,120');
+  }, {
+    skin: '#e6c2a4',
+    eye: { iris: '#3ae86a', irisLight: '#d8ffe0', tilt: 0.05, lashes: true },
+    brow: { angry: 0, thick: 3, color: '#4a2c18' },
+    mouth: { mouthW: 19, smile: 6, smirk: 2, lip: 'rgba(170,96,90,0.55)' },
+  }),
+  // CASCADIA: o aspecto CANSADO (as olheiras fundas, as linhas da testa) e os olhos azuis acesos
+  face_cascadia: face((g) => {
+    g.strokeStyle = 'rgba(120,70,60,0.35)'; g.lineWidth = 1.6;
+    for (let i = 0; i < 2; i++) { g.beginPath(); g.moveTo(CX - 34, EYE_Y - 36 - i * 7); g.quadraticCurveTo(CX, EYE_Y - 41 - i * 7, CX + 34, EYE_Y - 36 - i * 7); g.stroke(); }
+    for (const s of [-1, 1]) {
+      const gr = g.createRadialGradient(CX + s * 32, EYE_Y + 18, 2, CX + s * 32, EYE_Y + 18, 20);
+      gr.addColorStop(0, 'rgba(110,60,80,0.4)'); gr.addColorStop(1, 'rgba(110,60,80,0)');
+      g.fillStyle = gr; g.beginPath(); g.ellipse(CX + s * 32, EYE_Y + 18, 22, 10, 0, 0, Math.PI * 2); g.fill();
+    }
+    auraEyes(g, '80,180,255');
+  }, {
+    skin: '#e8cab4',
+    eye: { iris: '#4ab4ff', irisLight: '#d8f0ff', tilt: -0.06, lashes: true, lid: 5 },
+    brow: { angry: 0, thick: 3, color: '#a88a50' },
+    mouth: { mouthW: 14, smile: -2, lip: 'rgba(160,96,90,0.5)' },
+  }),
+  tabard_cascadia: ordoTabard('#2c3644', '90,110,140', '#141a22', 73),
+  // CORNELIUS: meia-idade, o BIGODE castanho grosso (wiki), a testa franzida de pavio curto e os olhos azuis acesos
+  face_cornelius: face((g) => {
+    g.strokeStyle = 'rgba(120,70,56,0.45)'; g.lineWidth = 2;
+    for (let i = 0; i < 2; i++) { g.beginPath(); g.moveTo(CX - 10, EYE_Y - 22 - i * 4); g.lineTo(CX - 4, EYE_Y - 34 - i * 4); g.stroke(); g.beginPath(); g.moveTo(CX + 10, EYE_Y - 22 - i * 4); g.lineTo(CX + 4, EYE_Y - 34 - i * 4); g.stroke(); }
+    stubble(g, 'rgba(70,40,20,0.25)', 900, { y0: 160, y1: 222, w: 76 });
+    g.fillStyle = '#5a3418'; // o bigode grosso, as pontas caindo
+    g.beginPath(); g.moveTo(CX - 40, MOUTH_Y + 10);
+    g.quadraticCurveTo(CX - 26, MOUTH_Y - 20, CX, MOUTH_Y - 12);
+    g.quadraticCurveTo(CX + 26, MOUTH_Y - 20, CX + 40, MOUTH_Y + 10);
+    g.quadraticCurveTo(CX + 24, MOUTH_Y - 2, CX, MOUTH_Y - 3);
+    g.quadraticCurveTo(CX - 24, MOUTH_Y - 2, CX - 40, MOUTH_Y + 10); g.fill();
+    g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 1;
+    for (let i = 0; i < 26; i++) { const x = CX - 34 + i * 2.7; g.beginPath(); g.moveTo(x, MOUTH_Y - 12 + Math.abs(x - CX) * 0.1); g.lineTo(x + (x < CX ? -2 : 2), MOUTH_Y - 2); g.stroke(); }
+    auraEyes(g, '90,140,255');
+  }, {
+    skin: '#e0b898',
+    eye: { iris: '#5a8cff', irisLight: '#d8e4ff', tilt: -0.08 },
+    brow: { angry: 4, thick: 6, color: '#4a2a14' },
+    mouth: { mouthW: 15, smile: -3, lip: 'rgba(150,80,70,0.5)' },
+  }),
+  tabard_cornelius: ordoTabard('#2e3448', '90,100,140', '#141824', 74, 0.55, 100),
+  // KARISE: mulher negra, os olhos azuis acesos por trás da mascarilha (a peça de metal é código: ordoWeapons.mascarilha)
+  face_karise: face((g) => {
+    auraEyes(g, '60,200,255', 1.1);
+  }, {
+    skin: '#4a2e22',
+    eye: { iris: '#3ac8ff', irisLight: '#e0f8ff', tilt: 0.06, lashes: true },
+    brow: { angry: 2, thick: 4, color: '#0c0808' },
+    mouth: { mouthW: 13, smile: 1, lip: 'rgba(70,30,26,0.65)' },
+  }),
+  tabard_karise: ordoTabard('#22282e', '70,90,110', '#0e1216', 75),
+  // MARCELLUS: magro, pele negra, ANIMADO (o meio sorriso, as sobrancelhas erguidas) e os olhos azuis acesos
+  face_marcellus: face((g) => {
+    stubble(g, 'rgba(14,8,6,0.3)', 900, { y0: 160, y1: 222, w: 70 });
+    auraEyes(g, '120,176,255');
+  }, {
+    skin: '#5a3a2a',
+    eye: { iris: '#7ab0ff', irisLight: '#e4f0ff', tilt: 0.06 },
+    brow: { angry: -2, thick: 4, color: '#1a0e0a' },
+    mouth: { mouthW: 17, smile: 5, lip: 'rgba(70,32,24,0.6)' },
+  }),
+  tabard_marcellus: ordoTabard('#383a44', '100,104,124', '#18191e', 76),
+  // NERO: o imperador — pele clara, as SOBRANCELHAS RUIVAS, as sardas, o olhar de cima e os olhos azuis acesos
+  face_nero: face((g) => {
+    const rnd = seeded(54);
+    g.fillStyle = 'rgba(170,90,50,0.35)';
+    for (let i = 0; i < 70; i++) { const x = CX + (rnd() * 2 - 1) * 60, y = EYE_Y + 12 + rnd() * 34; if (Math.abs(x - CX) < 8) continue; g.beginPath(); g.arc(x, y, 1 + rnd() * 1.3, 0, Math.PI * 2); g.fill(); }
+    stubble(g, 'rgba(160,70,30,0.3)', 900, { y0: 160, y1: 222, w: 74 });
+    auraEyes(g, '70,110,255');
+  }, {
+    skin: '#ecc8ac',
+    eye: { iris: '#3a6aff', irisLight: '#d8e2ff', tilt: -0.06, lid: 5 },
+    brow: { angry: 1, thick: 4, color: '#b0401a' },
+    mouth: { mouthW: 16, smile: 1, smirk: 3, lip: 'rgba(170,96,86,0.55)' },
+  }),
+  tabard_nero: ordoTabard('#5a5a62', '140,140,150', '#2a2a30', 77), // os panos CINZAS do imperador (wiki)
+  // VERITUS: meia-idade, a BARBA LOIRA cheia (wiki) e os olhos azuis acesos (dourados quando se revela — a aura é código)
+  face_veritus: face((g) => {
+    beardPaint(g, '#b08a4a', { mustache: '#a07a3c' });
+    auraEyes(g, '80,160,255');
+  }, {
+    skin: '#e4c0a2',
+    eye: { iris: '#4a9aff', irisLight: '#dcecff', tilt: -0.04 },
+    brow: { angry: 1, thick: 5, color: '#9a7638' },
+    mouth: { mouthW: 15, lip: 'rgba(150,84,74,0.4)' },
+  }),
+  tabard_veritus: ordoTabard('#56585e', '140,140,150', '#26272c', 78), // o pano CINZA no peito (wiki)
+  // O SACRIFÍCIO DO RANCOR (Hexatombe): a barba cheia mais escura, os riscos de sangue e os olhos AMARELOS acesos (a arte
+  // de Hexatombe)
+  face_veritus_rancor: face((g) => {
+    beardPaint(g, '#5a4a3a', { mustache: '#4a3a2c' });
+    scar(g, CX + 30, EYE_Y - 40, CX + 44, EYE_Y - 4, 'rgba(110,10,14,0.75)', 'rgba(220,80,80,0.4)');
+    g.fillStyle = 'rgba(140,10,16,0.5)';
+    for (const [x, y, r] of [[CX - 46, EYE_Y - 30, 5], [CX - 58, NOSE_Y, 4], [CX + 50, NOSE_Y + 10, 6]]) { g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); }
+    auraEyes(g, '255,200,60');
+  }, {
+    skin: '#dcb898',
+    eye: { iris: '#ffc83a', irisLight: '#fff4c8', tilt: -0.08 },
+    brow: { angry: 3, thick: 5, color: '#3a2a1e' },
+    mouth: { mouthW: 15, smile: -2, lip: 'rgba(140,70,60,0.45)' },
   }),
   face_raziel: () => canvasTex(W, HT, (g) => {
     g.fillStyle = '#c4847c'; g.fillRect(0, 0, W, HT);

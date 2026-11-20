@@ -4,6 +4,7 @@ import { applyHit, npcDamage } from './damage.js';
 import { inBounds } from './positioning.js';
 import { glowMat } from '../models/rig.js';
 import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, barBottle } from '../models/weapons.js';
+import { khopesh, spear, doubleDagger } from '../models/ordoWeapons.js';
 import { createMistZone } from './abilities.js';
 import { addBloodPool } from './bloodPools.js';
 import { inscribe } from './kianPowers.js';
@@ -410,6 +411,36 @@ const VISUALS = {
       g.add(fl);
     }
     g.add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 4), glowMat(color, 0.3)));
+    return g;
+  },
+  // ORDO CALAMITAS (v5.32.0): o KHOPESH da Cascadia girando, a LANÇA do Cornelius de ponta e a ADAGA DE PONTA DUPLA da
+  // Karise girando pelas duas pontas
+  khopesh() {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const m = khopesh();
+    m.position.y = 0.2;
+    spin.add(m);
+    g.add(spin);
+    g.userData.tumble = spin;
+    return g;
+  },
+  pilum(color) {
+    const g = new THREE.Group();
+    const sp = spear(color);
+    sp.rotation.x = -Math.PI / 2; // a ponta (−Y) vira para a frente (+z)
+    sp.position.z = -0.9;
+    g.add(sp);
+    return g;
+  },
+  doubleDagger() {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const m = doubleDagger();
+    m.position.y = 0.04;
+    spin.add(m);
+    g.add(spin);
+    g.userData.tumble = spin;
     return g;
   },
   // GAIUS: a maça de ferro arremessada, girando

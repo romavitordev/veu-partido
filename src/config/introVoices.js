@@ -708,6 +708,127 @@ export const VOICES = {
       any: [(o) => `Já vi coisa pior, ${o.name}. Já fui coisa pior.`, (o) => `Calma, ${o.name}. O velho ainda dá conta.`],
     },
   },
+  // ORDO CALAMITAS (v5.32.0) — cada um no tom do cânone (lore/ORDO-CALAMITAS.md); falas PROPOSTA, as citações marcadas
+  veritus: {
+    open: {
+      ally: (o) => `${o.name}. A gente não tava nessa Ordem pra lutar uns contra os outros.`,
+      rival: (o) => `${o.group}... ${o.one}. A Ordo Calamitas guarda Relíquias piores que você, ${o.name}.`,
+      any: [(o) => `Em nome da Ordo, ${o.name}. Ponha a arma no chão.`, (o) => `${o.name}, eu já enfrentei a grande sombra. Você é só mais uma.`],
+    },
+    reply: {
+      ally: (o) => `Então trabalhe junto, ${o.name}. Era pra isso.`,
+      rival: (o) => `${o.group}? Roma já queimou, ${o.name}. Eu continuo de pé.`,
+      any: [(o) => `Obediência, ${o.name}. Ou a espada.`, (o) => `Eu protejo o imperador. E você está no caminho, ${o.name}.`],
+    },
+  },
+  veritus_rancor: {
+    open: {
+      ally: (o) => `${o.name}... eu sobrevivi ao ritual. Fica atrás de mim.`,
+      rival: (o) => `${o.group}. ${o.one}. Eu vi o Hexatombe inteiro, ${o.name}. Você não me assusta.`,
+      any: [(o) => `Rancor, frustração, ansiedade, ira. Escolhe uma, ${o.name}.`, (o) => `Eu fui o sacrifício, ${o.name}. E fui o único que saiu.`],
+    },
+    reply: {
+      ally: (o) => `Tá, ${o.name}. Mas não olha pras minhas costas.`,
+      rival: (o) => `${o.group}... O Trono já foi meu, ${o.name}.`,
+      any: [(o) => `Sangra mais um pouco, ${o.name}. Eu sangrei por dias.`, (o) => `O Estigma arde. Você vai arder junto, ${o.name}.`],
+    },
+  },
+  nero: {
+    open: {
+      ally: (o) => `${o.name}. Regras: sem vinho, formalidade, e você luta pelo seu imperador.`,
+      rival: (o) => `${o.group}? ${o.one}. Ajoelhe-se, ${o.name}. Diante de você está o imperador de Roma.`,
+      any: [(o) => `Eu consigo tirar informações de quem eu quiser, ${o.name}. Eu sou o imperador de Roma!`, (o) => `${o.name}, chame-me de Majestade. Antes e depois de cair.`],
+    },
+    reply: {
+      ally: (o) => `Muito bem, ${o.name}. Roma agradece. Eu agradeço menos.`,
+      rival: (o) => `${o.group}... Roma já me culpou por um incêndio, ${o.name}. Eu aguento você.`,
+      any: [(o) => `Eu não estou mentindo, ${o.name}. ...Pare de olhar para as minhas mãos.`, (o) => `Insolência, ${o.name}. Eu mando decapitar por menos.`],
+    },
+  },
+  faustus: {
+    open: {
+      ally: (o) => `${o.name}. Lado a lado, como na legião.`,
+      rival: (o) => `${o.group}... ${o.one}. Eu já fui general, ${o.name}. Já vi exércitos inteiros caírem.`,
+      any: [(o) => `Pelos deuses de Roma, eu te vejo no inferno, ${o.name}!`, (o) => `${o.name}, eu faço o que for preciso pra sair vivo. Nada pessoal.`],
+    },
+    reply: {
+      ally: (o) => `Por Júpiter, ${o.name}. E pelos que ficaram pra trás.`,
+      rival: (o) => `${o.group}? O General não recua, ${o.name}.`,
+      any: [(o) => `Vou rezar por você depois, ${o.name}.`, (o) => `Se for pra trair, ${o.name}, eu traio primeiro.`],
+    },
+  },
+  marius: {
+    open: {
+      ally: (o) => `${o.name}. Junto.`,
+      rival: (o) => `${o.group}. ...Não.`,
+      any: [(o) => `...Vem.`, (o) => `${o.name}. Cuidado.`],
+    },
+    reply: {
+      ally: (o) => `...Obrigado, ${o.name}.`,
+      rival: (o) => `...Tá.`,
+      any: [(o) => `Hm.`, (o) => `...Pronto.`],
+    },
+  },
+  remus: {
+    open: {
+      ally: (o) => `${o.name}! Que bom te ver. Fica do meu lado, que eu fico bonito do seu.`,
+      rival: (o) => `${o.group}... ${o.one}. Charmoso. Quase tanto quanto eu, ${o.name}.`,
+      any: [(o) => `Por quê? Gostou do que viu, ${o.name}?`, (o) => `Calma, ${o.name}. Eu só quero conversar. ...Por enquanto.`],
+    },
+    reply: {
+      ally: (o) => `Claro, ${o.name}. Confia em mim. Sempre.`,
+      rival: (o) => `${o.group}? Eu compro vocês todos, ${o.name}.`,
+      any: [(o) => `Sorri, ${o.name}. Fica mais bonito quando apanha.`, (o) => `Ah, ${o.name}, que voz linda. Pena.`],
+    },
+  },
+  cascadia: {
+    open: {
+      ally: (o) => `${o.name}. Só não me atrapalha.`,
+      rival: (o) => `${o.group}, ${o.one}... Eu tenho um filho me esperando, ${o.name}.`,
+      any: [(o) => `Não lembro de ter perguntado, ${o.name}.`, (o) => `Eu tô cansada, ${o.name}. Então vai ser rápido.`],
+    },
+    reply: {
+      ally: (o) => `Tá bom, ${o.name}. Eu cubro o seu lado.`,
+      rival: (o) => `${o.group}? Já enterrei gente melhor, ${o.name}.`,
+      any: [(o) => `Fala menos, ${o.name}.`, (o) => `Duas lâminas, ${o.name}. Escolhe qual você quer primeiro.`],
+    },
+  },
+  cornelius: {
+    open: {
+      ally: (o) => `${o.name}! Atrás do meu escudo! Agora!`,
+      rival: (o) => `${o.group}?! ${o.one}?! Eu vou furar você, ${o.name}!`,
+      any: [(o) => `Você não me responde, ${o.name}! Você sabe que eu tenho pavio curto.`, (o) => `${o.name}! Fala comigo olhando nos olhos!`],
+    },
+    reply: {
+      ally: (o) => `HAHA! Isso, ${o.name}! Ninguém passa pela gente!`,
+      rival: (o) => `${o.group}! Já tô bravo, ${o.name}, e nem começou!`,
+      any: [(o) => `O quê?! Repete, ${o.name}! Repete!`, (o) => `De ferro, ${o.name}. Bate à vontade.`],
+    },
+  },
+  karise: {
+    open: {
+      ally: (o) => `${o.name}. Eu já sei tudo de você. Relaxa, eu não conto.`,
+      rival: (o) => `${o.group}, ${o.one}... Anotado, ${o.name}. Tudo anotado.`,
+      any: [(o) => `Não é nada pessoal, ${o.name}!`, (o) => `Eu já sei o que você vai fazer, ${o.name}.`],
+    },
+    reply: {
+      ally: (o) => `Tá, ${o.name}. Eu fico na sombra.`,
+      rival: (o) => `${o.group}? Já li a ficha de vocês, ${o.name}.`,
+      any: [(o) => `Nada pessoal, ${o.name}. Nunca é.`, (o) => `Você nem vai me ver, ${o.name}.`],
+    },
+  },
+  marcellus: {
+    open: {
+      ally: (o) => `${o.name}! Que bom, um amigo! Vamos, vamos, eu tenho que achar o meu irmão!`,
+      rival: (o) => `${o.group}? ${o.one}? Em guarda, ${o.name}! Duelo justo!`,
+      any: [(o) => `Eu não posso deixar de existir, ${o.name}! Eu tenho que encontrar o meu irmão!`, (o) => `Em guarda, ${o.name}! Ponta, guarda, ponta!`],
+    },
+    reply: {
+      ally: (o) => `Isso, ${o.name}! Juntos a gente acha o Gallerius!`,
+      rival: (o) => `${o.group}... tá, tá, eu aceito o duelo, ${o.name}!`,
+      any: [(o) => `Você viu um homem parecido comigo por aí, ${o.name}? Não? Tá. Em guarda.`, (o) => `Duelo, ${o.name}! Um contra um!`],
+    },
+  },
   // AMALIA (Ordo Calamitas): quieta, fala só o necessário; a flecha fala por ela
   amalia: {
     open: {

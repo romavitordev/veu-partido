@@ -3045,6 +3045,12 @@ export class Fighter {
     const seq = impl.start(this, a, this.world);
     if (!seq) { if (dubbed && this.world.cancelStandIn) this.world.cancelStandIn(); return; } // falhou (ex.: sem posição/alvo válido) — não gasta nada
     this.payCost(cost, blood);
+    // a.lifeCost: a habilidade cobra também uma parte da VIDA (fração da vida máxima; nunca mata) — o TRAIÇOEIRO do Remus
+    // (cânone: "gasta 1 de existência para tirar 1 de outro")
+    if (a.lifeCost) {
+      this.health = Math.max(1, this.health - Math.round(this.maxHealth * a.lifeCost));
+      this.world.fx.burst(this.chestPos(), { count: 10, color: a.color ?? 0xff3040, speed: 1.6, up: 1, life: 0.45, size: 0.13 });
+    }
     (this.lastAbilityUse || (this.lastAbilityUse = {}))[a.id] = this.world.time;
     this.lastAbilityId = a.id; // OUTRO LADO: o dano da habilidade conta para a carta do kit dela (damage.js)
     // TURNO EXTRA (Raziel): a habilidade usada dentro da janela é a ação extra — gasta a janela, não a recarga

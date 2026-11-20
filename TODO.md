@@ -629,6 +629,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **A Ordo Calamitas completa** — v5.32.0: os dez novos (com o Sacrifício do Rancor), modelos, kits, falas, retratos, especial de equipe e as barras azuis/vermelhas.
 - [x] **Cartelas do Velisar sem sobreposição** — v5.31.2: título e fala em cartelas separadas, uma de cada vez, por cima de todo o HUD.
 - [x] **Passe no Blender MCP (Velisar e Zéfero)** — v5.31.1: Zéfero com corcunda, cabelo espetado, mãos de bicho e barra rasgada; túnica do Velisar caindo reta com cauda.
 - [x] **A Missa Completa (Vampiros)** — v5.31.0: especiais próprios da Alvira, do Velisar e do Zéfero; a Missa de Sangue com os cinco (coleira do Zéfero, Velisar voando com a capa aberta, espadas da Sabara, cajado da Alvira, Raziel devorando e arrancando o braço só no fim da partida); Zéfero curvado com a corrente arrastando; capa nova do Velisar; cadeiras da igreja viradas para a mesa.
@@ -3116,9 +3117,14 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         2026-10-31: a FLECHA mais ligeira (pedido do dono, "atira meio devagar"): preparo 0,34 → 0,2 s, recuperação
         0,24 → 0,16 s, recarga 1,8 → 1,0 s, voo 38 → 46 m/s, dano 28 → 25; Flechas Caóticas com preparo 0,16 s e 0,1 s
         entre as flechas.
-      - [ ] **ORDO CALAMITAS**: Faustus, Marius, Remus (Marcados) e Cascadia (Cornelius, Karise e Marcellus ficam de fora — decisão do dono, 2026-10-31)
-        (2026-11-08: os itens 1–6 do planejamento estão feitos; só faltam estes 4 personagens novos. O dono pediu para
-        pular por enquanto.)
+      - [x] **ORDO CALAMITAS completa (v5.32.0, 2026-11-20)**: Faustus, Marius, Remus, Cascadia, Cornelius, Karise,
+        Marcellus, o imperador NERO e o líder VERITUS (com a 2ª versão do Hexatombe, o SACRIFÍCIO DO RANCOR — RB/LB na
+        seleção). Kits pela ficha da wiki, modelos novos no Blender (tools/blender/ordo_lib.py + char_<id>.py: elmos
+        fechado/de gladiador/com crista que saem nas habilidades, capas, pteruges, cabelos), armas em código
+        (models/ordoWeapons.js), retratos do Sobre, falas de introdução e de vitória contra o elenco inteiro. O especial
+        de equipe da Ordo: Nero, Veritus, Amalia, Celestine, Faustus, Gaius, Marius e Remus (pedido do dono). Barras de
+        vida: a Ordo em AZUL (como a existência), os Vampiros em vermelho e, transformados, vermelho com sangue.
+        (2026-10-31 o dono tinha deixado Cornelius, Karise e Marcellus de fora; em 2026-11-20 pediu para incluir.)
       - [x] **O MODELO DAS MÁSCARAS** (feito em 2026-10-27: modelo próprio `tools/blender/char_seita.py` → `public/models/seita.glb` — túnica branca longa com as regiões pretas, capuz, pelerine, forca no pescoço, corda na cintura e os Símbolos tatuados nos antebraços, como na wiki; as máscaras em 3D, uma por membro: Nathaniel, riscada de vermelho, preta e a do sorriso — `weapons.js seitaMask`) que a Magistrada chama (os membros da Seita das Máscaras) — refazer na técnica atual
         (pedido de 2026-10-27).
 - [x] **SKIN do ANFITRIÃO do ARNALDO ≠ ANFITRIÃO base** — entregue na v3.52.0: o Anfitrião selecionável das Relíquias tem o

@@ -9,6 +9,16 @@
 
 export const BATTLE_RECENT = {
   critical: {
+    veritus: 'A Ordo não cai enquanto eu estiver de pé.',
+    veritus_rancor: 'Eu sobrevivi ao Hexatombe. Isso aqui não é nada.',
+    nero: 'Isso... isso não aconteceu. Eu sou o imperador. (as mãos tremem)',
+    faustus: 'Júpiter... ainda não. Me dá mais um pouco.',
+    marius: '...Ainda.',
+    remus: 'Ai. Isso estragou o meu rosto? Me diz que não.',
+    cascadia: 'Caesar... a mamãe ainda vai voltar.',
+    cornelius: 'AGORA EU FIQUEI BRAVO!',
+    karise: 'Ferida. Mas eu já vi seu ponto fraco.',
+    marcellus: 'Eu não posso deixar de existir... ainda não!',
     carina: 'Eu não sou pega desprevenida. Nem sangrando.',
     rubens: 'Ferido. Estável. Continuo.',
     beatrice: 'Cara ou coroa... coroa. Então eu continuo.',
@@ -37,6 +47,16 @@ export const BATTLE_RECENT = {
     espreitador: '(some no escuro e volta mais perto)',
   },
   special: {
+    veritus: 'A gente não tava nessa Ordem pra lutar uns contra os outros!',
+    veritus_rancor: 'Rancor. Frustração. Ansiedade. Ira!',
+    nero: 'Eu sou o imperador de Roma!',
+    faustus: 'Que Júpiter me perdoe, mas eu te vejo no inferno!',
+    marius: 'Obrigado por tudo.',
+    remus: 'Por quê? Gostou do que viu?',
+    cascadia: 'Não lembro de ter perguntado.',
+    cornelius: 'Você sabe que eu tenho pavio curto!',
+    karise: 'Não é nada pessoal!',
+    marcellus: 'Eu tenho que encontrar o meu irmão!',
     carina: 'Bater e reposicionar. Você nem vai ver de onde veio.',
     rubens: 'Fio. Cobre. Solto.',
     beatrice: 'Orpheu, comigo! Mostra pra ele!',
@@ -65,6 +85,7 @@ export const BATTLE_RECENT = {
     espreitador: '(os Devorados saem da sombra junto)',
   },
   transform: {
+    veritus_rancor: 'O Estigma acordou. O Trono lembra de mim.',
     carina_leone: 'Todos os Leone vivem dentro de mim!', // (cânone)
     luciano: 'Fernando, pode descansar. Eu assumo.',
     fernando: 'Luciano...? Obrigado. Deixa comigo agora.', // a volta do Luciano para o Fernando
@@ -80,6 +101,16 @@ export const BATTLE_RECENT = {
 
 export const BATTLE_REPLIES_RECENT = {
   critical: {
+    veritus: 'Levanta. Ninguém fica pra trás na Ordo.',
+    veritus_rancor: 'Sangrando? Eu sangrei por dias.',
+    nero: 'De joelhos fica melhor.',
+    faustus: 'Reza agora. Depois não dá.',
+    marius: '...Desculpa.',
+    remus: 'Que pena. Era tão bonito.',
+    cascadia: 'Fica no chão. É mais fácil.',
+    cornelius: 'Isso! Cai! Cai logo!',
+    karise: 'Eu sabia que você ia cair aí.',
+    marcellus: 'Desculpa! Desculpa! Mas eu preciso vencer!',
     carina: 'Respira. Eu espero. Uma Leone não tem pressa.',
     rubens: 'Ferido. Não acabou. Levanta.',
     beatrice: 'Ei... tá tudo bem? Não, sério, quer parar?',
@@ -108,6 +139,16 @@ export const BATTLE_REPLIES_RECENT = {
     espreitador: '(um sussurro no escuro, bem atrás de você)',
   },
   special: {
+    veritus: 'A Ordo aguenta. Eu aguento.',
+    veritus_rancor: 'Já vi um ritual inteiro. Isso não é nada.',
+    nero: 'Insolente! Eu mando te executar!',
+    faustus: 'Júpiter, me dá força.',
+    marius: '...Hm.',
+    remus: 'Ui. Que intenso.',
+    cascadia: 'Bonito. Agora acabou?',
+    cornelius: 'É ISSO?! É ISSO QUE VOCÊ TEM?!',
+    karise: 'Eu já esperava esse.',
+    marcellus: 'Uau! Quase! Quase!',
     carina: 'Eu vi isso chegando antes de você pensar.',
     rubens: 'Golpe forte. Anotado. Respondo.',
     beatrice: 'Uau... isso foi lindo. Assustador, mas lindo.',

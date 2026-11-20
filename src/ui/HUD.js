@@ -13,6 +13,19 @@ const SUBTITLE_WORD_INTERVAL = 0.12;
 const COMBO_STATES = new Set(['hitstun', 'stun', 'pulled', 'grabbed', 'downed']);
 
 // HUD em DOM sobre o canvas. Lê o estado dos lutadores a cada frame.
+// a barra de vida de cada lutador: a da ficha (Portadores, Relíquias, formas) ou a da equipe
+const ORDO_BAR = { style: 'existencia', label: 'EXISTÊNCIA' };
+const VAMP_BAR = { style: 'vampRed' };
+const VAMP_BLOOD = { style: 'vampire' };
+export function hpBarOf(f) {
+  const d = f.def;
+  if (d.hpBar) return d.hpBar;
+  const teams = [d.origin, ...(d.teams || [])];
+  if (teams.includes('Vampiros')) return f.findBuff && f.findBuff('awakened') ? VAMP_BLOOD : VAMP_BAR;
+  if (!d.form && teams.includes('Ordo Calamitas')) return ORDO_BAR;
+  return null;
+}
+
 export class HUD {
   constructor(root) {
     this.root = root;
@@ -161,20 +174,24 @@ export class HUD {
       e.hp.classList.toggle('jam', !!(match && match.sino && match.sino.wave && f === match.enemy));
       // a vida não mostra número. Os PORTADORES (alguns só transformados: Ferreiro → Deus da Morte, Arnaldo →
       // Anfitrião) têm barra própria, com as cores e o efeito da Relíquia (def.hpBar.style → .hb-*)
-      const hb = f.def.hpBar ? `hb-${f.def.hpBar.style}` : '';
+      // Equipes com barra própria (pedido do dono, 2026-11-20): a ORDO CALAMITAS em AZUL, como a Existência (todos os
+      // membros — a Celestine e o Gaius também, fora das formas de Portador); os VAMPIROS em vermelho, e transformados
+      // (Memória/forma) no vermelho de sangue coagulado do Verdadeiro Raziel
+      const bar = hpBarOf(f);
+      const hb = bar ? `hb-${bar.style}` : '';
       if (e.hpStyle !== hb) {
         if (e.hpStyle) e.hp.classList.remove(e.hpStyle, 'custom');
         if (hb) e.hp.classList.add(hb, 'custom');
         e.hpStyle = hb;
       }
-      if (hb && f.def.hpBar?.label) {
+      if (hb && bar.label) {
         let lbl = e.hp.querySelector('.bar-lbl');
         if (!lbl) {
           lbl = document.createElement('span');
           lbl.className = 'bar-lbl';
           e.hp.appendChild(lbl);
         }
-        if (lbl.textContent !== f.def.hpBar.label) lbl.textContent = f.def.hpBar.label;
+        if (lbl.textContent !== bar.label) lbl.textContent = bar.label;
       } else {
         const lbl = e.hp.querySelector('.bar-lbl');
         if (lbl) lbl.remove();

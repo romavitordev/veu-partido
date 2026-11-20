@@ -25,6 +25,10 @@ const STYLE_OF = {
   // os que estavam no padrão (2026-11-01): agentes de arma controlados, quem luta de faca no ritmo da esgrima, as criaturas
   // e o Diabo pesados ou caóticos, os conjuradores elegantes
   erin: 'militar', kemi: 'militar', amalia: 'militar',
+  // ORDO CALAMITAS (v5.32.0): os soldados e o general militares, os brutos pesados, os duelistas na esgrima, o imperador
+  // e o líder elegantes
+  faustus: 'militar', cornelius: 'militar', cascadia: 'militar', marius: 'pesado', veritus_rancor: 'pesado',
+  remus: 'esgrima', karise: 'esgrima', marcellus: 'esgrima', nero: 'elegante', veritus: 'elegante',
   aghata: 'esgrima', fantasma: 'esgrima',
   o_diabo: 'pesado', diabo: 'pesado', raziel_verdadeiro: 'pesado',
   raziel: 'caotico', amigo: 'caotico',

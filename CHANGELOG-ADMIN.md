@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v5.32.0 — A Ordo Calamitas Completa
+
+- Versão: `VERSION` 5.31.2 → **5.32.0**. Data: 2026-11-20.
+- Dono: "foque 100% agora em finalizar a equipe da ordo calamitas [...] modele-os e quando finalizar dê commit e push numa
+  versão nova"; o especial só com Nero, Veritus, Amalia, Celestine, Faustus, Gaius, Marius e Remus; o Veritus com duas
+  versões (a de armadura e a do Hexatombe, com o Estigma nas costas); barras da Ordo em azul e dos Vampiros em vermelho.
+- Cânone: `lore/ORDO-CALAMITAS.md` (wiki de cada um). Números, nomes de golpes, especiais e falas são PROPOSTA.
+- Modelos feitos e conferidos no Blender vivo (MCP, 4 vistas), depois `build.mjs` (meshopt; ~0,64–0,94 MB cada).
+- Testado no navegador: os dez no lineup (frente e costas), luta Faustus × Cornelius (lança, escudo, gládio, barras azuis,
+  Tirar Capacete some com o elmo), o Estigma nas costas, o especial de equipe da Ordo (Veritus + Nero + Faustus).
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.31.2 — Uma Cartela de Cada Vez
 
 - Versão: `VERSION` 5.31.1 → **5.31.2**. Data: 2026-11-20.
