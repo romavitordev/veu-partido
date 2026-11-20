@@ -57,7 +57,7 @@ export function addFireZone(world, owner, x, z, { radius = 1.6, life = 5, dps = 
       if (npcT >= 0.5) {
         npcT = 0;
         const c = new THREE.Vector3(x, 0.5, z);
-        for (const n of world.npcs || []) if (n.alive && n.owner !== owner && n.hitTest(c, radius)) n.hitBy(owner, Math.round(dps * 0.5), { kind: 'ability' });
+        for (const n of world.npcs || []) if (n.alive && n.owner !== owner && n.hitTest(c, radius)) n.hitBy(owner, Math.round(dps * 0.5), { kind: 'ability', fire: true });
       }
       return t >= life;
     },
@@ -85,7 +85,7 @@ export function lanternBlast(world, owner, pos, a) {
       dir: new THREE.Vector3(foe.pos.x - c.x, 0, foe.pos.z - c.z).normalize(), color: FIRE, sound: 'heavyPunch', scale: 1.4,
     });
   }
-  for (const n of world.npcs || []) if (n.alive && n.owner !== owner && n.hitTest(c, R)) n.hitBy(owner, a.damage || 0, { kind: 'ability' });
+  for (const n of world.npcs || []) if (n.alive && n.owner !== owner && n.hitTest(c, R)) n.hitBy(owner, a.damage || 0, { kind: 'ability', fire: true });
   if (a.fire) addFireZone(world, owner, c.x, c.z, a.fire);
 }
 

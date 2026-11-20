@@ -1,0 +1,622 @@
+import * as THREE from 'three';
+import { Marionette, BloodZombie, BLOOD_ZOMBIE } from './npcs.js';
+import { InkBeast } from './beasts.js';
+import { applyHit } from './damage.js';
+import { yawTo, angleDiff, DEG, forwardFromYaw, distXZ } from '../core/util.js';
+import { buildNpcModel } from '../models/npcRig.js';
+import { buildInkBeast } from '../models/beasts.js';
+import { buildBloodZombie } from '../models/bloodZombie.js';
+
+// ================================================================== O BESTIÁRIO DO SERTÃO DO QUIBUNGO
+// Hexatombe ep. 5 (wiki "Araras Devoradas", "Felinos Devorados", "Quibungo"): os animais da Coroa de Espinhos tomados
+// pelo Sangue e o chefe Quibungo. As variantes INFERNAIS só vêm no Aniquilação (dono, 2026-11-20). PROPOSTA: todos os
+// números, os golpes e a entrada do Quibungo.
+const BLOOD = 0xc0202c;
+const DUST = 0x8a7a60;
+
+function hitBand(n, p, r, bottom, top) {
+  if (!n.alive || n.state === 'rise' || n.state === 'leave' || n.state === 'die') return false;
+  if (p.y < bottom - r || p.y > top + r) return false;
+  return Math.hypot(p.x - n.pos.x, p.z - n.pos.z) <= n.radius + r;
+}
+
+// morreu: desmancha em sangue (como os Zumbis de Sangue), sem a poça que fere
+function bloodMelt(n, k, restY, scale = 1) {
+  const root = n.model.root;
+  root.position.y = restY * (1 - k);
+  root.scale.set(scale * (1 + k * 0.4), scale * Math.max(0.05, 1 - k * 0.95), scale * (1 + k * 0.4));
+  if (Math.random() < 0.5) n.world.fx.burst(new THREE.Vector3(n.pos.x, 0.3 + (1 - k) * n.height * 0.4, n.pos.z), { count: 4, color: 0xa01018, speed: 2, up: 1, life: 0.5, size: 0.16, gravity: 9 });
+}
+
+// ------------------------------------------------------------------ ARARA DEVORADA / INFERNAL
+// Voa em círculos no alto (fora do alcance dos socos; tiros e lamparinas pegam), MERGULHA num rasante no alvo e fica
+// POUSADA um instante depois (a hora de bater); de perto, no chão, dá bicadas. Morta, despenca.
+export const ARARA = {
+  devorada: {
+    name: 'ARARA DEVORADA', hp: 90, duration: Infinity, speed: 6.4, radius: 0.55, height: 1.2, scale: 1,
+    element: 'sangue', fxColor: BLOOD, poolColor: 0x5a0008, noPool: true, alt: 2.9,
+    attacks: {
+      dive: { windup: 0.55, active: 0.45, recovery: 1.5, range: 1.7, arc: 130, damage: 14, cd: 3.4, knockback: 3, dash: 15 },
+      peck: { windup: 0.25, active: 0.1, recovery: 0.35, range: 1.5, arc: 110, damage: 8, cd: 1.0, knockback: 1 },
+    },
+    firstCd: { dive: 1.4, peck: 0.6 },
+  },
+  infernal: {
+    name: 'ARARA INFERNAL', hp: 200, duration: Infinity, speed: 7, radius: 0.7, height: 1.5, scale: 1.3,
+    element: 'sangue', fxColor: BLOOD, poolColor: 0x5a0008, noPool: true, alt: 3.3,
+    attacks: {
+      dive: { windup: 0.5, active: 0.5, recovery: 1.3, range: 2.0, arc: 140, damage: 24, cd: 3.0, knockback: 5, dash: 17, knockdown: true },
+      peck: { windup: 0.22, active: 0.1, recovery: 0.32, range: 1.8, arc: 120, damage: 14, cd: 0.9, knockback: 2 },
+    },
+    firstCd: { dive: 1.2, peck: 0.5 },
+  },
+};
+
+function buildArara(kind) {
+  const m = buildNpcModel(kind === 'infernal' ? 'arara_infernal' : 'arara_devorada', { outline: 0.012, noOutline: ['vein', 'fang', 'claw', 'beak', 'glow', 'eye', 'membrane', 'bone'] });
+  if (!m) return null;
+  const J = m.joint;
+  const opt = (n) => { try { return J(n); } catch { return null; } };
+  return {
+    root: m.root,
+    joints: {
+      body: J('body'), torso: J('torso'), head: J('head'), jaw: opt('jaw'), tail: opt('tail'),
+      wings: [['L', 1], ['R', -1]].map(([n, s]) => ({ s, w: J('wing' + n), tip: opt('wingtip' + n), arm: opt('arm' + n), fore: opt('forearm' + n), leg: opt('leg' + n), knee: opt('knee' + n), bat: opt('bat' + n) })),
+    },
+  };
+}
+
+export class AraraBeast extends Marionette {
+  configFor(o) { return ARARA[o.kind] || ARARA.devorada; }
+  buildModel(o) {
+    this.kind = ARARA[o.kind] ? o.kind : 'devorada';
+    this.isMarionette = false;
+    this.isBird = true;
+    this.alt = 9;
+    this.orbit = Math.random() < 0.5 ? 1 : -1;
+    this.orbitR = 3.4 + Math.random() * 2.2; // cada uma no seu raio (senão o bando se empilha num ponto só)
+    const m = buildArara(this.kind);
+    if (m) return m;
+    this.fallback = true;
+    return buildInkBeast('cao');
+  }
+
+  chooseTarget() { this.target = this.owner.opponent; }
+  landed() { return this.alt < 0.9; }
+  restY() { return this.alt; }
+  bob() { return this.landed() ? 0 : Math.sin(this.t * 2.2 + this.seed) * 0.18; }
+
+  // de onde se bate nela: no ar, só da altura do peito para cima (tiro, lamparina, golpe alto); pousada, o corpo todo
+  hitTest(p, r) {
+    const low = this.landed() ? -0.2 : this.alt - 1.6;
+    return hitBand(this, p, r, low, this.alt + this.height);
+  }
+
+  pickAttack(d) {
+    const c = this.cds;
+    const A = this.cfg.attacks;
+    if (this.landed() && d < A.peck.range - 0.1 && c.peck <= 0) return 'peck';
+    if (d > 2 && d < 10 && c.dive <= 0) return 'dive';
+    return null;
+  }
+  attackSound(name) { return name === 'dive' ? 'whip' : 'bloodClaw'; }
+  // de perto e sem o rasante pronto, plana em volta do alvo (stepSpeed baixo; a volta é feita em update)
+  stepSpeed(d) { return this.cfg.speed * (d < this.orbitR + 1 && !this.landed() ? 0.15 : d > 7 ? 1.25 : 1); }
+
+  // chega voando de cima do mato
+  riseTime() { return 0.9; }
+  risePose(k) {
+    this.alt = this.cfg.alt + (1 - k) * 7;
+    const root = this.model.root;
+    root.position.set(this.pos.x, this.alt, this.pos.z);
+    root.scale.setScalar(this.cfg.scale);
+  }
+  // morta: despenca girando e desmancha em sangue no chão
+  vanishPose(k, restY) {
+    const root = this.model.root;
+    if (this.state !== 'die') { this.alt += 0.15; root.position.y = this.alt; return; }
+    if (this.alt > 0.05) {
+      this.fallV = (this.fallV || 0) + 0.02;
+      this.alt = Math.max(0, this.alt - this.fallV);
+      root.position.y = this.alt;
+      root.rotation.z += 0.25;
+      return;
+    }
+    bloodMelt(this, k, 0, this.cfg.scale);
+  }
+
+  update(dt) {
+    if (this.alive && this.state !== 'rise' && this.state !== 'die' && this.state !== 'leave') {
+      const a = this.atk;
+      const st = this.stateT;
+      let goal = this.cfg.alt;
+      let rate = 2.5;
+      if (this.state === 'attack' && a && a.name === 'dive') {
+        if (st < a.windup) goal = this.cfg.alt + 0.7; // empina antes do mergulho
+        else if (st < a.windup + a.active) { goal = 0.15; rate = 9; }
+        else if (st < a.windup + a.active + a.recovery * 0.75) { goal = 0; rate = 12; } // pousada: a hora de bater
+        else rate = 3;
+      } else if (this.state === 'attack' && a && a.name === 'peck') goal = this.alt;
+      this.alt += (goal - this.alt) * Math.min(1, dt * rate);
+      // plana em círculo em volta do alvo
+      const tg = this.target;
+      if (this.state === 'chase' && tg && !this.landed()) {
+        const d = distXZ(this.pos, tg.pos);
+        if (d < this.orbitR + 1.5) {
+          const ang = yawTo(tg.pos, this.pos) + this.orbit * dt * 0.9;
+          const r = d + (this.orbitR - d) * Math.min(1, dt * 1.5);
+          this.pos.x = tg.pos.x + Math.sin(ang) * r;
+          this.pos.z = tg.pos.z + Math.cos(ang) * r;
+        }
+      }
+      // afasta das outras araras
+      for (const o of this.world.npcs) {
+        if (o === this || !o.isBird || !o.alive) continue;
+        const dx = this.pos.x - o.pos.x, dz = this.pos.z - o.pos.z;
+        const dd = Math.hypot(dx, dz);
+        if (dd < 1.8 && dd > 1e-3) { this.pos.x += (dx / dd) * (1.8 - dd) * 0.5; this.pos.z += (dz / dd) * (1.8 - dd) * 0.5; }
+        else if (dd <= 1e-3) this.pos.x += 0.05;
+      }
+      if (Math.random() < dt * 0.25) this.world.audio.play('whip', { volume: 0.25, pitch: 1.6 }); // o bater de asas
+    }
+    return super.update(dt);
+  }
+
+  swingFx(a) {
+    if (a.name === 'dive') {
+      this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.2, this.pos.z), { count: 10, color: DUST, kind: 'smoke', speed: 2.5, up: 0.6, life: 0.5, size: 0.5 });
+      return;
+    }
+    this.world.fx.slash(new THREE.Vector3(this.pos.x, this.pos.y + 0.8, this.pos.z), this.yaw, { color: 0xd02030, radius: a.range, arc: 1.8, life: 0.18, width: 0.2, roll: 0.3 });
+  }
+
+  onDestroyed() {}
+
+  pose() {
+    const J = this.model.joints;
+    const root = this.model.root;
+    root.rotation.y = this.yaw;
+    root.scale.setScalar(this.state === 'die' && this.alt <= 0.05 ? root.scale.x : this.cfg.scale);
+    if (this.fallback) { this.updateFlash(); return; }
+    const t = this.t;
+    const air = !this.landed();
+    const a = this.state === 'attack' ? this.atk : null;
+    const st = this.stateT;
+    const diving = a && a.name === 'dive' && st >= a.windup && st < a.windup + a.active;
+    const flapF = diving ? 0 : this.kind === 'infernal' ? 7 : 9;
+    const flap = air ? Math.sin(t * flapF) * 0.75 + 0.15 : 0;
+    let pitch = air ? 0.45 : 0.1;
+    let head = air ? -0.3 : 0;
+    let jaw = 0.2 + Math.abs(Math.sin(t * 6)) * 0.15;
+    if (a && a.name === 'dive') {
+      if (st < a.windup) { pitch = -0.2; jaw = 0.7; }
+      else if (diving) { pitch = 1.15; head = -0.9; jaw = 0.9; }
+    } else if (a && a.name === 'peck') {
+      const k = Math.min(1, st / a.windup);
+      pitch = st < a.windup ? 0.1 - 0.3 * k : 0.7;
+      head = st < a.windup ? -0.4 * k : 0.6;
+      jaw = st < a.windup ? 0.8 * k : 0.1;
+    }
+    if (this.state === 'die') { pitch = 0.8; jaw = 0.9; }
+    J.torso.rotation.set(pitch, 0, air ? Math.sin(t * 1.3) * 0.15 * this.orbit : 0);
+    J.head.rotation.x = head;
+    if (J.jaw) J.jaw.rotation.x = jaw;
+    if (J.tail) J.tail.rotation.set(Math.sin(t * 3) * 0.15 + (air ? 0.25 : -0.1), Math.sin(t * 2.1) * 0.2, 0);
+    for (const w of J.wings) {
+      const s = w.s;
+      if (air && !diving) w.w.rotation.set(0, 0, s * flap);
+      else if (diving) w.w.rotation.set(0, s * 0.9, s * 0.15); // asas fechadas para trás no mergulho
+      else w.w.rotation.set(0, s * 1.25, -s * 0.35); // pousada: dobradas nas costas
+      if (w.tip) w.tip.rotation.set(0, 0, air && !diving ? s * Math.sin(t * flapF - 0.6) * 0.45 : diving ? 0 : -s * 0.6);
+      if (w.bat) w.bat.rotation.set(0, 0, s * (air ? Math.sin(t * flapF + 1.2) * 0.6 : -0.3));
+      // os braços do peito agarram
+      if (w.arm) w.arm.rotation.set(diving ? -1.1 : -0.3 + Math.sin(t * 4 + s) * 0.15, 0, s * 0.2);
+      if (w.fore) w.fore.rotation.x = diving ? -0.2 : -0.7;
+      // as pernas: penduradas para trás no voo, à frente com as garras no rasante, em pé pousada
+      if (w.leg) w.leg.rotation.set(diving ? -0.9 : air ? 0.75 : -pitch, 0, 0);
+      if (w.knee) w.knee.rotation.x = diving ? 0.2 : air ? 0.6 : 0;
+    }
+    this.updateFlash();
+  }
+}
+
+// ------------------------------------------------------------------ FELINO DEVORADO (quadrúpede, sobre o cão da tinta)
+// Anda em bando: mordida, o BOTE de longe com a língua de fora e o GIRO do rabo-lâmina quando cercado.
+export const FELINO = {
+  name: 'FELINO DEVORADO', hp: 140, duration: Infinity, speed: 6.6, radius: 0.5, height: 1.5,
+  element: 'sangue', fxColor: BLOOD, poolColor: 0x5a0008, noPool: true,
+  attacks: {
+    bite: { windup: 0.22, active: 0.12, recovery: 0.35, range: 1.6, arc: 120, damage: 12, cd: 0.9, knockback: 1 },
+    pounce: { windup: 0.35, active: 0.32, recovery: 0.5, range: 1.7, arc: 110, damage: 18, cd: 3.6, knockback: 3, dash: 13 },
+    lash: { windup: 0.4, active: 0.25, recovery: 0.45, range: 2.6, arc: 360, damage: 16, cd: 5, knockback: 4 },
+  },
+  firstCd: { bite: 0.3, pounce: 0.8, lash: 2 },
+};
+
+export class FelinoBeast extends InkBeast {
+  configFor() { return FELINO; }
+  buildModel() {
+    this.kind = 'felino';
+    this.isMarionette = false;
+    this.isInkBeast = true;
+    const m = buildNpcModel('felino_devorado', { outline: 0.012, noOutline: ['vein', 'tooth', 'goo', 'glow', 'claw', 'bone', 'blade'] });
+    if (!m) return buildInkBeast('cao');
+    const J = m.joint;
+    return {
+      root: m.root,
+      joints: {
+        body: J('body'), torso: J('torso'), head: J('head'), jaw: J('jaw'), tail: J('tail'),
+        legs: ['FL', 'FR', 'BL', 'BR'].map((n) => ({ hip: J('leg' + n), knee: J('knee' + n) })),
+      },
+    };
+  }
+
+  pickAttack(d) {
+    const c = this.cds;
+    const A = this.cfg.attacks;
+    if (d < A.lash.range && c.lash <= 0 && Math.random() < 0.3) return 'lash';
+    if (d > 2.6 && d < 8 && c.pounce <= 0) return 'pounce';
+    if (d < A.bite.range - 0.1 && c.bite <= 0) return 'bite';
+    return null;
+  }
+  attackSound(name) { return name === 'lash' ? 'whip' : 'bloodClaw'; }
+
+  // sai do mato rastejando, levantando poeira
+  risePose(k) {
+    const root = this.model.root;
+    root.position.set(this.pos.x, -0.8 * (1 - k), this.pos.z);
+    root.scale.setScalar(1);
+    if (Math.random() < 0.4) this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.15, this.pos.z), { count: 3, color: DUST, kind: 'smoke', speed: 1.4, up: 0.8, life: 0.5, size: 0.4 });
+  }
+  vanishPose(k, restY) {
+    if (this.state !== 'die') { this.model.root.position.y = -k * 1.2; return; }
+    bloodMelt(this, k, 0);
+  }
+
+  swingFx(a) {
+    if (a.dash) return;
+    if (a.name === 'lash') {
+      this.world.fx.ring(new THREE.Vector3(this.pos.x, 0.5, this.pos.z), { color: 0xd8c098, radius: a.range, life: 0.3, inner: 0.85 });
+      return;
+    }
+    this.world.fx.slash(new THREE.Vector3(this.pos.x, this.pos.y + 0.8, this.pos.z), this.yaw, { color: 0xd02030, radius: a.range, arc: 2.0, life: 0.2, width: 0.25, roll: -0.2 });
+  }
+
+  pose() {
+    super.pose();
+    const J = this.model.joints;
+    const a = this.state === 'attack' ? this.atk : null;
+    if (!a) return;
+    const st = this.stateT;
+    if (a.name === 'lash') {
+      // gira o corpo inteiro e o rabo-lâmina varre em volta
+      const k = Math.min(1, Math.max(0, (st - a.windup * 0.6) / (a.active + a.windup * 0.4)));
+      this.model.root.rotation.y = this.yaw + k * Math.PI * 2;
+      if (J.tail) J.tail.rotation.set(0.6, 0, 0);
+    } else if (a.name === 'pounce' && J.jaw) J.jaw.rotation.x = 1.0; // a boca escancarada, a língua de fora
+  }
+}
+
+// ------------------------------------------------------------------ FELINO INFERNAL (de pé, sobre o Zumbi fraco)
+// Só no Aniquilação: garras, o salto de boca aberta e a FERROADA do rabo-lâmina por cima da cabeça.
+const FELINO_INF_SCALE = 1.15;
+BLOOD_ZOMBIE.felinoInfernal = {
+  ...BLOOD_ZOMBIE.weak,
+  name: 'FELINO INFERNAL', hp: 320, duration: Infinity, speed: 6, radius: 0.6, height: 2.4,
+  crouch: { hip: -0.6, knee: 1.0, chest: 0.5, neck: -0.45 },
+  attacks: {
+    claw: { ...BLOOD_ZOMBIE.weak.attacks.claw, range: 2.2, damage: 20, knockback: 2 },
+    bite: { ...BLOOD_ZOMBIE.weak.attacks.bite, damage: 28, dash: 13, cd: 3.5 },
+    sting: { windup: 0.5, active: 0.15, recovery: 0.5, range: 3.4, arc: 60, damage: 30, cd: 4.5, knockback: 4, knockdown: true },
+  },
+  firstCd: { claw: 0.3, bite: 0.9, sting: 1.6 },
+};
+
+export class FelinoInfernal extends BloodZombie {
+  configFor() { return BLOOD_ZOMBIE.felinoInfernal; }
+  buildModel(o) {
+    this.strong = false;
+    this.isMarionette = false;
+    const m = buildNpcModel('felino_infernal', { outline: 0.012, noOutline: ['vein', 'fang', 'claw', 'gum', 'maw', 'bone', 'spine'] });
+    if (!m) return buildBloodZombie(false);
+    const J = m.joint;
+    const opt = (n) => { try { return J(n); } catch { return null; } };
+    return {
+      root: m.root,
+      joints: {
+        body: J('body'), chest: J('chest'), neck: J('neck'), jaw: J('jaw'),
+        armL: { sh: J('shL'), el: J('elL'), hand: J('handL') },
+        armR: { sh: J('shR'), el: J('elR'), hand: J('handR') },
+        legs: [{ hip: J('hipL'), knee: J('kneeL') }, { hip: J('hipR'), knee: J('kneeR') }],
+        tail: opt('tail'), tail2: opt('tail2'),
+        zombie: true,
+      },
+    };
+  }
+  restY() { return super.restY() * FELINO_INF_SCALE; }
+  risePose(k, restY) { super.risePose(k, restY); this.model.root.scale.setScalar(FELINO_INF_SCALE); }
+  vanishPose(k, restY) {
+    if (this.state !== 'die') { super.vanishPose(k, restY); return; }
+    bloodMelt(this, k, restY, FELINO_INF_SCALE);
+  }
+
+  pickAttack(d) {
+    const c = this.cds;
+    const A = this.cfg.attacks;
+    if (d > 1.6 && d < A.sting.range && c.sting <= 0 && Math.random() < 0.5) return 'sting';
+    return super.pickAttack(d);
+  }
+  attackSound(name) { return name === 'sting' ? 'whip' : super.attackSound(name); }
+
+  swingFx(a) {
+    if (a.name === 'sting') {
+      const f = forwardFromYaw(this.yaw, new THREE.Vector3());
+      this.world.fx.tracer(new THREE.Vector3(this.pos.x, 2.6, this.pos.z), new THREE.Vector3(this.pos.x + f.x * a.range, 0.9, this.pos.z + f.z * a.range), { color: 0xd8c098, life: 0.2, width: 0.08 });
+      return;
+    }
+    super.swingFx(a);
+  }
+
+  pose() {
+    super.pose();
+    const J = this.model.joints;
+    this.model.root.scale.setScalar(this.state === 'die' ? this.model.root.scale.x : FELINO_INF_SCALE);
+    if (!J.tail) return;
+    const t = this.t;
+    let t1 = 0.25 + Math.sin(t * 2.4) * 0.15, t2 = Math.sin(t * 3.1 + 1) * 0.25;
+    const a = this.state === 'attack' ? this.atk : null;
+    if (a && a.name === 'sting') {
+      // o rabo sobe por cima da cabeça e ferroa para a frente
+      const k = Math.min(1, this.stateT / a.windup);
+      if (this.stateT < a.windup) { t1 = 0.25 + 1.2 * k; t2 = 0.8 * k; } else { t1 = 1.9; t2 = 1.4; }
+    }
+    J.tail.rotation.set(t1, Math.sin(t * 1.7) * 0.2, 0);
+    if (J.tail2) J.tail2.rotation.set(t2, 0, 0);
+  }
+}
+
+// ------------------------------------------------------------------ O QUIBUNGO (o chefe)
+// Mais de três metros, QUATRO BRAÇOS e a BOCARRA nas costas com a língua. ENTRADA: sai do mato da trilha, para no
+// alto do morro e ruge com a língua de fora (intocável enquanto isso). Golpes: garrada, a RAJADA dos quatro braços,
+// a PANCADA que racha o chão (onda em volta), a LÍNGUA que puxa de longe e o SALTO quando o alvo foge. Com metade da
+// vida, o URRO: fica mais rápido. O FOGO queima mais (×1,5: lamparinas, o Cristino, as tochas).
+const QUIB_SCALE = 1.6;
+const INTRO_WALK = 0.55; // fração da entrada andando (o resto é o rugido)
+BLOOD_ZOMBIE.quibungo = {
+  ...BLOOD_ZOMBIE.strong,
+  name: 'O QUIBUNGO', hp: 2600, duration: Infinity, speed: 3.6, radius: 1.3, height: 4.6,
+  crouch: { hip: -0.85, knee: 1.35, chest: 0.8, neck: -0.7 },
+  fireMult: 1.5,
+  attacks: {
+    claw: { windup: 0.38, active: 0.14, recovery: 0.45, range: 3.6, arc: 150, damage: 36, cd: 1.4, knockback: 4.5 },
+    flurry: { windup: 0.45, active: 0.1, recovery: 0.6, range: 3.4, arc: 160, damage: 15, cd: 5.5, knockback: 1.5, hits: [0.45, 0.62, 0.79, 0.96] },
+    slam: { windup: 0.75, active: 0.14, recovery: 0.8, range: 4.4, arc: 360, damage: 60, cd: 6, knockback: 9, knockdown: true },
+    tongue: { windup: 0.6, active: 0.2, recovery: 0.6, range: 10, arc: 40, damage: 20, cd: 6.5, knockback: 0, pull: 7 },
+    leap: { windup: 0.7, active: 0.55, recovery: 0.75, range: 3.6, arc: 180, damage: 48, cd: 9, knockback: 7, knockdown: true, dash: 15 },
+    roar: { windup: 0.3, active: 1.2, recovery: 0.4, range: 99, arc: 360, damage: 0, cd: 999, knockback: 0, self: true },
+  },
+  firstCd: { claw: 0.5, flurry: 2.5, slam: 3.5, tongue: 2, leap: 4, roar: 999 },
+  enrage: { at: 0.5, speed: 1.3, cd: 0.7 },
+};
+
+export class Quibungo extends BloodZombie {
+  configFor() { return BLOOD_ZOMBIE.quibungo; }
+  buildModel() {
+    this.strong = true;
+    this.isMarionette = false;
+    this.giant = true;
+    this.bossBar = true;
+    this.barName = 'O QUIBUNGO';
+    this.barOwner = 'COROA DE ESPINHOS';
+    this.barStyle = 'blood';
+    // a entrada: do mato da trilha (atrás e abaixo, ~10 m) até o ponto do morro onde o Dungeon o pôs
+    this.introTo = this.pos.clone();
+    this.introFrom = new THREE.Vector3(this.pos.x - 3, 0, this.pos.z - 10);
+    this.pos.copy(this.introFrom);
+    const m = buildNpcModel('quibungo', { outline: 0.016, noOutline: ['vein', 'fang', 'claw', 'gum', 'maw', 'spine', 'glow'] });
+    if (!m) return buildBloodZombie(true);
+    const J = m.joint;
+    const opt = (n) => { try { return J(n); } catch { return null; } };
+    const arm = (n) => ({ sh: J('sh' + n), el: J('el' + n), hand: J('hand' + n) });
+    return {
+      root: m.root,
+      joints: {
+        body: J('body'), chest: J('chest'), neck: J('neck'), jaw: J('jaw'),
+        armL: arm('L'), armR: arm('R'), armL2: arm('L2'), armR2: arm('R2'),
+        mandL: opt('mandL'), mandR: opt('mandR'),
+        tongue: [opt('tongue'), opt('tongue2'), opt('tongue3')],
+        legs: [{ hip: J('hipL'), knee: J('kneeL') }, { hip: J('hipR'), knee: J('kneeR') }],
+        zombie: true,
+      },
+    };
+  }
+  chooseTarget() { this.target = this.owner.opponent; }
+  restY() { return BloodZombie.prototype.restY.call(this) * QUIB_SCALE; }
+
+  // ---- a ENTRADA: sai do mato andando, para e RUGE com a língua de fora
+  riseTime() { return 4.4; }
+  risePose(k, restY) {
+    const root = this.model.root;
+    const w = Math.min(1, k / INTRO_WALK);
+    const px = this.pos.x, pz = this.pos.z;
+    this.pos.lerpVectors(this.introFrom, this.introTo, 1 - (1 - w) * (1 - w) * 0.3 - (1 - w) * 0.7);
+    this.gait += Math.hypot(this.pos.x - px, this.pos.z - pz);
+    this.introWalk = w < 1;
+    this.introRoar = k > INTRO_WALK ? (k - INTRO_WALK) / (1 - INTRO_WALK) : 0;
+    this.yaw = yawTo(this.pos, this.introTo.clone().add(new THREE.Vector3(0, 0, 5)));
+    // sobe a encosta: começa mais baixo no mato
+    root.position.set(this.pos.x, restY - 1.2 * (1 - w), this.pos.z);
+    root.scale.setScalar(QUIB_SCALE);
+    const W = this.world;
+    if (this.introWalk && Math.random() < 0.3) W.fx.burst(new THREE.Vector3(this.pos.x + (Math.random() - 0.5) * 2, 0.3, this.pos.z), { count: 3, color: 0x2a3a20, speed: 2, up: 2.5, life: 0.6, size: 0.18, gravity: 8 }); // o mato quebrando
+    if (this.introRoar > 0 && !this.roared) {
+      this.roared = true;
+      W.audio.play('fearGaze', { volume: 1, pitch: 0.3 });
+      W.audio.play('drain', { volume: 0.9, pitch: 0.4 });
+      W.cameraRig && W.cameraRig.shake(0.5, 1.4);
+    }
+    if (this.introRoar > 0 && this.introRoar < 0.8 && Math.random() < 0.25) {
+      W.fx.burst(new THREE.Vector3(this.pos.x, 0.2, this.pos.z), { count: 6, color: DUST, kind: 'smoke', speed: 3, up: 0.5, life: 0.7, size: 0.8 });
+      if (Math.random() < 0.3) W.audio.play('fearGaze', { volume: 0.5, pitch: 0.25 + Math.random() * 0.1 }); // grunhidos
+    }
+  }
+  vanishPose(k, restY) {
+    if (this.state !== 'die') { super.vanishPose(k, restY); this.model.root.scale.multiplyScalar(QUIB_SCALE); return; }
+    bloodMelt(this, k, restY, QUIB_SCALE);
+  }
+
+  pickAttack(d) {
+    const c = this.cds;
+    const A = this.cfg.attacks;
+    if (d > 6.5 && d < 13 && c.leap <= 0 && Math.random() < 0.5) return 'leap';
+    if (d > 4.5 && d < A.tongue.range && c.tongue <= 0) return 'tongue';
+    if (d < 3.6 && c.slam <= 0 && Math.random() < 0.35) return 'slam';
+    if (d < 3.2 && c.flurry <= 0 && Math.random() < 0.45) return 'flurry';
+    if (d < A.claw.range - 0.3 && c.claw <= 0) return 'claw';
+    return null;
+  }
+  attackSound(name) { return name === 'tongue' ? 'whip' : name === 'leap' ? 'jump' : name === 'roar' ? 'fearGaze' : name === 'claw' ? 'swing' : 'bloodClaw'; }
+  stepSpeed(d) { return this.cfg.speed * (this.enraged ? this.cfg.enrage.speed : 1) * (d > 7 ? 1.25 : 1); }
+  // no SALTO o corpo sobe num arco
+  bob() {
+    const a = this.state === 'attack' ? this.atk : null;
+    if (a && a.name === 'leap' && this.stateT >= a.windup && this.stateT < a.windup + a.active) return Math.sin(((this.stateT - a.windup) / a.active) * Math.PI) * 3;
+    return super.bob();
+  }
+
+  update(dt) {
+    // o URRO: com metade da vida, para e ruge uma vez; dali em diante, mais rápido e com os golpes voltando antes
+    if (this.alive && this.state === 'chase' && !this.enraged && this.hp < this.maxHp * this.cfg.enrage.at) {
+      this.enraged = true;
+      this.atk = { name: 'roar', ...this.cfg.attacks.roar, done: [], swung: [] };
+      this.setState('attack');
+      this.world.audio.play('fearGaze', { volume: 1, pitch: 0.28 });
+    }
+    if (this.enraged && this.state === 'chase') for (const k in this.cds) this.cds[k] = Math.max(0, this.cds[k] - dt * (1 / this.cfg.enrage.cd - 1));
+    return super.update(dt);
+  }
+
+  strike(a, tg, d) {
+    if (a.self) {
+      // URRO
+      const W = this.world;
+      W.cameraRig && W.cameraRig.shake(0.45, 1.0);
+      W.fx.ring(new THREE.Vector3(this.pos.x, 0.1, this.pos.z), { color: 0xc0202c, radius: 7, life: 0.8, inner: 0.85 });
+      this.owner.notify && this.owner.notify('O QUIBUNGO ENFURECEU', true);
+      tg && tg.notify && tg.notify('O QUIBUNGO ENFURECEU', true);
+      return true;
+    }
+    if (a.pull) {
+      // a LÍNGUA da bocarra das costas: acerta de longe e PUXA o alvo para perto
+      const inArc = Math.abs(angleDiff(this.yaw, yawTo(this.pos, tg.pos))) <= (a.arc * DEG) / 2;
+      if (!(d - tg.radius <= a.range && inArc && Math.abs(tg.pos.y - this.pos.y) < 2.6) || tg.isInvulnerable()) return true;
+      const dir = new THREE.Vector3(this.pos.x - tg.pos.x, 0, this.pos.z - tg.pos.z).normalize();
+      applyHit(this.world, this.owner, tg, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: a.pull, dir, sound: 'whip', color: 0x8a2a4a, scale: 1.2 });
+      tg.notify && tg.notify('A LÍNGUA DO QUIBUNGO', true);
+      return true;
+    }
+    return super.strike(a, tg, d);
+  }
+
+  swingFx(a, i) {
+    const W = this.world;
+    if (a.self) return;
+    if (a.pull) {
+      if (this.target) W.fx.tracer(new THREE.Vector3(this.pos.x, 4.2, this.pos.z), this.target.chestPos(), { color: 0x8a2a4a, life: 0.3, width: 0.16 });
+      return;
+    }
+    if (a.name === 'slam' || a.name === 'leap') {
+      W.cameraRig && W.cameraRig.shake(0.4, 0.35);
+      W.fx.ring(new THREE.Vector3(this.pos.x, 0.08, this.pos.z), { color: DUST, radius: a.range + 0.6, life: 0.5, inner: 0.7 });
+      W.fx.burst(new THREE.Vector3(this.pos.x, 0.3, this.pos.z), { count: 18, color: DUST, kind: 'smoke', speed: 4, up: 0.6, life: 0.7, size: 0.9 });
+      W.audio.play('shockwave', { volume: 0.8, pitch: 0.7 });
+      return;
+    }
+    const roll = a.name === 'flurry' ? (i % 2 ? 0.6 : -0.6) : -0.3;
+    W.fx.slash(new THREE.Vector3(this.pos.x, this.pos.y + 2.2, this.pos.z), this.yaw, { color: 0xd02030, radius: a.range, arc: 2.4, life: 0.2, width: 0.4, roll });
+  }
+
+  // o FOGO queima mais
+  hitBy(attacker, dmg, info) {
+    if (info && info.fire && this.alive && this.state !== 'die') {
+      dmg *= this.cfg.fireMult;
+      this.world.fx.burst(new THREE.Vector3(this.pos.x, 2.4, this.pos.z), { count: 8, color: 0xff7a2a, speed: 2, up: 2.5, life: 0.5, size: 0.35 });
+      if (!this.fireWarned) {
+        this.fireWarned = true;
+        attacker && attacker.notify && attacker.notify('O FOGO QUEIMA O QUIBUNGO!', true);
+      }
+    }
+    super.hitBy(attacker, dmg, info);
+  }
+
+  pose() {
+    super.pose();
+    const J = this.model.joints;
+    if (!J.armL2) return;
+    const t = this.t;
+    const C = this.cfg.crouch;
+    const a = this.state === 'attack' ? this.atk : null;
+    const st = this.stateT;
+    const roar = this.state === 'rise' ? this.introRoar : a && a.name === 'roar' ? Math.min(1, st / 0.3) * (st > a.windup + a.active ? Math.max(0, 1 - (st - a.windup - a.active) / a.recovery) : 1) : 0;
+    // andando na entrada: as pernas passam (o BloodZombie só anda em 'chase')
+    if (this.state === 'rise' && this.introWalk) {
+      const s1 = Math.sin(this.gait * 2.2);
+      for (const [i, l] of J.legs.entries()) {
+        const s = i ? -s1 : s1;
+        l.hip.rotation.x += s * 0.45;
+        l.knee.rotation.x = C.knee + Math.max(0, -s) * 0.5;
+      }
+    }
+    const chest = J.chest.rotation.x;
+    const armBase = -chest - 0.4;
+    // o 2º par de braços acompanha o 1º, defasado
+    let l2 = [armBase + Math.sin(t * 2.3) * 0.15, 0, 0.45], r2 = [armBase - Math.sin(t * 2.3) * 0.15, 0, -0.45];
+    let e2 = -0.5;
+    if (a && a.name === 'flurry') {
+      // a RAJADA: os quatro braços descem um depois do outro (R, L, R2, L2)
+      const hits = a.hits;
+      const ph = hits.map((h) => Math.max(0, Math.min(1, (st - h + 0.18) / 0.22)));
+      const sw = (k) => armBase - 2.2 + k * 2.4;
+      J.armR.sh.rotation.x = sw(ph[0]);
+      J.armL.sh.rotation.x = sw(ph[1]);
+      r2 = [sw(ph[2]), 0, -0.6];
+      l2 = [sw(ph[3]), 0, 0.6];
+      e2 = -0.3;
+    } else if (a && (a.name === 'slam' || a.name === 'leap')) {
+      l2 = [J.armL.sh.rotation.x, 0, 0.6];
+      r2 = [J.armR.sh.rotation.x, 0, -0.6];
+    }
+    if (roar > 0) {
+      // RUGIDO: abre os quatro braços, ergue o tronco, a boca e as mandíbulas escancaradas
+      J.chest.rotation.x = chest - 0.45 * roar;
+      J.neck.rotation.x += -0.5 * roar + Math.sin(t * 40) * 0.04 * roar;
+      J.armL.sh.rotation.set(armBase - 0.8 * roar, 0, 0.25 + 1.0 * roar);
+      J.armR.sh.rotation.set(armBase - 0.8 * roar, 0, -0.25 - 1.0 * roar);
+      l2 = [armBase - 0.3 * roar, 0, 0.45 + 0.9 * roar];
+      r2 = [armBase - 0.3 * roar, 0, -0.45 - 0.9 * roar];
+      if (J.jaw) J.jaw.rotation.x = 0.2 + 0.8 * roar;
+    }
+    J.armL2.sh.rotation.set(l2[0], l2[1], l2[2]);
+    J.armR2.sh.rotation.set(r2[0], r2[1], r2[2]);
+    J.armL2.el.rotation.x = e2;
+    J.armR2.el.rotation.x = e2;
+    const jaw = J.jaw ? J.jaw.rotation.x : 0.3;
+    if (J.mandL) J.mandL.rotation.y = -0.15 - jaw * 0.5;
+    if (J.mandR) J.mandR.rotation.y = 0.15 + jaw * 0.5;
+    // a LÍNGUA: balança para fora da bocarra; no rugido, se debate; no golpe, estica para a frente por cima da cabeça
+    const [g1, g2, g3] = J.tongue;
+    if (g1) {
+      let a1 = Math.sin(t * 1.8) * 0.2, a2 = Math.sin(t * 2.4 + 1) * 0.3, a3 = Math.sin(t * 3.1 + 2) * 0.4;
+      if (roar > 0) { a1 += Math.sin(t * 11) * 0.35 * roar; a2 += Math.sin(t * 13 + 1) * 0.5 * roar; a3 += Math.sin(t * 15) * 0.6 * roar; }
+      if (a && a.pull) {
+        const k = Math.min(1, st / a.windup);
+        const out = st < a.windup ? k : st < a.windup + a.active + 0.2 ? 1 : Math.max(0, 1 - (st - a.windup - a.active - 0.2) / a.recovery);
+        a1 = -0.3 * k + 1.3 * out; a2 = 0.4 * out; a3 = -0.6 * out;
+      }
+      g1.rotation.set(a1, 0, Math.sin(t * 1.3) * 0.15);
+      if (g2) g2.rotation.set(a2, 0, 0);
+      if (g3) g3.rotation.set(a3, Math.sin(t * 2) * 0.2, 0);
+    }
+    this.model.root.scale.setScalar(this.state === 'die' ? this.model.root.scale.x : QUIB_SCALE);
+  }
+}

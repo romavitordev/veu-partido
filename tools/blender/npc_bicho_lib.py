@@ -28,11 +28,14 @@ from npc_sculpt_lib import Sculpt, vcol_material, ridge, n3, white_vcols
 
 def build(kind):
     boar = kind == 'javali'
-    random.seed(17 if boar else 23)
+    cat = kind == 'felino'  # o FELINO DEVORADO do Sertão do Quibungo (npc_felino_devorado.py): a jaguatirica tomada pelo Sangue
+    random.seed(17 if boar else 41 if cat else 23)
     reset()
     M = {
         'fur': vcol_material('fur_bicho', 0.85),  # o corpo inteiro (pelo, carne, veias) com a cor por vértice
         'mane': material('fur2_bicho', '#3a2618' if boar else '#4a3424', 0.9),  # a crina e os tufos
+        'horn': material('horn_felino', '#6a1a12', 0.5),  # a coroa de chifres-garra do felino
+        'blade': material('blade_felino', '#d8c098', 0.35),  # a lâmina do rabo
         'tooth': material('tooth_bicho', '#d8c8a0', 0.4),
         'maw': material('maw_bicho', '#1a0604', 0.8),
         'claw': material('claw_bicho', '#14100c', 0.4),
@@ -41,7 +44,8 @@ def build(kind):
         'tongue': material('flesh_lingua_bicho', '#a0404a', 0.45),
     }
     C = {k: Vector(hex_rgb(v)) for k, v in {
-        'fur': '#4a3222' if boar else '#5a3e28', 'tip': '#7a5a3a' if boar else '#8a6a48', 'dark': '#22160e',
+        'fur': '#4a3222' if boar else '#a83a26' if cat else '#5a3e28', 'tip': '#7a5a3a' if boar else '#c8603c' if cat else '#8a6a48',
+        'dark': '#3a0806' if cat else '#22160e',
         'flesh': '#6a2420', 'vein': '#7a3424', 'bone': '#c8b48c', 'snout': '#3a2a24',
     }.items()}
 
@@ -51,12 +55,17 @@ def build(kind):
         # alta nos ombros caindo para a anca estreita, a cabeça grande e baixa (era uma bolha oval de pernas curtas)
         legH, halfL, bodyR, humpH, headL = 0.64, 0.6, (0.29, 0.3), 0.3, 0.6
         legR, legX = (0.085, 0.06), 0.19
+    elif cat:
+        # (2026-11-20, dono: "essas criaturas quadrupedes estão muito feias") pela arte do bestiário: pernas compridas
+        # de gato, o tronco fino com a barriga caída, o PESCOÇO alto erguendo a cabeça coroada de garras
+        legH, halfL, bodyR, humpH, headL = 0.74, 0.5, (0.16, 0.2), 0.1, 0.3
+        legR, legX = (0.052, 0.034), 0.12
     else:
         # (2026-11-19) de LOBO magro, como na arte: pernas altas, os ombros acima da anca, o pescoço erguido
         legH, halfL, bodyR, humpH, headL = 0.68, 0.45, (0.16, 0.2), 0.12, 0.4
         legR, legX = (0.045, 0.032), 0.11
     upper, lower = legH * 0.52, legH * 0.5
-    FUR = 0.02 if boar else 0.013  # comprimento das mechas (deslocamento)
+    FUR = 0.02 if boar else 0.006 if cat else 0.013  # comprimento das mechas (deslocamento)
 
     def fur_disp(axis_dir=(0, 0, -1)):
         """mechas de pelo: sulcos finos correndo para trás (e para baixo nos flancos), quebrados por ruído"""
@@ -79,6 +88,13 @@ def build(kind):
                 return C['flesh'].lerp(C['dark'], max(0.0, n3(p, 9)) * 0.6)
             if fld.get('snout', 0) > 0.5:
                 return C['snout']
+            if cat:  # a pelagem de jaguatirica: as ROSETAS escuras (anéis) sobre o vermelho
+                r = abs(n3(p, 15) + n3(p, 31) * 0.35)
+                if 0.16 < r < 0.27:
+                    return C['dark'].lerp(C['fur'], 0.15)
+                if r < 0.16:
+                    return C['fur'].lerp(C['dark'], 0.25)
+                return C['fur'].lerp(C['tip'], max(0.0, min(1.0, n3(p, 7) + 0.3)))
             k = max(0.0, min(1.0, disp_fn(p) / FUR + 0.4)) if disp_fn else 0.4
             return C['dark'].lerp(C['fur'], min(1.0, k * 1.5)).lerp(C['tip'], max(0.0, k - 0.7) * 2.5)
         return f
@@ -98,7 +114,9 @@ def build(kind):
         S.ell((0, bodyR[1] * 0.1 + hump * 0.5, z), (r, r * bodyR[1] / bodyR[0], halfL * 0.32))
     S.ell((0, -bodyR[1] * 0.25, 0.05), (bodyR[0] * 0.8, bodyR[1] * 0.55, halfL * 0.8))  # barriga
     S.ell((0, bodyR[1] * 0.1 + humpH * 0.6, halfL * 0.85), (bodyR[0] * 0.8, bodyR[1] * 0.8, halfL * 0.35))  # o pescoço grosso
-    if not boar:  # o pescoço erguido do lobo, subindo até a nuca
+    if cat:  # o pescoço ALTO do felino, subindo quase reto até a cabeça
+        S.chain([(0, bodyR[1] * 0.2 + humpH * 0.6, halfL * 0.85), (0, bodyR[1] * 0.4 + humpH * 0.6 + 0.16, halfL * 1.0), (0, bodyR[1] * 0.4 + humpH * 0.6 + 0.3, halfL * 1.08)], [bodyR[0] * 0.85, bodyR[0] * 0.62, bodyR[0] * 0.5], step=0.5)
+    elif not boar:  # o pescoço erguido do lobo, subindo até a nuca
         S.chain([(0, bodyR[1] * 0.2 + humpH * 0.6, halfL * 0.9), (0, bodyR[1] * 0.3 + humpH * 0.6 + 0.12, halfL * 1.05)], [bodyR[0] * 0.75, bodyR[0] * 0.6], step=0.5)
     for s in (1, -1):  # ombros e ancas (onde as pernas encaixam)
         S.ell((s * legX, 0.0, halfL * 0.62), (legR[0] * 1.9, legR[0] * 2.6, legR[0] * 2.1))
@@ -166,14 +184,14 @@ def build(kind):
     S.build(torso, M['fur'], 4200 if boar else 3200, res=0.012 if boar else 0.008, smooth=3, disp=fd, color=color_fn(fd))
 
     # a CRINA espetada pelo dorso e os tufos pendurados na barriga
-    for i in range(22 if boar else 16):
+    for i in range(0 if cat else 22 if boar else 16):
         t = i / (21 if boar else 15)
         z = -halfL * 0.85 + t * halfL * 1.9
         for s in (-1, 0, 1):
             p, d = surf(midY(z), z, s * 0.15)
             ln = (0.16 if boar else 0.1) * (1.25 if t > 0.55 else 0.9) * random.uniform(0.7, 1.2)
             add(torso, f'mane{i}{s}', spike(tuple(p - d * 0.02), (p.x + s * 0.04 + random.uniform(-0.02, 0.02), p.y + ln, p.z - ln * 0.7), 0.028 if boar else 0.018, seg=4), M['mane'])
-    for i in range(70 if boar else 55):  # o pelo DESGRENHADO pelos flancos, barriga e pescoço (pontas para trás e para baixo)
+    for i in range(0 if cat else 70 if boar else 55):  # o pelo DESGRENHADO pelos flancos, barriga e pescoço (pontas para trás e para baixo)
         z = random.uniform(-halfL * 0.85, halfL * 1.0)
         a = random.uniform(0.5, 2.9)
         s = random.choice((1, -1))
@@ -191,7 +209,7 @@ def build(kind):
         add(torso, f'goo{i}', rod([tuple(p), (p.x, p.y - ln * 0.6, p.z), (p.x, p.y - ln, p.z)], [0.018, 0.012, 0.003], seg=5), M['goo'])
 
     # ================================================================ CABEÇA
-    head = joint('J_head', (0, (bodyR[1] * -0.05 + humpH * 0.35) if boar else (bodyR[1] * 0.3 + humpH * 0.6 + 0.2), halfL * (1.0 if boar else 1.12)), torso)
+    head = joint('J_head', (0, (bodyR[1] * -0.05 + humpH * 0.35) if boar else (bodyR[1] * 0.4 + humpH * 0.6 + 0.36) if cat else (bodyR[1] * 0.3 + humpH * 0.6 + 0.2), halfL * (1.0 if boar else 1.12)), torso)
     Hs = Sculpt('cabeca_' + kind)
     if boar:
         Hs.ell((0, 0.06, 0.02), (0.2, 0.2, 0.2))  # a nuca larga
@@ -203,6 +221,16 @@ def build(kind):
             Hs.ell((s * 0.12, 0.16, 0.02), (0.05, 0.1, 0.03), dir=(s * 0.5, 1, -0.4))  # orelha
             Hs.ell((s * 0.11, 0.1, headL * 0.32), (0.035, 0.035, 0.03), 'flesh', neg=True)  # a órbita funda
         jawZ = headL * 0.45
+    elif cat:
+        Hs.ell((0, 0.04, 0.0), (0.12, 0.115, 0.12))  # o crânio redondo de gato
+        Hs.ell((0, 0.02, headL * 0.5), (0.08, 0.07, 0.1))
+        Hs.ell((0, -0.01, headL * 0.88), (0.055, 0.045, 0.06))  # o focinho curto
+        Hs.ell((0, 0.0, headL + 0.01), (0.03, 0.022, 0.02), 'snout')
+        for s in (1, -1):
+            Hs.ell((s * 0.07, 0.12, -0.02), (0.03, 0.06, 0.018), dir=(s * 0.5, 1, -0.2))  # orelhas curtas
+            Hs.ell((s * 0.06, 0.07, headL * 0.38), (0.024, 0.024, 0.02), 'flesh', neg=True)  # órbita
+            Hs.ell((s * 0.08, -0.03, headL * 0.45), (0.04, 0.05, 0.08))  # as bochechas inchadas da bocarra
+        jawZ = headL * 0.2
     else:
         Hs.ell((0, 0.05, 0.0), (0.11, 0.11, 0.12))  # crânio de lobo
         Hs.ell((0, 0.03, headL * 0.45), (0.075, 0.07, 0.13))
@@ -241,6 +269,20 @@ def build(kind):
             # as PRESAS gigantes: um par saindo do focinho e curvando para cima e para trás, outro mais baixo e para fora
             add(head, f'tusk{s}', rod(curve((s * 0.08, -0.06, headL * 0.78), (s * 0.24, -0.02, headL * 0.98), (s * 0.18, 0.22, headL * 0.8), 8), [0.04, 0.036, 0.03, 0.024, 0.017, 0.011, 0.006, 0.002], seg=7), M['tooth'])
             add(head, f'tusk2{s}', rod(curve((s * 0.1, -0.08, headL * 0.6), (s * 0.3, -0.12, headL * 0.75), (s * 0.34, 0.02, headL * 0.95), 7), [0.03, 0.026, 0.02, 0.015, 0.01, 0.005, 0.0015], seg=7), M['tooth'])
+
+    if cat:
+        # a COROA DE CHIFRES-GARRA: três de cada lado saindo do topo do crânio, abrindo para fora e para cima e com a
+        # ponta virando para dentro como uma garra; mais um par de garras menores na nuca
+        for s in (1, -1):
+            for k, (ln, sp, bz) in enumerate(((0.44, 0.75, 0.02), (0.36, 1.1, -0.05), (0.28, 1.45, -0.1))):
+                b = (s * 0.06, 0.1, bz)
+                m = (s * (0.06 + ln * math.sin(sp) * 0.95), 0.1 + ln * math.cos(sp) * 0.75, bz - ln * 0.12)
+                t = (s * (0.06 + ln * math.sin(sp) * 0.7), 0.1 + ln * math.cos(sp) * 0.75 + ln * 0.45, bz + ln * 0.15)
+                pts = curve(b, m, t, 7)
+                add(head, f'horn{s}{k}', rod(pts, [0.03, 0.026, 0.022, 0.018, 0.014, 0.01, 0.004], seg=7), M['horn'])
+                add(head, f'hornTip{s}{k}', rod(pts[-3:], [0.011, 0.006, 0.0015], seg=6), M['blade'])
+            pts = curve((s * 0.06, 0.0, -0.08), (s * 0.18, 0.02, -0.12), (s * 0.2, 0.12, -0.06), 5)
+            add(head, f'nape{s}', rod(pts, [0.022, 0.018, 0.012, 0.007, 0.002], seg=6), M['horn'])
 
     jaw = joint('J_jaw', (0, -0.08, jawZ), head)
     Js = Sculpt('mandibula_' + kind)
@@ -287,11 +329,17 @@ def build(kind):
     Ts = Sculpt('rabo_' + kind)
     if boar:
         Ts.chain(curve((0, 0, 0), (0, -0.05, -0.08), (0.03, -0.18, -0.06), 5), [0.03, 0.024, 0.018, 0.014, 0.01], step=0.5)
+    elif cat:
+        # o RABO comprido em S terminando numa LÂMINA curva (a arte do bestiário)
+        tp = curve((0, 0, 0), (0, -0.12, -0.3), (0, -0.2, -0.55), 6)[:-1] + curve((0, -0.2, -0.55), (0, -0.25, -0.95), (0, 0.3, -1.0), 7)
+        Ts.chain(tp, [0.04, 0.038, 0.035, 0.032, 0.03, 0.028, 0.026, 0.024, 0.022, 0.02, 0.018, 0.016], step=0.5)
+        bl = curve((0, 0.28, -1.0), (0, 0.62, -0.95), (0, 0.72, -0.62), 7)
+        add(tail, 'blade', rod(bl, [0.035, 0.04, 0.038, 0.03, 0.02, 0.01, 0.002], seg=8, flat=0.35), M['blade'])
     else:
         # o rabo peludo e cheio, curvando para cima como na miniatura
         Ts.chain(curve((0, 0, 0), (0, 0.02, -0.25), (0, 0.22, -0.42), 8), [0.035, 0.05, 0.06, 0.062, 0.058, 0.05, 0.038, 0.02], step=0.5)
     td = fur_disp()
-    Ts.build(tail, M['fur'], 400 if boar else 700, res=0.007, smooth=2, disp=td, color=color_fn(td))
+    Ts.build(tail, M['fur'], 400 if boar else 900 if cat else 700, res=0.007, smooth=2, disp=td, color=color_fn(td))
 
     white_vcols()
     finish()

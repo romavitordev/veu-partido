@@ -27,16 +27,97 @@ from npc_lib import rod, curve, spike, joint, add, finish
 from npc_sculpt_lib import Sculpt, vcol_material, limb_fibers, ridge, n3, white_vcols
 
 
-def build(strong):
-    random.seed(31 if strong else 7)
+def quibungo_extras(chest, M, MAW_C, MAW_D):
+    """as costas do Quibungo: os ESPINHOS DE OSSO em arco (como costelas) em volta da bocarra e a LÍNGUA em três juntas.
+    No jogo o tronco vai inclinado ~0,8 rad para a frente: U é o "para cima" e F o "para a frente" no mundo"""
+    th = 0.8
+    U = Vector((0, math.sin(th), -math.cos(th)))
+    F = Vector((0, math.cos(th), math.sin(th)))
+    X = Vector((1, 0, 0))
+    c0, d = Vector(MAW_C), Vector(MAW_D).normalized()
+    for s in (1, -1):
+        for i in range(6):
+            t = i / 5
+            c = c0 + d * (t - 0.5) * 0.95
+            ln = 0.42 + 0.2 * math.sin(t * math.pi)
+            b = Vector((s * (0.16 + 0.05 * math.sin(t * math.pi)), c.y, c.z + 0.05))
+            # arqueiam como costelas: saem para o lado e a ponta volta para cima da bocarra
+            mid = b + X * s * ln * 0.75 + U * ln * 0.45
+            tip = b + X * s * ln * 0.25 + U * ln * 1.0 + F * ln * (0.1 + 0.3 * t)
+            pts = curve(tuple(b), tuple(mid), tuple(tip), 7)
+            r0 = 0.03 + 0.012 * math.sin(t * math.pi)
+            add(chest, f'spine{s}{i}', rod(pts, [r0, r0 * 0.85, r0 * 0.7, r0 * 0.55, r0 * 0.4, r0 * 0.25, 0.003], seg=7), M['bone'])
+            add(chest, f'spineTip{s}{i}', rod(pts[-3:], [r0 * 0.3, r0 * 0.18, 0.002], seg=6), M['boneTip'])
+        for i in range(10):  # os dentes na borda da bocarra
+            t = i / 9
+            c = c0 + d * (t - 0.5) * 0.56
+            add(chest, f'btooth{s}{i}', spike((s * 0.08, c.y, c.z - 0.02), (s * 0.02, c.y + 0.01, c.z - 0.09), 0.016, seg=5), M['fang'])
+    tg = joint('J_tongue', tuple(c0 + U * 0.02), chest)
+    q1 = curve((0, 0, 0), tuple(U * 0.55 - F * 0.2), tuple(U * 1.0 - F * 0.05), 7)
+    add(tg, 'tongue1', rod(q1, [0.085, 0.08, 0.076, 0.072, 0.068, 0.064, 0.06], seg=10), M['tongue'])
+    tg2 = joint('J_tongue2', q1[-1], tg)
+    q2 = curve((0, 0, 0), tuple(U * 0.6 + F * 0.3), tuple(U * 0.75 - F * 0.35), 7)
+    add(tg2, 'tongue2', rod(q2, [0.06, 0.056, 0.052, 0.048, 0.045, 0.042, 0.04], seg=10), M['tongue'])
+    tg3 = joint('J_tongue3', q2[-1], tg2)
+    q3 = curve((0, 0, 0), tuple(U * 0.1 - F * 0.45), tuple(U * 0.45 - F * 0.4), 8)
+    add(tg3, 'tongue3', rod(q3, [0.04, 0.037, 0.034, 0.03, 0.025, 0.018, 0.01, 0.002], seg=10), M['tongue'])
+
+
+def felino_extras(chest, neck, M):
+    """o FELINO INFERNAL (Aniquilação) sobre o Zumbi Fraco: o LEQUE DE ESPINHOS DE OSSO abrindo das costas como asas,
+    a COROA de chifres-garra na cabeça e o RABO comprido em S com a lâmina (juntas tail/tail2)"""
+    X = Vector((1, 0, 0))
+    for s in (1, -1):
+        for row, (yb, n, L) in enumerate(((0.56, 7, 0.62), (0.4, 6, 0.48), (0.26, 4, 0.34))):
+            for i in range(n):
+                t = i / (n - 1)
+                a = 0.15 + t * 1.25  # 0 = para cima, ~pi/2 = para o lado
+                ln = L * (1 - 0.3 * abs(t - 0.35)) * random.uniform(0.9, 1.1)
+                b = Vector((s * (0.06 + 0.02 * row), yb - t * 0.05, -0.08 + 0.01 * row))
+                d = Vector((s * math.sin(a), math.cos(a), -0.35))
+                mid = b + d * ln * 0.55
+                tip = b + d * ln + Vector((-s * 0.08, 0.06, 0.12)) * ln  # a ponta vira para dentro e para a frente
+                pts = curve(tuple(b), tuple(mid), tuple(tip), 7)
+                r0 = 0.036 - 0.006 * row
+                add(chest, f'fan{s}{row}{i}', rod(pts, [r0, r0 * 0.85, r0 * 0.7, r0 * 0.55, r0 * 0.42, r0 * 0.28, 0.003], seg=6), M['bone'])
+                add(chest, f'fanTip{s}{row}{i}', rod(pts[-3:], [r0 * 0.32, r0 * 0.18, 0.002], seg=5), M['boneTip'])
+        for k, (ln, sp, bz) in enumerate(((0.36, 0.6, 0.0), (0.28, 1.0, -0.06), (0.22, 1.4, -0.1))):
+            b = (s * 0.08, 0.46, bz)
+            m = (s * (0.08 + ln * math.sin(sp) * 0.9), 0.46 + ln * math.cos(sp) * 0.75, bz - ln * 0.1)
+            t = (s * (0.08 + ln * math.sin(sp) * 0.65), 0.46 + ln * math.cos(sp) * 0.75 + ln * 0.45, bz + ln * 0.18)
+            pts = curve(b, m, t, 7)
+            add(neck, f'horn{s}{k}', rod(pts, [0.026, 0.022, 0.019, 0.015, 0.011, 0.007, 0.002], seg=6), M['claw'])
+    tl = joint('J_tail', (0, -0.04, -0.1), chest)
+    p1 = curve((0, 0, 0), (0, -0.25, -0.3), (0, -0.55, -0.5), 7)
+    add(tl, 'tail1', rod(p1, [0.06, 0.055, 0.05, 0.046, 0.042, 0.039, 0.036], seg=9), M['tail'])
+    tl2 = joint('J_tail2', p1[-1], tl)
+    p2 = curve((0, 0, 0), (0, -0.2, -0.5), (0, 0.45, -0.75), 8)
+    add(tl2, 'tail2', rod(p2, [0.036, 0.033, 0.03, 0.027, 0.024, 0.021, 0.018, 0.016], seg=8), M['tail'])
+    bl = curve(p2[-1], (0, 0.95, -0.7), (0, 1.05, -0.3), 7)
+    add(tl2, 'blade', rod(bl, [0.03, 0.04, 0.038, 0.03, 0.02, 0.01, 0.002], seg=8, flat=0.35), M['bone'])
+
+
+def build(strong, quibungo=False, felino=False):
+    """quibungo=True: o QUIBUNGO (o chefe do Sertão, npc_quibungo.py) sobre o Zumbi Forte — pedido do dono (2026-11-20):
+    "o quimbungo deveria ter como base o zumbi de sangue gigante e ser editado pra ficar com as caracteristicas do
+    quimbungo": o SEGUNDO PAR DE BRAÇOS, os dedos longos, as MANDÍBULAS dos lados da boca, a BOCARRA nas costas cercada
+    de ESPINHOS DE OSSO em arco e a LÍNGUA comprida que sai dela (juntas tongue/tongue2/tongue3)"""
+    Q = quibungo
+    FI = felino  # o FELINO INFERNAL (npc_felino_infernal.py) sobre o Zumbi Fraco
+    random.seed(71 if Q else 53 if FI else 31 if strong else 7)
     reset()
-    tag = 'forte' if strong else 'fraco'
+    tag = 'quibungo' if Q else 'felinoinf' if FI else 'forte' if strong else 'fraco'
     M = {
         'flesh': vcol_material('flesh_zumbi_' + tag, 0.42),  # a carne gosmenta (cor por vértice)
         'fang': material('fang_zumbi', '#ddd3b0' if not strong else '#c9c8a4', 0.4),
         'maw': material('maw_zumbi', '#140204', 0.8),
         'claw': material('claw_zumbi', '#2a0709', 0.4),
         'vein': material('vein_zumbi', '#3e050b', 0.5),
+        'bone': material('bone_spine_quibungo', '#d4b48a', 0.45),
+        'boneTip': material('claw_spine_tip_quibungo', '#4a2a1a', 0.4),
+        'tongue': material('flesh_tongue_quibungo', '#8a2a4a', 0.4),
+        'eye': material('glow_eye_quibungo', '#ffb020', 0.3, emission='#ff8a10', strength=3.0),
+        'tail': material('tail_felinoinf', '#7a1418', 0.45),
     }
     C = {k: Vector(hex_rgb(v)) for k, v in {
         'deep': '#4a0a0f', 'flesh': '#8a1a20', 'crest': '#d07070', 'vein': '#38040a', 'patch': '#5a0c12', 'hole': '#080102', 'gum': '#a8303c',
@@ -51,6 +132,7 @@ def build(strong):
         hipY, shY, shZ, shX = 1.0, 0.64, 0.14, 0.24
         upL, foreL, upR, foreR = 0.5, 0.52, 0.06, 0.045
         thighL, shinL, thighR, shinR, hipX = 0.5, 0.48, 0.07, 0.05, 0.12
+    UPL, FOREL, UPR, FORER = upL, foreL, upR, foreR
     AMP = 0.005 if strong else 0.0035  # profundidade das estrias (leves: a carne é lisa e gosmenta, com estrias claras)
 
     def flesh_color(disp_fn, amp):
@@ -75,6 +157,7 @@ def build(strong):
     body = joint('J_body', (0, 0, 0))
     chest = joint('J_chest', (0, hipY, 0), body)
     top = (0, shY, shZ)
+    MAW_C, MAW_D = (0, 0.66, -0.29), (0, 1, -0.35)  # a bocarra das costas (centro e eixo, na espinha)
 
     # ================================================================ TRONCO
     S = Sculpt('torso_' + tag)
@@ -92,6 +175,11 @@ def build(strong):
             S.ell((s * 0.16, -0.06, -0.08), (0.14, 0.13, 0.12))  # glúteo
             for k in range(3):
                 S.ell((s * 0.085, 0.36 - k * 0.12, 0.27 - k * 0.02), (0.075, 0.06, 0.05))  # gomos do abdômen
+            if Q:
+                S.ell((s * 0.34, 0.42, 0.18), (0.15, 0.14, 0.14))  # o ombro do 2º par de braços
+        if Q:  # a BOCARRA DAS COSTAS na corcova: a gengiva em volta e a fenda escura ao longo da espinha
+            S.ell(MAW_C, (0.13, 0.34, 0.1), 'gum', dir=MAW_D)
+            S.ell((MAW_C[0], MAW_C[1], MAW_C[2] + 0.03), (0.075, 0.3, 0.14), 'hole', dir=MAW_D, neg=True)
     else:
         S.ell((0, -0.05, 0.0), (0.12, 0.09, 0.09))  # pelve
         S.ell((0, 0.1, 0.02), (0.1, 0.12, 0.08))  # barriga funda
@@ -167,6 +255,18 @@ def build(strong):
         for i in range(3):
             x = random.uniform(-0.1, 0.1)
             add(jaw, f'drip{i}', rod([(x, -0.1, 0.36), (x, -0.18, 0.37), (x * 1.05, -0.24 - i * 0.04, 0.37)], [0.012, 0.009, 0.005], seg=5), M['vein'])
+        if Q:
+            # os OLHOS pequenos e acesos do Quibungo e as MANDÍBULAS dos lados (as várias bocas): abrem para os lados
+            for sd, nm in ((1, 'L'), (-1, 'R')):
+                add(neck, f'eye{nm}', rod([(sd * 0.12, 0.12, 0.33), (sd * 0.135, 0.12, 0.37)], 0.026, seg=8), M['eye'])
+                md = joint(f'J_mand{nm}', (sd * 0.2, -0.05, 0.2), neck)
+                Md = Sculpt(f'mand{nm}_quibungo')
+                Md.chain([(0, 0, -0.05), (sd * 0.04, -0.03, 0.12), (sd * 0.0, -0.02, 0.26)], [0.07, 0.06, 0.04], step=0.5)
+                Md.build(md, M['flesh'], 500, res=0.008, smooth=2, color=flesh_color(None, AMP))
+                for i in range(6):
+                    z = 0.0 + i * 0.05
+                    ln = 0.09 * random.uniform(0.8, 1.25)
+                    add(md, f'mfang{i}', rod(curve((-sd * 0.03, -0.01, z), (-sd * (0.03 + ln * 0.6), -0.02, z + 0.02), (-sd * (0.02 + ln), -0.05, z + 0.03), 4), [0.016, 0.012, 0.006, 0.0015], seg=5), M['fang'])
     else:
         # o FRACO: crânio grande e calvo de feto, as duas ÓRBITAS VAZIAS e fundas, a bocarra vertical cheia de presas
         neck = joint('J_neck', (0, top[1] + 0.03, top[2] + 0.06), chest)
@@ -209,8 +309,9 @@ def build(strong):
             add(jaw, f'fangL{i}', rod(curve(base, (base[0] * 1.1, base[1] + ln * 0.5, base[2] + 0.03), (base[0] * 0.85, base[1] + ln, base[2] + 0.01), 5), [0.013, 0.01, 0.006, 0.003, 0.0015], seg=5), M['fang'])
 
     # ================================================================ BRAÇOS longos com garras
-    def arm(s, name):
-        sh = joint(f'J_sh{name}', (s * shX, top[1] - 0.06, top[2] - 0.03), chest)
+    def arm(s, name, at=None, k=1.0):
+        upL, foreL, upR, foreR = UPL * k, FOREL * k, UPR * k, FORER * k
+        sh = joint(f'J_sh{name}', at or (s * shX, top[1] - 0.06, top[2] - 0.03), chest)
         U = Sculpt(f'upper{name}_{tag}')
         U.ell((s * 0.02, -0.03, 0), (upR * 1.35, upR * 1.4, upR * 1.3))  # deltoide
         U.chain([(0, -upL * 0.15, 0), (0, -upL * 0.5, 0.01), (0, -upL, 0)], [upR, upR * 1.05, upR * 0.8], step=0.6)
@@ -227,7 +328,7 @@ def build(strong):
 
         hand = joint(f'J_hand{name}', (0, -foreL, 0), el)
         hw = foreR * 1.5
-        fl = 0.2 if strong else 0.17
+        fl = (0.2 if strong else 0.17) * (1.8 if Q else 1)  # o Quibungo: os dedos LONGOS da arte
         Hd = Sculpt(f'hand{name}_{tag}')
         Hd.ell((0, -0.04, 0.01), (hw, 0.07, hw * 0.55))  # palma
         tips = []
@@ -242,7 +343,7 @@ def build(strong):
         th = [(-s * hw * 0.8, -0.04, 0.03), (-s * hw * 1.3, -0.1, 0.09), (-s * hw * 1.25, -0.14, 0.16)]
         Hd.chain(th, [hw * 0.3, hw * 0.24, hw * 0.18], step=0.5)
         Hd.build(hand, M['flesh'], 700, res=0.008 if strong else 0.0055, smooth=2, color=flesh_color(None, AMP))
-        cl = 0.14 if strong else 0.1
+        cl = (0.14 if strong else 0.1) * (1.4 if Q else 1)
         for i, tip in enumerate(tips + [th[-1]]):  # GARRAS longas e curvas
             c1 = (tip[0] * 1.05, tip[1] - cl * 0.45, tip[2] + cl * 0.4)
             c2 = (tip[0] * 1.08, tip[1] - cl * 0.7, tip[2] + cl)
@@ -250,6 +351,12 @@ def build(strong):
 
     arm(1, 'L')
     arm(-1, 'R')
+    if Q:  # o SEGUNDO PAR de braços, saindo das costelas, um pouco menor
+        arm(1, 'L2', (shX * 0.78, 0.42, 0.2), 0.82)
+        arm(-1, 'R2', (-shX * 0.78, 0.42, 0.2), 0.82)
+        quibungo_extras(chest, M, MAW_C, MAW_D)
+    if FI:
+        felino_extras(chest, neck, M)
 
     # ================================================================ PERNAS com pés de garras
     for s, name in ((1, 'L'), (-1, 'R')):

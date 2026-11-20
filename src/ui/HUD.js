@@ -312,6 +312,7 @@ export class HUD {
     // (pedido do dono, 2026-11-13: o jogador não sabe quanto de vida ele tem)
     this.npcBar.classList.toggle('sig', !!(mar && mar.barStyle === 'signal'));
     this.npcBar.classList.toggle('lost', !!(mar && mar.barLost));
+    this.npcBar.classList.toggle('blood', !!(mar && mar.barStyle === 'blood')); // o Quibungo (Sertão): a barra de sangue
     if (mar) {
       const lbl = `${mar.barName || mar.name} · ${mar.barOwner || mar.owner.def.name}`;
       const nb = this.npcBar.querySelector('b');

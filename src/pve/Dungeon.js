@@ -16,11 +16,13 @@ import { disposeRigResources } from '../models/glbRig.js';
 import { CpuController } from '../ai/CpuController.js';
 import { DanteClone, BloodZombie, GiantBloodZombie, InkZombie } from '../combat/npcs.js';
 import { InkBeast, InkSnake } from '../combat/beasts.js';
+import { AraraBeast, FelinoBeast, FelinoInfernal, Quibungo } from '../combat/sertaoBeasts.js';
 import { Assombracao } from '../combat/assombracao.js';
 import { SamhainVillage } from './samhain.js';
 import { LanternRun } from './corredor.js';
 import { TreeDefense, TREE } from './arvore.js';
 import { SamhainItems } from './itensSamhain.js';
+import { SertaoLanterns } from './lamparinas.js';
 import { Assist } from '../combat/assists.js';
 import { resolveBody } from '../combat/positioning.js';
 import { distXZ } from '../core/util.js';
@@ -106,7 +108,9 @@ const DOPPEL_GUN = estrangeiroDef.abilities.find((a) => a.id === 'homensDeTerno'
 const NEST = estrangeiroDef.abilities.find((a) => a.id === 'ninhoInterflorados');
 const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (o bombeiro Jorge e os outros)
 // os INFECTADOS DA ILHA (Tipora): a vida-base de cada tipo nas ondas e nas invocações do Amigo (PROPOSTA)
-const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150, assombracao: 140, assombracaoForte: 300 };
+const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150, assombracao: 140, assombracaoForte: 300,
+  // o Sertão do Quibungo (PROPOSTA): as araras têm pouca vida (voam e somem do alcance), os felinos andam em bando
+  araraDevorada: 90, araraInfernal: 200, felinoDevorado: 140, felinoInfernal: 320, quibungo: 2600 };
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
@@ -1007,6 +1011,11 @@ export class Dungeon {
       // os ITENS DA VIGÍLIA só na Árvore (dono, 2026-11-19: "Os itens como a tocha, e a lanterna de porco só devem
       // aparecer na parte 3 e nao na 1"): na vila não há mensageiro
     }
+    // SERTÃO DO QUIBUNGO: as lamparinas do Cristino pelo morro, para pegar e arremessar nos bichos (pve/lamparinas.js)
+    if (W.lanterns) {
+      if (this.items) this.items.dispose();
+      this.items = new SertaoLanterns(this, W.lanterns === true ? {} : W.lanterns);
+    }
     this.waveObjective();
   }
 
@@ -1149,7 +1158,7 @@ export class Dungeon {
       this.pveHud.setObjective(`${fighting ? `Onda ${n}` : 'A próxima onda vem aí'} · ${this.tree.label()}`);
       return;
     }
-    const tag = k === 'boss' || k === 'storm' ? ' (FINAL)' : k === 'giant' ? ' (GIGANTE)' : '';
+    const tag = k === 'boss' || k === 'storm' || k === 'beastBoss' ? ' (FINAL)' : k === 'giant' ? ' (GIGANTE)' : k === 'flock' ? ' (REVOADA)' : '';
     const vil = this.village ? ` · ${this.village.label()}` : '';
     this.pveHud.setObjective((fighting ? `Onda ${n} de ${S.total}${tag}` : `Próxima: onda ${n} de ${S.total}${tag}`) + vil);
   }
@@ -1195,8 +1204,15 @@ export class Dungeon {
       this.waveObjective();
       return;
     }
-    this.encounter = { room: S.M, done: false, koAt: this.world.time, zombies: true, wave: n, miniboss: kind === 'giant', storm: kind === 'storm' };
-    if (kind === 'giant') {
+    this.encounter = { room: S.M, done: false, koAt: this.world.time, zombies: true, wave: n, miniboss: kind === 'giant', storm: kind === 'storm', beastBoss: kind === 'beastBoss' };
+    if (kind === 'beastBoss') {
+      // o chefe-BICHO (o Quibungo no Sertão): sobe pela trilha sozinho; caiu, a fase acaba como a tempestade
+      const sp = S.M.spawn || { x: 0, z: -11 };
+      const z = this.spawnFoe('quibungo', new THREE.Vector3(sp.x, 0, sp.z));
+      z.giant = true;
+      this.hud.callout(this.D.bossName || 'O CHEFE', this.D.color || '#ff4a3a');
+      this.audio.play('fearGaze', { volume: 0.9, pitch: 0.35 });
+    } else if (kind === 'giant') {
       // o minichefe vem SOZINHO (pedido do dono)
       this.spawnFoe(W.giant || 'gigante', this.waveSpawnPoint(0, 1));
       this.hud.callout(W.giantName || 'UM ZUMBI GIGANTE', '#ff6a3a');
@@ -1224,6 +1240,8 @@ export class Dungeon {
       const beasts = ['javali', 'cao', 'cobra'].filter((t) => foes[t]).length;
       if (this.tree) this.hud.callout(`ONDA ${n}: ELAS VÊM PARA A ÁRVORE`, '#ffd84a');
       else if (this.village) this.hud.callout(`ONDA ${n}: AS ASSOMBRAÇÕES`, '#ffd84a');
+      else if (this.waveKind(n) === 'flock') this.hud.callout(`ONDA ${n}: A REVOADA`, '#ff6a3a');
+      else if (foes.felinoDevorado || foes.araraDevorada) this.hud.callout(`ONDA ${n}: OS DEVORADOS`, '#ffd84a');
       else this.hud.callout(beasts >= 3 ? `ONDA ${n}: JAVALIS, COBRAS E LOBOS` : foes.cao && !S.wolves ? `ONDA ${n}: OS LOBOS` : `ONDA ${n}`, '#ffd84a');
       if (foes.cao) S.wolves = true;
       this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
@@ -1262,6 +1280,11 @@ export class Dungeon {
     else if (type === 'tinta') z = new InkZombie(e, this.world, pos, { ...opts, spitter: Math.random() < 0.4 }); // 40% cospem tinta de longe
     else if (type === 'javali' || type === 'cao') z = new InkBeast(e, this.world, pos, { ...opts, kind: type });
     else if (type === 'cobra') z = new InkSnake(e, this.world, pos, opts);
+    // O SERTÃO DO QUIBUNGO (combat/sertaoBeasts.js): as Araras e os Felinos Devorados (as INFERNAIS no Aniquilação) e o chefe
+    else if (type === 'araraDevorada' || type === 'araraInfernal') z = new AraraBeast(e, this.world, pos, { ...opts, kind: type === 'araraInfernal' ? 'infernal' : 'devorada' });
+    else if (type === 'felinoDevorado') z = new FelinoBeast(e, this.world, pos, opts);
+    else if (type === 'felinoInfernal') z = new FelinoInfernal(e, this.world, pos, opts);
+    else if (type === 'quibungo') z = new Quibungo(e, this.world, pos, opts);
     else z = new BloodZombie(e, this.world, pos, opts);
     z.foe = type;
     z.onDestroyed = () => this.onZombieSlain(z);
@@ -1273,6 +1296,7 @@ export class Dungeon {
   onWaveCleared(enc) {
     const S = this.waves;
     if (enc.storm) { if (this.D.waves.runner) this.startRunner(enc); else this.finishStorm(); return; }
+    if (enc.beastBoss) { this.finishStorm(); return; }
     if (S.tree && enc.wave >= S.total) { this.finishTree(enc); return; }
     if (S.tree && this.tree) this.tree.rest();
     if (this.village && !this.tree && !this.runner) this.village.rest();

@@ -490,6 +490,68 @@ export const DUNGEONS = {
     exit: { door: { x: 80, z: 0, hidden: true } },
     chests: { chance: { waves: 0 }, coinsBoss: 18 },
   },
+  // O SERTÃO DO QUIBUNGO — a 3ª FASE DE ONDAS (Hexatombe ep. 5: o morro da caatinga onde armaram a emboscada para o
+  // Quibungo; mapa `sertao`, v5.38.0). Dono, 2026-11-20: "virão ondas de animais afetados pelo sangue, araras devoradas
+  // e (monstruosas em dificuldades maiores) … e na ultima onda virá o boss Quimbungo"; "Os infernais só virão na
+  // dificuldade Aniquilação". O bestiário é canon (wiki "Araras Devoradas" e "Felinos Devorados": os animais da Coroa
+  // de Espinhos tomados pelo Sangue; a variante INFERNAL de cada um). EM PRODUÇÃO (`hidden`): faltam os modelos da
+  // Arara, do Felino e do Quibungo. PROPOSTA: tudo o que é número.
+  sertao: {
+    id: 'sertao',
+    hidden: true,
+    storyOrder: 3.5, // Hexatombe (2025): antes de A Vigília
+    name: 'Sertão do Quibungo',
+    place: 'Coroa de Espinhos',
+    thumb: { from: 'sertao' },
+    color: '#ff4a2a',
+    arena: 'sertao',
+    boss: null, // o Quibungo é um bicho (Dungeon.startWave kind 'beastBoss'), não um lutador
+    bossName: 'O QUIBUNGO',
+    restricted: [],
+    waves: {
+      foes: 'sertao',
+      count: { easy: 7, normal: 8, hard: 9, superhard: 10, annihilation: 11 },
+      bossEvery: 3, chestEvery: 2, chestFade: 6,
+      rest: 5,
+      firstDelay: 6,
+      spawnRadius: 15,
+      giantHp: 700, lanterns: true,
+    },
+    about: 'FASE DE ONDAS no morro da caatinga: os animais da Coroa de Espinhos tomados pelo Sangue chegam em ondas — ARARAS DEVORADAS dão rasantes do céu e FELINOS DEVORADOS cercam pelo chão. Na última onda vem o QUIBUNGO. No Aniquilação, as variantes INFERNAIS.',
+    aboutShort: 'Fase de ONDAS: aguente as Araras e os Felinos Devorados no alto do morro; na última onda, o Quibungo',
+    tips: [
+      '<b>Fase de ondas:</b> os animais da caatinga tomados pelo Sangue chegam pelo mato em volta do morro.',
+      'As <b>ARARAS DEVORADAS</b> voam alto e descem num RASANTE: esquive na hora em que mergulham e bata quando pousam.',
+      'As <b>LAMPARINAS DO CRISTINO</b> estão acesas pelo morro: passe por cima para pegar e arremesse nos bichos — estoura e deixa fogo no chão. Acerta as Araras no ar.',
+      'Os <b>FELINOS DEVORADOS</b> andam em bando e dão o bote com a língua. Não deixe que cerquem você.',
+      'Na última onda vem o <b>QUIBUNGO</b>: mais de três metros, quatro braços e uma bocarra nas costas.',
+      'No <b>Aniquilação</b> vêm as variantes INFERNAIS, mais fortes.',
+    ],
+    minDepth: 3,
+    minions: 'zumbi',
+    drops: { heal: { chance: 0.45, amount: 0.18 } },
+    xp: { araraDevorada: 20, felinoDevorado: 24, araraInfernal: 40, felinoInfernal: 48, gigante: 90, boss: 180 },
+    exploreHint: 'Prepare-se: o mato se mexe',
+    deathText: 'VOCÊ CAIU',
+    endTitle: ['VOCÊ CAIU NO SERTÃO', 'VOCÊS CAÍRAM NO SERTÃO'],
+    killsLabel: 'Devorados',
+    bossDownText: 'O QUIBUNGO CAIU',
+    route: { rooms: [0, 0], monsters: [0, 0] },
+    start: 'morro',
+    bossModule: 'morro',
+    modules: {
+      morro: {
+        kind: 'waves', floor: 0, title: 'Alto do Morro', objective: 'Sobreviva às ondas',
+        entry: { x: 0, z: 9, yaw: Math.PI },
+        spawn: { x: 0, z: -11 }, // por onde o Quibungo sobe (a trilha)
+        exits: {},
+        chests: [{ x: -6, z: 2 }, { x: 6, z: 3 }, { x: 0, z: -6 }],
+        drawers: [],
+      },
+    },
+    exit: { door: { x: 70, z: 0, hidden: true } },
+    chests: { chance: { waves: 0 }, coinsBoss: 18 },
+  },
   // TORRE DA TV VARMINHO (pedido do dono, 2026-11-13: "a nova fase do Outro Lado: Torre de Transmissão, onde o boss será
   // o Estrangeiro"; estudo em docs/TORRE-TRANSMISSAO.md). Lançada na v4.42.0 (dev: B = await
   // import('/src/dev/pveBattery.js'); B.run(['joui'], 1, 'estrangeiro')).
@@ -805,6 +867,7 @@ export function wavePlan(D, difficulty = 'normal') {
   const W = D && D.waves;
   if (!W) return [];
   if (W.foes === 'samhain') return samhainPlan(W, difficulty);
+  if (W.foes === 'sertao') return sertaoPlan(W, difficulty);
   const total = W.count[difficulty] ?? W.count.normal;
   const every = W.bossEvery || 3;
   const X = WAVE_DIFF[difficulty] || WAVE_DIFF.normal;
@@ -827,6 +890,48 @@ export function wavePlan(D, difficulty = 'normal') {
     // os animais em rodízio: na 2ª onda só lobos; depois, a partir de um tipo diferente a cada onda
     for (let i = 0; i < animals; i++) put(n === 2 ? 'cao' : ANIMALS[(n + i) % 3], 1);
     out.push({ n, kind: 'horde', count, strongs, foes });
+  }
+  return out;
+}
+
+// as ondas do SERTÃO (o Quibungo): Felinos Devorados pelo chão e Araras Devoradas pelo céu, crescendo com a onda; a
+// cada `bossEvery` uma REVOADA (só araras, mais delas); a ÚLTIMA é o QUIBUNGO sozinho (kind 'beastBoss'). As variantes
+// INFERNAIS entram só no Aniquilação (dono, 2026-11-20). PROPOSTA: as quantidades.
+const SERTAO_DIFF = {
+  easy: { extra: 0, birds: 0.3, infernal: 0 },
+  normal: { extra: 0, birds: 0.35, infernal: 0 },
+  hard: { extra: 1, birds: 0.4, infernal: 0 },
+  superhard: { extra: 1, birds: 0.45, infernal: 0 },
+  annihilation: { extra: 2, birds: 0.45, infernal: 0.35 },
+};
+export function sertaoPlan(W, difficulty = 'normal') {
+  const total = W.count[difficulty] ?? W.count.normal;
+  const every = W.bossEvery || 3;
+  const X = SERTAO_DIFF[difficulty] || SERTAO_DIFF.normal;
+  const out = [];
+  const put = (foes, k, v) => { if (v > 0) foes[k] = (foes[k] || 0) + v; };
+  for (let n = 1; n <= total; n++) {
+    if (n === total) { out.push({ n, kind: 'beastBoss', count: 1, strongs: 0, foes: { quibungo: 1 } }); continue; }
+    const foes = {};
+    if (n % every === 0) {
+      // a REVOADA: as araras descem juntas
+      const count = Math.min(7, 3 + Math.floor(n / 3) + X.extra);
+      const inf = Math.round(count * X.infernal);
+      put(foes, 'araraDevorada', count - inf);
+      put(foes, 'araraInfernal', inf);
+      out.push({ n, kind: 'flock', count, strongs: inf, foes });
+      continue;
+    }
+    const count = Math.min(9, 2 + Math.ceil(n * 0.6) + X.extra);
+    const birds = n === 1 ? 0 : Math.min(count - 1, Math.max(1, Math.round(count * X.birds)));
+    const cats = count - birds;
+    const infB = Math.round(birds * X.infernal);
+    const infC = n >= 3 ? Math.round(cats * X.infernal) : 0;
+    put(foes, 'felinoDevorado', cats - infC);
+    put(foes, 'felinoInfernal', infC);
+    put(foes, 'araraDevorada', birds - infB);
+    put(foes, 'araraInfernal', infB);
+    out.push({ n, kind: 'horde', count, strongs: infB + infC, foes });
   }
   return out;
 }

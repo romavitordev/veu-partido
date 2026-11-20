@@ -501,7 +501,7 @@ export class SamhainItems {
           if (z.model && z.model.root) { z.model.root.position.x = z.pos.x; z.model.root.position.z = z.pos.z; }
         }
         if (burn) {
-          z.hitBy(this.d.player, Math.round(FI.dps * 0.5));
+          z.hitBy(this.d.player, Math.round(FI.dps * 0.5), { kind: 'ability', fire: true });
           this.w.fx.burst(new THREE.Vector3(z.pos.x, 1.2, z.pos.z), { count: 3, color: FIRE, speed: 1.2, up: 2, life: 0.35, size: 0.25 });
         }
       }
