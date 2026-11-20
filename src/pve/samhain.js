@@ -14,10 +14,15 @@ import { makeLightning } from '../arena/nightLife.js';
 import { distXZ } from '../core/util.js';
 import { buildAssombracao } from '../models/assombracao.js';
 
-// as casas do mapa: [ângulo, raio, largura, fundo] (arena_treb_ciach.py HOUSES) e os aldeões de cada uma (são ~15 nomeados)
+// as casas do mapa: [ângulo, raio, largura, fundo] (arena_treb_ciach.py HOUSES) e os aldeões de cada uma (são ~15 nomeados, mais os 5 visitantes = 20)
 const HOUSES = [[0.62, 26.5, 8.5, 5.0], [1.05, 28.5, 7.0, 4.6], [2.1, 26.5, 9.0, 5.2], [2.62, 28.5, 7.5, 4.8],
   [Math.PI, 31, 11, 6.0], [4.45, 26.5, 8.0, 5.0], [5.0, 28.5, 9.5, 5.2], [5.62, 26.5, 7.0, 4.6]];
 const VILLAGERS = [2, 2, 2, 2, 3, 2, 1, 1];
+// os VISITANTES do Samhain (dono, 2026-11-20: "deixe 20 aldeões em treb e não apenas 15, pois tem os visitantes de treb
+// ciach. Então 5 casas terão 2 aldeões e caso um morra, tem o outro ainda, como duas chances"): cinco casas recebem um
+// visitante a mais. Quando a lamparina dessas casas apaga pela primeira vez, morre só o visitante e a chama volta com
+// `VILLAGE.secondChance` da vida; na segunda vez morrem os moradores. PROPOSTA: quais casas e quanto a chama volta.
+const VISITORS = [0, 1, 0, 1, 0, 1, 1, 1];
 const ARROW_V = new THREE.Vector3();
 export const VILLAGE = {
   // Difícil para cima mais vida e o reacender mais rápido (dono, 2026-11-20: "ganhamos poucas vezes no dificil e nenhuma no
@@ -25,6 +30,7 @@ export const VILLAGE = {
   lampHp: { easy: 300, normal: 250, hard: 240, superhard: 215, annihilation: 185 },
   relight: 30, // vida por segundo que a lamparina recupera com alguém parado perto
   relightRange: 2.2,
+  secondChance: 0.5, // a vida com que a chama volta quando morre o visitante da casa
   rest: 0.35, // a chama que volta sozinha entre as ondas (fração da vida)
   safeRange: 3.2, // sem Assombração a esta distância da porta
   alertEvery: 6,
@@ -40,7 +46,7 @@ export function houseDoors(limit) {
     let dx = x + lx * c + lz * s, dz = z - lx * s + lz * c;
     const rr = Math.hypot(dx, dz);
     if (rr > limit) { dx *= limit / rr; dz *= limit / rr; }
-    return { i, x: dx, z: dz, villagers: VILLAGERS[i] };
+    return { i, x: dx, z: dz, villagers: VILLAGERS[i] + VISITORS[i], visitors: VISITORS[i] };
   });
 }
 
@@ -55,6 +61,7 @@ class House {
     this.maxHp = hp;
     this.hp = hp;
     this.villagers = door.villagers;
+    this.visitors = door.visitors || 0;
     this.state = 'idle';
     this.alertAt = -99;
     // a lamparina (a chama amarela) e o anel no chão que mostra quanto ela aguenta
@@ -154,7 +161,13 @@ class House {
     this.hp = Math.max(0, this.hp - dmg);
     this.hitAt = this.v.t;
     this.v.onHouseHit(this);
-    if (this.hp <= 0) {
+    if (this.hp <= 0 && this.visitors > 0) {
+      // a SEGUNDA CHANCE: o visitante morre e os moradores reacendem a chama
+      this.visitors--;
+      this.villagers--;
+      this.hp = this.maxHp * VILLAGE.secondChance;
+      this.v.onVisitorLost(this);
+    } else if (this.hp <= 0) {
       this.state = 'ko';
       this.v.onHouseLost(this);
     }
@@ -355,6 +368,14 @@ export class SamhainVillage {
       d.hud.callout('UMA CASA ESTÁ SENDO ATACADA', '#ffb84a');
       d.audio.play('fearGaze', { volume: 0.5, pitch: 1.4 });
     }
+  }
+
+  onVisitorLost(h) {
+    const d = this.d;
+    d.hud.callout('O VISITANTE MORREU: A CHAMA VOLTOU', '#ff8a3a');
+    d.audio.play('drain', { volume: 0.7, pitch: 0.8 });
+    d.world.fx.burst(h.chestPos(new THREE.Vector3()), { count: 18, color: 0x2a2c30, kind: 'smoke', speed: 1.4, up: 1.3, life: 1, size: 0.7, grow: 1 });
+    d.waveObjective();
   }
 
   onHouseLost(h) {

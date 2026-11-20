@@ -1,5 +1,13 @@
 # Registro administrativo de alterações
 
+## v5.37.1 — Os Visitantes do Samhain
+
+- Versão: `VERSION` 5.37.0 → **5.37.1**. Data: 2026-11-20.
+- Dono: "deixe 20 aldeões em treb e não apenas 15, pois tem os visitantes de treb ciach. Então 5 casas terão 2 aldões e
+  caso um morra, tem o outro ainda, como duas chances." "Sim, lance". Quais casas e a meia vida da volta: PROPOSTA.
+- Testado no navegador (SamhainVillage isolada): 20/20 → 19/20 com a casa acesa → 17/20 ao apagar de novo.
+- `npm test` (125), `npm run check` ("Tudo certo.") ok.
+
 ## v5.37.0 — O Carniçal de Lodo
 
 - Versão: `VERSION` 5.36.0 → **5.37.0**. Data: 2026-11-20.

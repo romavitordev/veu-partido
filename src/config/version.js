@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.37.0';
+export const VERSION = '5.37.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.37.1',
+    date: '2026-11-20',
+    title: 'Os Visitantes do Samhain',
+    items: [
+      'TREB CIACH: a vila agora tem 20 ALDEÕES (os 15 moradores e 5 VISITANTES do Samhain). Cinco casas recebem um visitante: na primeira vez que a lamparina delas apaga, morre só ele e a chama volta com metade da vida — uma segunda chance; na segunda vez morrem os moradores.',
+    ],
+  },
   {
     v: '5.37.0',
     date: '2026-11-20',

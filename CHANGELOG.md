@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.37.1 — Os Visitantes do Samhain
+
+### Alterado
+- `pve/samhain.js`: `VISITORS` (um visitante a mais em 5 das 8 casas, total 20); `House.hurt` mata primeiro o visitante e
+  devolve a chama com `VILLAGE.secondChance` (0,5) da vida; `SamhainVillage.onVisitorLost` (aviso, fumaça, objetivo).
+
 ## v5.37.0 — O Carniçal de Lodo
 
 ### Alterado

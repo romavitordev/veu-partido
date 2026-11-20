@@ -2,6 +2,9 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.37.1 — Os Visitantes do Samhain
+- TREB CIACH: a vila agora tem 20 ALDEÕES (os 15 moradores e 5 VISITANTES do Samhain). Cinco casas recebem um visitante: na primeira vez que a lamparina delas apaga, morre só ele e a chama volta com metade da vida — uma segunda chance; na segunda vez morrem os moradores.
+
 ## v5.37.0 — O Carniçal de Lodo
 - CARNIÇAL remodelado: corpo de lodo com músculos de verdade (ombros, bíceps, antebraços, peito, coxas e panturrilhas), fibras torcidas como cordas, abdômen em gomos, tendões que serpenteiam pelos braços, o vermelho de carne só nas costas e nos ombros e a caveira com terra e sujeira. O retrato do Sobre foi atualizado.
 
