@@ -190,15 +190,15 @@ export const TEAM_LINKS = {
     masks: { eloy: { show: ['maskOn'] }, cindy: { show: ['maskOn'] }, caio: { show: ['maskOn'] }, franco: { show: ['maskOn'] }, ale: { show: ['maskOn'] } },
   },
   // VAMPIROS (pedido do dono, 2026-11-18: "personagem novo de alguma equipe que falta"): o Raziel, a Sabara e a Alvira,
-  // a Primeira Vampira, fecham o trio de Hexatombe. Velisar e Zéfero entram no grupo quando estiverem no elenco
+  // a Primeira Vampira, e (2026-11-19) o Velisar e o Zéfero: a equipe inteira de Hexatombe
   vampiros: {
     id: 'vampiros',
     kind: 'group',
     name: 'MISSA DE SANGUE',
     banner: 'Missa de Sangue!',
-    group: ['raziel', 'sabara', 'alvira'],
+    group: ['raziel', 'sabara', 'alvira', 'velisar', 'zefero'],
     min: 3,
-    order: ['alvira', 'sabara', 'raziel'],
+    order: ['alvira', 'velisar', 'zefero', 'sabara', 'raziel'],
     color: 0xa01018,
     choreo: 'vampiros',
   },

@@ -37,6 +37,8 @@ import franco from './franco.js';
 import ale from './ale.js';
 import sabara from './sabara.js';
 import alvira from './alvira.js';
+import velisar from './velisar.js';
+import zefero from './zefero.js';
 import celestine from './celestine.js';
 import gaius from './gaius.js';
 import amalia from './amalia.js';
@@ -71,7 +73,7 @@ export const ROSTER = [
   dalmo, aguiar, jae, kemi, labirinto, juan, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo
   eloy, cindy, caio, franco, ale, // PSIKOLERA (Hexatombe) — o baterista e fundador, a baixista, o vocalista, o guitarrista e o teclado (Alê)
-  raziel, sabara, alvira, // Vampiros (Hexatombe) — o líder, a batedora e a Primeira Vampira (2026-11-18); Velisar e Zéfero entram depois
+  raziel, sabara, alvira, velisar, zefero, // Vampiros (Hexatombe) — o líder, a batedora, a Primeira Vampira (2026-11-18), o Velisar e o Zéfero (2026-11-19)
   // (2026-10-27) PORTADORES ≠ RELÍQUIAS: quem CARREGA a Relíquia e quem É a Relíquia. As formas ainda acontecem na luta
   // (Henri → Juan (Portador) → Portador do Trono; Arnaldo → Anfitrião; Ferreiro → Deus da Morte), mas também dá para
   // começar já como elas (selectableForms.js)

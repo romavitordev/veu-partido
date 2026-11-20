@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.29.0';
+export const VERSION = '5.30.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.30.0',
+    date: '2026-11-19',
+    title: 'O Ator e o Espécime',
+    items: [
+      'VELISAR jogável (Vampiros): o ator do cinema mudo de 2 metros, com a túnica ocre até o chão e o sobretudo preto de babados de asa de morcego. Garras longas, Navalhas no □, OLHAR DA CURIOSIDADE MÓRBIDA (quem olha nos olhos dele vira servo por um instante; quem não olha fica cego), ARMADILHA SANGUINÁRIA (planta um corpo que explode em sangue, dentes e navalhas quando o adversário chega perto), Sugar o Sangue, Voo do Vampiro, especial O BEIJO SANGRENTO e despertar Lorde Ruthven.',
+      'ZÉFERO jogável (Vampiros): o espécime do Velisar, com o grilhão de espinhos e a corrente no pescoço. Garras e dentes, o BOTE no □, MORDIDA FAMINTA (bebe tudo de quem está morrendo), ROSNADO (paralisa de medo), SOLTO DA CORRENTE, FARO DE SANGUE, especial ESPÉCIME e despertar Sem Coleira. Rápido e faminto, mas aguenta pouco.',
+      'A equipe dos Vampiros está completa: Raziel, Sabara, Alvira, Velisar e Zéfero. Os dois entram na MISSA DE SANGUE (o especial em equipe): o Velisar hipnotiza e o Zéfero morde.',
+      'Falas de vitória, de entrada e de luta dos dois contra todo o elenco; cenas de agarrão próprias; os dois desbloqueiam no Outro Lado junto com a Alvira.',
+    ],
+  },
   {
     v: '5.29.0',
     date: '2026-11-19',

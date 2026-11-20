@@ -629,6 +629,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **Velisar e Zéfero (Vampiros)** — v5.30.0: os dois que faltavam; a equipe dos Vampiros fica completa (Raziel, Sabara, Alvira, Velisar, Zéfero) e os dois entram na Missa de Sangue.
 - [ ] **Futuro: equipe dos COURAÇAS** (pedido do dono, 2026-11-13), os donos do Ferro Velho (o cenário "Base dos
       Couraças" já existe). Eloy (PSIKOLERA) e Sabara (Vampiros) entraram na v4.39.0. Antes de modelar, ler na wiki a
       página da equipe e de cada membro (aparência, armas, cenas de Hexatombe) e anotar em `lore/EQUIPES-HEXATOMBE.md`.
@@ -929,7 +930,7 @@ baixado sem o OK do dono.
         aproveitem esse banquete"); TRANSFORMAÇÃO "O VERDADEIRO RAZIEL" (rasga a parte de cima das roupas: o corpo
         descarnado com as costelas à mostra e os braços rasgados até o osso, a língua comprida; descontrolado, mais rápido
         e forte, SEDE INCONTROLÁVEL: devora quem está morrendo e se cura).
-        Equipe nova "Vampiros" (Alvira, Velisar, Zéfero, Sabara quando entrarem).
+        Equipe nova "Vampiros" (Alvira, Velisar, Zéfero, Sabara quando entrarem) — completa na v5.30.0.
 - [x] 3–14 Modo PvE, que vai se chamar **Outro Lado** (conferido em 2026-11-18: as 3 dungeons estão no jogo — Espreitador,
   Degolificada e Estrangeiro/Torre; o que falta tem item próprio nas seções do Outro Lado) — **EM PRODUÇÃO desde 2026-11-05; a 1ª fase jogável (Território do Espreitador) saiu na v4.25.0** — o coop local saiu na v4.29.0, o coop online na v4.30.0 e o backup na v4.31.0; falta: mais dungeons (a 3ª ficou para depois — decisão do dono, 2026-11-08) (pedido do dono: "leia tudo
   sobre o modo Outro Lado e comece a produção. Quero que tenha pelo menos uma fase jogável pra lançar"; antes ficou em

@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.30.0 — O Ator e o Espécime
+
+### Adicionado
+- `src/characters/velisar.js` e `src/characters/zefero.js` (ROSTER, unlocks no preço 170, grabScenes, battleRecent,
+  introVoices, dialogues, teamLinks: o grupo `vampiros` com os cinco).
+- `src/combat/velisarAbilities.js`: tipos `morbidGaze` (cone: transe em quem olha, cegueira em quem não olha) e
+  `bloodTrap` (o corpo plantado como ticker do mundo; um por vez em `f.bloodTrapObj`; explode com `launch` e sangramento).
+- `src/anim/razielClips.js`: `idle_velisar`, `idle_zefero`, `vic_velisar` (a reverência do ator), `vic_zefero` (o rugido).
+- `src/models/textures.js`: `face_velisar` e `face_zefero`.
+- Modelos `tools/blender/char_velisar.py` (2 m; túnica por tube, sobretudo casca + open_tube, pelerine e barra de asa de
+  morcego por `shell_grid` com pingentes) e `char_zefero.py` (1,70 m; babados, suspensórios, faixas em espiral, grilhão e
+  corrente de elos). `public/models/velisar.glb` e `zefero.glb`.
+- `src/combat/teamSpecials.js` `vampiros`: o Velisar e o Zéfero na Missa de Sangue (`splitDamage(crewTotal, 9)`).
+- `src/config/balance.js`: `velisar { dealt 1.12, taken 0.92 }` e `zefero { dealt 1.06, taken 0.96 }`.
+
 ## v5.29.0 — O Suvaco de Hexatombe
 
 ### Mudado

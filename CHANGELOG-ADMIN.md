@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v5.30.0 — O Ator e o Espécime
+
+- Versão: `VERSION` 5.29.0 → **5.30.0**. Data: 2026-11-19.
+- Dono: "faça os membros que faltam dos vampiros".
+- Cânone pelas páginas da wiki (Velisar, Zéfero, Vampiros) e a arte de corpo inteiro de cada um. PROPOSTA: os números,
+  o Navalhas e o Bote no □, o Rosnado, Solto da Corrente, Faro de Sangue, os especiais (O Beijo Sangrento, Espécime) e
+  os despertares (Lorde Ruthven, Sem Coleira), as falas.
+- Telemetria focada (12 personagens, 2 lutas por par, Igreja): Velisar 25% sem ajuste → 66% com 1.2/0.88 (ficou o meio-termo 1.12/0.92); Zéfero 34% sem ajuste (+6% de dano). Medir de novo numa rodada geral.
+- Testado no navegador: os dois modelos de frente e de perto, luta CPU × CPU sem erros.
+- `npm test`, `npm run check`, `vite build` (em outra pasta) e `npm run moves` ok.
+
 ## v5.29.0 — O Suvaco de Hexatombe
 
 - Versão: `VERSION` 5.28.0 → **5.29.0**. Data: 2026-11-19.

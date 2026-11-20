@@ -1556,8 +1556,9 @@ const CHOREO = {
     const END = S + 5.4;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const alvira = tools.get('alvira'), sabara = tools.get('sabara'), raziel = tools.get('raziel');
+    const velisar = tools.get('velisar'), zefero = tools.get('zefero');
     const BLOOD = 0xa01018, CRIMSON = 0xd01c30;
-    const hits = splitDamage(crewTotal, 7);
+    const hits = splitDamage(crewTotal, 9);
     const say = sayer(world);
     const cords = [];
     // 1. o sino e a reza; as cordas de sangue saem das mãos dela
@@ -1566,6 +1567,8 @@ const CHOREO = {
       if (alvira) { tools.enter(alvira, 0, 4.2); alvira.play('concentrate', 1.4); }
       if (sabara) { tools.enter(sabara, -0.9, 3.2); sabara.play('idle_dual', 1.2); }
       if (raziel) { tools.enter(raziel, 0.9, 3.4); raziel.play('taunt_roar', 1.0); }
+      if (velisar) { tools.enter(velisar, -1.8, 4.0); velisar.play('idle_velisar', 1.4); }
+      if (zefero) { tools.enter(zefero, -1.5, 3.0); zefero.play('idle_zefero', 1.4); }
       world.audio.play('bellToll', { volume: 0.9 });
       say(alvira || sabara || raziel, alvira ? 'Quando o sino tocar hoje...' : 'De joelhos.', 0);
       if (alvira) world.cameraRig.playShots([{ ...faceClose(alvira, { dur: 1.2, from: 2.6, to: 1.6, height: 1.55, fov: 38 }), cut: true }]);
@@ -1592,6 +1595,23 @@ const CHOREO = {
       if (i === 0) say(sabara, 'Dança comigo.', 1);
       tools.impact(sabara, hits[1 + i], { sound: 'bladeHit', color: CRIMSON, slash: true });
     }));
+    // 2b. (2026-11-19) o Velisar olha no fundo dos olhos do alvo e SOLTA a corrente do Zéfero, que pula e morde
+    tl.add(S + 1.0, () => {
+      if (!live() || !velisar) return;
+      velisar.face(opp);
+      velisar.play('concentrate', 0.8);
+      say(velisar, zefero ? 'Vai, meu espécime.' : 'Olhe nos meus olhos.', 1);
+      tools.impact(velisar, hits[7], { sound: 'fearGaze', color: CRIMSON });
+    });
+    tl.add(S + 2.2, () => {
+      if (!live() || !zefero) return;
+      const at = tools.around(zefero, -Math.PI / 2, 1.1);
+      zefero.pos.set(at.x, 0, at.z);
+      zefero.face(opp);
+      zefero.play('raziel_bite', 0.5);
+      world.fx.burst(opp.chestPos(), { count: 20, color: BLOOD, speed: 3, life: 0.5, size: 0.14, gravity: 8 });
+      tools.impact(zefero, hits[8], { sound: 'clawHit', color: BLOOD });
+    });
     // 3. o Raziel salta e morde
     tl.add(S + 2.5, () => {
       if (!live() || !raziel) return;

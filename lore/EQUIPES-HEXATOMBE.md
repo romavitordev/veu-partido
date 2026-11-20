@@ -49,7 +49,7 @@ original — Moeller Method como agarrão de "bateria" — e as baquetas) ou **C
 tiro dançando, Silenciar como habilidade). Franco (lança-chamas) e Caio (espada microfone + Berrão) também rendem kits
 muito distintos. Os cinco juntos fecham uma equipe com especial de banda ("show").
 
-## VAMPIROS (já no jogo: Raziel, Sabara e Alvira — v5.12.0; Velisar e Zéfero ainda não)
+## VAMPIROS (todos no jogo: Raziel, Sabara, Alvira — v5.12.0; Velisar e Zéfero — v5.30.0)
 Monstruosos de Sangue, base na Igreja Antiga; todos com afinidade de Sangue (rituais sem ingrediente).
 - **Alvira** (1,70 m): sorriso enorme de dentes afiados, cabelo ruivo muito longo com franja, faixas COSTURADAS sobre os
   olhos descendo ao pescoço; roupa de FREIRA de véu enorme até o chão, pontas rasgadas, túnica aberta nas costas. Arma:

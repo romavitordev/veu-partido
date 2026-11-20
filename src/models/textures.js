@@ -394,6 +394,94 @@ function sabaraFace(g, blood) {
   }
 }
 
+// VELISAR (wiki, arte de Hexatombe): pele vermelho-escura, careca com os CORTES fundos na cabeça (mais na testa), os
+// BURACOS no lugar dos olhos com a borda vermelha, o sorriso macabro de dentes longos e as presas
+const VELISAR_FACE = {
+  skin: '#9a4a44',
+  noEyes: true,
+  mouth: { mouthW: 0.1, smile: 0, lip: 'rgba(0,0,0,0)', lipLine: 'rgba(0,0,0,0)' },
+};
+function velisarFace(g) {
+  const rnd = seeded(131);
+  // os cortes na cabeça: riscos escuros verticais pela testa e pelo alto, com a borda viva
+  for (let i = 0; i < 14; i++) {
+    const x = CX + (i - 6.5) * 22 + (rnd() - 0.5) * 10;
+    const y0 = 4 + rnd() * 10, y1 = (Math.abs(x - CX) < 70 ? 92 : 60) + rnd() * 10;
+    g.strokeStyle = 'rgba(200,90,80,0.7)'; g.lineWidth = 6; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(x, y0); g.quadraticCurveTo(x + (rnd() - 0.5) * 14, (y0 + y1) / 2, x + (rnd() - 0.5) * 8, y1); g.stroke();
+    g.strokeStyle = 'rgba(40,6,8,0.95)'; g.lineWidth = 2.6;
+    g.beginPath(); g.moveTo(x, y0); g.quadraticCurveTo(x + (rnd() - 0.5) * 14, (y0 + y1) / 2, x + (rnd() - 0.5) * 8, y1); g.stroke();
+  }
+  // os buracos dos olhos: fundos e escuros, a borda vermelha inflamada
+  for (const sx of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 2, 2, CX + sx * 32, EYE_Y + 2, 24);
+    gr.addColorStop(0, 'rgba(4,0,0,1)'); gr.addColorStop(0.55, 'rgba(30,4,6,0.95)'); gr.addColorStop(0.8, 'rgba(170,30,30,0.7)'); gr.addColorStop(1, 'rgba(120,30,30,0)');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 24, 16, sx * 0.15, 0, Math.PI * 2); g.fill();
+  }
+  // as maçãs do rosto fundas (a cara de caveira do Conde)
+  for (const sx of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + sx * 48, MOUTH_Y - 18, 2, CX + sx * 48, MOUTH_Y - 18, 26);
+    gr.addColorStop(0, 'rgba(40,8,10,0.45)'); gr.addColorStop(1, 'rgba(40,8,10,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(CX + sx * 48, MOUTH_Y - 18, 26, 0, Math.PI * 2); g.fill();
+  }
+  // o sorriso macabro: a boca fina e larga, os dentes longos e as duas presas no meio
+  g.fillStyle = '#1a0406';
+  g.beginPath(); g.moveTo(CX - 44, MOUTH_Y - 6); g.quadraticCurveTo(CX, MOUTH_Y + 14, CX + 44, MOUTH_Y - 6); g.quadraticCurveTo(CX, MOUTH_Y + 2, CX - 44, MOUTH_Y - 6); g.fill();
+  g.fillStyle = '#ece2cc';
+  for (let i = -7; i <= 7; i++) {
+    const x = CX + i * 5.6;
+    const long = Math.abs(i) === 1 ? 13 : 7;
+    const y0 = MOUTH_Y - 5 + Math.abs(i) * 0.3;
+    g.beginPath(); g.moveTo(x - 2.4, y0); g.lineTo(x + 2.4, y0); g.lineTo(x, y0 + long); g.closePath(); g.fill();
+  }
+  // o sangue no queixo
+  g.strokeStyle = 'rgba(110,8,12,0.85)'; g.lineWidth = 2.4;
+  for (const dx of [-14, 6, 18]) { g.beginPath(); g.moveTo(CX + dx, MOUTH_Y + 6); g.lineTo(CX + dx + 2, MOUTH_Y + 30); g.stroke(); }
+}
+
+// ZÉFERO (wiki, arte de Hexatombe): pele clara SUJA DE SANGUE, o rosto todo ARRANHADO e cortado, os olhos arrancados e a
+// boca ENORME (a mandíbula alargada pelo Velisar) cheia de dentes afiados
+const ZEFERO_FACE = {
+  skin: '#c49a8c',
+  noEyes: true,
+  mouth: { mouthW: 0.1, smile: 0, lip: 'rgba(0,0,0,0)', lipLine: 'rgba(0,0,0,0)' },
+};
+function zeferoFace(g) {
+  const rnd = seeded(149);
+  // o sangue espalhado por tudo
+  for (let i = 0; i < 60; i++) {
+    const x = rnd() * W, y = rnd() * HT, r = 6 + rnd() * 26;
+    const gr = g.createRadialGradient(x, y, 1, x, y, r);
+    gr.addColorStop(0, `rgba(${110 + rnd() * 40 | 0},10,14,0.5)`); gr.addColorStop(1, 'rgba(110,10,14,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+  // os arranhões em diagonal pelo rosto inteiro
+  for (let i = 0; i < 26; i++) {
+    const x = CX - 110 + rnd() * 220, y = 20 + rnd() * 200, l = 20 + rnd() * 50, a = 0.6 + rnd() * 0.8;
+    g.strokeStyle = 'rgba(90,6,10,0.8)'; g.lineWidth = 1.4 + rnd() * 1.6;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l * (rnd() < 0.5 ? -1 : 1), y + Math.sin(a) * l); g.stroke();
+  }
+  // as covas dos olhos
+  for (const sx of [-1, 1]) {
+    const gr = g.createRadialGradient(CX + sx * 32, EYE_Y + 2, 2, CX + sx * 32, EYE_Y + 2, 21);
+    gr.addColorStop(0, 'rgba(6,2,2,1)'); gr.addColorStop(0.6, 'rgba(40,6,6,0.9)'); gr.addColorStop(1, 'rgba(60,12,10,0)');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(CX + sx * 32, EYE_Y + 2, 21, 15, sx * 0.1, 0, Math.PI * 2); g.fill();
+  }
+  // a boca enorme, de orelha a orelha, as duas fileiras de dentes raspados em ponta
+  g.fillStyle = 'rgba(130,8,12,0.9)';
+  g.beginPath(); g.ellipse(CX, MOUTH_Y + 10, 70, 30, 0, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#160404';
+  g.beginPath(); g.moveTo(CX - 64, MOUTH_Y - 10); g.quadraticCurveTo(CX, MOUTH_Y + 40, CX + 64, MOUTH_Y - 10); g.quadraticCurveTo(CX, MOUTH_Y - 2, CX - 64, MOUTH_Y - 10); g.fill();
+  g.fillStyle = '#d8c8b0';
+  for (let i = -11; i <= 11; i++) {
+    const x = CX + i * 5.6, t = i / 11;
+    const yTop = MOUTH_Y - 10 + 8 * (1 - t * t);
+    g.beginPath(); g.moveTo(x - 2.4, yTop); g.lineTo(x + 2.4, yTop); g.lineTo(x, yTop + 9); g.closePath(); g.fill();
+    const yBot = MOUTH_Y - 10 + 50 * (1 - t * t) * 0.5;
+    g.beginPath(); g.moveTo(x - 2.2, yBot); g.lineTo(x + 2.2, yBot); g.lineTo(x, yBot - 8); g.closePath(); g.fill();
+  }
+}
+
 function face(paintExtras, o) {
   return () => canvasTex(W, HT, (g) => {
     baseSkin(g, o.skin);
@@ -2892,6 +2980,8 @@ export const MATERIAL_TEXTURES = {
   // ---------------- SABARA (wiki: os olhos ARRANCADOS — dois buracos escuros —, a boca deformada cheia de dentes
   // pontiagudos; pele negra)
   face_sabara: face((g) => sabaraFace(g, false), SABARA_FACE),
+  face_velisar: face((g) => velisarFace(g), VELISAR_FACE), // VELISAR (Vampiros): os cortes na careca, os buracos dos olhos e as presas
+  face_zefero: face((g) => zeferoFace(g), ZEFERO_FACE), // ZÉFERO (Vampiros): arranhado, sujo de sangue, a boca enorme
   // GOSTO DE SANGUE (o Despertar): o rosto lavado de sangue — a boca e o queixo encharcados de quem acabou de morder,
   // respingos pelas bochechas e testa, um corte aberto na sobrancelha e o roxo de pancada na maçã do rosto
   face_sabara_blood: face((g) => sabaraFace(g, true), SABARA_FACE),

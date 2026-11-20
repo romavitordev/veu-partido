@@ -220,6 +220,9 @@ export const GRAB_SCENES = {
   franco: scene({ ...S('hammer_h'), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'shoot_bass', fx: 'pointBlank', sound: 'explosion', bleed: { dps: 4, duration: 2 } }),
   // SABARA: a espada no pescoço, a adaga curva no lado e a mordida (cânone: o Aguiar no ep. 4)
   alvira: scene({ ...S('hammer_h'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'raziel_bite', fx: 'consume', sound: 'clawHit', bleed: { dps: 4, duration: 2.5 } }),
+  // VELISAR: as garras longas abrem as entranhas e ele suga (cânone: o Dalmo); ZÉFERO: unhadas e a dentada (o Alê)
+  velisar: scene({ ...S('db_claw_r'), fx: { kind: 'slash' }, sound: 'clawHit' }, { ...S('db_cross'), fx: { kind: 'slash' }, sound: 'clawHit' }, { anim: 'raziel_feast', fx: 'consume', sound: 'clawHit', bleed: { dps: 4, duration: 2.5 } }),
+  zefero: scene({ ...S('db_claw_r'), fx: { kind: 'slash' }, sound: 'clawHit' }, { ...S('db_claw_l'), fx: { kind: 'slash' }, sound: 'clawHit' }, { anim: 'raziel_bite', fx: 'consume', sound: 'clawHit', bleed: { dps: 5, duration: 2.5 } }),
   sabara: scene({ ...S('dual_r'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('dual_l'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),
   // Cristino: segura pela gola, dois golpes de peixeira e a lâmina no pescoço ("Eu odeio gente barulhenta" — o Caíto)
   cristino: scene({ ...S('knife_1'), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('thrust'), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal', bleed: { dps: 4, duration: 2.5 } }),

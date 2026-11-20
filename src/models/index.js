@@ -23,6 +23,8 @@ const BLENDER_MODELS = {
   caio: { url: 'models/caio.glb', props: addCaioProps }, // PSIKOLERA: a Espada Microfone (a máscara PARE vem no modelo)
   franco: { url: 'models/franco.glb', props: addFrancoProps }, // PSIKOLERA: a Guitarra Lança-Chamas, o tanque e a máscara de gás (props.js)
   ale: { url: 'models/ale.glb', props: addAleProps }, // PSIKOLERA: a Lâmina Keytar (props.js) e a máscara de corpse paint (prop_maskOn)
+  velisar: { url: 'models/velisar.glb' }, // Vampiros: sem arma (as garras são do modelo)
+  zefero: { url: 'models/zefero.glb' }, // Vampiros: o grilhão e a corrente são do modelo
   alvira: { url: 'models/alvira.glb', props: addAlviraProps }, // Vampiros: o Cajado da Cruz de Sangue (costas parada, mão nos golpes)
   sabara: { url: 'models/sabara.glb', props: addSabaraProps }, // Vampiros: a espada e a adaga cerimonial
   dante: { url: 'models/dante.glb', props: addDanteProps }, // sem armas (Calamidade, de olhos fechados)

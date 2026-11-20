@@ -225,6 +225,32 @@ export const VOICES = {
       any: [(o) => `Shhh, ${o.name}. Fale baixo. Estamos na casa de Deus.`, (o) => `Que sangue bonito você tem, ${o.name}.`],
     },
   },
+  // VELISAR (cânone: ator do cinema mudo, contido, curioso, sádico, fala direto; o tom = PROPOSTA)
+  velisar: {
+    open: {
+      ally: (o) => `${o.name}! Que alegria. Conte-me tudo o que sabe antes de começarmos.`,
+      rival: (o) => `${o.group}... vocês viram um passarinho passando por aqui, ${o.name}?`,
+      any: [(o) => `Velisar está curioso a seu respeito, ${o.name}.`, (o) => `Olhe nos meus olhos, ${o.name}. Ou não olhe. Dá no mesmo.`],
+    },
+    reply: {
+      ally: (o) => `Ah, ${o.name}. Velisar adora um bom ensaio.`,
+      rival: (o) => `${o.group}? Excelente material para os meus experimentos.`,
+      any: [(o) => `Que interessante, ${o.name}. Continue falando.`, (o) => `Eu deixei um presente para você, ${o.name}.`],
+    },
+  },
+  // ZÉFERO (cânone: não fala, só rosna; as falas são a cena)
+  zefero: {
+    open: {
+      ally: () => '(fareja o aliado e baixa a cabeça, rosnando baixo)',
+      rival: () => '(puxa a corrente, rosnando, a baba escorrendo)',
+      any: [() => '(escancara a boca cheia de dentes e rosna)', () => 'Grrrrr...'],
+    },
+    reply: {
+      ally: () => '(gira a cabeça e solta um grunhido)',
+      rival: () => '(avança até a corrente esticar)',
+      any: [() => 'GRRRAAH!', () => '(lambe os dentes)'],
+    },
+  },
   artemis: {
     open: {
       ally: (o) => `${o.name}, querido. Vem com a mamãe. Vai doer só um pouquinho.`,

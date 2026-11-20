@@ -94,7 +94,7 @@ ok(get('juan_odio')?.origin === 'Portadores' && get('juan_odio').awakening.form 
   && ['arnaldo', 'ferreiro'].every((id) => get(id).origin === 'Portadores'),
 'equipes (2026-10-27): HENRI nos Mascarados → JUAN (Portador) → Portador do Trono; PORTADORES (Juan, Arnaldo, Ferreiro) ≠ RELÍQUIAS (Diabo, Deus da Morte, Magistrada, Anfitrião); OUTRO LADO (Estrangeiro, Amigo, Carniçal)');
 ok(VICTORY_LINES.anfitriao.default.length >= 16 && new Set(VICTORY_LINES.anfitriao.default).size === VICTORY_LINES.anfitriao.default.length && hostRandomSelectionValid, 'Anfitrião: falas caóticas próprias, variadas e selecionadas aleatoriamente');
-ok(ROSTER.map((c) => c.name).join() === 'ARTHUR CERVERO,JOUI JOUKI,KAISER,DANTE,ERIN PARKER,AGHATA,BALU,CARINA LEONE,RUBENS NALUTI,BEATRICE PORTINARI,FERNANDO CARVALHO,TRISTAN MONTEIRO,IVETE BEICUR,SENHOR VERÍSSIMO,CRISTOPHER,KIAN,GAL SAL,NUBI,DAMIR LUKIC,BORIS LUKIC,ARTEMIS,XANDE,GUIZO,LÍRIO,DARA,CHICO,MORATO,DALMO,AGUIAR,JAE,KEMI,LABIRINTO,HENRI,CRISTINO,ELOY FURTADO,CINDY LOPES,CAIO TELES,FRANCO,ALÊ,RAZIEL,SABARA,ALVIRA,JUAN,ARNALDO FRITZ,FERREIRO,CELESTINE,GAIUS,AMALIA,O DIABO,O DEUS DA MORTE,A MAGISTRADA,AMPHITRUO,O ESTRANGEIRO,AMIGO IMAGINÁRIO,CARNIÇAL,A DEGOLIFICADA,O ESPREITADOR', 'elenco agrupado por equipe: Ordo Realitas, Escriptas, Os Cinco, Mascarados, Transtornados, PSIKOLERA, Vampiros, Portadores, Ordo Calamitas, Relíquias, Outro Lado');
+ok(ROSTER.map((c) => c.name).join() === 'ARTHUR CERVERO,JOUI JOUKI,KAISER,DANTE,ERIN PARKER,AGHATA,BALU,CARINA LEONE,RUBENS NALUTI,BEATRICE PORTINARI,FERNANDO CARVALHO,TRISTAN MONTEIRO,IVETE BEICUR,SENHOR VERÍSSIMO,CRISTOPHER,KIAN,GAL SAL,NUBI,DAMIR LUKIC,BORIS LUKIC,ARTEMIS,XANDE,GUIZO,LÍRIO,DARA,CHICO,MORATO,DALMO,AGUIAR,JAE,KEMI,LABIRINTO,HENRI,CRISTINO,ELOY FURTADO,CINDY LOPES,CAIO TELES,FRANCO,ALÊ,RAZIEL,SABARA,ALVIRA,VELISAR,ZÉFERO,JUAN,ARNALDO FRITZ,FERREIRO,CELESTINE,GAIUS,AMALIA,O DIABO,O DEUS DA MORTE,A MAGISTRADA,AMPHITRUO,O ESTRANGEIRO,AMIGO IMAGINÁRIO,CARNIÇAL,A DEGOLIFICADA,O ESPREITADOR', 'elenco agrupado por equipe: Ordo Realitas, Escriptas, Os Cinco, Mascarados, Transtornados, PSIKOLERA, Vampiros, Portadores, Ordo Calamitas, Relíquias, Outro Lado');
 const jae = get('jae');
 ok(jae && jae.origin === 'Mascarados' && jae.element === 'intencao' && jae.awakening.form === 'jae_x' && jae.awakening.scene === 'hood' && ['dashStrike', 'shadowVeil', 'teleportBehind', 'whisperZone'].every((t) => jae.abilities.some((a) => a.type === t)) && jae.abilities.find((a) => a.type === 'dashStrike').blind > 0 && jae.abilities.find((a) => a.type === 'teleportBehind').strike && jae.passives.some((p) => p.type === 'backstab' && p.surprised), 'Jae: Mascarada de Intenção (tocou a Coroa) — Punhal X (cega), Shhh... (some nas sombras), Assassinato Furtivo (apunhala as costas), Zona dos Sussurros, bônus em desprevenido e o Capuz de X');
 const dalmo = get('dalmo');
@@ -573,6 +573,18 @@ ok(!COMBAT.powered && ROSTER.every((c) => !(c.abilities || []).some((a) => a.inp
     `Esfinge: ${RIDDLES.length} enigmas diferentes, cada um com 1 resposta certa e 3 erradas distintas`);
 }
 
+// ---------------- Velisar e Zéfero (Vampiros, Hexatombe) ----------------
+{
+  const vel = get('velisar');
+  const zef = get('zefero');
+  const ab = (c, t) => c.abilities.find((a) => a.type === t);
+  ok(vel && vel.origin === 'Vampiros' && vel.element === 'sangue' && ab(vel, 'morbidGaze') && ab(vel, 'bloodTrap') && ab(vel, 'vampireBite') && ab(vel, 'dashStrike')
+    && vel.special.name === 'O Beijo Sangrento' && vel.awakening.name === 'Lorde Ruthven',
+    'Velisar: Olhar da Curiosidade Mórbida, Armadilha Sanguinária, Sugar o Sangue, Voo do Vampiro, O Beijo Sangrento e Lorde Ruthven');
+  ok(zef && zef.origin === 'Vampiros' && zef.ranged.type === 'dashStrike' && ab(zef, 'vampireBite') && ab(zef, 'command') && ab(zef, 'selfBuff') && ab(zef, 'predatorScent')
+    && zef.passives.some((p) => p.type === 'devour') && zef.special.name === 'Espécime' && zef.awakening.name === 'Sem Coleira',
+    'Zéfero: Bote, Mordida Faminta, Rosnado, Solto da Corrente, Faro de Sangue, Devorar, Espécime e Sem Coleira');
+}
 // ---------------- Alvira (Vampiros, Hexatombe) ----------------
 {
   const alv = get('alvira');

@@ -2044,6 +2044,96 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## VELISAR
+
+*O cientista dos Vampiros, ex-astro do cinema mudo e dono do Zéfero* · arma: Garras longas, navalhas e os rituais de Sangue
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Unha comprida | 24 | 2.4 m |  |
+| ○ 2 | Unha de volta | 24 | 2.4 m |  |
+| ○ 3 | Abrir as entranhas | 30 (2 acertos) | 2.4 m |  |
+| ○ 4 | Corte final | 54 | 2.5 m | finalizador: lança |
+| Frente + ○ | Passo desumano | 32 | 2.4 m |  |
+| Trás + ○ | Recua curvado | 30 (2 acertos) | 2.3 m | invulnerável no começo |
+| Lado + ○ | Babado de morcego | 30 | 2.4 m |  |
+| No ar + ○ | O vampiro desce | 36 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Garra que ergue | 36 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Curvar-se sobre a presa | 42 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Navalhas
+
+- Dano 13 × 3 · alcance 24 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Olhar da Curiosidade Mórbida** — △ + □ / Y + X · custo 24 · cooldown 15 s · dano 14 · alcance 10 m
+  Atrai o adversário a olhar no fundo dos buracos dos olhos dele. Quem OLHA cai em transe, parado e sem defesa. Quem EVITA olhar (de costas ou defendendo) fica CEGO. A esquiva escapa.
+- **Armadilha Sanguinária** — △ + ○ / Y + B · custo 24 · cooldown 13 s · dano 46
+  Deixa um "presente" no chão: um corpo com a armadilha dentro. Quando o adversário chega perto, a cabeça e o tronco EXPLODEM em sangue, dentes e navalhas, que ferem e fazem sangrar em volta. Só uma por vez.
+- **Sugar o Sangue** — R2 + △ / RT + Y · custo 22 · cooldown 11 s · dano 26 · alcance 1.9 m
+  Dá o bote, segura a presa e crava os dentes duas vezes: tira vida, faz sangrar e CURA o Velisar com o sangue que suga.
+- **Voo do Vampiro** — △ + L2 / Y + LT · custo 20 · cooldown 10 s · dano 34 · alcance 1.8 m
+  Salta alto e voa na direção do adversário com as garras na frente: atravessa a arena e rasga em X, fazendo sangrar.
+- **Passiva — Afinidade com Sangue:** rituais de Sangue +10%; −15% de dano de rituais desse elemento
+
+### Especial: O Beijo Sangrento
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Lorde Ruthven
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano (físico, habilidades, especial), +12% de velocidade, recargas 35% mais rápidas, regenera 2 de vida/s, cura 8% na hora.
+
+---
+
+## ZÉFERO
+
+*O espécime do Velisar, o vampiro mais novo* · arma: Garras e dentes (e a corrente no pescoço)
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Unhada | 20 | 1.9 m |  |
+| ○ 2 | Unhada de volta | 20 | 1.9 m |  |
+| ○ 3 | Frenesi | 26 (2 acertos) | 1.9 m |  |
+| ○ 4 | Dentada | 48 | 1.9 m | finalizador: lança |
+| Frente + ○ | Avança de quatro | 30 | 2 m |  |
+| Trás + ○ | Pulo para trás | 26 (2 acertos) | 1.9 m | invulnerável no começo |
+| Lado + ○ | Rodeia a presa | 26 | 1.9 m |  |
+| No ar + ○ | Cai em cima | 34 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Pulo da fera | 34 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Prender no chão | 40 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Bote
+
+- Dano 26 · alcance 1.6 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Mordida Faminta** — △ + □ / Y + X · custo 20 · cooldown 8 s · dano 26 · alcance 1.7 m
+  Pula no pescoço do adversário e morde duas vezes: tira vida, faz sangrar e CURA o Zéfero. Contra quem está morrendo (menos de 30% de vida) vai mais longe e bebe tudo.
+- **Rosnado** — △ + ○ / Y + B · custo 20 · cooldown 12 s · dano 10 · alcance 5 m
+  Rosna na cara do adversário com a boca escancarada: quem está perto fica parado de medo por um instante.
+- **Solto da Corrente** — R2 + △ / RT + Y · custo 24 · cooldown 18 s
+  Arrebenta a corrente do grilhão: por 7 s corre e ataca mais rápido e bate mais forte, mas apanha um pouco mais.
+- **Faro de Sangue** — △ + L2 / Y + LT · custo 18 · cooldown 18 s
+  Fareja o sangue do adversário: por 8 s segue o rastro dele, anda mais rápido e todo ataque contra ele fica mais forte.
+- **Passiva — Afinidade com Sangue:** rituais de Sangue +10%; −15% de dano de rituais desse elemento
+
+### Especial: Espécime
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Sem Coleira
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades, especial), +15% de velocidade, recargas 30% mais rápidas, regenera 2.5 de vida/s, cura 10% na hora.
+
+---
+
 ## JUAN
 
 *Juan tomado pelo Ódio do Diabo: garras que fazem sangrar — e o Trono ainda chama* · arma: Garras de sangue no braço direito

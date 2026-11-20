@@ -19,6 +19,7 @@ import './tristanAbilities.js'; // e as do Tristan (o lança-chamas, a queimadur
 import './cindyAbilities.js'; // e as da Cindy (a Última Nota)
 import './cristopherAbilities.js'; // e a do Cristopher (o carro de dublê)
 import './razielAbilities.js'; // e a do Raziel (Mordida e Maldição Sanguínea)
+import './velisarAbilities.js'; // e as do Velisar (Olhar da Curiosidade Mórbida e Armadilha Sanguinária)
 import './danteAbilities.js'; // e as do Dante de Olhos Abertos (Paradoxo, Eco Espiral)
 import { SPECIALS } from './specials/index.js';
 import './outroLadoAbilities.js'; // e as da Degolificada e do Espreitador (cabelos, frestas e os especiais)
