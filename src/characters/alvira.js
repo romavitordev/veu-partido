@@ -164,27 +164,17 @@ export default {
   special: {
     name: 'Absolvição',
     banner: 'Você terá sua absolvição.',
-    type: 'cinematicCombo',
+    type: 'bellAbsolution', // especial próprio (specials/vampireSpecials.js): o sino, a marionete, as hastes, a bebida, a cruz
     energyCost: 50,
     cooldown: 14,
     color: BLOOD,
+    bellColor: GOLD,
     sound: 'specialStart',
-    physical: true,
-    prepare: { anim: 'concentrate', time: 0.5 },
-    dash: { speed: 20, maxTime: 0.55, contact: 2.0 },
-    standOff: 1.8,
-    hits: [
-      { t: 0.1, anim: 'hammer_h', dur: 0.42, share: 0.08, fx: { kind: 'slash', wide: true }, sound: 'bladeHit', shout: 'QUANDO O SINO TOCAR...' },
-      { t: 0.6, anim: 'hammer_diag', dur: 0.42, share: 0.08, fx: { kind: 'slash', flip: true }, sound: 'bladeHit' },
-      { t: 1.1, anim: 'thrust', dur: 0.4, share: 0.1, fx: { kind: 'stab', color: CRIMSON }, sound: 'bladeHit', bleed: { dps: 3, duration: 2.5 } },
-      { t: 1.55, anim: 'hammer_v', dur: 0.5, share: 0.1, fx: { kind: 'cross', color: CRIMSON }, sound: 'bladeHit' },
-      // ela bebe (drain): a Primeira Vampira
-      { t: 2.15, anim: 'raziel_feast', dur: 0.7, share: 0.16, fx: { kind: 'punch', color: BLOOD }, sound: 'clawHit', victimAnim: 'stun', drain: 2.5, gore: true, stream: true, shout: '...VOCÊ VAI ALCANÇAR A SUA LIBERDADE.' },
-      { t: 3.0, anim: 'hammer_finisher', dur: 0.7, share: 0.48, fx: { kind: 'stab', big: true, color: BLOOD }, sound: 'slashFinal', final: true },
-    ],
-    bannerAt: 0.2,
-    length: 3.9,
+    range: 9,
+    rods: 6,
+    drain: 1.5,
   },
+
 
   // O SINO TOCOU (PROPOSTA; cânone: a Primeira Vampira, sádica, que cura com o próprio sangue)
   awakening: {

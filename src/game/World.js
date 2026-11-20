@@ -308,7 +308,7 @@ export class World {
     this.riddlesUsed = null;
     this.projectiles.clear();
     this.fx.clear();
-    for (const f of this.fighters) f.reset();
+    for (const f of this.fighters) { if (f.rig && f.rig.restoreLimb) f.rig.restoreLimb(); f.reset(); }
     this.placeFighters();
     this.cameraRig.snap(this.fighters);
   }

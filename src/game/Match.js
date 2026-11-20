@@ -39,6 +39,8 @@ export class Match {
       });
     }
     this.world.onKO = () => { this.koPending = true; };
+    // o golpe que fecha a PARTIDA (o próximo round ganho por `fi` encerra): o Raziel só arranca o braço nele (teamSpecials)
+    this.world.isMatchPoint = (fi) => !this.training && this.wins[fi.index] + 1 >= (SETTINGS.rounds || COMBAT.roundsToWin);
     this.world.onBattleDialogue = (fighter, event) => this.triggerBattleDialogue(fighter, event);
     // troca de personagem na equipe: a HUD passa a mostrar o novo (nome, habilidades, assistências)
     this.world.onSwitch = () => this.hud.bind(this.world.fighters);

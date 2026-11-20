@@ -405,6 +405,81 @@ function actorFor(x, f, guests) {
   };
 }
 
+// A CAPA DO VELISAR ABERTA EM ASAS DE MORCEGO (pedido do dono, 2026-11-19, com a imagem de referência: ele desce do alto
+// com a capa aberta como asas enormes — membrana escura rasgada, "dedos" saindo do pulso, borda em gomos). Montada na hora
+// da cena, presa ao peito dele (segue a posição e o giro), e bate devagar.
+function batWings() {
+  const g = new THREE.Group();
+  const mat = new THREE.MeshToonMaterial({ color: 0x1c1416, side: THREE.DoubleSide });
+  const rib = new THREE.MeshToonMaterial({ color: 0x0c0809 });
+  const WRIST = [0.95, 0.85];
+  // borda: ombro → pulso → ponta, e os gomos voltando até o quadril (o "drapeado" entre os dedos)
+  const tips = [[2.25, 0.55], [1.95, -0.35], [1.45, -0.75], [0.95, -1.05], [0.42, -1.25], [0.12, -0.95]];
+  const make = (dir) => {
+    const w = new THREE.Group();
+    const sh = new THREE.Shape();
+    sh.moveTo(0.1, 0.3);
+    sh.quadraticCurveTo(0.45, 0.75, WRIST[0], WRIST[1]);
+    sh.lineTo(tips[0][0], tips[0][1]);
+    for (let i = 1; i < tips.length; i++) {
+      const [ax, ay] = tips[i - 1], [bx, by] = tips[i];
+      // o gomo puxa para dentro (na direção do pulso): a borda recortada da asa
+      const mx = (ax + bx) / 2, my = (ay + by) / 2;
+      sh.quadraticCurveTo(mx + (WRIST[0] - mx) * 0.32, my + (WRIST[1] - my) * 0.32, bx, by);
+    }
+    sh.lineTo(0.1, 0.3);
+    const mem = new THREE.Mesh(new THREE.ShapeGeometry(sh, 6), mat);
+    w.add(mem);
+    // os "dedos": do pulso a cada ponta, e o braço do ombro ao pulso
+    const bone = (a, b, r) => {
+      const A = new THREE.Vector3(a[0], a[1], 0.01), B = new THREE.Vector3(b[0], b[1], 0.01);
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.6, r, A.distanceTo(B), 5), rib);
+      m.position.copy(A).add(B).multiplyScalar(0.5);
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
+      w.add(m);
+    };
+    bone([0.1, 0.3], WRIST, 0.035);
+    for (const t of tips.slice(0, 5)) bone(WRIST, t, 0.02);
+    // a garra no pulso
+    const claw = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.16, 5), rib);
+    claw.position.set(WRIST[0], WRIST[1] + 0.07, 0.01);
+    w.add(claw);
+    w.scale.x = dir;
+    return w;
+  };
+  g.userData.R = make(1);
+  g.userData.L = make(-1);
+  g.add(g.userData.R, g.userData.L);
+  g.userData.dispose = () => g.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
+  return g;
+}
+
+// O RAZIEL ARRANCA O BRAÇO (só no golpe que fecha a partida — ver vampiros): o antebraço esquerdo do alvo some (o osso do
+// cotovelo encolhe a zero; rig.restoreLimb devolve no próximo round, por segurança), o pedaço fica na mão do Raziel e o
+// coto jorra sangue por uns segundos.
+function tearArm(world, raziel, opp) {
+  const elbow = opp.rig.joints.eL;
+  const at = elbow.getWorldPosition(new THREE.Vector3());
+  const saved = elbow.scale.clone();
+  elbow.scale.setScalar(0.0001);
+  opp.rig.restoreLimb = () => { elbow.scale.copy(saved); opp.rig.restoreLimb = null; };
+  const arm = new THREE.Group();
+  const fore = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.26, 4, 8), new THREE.MeshToonMaterial({ color: 0x8a2a24 }));
+  fore.position.y = -0.17;
+  const hand = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 6), new THREE.MeshToonMaterial({ color: 0xc89a84 }));
+  hand.position.y = -0.36;
+  const bone = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.08, 6), new THREE.MeshToonMaterial({ color: 0xe8e0c8 }));
+  bone.position.y = 0.02;
+  arm.add(fore, hand, bone);
+  const sock = raziel.rig && raziel.rig.sockets && raziel.rig.sockets.handR;
+  if (sock) { arm.rotation.x = Math.PI / 2; sock.add(arm); world.after(4, () => sock.remove(arm)); } else { arm.position.copy(at); world.scene.add(arm); world.after(4, () => world.scene.remove(arm)); }
+  world.fx.burst(at, { count: 70, color: 0xa01018, speed: 6, life: 0.8, size: 0.18, gravity: 9 });
+  world.fx.burst(at, { count: 12, color: 0x2a0408, kind: 'smoke', speed: 1.4, life: 0.8, size: 0.6, grow: 1 });
+  world.audio.play('descarnar', { volume: 1 });
+  const gush = world.fx.emitter({ rate: 60, follow: () => elbow.getWorldPosition(new THREE.Vector3()), particle: { color: 0xa01018, speed: 2.5, spread: 0.4, up: 0.5, life: 0.6, size: 0.12, gravity: 9 } });
+  world.after(2.4, () => gush.stop());
+}
+
 function choreographyTools({ f, opp, world, crew, guests, live, end }) {
   const actors = new Map([[f, actorFor(f, f, guests)], ...crew.map((x) => [x, actorFor(x, f, guests)])]
     .map(([source, actor]) => [linkId(source.def), actor]));
@@ -1549,106 +1624,263 @@ const CHOREO = {
     return END;
   },
 
-  // MISSA DE SANGUE (PROPOSTA; base canônica: o sino da Alvira, as cordas da Titereira de Sangue, a Dança das Lâminas da
-  // Sabara e a fome do Raziel). O sino toca, a Alvira reza e as cordas de sangue prendem o alvo; a Sabara dança com
-  // as lâminas em volta, o Raziel salta e morde, e a Alvira dá a absolvição com a lança do cajado
+  // MISSA DE SANGUE (refeita 2026-11-19, pedido do dono: "agora todos juntos"). O sino toca e a Alvira reza; o ZÉFERO
+  // está PRESO NA COLEIRA — quem segura a corrente (da equipe) o SOLTA e ele ataca; o VELISAR vem VOANDO DO ALTO com a capa
+  // aberta, a câmera nele contra a luz, e dá a investida; a SABARA crava as duas espadas e morde; a ALVIRA crava o cajado;
+  // o RAZIEL devora — e, SÓ quando o golpe fecha o último round, arranca um braço (no meio da partida o alvo voltaria sem o
+  // braço no round seguinte). Quem não está na equipe não entra: a parte dele vai para o golpe final. As falas são PROPOSTA.
   vampiros({ tl, S, f, opp, world, crew, guests, crewTotal, live }) {
-    const END = S + 5.4;
+    const END = S + 7.6;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const alvira = tools.get('alvira'), sabara = tools.get('sabara'), raziel = tools.get('raziel');
     const velisar = tools.get('velisar'), zefero = tools.get('zefero');
     const BLOOD = 0xa01018, CRIMSON = 0xd01c30;
-    const hits = splitDamage(crewTotal, 9);
+    const hits = splitDamage(crewTotal, 11);
+    // as partes de quem não veio somam no golpe final
+    let bank = 0;
+    const part = (who, i) => { if (who) return hits[i]; bank += hits[i]; return 0; };
+    const P = { bell: hits[0], z1: part(zefero, 1), z2: part(zefero, 2), z3: part(zefero, 3), vel: part(velisar, 4), s1: part(sabara, 5), s2: part(sabara, 6), alv: part(alvira, 7), r1: part(raziel, 8) };
+    const finalHit = () => hits[9] + hits[10] + bank;
+    // os golpes da cena nunca derrubam (com folga para os multiplicadores de dano): quem derruba é o golpe final comum,
+    // que completa o total — senão o alvo caía no meio e a cena (e o braço arrancado) não acontecia
+    const hit = (who, dmg, o) => tools.impact(who, Math.max(0, Math.min(dmg, Math.floor((opp.health - 1) / 1.6))), o);
     const say = sayer(world);
-    const cords = [];
-    // 1. o sino e a reza; as cordas de sangue saem das mãos dela
+    const node = (a, j) => (a && a.rig && ((a.rig.sockets && a.rig.sockets[j]) || a.rig.joints[j])) || null;
+    const wpos = (a, j) => { const n = node(a, j); return n ? n.getWorldPosition(new THREE.Vector3()) : a.chest(); };
+    const fx = []; // correntes, estacas e emissores para limpar no fim
+    const stopAll = () => { for (const x of fx) { if (x.stop) x.stop(); else if (x.isObject3D) world.scene.remove(x); } fx.length = 0; };
+    const stake = (from, to, len, r, color) => {
+      const dir = to.clone().sub(from).normalize();
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 0.6, len, 6).rotateX(Math.PI / 2), new THREE.MeshToonMaterial({ color }));
+      m.position.copy(to).addScaledVector(dir, -len * 0.15);
+      m.lookAt(m.position.clone().add(dir));
+      world.scene.add(m);
+      fx.push(m);
+      return m;
+    };
+    const gore = (at, n = 30) => {
+      world.fx.burst(at, { count: n, color: BLOOD, speed: 4.5, life: 0.6, size: 0.15, gravity: 9 });
+      world.fx.burst(at, { count: 8, color: 0x2a0408, kind: 'smoke', speed: 1, life: 0.7, size: 0.45, grow: 1 });
+    };
+    // quem segura a coleira do Zéfero (o Velisar chega voando depois, então é outro da equipe; sem ninguém, ele já vem solto)
+    const holder = zefero ? (sabara || raziel || alvira || null) : null;
+
+    // 1. o sino e a reza; o alvo fica preso no lugar
     tl.add(S, () => {
       if (!live()) return;
-      if (alvira) { tools.enter(alvira, 0, 4.2); alvira.play('concentrate', 1.4); }
-      if (sabara) { tools.enter(sabara, -0.9, 3.2); sabara.play('idle_dual', 1.2); }
-      if (raziel) { tools.enter(raziel, 0.9, 3.4); raziel.play('taunt_roar', 1.0); }
-      if (velisar) { tools.enter(velisar, -1.8, 4.0); velisar.play('idle_velisar', 1.4); }
-      if (zefero) { tools.enter(zefero, -1.5, 3.0); zefero.play('idle_zefero', 1.4); }
+      if (alvira) { tools.enter(alvira, 0, 4.4); alvira.play('concentrate', 1.4); }
+      if (sabara) { tools.enter(sabara, -1.0, 3.6); sabara.play('idle_dual', 1.2); }
+      if (raziel) { tools.enter(raziel, 1.0, 3.6); raziel.play('taunt_roar', 1.0); }
+      if (zefero) { tools.enter(zefero, -0.55, 3.0); zefero.play('idle_zefero', 1.4); }
+      if (holder) holder.face(zefero);
       world.audio.play('bellToll', { volume: 0.9 });
-      say(alvira || sabara || raziel, alvira ? 'Quando o sino tocar hoje...' : 'De joelhos.', 0);
-      if (alvira) world.cameraRig.playShots([{ ...faceClose(alvira, { dur: 1.2, from: 2.6, to: 1.6, height: 1.55, fov: 38 }), cut: true }]);
+      say(alvira || sabara || raziel || velisar, alvira ? 'Quando o sino tocar hoje...' : 'De joelhos.', 0);
+      if (opp.state !== 'ko') opp.stun(7.4, 'stagger');
+      hit(alvira || sabara || raziel || zefero || velisar, P.bell, { sound: 'bellToll', color: BLOOD });
+      if (alvira) world.cameraRig.playShots([{ ...faceClose(alvira, { dur: 1.0, from: 2.6, to: 1.7, height: 1.55, fov: 38 }), cut: true }]);
     });
-    tl.add(S + 0.8, () => {
-      if (!live()) return;
-      if (alvira && alvira.rig) {
-        const node = (fi, j) => (fi.rig.sockets && fi.rig.sockets[j]) || fi.rig.joints[j];
-        const jp = (fi, j) => () => (node(fi, j) ? node(fi, j).getWorldPosition(new THREE.Vector3()) : fi.chest());
-        for (const [a, b] of [['handR', 'handR'], ['handL', 'handL'], ['handR', 'hd']]) cords.push(world.fx.chain(jp(alvira, a), jp(opp, b), { rope: true, thick: 0.018, color: CRIMSON, glow: 0xff2030, sag: 0.18, links: 18 }));
+    // 2. o ZÉFERO na coleira: a corrente esticada na mão de quem segura... e solta
+    let leash = null;
+    tl.add(S + 0.9, () => {
+      if (!live() || !zefero) return;
+      if (holder) {
+        leash = world.fx.chain(() => wpos(holder, 'handR'), () => wpos(zefero, 'hd').add(new THREE.Vector3(0, -0.2, 0)), { links: 34, sag: 0.05 });
+        fx.push(leash);
+        holder.play(holder === sabara ? 'idle_dual' : 'point', 0.8);
       }
-      if (opp.state !== 'ko') { opp.stun(3.2, 'stagger'); opp.notify('MARIONETE', true); }
-      world.audio.play('bellToll', { volume: 0.7, pitch: 0.9 });
-      tools.impact(alvira || sabara || raziel, hits[0], { sound: 'clawHit', color: BLOOD });
+      world.audio.play('chainPull', { volume: 0.9, pitch: 0.8 });
+      say(zefero, '(rosna, puxando a corrente)', 1);
+      world.cameraRig.playShots([{ ...lowAngle(zefero, { dur: 1.0, dist: 2.2, side: 1.1, fov: 46 }), cut: true }]);
     });
-    // 2. a Sabara dança com as lâminas em volta do alvo preso
-    const blades = [[S + 1.4, 'dual_r', -1.2], [S + 1.7, 'dual_spin', 1.4], [S + 2.0, 'dual_cross', 0.2]];
-    blades.forEach(([t, anim, ang], i) => tl.add(t, () => {
+    tl.add(S + 1.5, () => {
+      if (!live() || !zefero) return;
+      if (leash) { leash.stop(); world.fx.burst(wpos(zefero, 'hd'), { count: 16, color: 0xb0b4bc, speed: 5, life: 0.4, size: 0.08, gravity: 9 }); }
+      leash = null;
+      world.audio.play('trapSnap', { volume: 0.9 });
+      if (holder) say(holder, holder === raziel ? 'Coma.' : holder === alvira ? 'Vá, criança.' : 'Pega.', 0);
+    });
+    // o bote: de onde está até o alvo, num arco
+    let zFrom = null;
+    tl.add(S + 1.6, () => {
+      if (!live() || !zefero) return;
+      zFrom = zefero.pos.clone();
+      zefero.face(opp);
+      zefero.play('raziel_pounce', 0.4);
+    });
+    tl.each((time) => {
+      if (!zFrom || !zefero || time < S + 1.6 || time > S + 1.95) return;
+      const k = Math.min(1, (time - S - 1.6) / 0.26);
+      const d = new THREE.Vector3(opp.pos.x - zFrom.x, 0, opp.pos.z - zFrom.z).normalize();
+      const to = opp.pos.clone().addScaledVector(d, -0.8);
+      zefero.pos.set(zFrom.x + (to.x - zFrom.x) * k, Math.sin(k * Math.PI) * 0.9, zFrom.z + (to.z - zFrom.z) * k);
+      if (k >= 1) { zefero.pos.y = 0; zFrom = null; }
+    });
+    [[S + 1.95, 'db_claw_r', 'z1'], [S + 2.2, 'db_claw_l', 'z2'], [S + 2.5, 'raziel_bite', 'z3']].forEach(([t, anim, key], i) => tl.add(t, () => {
+      if (!live() || !zefero) return;
+      zefero.pos.y = 0;
+      zefero.face(opp);
+      zefero.play(anim, i === 2 ? 0.5 : 0.22);
+      if (i === 2) gore(wpos(opp, 'hd'));
+      hit(zefero, P[key], { sound: 'clawHit', color: i === 2 ? BLOOD : CRIMSON, slash: i < 2 });
+    }));
+    // 3. o VELISAR vem voando do alto com a capa aberta, contra a luz, e dá a investida
+    let vFrom = null, vTo = null, glow = null, wings = null;
+    // as asas seguem o peito do Velisar e batem devagar (fecham quando ele pousa e investe)
+    tl.each((time) => {
+      if (!wings || !velisar) return;
+      const c = velisar.chest();
+      wings.position.set(c.x, c.y + 0.15, c.z);
+      const fold = time > S + 3.9 ? Math.min(1, (time - S - 3.9) / 0.3) : 0;
+      wings.rotation.set(0.6 * (1 - fold), velisar.yaw, 0, 'YXZ'); // inclinado para a câmera de baixo (mergulhando)
+      const flap = Math.sin((time - S) * 7) * 0.28 * (1 - fold);
+      wings.userData.R.rotation.y = 0.35 + flap + fold * 1.2; // para trás (o rosto dele olha para +z)
+      wings.userData.L.rotation.y = -0.35 - flap - fold * 1.2;
+      wings.scale.setScalar(1.3 * (1 - fold * 0.75));
+      if (time > S + 4.3) { world.scene.remove(wings); wings.userData.dispose(); wings = null; }
+    });
+    tl.add(S + 2.9, () => {
+      if (!live() || !velisar) return;
+      const at = tools.around(velisar, 0.7, 5.5);
+      velisar.show(END - (S + 2.9), at);
+      vFrom = new THREE.Vector3(at.x, 7.5, at.z);
+      const d = new THREE.Vector3(opp.pos.x - at.x, 0, opp.pos.z - at.z).normalize();
+      vTo = new THREE.Vector3(opp.pos.x - d.x * 2.6, 0, opp.pos.z - d.z * 2.6);
+      velisar.pos.copy(vFrom);
+      velisar.face(opp);
+      velisar.play('cast_up', 1.1); // os braços abertos: a capa de asa de morcego aberta
+      wings = batWings();
+      world.scene.add(wings);
+      fx.push(wings);
+      // a câmera embaixo, olhando para cima, com a luz forte ATRÁS dele (contraluz)
+      const cam = opp.pos.clone().addScaledVector(d, 1.4).add(new THREE.Vector3(-d.z * 0.9, 0.9, d.x * 0.9)); // atrás do alvo: o ângulo de baixo não achata as asas
+      const behind = () => { const v = velisar.pos.clone().add(new THREE.Vector3(0, 1.3, 0)); return v.addScaledVector(v.clone().sub(cam).normalize(), 3); };
+      glow = world.fx.emitter({ rate: 30, follow: behind, particle: { color: 0xfff0d0, speed: 0.4, spread: 1.2, life: 0.5, size: 1.6 } });
+      fx.push(glow);
+      world.fx.flash(behind(), { color: 0xfff4dc, size: 14, life: 1.0 });
+      world.cameraRig.playShots([{ dur: 1.15, fov: 52, cut: true, pos: () => cam, look: () => velisar.pos.clone().add(new THREE.Vector3(0, 1.2, 0)) }]);
+      world.audio.play('whip', { volume: 0.7, pitch: 0.6 });
+      say(velisar, 'Bravo... bravo.', 1);
+    });
+    tl.each((time) => {
+      if (!vFrom || !velisar || time < S + 2.9 || time > S + 4.05) return;
+      const k = Math.min(1, (time - S - 2.9) / 1.0);
+      const e = 1 - (1 - k) * (1 - k);
+      velisar.pos.set(vFrom.x + (vTo.x - vFrom.x) * e, vFrom.y * (1 - e), vFrom.z + (vTo.z - vFrom.z) * e);
+    });
+    tl.add(S + 3.95, () => {
+      if (!live() || !velisar) return;
+      if (glow) glow.stop();
+      velisar.pos.y = 0;
+      vFrom = null;
+      world.fx.burst(velisar.pos.clone().setY(0.2), { count: 14, color: 0x2a0408, kind: 'smoke', speed: 2, life: 0.6, size: 0.6, grow: 1 });
+    });
+    // a investida: atravessa até o alvo com as garras
+    let dFrom = null;
+    tl.add(S + 4.05, () => {
+      if (!live() || !velisar) return;
+      dFrom = velisar.pos.clone();
+      velisar.face(opp);
+      velisar.play('db_dash', 0.3);
+      world.audio.play('blink', { volume: 0.6 });
+    });
+    tl.each((time) => {
+      if (!dFrom || !velisar || time < S + 4.05 || time > S + 4.25) return;
+      const k = Math.min(1, (time - S - 4.05) / 0.14);
+      const d = new THREE.Vector3(opp.pos.x - dFrom.x, 0, opp.pos.z - dFrom.z).normalize();
+      const to = opp.pos.clone().addScaledVector(d, -0.95);
+      velisar.pos.set(dFrom.x + (to.x - dFrom.x) * k, 0, dFrom.z + (to.z - dFrom.z) * k);
+    });
+    tl.add(S + 4.22, () => {
+      if (!live() || !velisar) return;
+      dFrom = null;
+      velisar.play('db_claw_r', 0.26);
+      hit(velisar, P.vel, { sound: 'slashFinal', color: CRIMSON, slash: true });
+      world.fx.flash(opp.chestPos(), { color: 0xffffff, size: 3, life: 0.12 });
+    });
+    // 4. a SABARA crava as duas espadas e morde
+    tl.add(S + 4.6, () => {
       if (!live() || !sabara) return;
-      const at = tools.around(sabara, ang, 1.4);
+      const at = tools.around(sabara, -0.6, 1.1);
       sabara.pos.set(at.x, 0, at.z);
       sabara.face(opp);
-      sabara.play(anim, 0.32);
-      if (i === 0) say(sabara, 'Dança comigo.', 1);
-      tools.impact(sabara, hits[1 + i], { sound: 'bladeHit', color: CRIMSON, slash: true });
-    }));
-    // 2b. (2026-11-19) o Velisar olha no fundo dos olhos do alvo e SOLTA a corrente do Zéfero, que pula e morde
-    tl.add(S + 1.0, () => {
-      if (!live() || !velisar) return;
-      velisar.face(opp);
-      velisar.play('concentrate', 0.8);
-      say(velisar, zefero ? 'Vai, meu espécime.' : 'Olhe nos meus olhos.', 1);
-      tools.impact(velisar, hits[7], { sound: 'fearGaze', color: CRIMSON });
+      sabara.play('dual_cross', 0.4);
+      say(sabara, 'Fica quieto.', 1);
+      const c = opp.chestPos();
+      const from = new THREE.Vector3(at.x, c.y, at.z);
+      for (const off of [-0.12, 0.12]) stake(from.clone().add(new THREE.Vector3(0, off, 0)), c.clone().add(new THREE.Vector3(0, off, 0)), 0.9, 0.012, 0xd8d8e0);
+      world.fx.tracer(from, c, { color: CRIMSON, life: 0.15, width: 0.05 });
+      gore(c, 20);
+      hit(sabara, P.s1, { sound: 'bladeHit', color: CRIMSON });
     });
-    tl.add(S + 2.2, () => {
-      if (!live() || !zefero) return;
-      const at = tools.around(zefero, -Math.PI / 2, 1.1);
-      zefero.pos.set(at.x, 0, at.z);
-      zefero.face(opp);
-      zefero.play('raziel_bite', 0.5);
-      world.fx.burst(opp.chestPos(), { count: 20, color: BLOOD, speed: 3, life: 0.5, size: 0.14, gravity: 8 });
-      tools.impact(zefero, hits[8], { sound: 'clawHit', color: BLOOD });
+    tl.add(S + 5.0, () => {
+      if (!live() || !sabara) return;
+      sabara.play('raziel_bite', 0.5);
+      gore(wpos(opp, 'hd'));
+      hit(sabara, P.s2, { sound: 'clawHit', color: BLOOD });
     });
-    // 3. o Raziel salta e morde
-    tl.add(S + 2.5, () => {
-      if (!live() || !raziel) return;
-      const at = tools.around(raziel, Math.PI, 1.2);
-      raziel.pos.set(at.x, 0, at.z);
-      raziel.face(opp);
-      raziel.play('raziel_pounce', 0.45);
-      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.2, radius: 3.4, height: 1.5, a0: 0.4, a1: -0.4 }), cut: true }]);
+    // 5. a ALVIRA crava o cajado (a cruz de sangue) no inimigo
+    tl.add(S + 5.45, () => {
+      if (!live() || !alvira) return;
+      const at = tools.around(alvira, 0, 1.5);
+      alvira.pos.set(at.x, 0, at.z);
+      alvira.face(opp);
+      alvira.play('thrust', 0.55);
+      say(alvira, '...você terá sua absolvição.', 0);
+      world.cameraRig.playShots([{ ...impactClose(alvira, opp), cut: true }]);
     });
-    tl.add(S + 2.95, () => {
-      if (!live() || !raziel) return;
-      raziel.play('raziel_feast', 0.7);
-      say(raziel, 'Sangue... finalmente.', 0);
-      world.fx.burst(opp.chestPos(), { count: 26, color: BLOOD, speed: 3, life: 0.6, size: 0.16, gravity: 8 });
-      tools.impact(raziel, hits[4], { sound: 'clawHit', color: BLOOD });
+    tl.add(S + 5.7, () => {
+      if (!live() || !alvira) return;
+      const c = opp.chestPos();
+      const d = new THREE.Vector3(opp.pos.x - alvira.pos.x, 0, opp.pos.z - alvira.pos.z).normalize();
+      stake(c.clone().addScaledVector(d, -1.3).add(new THREE.Vector3(0, 0.1, 0)), c.clone().addScaledVector(d, 0.35), 1.9, 0.028, 0x3a3436);
+      world.audio.play('bellToll', { volume: 1 });
+      gore(c, 34);
+      hit(alvira, P.alv, { sound: 'bladeHit', color: BLOOD });
     });
-    // 4. a absolvição: as cordas puxam o alvo e a lança do cajado atravessa
-    tl.add(S + 3.8, () => {
+    // 6. o RAZIEL devora (e arranca o braço, só no golpe que fecha a partida)
+    const eater = () => raziel || alvira || sabara || zefero || velisar;
+    tl.add(S + 6.2, () => {
       if (!live()) return;
-      const who = alvira || sabara || raziel;
-      const at = tools.around(who, 0, 2.2);
+      const who = eater();
+      if (!who) return;
+      // quem já golpeou recua um passo: não tapa a câmera do banquete
+      for (const [a, ang] of [[sabara, -1.3], [alvira, 0.4]]) if (a && a !== who) { const p = tools.around(a, ang, 2.4); a.pos.set(p.x, 0, p.z); a.face(opp); }
+      const at = tools.around(who, Math.PI * 0.85, 0.9);
       who.pos.set(at.x, 0, at.z);
       who.face(opp);
-      who.play(alvira ? 'thrust' : 'dual_cross', 0.6);
-      say(who, alvira ? '...você terá sua absolvição.' : 'Acabou.', 1);
-      world.cameraRig.playShots([{ ...impactClose(who, opp), cut: true }]);
-      tools.impact(who, hits[5], { sound: 'bladeHit', color: CRIMSON });
+      who.play('raziel_feast', 0.7);
+      if (raziel) { say(raziel, 'Sangue... finalmente.', 0); hit(raziel, P.r1, { sound: 'clawHit', color: BLOOD }); gore(wpos(opp, 'hd'), 36); }
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 1.3, radius: 2.8, height: 1.6, a0: 0.6, a1: -0.2, lookH: 1.3 }), cut: true }]);
     });
-    tl.add(S + 4.3, () => {
+    tl.add(S + 6.85, () => {
       if (!live()) return;
-      for (const c of cords) c.stop();
-      cords.length = 0;
-      world.audio.play('bellToll', { volume: 1 });
-      tools.impact(alvira || sabara || raziel, hits[6], { sound: 'slashFinal', color: BLOOD });
+      const who = eater();
+      if (!who) return;
+      // a mordida funda (o golpe que derruba de verdade é o final comum, logo depois — F + 0.4 em runTeamSpecial)
+      hit(who, finalHit(), { sound: 'clawHit', color: BLOOD });
+      gore(wpos(opp, 'hd'), 30);
+      world.screenFlash && world.screenFlash('#3a0008', 0.25);
+      world.cameraRig.shake(0.6, 0.35);
     });
-    tl.add(END, () => { for (const c of cords) c.stop(); cords.length = 0; world.ui && world.ui.subtitle && world.ui.subtitle(null); });
-    return S + 4.3;
+    // o RAZIEL arranca o braço: SÓ se o golpe final derrubou E fechou a PARTIDA (o último round) — no meio da partida o
+    // alvo voltaria sem o braço no round seguinte. isMatchPoint é lido ANTES do golpe (depois dele a vitória já contou).
+    // (world.after e não a timeline: o KO cancela a cena, e a timeline para junto)
+    tl.add(S + 7.2, () => {
+      const matchPoint = !!(world.isMatchPoint && world.isMatchPoint(f));
+      if (raziel && matchPoint) world.after(0.12, () => {
+      if (opp.state !== 'ko' || !(opp.rig && opp.rig.joints && opp.rig.joints.eL)) return;
+      tearArm(world, raziel, opp);
+      raziel.face(opp);
+      raziel.play('raziel_feast', 1.2);
+      say(raziel, 'Eu espero que vocês aproveitem esse banquete.', 0);
+      });
+    });
+    tl.add(END, () => {
+      stopAll();
+      for (const a of [velisar, zefero]) if (a) a.pos.y = 0;
+      world.ui && world.ui.subtitle && world.ui.subtitle(null);
+    });
+    return S + 6.85;
   },
 
   // HORA DO SHOW! (nome do dono; pedido de 2026-11-14: "um especial dos psikolera"). A PSIKOLERA em cena: o Eloy na bateria e

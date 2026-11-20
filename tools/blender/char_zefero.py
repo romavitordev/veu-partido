@@ -147,18 +147,8 @@ for k in range(10):
     base = Vector((math.sin(a) * 0.074 * H, -0.01 * H - math.cos(a) * 0.07 * H, cz))
     sp.append(cone(tuple(base), tuple(base + Vector((math.sin(a) * 0.045 * H, -math.cos(a) * 0.045 * H, 0))), 0.011 * H, 5))
 b.add('collarSpikes', merge(*sp), iron, region='neck', subdiv=0)
-links = []
-p = Vector((0, -0.088 * H, cz - 0.01 * H))
-ll = 0.034 * H
-for k in range(11):
-    c = p + Vector((0, -0.062 * H * min(1.0, k / 4), -ll * 0.75 * k))
-    pts = []
-    for i in range(13):
-        a = i / 12 * TAU
-        off = Vector((math.cos(a) * 0.011 * H, 0, math.sin(a) * ll * 0.5)) if k % 2 == 0 else Vector((0, math.cos(a) * 0.011 * H, math.sin(a) * ll * 0.5))
-        pts.append(c + off)
-    links.append(rod(pts, 0.0035 * H, 4, caps=False))
-b.add('chain', merge(*links), iron, region='chest', subdiv=0)
+# a ARGOLA na frente do grilhão (a corrente que arrasta no chão é simulada no jogo: addZeferoProps em props.js)
+b.add('collarRing', rod([(math.cos(a) * 0.02 * H, -0.09 * H, cz - 0.03 * H + math.sin(a) * 0.02 * H) for a in [i / 12 * TAU for i in range(13)]], 0.005 * H, 5, caps=False), iron, region='neck', subdiv=0)
 
 # ================================================================ o CABELO escuro bagunçado no alto da cabeça
 tufts = []

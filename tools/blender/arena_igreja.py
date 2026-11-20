@@ -233,7 +233,9 @@ def chair(name, x, z, rot):
             cx = x + dx * math.cos(rot) + dz * math.sin(rot)
             cz = z - dx * math.sin(rot) + dz * math.cos(rot)
             box(f'{name}_leg{dx}{dz}', (cx, 0.25, cz), (0.06, 0.5, 0.06), M['wood'], rot)
-    bx, bz = x + 0.26 * math.sin(rot), z + 0.26 * math.cos(rot)
+    # o encosto fica do lado OPOSTO a `rot` (rot aponta para onde a cadeira olha: a mesa). Antes estava do lado da mesa
+    # e as cadeiras ficavam de costas para ela (dono, 2026-11-19).
+    bx, bz = x - 0.26 * math.sin(rot), z - 0.26 * math.cos(rot)
     poly_prism(f'{name}_back', [(-0.27, 0), (0.27, 0), (0.27, 1.0), (0.0, 1.45), (-0.27, 1.0)], 0.06, M['wood'], (bx, 0.54, bz), rot)
 
 

@@ -17,11 +17,17 @@ export function addRazielClips(CLIPS, k) {
   const CROUCH = { h: -0.36, lL: [-0.85, 0, 0.18], kL: [1.4, 0, 0], lR: [0.45, 0, -0.16], kR: [1.25, 0, 0] };
   // VELISAR (a arte de Hexatombe): curvado de um jeito desumano, os dedos em garra juntos na frente do peito
   const VEL = { h: -0.03, ...LEGS, sp: [0.38, 0.05, 0], hd: [-0.25, -0.1, 0.06], sL: [-1.05, -0.55, 0.15], eL: [-1.55, 0, 0], sR: [-1.05, 0.55, -0.15], eR: [-1.55, 0, 0] };
-  // ZÉFERO (a fera na corrente): agachado, o tronco para a frente, as garras abertas penduradas
-  const ZEF = { h: -0.2, lL: [-0.65, 0, 0.22], kL: [0.95, 0, 0], lR: [0.2, 0, -0.22], kR: [0.75, 0, 0], sp: [0.55, 0, 0], hd: [-0.45, 0, 0], sL: [-0.55, 0, 0.3], eL: [-0.45, 0, 0], sR: [-0.4, 0, -0.35], eR: [-0.3, 0, 0] };
+  // ZÉFERO (a fera na corrente; dono, 2026-11-19: "mais animalesco, mais curvado, quase de quatro patas"): agachado
+  // fundo, o tronco quase deitado para a frente, a cabeça erguida olhando a presa, os braços descendo até perto do chão
+  // (as garras quase tocam o piso, como patas da frente)
+  const ZEF = { h: -0.46, hip: [0.55, 0, 0], lL: [-1.55, 0, 0.3], kL: [1.75, 0, 0], lR: [-1.05, 0, -0.3], kR: [1.6, 0, 0], sp: [0.6, 0, 0], hd: [-1.0, 0, 0], sL: [-0.55, 0, 0.32], eL: [-0.25, 0, 0], sR: [-0.4, 0, -0.34], eR: [-0.3, 0, 0] };
+  // o galope de quatro: as duas garras vão à frente juntas e puxam, as pernas empurram de trás (o corpo baixo ondula)
+  const GAL_A = { h: -0.5, hip: [0.7, 0, 0], lL: [-1.7, 0, 0.25], kL: [1.9, 0, 0], lR: [-1.45, 0, -0.25], kR: [1.85, 0, 0], sp: [0.55, 0, 0], hd: [-1.05, 0, 0], sL: [-1.25, 0, 0.25], eL: [-0.15, 0, 0], sR: [-1.15, 0, -0.25], eR: [-0.2, 0, 0] };
+  const GAL_B = { h: -0.4, hip: [0.45, 0, 0], lL: [-0.6, 0, 0.25], kL: [1.0, 0, 0], lR: [-0.35, 0, -0.25], kR: [0.8, 0, 0], sp: [0.75, 0, 0], hd: [-1.2, 0, 0], sL: [0.15, 0, 0.3], eL: [-0.45, 0, 0], sR: [0.25, 0, -0.3], eR: [-0.4, 0, 0] };
   Object.assign(CLIPS, {
     idle_velisar: { dur: 2.6, loop: true, keys: [k(0, VEL), k(0.5, { ...VEL, sp: [0.44, 0.1, 0], hd: [-0.3, 0.12, 0.1], eL: [-1.65, 0, 0], eR: [-1.65, 0, 0] }), k(1, VEL)] },
-    idle_zefero: { dur: 0.9, loop: true, keys: [k(0, ZEF), k(0.45, { ...ZEF, h: -0.23, sp: [0.62, 0.12, 0], hd: [-0.35, 0.2, 0], sL: [-0.62, 0, 0.32], sR: [-0.5, 0, -0.38] }), k(1, ZEF)] },
+    idle_zefero: { dur: 0.9, loop: true, keys: [k(0, ZEF), k(0.45, { ...ZEF, h: -0.49, sp: [0.68, 0.14, 0], hd: [-0.9, 0.25, 0], sL: [-0.62, 0, 0.34], sR: [-0.5, 0, -0.38] }), k(1, ZEF)] },
+    run_zefero: { dur: 0.42, loop: true, keys: [k(0, GAL_A), k(0.5, GAL_B), k(1, GAL_A)] },
     // a reverência do ator do cinema mudo: um braço no peito, o outro aberto, o corpo dobrado
     vic_velisar: { dur: 1.6, keys: [
       k(0, VEL),

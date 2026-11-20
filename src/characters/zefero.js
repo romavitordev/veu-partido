@@ -27,7 +27,7 @@ export default {
     tagline: 'Grrrr...',
   },
   stats: { moveSpeed: 9.4, attackSpeed: 1.18 },
-  anims: { idle: 'idle_zefero', run: 'run', charge: 'db_charge', victory: 'vic_zefero', block: 'db_block' },
+  anims: { idle: 'idle_zefero', run: 'run_zefero', charge: 'db_charge', victory: 'vic_zefero', block: 'db_block' },
   chargeFx: { style: 'default', color: BLOOD },
   dodge: { style: 'default', distance: 5.6 },
 
@@ -154,25 +154,16 @@ export default {
   special: {
     name: 'Espécime',
     banner: 'Ele era como a brisa grega do mundo antigo.',
-    type: 'cinematicCombo',
+    type: 'specimenHunt', // especial próprio (specials/vampireSpecials.js): a corrente arrebenta, três botes, preso no chão, devora
     energyCost: 50,
     cooldown: 14,
     color: BLOOD,
     sound: 'specialStart',
-    physical: true,
-    prepare: { anim: 'idle_zefero', time: 0.4 },
-    dash: { speed: 26, maxTime: 0.45, contact: 1.7 },
-    hits: [
-      { t: 0.45, anim: 'db_claw_r', dur: 0.22, share: 0.08, fx: { kind: 'cross', color: CRIMSON }, sound: 'clawHit', shout: 'GRRRAAH!' },
-      { t: 0.7, anim: 'db_claw_l', dur: 0.22, share: 0.08, fx: { kind: 'cross', color: CRIMSON }, sound: 'clawHit' },
-      { t: 0.95, anim: 'db_claw_r', dur: 0.22, share: 0.08, fx: { kind: 'cross', color: CRIMSON }, sound: 'clawHit' },
-      { t: 1.2, anim: 'db_cross', dur: 0.36, share: 0.1, fx: { kind: 'cross', color: BLOOD }, sound: 'clawHit', bleed: { dps: 4, duration: 2 } },
-      { t: 1.7, anim: 'raziel_feast', dur: 0.6, share: 0.2, fx: { kind: 'punch', color: BLOOD }, sound: 'clawHit', victimAnim: 'stun', drain: 0.8, gore: true, stream: true },
-      { t: 2.5, anim: 'raziel_bite', dur: 0.5, share: 0.46, fx: { kind: 'cross', big: true, color: BLOOD, color2: CRIMSON }, sound: 'slashFinal', final: true },
-    ],
-    bannerAt: 0.2,
-    length: 3.3,
+    range: 9,
+    frenzy: 7,
+    drain: 1.2,
   },
+
 
   // SEM COLEIRA (PROPOSTA; cânone: só o Velisar o domava pela corrente — sem ela, a fera não tem freio)
   awakening: {

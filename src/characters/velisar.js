@@ -167,24 +167,17 @@ export default {
   special: {
     name: 'O Beijo Sangrento',
     banner: 'Vocês viram um passarinho passando por aqui?',
-    type: 'cinematicCombo',
+    type: 'silentFilm', // especial próprio (specials/vampireSpecials.js): o filme mudo, as cartelas, os cortes secos, a mordida
+    kissCard: 'Um beijo.',
     energyCost: 50,
     cooldown: 14,
     color: BLOOD,
     sound: 'specialStart',
-    physical: true,
-    prepare: { anim: 'vic_velisar', time: 0.6 },
-    dash: { speed: 22, maxTime: 0.5, contact: 2.0 },
-    hits: [
-      { t: 0.6, anim: 'db_claw_r', dur: 0.3, share: 0.1, fx: { kind: 'cross', color: TEAL }, sound: 'clawHit' },
-      { t: 0.95, anim: 'db_claw_l', dur: 0.3, share: 0.1, fx: { kind: 'cross', color: TEAL }, sound: 'clawHit' },
-      { t: 1.35, anim: 'db_cross', dur: 0.4, share: 0.12, fx: { kind: 'cross', color: CRIMSON }, sound: 'clawHit', bleed: { dps: 4, duration: 2 }, shout: 'Que curioso...' },
-      { t: 1.9, anim: 'raziel_feast', dur: 0.6, share: 0.2, fx: { kind: 'punch', color: BLOOD }, sound: 'clawHit', victimAnim: 'stun', drain: 0.8, gore: true, stream: true },
-      { t: 2.7, anim: 'db_rend', dur: 0.6, share: 0.48, fx: { kind: 'cross', big: true, color: BLOOD, color2: CRIMSON }, sound: 'slashFinal', final: true, shout: 'Um presente.' },
-    ],
-    bannerAt: 0.2,
-    length: 3.6,
+    range: 10,
+    cuts: 4,
+    drain: 1,
   },
+
 
   // LORDE RUTHVEN (PROPOSTA; cânone: o papel do filme "Vampir" — depois dele, Welly ficou cada vez mais parecido com o
   // personagem): mais rápido, mais forte e as recargas andam mais depressa

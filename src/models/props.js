@@ -1966,3 +1966,104 @@ export function addAlviraProps(rig) {
     if (hand.visible === onBack) { hand.visible = !onBack; back.visible = onBack; }
   });
 }
+
+// ZÉFERO (Vampiros): a CORRENTE do grilhão ARRASTANDO NO CHÃO (dono, 2026-11-19: "deve ter uma corrente presa no pescoço
+// que arrasta pelo chão"). Uma corrente de verdade, simulada a cada quadro (Verlet): presa na frente do grilhão, pende
+// até o chão e arrasta atrás dele quando corre, balança nos pulos. Os elos alternam o plano (um deitado, um em pé).
+// Fica sempre (é a coleira dele); no especial Espécime aparece a outra ponta esticada até arrebentar.
+export function addZeferoProps(rig) {
+  const N = 24;
+  const SEG = 0.07;
+  const geo = new THREE.TorusGeometry(0.03, 0.0085, 5, 10);
+  geo.scale(1, 1.55, 1);
+  const mat = toon(0x55555c);
+  mat.userData.keepEmissive = false;
+  const mesh = new THREE.InstancedMesh(geo, mat, N);
+  mesh.frustumCulled = false;
+  mesh.castShadow = true;
+  rig.root.add(mesh);
+  rig.props.chain = mesh;
+  const pts = Array.from({ length: N + 1 }, () => new THREE.Vector3());
+  const prev = Array.from({ length: N + 1 }, () => new THREE.Vector3());
+  let ready = false;
+  const anchor = new THREE.Vector3();
+  const chest = new THREE.Vector3();
+  const fwd = new THREE.Vector3();
+  const tmp = new THREE.Vector3();
+  const inv = new THREE.Matrix4();
+  const m = new THREE.Matrix4();
+  const q = new THREE.Quaternion();
+  const qAlt = new THREE.Quaternion();
+  const Y = new THREE.Vector3(0, 1, 0);
+  const one = new THREE.Vector3(1, 1, 1);
+  const lastAnchor = new THREE.Vector3();
+  const place = () => {
+    // estendida reta para baixo e depois para trás no chão
+    let ground = 0;
+    for (let i = 0; i <= N; i++) {
+      const p = pts[i];
+      if (anchor.y - i * SEG > ground + 0.03) p.set(anchor.x, anchor.y - i * SEG, anchor.z);
+      else { const k = i * SEG - (anchor.y - ground); p.set(anchor.x - fwd.x * k, ground + 0.03, anchor.z - fwd.z * k); }
+      prev[i].copy(p);
+    }
+    ready = true;
+  };
+  rig.tickers = rig.tickers || [];
+  rig.tickers.push((dt, f) => {
+    if (!rig.root.visible) return;
+    rig.root.updateMatrixWorld(true);
+    const hd = rig.joints.hd;
+    const sp = rig.joints.sp;
+    if (!hd || !sp) return;
+    hd.getWorldPosition(anchor);
+    sp.getWorldPosition(chest);
+    rig.root.getWorldDirection(fwd);
+    fwd.y = 0;
+    fwd.normalize();
+    // a argola na frente do grilhão: um pouco abaixo da cabeça, na direção do peito, à frente
+    anchor.lerp(chest, 0.3).addScaledVector(fwd, 0.09);
+    const ground = f && f.pos ? f.pos.y : 0;
+    if (!ready || anchor.distanceToSquared(lastAnchor) > 4) place();
+    lastAnchor.copy(anchor);
+    const h = Math.min(dt, 1 / 30);
+    const g = 9.8 * h * h;
+    for (let i = 1; i <= N; i++) {
+      const p = pts[i];
+      const o = prev[i];
+      tmp.copy(p).sub(o).multiplyScalar(0.97);
+      o.copy(p);
+      p.add(tmp);
+      p.y -= g;
+      if (p.y < ground + 0.025) {
+        p.y = ground + 0.025;
+        // atrito: no chão os elos ARRASTAM (perdem quase toda a velocidade)
+        o.x += (p.x - o.x) * 0.6;
+        o.z += (p.z - o.z) * 0.6;
+      }
+    }
+    for (let it = 0; it < 6; it++) {
+      pts[0].copy(anchor);
+      for (let i = 0; i < N; i++) {
+        const a = pts[i];
+        const b = pts[i + 1];
+        tmp.copy(b).sub(a);
+        const d = tmp.length() || 1e-6;
+        const diff = (d - SEG) / d;
+        if (i === 0) b.addScaledVector(tmp, -diff);
+        else { a.addScaledVector(tmp, diff * 0.5); b.addScaledVector(tmp, -diff * 0.5); }
+      }
+    }
+    inv.copy(rig.root.matrixWorld).invert();
+    for (let i = 0; i < N; i++) {
+      const a = pts[i];
+      const b = pts[i + 1];
+      tmp.copy(b).sub(a).normalize();
+      q.setFromUnitVectors(Y, tmp);
+      qAlt.setFromAxisAngle(Y, (i % 2) * Math.PI / 2);
+      q.multiply(qAlt);
+      m.compose(tmp.copy(a).add(b).multiplyScalar(0.5), q, one).premultiply(inv);
+      mesh.setMatrixAt(i, m);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+}

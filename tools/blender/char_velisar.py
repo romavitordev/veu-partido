@@ -25,19 +25,20 @@ H = sk.h
 hz = sk['hips'].z
 
 skin = material('skin_velisar', '#9a4a44', 0.7)
-coat = material('coat_velisar', '#141214', 0.8)
-tunic = material('tunic_velisar', '#8a6428', 0.85)
+coat = material('coat_velisar', '#1c1614', 0.8)
+tunic = material('tunic_velisar', '#5e3a1c', 0.85)  # a túnica marrom (a arte: marrom-terra, mais clara no peito)
+vest = material('vest_velisar', '#94561e', 0.85)
 M = {
     'skin': skin,
     'face': material('face_velisar', '#ffffff', 0.7),
-    'torso': tunic,
+    'torso': vest,
     'arm': coat,  # as mangas do sobretudo
     'hand': skin,
     'legs': tunic,
     'feet': material('shoe_velisar', '#0c0a0a', 0.5),
 }
-tunic_dk = material('tunic_velisar_dk', '#5a4018', 0.9)
-scarf = material('scarf_velisar', '#9a6a24', 0.9)
+tunic_dk = material('tunic_velisar_dk', '#3a2210', 0.9)
+scarf = material('scarf_velisar', '#a4501c', 0.9)
 teal = material('wing_velisar', '#2e6a72', 0.6)
 teal_dk = material('wing_velisar_dk', '#1a3e44', 0.7)
 metal = material('pendant_velisar', '#b8bcc4', 0.25, metal=0.9)
@@ -57,29 +58,30 @@ Vh = lambda x, y, z: HC + Vector((x * H, y * H, z * H))
 
 # ================================================================ a TÚNICA ocre até o chão, abrindo em pontas rasgadas
 SK = [(hz + 0.06 * H, 0.158, 0.122, 0.0), (hz - 0.08 * H, 0.17, 0.138, 0.004), (hz - 0.35 * H, 0.19, 0.16, 0.01),
-      (hz - 0.62 * H, 0.23, 0.2, 0.02), (0.1 * H, 0.31, 0.29, 0.03), (0.01 * H, 0.38, 0.36, 0.04)]
+      (hz - 0.62 * H, 0.22, 0.19, 0.02), (0.14 * H, 0.3, 0.28, 0.03), (0.05 * H, 0.4, 0.38, 0.05), (0.008 * H, 0.5, 0.48, 0.07)]
 so = b.add('tunicSkirt', tube([(0, cy * H, z, rx * H, ry * H) for z, rx, ry, cy in SK], 48, cap_start=False, cap_end=False), tunic, region='skirt', subdiv=1)
 relief(so, lambda p: (0.003 + 0.014 * max(0.0, min(1.0, (hz - p.z) / (0.9 * H)))) * H * ridge(math.atan2(p.x, -p.y) * 6 + n3(p, 4) * 1.5, 2))
 b.add('tunicSkirtIn', tube([(0, cy * H, z, rx * H * 0.96, ry * H * 0.96) for z, rx, ry, cy in SK[3:]], 48, cap_start=False, cap_end=False), tunic_dk, region='skirt', subdiv=0)
 # as pontas rasgadas da barra espalhadas no chão
 tips = []
-for i in range(14):
-    a = i / 14 * TAU + random.uniform(-0.1, 0.1)
+for i in range(18):
+    a = i / 18 * TAU + random.uniform(-0.08, 0.08)
     r0x, r0y = SK[-1][1] * H, SK[-1][2] * H
-    base = Vector((math.sin(a) * r0x, SK[-1][3] * H - math.cos(a) * r0y, 0.015 * H))
-    tip = Vector((math.sin(a) * (r0x + random.uniform(0.06, 0.14) * H), SK[-1][3] * H - math.cos(a) * (r0y + random.uniform(0.06, 0.14) * H), 0.004 * H))
-    tips.append(cone(tuple(base), tuple(tip), 0.035 * H, 4))
+    ln = random.uniform(0.1, 0.26) * H * (1.3 if math.cos(a) < -0.3 else 1.0)  # a cauda arrasta mais atrás
+    base = Vector((math.sin(a) * r0x * 0.97, SK[-1][3] * H - math.cos(a) * r0y * 0.97, 0.012 * H))
+    tip = Vector((math.sin(a) * (r0x + ln), SK[-1][3] * H - math.cos(a) * (r0y + ln), 0.003 * H))
+    tips.append(cone(tuple(base), tuple(tip), 0.05 * H, 4))
 b.add('tunicTips', merge(*tips), tunic, region='skirt', subdiv=0)
 
 # ================================================================ a GOLA ALTA: o cachecol ocre enrolado no pescoço
-for k in range(4):
-    z = 1.53 * H + k * 0.032 * H
-    r = (0.075 - 0.004 * k) * H
-    b.add(f'scarf{k}', rod([(math.sin(a) * r, -0.006 * H - math.cos(a) * r * 0.96, z + 0.008 * H * math.sin(a * 2 + k)) for a in [i / 24 * TAU for i in range(25)]], 0.016 * H, 6, caps=False), scarf, region='neck', subdiv=0)
+SCZ = [(1.49, 0.088, 0.084), (1.53, 0.094, 0.09), (1.57, 0.09, 0.086), (1.61, 0.084, 0.08), (1.645, 0.074, 0.07)]
+sc = b.add('scarf', tube([(0, -0.008 * H, z * H, rx * H, ry * H) for z, rx, ry in SCZ], 28, cap_start=False, cap_end=True), scarf, region='neck', subdiv=1)
+# as voltas do pano: faixas em espiral (não molas soltas)
+relief(sc, lambda p: 0.007 * H * ridge((p.z / H) * 95 + math.atan2(p.x, -p.y) * 0.9 + n3(p, 10) * 0.8, 2))
 b.add('scarfDrop', rod([(0.02 * H, -0.08 * H, 1.53 * H), (0.03 * H, -0.14 * H, 1.42 * H), (0.025 * H, -0.165 * H, 1.3 * H)], [0.028 * H, 0.03 * H, 0.022 * H], 6, flat=(outward((0, 0)), 0.5)), scarf, region='chest', subdiv=0)
 
 # ================================================================ o SOBRETUDO PRETO: o peito e os ombros (aberto na frente) e as abas até os joelhos
-UP = [(0.38, 0.164, 0.13, 2.45), (0.47, 0.178, 0.14, 2.55), (0.53, 0.16, 0.122, 2.65), (0.58, 0.122, 0.098, 2.75)]
+UP = [(0.16, 0.166, 0.134, 2.5), (0.27, 0.16, 0.128, 2.45), (0.38, 0.164, 0.13, 2.45), (0.47, 0.178, 0.14, 2.55), (0.53, 0.16, 0.122, 2.65), (0.58, 0.122, 0.098, 2.75)]
 rows = [ring_pts(hz + dz * H, (rx + 0.01) * H, (ry + 0.01) * H, math.pi - a, math.pi + a, 26) for dz, rx, ry, a in UP]
 b.add('coatTop', shell_grid(rows, 0.008), coat, region='torso', subdiv=1)
 GAP = 0.13
@@ -110,15 +112,58 @@ def bat_edge(z_of, rx, ry, a0, a1, n, depth):
     return [top, bot]
 
 
-# a pelerine dos ombros: abre larga como as asas, aberta na frente
-cape = bat_edge(sk['sL'].z + 0.02 * H, 0.3 * H, 0.2 * H, math.pi - 2.75, math.pi + 2.75, 9, 0.24 * H)
-collar_top = [Vector((p.x * 0.3, p.y * 0.42 - 0.01 * H, 1.6 * H)) for p in cape[0]]
-b.add('batCape', shell_grid([collar_top, cape[0], cape[1]], 0.006), teal, region='chest', subdiv=1)
-# as varetas da asa (as nervuras escuras)
+# A GOLA DE ASA DE MORCEGO (a arte: sobe atrás da cabeça como uma gola alta e desce em pontas sobre os ombros). As
+# VARETAS saem da base do pescoço; entre elas a membrana se recorta em arco (o babado). Ângulo 0 = frente (-y),
+# aberta na frente. Atrás a gola SOBE até a altura das orelhas; nos lados ela CAI sobre os ombros e o alto do braço.
+NECK_Z = 1.53 * H
+N_RIBS = 13
+A0, A1 = 0.62, TAU - 0.62
+
+
+def collar_outer(a):
+    back = max(0.0, -math.cos(a))           # 1 atrás, 0 nos lados
+    side = abs(math.sin(a))                 # 1 nos lados
+    r = (0.19 + 0.17 * side * (1 - back) + 0.07 * back) * H
+    z = NECK_Z + (-0.16 * side * (1 - back) + 0.32 * back ** 1.3) * H
+    return Vector((math.sin(a) * r * 1.15, -math.cos(a) * r * 0.95 + 0.03 * H, z))
+
+
+def collar_inner(a):
+    return Vector((math.sin(a) * 0.072 * H, -math.cos(a) * 0.066 * H - 0.004 * H, NECK_Z + 0.02 * H))
+
+
+SEG = N_RIBS - 1
+NS = SEG * 6
+rows = [[], [], [], []]
+for i in range(NS + 1):
+    a = A0 + (A1 - A0) * i / NS
+    q = (i % 6) / 6
+    scal = 1 - 0.3 * math.sin(q * math.pi)  # o recorte em arco entre duas varetas
+    pi_, po = collar_inner(a), collar_outer(a)
+    edge = pi_.lerp(po, scal)
+    mid1 = pi_.lerp(po, 0.36 * scal)
+    mid2 = pi_.lerp(po, 0.7 * scal)
+    # a membrana estufa um pouco para fora entre as varetas (não é uma folha plana)
+    bulge = Vector((math.sin(a), -math.cos(a), 0)) * (0.012 * H * math.sin(q * math.pi))
+    rows[0].append(pi_)
+    rows[1].append(mid1 + bulge * 0.6)
+    rows[2].append(mid2 + bulge)
+    rows[3].append(edge)
+cape = b.add('batCape', shell_grid(rows, 0.007), teal, region='chest', subdiv=1)
+relief(cape, lambda p: 0.0025 * H * n3(p, 18))
 ribs = []
-for i in range(0, len(cape[0]), 4):
-    ribs.append(rod([collar_top[i], cape[0][i], cape[1][i]], 0.005 * H, 4))
+for k in range(N_RIBS):
+    a = A0 + (A1 - A0) * k / SEG
+    pi_, po = collar_inner(a), collar_outer(a)
+    d = (po - pi_).normalized()
+    tip = po + d * 0.05 * H
+    ribs.append(rod([pi_, pi_.lerp(po, 0.5) + Vector((0, 0, 0.004 * H)), po], [0.008 * H, 0.0065 * H, 0.005 * H], 5))
+    pend.append(cone(tuple(po), tuple(tip), 0.009 * H, 5))  # a garra de metal na ponta de cada vareta
 b.add('batRibs', merge(*ribs), teal_dk, region='chest', subdiv=0)
+# a faixa de babado no QUADRIL (a arte: a barra do paletó acaba no quadril com a faixa azul recortada)
+waist = bat_edge(hz - 0.02 * H, 0.172 * H, 0.142 * H, GAP * TAU, TAU - GAP * TAU, 9, 0.075 * H)
+waist_top = [Vector((p.x, p.y, p.z + 0.045 * H)) for p in waist[0]]
+b.add('batWaist', shell_grid([waist_top, waist[0], waist[1]], 0.006), teal, region='skirt', subdiv=1)
 # a barra do sobretudo em babados
 hem = bat_edge(CZ[-1] + 0.02 * H, rings[-1][1], rings[-1][2], GAP * TAU, TAU - GAP * TAU, 8, 0.1 * H)
 hem_top = [Vector((p.x, p.y, p.z + 0.07 * H)) for p in hem[0]]
