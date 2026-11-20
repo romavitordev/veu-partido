@@ -1,12 +1,14 @@
 // VERITUS — O SACRIFÍCIO DO RANCOR (id: veritus_rancor) — a outra versão do Veritus (RB/LB na seleção). Wiki "Veritus"
-// (apelido: "Sacrifício do Rancor"): em HEXATOMBE, o Giovanni conta dos manuscritos sobre a participação dele no ritual
-// do Hexatombe — o ÚNICO SACRIFÍCIO que sobreviveu, e que ganhou o TRONO de presente por vencer o ritual. No flashback,
-// o tronco exposto, o físico definido e, nas COSTAS, a grande ferida no formato do ESTIGMA do Rancor, Frustração,
-// Ansiedade e Ira; a calça armadurada e os braços com FAIXAS ENSANGUENTADAS (a arte de Hexatombe: o cabelo escuro e
-// bagunçado, a barba, os olhos amarelos e a aura vermelha).
-// Sem arma conhecida nessa versão: luta com os punhos enfaixados (PROPOSTA). As quatro emoções do Estigma viram as
-// quatro habilidades; o especial e os números também são PROPOSTA. Modelo próprio do Blender
-// (public/models/veritus_rancor.glb, tools/blender/char_veritus_rancor.py; o Estigma é textura com brilho próprio).
+// (apelido: "Sacrifício do Rancor") e "Kian": quem estava no HEXATOMBE era o KIAN no corpo do Veritus (Kushim, o
+// Primeiro Ocultista, que troca de corpo). Ele foi o sacrifício marcado pelo ESTIGMA DO RANCOR ("Liberta tua cólera
+// primordial e aniquila a díade": matar duas pessoas no mesmo dia; a recompensa é mais dano e mais destruição da ira) e
+// VENCEU o ritual mesmo sendo sacrifício — o único sobrevivente até 2023 —, ganhando o TRONO (a Relíquia de Sangue) sem
+// usá-lo. NÃO virou monstro (dono, 2026-11-20: "o veritus fugiu do hexatombe e nao se tornou monstruoso, ele ganhou
+// mesmo sendo um sacrificio"). No flashback: o tronco exposto, nas COSTAS a ferida no formato do Estigma, a calça
+// armadurada, os braços com FAIXAS ENSANGUENTADAS, o cabelo e a barba LOIROS, os olhos amarelos e a aura vermelha.
+// "Os estigmas também alteram rituais que cada sacrifício possui": por isso o kit são os RITUAIS DO KIAN alterados pelo
+// Rancor (vermelhos, com sangue). Luta com os punhos enfaixados (como o Kian). Números, nomes e o especial: PROPOSTA.
+// Modelo próprio do Blender (public/models/veritus_rancor.glb, tools/blender/char_veritus_rancor.py).
 const RED = 0xff2a1a;
 const BLOOD = 0x9a0010;
 
@@ -20,10 +22,10 @@ export default {
   element: 'sangue',
   energyColor: RED,
   info: {
-    weapon: 'Os punhos enfaixados e o Estigma nas costas',
-    style: 'O sobrevivente do Hexatombe: socos de quem saiu vivo do ritual, e as quatro emoções do Estigma queimando nas costas',
-    identity: 'Veritus no Hexatombe: o único sacrifício que sobreviveu ao ritual — e ganhou o Trono de presente',
-    tagline: 'Rancor, Frustração, Ansiedade e Ira. Eu sobrevivi a todas.',
+    weapon: 'Os punhos enfaixados, os rituais do Kian e o Estigma do Rancor',
+    style: 'O Kian no corpo do Veritus: socos, os rituais do Primeiro Ocultista em vermelho e a cólera que cresce a cada inimigo derrubado',
+    identity: 'O sacrifício que venceu o Hexatombe: o Kian, marcado pelo Rancor, que ganhou o Trono e nunca o usou',
+    tagline: 'Liberta tua cólera primordial e aniquila a díade.',
   },
   stats: { moveSpeed: 7.8, attackSpeed: 1.08 },
   anims: { idle: 'idle_fist', run: 'run', charge: 'charge_fists', victory: 'vic_veritus_rancor', block: 'block' },
@@ -73,126 +75,107 @@ export default {
     hitSound: 'heavyPunch',
   },
 
+  // OS RITUAIS DO KIAN ALTERADOS PELO ESTIGMA DO RANCOR (cânone: "os estigmas também alteram rituais que cada sacrifício
+  // possui"): os mesmos rituais do Kian, em vermelho, com o sangue e a cólera do Rancor
   abilities: [
     {
-      // RANCOR: o soco que guarda tudo
-      id: 'rancor',
-      name: 'Rancor',
-      input: 'carga+physical', // △ + ○
-      type: 'heavyBlow',
-      description: 'Junta todo o rancor num soco só: quebra a defesa, derruba e faz sangrar. Preparação longa; errar deixa ele aberto.',
-      energyCost: 26,
-      cooldown: 12,
-      anim: 'meteor_punch',
-      duration: 1.05,
-      armorFrom: 0.22,
-      impact: 0.64,
-      step: 4.5,
-      range: 2.1,
-      arc: 90,
-      damage: 86,
-      knockback: 4.2,
-      guardCrush: 60,
-      bleed: { dps: 5, duration: 3 },
-      element: 'sangue',
-      whiffRecovery: 0.5,
-      color: RED,
-      ai: { when: 'opening', max: 2.3 },
-    },
-    {
-      // ANSIEDADE: não para quieto
-      id: 'ansiedade',
-      name: 'Ansiedade',
-      input: 'carga+dodge', // △ + L2
-      type: 'selfBuff',
-      buffType: 'anxiety',
-      label: 'ANSIEDADE',
-      anim: 'concentrate',
-      animTime: 0.3,
-      description: 'O Estigma acelera o coração: por 7 s corre 15% mais rápido, ataca 20% mais rápido e ganha uma esquiva.',
-      energyCost: 18,
-      cooldown: 16,
-      duration: 7,
-      speedMult: 1.15,
-      atkSpeed: 1.2,
-      refillDodges: 1,
-      color: RED,
-    },
-    {
-      // FRUSTRAÇÃO: o soco no chão do ritual
-      id: 'frustracao',
-      name: 'Frustração',
+      id: 'teletransporteRancor',
+      name: 'Teletransporte do Rancor',
       input: 'block+jump', // R2 + ×
-      type: 'stompQuake',
-      description: 'Desce os dois punhos no chão do ritual: a onda de sangue derruba quem estiver em volta.',
-      energyCost: 22,
-      cooldown: 12,
-      duration: 0.78,
-      impact: 0.44,
-      radius: 3.6,
-      damage: 36,
-      armorMax: 60,
-      element: 'sangue',
+      type: 'blink',
+      description: 'O Teletransporte do Kian tingido pelo Rancor: some e reaparece; sem direção, surge ao lado do adversário já socando.',
+      energyCost: 20,
+      cooldown: 7,
+      distance: 7,
+      flankDistance: 2.2,
+      vanishTime: 0.16,
+      color: RED,
+      residue: 'sigil',
+      strike: { range: 2.6, damage: 38, anim: 'dash_punch' },
+    },
+    {
+      id: 'laminaMedoRancor',
+      name: 'Lâmina do Medo do Rancor',
+      input: 'carga+physical', // △ + ○
+      type: 'fearBlade',
+      description: 'A Lâmina do Medo em vermelho: o golpe curto que quebra a defesa e deixa o alvo SANGRANDO (o Rancor). Errar deixa ele exposto.',
+      energyCost: 40,
+      cooldown: 22,
+      duration: 0.75,
+      active: [0.42, 0.56],
+      range: 2.8,
+      arc: 100,
+      damage: 130,
+      hitstun: 1.0,
+      whiffRecovery: 0.45,
+      dying: { dps: 9, duration: 4 },
       color: RED,
     },
     {
-      // IRA: o Estigma queima inteiro nas costas
-      id: 'ira',
-      name: 'Ira',
+      id: 'toqueMorteRancor',
+      name: 'Toque da Morte',
+      input: 'carga+dodge', // △ + L2
+      type: 'deathTouch',
+      description: 'Toca o alvo e o envelhece: definha, fica lento e mais FRACO até o fim do round. Curtíssimo alcance; dá para esquivar. Recarga muito longa.',
+      energyCost: 40,
+      cooldown: 50,
+      roundWeaken: 0.85,
+      windup: 0.38,
+      recovery: 0.35,
+      range: 1.3,
+      damage: 30,
+      duration: 6,
+      dps: 6,
+      slow: 0.8,
+      element: 'sangue',
+      color: BLOOD,
+    },
+    {
+      id: 'levitacaoRancor',
+      name: 'Levitação do Rancor',
       input: 'block+carga', // R2 + △
-      type: 'selfBuff',
-      buffType: 'wrath',
-      label: 'IRA',
-      anim: 'taunt_roar',
-      animTime: 0.5,
-      redAura: RED,
-      meleeBleed: true,
-      description: 'O Estigma acende nas costas: por 7 s os golpes físicos saem 25% mais fortes e fazem sangrar, mas ele recebe 10% a mais de dano.',
-      energyCost: 26,
-      cooldown: 20,
-      duration: 7,
-      damageMult: 1.25,
-      affects: ['melee'],
-      takenMult: 1.1,
+      type: 'levitation',
+      description: 'Ergue a mão e as pedras do chão sobem em volta dele, encharcadas de sangue; depois voam uma a uma contra o alvo.',
+      energyCost: 30,
+      cooldown: 15,
+      windup: 0.32,
+      recovery: 0.22,
+      stones: 5,
+      interval: 0.09,
+      speed: 34,
+      range: 18,
+      damage: 17,
       color: RED,
-      ai: { when: 'winning' },
     },
   ],
 
-  // O ÚNICO SOBREVIVENTE (PROPOSTA; o Hexatombe): o Estigma abre nas costas e o sangue sobe, os socos do ritual — as
-  // quatro emoções, um soco cada — e o último, com o Trono atrás dele
+  // SOB A LUA DE SANGUE (o Hexatombe): a lua vermelha, o círculo do ritual em volta do adversário e o sino toca três
+  // vezes — quem continua no círculo é o sacrifício e perde 1 ponto de existência a cada badalada; ele, o sacrifício que
+  // sobreviveu, recupera 1. Dá para sair correndo do círculo.
   special: {
-    name: 'O Único Sobrevivente',
-    banner: 'Eu sobrevivi ao Hexatombe!',
-    type: 'cinematicCombo',
-    physical: true,
+    name: 'Sob a Lua de Sangue',
+    banner: 'Sob a Lua de Sangue',
+    type: 'bloodMoon',
     energyCost: 50,
     cooldown: 14,
+    range: 12,
+    radius: 2.8,
     color: RED,
     sound: 'specialStart',
-    prepare: { anim: 'taunt_roar', time: 0.55, fx: 'bloodBurst' },
-    dash: { speed: 22, maxTime: 0.5, contact: 1.7 },
-    hits: [
-      { t: 0.6, anim: 'body_blow', dur: 0.32, share: 0.12, fx: { kind: 'punch', color: BLOOD }, sound: 'heavyPunch', victimAnim: 'stagger', call: 'RANCOR' },
-      { t: 1.0, anim: 'hook_l', dur: 0.32, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch', call: 'FRUSTRAÇÃO' },
-      { t: 1.4, anim: 'hook_r', dur: 0.32, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch', call: 'ANSIEDADE' },
-      { t: 1.8, anim: 'uppercut', dur: 0.4, share: 0.14, fx: { kind: 'punch', up: true }, sound: 'heavyPunch', call: 'IRA' },
-      { t: 2.5, anim: 'meteor_punch', dur: 0.62, share: 0.5, fx: { kind: 'punch', big: true }, sound: 'heavyPunch', final: true, quake: RED, rage: true },
-    ],
-    bannerAt: 0.15,
-    length: 3.4,
   },
 
-  // TRANSFORMAÇÃO: o TRONO (cânone: o presente por vencer o ritual) — o sangue toma o corpo e o Estigma arde
+  // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): O PRIMEIRO OCULTISTA — o Kian aparece por trás dos olhos
+  // amarelos: os rituais voltam bem mais rápido e a cólera bate mais forte. Nada de monstro: ele venceu o ritual inteiro.
   awakening: {
-    name: 'O Presente do Trono',
-    banner: 'O Trono',
+    name: 'O Primeiro Ocultista',
+    banner: 'O Primeiro Ocultista',
     type: 'awakenMode',
-    mult: 1.18, affects: ['melee', 'ranged', 'ability'], cdRate: 1.2, speedMult: 1.08, aura: 'flame', color: RED, heal: 0.12,
+    mult: 1.15, affects: ['melee', 'ranged', 'ability'], cdRate: 1.6, speedMult: 1.06, aura: 'flame', color: 0xffc83a, heal: 0.1,
   },
 
   passives: [
-    { type: 'escapeDeath' }, // O ÚNICO SOBREVIVENTE: uma vez por round um golpe fatal o deixa com 1 de vida
-    { type: 'sonOfPain', after: 3, mult: 0.85 }, // o ritual ensinou: apanhando seguido, aguenta mais
+    { type: 'dyad', per: 0.12, max: 2 }, // ANIQUILA A DÍADE: cada inimigo (ou entidade) derrubado na partida soma dano, até 2
+    { type: 'escapeDeath' }, // O SACRIFÍCIO QUE SOBREVIVEU: uma vez por round o golpe fatal o deixa com 1 de vida
+    { type: 'precognition' }, // o Kian não é pego desprevenido
   ],
 };

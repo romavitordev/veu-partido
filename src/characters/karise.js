@@ -74,39 +74,33 @@ export default {
 
   abilities: [
     {
-      // ESPIÃ (a ficha: obriga a revelar uma habilidade): ela lê o kit inteiro — e quem é lido apanha mais
+      // ESPIÃ (a ficha: obriga alguém a revelar uma habilidade): a habilidade revelada fica presa
       id: 'espia',
       name: 'Espiã',
       input: 'carga+physical', // △ + ○
+      type: 'spyReveal',
+      description: 'Obriga o adversário a revelar uma habilidade (o nome aparece): ela fica PRESA por 8 s. Sem habilidades, é o especial que fica preso.',
+      energyCost: 20,
+      cooldown: 15,
+      range: 14,
+      seal: 8,
+      color: BLUE,
+    },
+    {
+      // ESTUDAR O ALVO (PROPOSTA; a espiã lê o kit inteiro — o IMPERCEPTÍVEL da ficha virou passiva)
+      id: 'estudarAlvo',
+      name: 'Estudar o Alvo',
+      input: 'carga+dodge', // △ + L2
       type: 'analyze',
       buffType: 'espionada',
       label: 'ESPIONADO',
-      description: 'Estuda o adversário e descobre o que ele tem: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.',
+      description: 'Estuda o adversário: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.',
       energyCost: 20,
       cooldown: 16,
       range: 16,
       duration: 8,
       takenMult: 1.25,
       takenKinds: ['melee', 'ranged', 'ability'],
-      color: BLUE,
-    },
-    {
-      // IMPERCEPTÍVEL (a ficha: escolhe alguém e fica imune às habilidades dele)
-      id: 'imperceptivel',
-      name: 'Imperceptível',
-      input: 'carga+dodge', // △ + L2
-      type: 'selfBuff',
-      buffType: 'imperceptible',
-      label: 'IMPERCEPTÍVEL',
-      anim: 'concentrate',
-      animTime: 0.3,
-      description: 'Some do radar do adversário: por 4 s as HABILIDADES dele não causam dano nela (golpes físicos, tiros e especiais ainda doem).',
-      energyCost: 24,
-      cooldown: 18,
-      duration: 4,
-      takenMult: 0,
-      takenKinds: ['ability'],
-      speedMult: 1.1,
       color: BLUE,
     },
     {
@@ -147,27 +141,20 @@ export default {
     },
   ],
 
-  // NÃO É NADA PESSOAL (PROPOSTA; a fala dela para a Amalia): some no capuz, aparece pelas costas, os lados, as duas
-  // pontas — e a última adaga no ponto que ela já tinha espionado
+  // NÃO É NADA PESSOAL (PROPOSTA; a fala dela para a Amalia): some, as adagas vêm de todos os lados, aparece nas costas
+  // — e o dossiê fica completo: TODAS as habilidades do adversário presas por 6 s
   special: {
     name: 'Nada Pessoal',
     banner: 'Não é nada pessoal, Amalia!',
-    type: 'cinematicCombo',
+    type: 'spyDossier',
     energyCost: 50,
     cooldown: 14,
+    range: 10,
+    daggers: 8,
+    seal: 6,
+    damage: 250,
     color: BLUE,
     sound: 'specialStart',
-    prepare: { anim: 'concentrate', time: 0.4 },
-    dash: { speed: 28, maxTime: 0.45, contact: 1.6 },
-    hits: [
-      { t: 0.5, anim: 'knife_1', dur: 0.24, share: 0.1, fx: { kind: 'slash' }, sound: 'bladeHit', behind: true, vanish: 0.12, victimAnim: 'stagger' },
-      { t: 0.85, anim: 'knife_2', dur: 0.24, share: 0.1, fx: { kind: 'slash', flip: true }, sound: 'bladeHit', behind: true, vanish: 0.1 },
-      { t: 1.2, anim: 'dual_cross', dur: 0.3, share: 0.14, fx: { kind: 'cross' }, sound: 'bladeHit' },
-      { t: 1.6, anim: 'knife_3', dur: 0.28, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit', behind: true, vanish: 0.12 },
-      { t: 2.2, anim: 'knife_final', dur: 0.5, share: 0.52, fx: { kind: 'stab', big: true }, sound: 'slashFinal', final: true },
-    ],
-    bannerAt: 0.15,
-    length: 3.0,
   },
 
   awakening: {
@@ -178,6 +165,9 @@ export default {
   },
 
   passives: [
+    // IMPERCEPTÍVEL (a ficha: escolhe alguém e fica imune às habilidades especiais dele): o escolhido é o adversário — as
+    // habilidades dele doem 40% menos nela, o especial 20% menos, e o que prende/atordoa quase não a segura
+    { type: 'imperceptible', mult: 0.6, special: 0.8 },
     { type: 'backstab', mult: 1.25, surprised: true }, // a espiã: pelas costas, ou com o alvo desprevenido, entra fundo
   ],
 };

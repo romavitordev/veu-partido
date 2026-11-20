@@ -35,6 +35,8 @@ const ACTIVE_BUFF_TYPES = {
   deadlySpeedTrail: ['deadlySpeed'],
   whisperZone: ['whisperZone'], // Jae: não refaz a Zona dos Sussurros enquanto está dentro de uma
   shadowVeil: ['veil'], // Jae: não some de novo enquanto já está escondida
+  // Ordo Calamitas (combat/ordoCalamitas.js): não refaz o estado que já está valendo
+  helmetOff: ['helmetOff'], riskAll: ['riskAll'], shortFuse: ['shortFuse'], ordoSacrifice: ['ordoSacrifice'], duelRing: ['duel', 'grandDuel'],
 };
 
 // INTELIGÊNCIA ÚNICA (pedido de 2026-10-27: "uma IA única que saiba usar qualquer personagem contra qualquer outro"):
@@ -263,7 +265,8 @@ function sacrificeOk(f, opp) {
 const isModAbility = (a) => a.input.startsWith('block+') || a.input.startsWith('ranged+') || (a.input.startsWith('carga+') && a.input !== 'carga+jump');
 // tipos que não precisam do adversário perto (buffs, invocações, regras do jogo...)
 const SELF_TYPES = ['partnerSwap', 'weaponState', 'blink', 'mistCloud', 'healOverTime', 'hatredTemple', 'shadowClones', 'heavyProtection', 'noiseScreen', 'selfBuff', 'gameRule',
-  'chaosRule', 'hostTime', 'hostAudience', 'hostButton', 'orphanGame', 'hostClones', 'whisperZone', 'shadowVeil', 'shuffle', 'deadlySpeedTrail', 'agingHeal', 'calmEvade', 'falseAlliance'];
+  'chaosRule', 'hostTime', 'hostAudience', 'hostButton', 'orphanGame', 'hostClones', 'whisperZone', 'shadowVeil', 'shuffle', 'deadlySpeedTrail', 'agingHeal', 'calmEvade', 'falseAlliance',
+  'ordoSacrifice', 'helmetOff', 'riskAll', 'shortFuse'];
 
 export class CpuController {
   constructor({ level = 'normal' } = {}) {

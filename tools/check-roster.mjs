@@ -210,6 +210,8 @@ ok(ROSTER.find((c) => c.id === 'arthur').abilities[0].color === 0x3aff6a, 'Rebir
 ok(!GAMEPAD_LAYOUT.lock, 'sem botão de travar câmera');
 ok(GAMEPAD_LAYOUT.dodge[0] === 6, 'esquiva no LT / L2 (separada da defesa)');
 
+// as passivas dos módulos de personagem (ex.: a Ordo Calamitas em combat/ordoCalamitas.js) entram no registro com o Fighter
+await import('../src/combat/Fighter.js');
 for (const c of ROSTER) {
   for (const s of allStrikes(c)) if (!CLIPS[s.anim]) ok(false, `${c.name}: animação inexistente ${s.anim}`);
   for (const a of Object.values(c.anims)) if (!CLIPS[a]) ok(false, `${c.name}: animação inexistente ${a}`);

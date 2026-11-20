@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v5.33.0 — Fiéis ao Cânone
+
+- Versão: `VERSION` 5.32.1 → **5.33.0**. Data: 2026-11-20.
+- Dono: "os personagens precisam estar fieis, com mecanicas proprias, especiais proprios [...] o sacrificio do rancor é
+  o kian no corpo do veritus"; "o veritus fugiu do hexatombe e nao se tornou monstruoso, ele ganhou mesmo sendo um
+  sacrificio".
+- Referências: wiki Ordem Paranormal (fichas de cada um, "Kian", "Ritos do Hexatombe"), lidas no navegador.
+- Testado no navegador (Igreja): as 40 habilidades e os 10 especiais disparados por script, sem erros; Mãos Nuas
+  executando no último ponto, Pavio Curto (raiva 200 → 160, −40% pela Imperceptível), De Ferro (absorveu 300 → 272),
+  Duelo prendendo no círculo, A Revelação virando `veritus_kian` (sem elmo, cabelo, rituais do Kian).
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.32.1 — O Líder Loiro
 
 - Versão: `VERSION` 5.32.0 → **5.32.1**. Data: 2026-11-20.

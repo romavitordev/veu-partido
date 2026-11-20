@@ -7,7 +7,7 @@
 // DOURADOS, o pano cinza no peito com o Símbolo da Ordo e o ELMO FECHADO (as miniaturas); nas memórias revividas, a aura
 // AZUL. Arma: a ESPADA LONGA (Livro de Regras: a lâmina reta e larga, a cruzeta comprida, o cabo em espiral e o pomo e a
 // ponta em losango).
-// Habilidade da ficha: SACRIFÍCIO (cede um dos próprios pontos de existência a outra pessoa). Fala: "A gente não tava
+// Habilidade da ficha: SACRIFÍCIO (cede um dos próprios pontos de existência a outra pessoa; ver combat/ordoCalamitas.js). Fala: "A gente não tava
 // nessa Ordem pra lutar uns contra os outros... Era pra trabalhar juntos pra derrotar esse tipo de coisa!".
 // No RB/LB, a outra versão: o SACRIFÍCIO DO RANCOR (veritus_rancor.js), sem armadura, com o Estigma nas costas
 // (Hexatombe). Números, nomes de golpes e o especial: PROPOSTA. Modelo próprio do Blender (public/models/veritus.glb; o
@@ -89,15 +89,17 @@ export default {
       id: 'sacrificio',
       name: 'Sacrifício',
       input: 'carga+dodge', // △ + L2
-      type: 'altruism',
-      description: 'Cede a própria existência: paga 6% da vida e, na equipe, as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche; sozinho, recupera 40 de sanidade e as esquivas.',
+      type: 'ordoSacrifice',
+      description: 'Cede 1 PONTO DE EXISTÊNCIA (10% da vida; precisa sobrar 1). Na equipe, as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche; sozinho, a sanidade, a guarda e as esquivas enchem e ele bate 15% mais forte por 6 s.',
       energyCost: 0,
-      cooldown: 20,
-      healthCost: 0.06,
-      energy: 40,
+      cooldown: 18,
+      energy: 50,
       refillDodges: 2,
-      teamGauge: 22,
+      teamGauge: 25,
+      duration: 6,
+      damageMult: 1.15,
       color: BLUE,
+      ai: { when: 'opening' },
     },
     {
       // o LÍDER: obediência e consagração — a ordem que a Ordo segue
@@ -120,26 +122,26 @@ export default {
       color: BLUE,
     },
     {
-      id: 'julgamento',
-      name: 'Julgamento',
+      // a PONTA EM LOSANGO da espada (Livro de Regras): a estocada que atravessa a guarda
+      id: 'pontaLosango',
+      name: 'Ponta de Losango',
       input: 'carga+physical', // △ + ○
-      type: 'heavyBlow',
-      description: 'Ergue a espada longa com as duas mãos e desce com tudo: quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.',
-      energyCost: 28,
-      cooldown: 12,
-      anim: 'slash_v',
-      duration: 1.15,
-      armorFrom: 0.28,
-      impact: 0.7,
-      step: 4.5,
+      type: 'dashStrike',
+      description: 'Avança com a ponta em losango da espada longa: a estocada QUEBRA A DEFESA de quem está bloqueando e empurra longe.',
+      energyCost: 26,
+      cooldown: 11,
+      anim: 'thrust',
+      windup: 0.22,
+      distance: 6,
+      speed: 26,
       range: 2.6,
-      arc: 100,
-      damage: 90,
-      knockback: 4.2,
-      guardCrush: 70,
-      whiffRecovery: 0.55,
-      color: BLUE,
-      ai: { when: 'opening', max: 2.8 },
+      damage: 70,
+      knockback: 4,
+      hitstun: 0.6,
+      guardBreak: true,
+      recovery: 0.4,
+      color: GOLD,
+      ai: { when: 'opening', max: 6 },
     },
     {
       // proteger o governante primeiro (o ataque da silhueta negra): o líder se planta
@@ -159,37 +161,39 @@ export default {
     },
   ],
 
-  // A GENTE NÃO TAVA NESSA ORDEM PRA LUTAR UNS CONTRA OS OUTROS (PROPOSTA; a fala dele em Calamidade): o líder tira o
-  // elmo — os olhos acesos —, três cortes da espada longa e o último com a aura azul virando DOURADA por um instante (o
-  // segredo de quem ele é)
+  // O SACRIFÍCIO DO LÍDER (PROPOSTA a partir da ficha): ele dá a própria existência — até 3 pontos (sempre sobra 1) — e
+  // cada ponto vira uma lança de luz que voa contra o adversário; quanto mais ele dá, mais forte
   special: {
-    name: 'Era pra Trabalhar Juntos',
+    name: 'O Sacrifício do Líder',
     banner: 'A gente não tava nessa Ordem pra lutar uns contra os outros!',
-    type: 'cinematicCombo',
+    type: 'lastSacrifice',
     energyCost: 50,
     cooldown: 14,
+    range: 12,
+    maxPoints: 3,
+    perPoint: 140, // por ponto dado (3 pontos = 450 de vida dele: 420 + o final 90 = 510)
+    final: 90,
+    damage: 250,
     color: BLUE,
+    gold: GOLD,
     sound: 'specialStart',
-    prepare: { anim: 'ver_command', time: 0.55, fx: 'bladeGlow' },
-    dash: { speed: 20, maxTime: 0.55, contact: 2.0 },
-    hits: [
-      { t: 0.6, anim: 'slash_h', dur: 0.36, share: 0.14, fx: { kind: 'slash' }, sound: 'blade', victimAnim: 'stagger', props: [['helmet', false], ['hair', true]] },
-      { t: 1.05, anim: 'slash_h_back', dur: 0.36, share: 0.14, fx: { kind: 'slash', flip: true }, sound: 'blade' },
-      { t: 1.5, anim: 'thrust', dur: 0.34, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.95, anim: 'slash_v', dur: 0.44, share: 0.14, fx: { kind: 'slash', roll: 1.5, color: GOLD }, sound: 'blade' },
-      { t: 2.6, anim: 'slash_finisher', dur: 0.66, share: 0.44, fx: { kind: 'cross', big: true, color: GOLD, color2: BLUE }, sound: 'slashFinal', final: true, quake: GOLD },
-    ],
-    bannerAt: 0.15,
-    length: 3.5,
   },
 
-  // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): o líder se revela — a aura azul vira DOURADA e os olhos
-  // acendem em amarelo (cânone: depois de se revelar Kian)
+  // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): A REVELAÇÃO — o elmo sai e quem está ali é o KIAN (cânone:
+  // depois de se revelar, a aura DOURADA e os olhos amarelos). Vira forms/veritus_kian.js até o fim do round: os rituais
+  // do Primeiro Ocultista e o INEXISTIR
   awakening: {
-    name: 'O Segredo do Líder',
-    banner: 'Veritus revelado',
-    type: 'awakenMode',
-    mult: 1.18, affects: ['melee', 'ranged', 'ability'], cdRate: 1.25, speedMult: 1.06, aura: 'flame', color: GOLD, heal: 0.12,
+    name: 'A Revelação',
+    banner: 'A Revelação',
+    type: 'maskTransform',
+    form: 'veritus_kian',
+    formBanner: 'O LÍDER ERA O KIAN',
+    finalAnim: 'powerup',
+    tint: GOLD,
+    sound: 'powerUp',
+    duration: 0,
+    bonusHealth: 100,
+    color: GOLD,
   },
 
   passives: [

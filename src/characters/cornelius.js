@@ -96,12 +96,12 @@ export default {
       ai: { when: 'opening', max: 3.2 },
     },
     {
-      // DE FERRO (a ficha: a maior defesa de todos)
-      id: 'deFerro',
-      name: 'De Ferro',
+      // ESCUDO FECHADO (PROPOSTA; o DE FERRO da ficha virou passiva e especial)
+      id: 'escudoFechado',
+      name: 'Escudo Fechado',
       input: 'carga+dodge', // △ + L2
       type: 'heavyProtection',
-      label: 'DE FERRO',
+      label: 'ESCUDO FECHADO',
       description: 'Fecha atrás do escudo: por 7 s recebe 40% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.',
       energyCost: 24,
       cooldown: 20,
@@ -132,43 +132,45 @@ export default {
       color: BLUE,
     },
     {
-      // PAVIO CURTO: o grito e o pisão do escudo
+      // PAVIO CURTO (cânone: o pavio curto dele): acende o pavio — cada golpe que leva vira raiva, e explode
       id: 'pavioCurto',
       name: 'Pavio Curto',
       input: 'block+carga', // R2 + △
-      type: 'stompQuake',
-      description: 'Explode: bate o escudo no chão gritando e a onda derruba quem estiver em volta.',
-      energyCost: 20,
-      cooldown: 12,
-      duration: 0.75,
-      impact: 0.42,
+      type: 'shortFuse',
+      description: 'Acende o pavio por 4 s: recebe 15% menos dano, aguenta 3 golpes sem recuar e TODO dano que levar vira raiva. No fim explode num giro de lança em volta (40 + 60% do que levou, até 160 a mais).',
+      energyCost: 22,
+      cooldown: 16,
+      duration: 4,
+      takenMult: 0.85,
+      armor: 3,
+      base: 40,
+      ratio: 0.6,
+      maxBonus: 160,
       radius: 3.4,
-      damage: 32,
-      armorMax: 60,
       color: BLUE,
+      ai: { when: 'hurt' },
     },
   ],
 
-  // VOCÊ NÃO ME RESPONDE! (PROPOSTA; a fala dele): o pavio acaba — escudo na cara, três estocadas, e a lança atravessa
+  // DE FERRO (a ficha: a maior defesa de todos; a FÚRIA: com 1 ponto, ataca dois de uma vez): finca o escudo e aguenta
+  // TUDO por 2 s — o adversário bate à vontade —, depois solta a FÚRIA num giro de lança que cresce com o que absorveu e
+  // fica 6 s com cada golpe físico acertando duas vezes
   special: {
-    name: 'Pavio Curto',
+    name: 'De Ferro',
     banner: 'Você não me responde! Você sabe que eu tenho pavio curto.',
-    type: 'cinematicCombo',
+    type: 'ironWall',
     energyCost: 50,
     cooldown: 14,
+    stance: 2,
+    takenMult: 0.1,
+    base: 120,
+    ratio: 0.8,
+    maxBonus: 220,
+    radius: 3.6,
+    furia: 6,
+    damage: 250,
     color: BLUE,
     sound: 'specialStart',
-    prepare: { anim: 'taunt_roar', time: 0.55, fx: 'stomp' },
-    dash: { speed: 20, maxTime: 0.55, contact: 2.0 },
-    hits: [
-      { t: 0.6, anim: 'shoulder_bash', dur: 0.36, share: 0.14, fx: { kind: 'smash' }, sound: 'heavyPunch', victimAnim: 'stagger', shout: 'RESPONDE!' },
-      { t: 1.05, anim: 'thrust', dur: 0.3, share: 0.12, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.4, anim: 'ver_thrust', dur: 0.32, share: 0.12, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.75, anim: 'thrust', dur: 0.3, share: 0.12, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 2.4, anim: 'arn_lunge', dur: 0.62, share: 0.5, fx: { kind: 'stab', big: true }, sound: 'slashFinal', final: true, quake: true },
-    ],
-    bannerAt: 0.15,
-    length: 3.3,
   },
 
   awakening: {
@@ -179,8 +181,10 @@ export default {
   },
 
   passives: [
-    { type: 'resistant', mult: 0.88, kinds: ['melee', 'ranged'] }, // DE FERRO: a maior defesa de todos
-    // FÚRIA (a ficha: com 1 de existência, ataca 2 de uma vez): com a vida no fim, a fúria — mais dano e velocidade
-    { type: 'revenge', below: 0.2, label: 'FÚRIA', mult: 1.45, speedMult: 1.15, duration: 8 },
+    // DE FERRO (a ficha: a maior defesa de todos): leva 15% menos, a defesa gasta pouco e quase não é empurrado
+    { type: 'deFerro', mult: 0.85, chip: 0.5, guard: 0.6, knockback: 0.7 },
+    // FÚRIA (a ficha: com 1 ponto de existência, ataca dois de uma vez): com 1 ponto (ou depois do especial) cada golpe
+    // físico acerta DUAS vezes (o eco com 60% do dano)
+    { type: 'furia', points: 1, echo: 0.6, color: 0xff4a2a },
   ],
 };

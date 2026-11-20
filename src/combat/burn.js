@@ -4,6 +4,8 @@ const FIRE = 0xff7a2a; // o mesmo laranja de cristinoAbilities.FIRE
 
 export function igniteFighter(world, owner, foe, { dps = 10, duration = 2.5 } = {}) {
   if (!foe || foe.state === 'ko') return;
+  // CICATRIZES DO INCÊNDIO (Marius, salvo do incêndio por Veritus): o fogo não pega nele
+  if ((foe.def.passives || []).some((p) => p.type === 'fireScars')) return;
   let b = foe.findBuff('burn');
   if (!b) {
     b = { type: 'burn', name: 'QUEIMANDO', time: duration, duration };

@@ -4308,7 +4308,7 @@ Object.assign(ABILITY_TYPES, {
 });
 
 // o efeito do selfBuff (também usado pelo bloodBind com a.buff: o Morato estala as Magras e engole a Calabresa)
-function applySelfBuff(f, a, world) {
+export function applySelfBuff(f, a, world) {
   const trail = a.trail === false ? null : world.fx.emitter({ rate: 24, follow: () => f.chestPos(), particle: { color: a.color, speed: 0.4, spread: 0.4, life: 0.4, size: 0.16 } });
   if (a.refillDodges) f.dodges = Math.max(f.dodges, a.refillDodges);
   // a.energy: recupera sanidade na hora (Carina — Pergaminho da Pertinácia, "+PE temporário")

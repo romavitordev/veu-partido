@@ -1,5 +1,26 @@
 # Changelog
 
+## v5.33.0 — Fiéis ao Cânone
+
+### Adicionado
+- `src/combat/ordoCalamitas.js`: pontos de existência (`PONTO` = 10% da vida; `pontos`, `takePoint`, `givePoint`,
+  `spendPoint`, `pointOrb`, `duelCircle`), tipos de habilidade `ordoSacrifice`, `existenceTheft`, `imperialOrder`,
+  `conspiracy`, `emperorRules`, `metalCube`, `shortFuse`, `spyReveal`, `duelRing`, `khopeshHook`, `bareHandsGrab`,
+  `helmetOff`, `riskAll` e as passivas `gladiator`, `sanguinario`, `bondade`, `fireScars`, `deFerro`, `furia`,
+  `imperceptible`, `duelist`, `conspirador`, `dyad`, `noPatience`.
+- `src/combat/specials/ordoSpecials.js`: `lastSacrifice`, `bloodMoon`, `romeBurns`, `jupiterPrayer`, `streetBrawl`,
+  `charmTheft`, `ironWall`, `spyDossier`, `grandDuel`, `khopeshBoomerang`.
+- Forma `veritus_kian` (forms/veritus_kian.js) e variante de modelo `veritus_kian` (`addVeritusKianProps`, textura
+  `face_veritus_kian`).
+- `.bar.health.hb-existencia::after`: as 10 marcas da existência.
+- Ganchos genéricos: `noGuard` (`startBlock`), `noDodge` (`tryDodge`), `PASSIVES.onNpcKill` (`checkNpcHits`),
+  `imperceptible` em `Fighter.stun`, `fireScars` em `igniteFighter`; `applySelfBuff` exportado.
+
+### Alterado
+- Os dez kits da Ordo saíram do molde (`cinematicCombo` + `awakenMode` genéricos); o Rancor usa os rituais do Kian.
+- `tools/check-roster.mjs` carrega o Fighter antes de validar as passivas; `CpuController` conhece os tipos novos.
+- `lore/ORDO-CALAMITAS-KITS.md` (revisão cânone × kit) e `lore/ORDO-CALAMITAS.md` atualizados.
+
 ## v5.32.1 — O Líder Loiro
 
 ### Alterado

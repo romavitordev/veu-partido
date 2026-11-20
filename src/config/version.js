@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.32.1';
+export const VERSION = '5.33.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,21 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.33.0',
+    date: '2026-11-20',
+    title: 'Fiéis ao Cânone',
+    items: [
+      'A ORDO CALAMITAS ganhou os PONTOS DE EXISTÊNCIA dos jogos do Amphitruo: a barra azul tem 10 marcas e cada ponto é 10% da vida. Ceder, roubar e recuperar pontos não passa pela defesa.',
+      'VERITUS: o Sacrifício cede 1 ponto (na equipe, as assistências voltam na hora), a Ponta de Losango quebra a defesa e o especial O Sacrifício do Líder transforma até 3 pontos em lanças de luz. A transformação A Revelação tira o elmo: ele era o KIAN — aura dourada, olhos amarelos, os rituais do Primeiro Ocultista e o Inexistir.',
+      'SACRIFÍCIO DO RANCOR agora é o Kian no corpo do Veritus no Hexatombe, o sacrifício que venceu o ritual sem virar monstro: os rituais do Kian alterados pelo Estigma (Teletransporte, Lâmina do Medo que deixa sangrando, Toque da Morte, Levitação), a passiva Aniquila a Díade e o especial Sob a Lua de Sangue (o sino toca três vezes; quem fica no círculo perde pontos e ele recupera).',
+      'NERO: Imperador toma os estados bons do adversário (ou o faz ajoelhar), Conspirador oferece a traição (quem trai ganha um ponto, mas fica marcado) e as Regras do Imperador decretam SEM VINHO, FORMALIDADE e SILÊNCIO. Especial Roma em Chamas: três anéis de fogo e "ajoelhem-se".',
+      'FAUSTUS: Gladiador vira passiva (um contra um bate mais), Tirar Capacete vale o round inteiro e Arriscar Tudo dá um ponto e dobra o dano recebido. Especial Que Júpiter me Perdoe: ele reza e três raios caem.',
+      'MARIUS: Sanguinário devolve um ponto a cada derrubada com as mãos, Bondade bate mais com uma assistência dele em campo, Mãos Nuas mata quem está no último ponto e as Cicatrizes do Incêndio o deixam imune a queimaduras. Especial Briga de Rua.',
+      'REMUS: Traiçoeiro paga um ponto para tirar um do adversário e o Cubo de Metal prende e implode. CORNELIUS: De Ferro (passiva), Fúria (com um ponto, cada golpe acerta duas vezes), Pavio Curto (o dano recebido vira explosão) e o especial De Ferro, que absorve tudo e solta a Fúria.',
+      'KARISE: Espiã revela e prende uma habilidade, Imperceptível a protege das habilidades do adversário e o especial prende todas por 6 s. MARCELLUS: o círculo do Duelo prende os dois, e o especial Duelo até o Fim transforma as defesas em riposta. CASCADIA: o Gancho do Khopesh tira a guarda e o especial Por Caesar arremessa o khopesh como bumerangue.',
+    ],
+  },
   {
     v: '5.32.1',
     date: '2026-11-20',

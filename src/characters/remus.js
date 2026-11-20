@@ -73,20 +73,21 @@ export default {
 
   abilities: [
     {
-      // TRAIÇOEIRO (a ficha): gasta a própria existência para tirar a do outro — some e aparece nas costas
+      // TRAIÇOEIRO (a ficha: gasta 1 ponto de existência seu para tirar 1 de outra pessoa)
       id: 'traicoeiro',
       name: 'Traiçoeiro',
       input: 'carga+physical', // △ + ○
-      type: 'teleportBehind',
-      description: 'Paga 5% da própria vida e aparece nas COSTAS do alvo já rasgando com as seis garras: ele fica desprevenido e sangra.',
-      energyCost: 18,
-      lifeCost: 0.05,
-      cooldown: 10,
-      distance: 1.2,
-      vanishTime: 0.22,
-      surpriseTime: 0.7,
-      strike: { damage: 48, anim: 'dual_cross', dur: 0.34, at: 0.1, knockback: 1.6, hitstun: 0.55, element: 'energia', sound: 'bladeHit', bleed: { dps: 4, duration: 2.5 } },
+      type: 'existenceTheft',
+      description: 'Paga 1 PONTO DE EXISTÊNCIA (10% da vida; precisa sobrar 1) e TIRA 1 do adversário de até 9 m: não passa pela defesa e o alvo cambaleia. Com o último ponto do alvo, ele INEXISTE.',
+      energyCost: 22,
+      cooldown: 16,
+      windup: 0.45,
+      recovery: 0.3,
+      range: 9,
+      points: 1,
+      stagger: 0.35,
       color: GREEN,
+      ai: { when: 'opening' },
     },
     {
       // O CATIVANTE: o sorriso, a voz mansa — e o alvo baixa a guarda e vem
@@ -126,45 +127,36 @@ export default {
       color: GREEN,
     },
     {
-      id: 'sorrisoConstante',
-      name: 'Sorriso Constante',
+      // CUBO DE METAL (cânone: a ideia dele de conter a Relíquia de Energia num cubo de metal)
+      id: 'cuboDeMetal',
+      name: 'Cubo de Metal',
       input: 'block+carga', // R2 + △
-      type: 'selfBuff',
-      buffType: 'charmer',
-      label: 'SORRISO CONSTANTE',
-      anim: 'concentrate',
-      animTime: 0.3,
-      description: 'Nada tira o sorriso dele: por 7 s corre 15% mais rápido, ataca 15% mais rápido e os golpes pelas costas doem mais ainda.',
-      energyCost: 18,
+      type: 'metalCube',
+      description: 'Marca o chão do adversário: quem não sair em 0,6 s fica PRESO no cubo de contenção por 1,4 s, e o cubo implode (não dá para defender).',
+      energyCost: 26,
       cooldown: 16,
-      duration: 7,
-      speedMult: 1.15,
-      atkSpeed: 1.15,
+      range: 10,
+      windup: 0.6,
+      radius: 1.3,
+      hold: 1.4,
+      damage: 60,
       color: GREEN,
     },
   ],
 
-  // POR QUÊ? GOSTOU DO QUE VIU? (PROPOSTA; a fala dele): some com um sorriso, aparece nas costas, nos lados, de novo nas
-  // costas — e o último rasgo de garra com a aura verde inteira
+  // GOSTOU DO QUE VIU? (PROPOSTA; a fala dele): o sorriso do Cativante puxa o alvo até ele, as garras abrem caminho e o
+  // TRAIÇOEIRO DUPLO leva dois pontos de existência (ele paga um)
   special: {
     name: 'Gostou do que Viu?',
     banner: 'Por quê? Gostou do que viu?',
-    type: 'cinematicCombo',
+    type: 'charmTheft',
     energyCost: 50,
     cooldown: 14,
+    range: 10,
+    damage: 250,
+    points: 2,
     color: GREEN,
     sound: 'specialStart',
-    prepare: { anim: 'concentrate', time: 0.45, fx: 'fistGlow' },
-    dash: { speed: 26, maxTime: 0.45, contact: 1.7 },
-    hits: [
-      { t: 0.55, anim: 'hook_r', dur: 0.26, share: 0.12, fx: { kind: 'claw' }, sound: 'bladeHit', victimAnim: 'stagger' },
-      { t: 0.9, anim: 'hook_l', dur: 0.26, share: 0.12, fx: { kind: 'claw', flip: true }, sound: 'bladeHit', behind: true, vanish: 0.12 },
-      { t: 1.3, anim: 'dual_cross', dur: 0.32, share: 0.14, fx: { kind: 'claw' }, sound: 'bladeHit', behind: true, vanish: 0.12 },
-      { t: 1.7, anim: 'dual_spin', dur: 0.34, share: 0.14, fx: { kind: 'claw', tilt: 0.4 }, sound: 'bladeHit' },
-      { t: 2.3, anim: 'uppercut', dur: 0.5, share: 0.48, fx: { kind: 'claw', big: true }, sound: 'slashFinal', final: true, shout: 'Gostou?' },
-    ],
-    bannerAt: 0.15,
-    length: 3.1,
   },
 
   awakening: {

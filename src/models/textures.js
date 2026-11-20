@@ -3827,6 +3827,16 @@ export const MATERIAL_TEXTURES = {
     brow: { angry: 1, thick: 5, color: '#9a7638' },
     mouth: { mouthW: 15, lip: 'rgba(150,84,74,0.4)' },
   }),
+  // VERITUS REVELADO (o Kian): o mesmo rosto com os olhos AMARELOS acesos (cânone: depois de se revelar)
+  face_veritus_kian: face((g) => {
+    beardPaint(g, '#b08a4a', { mustache: '#a07a3c' });
+    auraEyes(g, '255,200,60', 1.2);
+  }, {
+    skin: '#e4c0a2',
+    eye: { iris: '#ffc83a', irisLight: '#fff4c8', tilt: -0.06 },
+    brow: { angry: 2, thick: 5, color: '#9a7638' },
+    mouth: { mouthW: 15, smile: 1, lip: 'rgba(150,84,74,0.4)' },
+  }),
   tabard_veritus: ordoTabard('#56585e', '140,140,150', '#26272c', 78), // o pano CINZA no peito (wiki)
   // O SACRIFÍCIO DO RANCOR (Hexatombe): a barba cheia LOIRA (dono, 2026-11-20: o Veritus é loiro), os riscos de sangue e os olhos AMARELOS acesos (a arte
   // de Hexatombe)

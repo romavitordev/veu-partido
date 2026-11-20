@@ -1,5 +1,5 @@
 import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps, addCarinaProps, addCarinaLeoneProps, addRubensProps, addBeatriceProps, addBeatriceExistidaProps, addEspreitadorProps, addDegolificadaProps, addFernandoProps, addLucianoProps, addTristanProps, addIveteProps, addBorisProps, addDamirProps, addArtemisProps, addEloyProps, addSabaraProps, addAlviraProps, addCindyProps, addCaioProps, addFrancoProps, addAleProps, addZeferoProps } from './props.js';
-import { addVeritusProps, addVeritusRancorProps, addNeroProps, addFaustusProps, addMariusProps, addRemusProps, addCascadiaProps, addCorneliusProps, addKariseProps, addMarcellusProps } from './ordoProps.js';
+import { addVeritusProps, addVeritusKianProps, addVeritusRancorProps, addNeroProps, addFaustusProps, addMariusProps, addRemusProps, addCascadiaProps, addCorneliusProps, addKariseProps, addMarcellusProps } from './ordoProps.js';
 import { loadGLBRetry as loadWithRetry, rigFromGLB } from './glbRig.js';
 import { preloadNpcModels } from './npcRig.js';
 
@@ -106,6 +106,7 @@ const MODEL_VARIANTS = {
   celestine_magistrada: { base: 'celestine', props: addCelestineMagistradaProps }, // a Máscara do Desespero no rosto
   amphitruo: { base: 'gaius', props: addAmphitruoProps }, // Amphitruo: o Gaius com a máscara da Relíquia de Energia e as chamas roxas
   kian_calamidade: { base: 'kian', props: addKianCalamidadeProps }, // a barba cheia e as faixas
+  veritus_kian: { base: 'veritus', props: addVeritusKianProps }, // A Revelação: sem elmo, aura dourada, olhos amarelos
 };
 
 // todos os modelos que o jogo sabe montar (personagens e formas)

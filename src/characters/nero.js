@@ -74,20 +74,32 @@ export default {
 
   abilities: [
     {
-      // IMPERADOR (a ficha: ordena que usem habilidades a favor dele)
+      // IMPERADOR (a ficha: ordena que quem tem uma habilidade que o favoreça a use nele)
       id: 'imperador',
       name: 'Imperador',
       input: 'carga+dodge', // △ + L2
-      type: 'command',
-      description: 'Dá a ordem do imperador: o adversário perto obedece — fica parado, de joelhos, aberto para o próximo golpe.',
-      energyCost: 26,
+      type: 'imperialOrder',
+      description: 'A ordem do imperador: os estados BONS do adversário (força, proteção, velocidade) passam para Nero. Sem nenhum, o adversário AJOELHA por 1 s e 30 de sanidade dele vão para Nero.',
+      energyCost: 24,
       cooldown: 15,
       windup: 0.4,
-      range: 7,
-      orders: ['AJOELHE-SE!', 'OBEDEÇA!'],
-      stun: 1.1,
-      damage: 12,
-      element: 'energia',
+      recovery: 0.3,
+      range: 10,
+      kneel: 1.0,
+      drain: 30,
+      color: GOLD,
+    },
+    {
+      // CONSPIRADOR (a ficha: se o alvo trair alguém, o alvo ganha +1 ponto de existência)
+      id: 'conspirador',
+      name: 'Conspirador',
+      input: 'carga+physical', // △ + ○
+      type: 'conspiracy',
+      description: 'Oferece a conspiração por 4 s: se o adversário bater nele (trair), GANHA 1 ponto de existência, mas fica MARCADO como traidor por 12 s e Nero bate 40% mais forte nele. Se ninguém trair, o ponto fica com Nero.',
+      energyCost: 20,
+      cooldown: 16,
+      range: 12,
+      window: 4,
       color: GOLD,
     },
     {
@@ -111,70 +123,39 @@ export default {
       color: BLUE,
     },
     {
-      id: 'sentenca',
-      name: 'Sentença',
-      input: 'carga+physical', // △ + ○
-      type: 'heavyBlow',
-      description: 'Ergue a espada curva e dá a sentença: um corte que quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.',
-      energyCost: 28,
-      cooldown: 12,
-      anim: 'slash_v',
-      duration: 1.1,
-      armorFrom: 0.28,
-      impact: 0.66,
-      step: 4.5,
-      range: 2.4,
-      arc: 100,
-      damage: 86,
-      knockback: 4,
-      guardCrush: 60,
-      whiffRecovery: 0.5,
-      color: GOLD,
-      ai: { when: 'opening', max: 2.6 },
-    },
-    {
-      // as REGRAS do imperador: formalidade, sem vinho — e a guarda dele inteira
+      // as REGRAS do imperador (cânone: sem vinho, formalidade): um decreto por vez, em ordem
       id: 'regrasDoImperador',
       name: 'Regras do Imperador',
       input: 'block+carga', // R2 + △
-      type: 'selfBuff',
-      buffType: 'emperorRules',
-      label: 'REGRAS DO IMPERADOR',
+      type: 'emperorRules',
       anim: 'ver_order',
-      animTime: 0.5,
-      orderAllies: true,
-      description: 'Impõe as regras: por 7 s recebe 20% menos dano e causa 15% a mais; na equipe, as assistências ficam prontas na hora.',
+      description: 'Um decreto por 6 s, na ordem: SEM VINHO (nada cura e a sanidade volta pela metade), FORMALIDADE (lento e sem esquiva), SILÊNCIO (sem habilidades).',
       energyCost: 26,
-      cooldown: 20,
-      duration: 7,
-      takenMult: 0.8,
-      damageMult: 1.15,
-      affects: ['melee', 'ranged', 'ability'],
+      cooldown: 18,
+      range: 12,
+      duration: 6,
       color: GOLD,
     },
   ],
 
-  // EU SOU O IMPERADOR DE ROMA (PROPOSTA; a fala dele): ordena — o alvo ajoelha —, o escudo na cara, os cortes da espada
-  // curva e a sentença final com a aura azul e o dourado do império
+  // ROMA EM CHAMAS (o incêndio de que ele levou a culpa): três anéis de fogo saem dele — pule ou esquive —, o chão em
+  // volta queima e ele ordena "AJOELHEM-SE"
   special: {
-    name: 'O Imperador de Roma',
-    banner: 'Eu consigo tirar informações de quem eu quiser. Eu sou o imperador de Roma!',
-    type: 'cinematicCombo',
+    name: 'Roma em Chamas',
+    banner: 'Eu sou o imperador de Roma!',
+    type: 'romeBurns',
     energyCost: 50,
     cooldown: 14,
-    color: BLUE,
+    range: 14,
+    ringDamage: 75,
+    ringSpeed: 9,
+    ringRadius: 12,
+    groundRadius: 4.5,
+    groundTime: 3,
+    kneel: 1.1,
+    damage: 250,
+    color: 0xff6a1a,
     sound: 'specialStart',
-    prepare: { anim: 'ver_command', time: 0.55, fx: 'bladeGlow' },
-    dash: { speed: 20, maxTime: 0.5, contact: 1.9 },
-    hits: [
-      { t: 0.6, anim: 'ver_order', dur: 0.4, share: 0.08, fx: { kind: 'punch', color: GOLD }, sound: 'heavyPunch', victimAnim: 'forced_kneel', call: 'AJOELHE-SE!' },
-      { t: 1.1, anim: 'shoulder_bash', dur: 0.34, share: 0.14, fx: { kind: 'smash' }, sound: 'heavyPunch' },
-      { t: 1.5, anim: 'slash_h', dur: 0.32, share: 0.14, fx: { kind: 'slash' }, sound: 'blade' },
-      { t: 1.9, anim: 'slash_h_back', dur: 0.32, share: 0.14, fx: { kind: 'slash', flip: true, color: GOLD }, sound: 'blade' },
-      { t: 2.5, anim: 'slash_finisher', dur: 0.62, share: 0.5, fx: { kind: 'slash', big: true, roll: 1.5 }, sound: 'slashFinal', final: true, quake: GOLD },
-    ],
-    bannerAt: 0.15,
-    length: 3.4,
   },
 
   awakening: {
@@ -185,8 +166,8 @@ export default {
   },
 
   passives: [
-    // CONSPIRADOR (a ficha: se o alvo trair alguém, ganha +1 de existência) — no jogo, como a Celestine: cada traição
-    // (pelas costas, ou no meio do ataque do outro) soma um dado
-    { type: 'nothingPersonal', mult: 0.06, max: 4, time: 12, label: 'CONSPIRADOR' },
+    // CONSPIRADOR (a ficha): quem aceita a conspiração e bate nele ganha o ponto, mas fica marcado — Nero bate 40% mais
+    // forte em quem o traiu (combat/ordoCalamitas.js)
+    { type: 'conspirador', mult: 1.4, mark: 12, color: GOLD },
   ],
 };

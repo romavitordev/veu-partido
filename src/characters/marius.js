@@ -73,36 +73,36 @@ export default {
 
   abilities: [
     {
-      // SANGUINÁRIO (a ficha): matar com as mãos devolve existência — no jogo, o soco que entra cura
-      id: 'sanguinario',
-      name: 'Sanguinário',
+      // MÃOS NUAS (o lutador de rua; o SANGUINÁRIO é matar "com as próprias mãos"): agarra, bate e arremessa — com o
+      // adversário no último ponto de existência, o agarrão MATA
+      id: 'maosNuas',
+      name: 'Mãos Nuas',
       input: 'carga+physical', // △ + ○
-      type: 'heavyBlow',
-      description: 'Um soco com tudo: quebra a defesa e derruba (quem já está caindo apanha mais e a vida dele volta — Sanguinário). Preparação longa; errar deixa ele aberto.',
-      energyCost: 28,
-      cooldown: 12,
-      anim: 'meteor_punch',
-      duration: 1.1,
-      armorFrom: 0.2,
-      impact: 0.66,
-      step: 4,
-      range: 2.1,
-      arc: 90,
-      damage: 90,
-      knockback: 4.4,
-      guardCrush: 70,
-      whiffRecovery: 0.55,
+      type: 'bareHandsGrab',
+      description: 'Agarra (não dá para defender), dá dois socos e arremessa. Com o adversário no ÚLTIMO PONTO DE EXISTÊNCIA (10% da vida ou menos), as mãos nuas MATAM — e o Sanguinário devolve 1 ponto.',
+      energyCost: 26,
+      cooldown: 13,
+      windup: 0.32,
+      range: 1.6,
+      lunge: 7,
+      hold: 1.0,
+      blows: 2,
+      blowDamage: 22,
+      finalDamage: 50,
+      final: 'throw',
+      blowAnims: ['body_blow', 'hook_r'],
+      executeAt: 1,
       color: RED,
-      ai: { when: 'opening', max: 2.2 },
+      ai: { when: 'opening', max: 2.4 },
     },
     {
-      // BONDADE (a ficha: +1 dado contra quem agride um aliado) — e, traído, ele pega a defesa de quem o atacou
-      id: 'bondade',
-      name: 'Bondade',
+      // NA FRENTE DOS AMIGOS (PROPOSTA; o jeito dele: o grandão que fica na frente — a BONDADE da ficha é passiva)
+      id: 'naFrente',
+      name: 'Na Frente dos Amigos',
       input: 'carga+dodge', // △ + L2
       type: 'selfBuff',
       buffType: 'kindness',
-      label: 'BONDADE',
+      label: 'NA FRENTE DOS AMIGOS',
       anim: 'block_heavy',
       animTime: 0.4,
       description: 'Fica na frente dos amigos: por 7 s recebe 30% menos dano e aguenta 3 golpes sem recuar, quase sem ser empurrado.',
@@ -152,28 +152,18 @@ export default {
     },
   ],
 
-  // OBRIGADO POR TUDO (PROPOSTA; a fala dele no fim dos jogos): o grandão não fala — os socos falam. Agarra, soca o
-  // corpo, o rosto, e o último soco com a aura vermelha inteira, o chão rachando
+  // BRIGA DE RUA (o lutador de rua): agarra o adversário, ergue e bate três vezes no chão; se derrubar com as mãos, o
+  // Sanguinário devolve o ponto
   special: {
-    name: 'Obrigado por Tudo',
+    name: 'Briga de Rua',
     banner: 'Obrigado por tudo.',
-    type: 'cinematicCombo',
-    physical: true,
+    type: 'streetBrawl',
     energyCost: 50,
     cooldown: 14,
+    range: 9,
+    damage: 250,
     color: RED,
     sound: 'specialStart',
-    prepare: { anim: 'charge_fists', time: 0.5, fx: 'fistGlow' },
-    dash: { speed: 18, maxTime: 0.55, contact: 1.7 },
-    hits: [
-      { t: 0.6, anim: 'body_blow', dur: 0.34, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch', victimAnim: 'stagger' },
-      { t: 0.95, anim: 'hook_l', dur: 0.34, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch' },
-      { t: 1.3, anim: 'hook_r', dur: 0.34, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch' },
-      { t: 1.7, anim: 'uppercut', dur: 0.4, share: 0.16, fx: { kind: 'punch', up: true }, sound: 'heavyPunch' },
-      { t: 2.4, anim: 'meteor_punch', dur: 0.66, share: 0.48, fx: { kind: 'punch', big: true }, sound: 'heavyPunch', final: true, quake: true, pressure: true },
-    ],
-    bannerAt: 0.15,
-    length: 3.3,
   },
 
   awakening: {
@@ -184,7 +174,9 @@ export default {
   },
 
   passives: [
-    { type: 'devour', below: 0.3, ratio: 0.3, label: 'SANGUINÁRIO' }, // SANGUINÁRIO: quem está caindo, ele termina com as mãos e a vida volta
-    { type: 'thickSkin' }, // 2 m de armadura: empurrado menos, a defesa gasta menos
+    { type: 'sanguinario' }, // SANGUINÁRIO (a ficha): derrubar alguém ou matar uma entidade com as mãos devolve 1 ponto de existência
+    { type: 'bondade', mult: 1.2 }, // BONDADE (a ficha: num 2 contra 2, +1 dado): com uma assistência dele em campo, bate 20% mais
+    { type: 'fireScars', fire: 0.6, energia: 0.85 }, // CICATRIZES DO INCÊNDIO (PROPOSTA): não pega fogo; resiste a fogo e Energia
+    { type: 'thickSkin' }, // o grandão: empurrado menos, a defesa gasta menos
   ],
 };

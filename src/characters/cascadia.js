@@ -77,24 +77,22 @@ export default {
 
   abilities: [
     {
+      // GANCHO DO KHOPESH (PROPOSTA a partir da arma: a lâmina curva em gancho)
       id: 'gancho',
       name: 'Gancho do Khopesh',
       input: 'carga+physical', // △ + ○
-      type: 'dashStrike',
-      description: 'Avança e prende a guarda do alvo no gancho do khopesh: a defesa quebra e a espada reta entra junto.',
-      energyCost: 20,
-      cooldown: 10,
-      anim: 'dual_both',
-      windup: 0.24,
-      distance: 5.5,
-      speed: 22,
+      type: 'khopeshHook',
+      description: 'Avança e prende a guarda no gancho do khopesh: a defesa quebra, o alvo é puxado para perto dela e NÃO CONSEGUE DEFENDER por 2 s (não dá para bloquear o gancho).',
+      energyCost: 22,
+      cooldown: 12,
+      windup: 0.28,
       recovery: 0.32,
-      range: 2.2,
-      damage: 52,
-      knockback: 2.6,
-      guardBreak: true,
-      hitSound: 'bladeHit',
+      lunge: 7,
+      range: 3.6,
+      damage: 40,
+      noGuard: 2,
       color: BLUE,
+      ai: { when: 'opening', max: 5 },
     },
     {
       // sem paciência (com a Celestine, com o Amphitruo, com tudo): o ritmo sobe
@@ -153,27 +151,18 @@ export default {
     },
   ],
 
-  // NÃO LEMBRO DE TER PERGUNTADO (PROPOSTA; a fala dela para a Celestine): nem olha direito — o khopesh puxa, a reta
-  // corta, as duas cruzam e a última tesoura azul joga longe
+  // POR CAESAR (o filho; PROPOSTA a partir das armas): o khopesh vai como bumerangue, engancha o alvo e volta arrastando-o
+  // até a espada reta — a estocada, o corte e as duas lâminas cruzadas
   special: {
-    name: 'Não Lembro de Ter Perguntado',
+    name: 'Por Caesar',
     banner: 'Não lembro de ter perguntado, Celestine.',
-    type: 'cinematicCombo',
+    type: 'khopeshBoomerang',
     energyCost: 50,
     cooldown: 14,
+    range: 12,
+    damage: 250,
     color: BLUE,
     sound: 'specialStart',
-    prepare: { anim: 'charge_dual', time: 0.45, fx: 'bladeGlow' },
-    dash: { speed: 24, maxTime: 0.5, contact: 1.8 },
-    hits: [
-      { t: 0.55, anim: 'dual_r', dur: 0.28, share: 0.12, fx: { kind: 'slash' }, sound: 'bladeHit', victimAnim: 'stagger' },
-      { t: 0.9, anim: 'dual_l', dur: 0.26, share: 0.12, fx: { kind: 'slash', flip: true }, sound: 'bladeHit' },
-      { t: 1.25, anim: 'dual_cross', dur: 0.34, share: 0.14, fx: { kind: 'cross' }, sound: 'bladeHit' },
-      { t: 1.7, anim: 'dual_spin', dur: 0.38, share: 0.14, fx: { kind: 'slash', wide: true }, sound: 'bladeHit' },
-      { t: 2.3, anim: 'dual_both', dur: 0.56, share: 0.48, fx: { kind: 'cross', big: true }, sound: 'slashFinal', final: true },
-    ],
-    bannerAt: 0.15,
-    length: 3.1,
   },
 
   awakening: {
@@ -186,6 +175,8 @@ export default {
   passives: [
     // DESESPERADA (nos jogos, a mãe que precisa voltar para o filho): caindo abaixo de 30% pela primeira vez no round, luta
     // com tudo
-    { type: 'revenge', below: 0.3, label: 'POR CAESAR', mult: 1.3, speedMult: 1.1, duration: 6 },
+    { type: 'revenge', below: 0.3, label: 'A MÃE DE CAESAR', mult: 1.3, speedMult: 1.1, duration: 6 },
+    // SEM PACIÊNCIA COM A CELESTINE (cânone: o jeito dela com a Celestine; o número é PROPOSTA)
+    { type: 'noPatience', vs: ['celestine'], mult: 1.2 },
   ],
 };

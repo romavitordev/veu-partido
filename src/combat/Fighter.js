@@ -20,12 +20,13 @@ import './cindyAbilities.js'; // e as da Cindy (a Última Nota)
 import './cristopherAbilities.js'; // e a do Cristopher (o carro de dublê)
 import './razielAbilities.js'; // e a do Raziel (Mordida e Maldição Sanguínea)
 import './velisarAbilities.js'; // e as do Velisar (Olhar da Curiosidade Mórbida e Armadilha Sanguinária)
+import './ordoCalamitas.js'; // a Ordo Calamitas: pontos de existência e os poderes de cada ficha
 import './danteAbilities.js'; // e as do Dante de Olhos Abertos (Paradoxo, Eco Espiral)
 import { SPECIALS } from './specials/index.js';
 import './outroLadoAbilities.js'; // e as da Degolificada e do Espreitador (cabelos, frestas e os especiais)
 import { resolveTeamActionSlots } from './teamInput.js';
 import { telegraphFor, startTelegraph, updateTelegraph, stopTelegraph, telegraphMissed, TELEGRAPH } from './specials/telegraph.js';
-import { hasPassive } from './passives.js';
+import { hasPassive, PASSIVES } from './passives.js';
 import { ELEMENTS } from '../config/elements.js';
 import { updateForm, revertForm } from './forms.js';
 import { buildBloodArmor } from '../models/bloodArmor.js';
@@ -500,6 +501,12 @@ export class Fighter {
     // Mente Labiríntica (Labirinto): a mente se protege — atordoamentos duram menos
     const mm = (this.def.passives || []).find((p) => p.type === 'mentalMaze');
     if (mm) time *= mm.stunMult ?? 0.6;
+    // IMPERCEPTÍVEL (Karise, cânone: imune às habilidades de quem ela escolhe): o que o adversário prende com uma
+    // habilidade quase não a segura
+    if (this.opponent && this.opponent.state === 'ability' && hasPassive(this, 'imperceptible')) {
+      time = Math.min(time, 0.15);
+      this.notify('IMPERCEPTÍVEL', true);
+    }
     // MERINTOFOBIA (Beatrice, cânone: medo de ser amarrada): amarrada, o pânico a segura mais tempo
     const fear = bind && (this.def.passives || []).find((p) => p.type === 'merintofobia');
     if (fear) {
@@ -1724,6 +1731,9 @@ export class Fighter {
 
   // ------------------------------------------------ defesa (L1/LB)
   startBlock() {
+    // GUARDA PUXADA (Gancho do Khopesh da Cascadia): por um instante não dá para defender
+    const ng = this.buffs.find((b) => b.noGuard);
+    if (ng) { this.notify(ng.lockMsg || 'SEM GUARDA'); return; }
     this.setState('block');
     this.guardMoving = false;
     // momento em que a Defesa foi apertada (usado pelo Bloqueio Perfeito)
@@ -1835,6 +1845,9 @@ export class Fighter {
   // ------------------------------------------------ esquiva (R2/RT)
   tryDodge() {
     if (this.cooldowns.dodge > 0 || !this.onGround) return;
+    // FORMALIDADE (Regras do Imperador, Nero): ninguém corre nem pula diante do imperador
+    const nd = this.buffs.find((b) => b.noDodge);
+    if (nd) { this.notify(nd.lockMsg || 'SEM ESQUIVA'); return; }
     if (this.dodges <= 0) {
       this.notify('SEM ESQUIVAS');
       return;
@@ -2226,6 +2239,8 @@ export class Fighter {
       if (Math.abs(n.pos.y - this.pos.y) > (s.vertical ?? 2.2)) continue;
       c.npcHits[key(n)] = true;
       n.hitBy(this, npcDamage(this, s.damage / (s.actives ? s.actives.length : 1), 'melee'), { kind: 'melee' });
+      // passivas que contam ENTIDADES mortas na mão (Sanguinário do Marius, a Díade do Rancor)
+      if (n.alive === false) for (const p of this.def.passives || []) PASSIVES[p.type]?.onNpcKill?.({ attacker: this, npc: n, passive: p, world: this.world });
       this.world.hitstop(0.035);
     }
   }

@@ -78,23 +78,21 @@ export default {
 
   abilities: [
     {
-      // DUELO (a ficha: +5 de defesa e de luta contra um adversário só)
+      // DUELO (a ficha: em combate com um adversário só, +5 de defesa e de luta)
       id: 'duelo',
       name: 'Duelo',
       input: 'carga+dodge', // △ + L2
-      type: 'selfBuff',
-      buffType: 'duel',
-      label: 'DUELO',
+      type: 'duelRing',
       anim: 'arn_focus',
-      animTime: 0.4,
-      description: 'Chama o adversário para o duelo: por 8 s recebe 25% menos dano e os golpes físicos saem 25% mais fortes.',
+      description: 'Desenha o CÍRCULO DO DUELO em volta dos dois por 8 s: ninguém sai; lá dentro ele recebe 20% menos dano, bate 20% mais forte, e nada de fora (invocações) o atinge.',
       energyCost: 24,
-      cooldown: 18,
+      cooldown: 20,
+      range: 8,
+      radius: 5.5,
       duration: 8,
-      takenMult: 0.75,
-      damageMult: 1.25,
-      affects: ['melee'],
-      color: BLUE,
+      takenMult: 0.8,
+      damageMult: 1.2,
+      color: GOLD,
     },
     {
       id: 'aFundo',
@@ -148,27 +146,22 @@ export default {
     },
   ],
 
-  // EU TENHO QUE ENCONTRAR O MEU IRMÃO (PROPOSTA; a fala dele): saudação de duelista, e a rapieira não para — as
-  // estocadas, a volta e o ataque a fundo que atravessa
+  // DUELO ATÉ O FIM (PROPOSTA a partir do Duelo da ficha): o grande círculo por 7 s — toda defesa dele vira riposta (o
+  // bloqueio perfeito fica largo) e as estocadas atravessam a defesa
   special: {
     name: 'Duelo até o Fim',
     banner: 'Eu não posso deixar de existir, eu tenho que encontrar o meu irmão!',
-    type: 'cinematicCombo',
+    type: 'grandDuel',
     energyCost: 50,
-    cooldown: 14,
-    color: BLUE,
+    cooldown: 16,
+    range: 9,
+    radius: 7,
+    duration: 7,
+    parryWindow: 0.5,
+    damageMult: 1.25,
+    damage: 250,
+    color: GOLD,
     sound: 'specialStart',
-    prepare: { anim: 'arn_open', time: 0.5, fx: 'bladeGlow' },
-    dash: { speed: 26, maxTime: 0.45, contact: 2.0 },
-    hits: [
-      { t: 0.5, anim: 'thrust', dur: 0.24, share: 0.1, fx: { kind: 'stab' }, sound: 'bladeHit', victimAnim: 'stagger' },
-      { t: 0.78, anim: 'ver_thrust', dur: 0.24, share: 0.1, fx: { kind: 'stab', color: GOLD }, sound: 'bladeHit' },
-      { t: 1.06, anim: 'thrust', dur: 0.24, share: 0.1, fx: { kind: 'stab' }, sound: 'bladeHit' },
-      { t: 1.4, anim: 'arn_flourish', dur: 0.4, share: 0.14, fx: { kind: 'slash', wide: true }, sound: 'blade' },
-      { t: 2.1, anim: 'arn_lunge', dur: 0.52, share: 0.56, fx: { kind: 'stab', big: true }, sound: 'slashFinal', final: true },
-    ],
-    bannerAt: 0.15,
-    length: 3.0,
   },
 
   awakening: {
@@ -179,7 +172,7 @@ export default {
   },
 
   passives: [
-    { type: 'forcaParanormal', mult: 1.06 }, // DUELO: um contra um, a ponta acha o buraco
+    { type: 'duelist' }, // DUELO: dentro do círculo, nada de fora o atinge
     { type: 'escapeDeath' }, // NÃO POSSO DEIXAR DE EXISTIR: uma vez por round um golpe fatal o deixa com 1 de vida
   ],
 };

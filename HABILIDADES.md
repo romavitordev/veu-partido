@@ -2228,54 +2228,6 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
-## FERREIRO
-
-*Guardião de Santo Berço: quase morto, o Pacto do Santo o transforma no Deus da Morte* · arma: Espada Consumidora
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Corte largo | 32 | 2.3 m |  |
-| ○ 2 | Corte de volta | 32 | 2.3 m |  |
-| ○ 3 | Corte diagonal | 38 | 2.3 m |  |
-| ○ 4 | Golpe do Ferreiro | 44 | 2.4 m |  |
-| ○ 5 | Consumir | 66 | 2.4 m | finalizador: lança |
-| Frente + ○ | Investida do Ferreiro | 40 | 2.4 m |  |
-| Trás + ○ | Recua e consome | 36 | 2.4 m | invulnerável no começo |
-| Lado + ○ | Corte em arco | 34 | 2.4 m |  |
-| No ar + ○ | Corte aéreo | 40 | 2.5 m | desce com impacto |
-| ↑ + ○ (no combo) | Corte ascendente | 44 | 2.5 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Espada no chão | 52 | 2.5 m | finalizador: derruba |
-
-### Principal (□ / X): Lodo arremessado
-
-- Dano 34 · alcance 18 m · cooldown 2.4 s · custo 0
-
-### Habilidades
-
-- **Hipnose Espiral** — △ + ○ / Y + B · custo 25 · cooldown 22 s · alcance 10 m
-  A espiral do Parasita de Dimensões: o Lodo desenha uma espiral no chão e o alvo anda em círculos até o centro (perto do Ferreiro), sem conseguir defender; lá fica parado, hipnotizado.
-- **Chamar os Mananciais** — △ + □ / Y + X · custo 35 · cooldown 24 s
-  Três MANANCIAIS (os filhos do Ferreiro, presos nas salas brancas para alimentar o Santo) sobem do Símbolo Espiral em volta do adversário e lutam por ele por 10 s — enlouquecidos, arranham, agarram e se jogam em cima; às vezes um deles fica longe e arremessa o Lodo, que tira sanidade. Quando um morre, a sirene de Santo Berço toca e o Ferreiro recupera sanidade.
-- **Espada Consumidora** — R2 + × / RT + A · custo 20 · cooldown 16 s
-  Desperta a espada amaldiçoada: por alguns segundos cada corte abre um ferimento que consome o alvo.
-- **Conforto de Santo Berço** — R2 + △ / RT + Y · custo 25 · cooldown 24 s
-  A ilusão da tarde perfeita de Santo Berço conforta o Luzidio: recupera bastante vida devagar — mas a ilusão se quebra se ele apanhar.
-- **Armadura do Ferreiro** — △ + L2 / Y + LT · custo 25 · cooldown 22 s
-  Fecha o peitoral de metal: por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar, mas anda um pouco mais devagar.
-- **Passiva — Resistente:** −8% de dano físico recebido
-
-### Especial: Espada Consumidora
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: Pacto do Santo
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → o Lodo toma o corpo: transforma no Deus da Morte (chefe com vida própria) até o fim do round.
-
----
-
 ## CELESTINE
 
 *A Rebelde: guerreira da Ordo Calamitas que trai sem pensar duas vezes e veste a Máscara do Desespero* · arma: Duas machadinhas ligadas por uma corrente
@@ -2438,29 +2390,29 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Sacrifício** — △ + L2 / Y + LT · custo 0 · cooldown 20 s
-  Cede a própria existência: paga 6% da vida e, na equipe, as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche; sozinho, recupera 40 de sanidade e as esquivas.
+- **Sacrifício** — △ + L2 / Y + LT · custo 0 · cooldown 18 s
+  Cede 1 PONTO DE EXISTÊNCIA (10% da vida; precisa sobrar 1). Na equipe, as ASSISTÊNCIAS voltam na hora e a Barra de Equipe enche; sozinho, a sanidade, a guarda e as esquivas enchem e ele bate 15% mais forte por 6 s.
 - **Líder da Ordo** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
   Ergue a espada e dá a ordem: por 7 s recebe 20% menos dano, aguenta 2 golpes sem recuar e os golpes saem 15% mais fortes; na equipe, as assistências ficam prontas.
-- **Julgamento** — △ + ○ / Y + B · custo 28 · cooldown 12 s · dano 90 · alcance 2.6 m
-  Ergue a espada longa com as duas mãos e desce com tudo: quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Ponta de Losango** — △ + ○ / Y + B · custo 26 · cooldown 11 s · dano 70 · alcance 2.6 m
+  Avança com a ponta em losango da espada longa: a estocada QUEBRA A DEFESA de quem está bloqueando e empurra longe.
 - **Proteger o Imperador** — R2 + × / RT + A · custo 22 · cooldown 20 s
   Planta a espada na frente: por 6 s recebe 35% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
 - **Passiva — Resistente:** −8% de dano físico e de tiros e projéteis recebido
 
-### Especial: Era pra Trabalhar Juntos
+### Especial: O Sacrifício do Líder
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: O Segredo do Líder
+### Transformação: A Revelação
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano (físico, distância, habilidades), +6% de velocidade, recargas 25% mais rápidas, cura 12% na hora.
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
 
 ---
 
 ## SACRIFÍCIO DO RANCOR
 
-*Veritus no Hexatombe: o único sacrifício que sobreviveu ao ritual — e ganhou o Trono de presente* · arma: Os punhos enfaixados e o Estigma nas costas
+*O sacrifício que venceu o Hexatombe: o Kian, marcado pelo Rancor, que ganhou o Trono e nunca o usou* · arma: Os punhos enfaixados, os rituais do Kian e o Estigma do Rancor
 
 ### Físico (○ / B)
 
@@ -2484,22 +2436,23 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Rancor** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 86 · alcance 2.1 m
-  Junta todo o rancor num soco só: quebra a defesa, derruba e faz sangrar. Preparação longa; errar deixa ele aberto.
-- **Ansiedade** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
-  O Estigma acelera o coração: por 7 s corre 15% mais rápido, ataca 20% mais rápido e ganha uma esquiva.
-- **Frustração** — R2 + × / RT + A · custo 22 · cooldown 12 s · dano 36
-  Desce os dois punhos no chão do ritual: a onda de sangue derruba quem estiver em volta.
-- **Ira** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
-  O Estigma acende nas costas: por 7 s os golpes físicos saem 25% mais fortes e fazem sangrar, mas ele recebe 10% a mais de dano.
+- **Teletransporte do Rancor** — R2 + × / RT + A · custo 20 · cooldown 7 s
+  O Teletransporte do Kian tingido pelo Rancor: some e reaparece; sem direção, surge ao lado do adversário já socando.
+- **Lâmina do Medo do Rancor** — △ + ○ / Y + B · custo 40 · cooldown 22 s · dano 130 · alcance 2.8 m
+  A Lâmina do Medo em vermelho: o golpe curto que quebra a defesa e deixa o alvo SANGRANDO (o Rancor). Errar deixa ele exposto.
+- **Toque da Morte** — △ + L2 / Y + LT · custo 40 · cooldown 50 s · dano 30 · alcance 1.3 m
+  Toca o alvo e o envelhece: definha, fica lento e mais FRACO até o fim do round. Curtíssimo alcance; dá para esquivar. Recarga muito longa.
+- **Levitação do Rancor** — R2 + △ / RT + Y · custo 30 · cooldown 15 s · dano 17 · alcance 18 m
+  Ergue a mão e as pedras do chão sobem em volta dele, encharcadas de sangue; depois voam uma a uma contra o alvo.
+- **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
 
-### Especial: O Único Sobrevivente
+### Especial: Sob a Lua de Sangue
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: O Presente do Trono
+### Transformação: O Primeiro Ocultista
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +18% de dano (físico, distância, habilidades), +8% de velocidade, recargas 20% mais rápidas, cura 12% na hora.
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +6% de velocidade, recargas 60% mais rápidas, cura 10% na hora.
 
 ---
 
@@ -2529,16 +2482,16 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Imperador** — △ + L2 / Y + LT · custo 26 · cooldown 15 s · dano 12 · alcance 7 m
-  Dá a ordem do imperador: o adversário perto obedece — fica parado, de joelhos, aberto para o próximo golpe.
+- **Imperador** — △ + L2 / Y + LT · custo 24 · cooldown 15 s · alcance 10 m
+  A ordem do imperador: os estados BONS do adversário (força, proteção, velocidade) passam para Nero. Sem nenhum, o adversário AJOELHA por 1 s e 30 de sanidade dele vão para Nero.
+- **Conspirador** — △ + ○ / Y + B · custo 20 · cooldown 16 s · alcance 12 m
+  Oferece a conspiração por 4 s: se o adversário bater nele (trair), GANHA 1 ponto de existência, mas fica MARCADO como traidor por 12 s e Nero bate 40% mais forte nele. Se ninguém trair, o ponto fica com Nero.
 - **Escudo Imperial** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
   Avança atrás do escudo redondo e corta por cima: quebra a defesa e empurra longe.
-- **Sentença** — △ + ○ / Y + B · custo 28 · cooldown 12 s · dano 86 · alcance 2.4 m
-  Ergue a espada curva e dá a sentença: um corte que quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
-- **Regras do Imperador** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
-  Impõe as regras: por 7 s recebe 20% menos dano e causa 15% a mais; na equipe, as assistências ficam prontas na hora.
+- **Regras do Imperador** — R2 + △ / RT + Y · custo 26 · cooldown 18 s · alcance 12 m
+  Um decreto por 6 s, na ordem: SEM VINHO (nada cura e a sanidade volta pela metade), FORMALIDADE (lento e sem esquiva), SILÊNCIO (sem habilidades).
 
-### Especial: O Imperador de Roma
+### Especial: Roma em Chamas
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -2574,16 +2527,16 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Gladiador** — △ + ○ / Y + B · custo 28 · cooldown 12 s · dano 84 · alcance 2.5 m
-  Escolhe um adversário só e crava o gládio: uma estocada pesada que quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
-- **Tirar Capacete** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
-  Tira o grande elmo de gladiador: por 8 s os golpes saem 15% mais rápidos e 15% mais fortes, mas ele recebe 20% a mais de dano (−5 de defesa).
+- **Gládio do General** — △ + ○ / Y + B · custo 28 · cooldown 12 s · dano 84 · alcance 2.5 m
+  Crava o gládio: uma estocada pesada que quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Tirar Capacete** — △ + L2 / Y + LT · custo 0 · cooldown 6 s
+  Tira o grande elmo de gladiador ATÉ O FIM DO ROUND: recebe 12% a mais de dano (−5 de defesa), mas a sanidade volta 80% mais rápido (o dado social: o público do gladiador) e ganha 20 na hora.
 - **Carga da Legião** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
   Abaixa o ombro e entra com o gládio na frente, como a parede de escudos — quebra a defesa e empurra longe.
-- **Arriscar Tudo** — R2 + △ / RT + Y · custo 30 · cooldown 22 s
-  Joga o capacete fora e aposta a vida: por 6 s causa 60% a mais de dano e não recua com golpe pequeno, mas recebe o DOBRO de dano.
+- **Arriscar Tudo** — R2 + △ / RT + Y · custo 30 · cooldown 24 s
+  Dá o capacete: +1 PONTO DE EXISTÊNCIA (na equipe vai para as assistências, que voltam na hora; sozinho, para ele). Por 6 s causa 40% a mais, mas recebe o DOBRO de dano.
 
-### Especial: Te Vejo no Inferno
+### Especial: Que Júpiter me Perdoe
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -2619,16 +2572,16 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Sanguinário** — △ + ○ / Y + B · custo 28 · cooldown 12 s · dano 90 · alcance 2.1 m
-  Um soco com tudo: quebra a defesa e derruba (quem já está caindo apanha mais e a vida dele volta — Sanguinário). Preparação longa; errar deixa ele aberto.
-- **Bondade** — △ + L2 / Y + LT · custo 24 · cooldown 18 s
+- **Mãos Nuas** — △ + ○ / Y + B · custo 26 · cooldown 13 s · alcance 1.6 m
+  Agarra (não dá para defender), dá dois socos e arremessa. Com o adversário no ÚLTIMO PONTO DE EXISTÊNCIA (10% da vida ou menos), as mãos nuas MATAM — e o Sanguinário devolve 1 ponto.
+- **Na Frente dos Amigos** — △ + L2 / Y + LT · custo 24 · cooldown 18 s
   Fica na frente dos amigos: por 7 s recebe 30% menos dano e aguenta 3 golpes sem recuar, quase sem ser empurrado.
 - **Agarrão de Rua** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 54 · alcance 2.2 m
   Avança de ombro e passa por cima de quem estiver na frente: quebra a defesa e joga longe.
 - **Chão Quebrado** — R2 + △ / RT + Y · custo 22 · cooldown 12 s · dano 36
   Desce as duas manoplas no chão: a onda vermelha derruba quem estiver em volta.
 
-### Especial: Obrigado por Tudo
+### Especial: Briga de Rua
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -2664,14 +2617,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Traiçoeiro** — △ + ○ / Y + B · custo 18 · cooldown 10 s
-  Paga 5% da própria vida e aparece nas COSTAS do alvo já rasgando com as seis garras: ele fica desprevenido e sangra.
+- **Traiçoeiro** — △ + ○ / Y + B · custo 22 · cooldown 16 s · alcance 9 m
+  Paga 1 PONTO DE EXISTÊNCIA (10% da vida; precisa sobrar 1) e TIRA 1 do adversário de até 9 m: não passa pela defesa e o alvo cambaleia. Com o último ponto do alvo, ele INEXISTE.
 - **Cativante** — △ + L2 / Y + LT · custo 30 · cooldown 18 s · alcance 9 m
   Sorri e fala manso: um anel verde fecha em volta do alvo (dá para esquivar) e ele vem andando até o Remus sem se defender. Apertar botões resiste.
 - **Dança das Garras** — R2 + × / RT + A · custo 20 · cooldown 11 s · dano 54
   Gira com as garras abertas, a capa branca voando: dois rasgos em volta dele, o último joga longe.
-- **Sorriso Constante** — R2 + △ / RT + Y · custo 18 · cooldown 16 s
-  Nada tira o sorriso dele: por 7 s corre 15% mais rápido, ataca 15% mais rápido e os golpes pelas costas doem mais ainda.
+- **Cubo de Metal** — R2 + △ / RT + Y · custo 26 · cooldown 16 s · dano 60 · alcance 10 m
+  Marca o chão do adversário: quem não sair em 0,6 s fica PRESO no cubo de contenção por 1,4 s, e o cubo implode (não dá para defender).
 - **Passiva:** golpes físicos pelas costas causam +30%
 
 ### Especial: Gostou do que Viu?
@@ -2710,8 +2663,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Gancho do Khopesh** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 52 · alcance 2.2 m
-  Avança e prende a guarda do alvo no gancho do khopesh: a defesa quebra e a espada reta entra junto.
+- **Gancho do Khopesh** — △ + ○ / Y + B · custo 22 · cooldown 12 s · dano 40 · alcance 3.6 m
+  Avança e prende a guarda no gancho do khopesh: a defesa quebra, o alvo é puxado para perto dela e NÃO CONSEGUE DEFENDER por 2 s (não dá para bloquear o gancho).
 - **Sem Paciência** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Cansou de esperar: por 7 s ataca 20% mais rápido e corre 10% mais rápido.
 - **Dança das Duas Lâminas** — R2 + × / RT + A · custo 22 · cooldown 11 s
@@ -2719,7 +2672,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Guerreira Antiga** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
   Já viu a Ordo nascer: firma as duas lâminas na frente e por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar.
 
-### Especial: Não Lembro de Ter Perguntado
+### Especial: Por Caesar
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -2757,15 +2710,14 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 - **Lança Certeira** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.2 m
   Recua a lança e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
-- **De Ferro** — △ + L2 / Y + LT · custo 24 · cooldown 20 s
+- **Escudo Fechado** — △ + L2 / Y + LT · custo 24 · cooldown 20 s
   Fecha atrás do escudo: por 7 s recebe 40% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
 - **Muralha de Escudo** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
   Avança atrás do escudo e passa por cima: quebra a defesa e joga longe.
-- **Pavio Curto** — R2 + △ / RT + Y · custo 20 · cooldown 12 s · dano 32
-  Explode: bate o escudo no chão gritando e a onda derruba quem estiver em volta.
-- **Passiva — Resistente:** −12% de dano físico e de tiros e projéteis recebido
+- **Pavio Curto** — R2 + △ / RT + Y · custo 22 · cooldown 16 s
+  Acende o pavio por 4 s: recebe 15% menos dano, aguenta 3 golpes sem recuar e TODO dano que levar vira raiva. No fim explode num giro de lança em volta (40 + 60% do que levou, até 160 a mais).
 
-### Especial: Pavio Curto
+### Especial: De Ferro
 
 250 de dano · custo 50 · cooldown 14 s.
 
@@ -2801,10 +2753,10 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Espiã** — △ + ○ / Y + B · custo 20 · cooldown 16 s · alcance 16 m
-  Estuda o adversário e descobre o que ele tem: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.
-- **Imperceptível** — △ + L2 / Y + LT · custo 24 · cooldown 18 s
-  Some do radar do adversário: por 4 s as HABILIDADES dele não causam dano nela (golpes físicos, tiros e especiais ainda doem).
+- **Espiã** — △ + ○ / Y + B · custo 20 · cooldown 15 s · alcance 14 m
+  Obriga o adversário a revelar uma habilidade (o nome aparece): ela fica PRESA por 8 s. Sem habilidades, é o especial que fica preso.
+- **Estudar o Alvo** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 16 m
+  Estuda o adversário: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.
 - **Sombra da Ordo** — R2 + × / RT + A · custo 20 · cooldown 14 s
   Puxa o capuz e sai da vista (3 s): quase invisível e mais rápida; o primeiro ataque pega o alvo DESPREVENIDO. Tomar dano a revela.
 - **Leque de Adagas** — R2 + △ / RT + Y · custo 22 · cooldown 10 s
@@ -2847,8 +2799,8 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
-- **Duelo** — △ + L2 / Y + LT · custo 24 · cooldown 18 s
-  Chama o adversário para o duelo: por 8 s recebe 25% menos dano e os golpes físicos saem 25% mais fortes.
+- **Duelo** — △ + L2 / Y + LT · custo 24 · cooldown 20 s · alcance 8 m
+  Desenha o CÍRCULO DO DUELO em volta dos dois por 8 s: ninguém sai; lá dentro ele recebe 20% menos dano, bate 20% mais forte, e nada de fora (invocações) o atinge.
 - **A Fundo** — △ + ○ / Y + B · custo 20 · cooldown 9 s · dano 50 · alcance 2.4 m
   O ataque a fundo do esgrimista: atravessa a distância numa estocada só e quebra a defesa.
 - **Chuva de Pontas** — R2 + × / RT + A · custo 20 · cooldown 10 s
@@ -2858,11 +2810,59 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Especial: Duelo até o Fim
 
-250 de dano · custo 50 · cooldown 14 s.
+250 de dano · custo 50 · cooldown 16 s.
 
 ### Transformação: Memória Revivida
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +8% de velocidade, recargas 25% mais rápidas, cura 10% na hora.
+
+---
+
+## FERREIRO
+
+*Guardião de Santo Berço: quase morto, o Pacto do Santo o transforma no Deus da Morte* · arma: Espada Consumidora
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte largo | 32 | 2.3 m |  |
+| ○ 2 | Corte de volta | 32 | 2.3 m |  |
+| ○ 3 | Corte diagonal | 38 | 2.3 m |  |
+| ○ 4 | Golpe do Ferreiro | 44 | 2.4 m |  |
+| ○ 5 | Consumir | 66 | 2.4 m | finalizador: lança |
+| Frente + ○ | Investida do Ferreiro | 40 | 2.4 m |  |
+| Trás + ○ | Recua e consome | 36 | 2.4 m | invulnerável no começo |
+| Lado + ○ | Corte em arco | 34 | 2.4 m |  |
+| No ar + ○ | Corte aéreo | 40 | 2.5 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte ascendente | 44 | 2.5 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Espada no chão | 52 | 2.5 m | finalizador: derruba |
+
+### Principal (□ / X): Lodo arremessado
+
+- Dano 34 · alcance 18 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Hipnose Espiral** — △ + ○ / Y + B · custo 25 · cooldown 22 s · alcance 10 m
+  A espiral do Parasita de Dimensões: o Lodo desenha uma espiral no chão e o alvo anda em círculos até o centro (perto do Ferreiro), sem conseguir defender; lá fica parado, hipnotizado.
+- **Chamar os Mananciais** — △ + □ / Y + X · custo 35 · cooldown 24 s
+  Três MANANCIAIS (os filhos do Ferreiro, presos nas salas brancas para alimentar o Santo) sobem do Símbolo Espiral em volta do adversário e lutam por ele por 10 s — enlouquecidos, arranham, agarram e se jogam em cima; às vezes um deles fica longe e arremessa o Lodo, que tira sanidade. Quando um morre, a sirene de Santo Berço toca e o Ferreiro recupera sanidade.
+- **Espada Consumidora** — R2 + × / RT + A · custo 20 · cooldown 16 s
+  Desperta a espada amaldiçoada: por alguns segundos cada corte abre um ferimento que consome o alvo.
+- **Conforto de Santo Berço** — R2 + △ / RT + Y · custo 25 · cooldown 24 s
+  A ilusão da tarde perfeita de Santo Berço conforta o Luzidio: recupera bastante vida devagar — mas a ilusão se quebra se ele apanhar.
+- **Armadura do Ferreiro** — △ + L2 / Y + LT · custo 25 · cooldown 22 s
+  Fecha o peitoral de metal: por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar, mas anda um pouco mais devagar.
+- **Passiva — Resistente:** −8% de dano físico recebido
+
+### Especial: Espada Consumidora
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Pacto do Santo
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → o Lodo toma o corpo: transforma no Deus da Morte (chefe com vida própria) até o fim do round.
 
 ---
 

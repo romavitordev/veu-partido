@@ -1,4 +1,5 @@
 import { Color, CanvasTexture, SRGBColorSpace, PlaneGeometry, MeshBasicMaterial, Mesh, DoubleSide } from 'three';
+import { MATERIAL_TEXTURES } from './textures.js';
 import { energyFlames } from './weapons.js';
 import { gladius, gauntlet, claws, khopesh, straightSword, spear, corneliusShield, doubleDagger, mascarilha, rapier, neroSword, neroShield, laurelCrown, veritusSword } from './ordoWeapons.js';
 
@@ -135,6 +136,32 @@ export function addVeritusProps(rig) {
   rig.props.sword = s;
   rig.showProp('hair', false); // o cabelo loiro não cabe no elmo fechado: só aparece quando ele tira o elmo (veritus.js)
   aura(rig, 0x4a9aff);
+}
+
+// VERITUS REVELADO (a Transformação "A Revelação"; forms/veritus_kian.js): o KIAN por baixo do elmo. Cânone (wiki
+// "Veritus"/"Kian"): depois de se revelar, a aura vira DOURADA e os olhos AMARELOS. Sem o elmo, o cabelo loiro à mostra,
+// a espada acesa em dourado e o rosto com os olhos amarelos (face_veritus_kian)
+let kianFaceTex = null;
+export function addVeritusKianProps(rig) {
+  const s = veritusSword(0xffd27a);
+  inFist(s, GRIP_HEAVY);
+  rig.sockets.handR.add(s);
+  rig.props.sword = s;
+  if (rig.props.helmet) rig.showProp('helmet', false);
+  if (rig.props.hair) rig.showProp('hair', true);
+  aura(rig, 0xffd27a, 0xffb040);
+  const swapped = new Map();
+  rig.root.traverse((o) => {
+    if (!o.isMesh || !o.material || !o.material.name || o.userData.isOutline || !o.material.name.endsWith('face_veritus')) return;
+    if (!swapped.has(o.material)) {
+      if (!kianFaceTex) { kianFaceTex = MATERIAL_TEXTURES.face_veritus_kian(); kianFaceTex.flipY = false; kianFaceTex.needsUpdate = true; }
+      const m = o.material.clone();
+      m.map = kianFaceTex;
+      m.userData.sharedMap = true;
+      swapped.set(o.material, m);
+    }
+    o.material = swapped.get(o.material);
+  });
 }
 
 // O SACRIFÍCIO DO RANCOR: sem arma (os punhos enfaixados são do modelo); a aura vermelha do Hexatombe

@@ -76,12 +76,12 @@ export default {
 
   abilities: [
     {
-      // GLADIADOR (a ficha: "+1 dado contra um adversário só"): o general escolhe UM e vai nele
-      id: 'gladiador',
-      name: 'Gladiador',
+      // o GLÁDIO com o colar de cruz (o Gladiador agora é passiva: ver `gladiator`)
+      id: 'gladioGeneral',
+      name: 'Gládio do General',
       input: 'carga+physical', // △ + ○
       type: 'heavyBlow',
-      description: 'Escolhe um adversário só e crava o gládio: uma estocada pesada que quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.',
+      description: 'Crava o gládio: uma estocada pesada que quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.',
       energyCost: 28,
       cooldown: 12,
       anim: 'ver_thrust',
@@ -99,24 +99,19 @@ export default {
       ai: { when: 'opening', max: 2.6 },
     },
     {
-      // TIRAR CAPACETE (a ficha: −5 de defesa, +1 dado social): o elmo vai para o chão e o general luta de cara limpa
+      // TIRAR CAPACETE (a ficha: −5 de defesa, +1 dado social): o elmo vai para o chão até o fim do round
       id: 'tirarCapacete',
       name: 'Tirar Capacete',
       input: 'carga+dodge', // △ + L2
-      type: 'selfBuff',
-      buffType: 'helmetOff',
-      label: 'SEM CAPACETE',
-      anim: 'concentrate',
-      animTime: 0.4,
-      props: [['helmet', false]],
-      description: 'Tira o grande elmo de gladiador: por 8 s os golpes saem 15% mais rápidos e 15% mais fortes, mas ele recebe 20% a mais de dano (−5 de defesa).',
-      energyCost: 18,
-      cooldown: 16,
-      duration: 8,
-      damageMult: 1.15,
-      atkSpeed: 1.15,
-      takenMult: 1.2,
+      type: 'helmetOff',
+      description: 'Tira o grande elmo de gladiador ATÉ O FIM DO ROUND: recebe 12% a mais de dano (−5 de defesa), mas a sanidade volta 80% mais rápido (o dado social: o público do gladiador) e ganha 20 na hora.',
+      energyCost: 0,
+      cooldown: 6,
+      takenMult: 1.12,
+      regen: 1.8,
+      energy: 20,
       color: PINK,
+      ai: { when: 'far', min: 6 },
     },
     {
       id: 'cargaLegiao',
@@ -139,53 +134,42 @@ export default {
       color: PINK,
     },
     {
-      // ARRISCAR TUDO (a ficha): o capacete vai embora e o dano dobra — para os dois lados
+      // ARRISCAR TUDO (a ficha: dá o capacete a outro — +1 ponto de existência para ele —, −5 de defesa e dano dobrado)
       id: 'arriscarTudo',
       name: 'Arriscar Tudo',
       input: 'block+carga', // R2 + △
-      type: 'selfBuff',
-      buffType: 'riskAll',
-      label: 'ARRISCAR TUDO',
-      anim: 'taunt_roar',
-      animTime: 0.5,
-      props: [['helmet', false]],
-      redAura: PINK,
-      description: 'Joga o capacete fora e aposta a vida: por 6 s causa 60% a mais de dano e não recua com golpe pequeno, mas recebe o DOBRO de dano.',
+      type: 'riskAll',
+      description: 'Dá o capacete: +1 PONTO DE EXISTÊNCIA (na equipe vai para as assistências, que voltam na hora; sozinho, para ele). Por 6 s causa 40% a mais, mas recebe o DOBRO de dano.',
       energyCost: 30,
-      cooldown: 22,
+      cooldown: 24,
       duration: 6,
-      damageMult: 1.6,
-      affects: ['melee', 'ranged', 'ability'],
+      damageMult: 1.4,
       takenMult: 2.0,
-      armor: 2,
+      teamGauge: 20,
       color: PINK,
-      ai: { when: 'winning' },
+      ai: { when: 'opening' },
     },
   ],
-
-  // TE VEJO NO INFERNO (PROPOSTA; a fala dele em Calamidade): beija o colar de cruz, tira o capacete, e o general crava
-  // o gládio quatro vezes — a última com a aura rosa e azul de Júpiter caindo do alto
+  // QUE JÚPITER ME PERDOE (o devoto de Júpiter, que inexistiu rezando; a fala "te vejo no inferno"): ajoelha e reza com o
+  // colar de cruz; três raios de Júpiter caem marcados onde o adversário estava (dá para fugir) e ele levanta com o
+  // gládio
   special: {
-    name: 'Te Vejo no Inferno',
-    banner: 'Que Júpiter me perdoe, mas eu te vejo no inferno!',
-    type: 'cinematicCombo',
+    name: 'Que Júpiter me Perdoe',
+    banner: 'Que Júpiter me perdoe...',
+    type: 'jupiterPrayer',
     energyCost: 50,
     cooldown: 14,
-    color: PINK,
+    range: 16,
+    bolts: 3,
+    boltDamage: 70,
+    boltRadius: 1.4,
+    lungeRange: 12,
+    finalDamage: 110,
+    damage: 250,
+    color: 0xbfe0ff,
+    gladiusColor: PINK,
     sound: 'specialStart',
-    prepare: { anim: 'concentrate', time: 0.55, fx: 'bladeGlow' },
-    dash: { speed: 22, maxTime: 0.5, contact: 1.8 },
-    hits: [
-      { t: 0.6, anim: 'slash_h', dur: 0.34, share: 0.14, fx: { kind: 'slash' }, sound: 'blade', props: [['helmet', false]] },
-      { t: 1.05, anim: 'thrust', dur: 0.32, share: 0.16, fx: { kind: 'stab' }, sound: 'bladeHit', victimAnim: 'stagger' },
-      { t: 1.45, anim: 'slash_h_back', dur: 0.34, share: 0.14, fx: { kind: 'slash', flip: true, color: BLUE }, sound: 'blade' },
-      { t: 1.85, anim: 'thrust', dur: 0.32, share: 0.16, fx: { kind: 'stab', color: BLUE }, sound: 'bladeHit' },
-      { t: 2.45, anim: 'ver_thrust', dur: 0.6, share: 0.4, fx: { kind: 'stab', big: true }, sound: 'slashFinal', final: true, quake: BLUE, shout: 'INFERNO!' },
-    ],
-    bannerAt: 0.15,
-    length: 3.3,
   },
-
   // TRANSFORMAÇÃO (Barra cheia + vida baixa, segurando △): a MEMÓRIA REVIVIDA — a aura rosa com as partes azuis toma o
   // corpo e os olhos acendem em azul (Calamidade ep. 5)
   awakening: {
@@ -196,6 +180,6 @@ export default {
   },
 
   passives: [
-    { type: 'forcaParanormal', mult: 1.08 }, // GLADIADOR: um contra um, o gládio entra mais fundo
+    { type: 'gladiator', mult: 1.12 }, // GLADIADOR (a ficha: +1 dado contra um adversário só): sem assistência nem invocação do outro lado, bate 12% mais
   ],
 };
