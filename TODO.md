@@ -629,6 +629,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **O Veritus loiro remodelado** — v5.32.1: Veritus refeito (placas, manto-capuz, cabelo loiro sob o elmo), Rancor loiro, Celestine na Ordo e Ferreiro nas Relíquias, acabamentos do Cornelius, Nero e Karise.
 - [x] **A Ordo Calamitas completa** — v5.32.0: os dez novos (com o Sacrifício do Rancor), modelos, kits, falas, retratos, especial de equipe e as barras azuis/vermelhas.
 - [x] **Cartelas do Velisar sem sobreposição** — v5.31.2: título e fala em cartelas separadas, uma de cada vez, por cima de todo o HUD.
 - [x] **Passe no Blender MCP (Velisar e Zéfero)** — v5.31.1: Zéfero com corcunda, cabelo espetado, mãos de bicho e barra rasgada; túnica do Velisar caindo reta com cauda.

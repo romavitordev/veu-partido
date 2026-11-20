@@ -173,7 +173,7 @@ export default {
     prepare: { anim: 'ver_command', time: 0.55, fx: 'bladeGlow' },
     dash: { speed: 20, maxTime: 0.55, contact: 2.0 },
     hits: [
-      { t: 0.6, anim: 'slash_h', dur: 0.36, share: 0.14, fx: { kind: 'slash' }, sound: 'blade', victimAnim: 'stagger', props: [['helmet', false]] },
+      { t: 0.6, anim: 'slash_h', dur: 0.36, share: 0.14, fx: { kind: 'slash' }, sound: 'blade', victimAnim: 'stagger', props: [['helmet', false], ['hair', true]] },
       { t: 1.05, anim: 'slash_h_back', dur: 0.36, share: 0.14, fx: { kind: 'slash', flip: true }, sound: 'blade' },
       { t: 1.5, anim: 'thrust', dur: 0.34, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit' },
       { t: 1.95, anim: 'slash_v', dur: 0.44, share: 0.14, fx: { kind: 'slash', roll: 1.5, color: GOLD }, sound: 'blade' },

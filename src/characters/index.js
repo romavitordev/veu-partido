@@ -88,13 +88,14 @@ export const ROSTER = [
   // (Henri → Juan (Portador) → Portador do Trono; Arnaldo → Anfitrião; Ferreiro → Deus da Morte), mas também dá para
   // começar já como elas (selectableForms.js)
   // quem é de DUAS equipes (2026-10-27): `origin` é a equipe em que ele fica na seleção (e a cor do retrato); `teams`
-  // lista as outras — aparecem como etiqueta extra no cartão e na ficha (ex.: a Celestine, Portadora E Ordo Calamitas)
-  juanPortador, arnaldo, ferreiro, celestine, // Portadores (Sangue, Energia, Morte, Conhecimento) — a Celestine também é da Ordo Calamitas
+  // lista as outras — aparecem como etiqueta extra no cartão e na ficha (ex.: o Arnaldo, Portador E Ordo Realitas)
+  juanPortador, arnaldo, // Portadores (Sangue, Energia)
+  celestine, // Ordo Calamitas (2026-11-20, dono: fica junto a eles, sem a etiqueta de Portadores)
   gaius, // Ordo Calamitas (Calamidade, 67 d.C.) — o Gaius; no RB/LB, o AMPHITRUO (a versão transformada)
   amalia, // Ordo Calamitas — A Flecha, a arqueira (Calamidade)
   veritus, veritus_rancor, nero, faustus, marius, remus, // Ordo Calamitas (v5.32.0): o líder (e o Sacrifício do Rancor, a versão de Hexatombe), o imperador e os guerreiros jogados nos episódios
   cascadia, cornelius, karise, marcellus, // ...e os outros membros da Ordo Calamitas (personagens do mestre)
-  oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (Sangue, Morte, Conhecimento, Energia)
+  ferreiro, oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (o Ferreiro desde 2026-11-20; Sangue, Morte, Conhecimento, Energia)
   estrangeiro, amigo, carnical, degolificada, espreitador, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
 ];
 

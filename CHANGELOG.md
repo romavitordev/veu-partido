@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.32.1 — O Líder Loiro
+
+### Alterado
+- `tools/blender/char_veritus.py` reescrito: placas nos braços e pernas (`rerebrace`, `vambrace`, `couter`, `gauntlet`,
+  `cuisse`, `greave`, `poleyn`), fauld em lâminas, manto-capuz assentado por raio sobre couraça e ombreiras, ponta e
+  losango dourados no elmo (`prop_helmetFinial`, juntado ao `prop_helmet`), cabelo pelo método da Cindy como peça
+  `prop_hair` e barba cheia. `addVeritusProps` esconde o `hair`; o golpe do especial que tira o elmo mostra o `hair`.
+- `char_veritus_rancor.py`: cabelo e barba loiros (mesmo método); `face_veritus_rancor` com barba e sobrancelha loiras.
+- `celestine.origin` = Ordo Calamitas (sem `teams`); `ferreiro.origin` = Relíquias; ordem do `ROSTER` e
+  `tools/check-roster.mjs` atualizados.
+- `ordo_lib.helmet_galea`: proteções das bochechas como placas paramétricas rentes ao rosto.
+- `ordoProps.js`: coroa do Nero e mascarilha da Karise subidas (o socket `head` fica na base do crânio);
+  `ordoWeapons.mascarilha` com o arco centrado na frente.
+
+### Corrigido
+- `lib.export_glb` valida as malhas antes de exportar (o sangue do Rancor saía como malha inválida no glTF).
+
 ## v5.32.0 — A Ordo Calamitas Completa
 
 ### Adicionado

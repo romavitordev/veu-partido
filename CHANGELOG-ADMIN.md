@@ -1,5 +1,17 @@
 # Registro administrativo de alterações
 
+## v5.32.1 — O Líder Loiro
+
+- Versão: `VERSION` 5.32.0 → **5.32.1**. Data: 2026-11-20.
+- Dono: "faça oque faltou"; "celestine tem que ficar junto a eles, pode tirar o titulo portadores e dar o titulo de
+  reliquia pro ferreiro"; "veritos é loiro e está muito feio, precisa de um remodel completo".
+- Referências: wiki "Veritus" (arte do Livro de Regras, miniaturas com e sem elmo, Hexatombe), vistas no navegador.
+- Modelos no Blender vivo (MCP, 4 vistas + closes da cabeça), cabelo conferido por raio contra o elmo; `build.mjs`.
+- Testado no navegador: lineup das duas versões (frente e costas), `hair` escondido por padrão, closes do Nero e da
+  Karise, barras dos Vampiros (`hb-vampRed` e `hb-vampire` com o `awakened`). Retratos regenerados (Veritus, Rancor,
+  Cornelius, Nero, Karise).
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.32.0 — A Ordo Calamitas Completa
 
 - Versão: `VERSION` 5.31.2 → **5.32.0**. Data: 2026-11-20.

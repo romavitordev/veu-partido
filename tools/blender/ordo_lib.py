@@ -587,11 +587,16 @@ class Ordo:
         self.b.add(name + 'NeckIn', grid(neck, 16, 2, flip=True), metal, region='head', subdiv=0)
         brow = [P(a, -0.2, 1.03) for a in [x / 8 * 1.6 - 1.6 for x in range(17)]]
         parts = [rod(brow, [0.012 * H] * len(brow), 6)]
-        ch = Sculpt()
-        for s in (1, -1):  # as proteções das bochechas, penduradas até a mandíbula
-            top_ = P(s * 1.3, -0.3, 1.0)
-            ch.ell(top_ + Vector((0, -0.01 * H, -0.06 * H)), (0.012 * H, 0.04 * H, 0.065 * H))
-        self.b.add(name + 'Cheeks', ch.mesh(res=0.003, smooth=2, target=900), trim, region='head', subdiv=0)
+        cheeks = []
+        for s in (1, -1):  # as proteções das bochechas: placas que descem rentes ao rosto até a mandíbula
+            def cheek(u, v, s=s, k=1.0):
+                a = s * (0.78 + 0.1 * v + (0.6 - 0.25 * v) * u)
+                p = P(a, -0.27, k)
+                d = Vector((p.x - c.x, p.y - c.y, 0)).normalized()
+                return p - d * (0.018 * H * v * v) - Vector((0, 0, v * 0.095 * H))
+            inn = lambda u, v, f=cheek: f(u, v, k=0.965)
+            cheeks += [grid(cheek, 8, 6, flip=s < 0), grid(inn, 8, 6, flip=s > 0)]
+        self.b.add(name + 'Cheeks', merge(*cheeks), trim, region='head', subdiv=0)
         self.b.add(name + 'Brow', merge(*parts), trim, region='head', subdiv=0)
         self._crest(crest, c, ry, rz, name, transverse=transverse)
         self.b.group(name, name)

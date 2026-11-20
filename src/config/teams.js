@@ -24,7 +24,7 @@ export function teamColor(def) {
   return TEAM_COLORS[def && def.origin] || null;
 }
 
-// todas as equipes do personagem: a principal (origin) e as outras (teams) â€” ex.: Celestine = Portadores + Ordo Calamitas
+// todas as equipes do personagem: a principal (origin) e as outras (teams) â€” ex.: Arnaldo = Portadores + Ordo Realitas
 export function defTeams(def) {
   return def ? [def.origin, ...(def.teams || [])].filter(Boolean) : [];
 }

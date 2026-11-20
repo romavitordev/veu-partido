@@ -339,9 +339,9 @@ export function doubleDagger() {
 // a MASCARILHA metálica da Karise (cânone: "uma mascarilha metálica"): a meia-máscara sobre os olhos e o nariz
 export function mascarilha() {
   const g = new THREE.Group();
-  const geo = new THREE.SphereGeometry(0.135, 20, 10, -Math.PI * 0.42, Math.PI * 0.84, Math.PI * 0.36, Math.PI * 0.22);
+  // no SphereGeometry o phi = π/2 aponta para +z (a frente): o arco vai de um lado ao outro do rosto
+  const geo = new THREE.SphereGeometry(0.135, 20, 10, Math.PI * 0.08, Math.PI * 0.84, Math.PI * 0.36, Math.PI * 0.22);
   const m = part(geo, 0, { mat: toon(0x9aa0aa, { side: THREE.DoubleSide }) });
-  m.rotation.y = Math.PI; // a parte da frente (+z)
   m.scale.set(1, 1.1, 1.05);
   g.add(m);
   const dark = new THREE.MeshBasicMaterial({ color: 0x08090c });

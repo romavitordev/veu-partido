@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.32.0';
+export const VERSION = '5.32.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.32.1',
+    date: '2026-11-20',
+    title: 'O Líder Loiro',
+    items: [
+      'VERITUS remodelado do zero pela arte do Livro de Regras: armadura de placas completa (braços, manoplas, coxotes, joelheiras douradas e grevas), o grande manto-capuz cinza caído sobre os ombros, ombreiras em lâminas com friso dourado, o pano longo até os joelhos e o elmo fechado com a ponta dourada. Quando ele tira o elmo no especial, aparece o cabelo LOIRO com franja e a barba cheia.',
+      'O SACRIFÍCIO DO RANCOR também ficou loiro: cabelo bagunçado, barba cheia e sobrancelhas loiras.',
+      'CELESTINE agora fica junto da Ordo Calamitas na seleção (sem a etiqueta de Portadores), e o FERREIRO passa para as Relíquias.',
+      'Acabamentos da Ordo: as proteções das bochechas do elmo do Cornelius descem rentes ao rosto, a coroa de louros do Nero aparece por cima do cabelo e a mascarilha da Karise cobre os olhos de verdade.',
+    ],
+  },
   {
     v: '5.32.0',
     date: '2026-11-20',

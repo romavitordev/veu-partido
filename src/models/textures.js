@@ -3828,10 +3828,10 @@ export const MATERIAL_TEXTURES = {
     mouth: { mouthW: 15, lip: 'rgba(150,84,74,0.4)' },
   }),
   tabard_veritus: ordoTabard('#56585e', '140,140,150', '#26272c', 78), // o pano CINZA no peito (wiki)
-  // O SACRIFÍCIO DO RANCOR (Hexatombe): a barba cheia mais escura, os riscos de sangue e os olhos AMARELOS acesos (a arte
+  // O SACRIFÍCIO DO RANCOR (Hexatombe): a barba cheia LOIRA (dono, 2026-11-20: o Veritus é loiro), os riscos de sangue e os olhos AMARELOS acesos (a arte
   // de Hexatombe)
   face_veritus_rancor: face((g) => {
-    beardPaint(g, '#5a4a3a', { mustache: '#4a3a2c' });
+    beardPaint(g, '#a8823e', { mustache: '#987234' });
     scar(g, CX + 30, EYE_Y - 40, CX + 44, EYE_Y - 4, 'rgba(110,10,14,0.75)', 'rgba(220,80,80,0.4)');
     g.fillStyle = 'rgba(140,10,16,0.5)';
     for (const [x, y, r] of [[CX - 46, EYE_Y - 30, 5], [CX - 58, NOSE_Y, 4], [CX + 50, NOSE_Y + 10, 6]]) { g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); }
@@ -3839,7 +3839,7 @@ export const MATERIAL_TEXTURES = {
   }, {
     skin: '#dcb898',
     eye: { iris: '#ffc83a', irisLight: '#fff4c8', tilt: -0.08 },
-    brow: { angry: 3, thick: 5, color: '#3a2a1e' },
+    brow: { angry: 3, thick: 5, color: '#8e6a30' },
     mouth: { mouthW: 15, smile: -2, lip: 'rgba(140,70,60,0.45)' },
   }),
   face_raziel: () => canvasTex(W, HT, (g) => {

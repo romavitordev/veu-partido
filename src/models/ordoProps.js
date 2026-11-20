@@ -93,7 +93,7 @@ export function addKariseProps(rig) {
     rig.props['dagger' + side] = d;
   }
   const m = mascarilha();
-  m.position.set(0, 0.0, 0.0);
+  m.position.set(0, 0.175, 0.008); // o socket da cabeça fica na base do crânio: sobe até os olhos
   rig.sockets.head.add(m);
   rig.props.mascarilha = m;
   aura(rig, 0x3ac8ff);
@@ -120,7 +120,8 @@ export function addNeroProps(rig) {
   rig.sockets.handL.add(sh);
   rig.props.shield = sh;
   const c = laurelCrown();
-  c.position.set(0, 0.125, -0.01); // por cima do cabelo ruivo
+  c.position.set(0, 0.25, -0.012); // o socket fica na base do crânio: sobe até o alto da testa, por cima do cabelo
+  c.scale.setScalar(1.24);
   rig.sockets.head.add(c);
   rig.props.crown = c;
   aura(rig, 0x3a6aff);
@@ -132,6 +133,7 @@ export function addVeritusProps(rig) {
   inFist(s, GRIP_HEAVY);
   rig.sockets.handR.add(s);
   rig.props.sword = s;
+  rig.showProp('hair', false); // o cabelo loiro não cabe no elmo fechado: só aparece quando ele tira o elmo (veritus.js)
   aura(rig, 0x4a9aff);
 }
 

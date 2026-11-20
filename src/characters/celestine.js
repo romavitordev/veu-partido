@@ -14,8 +14,7 @@ export default {
   name: 'CELESTINE',
   model: 'celestine',
   color: '#8ad8ff',
-  origin: 'Portadores', // carrega a Máscara do Desespero (Relíquia de Conhecimento)...
-  teams: ['Ordo Calamitas'], // ...e é da Ordo Calamitas
+  origin: 'Ordo Calamitas', // (2026-11-20, dono) fica junto da Ordo Calamitas, sem a etiqueta de Portadores
   element: 'conhecimento',
   energyColor: BLUE,
   info: {

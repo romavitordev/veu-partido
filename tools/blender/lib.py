@@ -909,6 +909,9 @@ class Builder:
 def export_glb(path):
     for o in bpy.context.selected_objects:
         o.select_set(False)
+    for o in bpy.context.scene.objects:  # malha inválida (arestas repetidas das metaballs) sai torta no glTF
+        if o.type == 'MESH':
+            o.data.validate()
     bpy.ops.export_scene.gltf(
         filepath=path,
         export_format='GLB',
