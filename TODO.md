@@ -363,6 +363,16 @@ baixado sem o OK do dono.
 - [ ] Atualização automática do jogo de PC (electron-updater).
 - [ ] Mais para frente: WebGPURenderer, itch.io/butler, Steam, geração de adereços por IA, Mixamo.
 
+## Outro Lado — pedidos de 2026-11-19
+- [x] Febre do Ouro (baú raro, barra de 30 s, abates estendem, moedas caindo e fade dourado) — v5.28.0.
+- [x] Coop: dois leitos na saída da TV Varminho, a fase só acaba com os dois deitados — v5.28.0.
+- [x] Coop: caído se arrastando, resgate segurando o botão (mão + aura), caixão e reviver pago pela metade — v5.28.0.
+
+## PRÓXIMO (antes do personagem novo) — Suvaco Seco refeito fiel à série (dono, 2026-11-19)
+- [ ] Rever o mapa do Suvaco por completo: prédios se sobrepondo, prédio DENTRO do bar, a GELADEIRA sumiu (a entrada
+      da base é por ela). Buscar referências do bar em HEXATOMBE e refazer o mapa fiel ao original, mantendo a luta
+      dentro e fora do bar (salão + calçada/rua). Depois: o personagem novo (sugestão: Elizabeth Webber, fecha a Força D).
+
 ## Fila de personagens novos (pedido do dono, 2026-11-02)
 - [x] **Rubens Naluti** (Equipe Abutres, Calamidade) — v4.18.0: fecha os Abutres. Kit pelo cânone (Martelo, Glock
       Silenciada, faca do Johnny; Salto Fantasma, Tratar Ferimentos, Queima-Roupa, Mira de Elite, Coração Pulsante),

@@ -972,9 +972,10 @@ export class Fighter {
     // POSE SEGURADA (especiais cinemáticos, docs/REFERENCIAS-ANIMACAO.md §2): a pose do impacto fica parada alguns
     // quadros, como na animação limitada; o tempo segurado não se perde, a animação só atrasa
     // RAGDOLL NO NOCAUTE (physics/ragdoll.js): só visual — os ossos seguem a física, o lutador não muda
-    if (this.ragdoll && (this.state !== 'ko' || this.ragdoll.rig !== this.rig || !this.visible)) { this.ragdoll.dispose(); this.ragdoll = null; }
+    // RASTEJANDO (coop do Outro Lado, pve/coopRescue.js): caído, mas a pose é a animação de se arrastar, não a física
+    if (this.ragdoll && (this.state !== 'ko' || this.crawling || this.ragdoll.rig !== this.rig || !this.visible)) { this.ragdoll.dispose(); this.ragdoll = null; }
     if (this.state !== 'ko') this.ragdollTried = false;
-    else if (!this.ragdoll && !this.ragdollTried && this.visible) {
+    else if (!this.ragdoll && !this.ragdollTried && this.visible && !this.crawling) {
       this.ragdollTried = true;
       this.ragdoll = startRagdoll(this);
     }

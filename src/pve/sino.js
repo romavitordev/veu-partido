@@ -48,6 +48,7 @@ export class SinoMechanics {
     this.lastCap = -1;
     this.phase = 0;
     this.exitCap = null;
+    this.exitCaps = []; // no coop são DOIS leitos (dono, 2026-11-19): a fase só acaba com os dois deitados
     this.beams = [];
     this.t = 0;
     this.dress();
@@ -282,9 +283,18 @@ export class SinoMechanics {
   // a saída é DEITAR numa cápsula (dono, 2026-11-14: "algumas cápsulas têm que ficar em pé e outras deitadas; a que você
   // dorme tem que ser deitada"): as seis da sala ficam EM PÉ (as do sino, que protegem); a da saída é um LEITO que sobe
   // do chão no meio da sala, deitado, com a tampa de vidro aberta. PROPOSTA: o desenho do leito
-  openExit(from) {
+  openExit(from, count = 1) {
     const x = from.x < 82 ? 76.5 : 87.5;
     const z = from.z < 0 ? -3.2 : 3.2;
+    const b = this.makeBed(x, z);
+    this.exitCap = b;
+    this.exitCaps = [b];
+    // o segundo leito (coop): ao lado do primeiro, para o meio da sala
+    if (count > 1) this.exitCaps.push(this.makeBed(x, z - Math.sign(z) * 1.55));
+    return b;
+  }
+
+  makeBed(x, z) {
     const g = new THREE.Group();
     const steel = new THREE.MeshToonMaterial({ color: 0x4a5048, emissive: 0x080a08 });
     const dark = new THREE.MeshToonMaterial({ color: 0x1a1e1a });
@@ -319,9 +329,8 @@ export class SinoMechanics {
     g.position.set(x, -0.9, z); // sobe do chão
     this.w.scene.add(g);
     this.w.fx.distort(new THREE.Vector3(x, 0.8, z), { color: GREEN, radius: 2, life: 0.6 });
-    const b = { g, col, ring, k: -1, spot: { x, z }, bed: true, hinge, liquid, rise: 0, len: L };
+    const b = { g, col, ring, k: -1, spot: { x, z }, bed: true, hinge, liquid, rise: 0, len: L, user: null };
     this.beams.push(b);
-    this.exitCap = b;
     return b;
   }
 
@@ -332,23 +341,25 @@ export class SinoMechanics {
 
   // o leito sobe do chão (chamado a cada quadro pelo Dungeon enquanto ele espera)
   exitIdle(dt) {
-    const b = this.exitCap;
-    if (!b || !b.bed) return;
-    b.rise = Math.min(1, b.rise + dt / 0.8);
-    b.g.position.y = -0.9 * (1 - b.rise);
-    b.col.material.opacity = 0.1 + 0.06 * Math.sin(performance.now() / 260);
+    for (const b of this.exitCaps) {
+      if (!b.bed) continue;
+      b.rise = Math.min(1, b.rise + dt / 0.8);
+      b.g.position.y = -0.9 * (1 - b.rise);
+      b.col.material.opacity = b.user ? 0.04 : 0.1 + 0.06 * Math.sin(performance.now() / 260);
+      b.ring.material.color.setHex(b.user ? 0xffd84a : GREEN);
+    }
   }
 
   // durante a cena: a tampa fecha e o líquido enche
   exitTick(t) {
-    const b = this.exitCap;
-    if (!b) return;
-    if (!b.bed) { b.col.material.opacity = Math.min(0.85, 0.25 + t * 0.4); return; }
-    const k = Math.min(1, t / 0.9);
-    b.hinge.rotation.x = -1.9 * (1 - k * k);
-    b.liquid.scale.y = 0.05 + Math.min(1, Math.max(0, (t - 0.6) / 1.2)) * 0.95;
-    b.liquid.position.y = 0.45 + 0.15 * b.liquid.scale.y;
-    b.col.material.opacity = Math.max(0, 0.12 - t * 0.1);
+    for (const b of this.exitCaps) {
+      if (!b.bed) { b.col.material.opacity = Math.min(0.85, 0.25 + t * 0.4); continue; }
+      const k = Math.min(1, t / 0.9);
+      b.hinge.rotation.x = -1.9 * (1 - k * k);
+      b.liquid.scale.y = 0.05 + Math.min(1, Math.max(0, (t - 0.6) / 1.2)) * 0.95;
+      b.liquid.position.y = 0.45 + 0.15 * b.liquid.scale.y;
+      b.col.material.opacity = Math.max(0, 0.12 - t * 0.1);
+    }
   }
 
   dispose() {
@@ -359,7 +370,7 @@ export class SinoMechanics {
       this.wave.g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
       this.wave = null;
     }
-    for (const b of this.beams.slice()) if (b !== this.exitCap) this.dropBeam(b);
+    for (const b of this.beams.slice()) if (!this.exitCaps.includes(b)) this.dropBeam(b);
     if (this.e.cpuEdge) this.e.cpuEdge.taken = 1;
   }
 
@@ -368,5 +379,6 @@ export class SinoMechanics {
     if (this.cables) { this.w.scene.remove(this.cables); disposeCables(this.cables); this.cables = null; }
     for (const b of this.beams.slice()) this.dropBeam(b);
     this.exitCap = null;
+    this.exitCaps = [];
   }
 }

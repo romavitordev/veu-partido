@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.28.0 — Febre do Ouro
+
+### Adicionado
+- `src/pve/goldFever.js`: a FEBRE DO OURO (`FEVER`: chance 4% por baú, 30 s, +3 s por abate, moedas ×2, 2–4 moedas por
+  abate); barra, moedas caindo (só CSS; somem com "reduzir movimento") e o fade dourado em `src/styles.css`.
+- `src/pve/coopRescue.js`: o coop caído (`RESCUE`: 25 s, 0,5 m/s, segurar 2 s), o resgate com a aura que empurra, o
+  CAIXÃO (segurar 5 s, metade de `revivePrice()`), a cena do caixão abrindo.
+- Clipes `crawl`, `help_hand` e `help_pull` em `src/anim/clips.js`.
+
+### Mudado
+- `src/pve/sino.js`: `openExit(from, count)` monta dois leitos no coop (`exitCaps`); `Dungeon.updateCoopBeds` deita
+  cada um no seu e só sai com os dois deitados (quem está no caixão não precisa).
+- `src/pve/Dungeon.js`: o KO do coop usa o resgate (saiu o `REVIVE` de 60 s); tela cheia com a câmera de quem ficou vivo
+  quando um está no caixão; a porta de saída vale para qualquer jogador de pé; subir de nível não trava com o P1 no
+  caixão.
+- `src/combat/Fighter.js`: `crawling` desliga o ragdoll do nocaute (a pose vira a animação de se arrastar).
+
 ## v5.27.2 — A Foto do Bar
 
 ### Corrigido

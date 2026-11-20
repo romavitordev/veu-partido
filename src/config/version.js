@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.27.2';
+export const VERSION = '5.28.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.28.0',
+    date: '2026-11-19',
+    title: 'Febre do Ouro',
+    items: [
+      'OUTRO LADO — FEBRE DO OURO: bem rara, sai de um baú. Uma barra de 30 s vai esvaziando; cada inimigo derrotado devolve 3 s. Enquanto dura, as moedas valem o dobro e todo abate solta moedas. Moedas de ouro caem na tela e as bordas ficam douradas.',
+      'COOP: quem cai fica no chão MORRENDO e pode se arrastar devagar até o amigo. O amigo tem 25 s para chegar e SEGURAR o botão de interagir: dá a mão, levanta o caído e uma aura empurra os inimigos em volta.',
+      'COOP: se ninguém chegar a tempo, fica um CAIXÃO onde ele caiu e a tela volta a ser de um jogador só. Quem ficou pode pagar METADE do preço da ressurreição e segurar o botão (mais tempo que o resgate): o caixão abre, sai uma luz e o amigo volta.',
+      'COOP na TV Varminho: agora são DOIS leitos na saída e a fase só acaba quando os dois deitam (pular sai do leito). Quem está no caixão vai junto.',
+    ],
+  },
   {
     v: '5.27.2',
     date: '2026-11-19',

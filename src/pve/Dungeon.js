@@ -52,6 +52,8 @@ import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
 import { actionLabel } from '../ui/labels.js';
 import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
+import { GoldFever, rollFever } from './goldFever.js';
+import { CoopRescue, RESCUE } from './coopRescue.js';
 
 const CHEST_INTERACT_HOLD_TIME = 0.45;
 
@@ -119,7 +121,6 @@ const v3 = new THREE.Vector3();
 const onLayer = (o, layer) => { if (layer) o.traverse((c) => c.layers.set(layer)); };
 
 // COOP: quem cai volta sozinho em `time` s; com o amigo a até `radius` m, o tempo corre `near` vezes mais rápido
-const REVIVE = { time: 60, radius: 2.8, near: 3 };
 
 export class Dungeon {
   constructor({ renderer, audio, input, hud, playerDef, teamDefs = [], run, profile, dungeonId = 'espreitador', onEnd, coopDef = null, coopTeam = [], coopProfile = null, net = null }) {
@@ -354,6 +355,8 @@ export class Dungeon {
     const h = this.hud;
     h.reset();
     this.pveHud = new PveHud(h);
+    this.fever = new GoldFever(this);
+    this.rescue = new CoopRescue(this);
     this.bindHud();
     h.show(true);
     this.hudAdd('pve-noboss');
@@ -729,6 +732,7 @@ export class Dungeon {
       this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : 0);
       this.revives = (this.revives || 0) + 1;
       for (const pl of this.players) {
+        this.rescue && this.rescue.clear(pl);
         pl.health = Math.round(pl.maxHealth * 0.5);
         pl.vel.set(0, 0, 0);
         pl.setState('idle');
@@ -775,39 +779,10 @@ export class Dungeon {
     }
   }
 
+  // a sala limpa / a próxima sala: quem está caído levanta (quem está no caixão não)
   revivePlayers() {
     if (!this.coop) return;
-    for (const pl of this.players) if (pl.state === 'ko') this.revivePlayer(pl);
-  }
-
-  revivePlayer(pl) {
-    pl.reviveT = null;
-    pl.health = Math.round(pl.maxHealth * 0.35);
-    pl.vel.set(0, 0, 0);
-    pl.setState('idle');
-    pl.anim.play('idle', { restart: true });
-    pl.invuln = Math.max(pl.invuln || 0, 1.5);
-    this.world.fx.burst(pl.chestPos(), { count: 30, color: 0x7dffb0, speed: 3, up: 2, life: 0.6, size: 0.2 });
-    this.popup(pl === this.player ? 0 : 1, 'DE PÉ DE NOVO', '#7dffb0');
-  }
-
-  // o tempo de quem caiu no coop: anda sozinho; com o amigo de pé perto, anda REVIVE.near vezes mais rápido
-  tickRevive(dt) {
-    if (!this.coop || this.phase === 'dead') return;
-    for (const pl of this.players) {
-      if (pl.state !== 'ko' || pl.reviveT == null) continue;
-      const mate = this.players.find((q) => q !== pl && q.state !== 'ko');
-      if (!mate) continue;
-      const near = distXZ(mate.pos, pl.pos) <= REVIVE.radius;
-      pl.reviveT -= dt * (near ? REVIVE.near : 1);
-      const sec = Math.max(0, Math.ceil(pl.reviveT));
-      if (sec !== pl.reviveShown) {
-        pl.reviveShown = sec;
-        this.popup(pl === this.player ? 0 : 1, near ? `VOLTA EM ${sec} s (ACELERANDO)` : `VOLTA EM ${sec} s`, near ? '#7dffb0' : '#ffd84a');
-        this.world.fx.ring(new THREE.Vector3(pl.pos.x, 0.06, pl.pos.z), { color: near ? 0x7dffb0 : 0xffd84a, radius: REVIVE.radius, life: 0.9, inner: 0.94 });
-      }
-      if (pl.reviveT <= 0) this.revivePlayer(pl);
-    }
+    this.rescue && this.rescue.liftAll();
   }
 
   // a sala começa (depois que a tela clareia): luta, chefe, espreita ou o hall
@@ -986,6 +961,7 @@ export class Dungeon {
 
   onZombieSlain(z) {
     this.stats.kills++;
+    this.fever && this.fever.onKill(z.pos);
     const X = this.D.xp;
     // na ÁRVORE (a parte 3 do Samhain) abate não dá XP e a cura cai menos (dono, 2026-11-19: "você chegar na parte 3
     // com oque você conseguiu upar na parte um … E na parte 3 sobreviver com oque upou antes")
@@ -1614,7 +1590,7 @@ export class Dungeon {
     const n = chestCount(Math.random, (c.luck || 0) + (this.mods?.chestLuck || 0)); // + Baú Farto (loja da Aghata)
     // A BUILD COMEÇA VAZIA (pedido do dono, 2026-11-13): o baú só sobe habilidades que o jogador ESCOLHEU ao subir de
     // nível. Antes do nível 2 (ou sem nenhuma habilidade ainda) ele só dá moedas ou experiência — sem melhoria de graça
-    if ((this.run.level || 1) < 2 || !this.run.picks.length) return this.openEarlyChest(c, n);
+    if ((this.run.level || 1) < 2 || !this.run.picks.length) return this.feverChest(c, this.openEarlyChest(c, n));
     const ups = chestUpgrades(this.run.picks, Math.random, n, { discovered: this.discovered() });
     const items = [];
     const rows = [];
@@ -1649,7 +1625,14 @@ export class Dungeon {
       } else if (u.chest && countOf(this.run.picks, id) === 1) this.hud.callout(u.name.toUpperCase(), '#7ec8ff');
     }
     this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
-    return items;
+    return this.feverChest(c, items);
+  }
+
+  // a FEBRE DO OURO (pve/goldFever.js): bem rara, sai de qualquer baú além do que ele já deu
+  feverChest(c, items) {
+    if (!this.fever || this.fever.active || !rollFever(Math.random, c.luck || 0)) return items;
+    this.world.after(0.7, () => { if (!this.disposed && ['explore', 'fight', 'bossDown'].includes(this.phase)) this.fever.start(); });
+    return [...items, { icon: '$', colorCss: '#ffd84a' }];
   }
 
   // as fusões já descobertas (o flow.js põe `profile.discovered`): chegam ao baú bem raras mesmo sem a receita
@@ -1677,6 +1660,7 @@ export class Dungeon {
   giveCoins(n, raw = false) {
     // a dificuldade (PVE_DIFFICULTIES[].coin) e a Ganância da árvore aumentam as moedas; raw = já calculado (a recompensa)
     if (!raw) n = Math.max(1, Math.round(n * (this.diff.coin ?? 1) * (this.mods?.coinMult ?? 1)));
+    if (this.fever && this.fever.active) n *= this.fever.mult(); // a Febre do Ouro: o dobro (até a recompensa já calculada)
     this.stats.coins += n;
     this.audio.play('pickup', { volume: 1, pitch: 1.4 });
     this.popup(0, `+${n} MOEDAS`, '#ffc040');
@@ -1691,12 +1675,11 @@ export class Dungeon {
       if (this.coop && this.players.some((p) => p !== f && p.state !== 'ko')) {
         this.hud.callout(`${f === this.player ? 'P1' : 'P2'} CAIU`, '#ff4a3a');
         this.audio.play('ko', { volume: 0.8 });
-        // (feedback do dono, 2026-11-14) só quem morreu cai: fica no chão e volta em 60 s — mais rápido com o amigo
-        // PERTO (o anel no chão); a sala limpa ou a próxima sala também o põem de pé
-        f.reviveT = REVIVE.time;
-        f.reviveShown = -1;
-        this.hint(`Quem caiu volta em ${REVIVE.time} s — fique perto dele para acelerar`);
-        this.hintT = 4;
+        // (dono, 2026-11-19) quem caiu fica MORRENDO no chão, se arrastando: o amigo tem RESCUE.bleed s para chegar e
+        // segurar o botão; senão vira caixão (pve/coopRescue.js). A sala limpa ou a próxima sala ainda o põem de pé
+        this.rescue.down(f);
+        this.hint(`${f === this.player ? 'P1' : 'P2'} está morrendo — chegue perto e SEGURE o botão de interagir (${RESCUE.bleed} s)`);
+        this.hintT = 5;
         return;
       }
       this.deadFrom = this.phase === 'bossDown' ? 'bossDown' : this.encounter && !this.encounter.done ? 'fight' : 'explore';
@@ -1731,6 +1714,7 @@ export class Dungeon {
     }
     this.encounter.koAt = this.world.time;
     this.stats.kills++;
+    this.fever && this.fever.onKill(at);
     this.giveXp(this.D.xp.devorado);
     this.tryHeal(at, 1);
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal);
@@ -1744,6 +1728,7 @@ export class Dungeon {
 
   onCopiaSlain(n) {
     this.stats.copias++;
+    this.fever && this.fever.onKill(n.pos);
     this.giveXp(this.D.xp.copia);
     this.tryHeal(n.pos, 0.6);
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
@@ -2260,7 +2245,7 @@ export class Dungeon {
     // a TORRE: depois do Estrangeiro, a saída é uma CÁPSULA (pedido do dono, 2026-11-13: "deitar numa cápsula para
     // passar para a próxima fase") — a porta fica trancada
     if (this.sino && !this.sino.exitCap) {
-      this.sino.openExit(this.player.pos);
+      this.sino.openExit(this.player.pos, this.coop ? 2 : 1);
       this.audio.play('teleport', { volume: 0.7, pitch: 0.6 });
       this.hud.callout('UM LEITO SUBIU DO CHÃO', '#7aff4a');
       this.pveHud.setObjective('Deite na cápsula');
@@ -2290,7 +2275,6 @@ export class Dungeon {
     this.lastDt = dt;
     if (this.endQueued) { this.flushEnd(); return; }
     if (this.phase === 'loading' || this.phase === 'over' || this.disposed) return;
-    this.tickRevive(dt);
     // a cena de entrada do Espreitador: o mundo anda (animações, câmera), mas ninguém luta
     if (this.bossIntro) {
       for (const q of this.players) q.aimYaw = null;
@@ -2325,14 +2309,19 @@ export class Dungeon {
       this.hud.update(this);
       return;
     }
-    if (!this.choosing && this.pendingRewards && this.pendingRewards.length && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) this.openReward(this.pendingRewards.shift());
+    if (!this.choosing && this.pendingRewards && this.pendingRewards.length && this.phase !== 'dead' && this.phase !== 'exit' && (this.player.state !== 'ko' || this.player.coffin) && !this.world.cinematic) this.openReward(this.pendingRewards.shift());
     // no CORREDOR das lamparinas ninguém sobe de nível no meio da corrida (dono, 2026-11-19): as escolhas esperam a chegada
-    else if (this.pendingUps > 0 && !(this.runner && !this.runner.done) && this.phase !== 'dead' && this.phase !== 'exit' && this.player.state !== 'ko' && !this.world.cinematic) {
+    else if (this.pendingUps > 0 && !(this.runner && !this.runner.done) && this.phase !== 'dead' && this.phase !== 'exit' && (this.player.state !== 'ko' || this.player.coffin) && !this.world.cinematic) {
       this.openLevelUp();
       return;
     }
     this.phaseTime += dt;
     this.stats.time += dt;
+    if (this.fever && this.fever.active) {
+      if (this.phase === 'dead' || this.phase === 'exit') this.fever.stop();
+      else this.fever.update(dt);
+    }
+    if (this.coop && this.phase !== 'dead') this.rescue.tick(dt);
     const w = this.world;
     const p = this.player;
     // CÂMERA LIVRE: o mouse/analógico direito giram a câmera e o corpo mira para onde ela olha (frente = yaw + π)
@@ -2345,7 +2334,8 @@ export class Dungeon {
       // travado: o corpo mira direto no alvo (não espera a câmera terminar de virar)
       if (q.aimYaw !== null && V.lockT && V.lockT.pos) q.aimYaw = Math.atan2(V.lockT.pos.x - q.pos.x, V.lockT.pos.z - q.pos.z);
       // um erro na interação (porta, gaveta, baú) não pode impedir o mundo de andar logo abaixo (travamentos, 2026-11-07)
-      try { this.updateInteract(V, dt); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
+      // o coop: levantar quem caiu / reviver do caixão tem a vez antes das portas e baús
+      try { if (!(this.coop && this.rescue.input(V, dt))) this.updateInteract(V, dt); } catch (e) { console.error('Erro na interação do Outro Lado:', e); }
       if (this.minis && this.minis.input) this.minis.input(V); // os sacos de farinha do Rastropoda (pega/arremessa)
       if (this.items && this.phase !== 'dead') this.items.input(V); // os itens da Vigília no Samhain (pega/arremessa)
     }
@@ -2490,7 +2480,8 @@ export class Dungeon {
     // a Torre: a saída é DEITAR numa cápsula (pve/sino.js)
     if (this.sino && this.sino.exitCap && this.phase !== 'exit') {
       this.sino.exitIdle(this.lastDt);
-      if (this.sino.exitReached(this.players)) this.startCapsuleExit();
+      if (this.sino.exitCaps.length > 1) this.updateCoopBeds();
+      else if (this.sino.exitReached(this.players)) this.startCapsuleExit();
     }
     // a sala do chefe com gatilho (o bunker da escola): a luta começa quando alguém passa dele
     const B = this.pendingBoss;
@@ -2499,7 +2490,7 @@ export class Dungeon {
       this.startBoss(B);
     }
     // atravessou a porta de saída
-    if (this.exitDoor.unlocked && p.pos.x > this.D.exit.door.x + 0.4 && this.phase !== 'exit') this.startExit();
+    if (this.exitDoor.unlocked && this.players.some((q) => q.state !== 'ko' && q.pos.x > this.D.exit.door.x + 0.4) && this.phase !== 'exit') this.startExit();
   }
 
   takeReward() {
@@ -2534,16 +2525,69 @@ export class Dungeon {
     }]);
   }
 
+  // COOP (dono, 2026-11-19: "deve ter duas e só acaba a fase quando os dois deitarem"): cada um deita no seu leito e
+  // espera o outro (pular sai do leito); quem está no caixão não precisa deitar — vai junto
+  updateCoopBeds() {
+    const caps = this.sino.exitCaps;
+    this.players.forEach((q, i) => {
+      const V = this.views[i];
+      const b = q.bed;
+      if (b) {
+        q.vel.set(0, 0, 0);
+        q.pos.set(b.spot.x, 0.5, b.spot.z);
+        q.yaw = -Math.PI / 2;
+        q.invuln = Math.max(q.invuln || 0, 0.3);
+        if (V && V.inp.pressed && V.inp.pressed.jump) {
+          b.user = null;
+          q.bed = null;
+          q.lying = false;
+          q.pos.y = 0;
+          // sai para o lado de fora do par de leitos e só deita de novo depois de se afastar
+          const mid = caps.reduce((acc, c) => acc + c.spot.z, 0) / caps.length;
+          q.pos.z += (b.spot.z <= mid ? -1 : 1) * 1.2;
+          resolveBody(this.world.arena, q.pos, q.radius || 0.5);
+          q.bedAway = true;
+          q.setState('idle');
+          q.anim.play('idle', { restart: true });
+          V.prompt.hide();
+        }
+        return;
+      }
+      if (q.state === 'ko' || q.coffin || q.rescue) return;
+      if (q.bedAway) {
+        if (caps.every((c) => Math.hypot(q.pos.x - c.spot.x, q.pos.z - c.spot.z) > 1.8)) q.bedAway = false;
+        else return;
+      }
+      const free = caps.filter((c) => !c.user && c.rise >= 1 && Math.hypot(q.pos.x - c.spot.x, q.pos.z - c.spot.z) <= 1.5);
+      if (!free.length) return;
+      const c = free.sort((a, b2) => Math.hypot(q.pos.x - a.spot.x, q.pos.z - a.spot.z) - Math.hypot(q.pos.x - b2.spot.x, q.pos.z - b2.spot.z))[0];
+      c.user = q;
+      q.bed = c;
+      q.cancelAction && q.cancelAction();
+      q.setState('intro');
+      q.lying = true;
+      q.anim.play('downed', { restart: true });
+      this.audio.play('teleport', { volume: 0.6, pitch: 0.7 });
+      const other = this.players.find((o) => o !== q);
+      if (other && !other.bed && !other.coffin) this.popup(i, 'ESPERANDO O PARCEIRO DEITAR (PULE PARA SAIR)', '#7dffb0');
+    });
+    const need = this.players.filter((q) => !q.coffin);
+    if (need.length && need.every((q) => q.bed)) this.startCapsuleExit();
+  }
+
   // a saída da Torre: quem chega à cápsula entra, deita, o líquido verde sobe e a tela apaga
   startCapsuleExit() {
     const p = this.player;
-    const b = this.sino.exitCap;
+    const caps = this.sino.exitCaps || [];
+    const two = caps.length > 1;
+    // os dois leitos: a câmera olha o meio deles
+    const b = two ? { spot: { x: caps[0].spot.x, z: (caps[0].spot.z + caps[1].spot.z) / 2 }, bed: true } : this.sino.exitCap;
     this.phase = 'exit';
     this.phaseTime = 0;
-    this.capsuleExit = { from: p.pos.clone(), to: { x: b.spot.x, z: b.spot.z }, bed: !!b.bed };
+    this.capsuleExit = { from: p.pos.clone(), to: { x: b.spot.x, z: b.spot.z }, bed: !!b.bed, two };
     this.pveHud.hint(null);
     for (const q of this.players) { q.cancelAction && q.cancelAction(); q.setState('intro'); }
-    p.anim.play('walk', { restart: true });
+    if (!two) p.anim.play('walk', { restart: true });
     this.audio.play('teleport', { volume: 0.8, pitch: 0.5 });
     const cam = this.world.cameraRig;
     const from = cam.pos.clone();
@@ -2580,7 +2624,10 @@ export class Dungeon {
   // enche. No coop, o outro fica de pé ao lado, com a mão no vidro
   bedExit(X, t, k) {
     const b = this.sino.exitCap;
-    this.players.forEach((q, i) => {
+    if (X.two) {
+      // os dois já estão deitados: só a tampa fecha e o líquido enche
+      for (const q of this.players) if (q.bed) { q.vel.set(0, 0, 0); q.pos.set(q.bed.spot.x, 0.5, q.bed.spot.z); q.yaw = -Math.PI / 2; }
+    } else this.players.forEach((q, i) => {
       if (q.state === 'ko') return;
       q.vel.set(0, 0, 0);
       if (i === 0) {
@@ -2596,7 +2643,7 @@ export class Dungeon {
     });
     this.sino.exitTick(Math.max(0, t - 0.9));
     if (t > 2.2 && !this.fading) { this.fading = true; this.pveHud.fade(true, 1.2); }
-    if (t > 3.6 && !this.ended) { this.ended = true; for (const q of this.players) { q.lying = false; q.pos.y = 0; } this.finish('clear'); }
+    if (t > 3.6 && !this.ended) { this.ended = true; for (const q of this.players) { q.lying = false; q.pos.y = 0; if (q.bed) { q.bed.user = null; q.bed = null; } } this.finish('clear'); }
   }
 
   updateExit(dt) {
@@ -2616,6 +2663,7 @@ export class Dungeon {
   finish(result) {
     if (this.phase === 'over') return;
     this.phase = 'over';
+    this.fever && this.fever.stop();
     // onde a tentativa parou (a tela do fim mostra a rota até o chefe) e o nível alcançado
     Object.assign(this.stats, { room: this.step, rooms: this.routeLen, boss: !!(this.mod && this.mod.kind === 'boss') || !!(this.waves && this.waves.n >= this.waves.total), waves: !!this.waves, villageLost: !!this.villageLost, treeLost: !!this.treeLost, tree: !!this.tree, treeWave: this.tree && this.waves ? this.waves.n : 0, level: this.run.level || 1 });
     // online: no próximo quadro da simulação (igual nos dois computadores); local: fora do quadro atual
@@ -2651,9 +2699,18 @@ export class Dungeon {
     // TELA DIVIDIDA: um ESPECIAL (cinematic do mundo ou planos na câmera principal) toma a tela toda — tira a divisão e
     // mostra a cena (pedido do dono, 2026-11-14); as cenas de entrada, a saída e o fim também
     const cine = !!(w.cinematic || w.cameraRig.shots);
-    const full = !this.coop || this.net || this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over';
+    // um no CAIXÃO (dono, 2026-11-19: "a tela volta a ser de um player só"): a tela inteira é de quem ficou vivo
+    const solo = this.coop && !this.net && this.views ? this.views.find((V) => !V.p.coffin && this.players.some((q) => q.coffin)) : null;
+    const full = !this.coop || this.net || this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over' || !!solo;
     if (this.coop && !this.net && this.pveHud && this.pveHud.split === full) this.pveHud.setSplit(!full);
     if (this.coop && !this.net) this.hud.root.classList.toggle('pve-solo', full);
+    if (solo && solo.i === 1 && !(this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over')) {
+      const cam = solo.rig.camera;
+      const asp = size.x / Math.max(1, size.y);
+      if (Math.abs(cam.aspect - asp) > 1e-3) { cam.aspect = asp; cam.updateProjectionMatrix(); }
+      r.render(w.scene, cam);
+      return;
+    }
     if (full) {
       const asp = size.x / Math.max(1, size.y);
       if (Math.abs(w.camera.aspect - asp) > 1e-3) { w.camera.aspect = asp; w.camera.updateProjectionMatrix(); }
@@ -2698,6 +2755,8 @@ export class Dungeon {
     if (this.player) this.player.aimYaw = null;
     if (document.pointerLockElement) document.exitPointerLock();
     this.bossIntro && this.bossIntro.dispose();
+    this.fever && this.fever.dispose();
+    this.rescue && this.rescue.dispose();
     if (this.roomCables) { disposeCables(this.roomCables); this.roomCables = null; }
     if (this.sigAmb) { this.sigAmb.remove(); this.sigAmb = null; }
     this.ambience && this.ambience.dispose();

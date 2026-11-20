@@ -1,5 +1,18 @@
 # Registro administrativo de alterações
 
+## v5.28.0 — Febre do Ouro
+
+- Versão: `VERSION` 5.27.2 → **5.28.0**. Data: 2026-11-19.
+- Dono: "adicionar ao modo outro lado: Febre do Ouro … Arrumar as capsulas do final do mapa da tv varminho, caso esteja
+  jogando coop, deve ter duas … Quando apenas um dos players no coop morrem, o player morto deve ficar caido no chão se
+  rastejando …".
+- Números (PROPOSTA): Febre 4% por baú, 30 s (uma sala de luta dura 40–70 s; quem mata a cada 3 s segura a sala
+  inteira), +3 s por abate, moedas ×2. Caído: 25 s, 0,5 m/s; resgate 2 s; caixão 5 s a metade do preço.
+- A sala limpa e a próxima sala ainda levantam quem está caído (regra antiga do dono), mas não quem está no caixão.
+- Testado no navegador (coop na Torre): febre (barra, moedas, abate +3 s, fim), rastejar, resgate com a mão e a aura,
+  caixão, reviver pago (20 moedas) com a tampa abrindo e a luz, os dois leitos (só sai com os dois; pular sai do leito).
+- `npm test`, `npm run check`, `vite build` e `npm run moves` ok.
+
 ## v5.27.2 — A Foto do Bar
 
 - Versão: `VERSION` 5.27.1 → **5.27.2**. Data: 2026-11-19.
