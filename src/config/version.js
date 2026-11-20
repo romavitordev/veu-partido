@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.39.0';
+export const VERSION = '5.39.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,14 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.39.1',
+    date: '2026-11-20',
+    title: 'O Sertão no Outro Lado',
+    items: [
+      'A fase do Sertão do Quibungo agora aparece na seleção do Outro Lado, entre a Torre da TV Varminho e Treb Ciach. A página Sobre ganhou o retrato do Quibungo e a descrição da fase.',
+    ],
+  },
   {
     v: '5.39.0',
     date: '2026-11-20',

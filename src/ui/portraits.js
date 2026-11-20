@@ -159,7 +159,13 @@ export async function renderNpcPortrait(id, renderer, { w = 300, h = 400, turn =
     renderer.setRenderTarget(prevTarget);
     renderer.setClearColor(prevClearColor, prevClear);
     target.dispose();
-    disposeRigResources(root);
+    // buildNpcModel compartilha a geometria do GLB em cache com os NPCs da luta; aqui só liberamos materiais da instância.
+    const materials = new Set();
+    root.traverse((o) => {
+      if (!o.material) return;
+      for (const material of Array.isArray(o.material) ? o.material : [o.material]) materials.add(material);
+    });
+    for (const material of materials) material.dispose();
   }
 }
 

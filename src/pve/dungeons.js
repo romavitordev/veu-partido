@@ -491,14 +491,12 @@ export const DUNGEONS = {
     chests: { chance: { waves: 0 }, coinsBoss: 18 },
   },
   // O SERTÃO DO QUIBUNGO — a 3ª FASE DE ONDAS (Hexatombe ep. 5: o morro da caatinga onde armaram a emboscada para o
-  // Quibungo; mapa `sertao`, v5.38.0). Dono, 2026-11-20: "virão ondas de animais afetados pelo sangue, araras devoradas
+  // Quibungo; mapa `sertao`, v5.39.0). Dono, 2026-11-20: "virão ondas de animais afetados pelo sangue, araras devoradas
   // e (monstruosas em dificuldades maiores) … e na ultima onda virá o boss Quimbungo"; "Os infernais só virão na
   // dificuldade Aniquilação". O bestiário é canon (wiki "Araras Devoradas" e "Felinos Devorados": os animais da Coroa
-  // de Espinhos tomados pelo Sangue; a variante INFERNAL de cada um). EM PRODUÇÃO (`hidden`): faltam os modelos da
-  // Arara, do Felino e do Quibungo. PROPOSTA: tudo o que é número.
+  // de Espinhos tomados pelo Sangue; a variante INFERNAL de cada um). Os modelos estão registrados e prontos para jogar.
   sertao: {
     id: 'sertao',
-    hidden: true,
     storyOrder: 3.5, // Hexatombe (2025): antes de A Vigília
     name: 'Sertão do Quibungo',
     place: 'Coroa de Espinhos',
@@ -1005,7 +1003,7 @@ export function treePlan(difficulty = 'normal', lamps = 0) {
   return out;
 }
 
-// `hidden`: em produção (fora da ordem da história e do sorteio)
+  // `hidden`: fora da ordem da história e do sorteio
 export const DUNGEON_ORDER = Object.values(DUNGEONS)
   .filter((dungeon) => !dungeon.hidden)
   .sort((a, b) => a.storyOrder - b.storyOrder)

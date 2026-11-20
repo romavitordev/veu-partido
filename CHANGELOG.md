@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.39.1 — O Sertão no Outro Lado
+
+### Corrigido
+- A fase do Sertão do Quibungo agora aparece na seleção do Outro Lado, entre a Torre da TV Varminho e Treb Ciach. A página Sobre ganhou o retrato do Quibungo e a descrição da fase.
+
 ## v5.39.0 — O Bestiário da Coroa de Espinhos
 
 ### Adicionado

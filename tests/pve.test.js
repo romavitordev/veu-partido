@@ -114,7 +114,7 @@ test('salvamento: dado quebrado ou de outra versão não derruba', () => {
 });
 
 test('dungeons: o chefe fica fora da seleção, o sorteio evita repetir e a profundidade escala', () => {
-  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador', 'tipora', 'estrangeiro', 'samhain']);
+  assert.deepEqual(DUNGEON_ORDER, ['degolificada', 'espreitador', 'tipora', 'estrangeiro', 'sertao', 'samhain']);
   assert.deepEqual(DUNGEON_ORDER, Object.values(DUNGEONS).filter((d) => !d.hidden).sort((a, b) => a.storyOrder - b.storyOrder).map((d) => d.id));
   assert.equal(new Set(Object.values(DUNGEONS).map((d) => d.storyOrder)).size, Object.keys(DUNGEONS).length, 'cada fase futura precisa de uma posição cronológica própria');
   assert.deepEqual(validDungeons(1), ['degolificada']);
@@ -525,10 +525,13 @@ test('Ondas de Tipora: fase de ondas sem portas, gigante sozinho a cada 3 e o Am
   const tally = (diff, keys) => wavePlan(D, diff).reduce((a, w) => a + keys.reduce((s, k) => s + ((w.foes || {})[k] || 0), 0), 0);
   assert.ok(tally('annihilation', ['javali', 'cao', 'cobra']) > tally('easy', ['javali', 'cao', 'cobra']));
   assert.ok(tally('hard', ['tinta']) > tally('easy', ['tinta']));
-  // entrou entre a Mansão e a Torre, sem trancar a Torre de quem já a venceu
+  // o Sertão entra depois da Torre e antes de Treb Ciach, sem perder os desbloqueios anteriores
   assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador'] }, 'tipora'));
   assert.ok(!phaseUnlocked({ phases: ['degolificada', 'espreitador'] }, 'estrangeiro'));
   assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador', 'estrangeiro'] }, 'estrangeiro'));
+  assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador', 'tipora', 'estrangeiro'] }, 'sertao'));
+  assert.ok(!phaseUnlocked({ phases: ['degolificada', 'espreitador', 'tipora', 'estrangeiro'] }, 'samhain'));
+  assert.ok(phaseUnlocked({ phases: ['degolificada', 'espreitador', 'tipora', 'estrangeiro', 'sertao'] }, 'samhain'));
   const boss = (await import('../src/characters/bosses/amigo.js')).default;
   assert.ok(boss.boss && boss.stats.maxHealth > 1800 && !boss.special && !boss.awakening);
 });
