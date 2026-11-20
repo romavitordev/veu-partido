@@ -5,6 +5,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { toon } from './rig.js';
 import { fetchBuffer } from './netLoad.js';
 import { MATERIAL_TEXTURES } from './textures.js';
+import { ORDO_METAL, applyOrdoMetal } from './metalShader.js';
 
 // Rig a partir de um .glb feito no Blender (tools/blender/char_*.py).
 // O esqueleto usa os MESMOS nomes de junta do rig procedural, então o Animator
@@ -227,6 +228,7 @@ export function rigFromGLB(gltf, { scale = 1, outline = 0.012 } = {}) {
       });
       m.name = src.name;
       if (/^MAT_SKIN_/.test(src.name)) keepSkinHue(m);
+      if (ORDO_METAL.test(key)) applyOrdoMetal(m, { dark: key.endsWith('_dark') });
       if (emissive) m.userData.glow = true;
       if (emissiveMap) m.userData.baseEmissive = { color: new THREE.Color(texEmissive), intensity: 1 };
       convert.set(src, m);

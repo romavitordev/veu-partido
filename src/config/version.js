@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.33.0';
+export const VERSION = '5.34.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.34.0',
+    date: '2026-11-20',
+    title: 'A Lança e o Metal',
+    items: [
+      'LANÇAS com golpes de lança de verdade: a estocada com a lança deitada, a cravada POR CIMA (ela vira na mão e desce no adversário), o golpe POR BAIXO que sobe na diagonal, a INVESTIDA com o corpo inteiro, a lança cravada do alto e a haste varrida. O Cornelius ganhou todos; a Antena do Labirinto, a estocada e a investida.',
+      'ARREMESSO CARREGADO: segure o □ do Cornelius para armar a lança atrás da cabeça — uma barrinha curta aparece em cima dele e, no máximo, fica branca e pisca. Solto no máximo, o arremesso dá até 1,8× o dano, voa mais rápido e quebra a defesa. Um toque rápido continua sendo o arremesso normal.',
+      'XANDE: o Amaldiçoar Arma agora amaldiçoa o taco E o SKATE. Arremessado, o skate leva o elemento; erguido na defesa, quem bate nele leva o elemento de volta (mais ainda no bloqueio perfeito).',
+      'METAL nas armaduras da Ordo Calamitas: as placas têm metal escovado, riscos de batalha, desgaste e um reflexo que corre pela armadura quando a câmera e o lutador se mexem.',
+      'MARIUS ficou do tamanho do Grandão: tronco em barril (peitoral e costas fundos, como o Dalmo) e braços e pernas bem mais grossos.',
+    ],
+  },
   {
     v: '5.33.0',
     date: '2026-11-20',

@@ -71,6 +71,25 @@ export class Animator {
     sample(clip, t, this.pose);
     if (this.blend < 1 && this.prevPose) mixPose(this.prevPose, this.pose, smooth(this.blend), this.pose);
     this.apply(dt);
+    this.updateGrip(clip, t, dt);
+  }
+
+  // PEGADA DA ARMA (2026-11-20, as lanças): o clipe pode girar a arma DENTRO da mão (clip.grip = [[t, ângulo], ...],
+  // radianos somados à inclinação de repouso no eixo X da peça) — a lança segurada por cima para cravar, por baixo
+  // para subir, deitada no arremesso. Sem grip no clipe ela volta à pegada normal. rig.gripProp = { obj, base }.
+  updateGrip(clip, t, dt) {
+    const gp = this.rig.gripProp;
+    if (!gp) return;
+    let target = gp.rest ?? 0;
+    const g = clip.grip;
+    if (g) {
+      if (t <= g[0][0]) target = g[0][1];
+      else if (t >= g[g.length - 1][0]) target = g[g.length - 1][1];
+      else for (let i = 1; i < g.length; i++) if (t <= g[i][0]) { const u = (t - g[i - 1][0]) / (g[i][0] - g[i - 1][0]); target = g[i - 1][1] + (g[i][1] - g[i - 1][1]) * smooth(u); break; }
+    }
+    gp.cur = gp.cur ?? 0;
+    gp.cur += (target - gp.cur) * (dt <= 0 || dt >= 0.1 ? 1 : Math.min(1, dt * 22));
+    gp.obj.rotation.x = gp.base + gp.cur;
   }
 
   apply(dt = 0) {

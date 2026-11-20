@@ -36,6 +36,7 @@ import { GRAB_SCENES, FINISHERS } from './grabScenes.js';
 import { rollChaosShot, tickHostQuirks } from './chaos.js';
 import { inscribe } from './kianPowers.js';
 import { startRagdoll } from '../physics/ragdoll.js';
+import { chargeBar } from '../fx/chargeBar.js';
 
 // estados em que o alvo continua "dentro do combo" (contadores de escala não zeram)
 const RUN_SIDE = 1.15; // o desvio de lado no corredor (× a velocidade de corrida)
@@ -2537,6 +2538,13 @@ export class Fighter {
     }
     this.cooldowns.ranged = r.cooldown;
     this.cooldownMax.ranged = r.cooldown;
+    // ARREMESSO CARREGÁVEL (r.hold — as lanças, 2026-11-20): segurar o □ prepara o arremesso e enche a barrinha em
+    // cima do lutador; soltar (ou chegar no máximo e esperar r.hold.auto s) arremessa com dano/velocidade proporcionais
+    if (r.hold) { this.startHoldThrow(r, intent, variant); return; }
+    this.launchRanged(r, intent, variant);
+  }
+
+  launchRanged(r, intent, variant) {
     r = { ...r, volley: (this.volleySeq = (this.volleySeq || 0) + 1) };
     this.activeRanged = r;
     this.setState('ranged');
@@ -2583,6 +2591,65 @@ export class Fighter {
         return false;
       },
       cancel() { self.hideRangedProps(); },
+    };
+  }
+
+  startHoldThrow(r, intent, variant) {
+    const H = r.hold;
+    const self = this;
+    this.setState('ranged');
+    this.vel.x = 0;
+    this.vel.z = 0;
+    this.anim.play(H.anim || r.anim, { restart: true, duration: H.max });
+    const bar = chargeBar(this.world, this, { color: H.color ?? 0xffc840 });
+    const cpuWant = this.input && this.input.cpu ? 0.35 + Math.random() * 0.65 : null;
+    this.holdChannel = true;
+    let t = 0;
+    let fullT = 0;
+    let wasFull = false;
+    const finish = () => { bar.dispose(); self.holdChannel = false; };
+    this.seq = {
+      update(dt) {
+        t += dt;
+        const opp = self.aimYaw != null ? self.aimTarget() : self.opponent;
+        if (opp) self.yaw = turnTowards(self.yaw, yawTo(self.pos, opp.pos), dt * 8);
+        self.vel.x = 0;
+        self.vel.z = 0;
+        const k = Math.min(1, t / H.max);
+        bar.set(k);
+        bar.update(dt);
+        if (k >= 1) {
+          fullT += dt;
+          if (!wasFull) { wasFull = true; self.world.audio.play('ready', { volume: 0.7 }); self.world.fx.flash(self.chestPos(), { color: H.color ?? 0xffc840, size: 1.6, life: 0.15 }); }
+        }
+        const held = self.input && self.input.held.ranged;
+        const release = (cpuWant != null ? k >= cpuWant : !held && t >= (H.min ?? 0.12)) || fullT >= (H.auto ?? 1.2);
+        if (!release) return false;
+        finish();
+        // k = 0 (toque rápido) → o arremesso normal; k = 1 → o carregado inteiro
+        const q = Math.max(0, (k - 0.15) / 0.85);
+        const full = k >= 1;
+        const rr = {
+          ...r,
+          hold: null,
+          // toque rápido: o arremesso normal inteiro; segurou o bastante, a lança já está armada e só sai
+          anim: k >= 0.3 ? H.release || r.anim : r.anim,
+          windup: k >= 0.3 ? H.releaseWindup ?? r.windup : r.windup,
+          damage: Math.round(r.damage * (1 + ((H.damage ?? 1.8) - 1) * q)),
+          speed: r.speed * (1 + ((H.speed ?? 1.4) - 1) * q),
+          knockback: (r.knockback || 0) * (1 + ((H.knockback ?? 1.6) - 1) * q),
+          radius: r.radius * (full ? (H.radius ?? 1.3) : 1),
+          guardCrush: full && H.guardCrushAtMax ? H.guardCrushAtMax : r.guardCrush, // no máximo atravessa a defesa
+          impactScale: (r.impactScale || 1) * (1 + 0.6 * q),
+          hitstun: (r.hitstun || 0.4) * (full ? 1.4 : 1),
+          charged: q,
+        };
+        if (full) self.notify(H.label || 'ARREMESSO CARREGADO!', true);
+        self.seq = null;
+        self.launchRanged(rr, intent, variant);
+        return false; // a sequência nova (launchRanged) assume
+      },
+      cancel() { finish(); self.hideRangedProps(); },
     };
   }
 

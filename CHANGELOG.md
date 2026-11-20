@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.34.0 — A Lança e o Metal
+
+### Adicionado
+- `src/anim/spearClips.js`: `spear_thrust`, `spear_lunge`, `spear_over`, `spear_low`, `spear_air`, `spear_sweep`,
+  `spear_throw`, `spear_throw_hold`, `spear_throw_release` (poses conferidas renderizadas de lado).
+- Canal de pegada `clip.grip` (`Animator.updateGrip`, `rig.gripProp = {obj, base, rest}`): o giro da arma dentro da mão.
+- Arremesso segurável `ranged.hold` (`Fighter.startHoldThrow` / `launchRanged`) e `src/fx/chargeBar.js`.
+- `def.curseShield` + `cursedShieldBite` (damage.js): o escudo amaldiçoado devolve o elemento na defesa.
+- `src/models/metalShader.js`: `applyOrdoMetal` (procedural, sem UV) nos materiais `armor_*` da Ordo (glbRig).
+
+### Alterado
+- Cornelius e Labirinto usam os golpes de lança; o □ do Cornelius tem `hold`.
+- Xande: `amaldicoarTaco.props` = taco e skate.
+- `char_marius.py`: tronco próprio em barril (`marius_torso`), `arm_r`/`leg_r` maiores; retrato regenerado.
+
 ## v5.33.0 — Fiéis ao Cânone
 
 ### Adicionado

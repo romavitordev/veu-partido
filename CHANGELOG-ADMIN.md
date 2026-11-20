@@ -1,5 +1,16 @@
 # Registro administrativo de alterações
 
+## v5.34.0 — A Lança e o Metal
+
+- Versão: `VERSION` 5.33.0 → **5.34.0**. Data: 2026-11-20.
+- Dono: "Marius deveria ser um personagem grande como o dalmo"; "veja se é possivel adicionar textura de metal nessas
+  armaduras"; "As animações de bater com uma lança [...] Deve ser possivel segurar o botão de lançar a lança [...] Xande
+  precisa de um upd, ao ele usar o amaldiçoar arma, deveria amaldiçoar o skate dele também".
+- Referências: wiki (aparência dos dez da Ordo); Marius "cerca de 2 metros, bem parrudo e robusto".
+- Testado no navegador: Marius ao lado do Dalmo no Blender; closes do metal; folha das poses de lança; arremesso em luta
+  (toque 38, carregado 68 = 1,8×) com a barra; Xande amaldiçoado bloqueando o Marius (14 devolvidos, Conhecimento).
+- `npm test` (125), `npm run check` ("Tudo certo."), `npm run moves`, `vite build` (em outra pasta) ok.
+
 ## v5.33.0 — Fiéis ao Cânone
 
 - Versão: `VERSION` 5.32.1 → **5.33.0**. Data: 2026-11-20.

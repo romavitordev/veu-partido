@@ -178,6 +178,7 @@ export function addLabirintoProps(rig) {
   ant.position.y = 0.05;
   sockets.handR.add(ant);
   props.antenna = ant;
+  rig.gripProp = { obj: ant, base: ant.rotation.x }; // as estocadas de lança giram a Antena na mão (spearClips.js)
   if (props.helmetOn) rig.showProp('helmetOn', false);
   if (props.helmetOn_papers) {
     // papéis colados fazem parte do elmo: ligam e desligam juntos

@@ -9,6 +9,7 @@ as pteruges, as grevas e as botas. As MANOPLAS escuras e a aura vermelha ficam e
 import sys, os, math
 sys.path.insert(0, os.path.dirname(__file__))
 from lib import *
+import lib
 from sculpt_lib import Sculpt, ridge, n3, rod, relief, clothe
 from ordo_lib import Ordo, grid
 from mathutils import Vector
@@ -38,14 +39,51 @@ TP = [(-0.115, 0.19), (0.0, 0.184), (0.17, 0.176), (0.36, 0.22), (0.47, 0.232), 
 HR = (0.13, 0.14, 0.155)
 M['legs'] = under
 M['feet'] = boots
-hc = b.body(M, TP, arm_r=(0.075, 0.064, 0.054), leg_r=(0.1, 0.08, 0.062), head_r=HR, feet='bare')
+# 2026-11-20 (dono: "Marius deveria ser um personagem grande como o dalmo"): o tronco em barril do Dalmo — fundo na
+# frente (peitoral e barriga de lutador de rua) e nas costas (dorsais), em vez do tubo achatado; braços e pernas grossos.
+# (z relativo ao quadril, meia-largura, profundidade da FRENTE, profundidade das COSTAS) — em frações de H
+TT = [
+    (-0.115, 0.2, 0.165, 0.155),
+    (0.0, 0.198, 0.175, 0.16),
+    (0.12, 0.205, 0.2, 0.162),     # barriga
+    (0.24, 0.225, 0.215, 0.168),
+    (0.34, 0.248, 0.225, 0.178),   # peitoral
+    (0.43, 0.262, 0.215, 0.185),   # dorsais largos
+    (0.5, 0.25, 0.19, 0.18),
+    (0.56, 0.205, 0.15, 0.155),    # trapézio
+    (0.6, 0.15, 0.11, 0.118),
+    (0.635, 0.085, 0.075, 0.08),
+]
+
+
+def _lerp(z):
+    if z <= TT[0][0]:
+        return TT[0][1:]
+    for a, c in zip(TT, TT[1:]):
+        if z <= c[0]:
+            t = (z - a[0]) / (c[0] - a[0])
+            return tuple(p + (q - p) * t for p, q in zip(a[1:], c[1:]))
+    return TT[-1][1:]
+
+
+def marius_torso(sk_, profile, seg=18, depth=0.62):
+    v, f, u = tube([(0, 0, hz + z * H, w * H, 1.0) for z, w, fd, bd in TT], 32)
+    out = []
+    for x, y, z in v:
+        _, fd, bd = _lerp((z - hz) / H)
+        out.append((x, y * (fd if y < 0 else bd) * H, z))
+    return out, f, u
+
+
+lib.torso_part = marius_torso
+hc = b.body(M, TP, arm_r=(0.096, 0.083, 0.066), leg_r=(0.13, 0.102, 0.076), head_r=HR, feet='bare')
 O = Ordo(b, hc, HR)
 O.under(under, sleeves=under, sleeve_to='wrist', pants=under)
 O.cuirass(armor, lo=0.06, bands=16, depth=0.008, thick=0.038, chest_relief=0.012)
 O.pauldrons(armor, 'round', trim=armor_d, size=1.15)
 O.bracers(armor_d, ridges=18, thick=0.026)
 O.belt(leather, buckle=armor_d, z1=0.07, thick=0.045)
-O.pteruges(leather, n=18, length=0.24, r=0.225, skip_front=0.0)
+O.pteruges(leather, n=20, length=0.25, r=0.245, skip_front=0.0)
 O.tabard(tabard, half=0.1, bottom=-0.18, flare=0.0)
 O.scarf(scarf, thick=1.2, tail=False)
 O.boots(boots, sole, greave=armor)

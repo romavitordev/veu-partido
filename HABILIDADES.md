@@ -1105,7 +1105,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Habilidades
 
 - **Amaldiçoar Arma** — △ + □ / Y + X · custo 20 · cooldown 18 s
-  Amaldiçoa o taco por 8 s com o elemento que SUPERA o adversário (contra Sangue, Morte; contra Morte, Energia; contra Energia, Conhecimento; contra Conhecimento, Sangue). Sangue sangra, Morte apodrece e deixa lento, Conhecimento drena a sanidade, Energia solta choques — e os golpes levam a vantagem do elemento.
+  Amaldiçoa o taco e o skate por 8 s com o elemento que SUPERA o adversário (contra Sangue, Morte; contra Morte, Energia; contra Energia, Conhecimento; contra Conhecimento, Sangue). Sangue sangra, Morte apodrece e deixa lento, Conhecimento drena a sanidade, Energia solta choques — e os golpes levam a vantagem do elemento. O skate amaldiçoado também: arremessado, leva o elemento; erguido na defesa, quem bate nele leva o elemento de volta.
 - **Polarização Caótica** — △ + ○ / Y + B · custo 30 · cooldown 12 s · alcance 11 m
   Aura magnética: o inimigo LONGE é atraído até ele; o inimigo PERTO é repelido para longe e cai.
 - **Tela de Ruído** — R2 + △ / RT + Y · custo 30 · cooldown 22 s
@@ -2691,15 +2691,15 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
 | ○ 1 | Estocada | 26 | 2.8 m |  |
-| ○ 2 | Estocada Dupla | 28 | 2.9 m |  |
+| ○ 2 | Cravada por Cima | 28 | 2.9 m |  |
 | ○ 3 | Escudada | 30 | 1.7 m |  |
 | ○ 4 | Haste Varrida | 30 | 2.6 m |  |
-| ○ 5 | Pavio Curto | 60 | 3.2 m | finalizador: lança |
+| ○ 5 | Investida da Lança | 60 | 3.2 m | finalizador: lança |
 | Frente + ○ | Investida de Escudo | 36 | 2 m |  |
 | Trás + ○ | Recuo de Lança | 32 | 3 m | invulnerável no começo |
 | Lado + ○ | Roda da Lança | 32 | 2.8 m |  |
 | No ar + ○ | Lança do Alto | 36 | 2.6 m | desce com impacto |
-| ↑ + ○ (no combo) | Lança para Cima | 38 | 2.6 m | finalizador: lança alto (combo aéreo) |
+| ↑ + ○ (no combo) | Lança de Baixo | 38 | 2.6 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Escudo no Chão | 44 | 1.9 m | finalizador: derruba |
 
 ### Principal (□ / X): Lança Arremessada

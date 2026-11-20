@@ -205,6 +205,7 @@ export function applyHit(world, attacker, victim, o) {
         victim.notify('BLOQUEIO PERFEITO!', true);
         // golpe físico: o atacante fica aberto; projétil: só é anulado
         if (o.kind === 'melee') attacker.stun(pb.counterStun, 'stagger');
+        if (o.kind === 'melee') cursedShieldBite(world, victim, attacker, 1.5);
         victim.setState('idle'); // livre para contra-atacar na hora
         world.onParry && world.onParry(victim, attacker);
         return 'parried';
@@ -224,6 +225,7 @@ export function applyHit(world, attacker, victim, o) {
       world.hitstop(COMBAT.hitstop * 0.6);
       rumble(victim, world, 'block'); // vibração do controle (input/rumble.js)
       if (o.kind === 'melee') runMeleePassives(world, attacker, victim, o, dealt, attempted);
+      if (o.kind === 'melee') cursedShieldBite(world, victim, attacker);
       world.onHit && world.onHit(attacker, victim, dealt, { ...o, blocked: true });
       return 'blocked';
     }
@@ -487,4 +489,23 @@ function shuffleDodge(world, attacker, victim, o) {
   victim.notify('ERA UMA CÓPIA!', true);
   if (attacker.notify) attacker.notify('ERA UMA CÓPIA!');
   return true;
+}
+
+// ESCUDO AMALDIÇOADO (Xande, 2026-11-20 — dono: "ao ele usar o amaldiçoar arma, deveria amaldiçoar o skate dele também,
+// porque ele arremessa e usa de escudo"): com a arma amaldiçoada, quem bate na defesa dele (o skate erguido) leva o
+// elemento de volta — um pouco de dano e o efeito da maldição (sangra, apodrece, perde sanidade ou toma choque).
+// def.curseShield = dano devolvido; o bloqueio perfeito devolve mais (mult).
+function cursedShieldBite(world, victim, attacker, mult = 1) {
+  const D = victim.def.curseShield;
+  if (!D || !attacker || attacker.state === 'ko' || !attacker.takeDamage) return;
+  const curse = victim.findBuff && victim.findBuff('curse');
+  if (!curse) return;
+  const n = attacker.takeDamage(Math.round(D * mult));
+  if (curse.bleed && attacker.applyBleed) attacker.applyBleed({ dps: curse.bleed.dps, duration: curse.bleed.duration * 0.6 }, victim);
+  if (curse.slow && attacker.addBuff && !attacker.findBuff('curseSlow')) attacker.addBuff({ type: 'curseSlow', name: 'APODRECENDO', time: curse.slow.time, duration: curse.slow.time, speedMult: curse.slow.mult });
+  if (curse.drain && attacker.energy !== undefined) attacker.energy = Math.max(0, attacker.energy - curse.drain * 0.6);
+  const color = { sangue: 0xc0141c, morte: 0x3a3a3a, conhecimento: 0xf2c230, energia: 0xc89aff }[curse.element] ?? 0xffffff;
+  world.fx.burst(attacker.chestPos(), { count: 10, color, speed: 3, life: 0.3, size: 0.09 });
+  if (curse.element === 'energia') world.audio.play('chargeHum', { volume: 0.6, pitch: 2 });
+  world.onHit && world.onHit(victim, attacker, n, { kind: 'ability', ability: 'escudoAmaldicoado' });
 }

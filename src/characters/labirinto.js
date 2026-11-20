@@ -25,7 +25,7 @@ export default {
   melee: {
     name: 'A Antena',
     strikes: [
-      { name: 'Estocada', anim: 'thrust', dur: 0.3, active: [0.09, 0.18], damage: 30, range: 2.5, arc: 50, knockback: 1.0, lunge: 1.1, sound: 'swing', hitSound: 'bladeHit', trail: { color: 0x9a6aff, radius: 2.0 } },
+      { name: 'Estocada', anim: 'spear_thrust', dur: 0.32, active: [0.12, 0.2], damage: 30, range: 2.5, arc: 50, knockback: 1.0, lunge: 1.1, sound: 'swing', hitSound: 'bladeHit', trail: { color: 0x9a6aff, radius: 2.0 } },
       { name: 'Varrida', anim: 'slash_h', dur: 0.32, active: [0.1, 0.19], damage: 32, range: 2.5, arc: 140, knockback: 1.2, lunge: 1.0, sound: 'swing', hitSound: 'impact', trail: { color: 0x9a6aff, radius: 2.1, tilt: 0.05 } },
       { name: 'Varrida de volta', anim: 'slash_h_back', dur: 0.32, active: [0.1, 0.19], damage: 32, range: 2.5, arc: 140, knockback: 1.2, lunge: 1.0, sound: 'swing', hitSound: 'impact', trail: { color: 0x9a6aff, radius: 2.1, flip: true } },
       { name: 'Golpe da parabólica', anim: 'slash_d', dur: 0.4, active: [0.14, 0.24], damage: 40, range: 2.4, arc: 100, knockback: 1.6, lunge: 1.0, sound: 'swing', hitSound: 'heavyPunch', trail: { color: 0x9a6aff, roll: 0.9 } },
@@ -33,7 +33,7 @@ export default {
     ],
     up: { name: 'Antena para cima', anim: 'slash_up', dur: 0.46, active: [0.16, 0.28], damage: 40, range: 2.4, arc: 120, lunge: 0.9, finisher: 'launchHigh', launcher: true, sound: 'swing', hitSound: 'impact', trail: { color: 0x9a6aff, tilt: -1.3 } },
     down: { name: 'Antena no chão', anim: 'slash_v', dur: 0.52, active: [0.2, 0.32], damage: 46, range: 2.4, arc: 100, lunge: 1, finisher: 'knockdown', sound: 'swing', hitSound: 'heavyPunch', impactScale: 1.4, trail: { color: 0x9a6aff, roll: 1.5, big: true } },
-    forward: { name: 'Investida da lança', anim: 'dash_slash', dur: 0.42, active: [0.14, 0.26], damage: 34, range: 2.6, arc: 60, knockback: 2.2, motion: [{ t: [0, 0.24], fwd: 4.4, stopClose: true }], sound: 'swing', hitSound: 'bladeHit', trail: { color: 0x9a6aff, radius: 2.0 } },
+    forward: { name: 'Investida da lança', anim: 'spear_lunge', dur: 0.46, active: [0.2, 0.3], damage: 34, range: 2.6, arc: 60, knockback: 2.2, motion: [{ t: [0, 0.24], fwd: 4.4, stopClose: true }], sound: 'swing', hitSound: 'bladeHit', trail: { color: 0x9a6aff, radius: 2.0 } },
     back: { name: 'Recua e estoca', anim: 'knife_evade', dur: 0.5, active: [0.28, 0.38], damage: 34, range: 2.4, arc: 70, knockback: 2.0, iframes: [0, 0.2], motion: [{ t: [0, 0.15], back: 2.4 }, { t: [0.18, 0.32], fwd: 1.6, stopClose: true }], sound: 'swing', hitSound: 'bladeHit', trail: { color: 0x9a6aff, radius: 2.0 } },
     side: { name: 'Varrida lateral', anim: 'slash_h', dur: 0.38, active: [0.11, 0.22], damage: 30, range: 2.5, arc: 160, knockback: 1.6, motion: [{ t: [0, 0.22], side: 2.4 }], sound: 'swing', hitSound: 'impact', trail: { color: 0x9a6aff, radius: 2.1, tilt: 0.2 } },
     air: { name: 'Antena do alto', anim: 'air_slash', dur: 0.42, active: [0.14, 0.3], damage: 36, range: 2.4, arc: 110, knockback: 3, slam: 15, vertical: 2.3, sound: 'swing', hitSound: 'heavyPunch', trail: { color: 0x9a6aff, roll: 1.3 } },

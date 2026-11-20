@@ -22,6 +22,7 @@ export default {
   anims: { idle: 'idle_xande', run: 'run', charge: 'charge', victory: 'vic_xande', block: 'block_skate' },
   // pegada: skate na mão esquerda; ao bater vai para as costas e o taco é seguro com as duas mãos
   grip: { prop: 'skate', reach: 0.42 },
+  curseShield: 14, // o skate amaldiçoado na defesa devolve o elemento em quem bate (damage.js cursedShieldBite)
   // o skate de escudo: bloqueio perfeito com janela um pouco maior
   defense: { perfectBlock: { window: 0.14, counterStun: 0.45 } },
   chargeFx: { style: 'default', color: 0xf2c230 },
@@ -82,11 +83,11 @@ export default {
       input: 'carga+ranged',
       type: 'curseWeapon',
       adaptive: true,
-      description: 'Amaldiçoa o taco por 8 s com o elemento que SUPERA o adversário (contra Sangue, Morte; contra Morte, Energia; contra Energia, Conhecimento; contra Conhecimento, Sangue). Sangue sangra, Morte apodrece e deixa lento, Conhecimento drena a sanidade, Energia solta choques — e os golpes levam a vantagem do elemento.',
+      description: 'Amaldiçoa o taco e o skate por 8 s com o elemento que SUPERA o adversário (contra Sangue, Morte; contra Morte, Energia; contra Energia, Conhecimento; contra Conhecimento, Sangue). Sangue sangra, Morte apodrece e deixa lento, Conhecimento drena a sanidade, Energia solta choques — e os golpes levam a vantagem do elemento. O skate amaldiçoado também: arremessado, leva o elemento; erguido na defesa, quem bate nele leva o elemento de volta.',
       energyCost: 20,
       cooldown: 18,
       duration: 8,
-      props: ['bat'],
+      props: ['bat', 'skate'], // o taco E o skate (o arremesso e o escudo levam a maldição)
       element: 'sangue',
       bleed: { dps: 4, duration: 3 },
     },

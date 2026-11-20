@@ -1,5 +1,6 @@
 import { Color, CanvasTexture, SRGBColorSpace, PlaneGeometry, MeshBasicMaterial, Mesh, DoubleSide } from 'three';
 import { MATERIAL_TEXTURES } from './textures.js';
+import { SPEAR_REST } from '../anim/spearClips.js';
 import { energyFlames } from './weapons.js';
 import { gladius, gauntlet, claws, khopesh, straightSword, spear, corneliusShield, doubleDagger, mascarilha, rapier, neroSword, neroShield, laurelCrown, veritusSword } from './ordoWeapons.js';
 
@@ -77,6 +78,7 @@ export function addCorneliusProps(rig) {
   inFist(sp, GRIP_HEAVY);
   rig.sockets.handR.add(sp);
   rig.props.spear = sp;
+  rig.gripProp = { obj: sp, base: sp.rotation.x, rest: SPEAR_REST }; // os golpes de lança giram a pegada (Animator.updateGrip)
   const sh = corneliusShield();
   sh.rotation.set(0, -Math.PI / 2, 0);
   sh.position.set(0.02, 0.04, 0);
