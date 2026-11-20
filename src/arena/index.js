@@ -37,10 +37,10 @@ export const ARENAS = {
   },
   suvaco: {
     name: 'Bar Suvaco Seco',
-    description: 'Bar de esquina à noite. A luta começa lá dentro, entre a sinuca e o balcão, e pode sair para a calçada.',
+    description: 'A base da Ordo Realitas em Hexatombe: o sobrado de esquina com três portas. A luta começa no salão e sai para as calçadas, a esquina e a viela.',
     colors: ['#14100c', '#3a2a1a', '#ffb347'],
     available: true,
-    thumbCamera: { pos: [-8.2, 2.8, 5.4], look: [4, 1.0, -4] }, // o salão: balcão das garrafas, sinuca e as mesas de bar
+    thumbCamera: { pos: [16.5, 3.4, 15.5], look: [7, 2.4, 4.5] }, // a esquina: a placa na quina, os toldos e as duas portas
     create: () => createGLBArena(SUVACO),
   },
   coliseu: {

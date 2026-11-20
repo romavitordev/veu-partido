@@ -69,7 +69,8 @@ export const ORFANATO_NOITE = {
   particles: { color: 0x3a3428, count: 120, area: 40, height: 6, rise: -0.25, drift: 1.2, size: 0.08, opacity: 0.7 }, // folhas no vento
 };
 
-// Bar: dá para lutar no salão e sair pela porta para a calçada
+// Bar Suvaco Seco (refeito fiel ao de Hexatombe, v5.29): o salão com três portas, a esquina chanfrada com a placa,
+// as calçadas com toldos, a rua principal (frente, +z), a rua lateral (+x) e a viela (-x)
 export const SUVACO = {
   id: 'suvaco',
   name: 'Bar Suvaco Seco',
@@ -79,35 +80,45 @@ export const SUVACO = {
     // o raio descontado de cada lado abria frestas e o lutador travava numa "parede invisível" na porta.
     rects: [
       { minX: -8.8, maxX: 8.8, minZ: -5.8, maxZ: 5.9 }, // salão
-      { minX: -2.15, maxX: 2.15, minZ: 3.0, maxZ: 9.5 }, // porta (4,6 m), entra fundo no salão e na calçada
-      { minX: -29, maxX: 29, minZ: 6.55, maxZ: 26.6 }, // calçada + rua + calçada da frente
-      { minX: 17.15, maxX: 20.35, minZ: -5.3, maxZ: 9.0 }, // beco à direita
+      { minX: -2.55, maxX: -0.05, minZ: 3.0, maxZ: 9.5 }, // porta A (rua principal)
+      { minX: 4.05, maxX: 6.75, minZ: 2.0, maxZ: 9.5 }, // porta B (ao lado da quina)
+      { minX: 4.0, maxX: 12.5, minZ: 1.05, maxZ: 3.75 }, // porta C (rua lateral)
+      { minX: -30, maxX: 30, minZ: 6.55, maxZ: 23.2 }, // calçada + rua principal + calçada de lá
+      { minX: 9.55, maxX: 26.2, minZ: -28, maxZ: 23.2 }, // calçada + rua lateral + calçada de lá
+      { minX: -12.3, maxX: -9.5, minZ: -11.7, maxZ: 8.0 }, // a viela
     ],
   },
-  spawns: [{ x: -3.2, z: 0.6 }, { x: 3.0, z: 0.6 }],
+  spawns: [{ x: -3.2, z: 0.6 }, { x: 3.2, z: 0.6 }],
   sky: 0x0c0e16,
   skyGradient: [[0, '#05060c'], [0.7, '#141a2a'], [1, '#2a2a34']],
   fog: { color: 0x161a26, density: 0.016 },
   lights: [
     { type: 'hemi', sky: 0x6a7aa0, ground: 0x2a2018, intensity: 0.85 },
     { type: 'ambient', color: 0x3a3a40, intensity: 0.4 },
-    { type: 'point', color: 0xf2f4ea, intensity: 26, distance: 11, pos: [-4, 3.2, -1.5], flicker: true },
-    { type: 'point', color: 0xf2f4ea, intensity: 26, distance: 11, pos: [4, 3.2, -1.5] },
-    { type: 'point', color: 0xf2f4ea, intensity: 20, distance: 10, pos: [0, 3.2, 3] },
-    { type: 'point', color: 0xffc070, intensity: 40, distance: 18, pos: [-10, 4.8, 15.2] },
-    { type: 'point', color: 0xffc070, intensity: 40, distance: 18, pos: [10, 4.8, 15.2] },
-    { type: 'point', color: 0xffc070, intensity: 36, distance: 18, pos: [-24, 4.8, 23.8] },
-    { type: 'point', color: 0xffc070, intensity: 36, distance: 18, pos: [24, 4.8, 23.8] },
-    { type: 'point', color: 0xffc070, intensity: 34, distance: 17, pos: [0, 4.8, 23.8] },
-    { type: 'point', color: 0xffd090, intensity: 8, distance: 7, pos: [17.6, 3.2, -1.0] }, // beco
-    { type: 'point', color: 0xff4ab0, intensity: 6, distance: 7, pos: [-13.6, 3.2, 7.2] }, // neon LANCHES
-    { type: 'point', color: 0x3aff6a, intensity: 6, distance: 7, pos: [26.2, 3.2, 7.2] }, // neon FARMÁCIA
-    { type: 'point', color: 0xffb860, intensity: 10, distance: 6, pos: [0, 3.6, 7.0] },
-    { type: 'dir', color: 0x8ea0d0, intensity: 0.95, pos: [10, 24, 22], shadow: true, area: 34 },
+    // as fluorescentes do salão (uma pisca), o fliperama e a geladeira amarela
+    { type: 'point', color: 0xf2f4ea, intensity: 24, distance: 10, pos: [-4.5, 3.2, -3.0], flicker: true },
+    { type: 'point', color: 0xf2f4ea, intensity: 24, distance: 10, pos: [-4.5, 3.2, 1.4] },
+    { type: 'point', color: 0xf2f4ea, intensity: 24, distance: 10, pos: [5.4, 3.2, -1.6] },
+    { type: 'point', color: 0xf2f4ea, intensity: 18, distance: 9, pos: [5.0, 3.2, 3.6] },
+    { type: 'point', color: 0x7a8aff, intensity: 5, distance: 4, pos: [-7.8, 1.5, -2.7] },
+    { type: 'point', color: 0xffe0a0, intensity: 4, distance: 3.5, pos: [2.45, 1.3, -4.9] },
+    // os toldos e a placa da esquina
+    { type: 'point', color: 0xffb860, intensity: 14, distance: 8, pos: [-4.0, 2.5, 7.6] },
+    { type: 'point', color: 0xffb860, intensity: 12, distance: 8, pos: [3.0, 2.5, 7.6] },
+    { type: 'point', color: 0xffb860, intensity: 12, distance: 8, pos: [10.6, 2.5, -2.0] },
+    { type: 'point', color: 0xffc070, intensity: 12, distance: 7, pos: [9.4, 3.3, 6.4] },
+    // postes da rua e a viela
+    { type: 'point', color: 0xffc070, intensity: 40, distance: 18, pos: [11.1, 5.9, 10.6] },
+    { type: 'point', color: 0xffc070, intensity: 34, distance: 17, pos: [-8, 5.2, 19.8] },
+    { type: 'point', color: 0xffc070, intensity: 34, distance: 17, pos: [-28, 5.2, 19.8] },
+    { type: 'point', color: 0xffc070, intensity: 32, distance: 17, pos: [22.6, 5.2, -8] },
+    { type: 'point', color: 0xffc070, intensity: 30, distance: 17, pos: [22.6, 5.2, -24] },
+    { type: 'point', color: 0xffd090, intensity: 9, distance: 8, pos: [-9.8, 2.9, -4.0] }, // viela
+    { type: 'dir', color: 0x8ea0d0, intensity: 0.95, pos: [14, 24, 22], shadow: true, area: 34 },
   ],
   particles: { color: 0xffe0a0, count: 60, area: 16, height: 3.4, rise: 0.05, drift: 0.3, size: 0.03, opacity: 0.5, center: [0, 0, 0] }, // poeira na luz
   camera: {
-    rect: { minX: -31, maxX: 31, minZ: -7, maxZ: 33 },
+    rect: { minX: -31, maxX: 29, minZ: -29, maxZ: 25 },
     maxY: 8.5,
     // dentro do salão: câmera presa no salão e abaixo do teto
     interior: { when: { minX: -9, maxX: 9, minZ: -6, maxZ: 5.6 }, rect: { minX: -8.6, maxX: 8.6, minZ: -5.6, maxZ: 5.7 }, maxY: 3.25 },

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.28.0';
+export const VERSION = '5.29.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.29.0',
+    date: '2026-11-19',
+    title: 'O Suvaco de Hexatombe',
+    items: [
+      'BAR SUVACO SECO REFEITO fiel a Hexatombe: o sobrado de esquina com o térreo de tijolo, o andar de cima vermelho com janelas brancas e ar-condicionado, o telhado de barro e a QUINA chanfrada com a placa de madeira SUVACO SECO (com o crânio de chifres), o painel branco e a floreira.',
+      'Agora são TRÊS PORTAS (duas na rua principal e uma na rua lateral), TOLDOS nas duas calçadas com mesas amarelas e vermelhas, o poste com a fiação, a placa das ruas (Henrique L. e Felipe L.) e o hidrante. Dá para lutar no salão, nas duas calçadas, na esquina, nas ruas e na VIELA ao lado.',
+      'O salão como na série: balcão de madeira com a vitrine de salgados e três prateleiras de garrafas na parede de azulejo, alvo de dardos, a GELADEIRA AMARELA de volta (a entrada secreta, com o teclado numérico), engradados coloridos, cadeiras empilhadas, bebedouro, a sinuca na parede de tijolo com o quadro verde, a pilastra com a TV, o fliperama, a janela gradeada, panfletos de bandas e mesas de plástico amarelas e vermelhas.',
+      'Na viela: o anúncio da Construtora Opspor e o cartaz de DESAPARECIDO do Caíto Rocha, a caçamba e os sacos de lixo.',
+      'Corrigido: os prédios vizinhos não entram mais no bar nem uns nos outros (a vizinhança foi toda refeita com a planta medida), e a placa agora diz SUVACO, sem cedilha.',
+    ],
+  },
   {
     v: '5.28.0',
     date: '2026-11-19',

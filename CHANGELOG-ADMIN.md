@@ -1,5 +1,19 @@
 # Registro administrativo de alterações
 
+## v5.29.0 — O Suvaco de Hexatombe
+
+- Versão: `VERSION` 5.28.0 → **5.29.0**. Data: 2026-11-19.
+- Dono: "rever o mapa do suvaco seco por completo, arrumar os bugs, tem predios se sobrepondo e predio dentro do suvaco
+  seco, sem contar que a geladeira foi removida … quero que busque referencias em hexatombe e refaça esse mapa na
+  mesma ideia de jogar dentro e fora do bar, mas dessa vez fiel ao original".
+- Referências: ep. 2 de Hexatombe (37:10–39:15: a rua, a fachada e o salão) e os renders do modelo 3D oficial na wiki
+  (Base da Ordo Realitas). PROPOSTA onde as imagens não mostram: as medidas do salão, o lado da viela, os prédios em
+  volta, os nomes nos panfletos.
+- Testado no navegador: a fachada e o salão vistos de várias câmeras, a câmera da luta na calçada, a colisão nas três
+  portas, na viela e nas duas ruas.
+- `npm test`, `npm run check`, `vite build` (em outra pasta: `dist/fx` no disco E: dá "arquivo corrompido e
+  ilegível") e `npm run moves` ok.
+
 ## v5.28.0 — Febre do Ouro
 
 - Versão: `VERSION` 5.27.2 → **5.28.0**. Data: 2026-11-19.

@@ -55,6 +55,28 @@ function bricks(g, s, { base, mortar, rows = 8, cols = 4, vary = 18, dirt = 0.2 
   }
 }
 
+function flyers(titles) {
+  return tex(512, 1, (g, s) => {
+    g.fillStyle = '#d8d4ca'; g.fillRect(0, 0, s, s);
+    const bg = ['#141414', '#b01818', '#e8d020', '#1a3aa0', '#f0ece0', '#2a7a3a', '#e85a1a'];
+    for (let i = 0; i < 14; i++) {
+      const w = rnd(90, 150), h = rnd(120, 190);
+      const x = rnd(-20, s - w + 20), y = rnd(-20, s - h + 20);
+      g.save();
+      g.translate(x + w / 2, y + h / 2); g.rotate(rnd(-0.12, 0.12));
+      const c = bg[i % bg.length];
+      g.fillStyle = c; g.fillRect(-w / 2, -h / 2, w, h);
+      g.fillStyle = c === '#f0ece0' || c === '#e8d020' ? '#141414' : '#f6f0e0';
+      g.font = `bold ${Math.round(w / 7)}px Impact, Arial, sans-serif`; g.textAlign = 'center';
+      g.fillText(titles[i % titles.length], 0, -h / 6, w - 10);
+      g.font = `${Math.round(w / 11)}px Arial, sans-serif`;
+      g.fillText('ao vivo', 0, h / 6, w - 10);
+      g.restore();
+    }
+    noise(g, s, ['#000', '#fff'], 1500, [1, 3], 0.2);
+  });
+}
+
 export const ARENA_TEXTURES = {
   // ---------------- comuns
   grass_dry: () => tex(256, 3, (g, s) => {
@@ -229,19 +251,24 @@ export const ARENA_TEXTURES = {
     g.strokeStyle = 'rgba(40,20,10,0.4)'; g.lineWidth = 3;
     for (let i = 0; i < 40; i++) { const y = Math.random() * s; g.beginPath(); g.moveTo(0, y); g.lineTo(W, y + rnd(-6, 6)); g.stroke(); }
     g.strokeStyle = '#3a2010'; g.lineWidth = 18; g.strokeRect(9, 9, W - 18, s - 18);
-    // dois galos estilizados
-    g.fillStyle = '#e8c890';
-    for (const x of [W / 2 - 70, W / 2 + 70]) {
-      const d = x < W / 2 ? 1 : -1;
-      g.beginPath(); g.ellipse(x, 110, 46, 34, 0, 0, Math.PI * 2); g.fill();
-      g.beginPath(); g.ellipse(x + d * 38, 70, 16, 18, 0, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#c03a20'; g.beginPath(); g.arc(x + d * 38, 50, 9, 0, Math.PI * 2); g.fill(); g.fillStyle = '#e8c890';
+    // o crânio com chifres (o enfeite de cima da placa do bar de Hexatombe) dos dois lados
+    for (const x of [150, W - 150]) {
+      g.fillStyle = '#e8dcc0';
+      g.beginPath(); g.ellipse(x, 200, 62, 70, 0, 0, Math.PI * 2); g.fill();
+      g.fillRect(x - 36, 240, 72, 56);
+      for (const d of [-1, 1]) {
+        g.beginPath(); g.moveTo(x + d * 40, 160); g.quadraticCurveTo(x + d * 120, 120, x + d * 110, 40); g.quadraticCurveTo(x + d * 90, 110, x + d * 30, 140); g.fill();
+      }
+      g.fillStyle = '#2a140a';
+      for (const d of [-1, 1]) { g.beginPath(); g.ellipse(x + d * 24, 200, 16, 20, 0, 0, Math.PI * 2); g.fill(); }
+      g.beginPath(); g.moveTo(x, 225); g.lineTo(x - 9, 248); g.lineTo(x + 9, 248); g.fill();
+      for (let k = -2; k <= 2; k++) g.fillRect(x + k * 13 - 3, 270, 6, 22);
     }
     // título: maior tamanho que cabe com folga nas bordas
-    const title = 'SUVAÇO SECO';
+    const title = 'SUVACO SECO';
     let size = 230;
     g.font = `bold ${size}px Georgia, serif`;
-    while (g.measureText(title).width > W - 140 && size > 40) { size -= 6; g.font = `bold ${size}px Georgia, serif`; }
+    while (g.measureText(title).width > W - 560 && size > 40) { size -= 6; g.font = `bold ${size}px Georgia, serif`; }
     g.textAlign = 'center';
     g.textBaseline = 'alphabetic';
     g.fillStyle = '#2a140a'; g.fillText(title, W / 2 + 6, 352 + 6);
@@ -250,6 +277,106 @@ export const ARENA_TEXTURES = {
     g.fillText('bar & sinuca', W / 2, 452);
     g.restore();
   }),
+  // ---- o Suvaco Seco de Hexatombe (v5.29)
+  brick_bar: () => tex(512, 1.4, (g, s) => bricks(g, s, { base: [140, 64, 44], mortar: '#6a5a50', rows: 18, cols: 6, vary: 30, dirt: 0.2 })),
+  paint_wall: () => tex(256, 3, (g, s) => {
+    g.fillStyle = '#cfcbc2'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#a8a49a', '#e6e2da', '#8a8478'], 2600, [2, 7], 0.18);
+    const grd = g.createLinearGradient(0, s, 0, s * 0.6);
+    grd.addColorStop(0, 'rgba(60,50,40,0.25)'); grd.addColorStop(1, 'rgba(60,50,40,0)');
+    g.fillStyle = grd; g.fillRect(0, 0, s, s);
+  }),
+  plaster_red: () => tex(256, 3, (g, s) => {
+    g.fillStyle = '#962a22'; g.fillRect(0, 0, s, s);
+    noise(g, s, ['#6a1a14', '#b8443a', '#4a1410'], 3000, [2, 8], 0.22);
+    g.fillStyle = 'rgba(30,10,8,0.18)';
+    for (let i = 0; i < 6; i++) g.fillRect(rnd(0, s), 0, rnd(2, 5), rnd(s * 0.2, s * 0.7));
+  }),
+  plaster_wall: () => tex(256, 3, (g, s) => { g.fillStyle = '#7a6e62'; g.fillRect(0, 0, s, s); noise(g, s, ['#5a5046', '#9a8e80'], 2600, [2, 8], 0.22); }),
+  plaster_wall2: () => tex(256, 3, (g, s) => { g.fillStyle = '#5e6670'; g.fillRect(0, 0, s, s); noise(g, s, ['#3e4650', '#7e8690'], 2600, [2, 8], 0.22); }),
+  plaster_wall3: () => tex(256, 3, (g, s) => { g.fillStyle = '#8a7a5a'; g.fillRect(0, 0, s, s); noise(g, s, ['#6a5a3a', '#aa9a7a'], 2600, [2, 8], 0.22); }),
+  awning_canvas: () => tex(128, 1.2, (g, s) => {
+    g.fillStyle = '#d6b47c'; g.fillRect(0, 0, s, s);
+    g.fillStyle = 'rgba(120,80,30,0.18)';
+    for (let x = 0; x < s; x += 32) g.fillRect(x, 0, 16, s);
+    noise(g, s, ['#5a4020', '#fff'], 600, [1, 3], 0.2);
+  }),
+  // panfletos de bandas colados uns sobre os outros (paredes brancas do bar em Hexatombe)
+  flyers_bands: () => flyers(['LOS CAÍDOS', 'SÁBADO 22H', 'NOITE DO ROCK', 'MURO NEGRO', 'SHOW GRÁTIS', 'VÉU']),
+  flyers_bands2: () => flyers(['SAMBA DE SEXTA', 'TRIBUTO', 'OS AVULSOS', 'KARAOKÊ', 'DOMINGO 18H', 'ACÚSTICO']),
+  poster_opspor: () => tex(512, 1, (g, s) => {
+    g.fillStyle = '#f0ece2'; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#1a3a6a'; g.fillRect(0, 0, s, s * 0.3);
+    g.fillStyle = '#fff'; g.font = 'bold 76px Arial, sans-serif'; g.textAlign = 'center';
+    g.fillText('OPSPOR', s / 2, 110);
+    g.font = '30px Arial, sans-serif'; g.fillText('CONSTRUTORA', s / 2, 145);
+    // o prédio do anúncio
+    g.fillStyle = '#8a9ab0';
+    g.fillRect(s * 0.32, s * 0.36, s * 0.36, s * 0.46);
+    g.fillStyle = '#d8e4f0';
+    for (let r = 0; r < 7; r++) for (let c = 0; c < 4; c++) g.fillRect(s * 0.35 + c * 42, s * 0.39 + r * 32, 26, 18);
+    g.fillStyle = '#1a3a6a'; g.font = 'bold 34px Arial, sans-serif';
+    g.fillText('O FUTURO DO BAIRRO', s / 2, s * 0.9);
+    g.font = '22px Arial, sans-serif'; g.fillText('lançamento em breve', s / 2, s * 0.96);
+    noise(g, s, ['#5a4a30'], 1400, [1, 4], 0.3);
+  }),
+  poster_missing: () => tex(256, 1, (g, s) => {
+    g.fillStyle = '#ece6d4'; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#b01818'; g.font = 'bold 34px Arial, sans-serif'; g.textAlign = 'center';
+    g.fillText('DESAPARECIDO', s / 2, 40);
+    g.fillStyle = '#6a6458'; g.fillRect(s * 0.25, 56, s * 0.5, 110);
+    g.fillStyle = '#3a342c'; g.beginPath(); g.ellipse(s / 2, 100, 26, 32, 0, 0, Math.PI * 2); g.fill();
+    g.fillRect(s / 2 - 44, 135, 88, 31);
+    g.fillStyle = '#141414'; g.font = 'bold 26px Arial, sans-serif'; g.fillText('CAÍTO ROCHA', s / 2, 196);
+    g.font = '15px Arial, sans-serif'; g.fillText('visto pela última vez nesta rua', s / 2, 220);
+    g.fillText('qualquer informação ligue', s / 2, 240);
+    noise(g, s, ['#5a4a30'], 900, [1, 3], 0.3);
+  }),
+  // a geladeira amarela de vidro: garrafas iluminadas por dentro
+  fridge_bottles: () => tex(256, 1, (g, s) => {
+    g.fillStyle = '#e8e4d0'; g.fillRect(0, 0, s, s);
+    const cols = ['#c8221c', '#2a7a2a', '#e8a020', '#3a5ac8', '#8a2a8a', '#d8d0a0'];
+    for (let r = 0; r < 5; r++) {
+      const y = 12 + r * 49;
+      g.fillStyle = '#9a968a'; g.fillRect(0, y + 40, s, 4);
+      for (let k = 0; k < 10; k++) {
+        g.fillStyle = cols[(r * 3 + k) % cols.length];
+        g.fillRect(8 + k * 24, y + 8, 14, 32); g.fillRect(12 + k * 24, y, 6, 10);
+      }
+    }
+    g.fillStyle = 'rgba(255,255,255,0.25)'; g.fillRect(s * 0.1, 0, s * 0.08, s);
+  }, { glow: 0.55 }),
+  keypad: () => tex(64, 1, (g, s) => {
+    g.fillStyle = '#2a2a2c'; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#7dff9a'; g.fillRect(10, 5, 44, 10);
+    g.fillStyle = '#c8c8c0';
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) g.fillRect(12 + c * 15, 20 + r * 11, 10, 8);
+  }),
+  arcade_tetris: () => tex(256, 1, (g, s) => {
+    g.fillStyle = '#060814'; g.fillRect(0, 0, s, s);
+    const C = ['#30e0f0', '#f0e030', '#c040f0', '#40f060', '#f04040', '#3060f0', '#f0a030'];
+    const cell = 16;
+    g.strokeStyle = '#4a4a70'; g.strokeRect(70, 8, cell * 7 + 2, s - 16);
+    for (let r = 0; r < 14; r++) {
+      if (r < 6) continue;
+      for (let c = 0; c < 7; c++) {
+        if (r < 10 && Math.random() < 0.5) continue;
+        if (r >= 10 && c === 3) continue;
+        g.fillStyle = C[(r + c * 2) % C.length]; g.fillRect(71 + c * cell, 9 + r * cell + 8, cell - 1, cell - 1);
+      }
+    }
+    g.fillStyle = C[2]; for (const [c, r] of [[2, 1], [3, 1], [4, 1], [3, 2]]) g.fillRect(71 + c * cell, 9 + r * cell + 8, cell - 1, cell - 1);
+    g.fillStyle = '#f0f0ff'; g.font = 'bold 18px monospace';
+    g.fillText('SCORE', 196, 40); g.fillText('0413', 196, 64);
+  }, { glow: 1.4 }),
+  tv_screen: () => tex(256, 1, (g, s) => {
+    const grd = g.createLinearGradient(0, 0, 0, s);
+    grd.addColorStop(0, '#2a6ac8'); grd.addColorStop(0.55, '#7ac0f0'); grd.addColorStop(0.56, '#2a8a3a'); grd.addColorStop(1, '#1a5a24');
+    g.fillStyle = grd; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#f4f4f4'; g.beginPath(); g.arc(s * 0.6, s * 0.75, 8, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(0,0,0,0.6)'; g.fillRect(0, s * 0.86, s, s * 0.14);
+    g.fillStyle = '#fff'; g.font = 'bold 22px Arial, sans-serif'; g.fillText('SÃO PAULO 1 x 0', 12, s * 0.95);
+  }, { glow: 1.0 }),
   crate_red: () => crate('#b82a24'),
   crate_blue: () => crate('#2a4ab0'),
   crate_yellow: () => crate('#d8a624'),

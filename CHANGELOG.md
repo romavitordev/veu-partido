@@ -1,5 +1,24 @@
 # Changelog
 
+## v5.29.0 — O Suvaco de Hexatombe
+
+### Mudado
+- `tools/blender/arena_suvaco.py` reescrito: salão x[-9,9] z[-6,6] com a quina chanfrada em (9,6), três portas
+  (frente x[-2,6,0] e x[4,6,8], lateral z[1,3,8]), andar de cima, telhado, toldos, ruas em cruz (principal z 10,5–20,5,
+  lateral x 13,5–23,5), viela x[-12,5,-9,25]; a vizinhança é feita com caixas medidas (`bldg`), sem as peças de prédio
+  do Kenney que se sobrepunham. `public/arenas/suvaco.glb` regerado.
+- `src/arena/configs.js` SUVACO: retângulos andáveis novos (salão, três portas, as duas ruas, a viela), luzes
+  (fluorescentes, fliperama, geladeira, toldos, placa, postes, viela), `camera.rect` maior.
+- `src/arena/index.js`: descrição e miniatura (a esquina).
+
+### Adicionado
+- Texturas em `src/arena/arenaTextures.js`: `brick_bar`, `paint_wall`, `plaster_red`, `plaster_wall(2,3)`,
+  `awning_canvas`, `flyers_bands(2)` (helper `flyers`), `poster_opspor`, `poster_missing`, `fridge_bottles`, `keypad`,
+  `arcade_tetris`, `tv_screen`.
+
+### Corrigido
+- `sign_suvaco`: "SUVACO SECO" (estava com cedilha) e o crânio com chifres no lugar dos galos.
+
 ## v5.28.0 — Febre do Ouro
 
 ### Adicionado

@@ -369,7 +369,7 @@ baixado sem o OK do dono.
 - [x] Coop: caído se arrastando, resgate segurando o botão (mão + aura), caixão e reviver pago pela metade — v5.28.0.
 
 ## PRÓXIMO (antes do personagem novo) — Suvaco Seco refeito fiel à série (dono, 2026-11-19)
-- [ ] Rever o mapa do Suvaco por completo: prédios se sobrepondo, prédio DENTRO do bar, a GELADEIRA sumiu (a entrada
+- [x] (v5.29.0) Rever o mapa do Suvaco por completo: prédios se sobrepondo, prédio DENTRO do bar, a GELADEIRA sumiu (a entrada
       da base é por ela). Buscar referências do bar em HEXATOMBE e refazer o mapa fiel ao original, mantendo a luta
       dentro e fora do bar (salão + calçada/rua). Depois: o personagem novo (sugestão: Elizabeth Webber, fecha a Força D).
 

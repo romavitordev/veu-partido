@@ -2,6 +2,13 @@
 
 Este arquivo reúne as mesmas novidades exibidas no menu do jogo.
 
+## v5.29.0 — O Suvaco de Hexatombe
+- BAR SUVACO SECO REFEITO fiel a Hexatombe: o sobrado de esquina com o térreo de tijolo, o andar de cima vermelho com janelas brancas e ar-condicionado, o telhado de barro e a QUINA chanfrada com a placa de madeira SUVACO SECO (com o crânio de chifres), o painel branco e a floreira.
+- Agora são TRÊS PORTAS (duas na rua principal e uma na rua lateral), TOLDOS nas duas calçadas com mesas amarelas e vermelhas, o poste com a fiação, a placa das ruas (Henrique L. e Felipe L.) e o hidrante. Dá para lutar no salão, nas duas calçadas, na esquina, nas ruas e na VIELA ao lado.
+- O salão como na série: balcão de madeira com a vitrine de salgados e três prateleiras de garrafas na parede de azulejo, alvo de dardos, a GELADEIRA AMARELA de volta (a entrada secreta, com o teclado numérico), engradados coloridos, cadeiras empilhadas, bebedouro, a sinuca na parede de tijolo com o quadro verde, a pilastra com a TV, o fliperama, a janela gradeada, panfletos de bandas e mesas de plástico amarelas e vermelhas.
+- Na viela: o anúncio da Construtora Opspor e o cartaz de DESAPARECIDO do Caíto Rocha, a caçamba e os sacos de lixo.
+- Corrigido: os prédios vizinhos não entram mais no bar nem uns nos outros (a vizinhança foi toda refeita com a planta medida), e a placa agora diz SUVACO, sem cedilha.
+
 ## v5.28.0 — Febre do Ouro
 - OUTRO LADO — FEBRE DO OURO: bem rara, sai de um baú. Uma barra de 30 s vai esvaziando; cada inimigo derrotado devolve 3 s. Enquanto dura, as moedas valem o dobro e todo abate solta moedas. Moedas de ouro caem na tela e as bordas ficam douradas.
 - COOP: quem cai fica no chão MORRENDO e pode se arrastar devagar até o amigo. O amigo tem 25 s para chegar e SEGURAR o botão de interagir: dá a mão, levanta o caído e uma aura empurra os inimigos em volta.
