@@ -566,6 +566,7 @@ export class Fighter {
   }
 
   startCharging() {
+    if (this.runDir) { this.setState('idle'); return; } // no corredor não carrega (ver handleCommands)
     this.chargeMoving = false;
     if (this.state !== 'charging') {
       this.setState('charging');
@@ -1142,6 +1143,7 @@ export class Fighter {
   // kind 'long': △ + A — persegue o adversário
   // kind 'chase': × no meio do combo — persegue o alvo (inclusive no ar)
   startDash(kind) {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     const cfg = COMBAT.dash[kind === 'chase' ? 'short' : kind];
     const key = 'dash';
     if (this.cooldowns[key] > 0 && kind !== 'chase') return;
@@ -1390,11 +1392,21 @@ export class Fighter {
     return this.camBasis || this.world.cameraBasis; // coop local do Outro Lado: o P2 anda pela câmera dele
   }
 
+  // o "lado" do corredor: perpendicular à corrida, apontando para a direita da câmera (para o ← → bater com a tela)
+  runSide(out) {
+    const D = this.runDir;
+    const len = Math.hypot(D.x, D.z) || 1;
+    out.set(-D.z / len, 0, D.x / len);
+    const r = this.moveBasis().right;
+    if (out.x * r.x + out.z * r.z < 0) out.negate();
+    return out;
+  }
+
   moveInputWorld(out) {
     const b = this.moveBasis();
     out.set(0, 0, 0);
     // CORRIDA AUTOMÁTICA (o corredor das lamparinas, pve/corredor.js): sempre para a frente; o comando só desvia de lado
-    if (this.runDir) return out.copy(this.runDir).addScaledVector(b.right, this.input.moveX * 0.9);
+    if (this.runDir) return out.copy(this.runDir).addScaledVector(this.runSide(v2), this.input.moveX * 0.9);
     out.addScaledVector(b.right, this.input.moveX);
     out.addScaledVector(b.forward, this.input.moveY);
     // Controle Mental (Gal): o corpo obedece ao contrário
@@ -1464,11 +1476,13 @@ export class Fighter {
     if (this.runDir) {
       // CORRIDA AUTOMÁTICA: a frente sempre cheia e o desvio de lado RÁPIDO por cima (antes a soma era normalizada e o
       // lado saía a ~2/3 da velocidade; dono: "a movimentação lateral da parte 2 está muito lenta")
-      const R = this.moveBasis().right;
-      const rl = Math.hypot(R.x, R.z) || 1;
+      // o lado é PERPENDICULAR ao caminho (com o sentido da direita da câmera): a direita da câmera, que não fica
+      // alinhada ao caminho (no coop, a câmera de cada metade gira), fazia o desvio acelerar ou frear a corrida (dono,
+      // 2026-11-21: "da pra andar pra frente e trás, oque nao poderia")
+      const R = this.runSide(v2);
       const side = this.input.moveX * speed * RUN_SIDE;
-      this.vel.x = this.runDir.x * speed + (R.x / rl) * side;
-      this.vel.z = this.runDir.z * speed + (R.z / rl) * side;
+      this.vel.x = this.runDir.x * speed + R.x * side;
+      this.vel.z = this.runDir.z * speed + R.z * side;
     } else if (mag > 0.05) {
       dir.normalize();
       this.vel.x = dir.x * speed * mag;
@@ -1734,6 +1748,9 @@ export class Fighter {
 
   // ------------------------------------------------ defesa (L1/LB)
   startBlock() {
+    // no corredor não defende: a saída da esquiva segurando R2 caía na defesa e o R2 + △/× soltava habilidades (dono,
+    // 2026-11-21: "no coop ainda da pra usar habilidades")
+    if (this.runDir) { this.setState('idle'); return; }
     // GUARDA PUXADA (Gancho do Khopesh da Cascadia): por um instante não dá para defender
     const ng = this.buffs.find((b) => b.noGuard);
     if (ng) { this.notify(ng.lockMsg || 'SEM GUARDA'); return; }
@@ -2480,6 +2497,7 @@ export class Fighter {
 
   // ------------------------------------------------ ataque principal (□/X)
   tryRanged() {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     if (this.meleeLocked()) return;
     const base = this.getRangedAbility();
     if (!base) {
@@ -2909,6 +2927,7 @@ export class Fighter {
 
   // ------------------------------------------------ Defesa + ○: agarrão (não defensável, só esquivável)
   tryGrab() {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     const G = { ...COMBAT.grab, ...(this.def.grab || {}) };
     if (this.cooldowns.grab > 0 || !this.onGround) {
       this.setState('idle');
@@ -3096,6 +3115,7 @@ export class Fighter {
   }
 
   useAbility(a) {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     if (this.meleeLocked()) return;
     // Templo do Ódio (cânone): sob o ódio não se conjura ritual
     if (a.ritual && !a.hatredOk && this.buffs.some((b) => b.noRituals)) { this.notify('ÓDIO: NÃO CONJURA RITUAIS'); return; }
@@ -3183,6 +3203,7 @@ export class Fighter {
   // (combat/teamSpecials.js — pegou, conta como o especial do líder: recarga e uso). Sem especial disponível, avisa e não
   // gasta a barra.
   tryTeamSpecial() {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     if (!this.teamReady()) { this.trySpecial(); return; }
     if (!this.specialAvailable()) { this.trySpecial(); return; } // o próprio trySpecial diz o motivo
     const before = this.teamGauge;
@@ -3192,6 +3213,7 @@ export class Fighter {
   }
 
   trySpecial() {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     const sp = this.def.special;
     if (!sp) {
       this.notify('ESPECIAL INDISPONÍVEL');
@@ -3469,6 +3491,7 @@ export class Fighter {
   }
 
   startAwakening() {
+    if (this.runDir) return; // O CORREDOR DAS LAMPARINAS: só correr de lado e esquivar (ver handleCommands)
     const aw = this.def.awakening;
     const impl = SPECIALS[aw.type];
     this.overcharge = 0;

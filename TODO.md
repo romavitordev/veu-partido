@@ -63,7 +63,7 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   > subway surfers."
   - [x] **Parte 1 — a praça da Chama de Proteção** (v5.22.0, fase `samhain` "Proteja Treb Ciach"; 6/7/8/9/10 ondas do Fácil ao Aniquilação, a última é a TEMPESTADE com 9–17 Assombrações de uma vez; depois da tempestade vem o corredor) (o `treb_ciach` atual): X ondas em volta da fogueira; no fim
     começa a trovejar forte (os raios do motor, v4.48.1) e vem uma leva enorme de Assombrações de uma vez.
-  - [ ] **Cutscene**: a massa de Assombrações chegando e o jogador fugindo para o caminho (como às 3h28–3h31 do ep. 3).
+  - [x] **Cutscene** (feita: `hordeScene` em `pve/samhain.js`, a horda fecha um arco e o personagem foge pela brecha do corredor): a massa de Assombrações chegando e o jogador fugindo para o caminho (como às 3h28–3h31 do ep. 3).
   - [x] **Parte 2 — o CORREDOR DAS LAMPARINAS** (v5.22.0: `pve/corredor.js`; corrida automática `Fighter.runDir`, 35/45/55/62/70 s do Fácil ao Aniquilação, avisos vermelhos no chão com o bote das Assombrações dos lados ou do alto, 10–24% da vida por acerto, a esquiva passa; o cenário procedural provisório — PROPOSTA refazer no Blender MCP; vencido o corredor começa a Árvore) (estilo corrida sem fim: o personagem corre sozinho para a frente e o
     jogador desvia de lado/pula/abaixa): um caminho de terra com lamparinas da Chama de Proteção dos dois lados; as
     Assombrações atacam de trás e dos lados com golpes que dão MUITO dano; aguentar por um tempo até chegar na árvore.
@@ -135,7 +135,9 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       a lamparina fraca pisca só em amarelo.
     - [x] (v5.27.0) Conferido: os especiais nos bichos pelo teclado; o Racha e os carros nas arenas (bateria src/dev/vehicleBattery.js; Van/Direção Avançada sem pista livre corrigidas).
     - [x] (v5.27.0) Suvaco Seco: cadeiras de bar brancas viradas para a mesa; mesas brancas e de cervejaria.
-    - [ ] Conferir com controle humano: pegar brasas no corredor e a janela do RESGATE na Árvore.
+    - [x] Conferido com controle humano pelo dono (2026-11-21): brasas no corredor e o RESGATE na Árvore funcionam.
+    - [x] (v5.45.1) Corredor no COOP (dono, 2026-11-21: "Fica um pouco ruim no coop, ainda da pra usar habilidades, da pra andar pra
+      frente e trás, oque nao poderia"): no coop o corredor ainda deixa usar habilidades e andar para frente e para trás. O lado agora é perpendicular ao caminho e defesa, carga, dash, tiros, habilidades e especiais ficam travados no corredor (`Fighter.runSide` e as travas por `runDir`).
     - [ ] A árvore em chamas no fim (cânone, 4h03); o Sino Amaldiçoado e o jarro de abelhas como itens.
     - [ ] Gwayne e Eileen como modelos (hoje o mensageiro é um aldeão genérico de capuz).
   - [x] **Dificuldade** (v5.22.0: 6→10 ondas na vila, 35→70 s no corredor, 3→7 ondas na Árvore, mais fortes e mais dano): quanto mais alta, mais ondas na parte 1, mais tempo no corredor, mais ondas na árvore e bichos
@@ -178,7 +180,7 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   ganhado essa mesma fase no normal, assim por diante"): Fácil e Normal sempre abertos; cada uma acima abre vencendo
   a fase na de baixo; a próxima fase abre com qualquer vitória e começa só com Fácil e Normal.
 - [x] **Nome da fase** (v5.20.0): "Proteja a Ilha de Tipora" (dono, 2026-11-19).
-- [~] **Tipora mais fiel** (dono, 2026-11-19: "Faltou as ondas de porcos infectados, cobras, e lobos. Ondas onde tem os 3
+- [x] **Tipora mais fiel** (dono, 2026-11-19: "Faltou as ondas de porcos infectados, cobras, e lobos. Ondas onde tem os 3
   tipos de infectados. Isso altera conforme a dificuldade selecionada" / "Amigo imaginario vai ter que ser atualizado na
   forma boss para ser mais fiel ao canone, na sua forma transformada pode ser TODO MUNDO VAI MORRER e ele fica com
   raiva, invoca esses zumbis de tinta e as cobras juntos aos outros animais"):
@@ -199,13 +201,13 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
     ENORMES saírem do manto (mangas rasgadas, antebraços com tendões, mãos e garras maiores), mais tentáculos e alguns
     erguidos; `stats.size` 1,4. O chefe ×1,2 dele (×1,35 na fúria); a fúria segue o "Frenesi de Sangue" da wiki (mais
     rápido, agressivo e resistente).
-  - [ ] Conferir jogando a fase inteira (dono) e ajustar os números; lançada a v5.21.0; falta só o dono jogar a fase inteira e pedir ajustes.
+  - [x] Conferido jogando a fase inteira (dono, 2026-11-21: "está bom"); sem ajustes.
 
 ## Tela de carregamento e o jogo que não abria (pedido do dono, 2026-11-18)
 
 - [x] **Tela própria de carregamento** (v5.2.0): barra real, %, MB/arquivos, dicas, aviso de conexão parada, erro com TENTAR DE NOVO (também WebGL e script).
 - [x] **Não ficar preso no carregamento** (v5.2.0): fila de downloads com tempo limite e novas tentativas; erro depois dos downloads agora aparece.
-- [ ] **Confirmar no PC do amigo** se abre; se não, pedir a mensagem que a tela mostra agora.
+- [x] **Confirmar no PC do amigo** se abre (dono, 2026-11-21: "Acho que agora abre"); se voltar a falhar, pedir a mensagem da tela.
 - [x] **Abrir o menu antes de baixar tudo** (v5.6.0): o menu abre logo, os downloads seguem por trás com o selo no alto; um modo escolhido antes do fim espera e abre sozinho (VOLTAR cancela).
 - [x] **Versão nova não baixa tudo de novo** (v5.7.0): o app instalado guardava os ~62 MB num cache com a versão no nome e apagava tudo a cada versão; agora guarda por impressão do arquivo e só troca o que mudou.
 - [ ] **Baixar só os lutadores escolhidos** (próximo passo): a seleção ainda espera todos os modelos porque os retratos saem dos modelos 3D; precisa de retratos prontos em imagem e download por personagem/cenário.
@@ -350,14 +352,15 @@ baixado sem o OK do dono.
 - [ ] Netcode ROLLBACK completo (decisão do dono, 2026-11-15: depois). Precisa de estado da luta serializável: hoje 126
       habilidades e 165 `Timeline` guardam estado em closures. Caminho: estado das ações em dados (fase, tempo, alvo) e
       efeitos visuais/sonoros fora da simulação, para refazer quadros sem repetir som e partícula.
-- [ ] Jogar uma partida online real entre dois computadores com o atraso adaptativo (o dono).
+- [ ] Jogar uma partida online real entre dois computadores com o atraso adaptativo (o dono). **2026-11-21:** pela
+      internet ainda não dá para jogar, só pela LAN; provavelmente depende do servidor de sinalização/TURN do item abaixo.
 - [ ] Servidor próprio de sinalização (PeerServer) e TURN para quem está atrás de NAT restrito. **Precisa do dono:** onde hospedar (um servidor ou serviço pago/grátis) e a conta.
 - [x] Pós-processamento (v4.48.0): bloom, vinheta com a cor do momento e aberração nos impactos (`src/render/postfx.js`); desligado na qualidade baixa.
 - [x] three-mesh-bvh (v4.48.1): raios contra o cenário ~200× mais rápidos (câmera contra blocos, transparência das paredes). A linha de visão do Espreitador usa `blocksPoint` (colisores), não raio: não precisou.
 - [x] Vibração do controle pelo peso do golpe (v4.49.0). Celular SEM vibração (decisão do dono, 2026-11-15).
-- [ ] Sentir a vibração num controle físico (o dono).
+- [x] Sentir a vibração num controle físico (o dono, 2026-11-21: funciona).
 - [x] Som 3D e eco por cenário (v4.50.0): StereoPanner pela posição na tela + volume pela distância; ConvolverNode com eco gerado na hora por cenário (`src/audio/acoustics.js`). Sem PannerNode/HRTF: o lado basta numa luta e custa menos.
-- [ ] Ouvir o som 3D e o eco com fone (o dono): o eco da Igreja e o lado dos golpes.
+- [x] Ouvir o som 3D e o eco com fone (o dono, 2026-11-21: funciona).
 - [x] Ragdoll no nocaute com Rapier determinístico (v4.51.0): `src/physics/ragdoll.js`, só visual (não mexe em posição/vida: o online não desincroniza), 11 cápsulas, joelho/cotovelo com limite, 0,06 ms por quadro. Carregado na primeira luta (1,65 MB gzip).
 - [ ] Destroços e objetos de cenário que quebram com o mesmo Rapier (o guia, item 9) — PROPOSTA, só se o dono quiser.
 - [ ] Bateria de balanceamento sem navegador (Node/Workers ou Playwright).
@@ -603,7 +606,7 @@ baixado sem o OK do dono.
 - [x] **Menus revistos:** Voltar à vida refeito; COMANDOS na pausa do Outro Lado consertado; tela do fim da fase (morte e vitória) com rota, blocos e recorde.
 - [x] Escudo da Degolificada furado pelo Vínculo de Sangue (dano direto agora respeita o escudo).
   - [x] Bateria da Torre e economia (v4.44.3, `phaseBattery`: ~320 s, 9–11 salas, ~25 moedas sem contar os baús).
-  - [ ] Jogar a rota inteira (o dono).
+  - [x] Jogar a rota inteira (o dono, 2026-11-21: sem problemas percebidos).
   - [x] Tirar o `hidden` (lançada na v4.42.0).
   - [ ] Polir os modelos da arena no Blender MCP (está em blocos).
 - [x] **Lista do dono (2026-11-14, 2ª):**
@@ -621,7 +624,7 @@ baixado sem o OK do dono.
   - [x] Bilu: rodeia e ataca pelas costas, foge depois.
   - [x] Balanço da Cindy contra o elenco: 18% → 50% (dealt 1,15 / taken 0,92).
   - [x] Tela de K.O. refeita (a faixa do especial ficava na frente).
-  - [ ] Números das cartas do kit numa tentativa inteira (o dono jogar).
+  - [x] Números das cartas do kit numa tentativa inteira (o dono, 2026-11-21: sem problemas percebidos).
 - [x] **Lançar o especial HORA DO SHOW! (PSIKOLERA)** (v5.9.0): Franco e Alê jogáveis, os cinco na coreografia (o
       solo de fogo do Franco e o transe de Alê entram antes da Última Nota), `min` 3, sem o `unreleased`.
 - [x] **Franco e Alê (PSIKOLERA)** — v5.9.0: o guitarrista (Guitarra Lança-Chamas, máscara de gás com tanque) e o

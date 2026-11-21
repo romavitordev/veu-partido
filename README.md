@@ -13,7 +13,7 @@ Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível,
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v5.45.0**.
+Versão atual do jogo: **v5.45.1**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 
@@ -71,7 +71,8 @@ npm run moves    # regenera HABILIDADES.md a partir dos dados dos personagens
 - **Substituição:** aperte L2 enquanto apanha para gastar uma carga, escapar do combo e desviar com um passo curto para o lado (para onde o direcional aponta), reaparecendo perto de onde estava — nunca nas costas do adversário.
 - **Câmera:** sempre travada no adversário. **L1 / R1** chamam as assistências na batalha em equipe.
 - Cada jogador lê teclado **e** controle ao mesmo tempo.
-- **Menus:** A/× (Pulo, Enter) confirma · B/○ (Ataque físico, Esc) volta.
+- **Menus:** A/× (Pulo, Enter) confirma · B/○ (Ataque físico, Esc) volta. Com o mouse, passar por uma opção a
+  destaca e o clique confirma (em todos os menus; na partida online o destaque só anda pelo controle/teclado).
 - **Fluxo:** Tela inicial → Batalha Solo / Batalha em Equipe (P1 VS P2, P1 VS CPU, CPU VS CPU), Tutorial ou Treinamento →
   Personagens (os dois confirmam) → **COMEÇAR** → **Configurações** (tempo 30/60/90/99/120/∞, dificuldade da CPU
   Fácil/Normal/Difícil/Muito Difícil/Super Difícil, rounds 1–3) → Cenário (com preview) → Carregamento → entrada dos lutadores com
@@ -95,6 +96,8 @@ npm run moves    # regenera HABILIDADES.md a partir dos dados dos personagens
   para a lista de salas). Quem cria a sala é o P1; cada um joga com o teclado do P1 (ou controle) do próprio
   computador. Os dois rodam a mesma luta, quadro a quadro; o canto da tela mostra os nomes, o ping e avisa quando está
   esperando o outro. Por enquanto só batalha solo (1 × 1).
+  **Hoje só a LAN funciona** (mesma rede ou Radmin): pela internet a conexão ainda não fecha; falta um servidor
+  próprio de sinalização/TURN (ver o TODO).
 - **Tutorial:** escolha um personagem e aprenda todos os golpes dele, passo a passo, contra um alvo parado: o cartão
   mostra o comando com as teclas do aparelho que você está usando e só avança quando você faz o golpe (a pausa pula
   um passo). Os comandos de cada ataque também aparecem sempre nos ícones da HUD.
@@ -113,7 +116,40 @@ npm run moves    # regenera HABILIDADES.md a partir dos dados dos personagens
 - **PAUSA → COMANDOS** mostra todos os golpes dos dois lutadores (a lista rola com ▲ ▼, roda do mouse ou dedo).
 - Teclas em `src/config/controls.js`. Nada no código usa tecla fixa.
 
+## Modos
+
+- **Batalha Solo / Batalha em Equipe:** P1 VS P2, P1 VS CPU ou CPU VS CPU (em equipe: líder + 2 assistências).
+- **Torre:** 8 torres de andares contra a CPU, cada uma aberta ao zerar a anterior, com o recorde de dificuldade.
+- **Torneio:** chave de 2 a 8 participantes (humanos ou CPU), solo ou em equipe, com as regras escolhidas.
+- **Outro Lado:** o modo PvE com tentativas (roguelite). Fases: Território do Espreitador, Território da
+  Degolificada, Proteja a Ilha de Tipora, Proteja Treb Ciach (a vila, o Corredor das Lamparinas e a Árvore Anciã),
+  Sertão do Quibungo e Território do Estrangeiro. Dificuldades do Fácil ao **Aniquilação** (cada uma abre vencendo a
+  de baixo). Cartas de melhoria a cada nível, fusões, achados nos baús, moedas para a loja/gacha e as melhorias
+  permanentes da Aghata. Joga-se sozinho, em dois no mesmo PC (tela dividida **lado a lado**: P1 à esquerda, P2 à
+  direita) ou online.
+- **Tutorial e Treinamento:** os golpes de cada personagem passo a passo e o alvo de treino.
+- **Explorar:** o olho no canto da tela inicial (L3 + R3) abre um voo livre pelos cenários.
+
 ## Elenco
+
+**70 lutadores em 10 equipes:**
+
+- **Ordo Realitas (16):** Arthur Cervero, Joui Jouki, Kaiser, Dante, Erin Parker, Aghata, Balu, Carina Leone,
+  Rubens Naluti, Beatrice Portinari, Fernando Carvalho, Tristan Monteiro, Ivete Beicur, Senhor Veríssimo, Cristopher,
+  Arnaldo Fritz.
+- **Escriptas (6):** Kian, Gal Sal, Nubi, Damir Lukic, Boris Lukic, Artemis.
+- **Os Cinco (6):** Xande, Guizo, Lírio, Dara, Chico, Morato.
+- **Mascarados (7):** Dalmo, Aguiar, Jae, Kemi, Labirinto, Henri, Juan.
+- **Transtornados (1):** Cristino.
+- **PSIKOLERA (5):** Eloy Furtado, Cindy Lopes, Caio Teles, Franco, Alê.
+- **Vampiros (5):** Raziel, Sabara, Alvira, Velisar, Zéfero.
+- **Ordo Calamitas (13):** Cascadia, Cornelius, Karise, Marcellus, Celestine, Amalia, Faustus, Marius, Remus, Veritus,
+  Sacrifício do Rancor, Nero, Gaius.
+- **Relíquias (5):** Ferreiro, O Diabo, O Deus da Morte, A Magistrada, Amphitruo.
+- **Outro Lado (6):** O Estrangeiro, Amigo Imaginário, Carniçal, A Degolificada, O Espreitador, Quibungo.
+
+A tabela abaixo detalha os primeiros lutadores; os golpes e números de **todos** estão em [HABILIDADES.md](HABILIDADES.md).
+
 
 | Personagem | Origem | Elemento | □ principal | Habilidades (□ / ○ / L2 = △ + botão · △ / × = R2 + botão) | Especial | Passiva |
 |---|---|---|---|---|---|---|
@@ -276,5 +312,8 @@ O menu principal tem **SOBRE O JOGO / BAIXAR** (`sobre.html`), com os downloads 
   `.github/workflows/release-apps.yml` gera o `.exe` e o `.apk` e cria a release com as notas do CHANGELOG.
 
 ## Limitações conhecidas
-- Suporte a controle usa a Gamepad API do navegador (layout padrão Xbox/PlayStation); não testado com controle físico.
+- Suporte a controle usa a Gamepad API do navegador (layout padrão Xbox/PlayStation); conferido com controle físico,
+  inclusive a vibração.
+- Online só pela LAN (mesma rede ou Radmin) por enquanto: pela internet falta o servidor de sinalização/TURN.
+- No celular, os botões de habilidade ainda ocupam bastante do lado direito (falta testar num aparelho de verdade).
 - Os cenários dependem dos kits do Kenney baixados em `assets_src/` para serem gerados de novo (o `.glb` pronto já está em `public/arenas/`).

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.45.0';
+export const VERSION = '5.45.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.45.1',
+    date: '2026-11-21',
+    title: 'O Corredor Sem Atalhos',
+    items: [
+      'Corredor das Lamparinas (Treb Ciach): no coop o desvio de lado acelerava ou freava a corrida; agora o lado segue o caminho.',
+      'No corredor não dá mais para defender, carregar, dar dash nem soltar habilidades, tiros ou especiais: só correr de lado e esquivar.',
+      'README com os modos de jogo e o elenco inteiro (70 lutadores em 10 equipes).',
+    ],
+  },
   {
     v: '5.45.0',
     date: '2026-11-21',

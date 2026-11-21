@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.45.1 — O Corredor Sem Atalhos
+
+### Corrigido
+- Corredor das Lamparinas (Treb Ciach): o desvio de lado acelerava ou freava a corrida, porque seguia o lado da câmera, que no coop gira em cada metade da tela. Agora o lado é sempre perpendicular ao caminho. Também deixou de ser possível defender, carregar, dar dash ou soltar habilidades, tiros e especiais no corredor (esquivar segurando a defesa caía na defesa e liberava o R2 + △/×): lá só se corre de lado e se esquiva.
+
+### Documentação
+- README: nova seção Modos (Batalha, Torre, Torneio, Outro Lado com as 6 fases, Tutorial, Treinamento e Explorar), o elenco inteiro (70 lutadores em 10 equipes), o online só pela LAN por enquanto e as limitações atualizadas.
+- TODO: marcados os itens conferidos pelo dono (Tipora, rota do Outro Lado, PC do amigo, vibração, som 3D e corredor).
+
 ## v5.45.0 — Shi no Kage
 
 ### Corrigido
