@@ -19,7 +19,7 @@ const copyMelee = (m) => {
 // base (vida igual, especial de 250, transformação obrigatória) e fala pelas falas do personagem base (dialogues.js)
 const selectable = (form, extra) => ({ ...form, form: false, selectableForm: true, melee: copyMelee(form.melee), ...extra });
 
-export const juanPortador = selectable(juanOdio, { origin: 'Portadores', teams: ['Mascarados'] });
+export const juanPortador = selectable(juanOdio, { origin: 'Mascarados', teams: [] }); // (2026-11-20) a equipe Portadores saiu: o Juan é a versão do Henri
 export const deusMorteReliquia = selectable(deusMorte, { origin: 'Relíquias', teams: [], relic: 'morte' });
 // o Anfitrião das Relíquias é o AMPHITRUO (o Gaius consumido; 2026-10-29) — mantém o id anfitriao (falas, Torre, Destronar)
 export const anfitriaoReliquia = selectable(amphitruo, { id: 'anfitriao', origin: 'Relíquias', teams: [], relic: 'energia' });

@@ -14,8 +14,8 @@ export default {
   name: 'CELESTINE, A MAGISTRADA',
   model: 'celestine_magistrada',
   color: '#8ad8ff',
-  origin: 'Portadores',
-  teams: ['Ordo Calamitas'],
+  origin: 'Ordo Calamitas', // (2026-11-20) sem a etiqueta de Portadores
+  teams: [],
   info: {
     ...magistrada.info,
     weapon: 'As machadinhas e a Máscara do Desespero',

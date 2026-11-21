@@ -49,6 +49,7 @@ export function npcDamage(attacker, dmg, kind, abilityId = null) {
   if (!m || !dmg) return dmg;
   let k = m.dealt[kind] ?? 1;
   if (m.kitDmg) k *= m.kitDmg[kind === 'ability' ? (abilityId || attacker.lastAbilityId) : kind] ?? 1;
+  if (m.npcProc) k *= m.npcProc(kind); // Tesoura da Costureira / Chama da Vigília (achados das fases)
   if (m.onNpcDealt) m.onNpcDealt(dmg * k); // o DANO da tela do fim conta os monstros também
   return dmg * k;
 }
@@ -191,6 +192,7 @@ export function applyHit(world, attacker, victim, o) {
   // OUTRO LADO (PvE): as melhorias da tentativa e da árvore permanente (pve/upgrades.js → computeMods)
   if (attacker.pveMods) {
     mult *= attacker.pveMods.dealt[o.kind] ?? 1;
+    if (attacker.pveMods.bossDealt && victim.pveBoss) mult *= 1 + attacker.pveMods.bossDealt; // Olho da Fresta
     // as cartas do KIT: o golpe que causou (a habilidade pelo id; senão o tiro, o combo ou o especial)
     const kd = attacker.pveMods.kitDmg;
     if (kd) mult *= kd[o.kind === 'ability' ? (o.ability || attacker.lastAbilityId) : o.kind] ?? 1;

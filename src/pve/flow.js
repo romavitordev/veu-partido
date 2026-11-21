@@ -27,7 +27,7 @@ import { PveChoiceScreen } from './choiceScreen.js';
 import { PveHubScreen } from './hubScreen.js';
 import { fmtTime } from './pveHud.js';
 import { spin } from './economy.js';
-import { TREE, FUSIONS } from './upgrades.js';
+import { TREE, FUSIONS, RELICS } from './upgrades.js';
 import { AGHATA_LINES, pickLine, buyLine } from './aghataShop.js';
 import { emptyData, loadPve, savePve, clearPve, profileOf, buyRank, refundTree, newAttempt, rewardBoss, endAttemptByDeath, discover, exportPve, parseBackup, describePve } from './save.js';
 
@@ -110,8 +110,8 @@ export function createPveFlow(ctx) {
       owned: ROSTER.length - lockedMap(data, ROSTER).size,
       total: ROSTER.length,
       treeRanks: Object.values(data.tree || {}).reduce((x, y) => x + y, 0),
-      found: FUSIONS.filter((f) => (data.discovered || []).includes(f.id)).length,
-      foundTotal: FUSIONS.length,
+      found: [...FUSIONS, ...RELICS].filter((f) => (data.discovered || []).includes(f.id)).length, // fusões e achados das fases
+      foundTotal: FUSIONS.length + RELICS.length,
       warn,
       attempt: a ? {
         name: d ? d.name : a.charId,

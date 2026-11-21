@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KIT, MAX_PASSIVE, slotsOf, rewardChoices, kitUpgrades, kitId, KIT_STEP } from '../src/pve/upgrades.js';
+import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KIT, MAX_PASSIVE, slotsOf, rewardChoices, kitUpgrades, kitId, KIT_STEP, FUSIONS } from '../src/pve/upgrades.js';
 import cindy from '../src/characters/cindy.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, treeCoinCost, migrateTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
@@ -187,7 +187,7 @@ test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o se
   for (const a of cindy.abilities) assert.ok(names.includes(a.name), a.name);
   assert.ok(names.includes(cindy.ranged.name) && names.includes(cindy.melee.name) && names.includes(cindy.special.name));
   assert.ok(kit.length > MAX_KIT, 'mais golpes do que vagas: precisa escolher');
-  assert.ok(UPGRADES.every((u) => u.kind === 'passive' || u.kind === 'fusion'), 'sem as ativas automáticas fora da lore');
+  assert.ok(UPGRADES.every((u) => u.kind === 'passive' || u.kind === 'fusion' || u.kind === 'relic'), 'sem as ativas automáticas fora da lore');
   const pass = UPGRADES.filter((u) => !u.chest);
   assert.ok(pass.length >= 14);
   // as do baú nunca nas cartas
@@ -204,8 +204,9 @@ test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o se
   }
   // tudo no máximo: o baú não tem o que dar -> recompensa (moedas ou vida)
   const maxed = base.flatMap((id) => Array(5).fill(id)).filter((id, i, arr) => arr.slice(0, i).filter((x) => x === id).length < ([...UPGRADES, ...kit].find((u) => u.id === id).max));
-  // (a sorte acima da chance: nenhuma FUSÃO sai — a receita de algumas está pronta aqui)
-  assert.deepEqual(chestUpgrades(maxed, () => 0.99, 3), []);
+  // (só sai FUSÃO: a receita de algumas está pronta aqui e, desde 2026-11-20, a fusão pronta é garantida)
+  assert.ok(chestUpgrades(maxed, () => 0.99, 3).every((id) => FUSIONS.some((f) => f.id === id)));
+  assert.deepEqual(chestUpgrades([...maxed, ...FUSIONS.map((f) => f.id)], () => 0.99, 3), []);
   assert.equal(rollChoices(maxed, Math.random, 3, cindy).length, 0);
   const r = rewardChoices(30, 0.3);
   assert.deepEqual(r.map((x) => x.id), ['reward:coins', 'reward:heal']);
@@ -383,7 +384,7 @@ test('fusões: receita, chance do baú, descoberta e nada de Segundo Fôlego', a
     assert.equal(f.max, 1);
     for (const [id] of f.needs) assert.ok(U.getUpgrade(id), `${f.id}: a receita usa melhorias que existem (${id})`);
     const [a, lv] = f.needs[0];
-    assert.equal(U.getUpgrade(a).max, lv, `${f.id}: a 1ª da receita pede o máximo`);
+    assert.ok(lv <= U.getUpgrade(a).max && lv <= 3, `${f.id}: a 1ª da receita pede no máximo o nível 3 (2026-11-20)`);
   }
   // nunca nas cartas de nível
   for (let i = 0; i < 30; i++) assert.ok(!U.rollChoices([], Math.random, 4).some((u) => u.kind === 'fusion'));
@@ -481,7 +482,7 @@ test('Escola: o almoxarifado sem saída e o pátio da cantina na rota', () => {
 
 test('Fusões: 12, cada receita com passivas que existem e nenhuma receita repetida', async () => {
   const U = await import('../src/pve/upgrades.js');
-  assert.equal(U.FUSIONS.length, 12);
+  assert.equal(U.FUSIONS.length, 17);
   const seen = new Set();
   for (const f of U.FUSIONS) {
     for (const [id, lv] of f.evolve.needs) {
@@ -495,6 +496,29 @@ test('Fusões: 12, cada receita com passivas que existem e nenhuma receita repet
     const m = U.computeMods([f.id]);
     assert.ok(m, f.id);
   }
+});
+
+// ACHADOS DAS FASES (dono, 2026-11-20: "mais variedade de melhorias que posso descobrir nas fases")
+test('Achados das fases: dois por fase, só do baú daquela fase, uma vez por tentativa; fusão pronta é garantida', async () => {
+  const U = await import('../src/pve/upgrades.js');
+  const { DUNGEONS } = await import('../src/pve/dungeons.js');
+  assert.equal(U.RELICS.length, 12);
+  for (const r of U.RELICS) {
+    assert.ok(DUNGEONS[r.phase], `${r.id}: a fase ${r.phase} existe`);
+    assert.equal(U.RELICS.filter((x) => x.phase === r.phase).length, 2);
+    assert.ok(U.computeMods([r.id]), r.id);
+  }
+  for (let i = 0; i < 30; i++) assert.ok(!U.rollChoices([], Math.random, 4).some((u) => u.kind === 'relic'), 'nunca nas cartas');
+  const always = () => 0;
+  const got = U.chestUpgrades([], always, 1, { phase: 'sertao' });
+  assert.ok(U.isRelic(got[0]) && U.getUpgrade(got[0]).phase === 'sertao');
+  assert.ok(!U.chestUpgrades([], always, 3).some(U.isRelic), 'sem fase, nenhum achado');
+  assert.ok(!U.chestUpgrades(['denteQuibungo', 'mandacaru'], always, 2, { phase: 'sertao' }).some(U.isRelic), 'já tem os dois');
+  // a fusão com a receita pronta sai no próximo baú (chance 1) e a pista da carta avisa
+  const pronta = ['furia', 'furia', 'furia', 'sanguessuga'];
+  assert.ok(U.chestUpgrades(pronta, () => 0.99, 1).includes('carnificina'));
+  assert.deepEqual(U.fusionHint(['furia', 'furia', 'furia'], 'sanguessuga'), { part: true, completes: true });
+  assert.equal(U.fusionHint([], 'furia').completes, false);
 });
 
 test('Ondas de Tipora: fase de ondas sem portas, gigante sozinho a cada 3 e o Amigo Imaginário na última', async () => {

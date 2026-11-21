@@ -257,6 +257,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   ACERTADO pode emendar outro (60%, até 2). Conferido no jogo (3 cadeias em 6 botes).
 - [ ] Bateria Degolificada × Espreitador × Estrangeiro depois das brechas e do Espreitador novo (tempo e mortes).
 - [x] Mais fusões (uma por par de passivas que combina): v5.17.0, 5 novas (12 no total).
+- [x] Fusões que dá para alcançar: v5.41.0, receita no nível 3, baú garantido com a receita pronta, pistas nas cartas e 5 fusões novas (17 no total).
+- [x] Achados das fases: v5.41.0, 12 melhorias únicas (duas por fase) só dos baús da fase, na tela DESCOBERTAS.
 - [ ] PROPOSTA: fusões do KIT do personagem (o "talvez" do item acima).
 
 ## Outro Lado — baú e salas da Escola (pedido do dono, 2026-11-16)
@@ -629,6 +631,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **As fusões do Outro Lado** — v5.41.0: fusões alcançáveis (nível 3, baú garantido, pistas), 5 fusões novas, 12 achados das fases, tela DESCOBERTAS em duas seções, Ordo Calamitas reordenada e Arnaldo na Ordo Realitas sem o título Portadores.
 - [x] **A tinta e as sombras** — v5.40.0: furtividade que desvia de 2 ataques ou 1 especial, a tinta na tela na entrada do Amigo, a língua do Quibungo (sem olhos) e as seleções de fases e mapas responsivas.
 - [x] **O morro do Quibungo** — v5.38.0: mapa novo do sertão (HEX ep. 5), noite e dia.
 - [x] **Os visitantes do Samhain** — v5.37.1: 20 aldeões em Treb Ciach, cinco casas com um visitante que é a segunda chance.

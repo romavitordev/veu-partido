@@ -29,7 +29,8 @@ import { distXZ } from '../core/util.js';
 import { applyHit } from '../combat/damage.js';
 import { DUNGEONS, PVE_DIFFICULTIES, depthScale, heatScale, rollHeal, rollRouteLength, rollExits, rollLock, chestChance, charTune, wavePlan, treePlan, treeWeaken } from './dungeons.js';
 import { RoomDoor, Drawer, InteractPrompt, makeArrow, aimArrow } from './roomDoors.js';
-import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices, kitUpgrades, slotsOf } from './upgrades.js';
+import { computeMods, gainXp, rollChoices, chestUpgrades, chestCount, countOf, getUpgrade, rewardChoices, kitUpgrades, slotsOf, FUSIONS, evolutionReady } from './upgrades.js';
+import { igniteFighter } from '../combat/burn.js';
 import { torreRoomCables, pulseCables, disposeCables } from './cables.js';
 import { devoradoDef, restyleDevorado, copiaOpts } from './devorado.js';
 import { Pickup, Chest } from './pickups.js';
@@ -314,10 +315,26 @@ export class Dungeon {
     p.moveSpeed = (p.def.stats?.moveSpeed ?? COMBAT.moveSpeed) * m.speedMult;
     m.onDealt = (dealt, kind, victim, o) => {
       if (m.lifesteal > 0 && kind === 'melee') p.health = Math.min(p.maxHealth, p.health + dealt * m.lifesteal);
+      if (m.lifestealAll > 0) p.health = Math.min(p.maxHealth, p.health + dealt * m.lifestealAll); // Dente do Quibungo
+      // os ACHADOS DAS FASES nos lutadores (o chefe, o dono das salas): sangrar, queimar e deixar lento
+      if (victim && victim !== p && victim.state !== 'ko' && !(o && (o.thorns || o.relicFx))) {
+        if (m.bleedChance > 0 && kind === 'melee' && victim.applyBleed && Math.random() < m.bleedChance) victim.applyBleed({ dps: 14, duration: 4, color: 0x9a0010 }, p);
+        if (m.burnChance > 0 && victim.findBuff && Math.random() < m.burnChance) igniteFighter(this.world, p, victim, { dps: 12, duration: 3 });
+        if (m.slowOnHit && (kind === 'ability' || kind === 'ranged') && victim.addBuff && victim.findBuff) {
+          const sb = victim.findBuff('curseSlow');
+          if (sb) sb.time = Math.max(sb.time, 2);
+          else victim.addBuff({ type: 'curseSlow', name: 'LENTO (TINTA)', time: 2, duration: 2, speedMult: 0.7 });
+        }
+      }
       this.stats.damage += dealt;
       if (o && o.crit) this.world.fx.burst(victim.chestPos ? victim.chestPos(v1).clone() : p.chestPos(v1).clone(), { count: 10, color: 0xffe08a, speed: 3.2, life: 0.3, size: 0.12 });
     };
-    m.onNpcDealt = (d) => { this.stats.damage += d; };
+    m.onNpcDealt = (d) => {
+      this.stats.damage += d;
+      if (m.lifestealAll > 0) p.health = Math.min(p.maxHealth, p.health + d * m.lifestealAll);
+    };
+    // os monstros das salas não têm estados: a Tesoura e a Chama viram um golpe 50% mais forte quando pegam (npcDamage)
+    m.npcProc = (kind) => ((m.bleedChance > 0 && kind === 'melee' && Math.random() < m.bleedChance) || (m.burnChance > 0 && Math.random() < m.burnChance) ? 1.5 : 1);
     // PELE DE ESPINHOS (baú): devolve parte do dano corpo a corpo a quem bateu
     m.onTaken = m.thorns > 0 ? (dealt, kind, attacker, o) => {
       if (kind !== 'melee' || o.thorns || !attacker || attacker === p || !attacker.takeDamage || attacker.state === 'ko') return;
@@ -1503,6 +1520,7 @@ export class Dungeon {
     e.lurking = false;
     e.maxHealth = Math.round(def.stats.maxHealth * this.scale.hp * (this.D.bossTune?.hp ?? 1));
     e.reset();
+    e.pveBoss = true; // o chefe (Olho da Fresta: damage.js)
     this.hudAdd('pve-noboss');
     this.pveHud.hint(null);
     if (this.D.boss === 'degolificada') {
@@ -1610,7 +1628,7 @@ export class Dungeon {
     // A BUILD COMEÇA VAZIA (pedido do dono, 2026-11-13): o baú só sobe habilidades que o jogador ESCOLHEU ao subir de
     // nível. Antes do nível 2 (ou sem nenhuma habilidade ainda) ele só dá moedas ou experiência — sem melhoria de graça
     if ((this.run.level || 1) < 2 || !this.run.picks.length) return this.feverChest(c, this.openEarlyChest(c, n));
-    const ups = chestUpgrades(this.run.picks, Math.random, n, { discovered: this.discovered() });
+    const ups = chestUpgrades(this.run.picks, Math.random, n, { discovered: this.discovered(), phase: this.D.id });
     const items = [];
     const rows = [];
     for (const id of ups) {
@@ -1641,6 +1659,12 @@ export class Dungeon {
         this.hud.callout(`${fresh ? 'NOVA FUSÃO' : 'FUSÃO'}: ${u.name.toUpperCase()}`, '#d8a0ff');
         this.audio.play('levelUp', { volume: 1, pitch: 0.8 });
         for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'fusão';
+      } else if (u.kind === 'relic') {
+        // o ACHADO DA FASE: também vai para a DESCOBERTAS (o mesmo `discovered` do save)
+        const fresh = this.onDiscover ? this.onDiscover(id) : false;
+        this.hud.callout(`${fresh ? 'NOVO ACHADO' : 'ACHADO DA FASE'}: ${u.name.toUpperCase()}`, '#7effc8');
+        this.audio.play('levelUp', { volume: 0.9, pitch: 1.15 });
+        for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'achado';
       } else if (u.chest && countOf(this.run.picks, id) === 1) this.hud.callout(u.name.toUpperCase(), '#7ec8ff');
     }
     this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
@@ -1809,11 +1833,15 @@ export class Dungeon {
     this.choosing = true;
     if (this.coop) this.chooser = 1 - this.chooser;
     this.pveHud.openChoice(choices, this.run, (id) => {
+      const wasReady = FUSIONS.filter((f) => evolutionReady(this.run.picks, f)).length;
       this.run.picks.push(id);
       this.applyPlayerMods(false);
       this.pveHud.setRun(this.run, this.run.depth);
       this.choosing = false;
       this.hud.callout(choices.find((u) => u.id === id).name.toUpperCase(), '#ffd84a');
+      // a receita de uma FUSÃO ficou pronta: o próximo baú traz (o aviso entra depois do nome da carta)
+      const ready = FUSIONS.filter((f) => !this.run.picks.includes(f.id) && evolutionReady(this.run.picks, f)).length;
+      if (ready > wasReady) this.world.after(1.2, () => { if (!this.disposed) this.hud.callout('FUSÃO PRONTA: ABRA UM BAÚ!', '#d8a0ff'); });
     }, { who, coop: this.coop, noClick: !!this.net || (this.coop && who === 1), mine: this.local === null || this.local === who });
   }
 

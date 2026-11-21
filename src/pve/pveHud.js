@@ -4,7 +4,7 @@
 //  · nível e barra de experiência, as melhorias da tentativa (e as sinergias), o objetivo da sala, a dica do momento;
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
 import { actionLabel } from '../ui/labels.js';
-import { SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KIT, MAX_PASSIVE, slotsOf, getUpgrade } from './upgrades.js';
+import { SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KIT, MAX_PASSIVE, slotsOf, getUpgrade, fusionHint } from './upgrades.js';
 
 // os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
 const pipsHtml = (n, max, was = n) => Array.from({ length: max }, (_, i) => `<b class="${i < was ? 'on' : i < n ? 'new' : ''}"></b>`).join('');
@@ -202,7 +202,9 @@ export class PveHud {
     this.q('.pv-ups').innerHTML = ids.map((id) => {
       const u = getUpgrade(id);
       const n = countOf(run.picks, id);
-      return `<span class="pv-up ${u.kind === 'kit' ? 'act' : ''}" title="${esc(u.name)}: ${esc(u.desc)}"><i>${u.icon}</i><s>${pipsHtml(n, u.max)}</s></span>`;
+      // fusão (roxa) e achado da fase (verde) com a borda própria
+      const cls = u.kind === 'kit' ? 'act' : u.kind === 'fusion' ? 'fus' : u.kind === 'relic' ? 'rel' : '';
+      return `<span class="pv-up ${cls}" title="${esc(u.name)}: ${esc(u.desc)}"><i>${u.icon}</i><s>${pipsHtml(n, u.max)}</s></span>`;
     }).join('') + syn.map((s) => `<span class="pv-syn" title="${esc(s.desc)}">${esc(s.name)}</span>`).join('');
   }
 
@@ -227,7 +229,10 @@ export class PveHud {
       const ready = syn.filter((s) => s.needs.every((x) => x === u.id || picks.includes(x)));
       const tag = n ? `nv ${n + 1}` : u.chest ? 'NOVA DO BAÚ!' : 'NOVO!';
       const kind = u.kind === 'kit' ? `<u class="act">${coop ? esc(u.who) : 'SEU KIT'}</u>` : '<u>PASSIVA</u>';
-      return `<div class="pv-card ${u.kind === 'kit' ? 'act' : ''}" data-i="${i}"><i>${u.icon}</i><div><b>${kind}${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}</div></div>`;
+      // a PISTA DA FUSÃO (2026-11-20): a carta que entra numa receita avisa; a que completa, avisa mais forte
+      const fh = u.kind === 'kit' ? null : fusionHint(picks, u.id);
+      const fus = fh && fh.completes ? '<small class="fus ready">⚗ Completa uma FUSÃO: o próximo baú traz!</small>' : fh && fh.part ? '<small class="fus">⚗ Ingrediente de uma fusão</small>' : '';
+      return `<div class="pv-card ${u.kind === 'kit' ? 'act' : ''}" data-i="${i}"><i>${u.icon}</i><div><b>${kind}${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}${fus}</div></div>`;
     }).join('');
     const ids = buildIds(picks);
     const kitChar = choices.find((u) => u.kind === 'kit')?.char;

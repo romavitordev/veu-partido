@@ -777,6 +777,55 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## ARNALDO FRITZ
+
+*Aniquilador da Ordo Realitas: na Transformação, o relógio de bolso guarda a Relíquia e ele vira O Anfitrião* · arma: Espada da fita vermelha e o Emissor de Pulsos Paranormais
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Abertura de Cena | 26 | 2.15 m |  |
+| ○ 2 | Estocada de Palco | 28 | 2.6 m |  |
+| ○ 3 | Corte em Reverência | 28 | 2.15 m |  |
+| ○ 4 | Floreio | 34 (2 acertos) | 2.2 m |  |
+| ○ 5 | Ato Final | 60 | 2.5 m | finalizador: lança |
+| Frente + ○ | Entrada Triunfal | 36 | 2.2 m |  |
+| Trás + ○ | Mesura e Estocada | 40 | 2.5 m | invulnerável no começo |
+| Lado + ○ | Rodopio | 32 | 2.3 m |  |
+| No ar + ○ | Corte Aéreo | 36 | 2.2 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte Ascendente | 38 | 2.2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Golpe de Cena | 46 | 2.2 m | finalizador: derruba |
+
+### Principal (□ / X): Emissor de Pulsos Paranormais
+
+- Dano 18 · alcance 14 m · cooldown 3.2 s · custo 0
+- Prende e puxa o inimigo para 1.9 m, abrindo 0.5 s para combar
+- Trás + □: **AFASTAR!** — 26
+
+### Habilidades
+
+- **Finta Teatral** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 55 · alcance 2.2 m
+  Provoca com a mão livre, avança e, quando o adversário reage, o corte de verdade entra pela guarda — quebra a defesa.
+- **Pulso Paranormal** — △ + □ / Y + X · custo 25 · cooldown 12 s · alcance 11 m
+  O Emissor de Pulsos no máximo: o alvo LONGE é atraído e recebe a estocada assim que chega; o alvo PERTO é jogado longe e cai.
+- **Rodopio da Fita** — R2 + × / RT + A · custo 20 · cooldown 11 s · dano 60
+  Gira com a espada aberta — a fita vermelha acompanha o giro: dois cortes em área, o último joga longe.
+- **Aniquilador** — △ + L2 / Y + LT · custo 25 · cooldown 20 s
+  O veterano dos Aniquiladores aparece: por 7 s a postura fica agressiva, os golpes físicos saem 15% mais rápidos e 15% mais fortes, e ele recupera uma esquiva.
+- **Ensaio Geral** — R2 + △ / RT + Y · custo 20 · cooldown 18 s
+  Já ensaiou essa cena: por 6 s recebe 20% menos dano, é empurrado bem menos e aguenta 2 golpes sem recuar.
+
+### Especial: Ato Final
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: A Relíquia do Relógio
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
 ## KIAN
 
 *Força física absurda + paranormal + mobilidade + ataques devastadores* · arma: Punhos (sem armas)
@@ -1634,6 +1683,51 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## JUAN
+
+*Juan tomado pelo Ódio do Diabo: garras que fazem sangrar — e o Trono ainda chama* · arma: Garras de sangue no braço direito
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte rápido | 28 | 2 m |  |
+| ○ 2 | Corte de volta | 28 | 2 m |  |
+| ○ 3 | Estocada | 33 | 2.1999999999999997 m |  |
+| ○ 4 | Corte descendente | 35 | 2 m |  |
+| ○ 5 | Banho de Sangue | 64 | 2.1999999999999997 m | finalizador: lança |
+| Frente + ○ | Bote | 38 | 2.1999999999999997 m |  |
+| Trás + ○ | Recua e corta | 35 | 2.1 m | invulnerável no começo |
+| Lado + ○ | Corte em movimento | 33 | 2.1 m |  |
+| No ar + ○ | Faca aérea | 38 | 2.1 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte para cima | 45 | 2.1 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Faca no chão | 52 | 2.1 m | finalizador: derruba |
+
+### Principal (□ / X): Lâmina de Sangue
+
+- Dano 24 · alcance 18 m · cooldown 2 s · custo 0
+
+### Habilidades
+
+- **Descarnar Discente** — R2 + △ / RT + Y · custo 30 · cooldown 14 s · dano 80 · alcance 9 m
+  Ritual de Sangue: cortes surgem no corpo do alvo, um atrás do outro (dano alto e sangramento).
+- **Perturbação Discente** — △ + ○ / Y + B · custo 20 · cooldown 12 s · dano 30 · alcance 5 m
+  Uma ordem simples a quem está perto: "PARE!" (paralisa), "VENHA!" (puxa) ou "AJOELHE!" (derruba). Sai uma ao acaso.
+- **Vínculo de Sangue** — △ + □ / Y + X · custo 25 · cooldown 20 s · alcance 9 m
+  Marca o próprio corpo e o do alvo: por 8 s, 30% do dano que o Juan recebe é replicado no alvo.
+- **Armadura de Sangue Diabólica** — △ + L2 / Y + LT · custo 30 · cooldown 24 s
+  Também nasce sozinha depois de sangrar o bastante (a cada 400 de dano recebido, mais curta, e usa a recarga). O próprio sangue endurece numa armadura com espinhos: recebe 30% menos dano, aguenta 2 golpes sem recuar e fica mais rápido. O braço da faca vira uma arma de sangue: golpes físicos 25% mais fortes.
+
+### Especial: Hemorragia Severa
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Renascimento
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → transforma no Diabo até o fim do round (+150 de vida).
+
+---
+
 ## CRISTINO
 
 *O cangaceiro que não queria jogar o Hexatombe — tocando a Coroa de Espinhos, vira o Desertor* · arma: Peixeira, Espingarda Socadeira e Lampiões Explosivos
@@ -2134,97 +2228,184 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
-## JUAN
+## CASCADIA
 
-*Juan tomado pelo Ódio do Diabo: garras que fazem sangrar — e o Trono ainda chama* · arma: Garras de sangue no braço direito
+*A guerreira mais antiga da Ordo Calamitas, mãe de Caesar — cansada de tudo, principalmente da Celestine* · arma: O khopesh curvo e a espada reta
 
 ### Físico (○ / B)
 
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
-| ○ 1 | Corte rápido | 28 | 2 m |  |
-| ○ 2 | Corte de volta | 28 | 2 m |  |
-| ○ 3 | Estocada | 33 | 2.1999999999999997 m |  |
-| ○ 4 | Corte descendente | 35 | 2 m |  |
-| ○ 5 | Banho de Sangue | 64 | 2.1999999999999997 m | finalizador: lança |
-| Frente + ○ | Bote | 38 | 2.1999999999999997 m |  |
-| Trás + ○ | Recua e corta | 35 | 2.1 m | invulnerável no começo |
-| Lado + ○ | Corte em movimento | 33 | 2.1 m |  |
-| No ar + ○ | Faca aérea | 38 | 2.1 m | desce com impacto |
-| ↑ + ○ (no combo) | Corte para cima | 45 | 2.1 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Faca no chão | 52 | 2.1 m | finalizador: derruba |
+| ○ 1 | Gancho do Khopesh | 23 | 2 m |  |
+| ○ 2 | Espada Reta | 21 | 2.1 m |  |
+| ○ 3 | Tesoura | 17 (2 acertos) | 2 m |  |
+| ○ 4 | Puxão e Estocada | 28 | 2.3 m |  |
+| ○ 5 | Corte da Veterana | 56 | 2.3 m | finalizador: lança |
+| Frente + ○ | Avanço Cruzado | 30 | 2.1 m |  |
+| Trás + ○ | Aparar com o Gancho | 0 | 0 m | contra-ataque (revida 50) |
+| Lado + ○ | Giro das Duas Lâminas | 28 | 2.1 m |  |
+| No ar + ○ | Lâminas do Alto | 32 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Khopesh de Baixo | 34 | 2.1 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Corte nas Pernas | 36 | 2.1 m | finalizador: derruba |
 
-### Principal (□ / X): Lâmina de Sangue
+### Principal (□ / X): Khopesh Arremessado
 
-- Dano 24 · alcance 18 m · cooldown 2 s · custo 0
+- Dano 30 · alcance 14 m · cooldown 2.6 s · custo 0
 
 ### Habilidades
 
-- **Descarnar Discente** — R2 + △ / RT + Y · custo 30 · cooldown 14 s · dano 80 · alcance 9 m
-  Ritual de Sangue: cortes surgem no corpo do alvo, um atrás do outro (dano alto e sangramento).
-- **Perturbação Discente** — △ + ○ / Y + B · custo 20 · cooldown 12 s · dano 30 · alcance 5 m
-  Uma ordem simples a quem está perto: "PARE!" (paralisa), "VENHA!" (puxa) ou "AJOELHE!" (derruba). Sai uma ao acaso.
-- **Vínculo de Sangue** — △ + □ / Y + X · custo 25 · cooldown 20 s · alcance 9 m
-  Marca o próprio corpo e o do alvo: por 8 s, 30% do dano que o Juan recebe é replicado no alvo.
-- **Armadura de Sangue Diabólica** — △ + L2 / Y + LT · custo 30 · cooldown 24 s
-  Também nasce sozinha depois de sangrar o bastante (a cada 400 de dano recebido, mais curta, e usa a recarga). O próprio sangue endurece numa armadura com espinhos: recebe 30% menos dano, aguenta 2 golpes sem recuar e fica mais rápido. O braço da faca vira uma arma de sangue: golpes físicos 25% mais fortes.
+- **Gancho do Khopesh** — △ + ○ / Y + B · custo 22 · cooldown 12 s · dano 40 · alcance 3.6 m
+  Avança e prende a guarda no gancho do khopesh: a defesa quebra, o alvo é puxado para perto dela e NÃO CONSEGUE DEFENDER por 2 s (não dá para bloquear o gancho).
+- **Sem Paciência** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
+  Cansou de esperar: por 7 s ataca 20% mais rápido e corre 10% mais rápido.
+- **Dança das Duas Lâminas** — R2 + × / RT + A · custo 22 · cooldown 11 s
+  Gira para trás, intocável no salto, e solta três cortes de energia azul em leque no adversário.
+- **Guerreira Antiga** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
+  Já viu a Ordo nascer: firma as duas lâminas na frente e por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar.
 
-### Especial: Hemorragia Severa
+### Especial: Por Caesar
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: Renascimento
+### Transformação: Memória Revivida
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → transforma no Diabo até o fim do round (+150 de vida).
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades), +8% de velocidade, recargas 20% mais rápidas, cura 10% na hora.
 
 ---
 
-## ARNALDO FRITZ
+## CORNELIUS
 
-*Aniquilador da Ordo Realitas: na Transformação, o relógio de bolso guarda a Relíquia e ele vira O Anfitrião* · arma: Espada da fita vermelha e o Emissor de Pulsos Paranormais
+*O guerreiro De Ferro da Ordo Calamitas: a maior defesa de todos e nenhuma paciência* · arma: A lança e o escudo
 
 ### Físico (○ / B)
 
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
-| ○ 1 | Abertura de Cena | 26 | 2.15 m |  |
-| ○ 2 | Estocada de Palco | 28 | 2.6 m |  |
-| ○ 3 | Corte em Reverência | 28 | 2.15 m |  |
-| ○ 4 | Floreio | 34 (2 acertos) | 2.2 m |  |
-| ○ 5 | Ato Final | 60 | 2.5 m | finalizador: lança |
-| Frente + ○ | Entrada Triunfal | 36 | 2.2 m |  |
-| Trás + ○ | Mesura e Estocada | 40 | 2.5 m | invulnerável no começo |
-| Lado + ○ | Rodopio | 32 | 2.3 m |  |
-| No ar + ○ | Corte Aéreo | 36 | 2.2 m | desce com impacto |
-| ↑ + ○ (no combo) | Corte Ascendente | 38 | 2.2 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Golpe de Cena | 46 | 2.2 m | finalizador: derruba |
+| ○ 1 | Estocada | 26 | 2.8 m |  |
+| ○ 2 | Cravada por Cima | 28 | 2.9 m |  |
+| ○ 3 | Escudada | 30 | 1.7 m |  |
+| ○ 4 | Haste Varrida | 30 | 2.6 m |  |
+| ○ 5 | Investida da Lança | 60 | 3.2 m | finalizador: lança |
+| Frente + ○ | Investida de Escudo | 36 | 2 m |  |
+| Trás + ○ | Recuo de Lança | 32 | 3 m | invulnerável no começo |
+| Lado + ○ | Roda da Lança | 32 | 2.8 m |  |
+| No ar + ○ | Lança do Alto | 36 | 2.6 m | desce com impacto |
+| ↑ + ○ (no combo) | Lança de Baixo | 38 | 2.6 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Escudo no Chão | 44 | 1.9 m | finalizador: derruba |
 
-### Principal (□ / X): Emissor de Pulsos Paranormais
+### Principal (□ / X): Lança Arremessada
 
-- Dano 18 · alcance 14 m · cooldown 3.2 s · custo 0
-- Prende e puxa o inimigo para 1.9 m, abrindo 0.5 s para combar
-- Trás + □: **AFASTAR!** — 26
+- Dano 38 · alcance 20 m · cooldown 3 s · custo 0
 
 ### Habilidades
 
-- **Finta Teatral** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 55 · alcance 2.2 m
-  Provoca com a mão livre, avança e, quando o adversário reage, o corte de verdade entra pela guarda — quebra a defesa.
-- **Pulso Paranormal** — △ + □ / Y + X · custo 25 · cooldown 12 s · alcance 11 m
-  O Emissor de Pulsos no máximo: o alvo LONGE é atraído e recebe a estocada assim que chega; o alvo PERTO é jogado longe e cai.
-- **Rodopio da Fita** — R2 + × / RT + A · custo 20 · cooldown 11 s · dano 60
-  Gira com a espada aberta — a fita vermelha acompanha o giro: dois cortes em área, o último joga longe.
-- **Aniquilador** — △ + L2 / Y + LT · custo 25 · cooldown 20 s
-  O veterano dos Aniquiladores aparece: por 7 s a postura fica agressiva, os golpes físicos saem 15% mais rápidos e 15% mais fortes, e ele recupera uma esquiva.
-- **Ensaio Geral** — R2 + △ / RT + Y · custo 20 · cooldown 18 s
-  Já ensaiou essa cena: por 6 s recebe 20% menos dano, é empurrado bem menos e aguenta 2 golpes sem recuar.
+- **Lança Certeira** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.2 m
+  Recua a lança e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Escudo Fechado** — △ + L2 / Y + LT · custo 24 · cooldown 20 s
+  Fecha atrás do escudo: por 7 s recebe 40% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
+- **Muralha de Escudo** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
+  Avança atrás do escudo e passa por cima: quebra a defesa e joga longe.
+- **Pavio Curto** — R2 + △ / RT + Y · custo 22 · cooldown 16 s
+  Acende o pavio por 4 s: recebe 15% menos dano, aguenta 3 golpes sem recuar e TODO dano que levar vira raiva. No fim explode num giro de lança em volta (40 + 60% do que levou, até 160 a mais).
 
-### Especial: Ato Final
+### Especial: De Ferro
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: A Relíquia do Relógio
+### Transformação: Memória Revivida
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano (físico, habilidades), +5% de velocidade, recargas 15% mais rápidas, cura 14% na hora.
+
+---
+
+## KARISE
+
+*A espiã da Ordo Calamitas — de capuz e mascarilha, nada é pessoal* · arma: O par de adagas de ponta dupla
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Ponta | 19 | 1.7 m |  |
+| ○ 2 | Contraponta | 19 | 1.7 m |  |
+| ○ 3 | Duas Pontas | 15 (2 acertos) | 1.8 m |  |
+| ○ 4 | Giro de Punho | 21 | 1.8 m |  |
+| ○ 5 | Nada Pessoal | 50 | 2 m | finalizador: lança |
+| Frente + ○ | Bote da Espiã | 28 | 2 m |  |
+| Trás + ○ | Esquiva e Corte | 26 | 1.9 m | invulnerável no começo |
+| Lado + ○ | Roda das Pontas | 24 | 1.9 m |  |
+| No ar + ○ | Pontas do Alto | 28 | 1.9 m | desce com impacto |
+| ↑ + ○ (no combo) | Pontas para Cima | 30 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Rasteira | 32 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Adaga Arremessada
+
+- Dano 16 × 2 · alcance 22 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Espiã** — △ + ○ / Y + B · custo 20 · cooldown 15 s · alcance 14 m
+  Obriga o adversário a revelar uma habilidade (o nome aparece): ela fica PRESA por 8 s. Sem habilidades, é o especial que fica preso.
+- **Estudar o Alvo** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 16 m
+  Estuda o adversário: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.
+- **Sombra da Ordo** — R2 + × / RT + A · custo 20 · cooldown 14 s
+  Puxa o capuz e sai da vista (até 5 s): quase invisível e mais rápida. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo DESPREVENIDO.
+- **Leque de Adagas** — R2 + △ / RT + Y · custo 22 · cooldown 10 s
+  Gira para trás, intocável no salto, e solta quatro adagas em leque no adversário.
+- **Passiva:** golpes físicos pelas costas causam +25%
+
+### Especial: Nada Pessoal
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Memória Revivida
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +10% de velocidade, recargas 25% mais rápidas, cura 10% na hora.
+
+---
+
+## MARCELLUS
+
+*O duelista animado da Ordo Calamitas, que não pode deixar de existir antes de achar o irmão* · arma: A rapieira de cabo dourado
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Estocada | 20 | 2.4 m |  |
+| ○ 2 | Estocada Alta | 20 | 2.4 m |  |
+| ○ 3 | Raspão | 14 (2 acertos) | 2.2 m |  |
+| ○ 4 | Finta e Ponta | 24 | 2.6 m |  |
+| ○ 5 | Ataque a Fundo | 54 | 3 m | finalizador: lança |
+| Frente + ○ | Flecha | 30 | 2.6 m |  |
+| Trás + ○ | Parada e Resposta | 0 | 0 m | contra-ataque (revida 52) |
+| Lado + ○ | Volta do Duelista | 26 | 2.3 m |  |
+| No ar + ○ | Ponta do Alto | 30 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Ponta para Cima | 30 | 2.2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pé no Joelho | 32 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Estocada de Energia
+
+- Dano 26 · alcance 20 m · cooldown 2.2 s · custo 0
+
+### Habilidades
+
+- **Duelo** — △ + L2 / Y + LT · custo 24 · cooldown 20 s · alcance 8 m
+  Desenha o CÍRCULO DO DUELO em volta dos dois por 8 s: ninguém sai; lá dentro ele recebe 20% menos dano, bate 20% mais forte, e nada de fora (invocações) o atinge.
+- **A Fundo** — △ + ○ / Y + B · custo 20 · cooldown 9 s · dano 50 · alcance 2.4 m
+  O ataque a fundo do esgrimista: atravessa a distância numa estocada só e quebra a defesa.
+- **Chuva de Pontas** — R2 + × / RT + A · custo 20 · cooldown 10 s
+  Três estocadas no ar, rápidas: três fios de energia azul seguidos.
+- **Meu Irmão** — R2 + △ / RT + Y · custo 0 · cooldown 20 s
+  Lembra do Gallerius e se recompõe: paga 4% da vida e recupera 35 de sanidade e as esquivas; na equipe, as assistências voltam na hora.
+
+### Especial: Duelo até o Fim
+
+250 de dano · custo 50 · cooldown 16 s.
+
+### Transformação: Memória Revivida
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +8% de velocidade, recargas 25% mais rápidas, cura 10% na hora.
 
 ---
 
@@ -2455,232 +2636,6 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
-## CASCADIA
-
-*A guerreira mais antiga da Ordo Calamitas, mãe de Caesar — cansada de tudo, principalmente da Celestine* · arma: O khopesh curvo e a espada reta
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Gancho do Khopesh | 23 | 2 m |  |
-| ○ 2 | Espada Reta | 21 | 2.1 m |  |
-| ○ 3 | Tesoura | 17 (2 acertos) | 2 m |  |
-| ○ 4 | Puxão e Estocada | 28 | 2.3 m |  |
-| ○ 5 | Corte da Veterana | 56 | 2.3 m | finalizador: lança |
-| Frente + ○ | Avanço Cruzado | 30 | 2.1 m |  |
-| Trás + ○ | Aparar com o Gancho | 0 | 0 m | contra-ataque (revida 50) |
-| Lado + ○ | Giro das Duas Lâminas | 28 | 2.1 m |  |
-| No ar + ○ | Lâminas do Alto | 32 | 2 m | desce com impacto |
-| ↑ + ○ (no combo) | Khopesh de Baixo | 34 | 2.1 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Corte nas Pernas | 36 | 2.1 m | finalizador: derruba |
-
-### Principal (□ / X): Khopesh Arremessado
-
-- Dano 30 · alcance 14 m · cooldown 2.6 s · custo 0
-
-### Habilidades
-
-- **Gancho do Khopesh** — △ + ○ / Y + B · custo 22 · cooldown 12 s · dano 40 · alcance 3.6 m
-  Avança e prende a guarda no gancho do khopesh: a defesa quebra, o alvo é puxado para perto dela e NÃO CONSEGUE DEFENDER por 2 s (não dá para bloquear o gancho).
-- **Sem Paciência** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
-  Cansou de esperar: por 7 s ataca 20% mais rápido e corre 10% mais rápido.
-- **Dança das Duas Lâminas** — R2 + × / RT + A · custo 22 · cooldown 11 s
-  Gira para trás, intocável no salto, e solta três cortes de energia azul em leque no adversário.
-- **Guerreira Antiga** — R2 + △ / RT + Y · custo 22 · cooldown 20 s
-  Já viu a Ordo nascer: firma as duas lâminas na frente e por 6 s recebe 25% menos dano e aguenta 2 golpes sem recuar.
-
-### Especial: Por Caesar
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: Memória Revivida
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades), +8% de velocidade, recargas 20% mais rápidas, cura 10% na hora.
-
----
-
-## CORNELIUS
-
-*O guerreiro De Ferro da Ordo Calamitas: a maior defesa de todos e nenhuma paciência* · arma: A lança e o escudo
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Estocada | 26 | 2.8 m |  |
-| ○ 2 | Cravada por Cima | 28 | 2.9 m |  |
-| ○ 3 | Escudada | 30 | 1.7 m |  |
-| ○ 4 | Haste Varrida | 30 | 2.6 m |  |
-| ○ 5 | Investida da Lança | 60 | 3.2 m | finalizador: lança |
-| Frente + ○ | Investida de Escudo | 36 | 2 m |  |
-| Trás + ○ | Recuo de Lança | 32 | 3 m | invulnerável no começo |
-| Lado + ○ | Roda da Lança | 32 | 2.8 m |  |
-| No ar + ○ | Lança do Alto | 36 | 2.6 m | desce com impacto |
-| ↑ + ○ (no combo) | Lança de Baixo | 38 | 2.6 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Escudo no Chão | 44 | 1.9 m | finalizador: derruba |
-
-### Principal (□ / X): Lança Arremessada
-
-- Dano 38 · alcance 20 m · cooldown 3 s · custo 0
-
-### Habilidades
-
-- **Lança Certeira** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.2 m
-  Recua a lança e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
-- **Escudo Fechado** — △ + L2 / Y + LT · custo 24 · cooldown 20 s
-  Fecha atrás do escudo: por 7 s recebe 40% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
-- **Muralha de Escudo** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
-  Avança atrás do escudo e passa por cima: quebra a defesa e joga longe.
-- **Pavio Curto** — R2 + △ / RT + Y · custo 22 · cooldown 16 s
-  Acende o pavio por 4 s: recebe 15% menos dano, aguenta 3 golpes sem recuar e TODO dano que levar vira raiva. No fim explode num giro de lança em volta (40 + 60% do que levou, até 160 a mais).
-
-### Especial: De Ferro
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: Memória Revivida
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +12% de dano (físico, habilidades), +5% de velocidade, recargas 15% mais rápidas, cura 14% na hora.
-
----
-
-## KARISE
-
-*A espiã da Ordo Calamitas — de capuz e mascarilha, nada é pessoal* · arma: O par de adagas de ponta dupla
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Ponta | 19 | 1.7 m |  |
-| ○ 2 | Contraponta | 19 | 1.7 m |  |
-| ○ 3 | Duas Pontas | 15 (2 acertos) | 1.8 m |  |
-| ○ 4 | Giro de Punho | 21 | 1.8 m |  |
-| ○ 5 | Nada Pessoal | 50 | 2 m | finalizador: lança |
-| Frente + ○ | Bote da Espiã | 28 | 2 m |  |
-| Trás + ○ | Esquiva e Corte | 26 | 1.9 m | invulnerável no começo |
-| Lado + ○ | Roda das Pontas | 24 | 1.9 m |  |
-| No ar + ○ | Pontas do Alto | 28 | 1.9 m | desce com impacto |
-| ↑ + ○ (no combo) | Pontas para Cima | 30 | 1.9 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Rasteira | 32 | 1.9 m | finalizador: derruba |
-
-### Principal (□ / X): Adaga Arremessada
-
-- Dano 16 × 2 · alcance 22 m · cooldown 2.4 s · custo 0
-
-### Habilidades
-
-- **Espiã** — △ + ○ / Y + B · custo 20 · cooldown 15 s · alcance 14 m
-  Obriga o adversário a revelar uma habilidade (o nome aparece): ela fica PRESA por 8 s. Sem habilidades, é o especial que fica preso.
-- **Estudar o Alvo** — △ + L2 / Y + LT · custo 20 · cooldown 16 s · alcance 16 m
-  Estuda o adversário: por 8 s ele recebe 25% a mais de dano de tudo o que vem dela.
-- **Sombra da Ordo** — R2 + × / RT + A · custo 20 · cooldown 14 s
-  Puxa o capuz e sai da vista (até 5 s): quase invisível e mais rápida. FURTIVA: desvia dos 2 próximos ataques — ou de um especial, que gasta a furtividade inteira. O primeiro ataque pega o alvo DESPREVENIDO.
-- **Leque de Adagas** — R2 + △ / RT + Y · custo 22 · cooldown 10 s
-  Gira para trás, intocável no salto, e solta quatro adagas em leque no adversário.
-- **Passiva:** golpes físicos pelas costas causam +25%
-
-### Especial: Nada Pessoal
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: Memória Revivida
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +10% de velocidade, recargas 25% mais rápidas, cura 10% na hora.
-
----
-
-## MARCELLUS
-
-*O duelista animado da Ordo Calamitas, que não pode deixar de existir antes de achar o irmão* · arma: A rapieira de cabo dourado
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Estocada | 20 | 2.4 m |  |
-| ○ 2 | Estocada Alta | 20 | 2.4 m |  |
-| ○ 3 | Raspão | 14 (2 acertos) | 2.2 m |  |
-| ○ 4 | Finta e Ponta | 24 | 2.6 m |  |
-| ○ 5 | Ataque a Fundo | 54 | 3 m | finalizador: lança |
-| Frente + ○ | Flecha | 30 | 2.6 m |  |
-| Trás + ○ | Parada e Resposta | 0 | 0 m | contra-ataque (revida 52) |
-| Lado + ○ | Volta do Duelista | 26 | 2.3 m |  |
-| No ar + ○ | Ponta do Alto | 30 | 2.3 m | desce com impacto |
-| ↑ + ○ (no combo) | Ponta para Cima | 30 | 2.2 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Pé no Joelho | 32 | 1.9 m | finalizador: derruba |
-
-### Principal (□ / X): Estocada de Energia
-
-- Dano 26 · alcance 20 m · cooldown 2.2 s · custo 0
-
-### Habilidades
-
-- **Duelo** — △ + L2 / Y + LT · custo 24 · cooldown 20 s · alcance 8 m
-  Desenha o CÍRCULO DO DUELO em volta dos dois por 8 s: ninguém sai; lá dentro ele recebe 20% menos dano, bate 20% mais forte, e nada de fora (invocações) o atinge.
-- **A Fundo** — △ + ○ / Y + B · custo 20 · cooldown 9 s · dano 50 · alcance 2.4 m
-  O ataque a fundo do esgrimista: atravessa a distância numa estocada só e quebra a defesa.
-- **Chuva de Pontas** — R2 + × / RT + A · custo 20 · cooldown 10 s
-  Três estocadas no ar, rápidas: três fios de energia azul seguidos.
-- **Meu Irmão** — R2 + △ / RT + Y · custo 0 · cooldown 20 s
-  Lembra do Gallerius e se recompõe: paga 4% da vida e recupera 35 de sanidade e as esquivas; na equipe, as assistências voltam na hora.
-
-### Especial: Duelo até o Fim
-
-250 de dano · custo 50 · cooldown 16 s.
-
-### Transformação: Memória Revivida
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +8% de velocidade, recargas 25% mais rápidas, cura 10% na hora.
-
----
-
-## NERO
-
-*Nero, o imperador de Roma e líder da Ordo Calamitas — superior, cheio de regras, e as mãos tremem quando mente* · arma: A espada longa e curva e o escudo redondo
-
-### Físico (○ / B)
-
-| Comando | Golpe | Dano | Alcance | Observações |
-|---|---|---|---|---|
-| ○ 1 | Corte Imperial | 28 | 2.3 m |  |
-| ○ 2 | Revés Curvo | 28 | 2.3 m |  |
-| ○ 3 | Escudada | 26 | 1.7 m |  |
-| ○ 4 | Corte Diagonal | 34 | 2.3 m |  |
-| ○ 5 | Sentença do Imperador | 60 | 2.5 m | finalizador: lança |
-| Frente + ○ | Avanço do Escudo | 36 | 2 m |  |
-| Trás + ○ | Recuo Real | 34 | 2.4 m | invulnerável no começo |
-| Lado + ○ | Meia-Lua | 32 | 2.4 m |  |
-| No ar + ○ | Espada do Alto | 36 | 2.3 m | desce com impacto |
-| ↑ + ○ (no combo) | Corte Ascendente | 38 | 2.3 m | finalizador: lança alto (combo aéreo) |
-| ↓ + ○ (no combo) | Ajoelhe-se | 46 | 2.3 m | finalizador: derruba |
-
-### Principal (□ / X): Meia-Lua de Energia
-
-- Dano 30 · alcance 16 m · cooldown 2.6 s · custo 0
-
-### Habilidades
-
-- **Imperador** — △ + L2 / Y + LT · custo 24 · cooldown 15 s · alcance 10 m
-  A ordem do imperador: os estados BONS do adversário (força, proteção, velocidade) passam para Nero. Sem nenhum, o adversário AJOELHA por 1 s e 30 de sanidade dele vão para Nero.
-- **Conspirador** — △ + ○ / Y + B · custo 20 · cooldown 16 s · alcance 12 m
-  Oferece a conspiração por 4 s: se o adversário bater nele (trair), GANHA 1 ponto de existência, mas fica MARCADO como traidor por 12 s e Nero bate 40% mais forte nele. Se ninguém trair, o ponto fica com Nero.
-- **Escudo Imperial** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
-  Avança atrás do escudo redondo e corta por cima: quebra a defesa e empurra longe.
-- **Regras do Imperador** — R2 + △ / RT + Y · custo 26 · cooldown 18 s · alcance 12 m
-  Um decreto por 6 s, na ordem: SEM VINHO (nada cura e a sanidade volta pela metade), FORMALIDADE (lento e sem esquiva), SILÊNCIO (sem habilidades).
-
-### Especial: Roma em Chamas
-
-250 de dano · custo 50 · cooldown 14 s.
-
-### Transformação: Memória Revivida
-
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades), +6% de velocidade, recargas 20% mais rápidas, cura 12% na hora.
-
----
-
 ## VERITUS
 
 *O líder da Ordo Calamitas, guardião das Relíquias — e, por baixo do elmo, um segredo de Conhecimento* · arma: A espada longa do líder
@@ -2770,6 +2725,51 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Transformação: O Primeiro Ocultista
 
 Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, distância, habilidades), +6% de velocidade, recargas 60% mais rápidas, cura 10% na hora.
+
+---
+
+## NERO
+
+*Nero, o imperador de Roma e líder da Ordo Calamitas — superior, cheio de regras, e as mãos tremem quando mente* · arma: A espada longa e curva e o escudo redondo
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte Imperial | 28 | 2.3 m |  |
+| ○ 2 | Revés Curvo | 28 | 2.3 m |  |
+| ○ 3 | Escudada | 26 | 1.7 m |  |
+| ○ 4 | Corte Diagonal | 34 | 2.3 m |  |
+| ○ 5 | Sentença do Imperador | 60 | 2.5 m | finalizador: lança |
+| Frente + ○ | Avanço do Escudo | 36 | 2 m |  |
+| Trás + ○ | Recuo Real | 34 | 2.4 m | invulnerável no começo |
+| Lado + ○ | Meia-Lua | 32 | 2.4 m |  |
+| No ar + ○ | Espada do Alto | 36 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Corte Ascendente | 38 | 2.3 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Ajoelhe-se | 46 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Meia-Lua de Energia
+
+- Dano 30 · alcance 16 m · cooldown 2.6 s · custo 0
+
+### Habilidades
+
+- **Imperador** — △ + L2 / Y + LT · custo 24 · cooldown 15 s · alcance 10 m
+  A ordem do imperador: os estados BONS do adversário (força, proteção, velocidade) passam para Nero. Sem nenhum, o adversário AJOELHA por 1 s e 30 de sanidade dele vão para Nero.
+- **Conspirador** — △ + ○ / Y + B · custo 20 · cooldown 16 s · alcance 12 m
+  Oferece a conspiração por 4 s: se o adversário bater nele (trair), GANHA 1 ponto de existência, mas fica MARCADO como traidor por 12 s e Nero bate 40% mais forte nele. Se ninguém trair, o ponto fica com Nero.
+- **Escudo Imperial** — R2 + × / RT + A · custo 20 · cooldown 10 s · dano 50 · alcance 2.2 m
+  Avança atrás do escudo redondo e corta por cima: quebra a defesa e empurra longe.
+- **Regras do Imperador** — R2 + △ / RT + Y · custo 26 · cooldown 18 s · alcance 12 m
+  Um decreto por 6 s, na ordem: SEM VINHO (nada cura e a sanidade volta pela metade), FORMALIDADE (lento e sem esquiva), SILÊNCIO (sem habilidades).
+
+### Especial: Roma em Chamas
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Memória Revivida
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +15% de dano (físico, habilidades), +6% de velocidade, recargas 20% mais rápidas, cura 12% na hora.
 
 ---
 

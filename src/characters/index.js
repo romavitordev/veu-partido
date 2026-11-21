@@ -77,10 +77,10 @@ import { juanPortador, deusMorteReliquia, anfitriaoReliquia } from './selectable
 // Para adicionar um personagem: crie o arquivo de definição aqui, registre o modelo em models/index.js e coloque-o
 // junto da equipe dele nesta lista.
 export const ROSTER = [
-  arthur, joui, kaiser, dante, erin, aghata, balu, carina, rubens, beatrice, fernando, tristan, ivete, verissimo, cristopher, // Ordo Realitas (o Cris fecha a Equipe E de OSNF; Carina e Rubens, dos Abutres, ao lado do Balu; a Beatrice, da Força D)
+  arthur, joui, kaiser, dante, erin, aghata, balu, carina, rubens, beatrice, fernando, tristan, ivete, verissimo, cristopher, arnaldo, // Ordo Realitas (o Cris fecha a Equipe E de OSNF; Carina e Rubens, dos Abutres, ao lado do Balu; a Beatrice, da Força D; o Arnaldo por último — 2026-11-20, sem a etiqueta de Portadores: são 16, ele abre a página 2)
   kian, gal_sal, nubi, damir, boris, artemis, // Escriptas
   xande, guizo, lirio, dara, chico, morato, // Os Cinco (Sinais do Outro Lado) — o Guizo do lado do melhor amigo; a Dara, a médica
-  dalmo, aguiar, jae, kemi, labirinto, juan, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan
+  dalmo, aguiar, jae, kemi, labirinto, juan, juanPortador, // Mascarados (Hexatombe) — o HENRI (id juan); no ódio ele vira o Juan
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo
   eloy, cindy, caio, franco, ale, // PSIKOLERA (Hexatombe) — o baterista e fundador, a baixista, o vocalista, o guitarrista e o teclado (Alê)
   raziel, sabara, alvira, velisar, zefero, // Vampiros (Hexatombe) — o líder, a batedora, a Primeira Vampira (2026-11-18), o Velisar e o Zéfero (2026-11-19)
@@ -89,12 +89,11 @@ export const ROSTER = [
   // começar já como elas (selectableForms.js)
   // quem é de DUAS equipes (2026-10-27): `origin` é a equipe em que ele fica na seleção (e a cor do retrato); `teams`
   // lista as outras — aparecem como etiqueta extra no cartão e na ficha (ex.: o Arnaldo, Portador E Ordo Realitas)
-  juanPortador, arnaldo, // Portadores (Sangue, Energia)
-  // ORDO CALAMITAS na grade (dono, 2026-11-20): os membros sem versão em cima; na última linha Nero, Veritus (⇄ Rancor) e
-  // o GAIUS (⇄ Amphitruo) por último — colado nos Portadores/Relíquias. A Celestine fica junto a eles, sem a etiqueta de
-  // Portadores; Amalia é A Flecha; Cascadia, Cornelius, Karise e Marcellus são personagens do mestre
-  celestine, amalia, faustus, marius, remus, cascadia, cornelius, karise, marcellus,
-  nero, veritus, veritus_rancor, gaius,
+  // ORDO CALAMITAS na grade (dono, 2026-11-20): em cima os personagens do mestre (Cascadia, Cornelius, Karise, Marcellus);
+  // embaixo os jogados nos episódios — Celestine, Amalia (A Flecha), Faustus, Marius, Remus, Veritus (⇄ Rancor) e Nero —
+  // perto do GAIUS (⇄ Amphitruo), o último, colado nas Relíquias. A Celestine sem a etiqueta de Portadores
+  cascadia, cornelius, karise, marcellus,
+  celestine, amalia, faustus, marius, remus, veritus, veritus_rancor, nero, gaius,
   ferreiro, oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (o Ferreiro desde 2026-11-20; Sangue, Morte, Conhecimento, Energia)
   estrangeiro, amigo, carnical, degolificada, espreitador, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
 ];

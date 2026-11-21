@@ -1914,6 +1914,11 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 
 /* ATIVAS x PASSIVAS (dono, 2026-11-14: 6 de cada): as ativas com a borda roxa, o selo do tipo na carta */
 #pvehud .pv-up.act i { box-shadow: 0 0 0 1px #b07aff, 0 0 8px #8a4aff66; }
+/* fusões (lilás) e achados das fases (verde) na barra da build; a pista da fusão nas cartas de nível */
+#pvehud .pv-up.fus i { box-shadow: 0 0 0 1px #d8a0ff, 0 0 10px #c070ffaa; color: #f0d8ff; }
+#pvehud .pv-up.rel i { box-shadow: 0 0 0 1px #7effc8, 0 0 10px #3ad8a0aa; color: #d8fff0; }
+#pvehud .pv-card small.fus { display: block; color: #d8a0ff; }
+#pvehud .pv-card small.fus.ready { color: #f0c8ff; font-weight: 700; text-shadow: 0 0 8px #b060ff; }
 #pvehud .pv-card b u { display: inline-block; margin-right: 8px; padding: 1px 6px; border-radius: 4px; font-size: 10px; letter-spacing: .12em; text-decoration: none; vertical-align: middle; color: #c8bfb0; border: 1px solid #ffffff33; }
 #pvehud .pv-card b u.act { color: #e0c8ff; border-color: #b07aff; background: #8a4aff22; }
 #pvehud .pv-card.act > i { box-shadow: 0 0 0 1px #b07aff, 0 0 12px #8a4aff66; }
@@ -1988,16 +1993,22 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 
 /* OUTRO LADO — DESCOBERTAS (as fusões, como a coleção do Vampire Survivors) */
 .pve-found { display: flex; align-items: center; justify-content: center; padding: 16px; background: radial-gradient(ellipse at 50% 30%, #1e0f2acc, #060307ee 70%); font-family: Inter, system-ui, sans-serif; color: #e8e2d4; }
-.pve-found .pf-wrap { width: min(760px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.pve-found .pf-wrap { width: min(860px, 100%); display: flex; flex-direction: column; gap: 12px; }
 .pve-found header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .pve-found header small { color: #a89c90; letter-spacing: .14em; font-size: 12px; }
 .pve-found header h2 { margin: 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 40px; letter-spacing: .06em; color: #f4ece0; }
 .pve-found header span { margin-left: auto; color: #d8a0ff; font-weight: 700; }
-.pve-found .pf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.pve-found .pf-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 6px; border-radius: 10px; background: #140c18d9; border: 1px solid #ffffff14; cursor: pointer; text-align: center; }
+.pve-found .pf-wrap { max-height: 100%; }
+.pve-found .pf-list { overflow-y: auto; min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.pve-found .pf-list h3 { margin: 4px 0 0; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 22px; letter-spacing: .08em; color: #f4ece0; }
+.pve-found .pf-list h3 span { color: #a89c90; font-size: 16px; margin-left: 6px; }
+.pve-found .pf-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.pve-found .pf-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border-radius: 10px; background: #140c18d9; border: 1px solid #ffffff14; cursor: pointer; text-align: center; }
 .pve-found .pf-tile i { font-style: normal; font-size: 30px; color: #5a5060; }
 .pve-found .pf-tile b { font-size: 12px; color: #7a7080; letter-spacing: .04em; }
 .pve-found .pf-tile.ok i { color: #d8a0ff; text-shadow: 0 0 12px #b060ff88; }
+.pve-found .pf-tile.rel.ok i { color: #7effc8; text-shadow: 0 0 12px #3ad8a088; }
+.pve-found .pf-info.rel > i { color: #7effc8; }
 .pve-found .pf-tile.ok b { color: #f4ece0; }
 .pve-found .pf-tile.on { border-color: #ffd84a; background: #2a1a10e6; }
 .pve-found .pf-info { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 10px; background: #160c12d9; border: 1px solid #ffffff1a; min-height: 96px; }
@@ -2009,7 +2020,7 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 .pve-found .pf-tip { margin: 0; font-size: 12px; color: #a89c90; line-height: 1.5; }
 .pve-found .pf-btns { display: flex; justify-content: flex-end; }
 .pve-found .pf-btns button { padding: 10px 18px; border-radius: 8px; background: #2a1a10e6; color: #ffd84a; border: 1px solid #ffd84a55; font-weight: 700; letter-spacing: .08em; cursor: pointer; }
-@media (max-width: 560px) { .pve-found .pf-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .pve-found .pf-grid { grid-template-columns: repeat(3, 1fr); } }
 
 /* TELA DE CARREGAMENTO DO JOGO (#bootscreen no index.html, ui/bootScreen.js) — própria, por cima de tudo */
 #bootscreen { position: fixed; inset: 0; z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: radial-gradient(ellipse at 50% 42%, #24123a 0%, #0b0612 58%, #030205 100%); color: #e9e0f7; font-family: 'Bebas Neue', Impact, sans-serif; text-align: center; transition: opacity .6s ease, visibility .6s; }

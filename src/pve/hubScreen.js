@@ -45,7 +45,7 @@ export class PveHubScreen {
           ${a ? '<button data-id="new"><b>NOVA TENTATIVA</b><small>abandona a atual</small></button>' : ''}
           <button data-id="unlock"><b>LOJA · GACHA</b><small>${info.owned}/${info.total} personagens · giro ● ${SPIN_PRICE}</small></button>
           <button data-id="tree"><b>MELHORIAS</b><small>${info.treeRanks} grau(s) · balcão da Aghata</small></button>
-          <button data-id="found"><b>DESCOBERTAS</b><small>${info.found || 0}/${info.foundTotal || 0} fusões de poderes</small></button>
+          <button data-id="found"><b>DESCOBERTAS</b><small>${info.found || 0}/${info.foundTotal || 0} fusões e achados</small></button>
         </nav>
         <footer class="ph-foot">
           <span>${played ? `Recorde: profundidade ${c.bestDepth} · chefes ${c.bossKills} · mortes ${c.deaths}` : 'Nenhuma descida ainda'}</span>

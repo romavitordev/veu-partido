@@ -37,10 +37,10 @@ export const UPGRADES = [
   // (a primeira no máximo), cada baú tem `chance` de trazer a fusão; descoberta uma vez, ela fica na tela DESCOBERTAS e
   // pode vir, bem rara (`rare`), mesmo sem a receita. Nunca sai nas cartas de nível e não ocupa vaga. PROPOSTA: todas.
   ...[
-    { id: 'carnificina', name: 'Carnificina', icon: '☠', needs: [['furia', 5], ['sanguessuga', 1]], desc: '+15% de dano dos golpes físicos e cura 4% do dano físico que causar.', apply: (m) => { m.dealt.melee += 0.15; m.lifesteal += 0.04; } },
-    { id: 'muralhaViva', name: 'Muralha Viva', icon: '⛫', needs: [['couraca', 5], ['vigor', 1]], desc: '−8% de dano recebido e +15% de vida máxima.', apply: (m) => { m.taken *= 0.92; m.hpMult += 0.15; } },
-    { id: 'transe', name: 'Transe Ritual', icon: '✺', needs: [['foco', 5], ['calma', 1]], desc: 'Habilidades custam 15% menos Sanidade e causam +12% de dano (o especial também).', apply: (m) => { m.costMult *= 0.85; m.dealt.ability += 0.12; m.dealt.special += 0.12; } },
-    { id: 'olhoMorto', name: 'Olho Morto', icon: '◉', needs: [['mira', 5], ['certeiro', 1]], desc: '+15% de dano dos tiros e arremessos e +8% de chance de crítico.', apply: (m) => { m.dealt.ranged += 0.15; m.crit += 0.08; } },
+    { id: 'carnificina', name: 'Carnificina', icon: '☠', needs: [['furia', 3], ['sanguessuga', 1]], desc: '+15% de dano dos golpes físicos e cura 4% do dano físico que causar.', apply: (m) => { m.dealt.melee += 0.15; m.lifesteal += 0.04; } },
+    { id: 'muralhaViva', name: 'Muralha Viva', icon: '⛫', needs: [['couraca', 3], ['vigor', 1]], desc: '−8% de dano recebido e +15% de vida máxima.', apply: (m) => { m.taken *= 0.92; m.hpMult += 0.15; } },
+    { id: 'transe', name: 'Transe Ritual', icon: '✺', needs: [['foco', 3], ['calma', 1]], desc: 'Habilidades custam 15% menos Sanidade e causam +12% de dano (o especial também).', apply: (m) => { m.costMult *= 0.85; m.dealt.ability += 0.12; m.dealt.special += 0.12; } },
+    { id: 'olhoMorto', name: 'Olho Morto', icon: '◉', needs: [['mira', 3], ['certeiro', 1]], desc: '+15% de dano dos tiros e arremessos e +8% de chance de crítico.', apply: (m) => { m.dealt.ranged += 0.15; m.crit += 0.08; } },
     { id: 'passoSombra', name: 'Passo de Sombra', icon: '☽', needs: [['agilidade', 3], ['reflexos', 1]], desc: '+8% de velocidade e a esquiva recarrega 15% mais rápido.', apply: (m) => { m.speedMult += 0.08; m.dodgeMult *= 0.85; } },
     { id: 'carapaca', name: 'Carapaça de Espinhos', icon: '✹', needs: [['espinhos', 3], ['couraca', 1]], desc: 'Devolve mais 25% do dano corpo a corpo que você recebe.', apply: (m) => { m.thorns += 0.25; } },
     { id: 'predador', name: 'Predador', icon: '⚔', needs: [['cacador', 3], ['agilidade', 1]], desc: 'Derrotar um inimigo cura mais 4% da vida, e você anda 5% mais rápido.', apply: (m) => { m.killHeal += 0.04; m.speedMult += 0.05; } },
@@ -50,8 +50,37 @@ export const UPGRADES = [
     { id: 'execucao', name: 'Execução', icon: '✠', needs: [['certeiro', 3], ['furia', 1]], desc: '+8% de chance de crítico e +10% de dano dos golpes físicos.', apply: (m) => { m.crit += 0.08; m.dealt.melee += 0.1; } },
     { id: 'banquete', name: 'Banquete de Sangue', icon: '❦', needs: [['sanguessuga', 3], ['cacador', 1]], desc: 'Cura mais 3% do dano físico que causar e derrotar um inimigo cura mais 3% da vida.', apply: (m) => { m.lifesteal += 0.03; m.killHeal += 0.03; } },
     { id: 'estudioso', name: 'Ocultista Estudioso', icon: '✐', needs: [['sabedoria', 3], ['ima', 1]], desc: '+15% de experiência e puxa moedas, experiência e cura de 50% mais longe.', apply: (m) => { m.xpMult += 0.15; m.magnet += 0.5; } },
-  ].map((f) => ({ ...f, kind: 'fusion', chest: true, max: 1, evolve: { needs: f.needs, chance: 0.3, rare: 0.03 } })),
+    // mais 5 (pedido do dono, 2026-11-20: "a proxima atualização quero que foque nas fusões... quero mais variedade de
+    // melhorias que posso descobrir nas fases"; PROPOSTA)
+    { id: 'colosso', name: 'Colosso', icon: '⛰', needs: [['vigor', 3], ['furia', 1]], desc: '+12% de vida máxima e +12% de dano dos golpes físicos.', apply: (m) => { m.hpMult += 0.12; m.dealt.melee += 0.12; } },
+    { id: 'tempestade', name: 'Tempestade de Chumbo', icon: '☄', needs: [['mira', 3], ['frequencia', 1]], desc: '+12% de dano dos tiros e arremessos e as recargas ficam 10% menores.', apply: (m) => { m.dealt.ranged += 0.12; m.cdMult *= 0.9; } },
+    { id: 'vigilia', name: 'Vigília', icon: '☼', needs: [['lucidez', 3], ['vigor', 1]], desc: '+10% de vida máxima e regenera 0,3% da vida por segundo.', apply: (m) => { m.hpMult += 0.1; m.regenHp += 0.003; } },
+    { id: 'fortuna', name: 'Fortuna Macabra', icon: '♠', needs: [['ima', 2], ['cacador', 1]], desc: '+30% de chance de cura dos inimigos, +25% de moedas e baús mais fartos.', apply: (m) => { m.dropMult += 0.3; m.coinMult += 0.25; m.chestLuck += 0.25; } },
+    { id: 'sangueFrio', name: 'Sangue Frio', icon: '❄', needs: [['reflexos', 3], ['certeiro', 1]], desc: '+10% de chance de crítico e a esquiva recarrega 10% mais rápido.', apply: (m) => { m.crit += 0.1; m.dodgeMult *= 0.9; } },
+  // A FUSÃO É GARANTIDA (2026-11-20): com a receita pronta, o PRÓXIMO baú traz (como a evolução do Vampire Survivors).
+  // Antes: o 1º ingrediente no nível 5 e 30% por baú — numa fase só quase ninguém chegava (2–4% das tentativas simuladas)
+  ].map((f) => ({ ...f, kind: 'fusion', chest: true, max: 1, evolve: { needs: f.needs, chance: 1, rare: 0.03 } })),
+  // ---------------- ACHADOS DAS FASES (pedido do dono, 2026-11-20: "mais variedade de melhorias que posso descobrir nas
+  // fases"): dois por fase, só saem dos BAÚS daquela fase (RELIC_CHANCE por baú), cada um uma vez por tentativa, sem
+  // ocupar vaga; achado uma vez, fica na tela DESCOBERTAS. PROPOSTA: todos os nomes, efeitos e números.
+  ...[
+    { id: 'olhoFresta', phase: 'espreitador', name: 'Olho da Fresta', icon: '◔', desc: '+15% de dano nos chefes: você já sabe de onde ele olha.', apply: (m) => { m.bossDealt += 0.15; } },
+    { id: 'chaveMestra', phase: 'espreitador', name: 'Chave Mestra', icon: '⚿', desc: 'Baús mais fartos e +15% de moedas.', apply: (m) => { m.chestLuck += 0.35; m.coinMult += 0.15; } },
+    { id: 'tesoura', phase: 'degolificada', name: 'Tesoura da Costureira', icon: '✂', desc: 'Golpes físicos têm 15% de chance de fazer SANGRAR.', apply: (m) => { m.bleedChance += 0.15; } },
+    { id: 'giz', phase: 'degolificada', name: 'Giz do Quadro-Negro', icon: '✐', desc: '+12% de dano das habilidades e +10% de experiência.', apply: (m) => { m.dealt.ability += 0.12; m.xpMult += 0.1; } },
+    { id: 'frascoTinta', phase: 'tipora', name: 'Frasco de Tinta', icon: '⚱', desc: 'Habilidades e tiros deixam o alvo LENTO por 2 s.', apply: (m) => { m.slowOnHit = true; } },
+    { id: 'lanternaFarol', phase: 'tipora', name: 'Lanterna do Farol', icon: '☀', desc: '+10% de velocidade e puxa moedas, experiência e cura de 40% mais longe.', apply: (m) => { m.speedMult += 0.1; m.magnet += 0.4; } },
+    { id: 'chamaVigilia', phase: 'samhain', name: 'Chama da Vigília', icon: '♨', desc: 'Seus golpes têm 12% de chance de QUEIMAR o alvo.', apply: (m) => { m.burnChance += 0.12; } },
+    { id: 'mascaraPalha', phase: 'samhain', name: 'Máscara de Palha', icon: '☗', desc: '−8% de dano recebido e derrotar um inimigo cura 2% da vida.', apply: (m) => { m.taken *= 0.92; m.killHeal += 0.02; } },
+    { id: 'denteQuibungo', phase: 'sertao', name: 'Dente do Quibungo', icon: '⚚', desc: 'Cura 3% de TODO dano que você causar (não só o físico).', apply: (m) => { m.lifestealAll += 0.03; } },
+    { id: 'mandacaru', phase: 'sertao', name: 'Espinho de Mandacaru', icon: '✶', desc: 'Devolve 20% do dano corpo a corpo que você recebe e +6% de vida máxima.', apply: (m) => { m.thorns += 0.2; m.hpMult += 0.06; } },
+    { id: 'fitaTransmissao', phase: 'estrangeiro', name: 'Fita da Transmissão', icon: '▣', desc: 'A Sanidade volta 25% mais rápido e as recargas ficam 8% menores.', apply: (m) => { m.regenMult += 0.25; m.cdMult *= 0.92; } },
+    { id: 'antenaTorta', phase: 'estrangeiro', name: 'Antena Torta', icon: '⌁', desc: '+6% de chance de crítico e +10% de dano dos tiros.', apply: (m) => { m.crit += 0.06; m.dealt.ranged += 0.1; } },
+  ].map((r) => ({ ...r, kind: 'relic', chest: true, max: 1 })),
 ];
+
+// a chance de um achado da fase sair de cada baú (um por baú). PROPOSTA
+export const RELIC_CHANCE = 0.18;
 
 // a receita da fusão está pronta (todas as `needs` no nível pedido): o baú pode trazê-la
 export function evolutionReady(picks, u) {
@@ -120,6 +149,12 @@ export function baseMods() {
     crit: 0,
     chestLuck: 0,
     revive: false,
+    // os ACHADOS DAS FASES (Dungeon.modsFor lê no onDealt)
+    bossDealt: 0,
+    lifestealAll: 0,
+    bleedChance: 0,
+    burnChance: 0,
+    slowOnHit: false,
     // o KIT: { slot: nível } (slot = id da habilidade, 'ranged', 'melee' ou 'special') e o que cada nível vira
     kit: {},
     kitPower: 1,
@@ -250,9 +285,12 @@ export function rollChoices(picks, rng = Math.random, n = 3, def = null) {
 // o BAÚ (como no Vampire Survivors): sobe de grau melhorias que o jogador JÁ tem e, enquanto houver vaga, pode trazer
 // uma do baú (u.chest). Ids sem repetir, só abaixo do máximo. Devolve [] quando não há mais nada: aí o baú oferece moedas
 // ou vida (Dungeon.openChest)
-export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = [] } = {}) {
+export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = [], phase = null } = {}) {
   const have = [...picks];
   const out = [];
+  // o ACHADO DA FASE (só nos baús dela; no máximo um por baú)
+  const relics = phase ? RELICS.filter((r) => r.phase === phase && !have.includes(r.id)) : [];
+  if (relics.length && rng() < RELIC_CHANCE) { const r = relics[Math.floor(rng() * relics.length)]; out.push(r.id); have.push(r.id); }
   // a FUSÃO primeiro, por chance: com a receita pronta (u.evolve.chance) ou, já descoberta antes, bem rara (rare)
   for (const u of UPGRADES) {
     if (!u.evolve || countOf(have, u.id) >= u.max || out.length >= n) continue;
@@ -261,7 +299,7 @@ export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = []
   }
   while (out.length < n) {
     const owned = [...new Set(have)].filter(isKit).map((id) => KIT.get(id)).filter(Boolean);
-    const pool = [...UPGRADES, ...owned].filter((u) => !u.evolve && !out.includes(u.id) && countOf(have, u.id) < u.max
+    const pool = [...UPGRADES, ...owned].filter((u) => !u.evolve && u.kind !== 'relic' && !out.includes(u.id) && countOf(have, u.id) < u.max
       && (countOf(have, u.id) > 0 || (u.chest && slotFree(have, u)))).map((u) => u.id);
     if (!pool.length) break;
     const id = pool[Math.floor(rng() * pool.length)];
@@ -312,3 +350,12 @@ export function getTreeNode(id) { return byId(TREE, id); }
 // as FUSÕES (para a tela DESCOBERTAS e o HUD)
 export const FUSIONS = UPGRADES.filter((u) => u.kind === 'fusion');
 export const isFusion = (id) => FUSIONS.some((f) => f.id === id);
+// os ACHADOS DAS FASES (tela DESCOBERTAS)
+export const RELICS = UPGRADES.filter((u) => u.kind === 'relic');
+export const isRelic = (id) => RELICS.some((r) => r.id === id);
+// a pista nas cartas de nível: a melhoria entra em alguma fusão que falta, e escolher `id` agora deixa uma pronta
+export function fusionHint(picks, id) {
+  const open = FUSIONS.filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => x === id));
+  const completes = open.some((f) => !evolutionReady(picks, f) && evolutionReady([...picks, id], f));
+  return { part: open.length > 0, completes };
+}

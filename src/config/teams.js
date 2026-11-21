@@ -12,7 +12,6 @@ export const TEAM_COLORS = {
   // no branco-osso; quem Ã‰ a RelÃ­quia (O Diabo, O Deus da Morte, A Magistrada, O AnfitriÃ£o) no MAGENTA (o dourado de
   // antes era quase o amarelo da Ordo â€” nenhuma outra equipe usa magenta); e os Sinos de Tenebris (o Estrangeiro e o
   // Amigo ImaginÃ¡rio) no verde-acinzentado do OUTRO LADO
-  Portadores: '#d8cfb8',
   'RelÃ­quias': '#d63c8c',
   'Outro Lado': '#7fa89a',
   'Ordo Calamitas': '#4a62e0', // a ordem de 67 d.C. (Celestine, Gaius, Amalia, Cornelius): azul-real, nenhuma outra usa

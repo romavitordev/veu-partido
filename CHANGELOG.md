@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.41.0 — As Fusões do Outro Lado
+
+### Corrigido
+- Fusões no Outro Lado: quase nunca saíam, porque a receita pedia a primeira melhoria no nível máximo e o baú só trazia a fusão em 30% das vezes. Agora a primeira melhoria pede o nível 3, e com a receita pronta o próximo baú traz a fusão sempre.
+
+### Adicionado
+- Cinco fusões novas: Colosso, Tempestade de Chumbo, Vigília, Fortuna Macabra e Sangue Frio (17 no total).
+- Achados das fases: 12 melhorias únicas, duas por fase, que só saem dos baús daquela fase. Exemplos: a Tesoura da Costureira faz sangrar, a Chama da Vigília queima, o Frasco de Tinta deixa lento e o Dente do Quibungo cura com todo dano causado.
+- As cartas de nível avisam quando uma melhoria é ingrediente de fusão ou completa uma receita, e a luta mostra “FUSÃO PRONTA: ABRA UM BAÚ!”.
+- A tela DESCOBERTAS ganhou duas seções, Fusões e Achados das fases. Mesmo antes de descobrir, ela mostra a receita de cada fusão e a fase de cada achado.
+
+### Alterado
+- Seleção de personagem, Ordo Calamitas: Cascadia, Cornelius, Karise e Marcellus ficam em cima; os personagens dos episódios ficam perto do Gaius, que é o último.
+- O título Portadores saiu da seleção. O Arnaldo agora está na Ordo Realitas, e o Juan (Ódio) volta aos Mascarados.
+
 ## v5.40.0 — A Tinta e as Sombras
 
 ### Alterado
