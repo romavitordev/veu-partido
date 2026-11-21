@@ -14,27 +14,57 @@ export class SelectStage {
   constructor(roster) {
     this.roster = roster;
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0b0910);
-    this.scene.fog = new THREE.Fog(0x0b0910, 7, 16);
+    // CLIMA DO MENU (dono, 2026-11-21: "todo design ultrapassado com nosso novo nivel de qualidade"): o fundo é o roxo do
+    // Outro Lado com o RASGO do Véu no centro (o feixe do menu inicial), o chão com o pentagrama e cinzas subindo
+    this.bgTex = riftBackdrop();
+    this.scene.background = this.bgTex;
+    this.scene.fog = new THREE.Fog(0x0d0816, 8, 17);
     this.cam = new THREE.PerspectiveCamera(30, 16 / 9, 0.1, 60);
-    this.cam.position.set(0, 1.05, 7.8);
-    this.cam.lookAt(0, 0.8, 0); // lutadores um pouco acima das placas de nome
+    this.cam.position.set(0, 1.05, 7.2);
+    this.cam.lookAt(0, 0.62, 0); // lutadores mais altos na tela: o nome e as faixas ficam embaixo (2026-11-21)
     this.scene.add(new THREE.HemisphereLight(0xc8b8ff, 0x201830, 1.2));
     const key = new THREE.DirectionalLight(0xffffff, 2.2);
     key.position.set(0, 4, 5);
     this.scene.add(key);
     // chão com o sigilo e dois círculos de luz (um por jogador)
-    const floor = new THREE.Mesh(new THREE.CircleGeometry(9, 48), new THREE.MeshStandardMaterial({ color: 0x120e18, roughness: 0.9 }));
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(9, 48), new THREE.MeshStandardMaterial({ color: 0x140d20, roughness: 0.85 }));
     floor.rotation.x = -Math.PI / 2;
     this.scene.add(floor);
     this.sigil = new THREE.Group();
     for (const [r, w] of [[3.2, 0.03], [2.6, 0.02], [1.6, 0.025]]) {
-      const ring = new THREE.Mesh(new THREE.RingGeometry(r - w, r + w, 96), new THREE.MeshBasicMaterial({ color: 0x5a3a8a, transparent: true, opacity: 0.55 }));
+      const ring = new THREE.Mesh(new THREE.RingGeometry(r - w, r + w, 96), new THREE.MeshBasicMaterial({ color: 0x7a4ac0, transparent: true, opacity: 0.6 }));
       ring.rotation.x = -Math.PI / 2;
       ring.position.y = 0.01;
       this.sigil.add(ring);
     }
+    // o pentagrama entre os anéis (como o círculo do menu) e as runas em volta
+    const starPts = [];
+    for (let k = 0; k <= 5; k++) { const a = (k * 2 * Math.PI * 2) / 5 - Math.PI / 2; starPts.push(new THREE.Vector3(Math.cos(a) * 2.55, 0.012, Math.sin(a) * 2.55)); }
+    const star = new THREE.Line(new THREE.BufferGeometry().setFromPoints(starPts), new THREE.LineBasicMaterial({ color: 0x9a6ae0, transparent: true, opacity: 0.6 }));
+    this.sigil.add(star);
+    for (let k = 0; k < 24; k++) {
+      const a = (k / 24) * Math.PI * 2;
+      const tick = new THREE.Mesh(new THREE.PlaneGeometry(0.05, k % 3 ? 0.14 : 0.26), new THREE.MeshBasicMaterial({ color: 0x7a4ac0, transparent: true, opacity: 0.55 }));
+      tick.rotation.x = -Math.PI / 2;
+      tick.rotation.z = -a;
+      tick.position.set(Math.cos(a) * 2.9, 0.012, Math.sin(a) * 2.9);
+      this.sigil.add(tick);
+    }
     this.scene.add(this.sigil);
+    // cinzas roxas subindo devagar
+    const N = 90;
+    const pos = new Float32Array(N * 3);
+    this.motes = [];
+    for (let k = 0; k < N; k++) {
+      const m = { x: (Math.random() - 0.5) * 9, y: Math.random() * 4, z: -3 + Math.random() * 4, v: 0.12 + Math.random() * 0.25, w: Math.random() * 6 };
+      this.motes.push(m);
+      pos.set([m.x, m.y, m.z], k * 3);
+    }
+    const mg = new THREE.BufferGeometry();
+    mg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    this.moteGeo = mg;
+    this.moteObj = new THREE.Points(mg, new THREE.PointsMaterial({ color: 0xc8a0ff, size: 0.035, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false }));
+    this.scene.add(this.moteObj);
     this.sides = [0, 1].map((s) => {
       const glow = new THREE.Mesh(new THREE.CircleGeometry(0.9, 40), new THREE.MeshBasicMaterial({ color: P_COLORS[s], transparent: true, opacity: 0.22, depthWrite: false }));
       glow.rotation.x = -Math.PI / 2;
@@ -124,16 +154,28 @@ export class SelectStage {
     });
   }
 
+  // TORRE / OUTRO LADO (só o P1 escolhe): o lutador fica no centro, na frente do rasgo
+  sideX(s) { return this.solo && s === 0 ? 0 : SIDE_X[s]; }
+
   render(renderer) {
+    if (this.solo) { this.sides[0].glow.position.x = 0; this.sides[0].pulse.position.x = 0; this.sides[1].glow.visible = false; }
     const now = performance.now();
     const dt = Math.min(0.05, (now - this.last) / 1000);
     this.last = now;
     const size = renderer.getSize(new THREE.Vector2());
     this.cam.aspect = size.x / Math.max(1, size.y);
     // tela estreita: afasta a câmera para os dois caberem
-    this.cam.position.z = this.cam.aspect < 1.2 ? 10.5 : 7.8;
+    this.cam.position.z = this.cam.aspect < 1.2 ? 10.5 : 7.2;
     this.cam.updateProjectionMatrix();
     this.sigil.rotation.y += dt * 0.08;
+    const mp = this.moteGeo.attributes.position;
+    for (let k = 0; k < this.motes.length; k++) {
+      const m = this.motes[k];
+      m.y += m.v * dt;
+      if (m.y > 4.2) { m.y = 0; m.x = (Math.random() - 0.5) * 9; }
+      mp.setXYZ(k, m.x + Math.sin(now / 1400 + m.w) * 0.15, m.y, m.z);
+    }
+    mp.needsUpdate = true;
     for (let s = 0; s < 2; s++) {
       const S = this.sides[s];
       if (S.cur) {
@@ -141,7 +183,7 @@ export class SelectStage {
         c.t += dt;
         const k = Math.min(1, c.t / 0.35);
         const ease = 1 - (1 - k) ** 3;
-        c.e.rig.root.position.x = ENTER_FROM[s] + (SIDE_X[s] - ENTER_FROM[s]) * ease;
+        c.e.rig.root.position.x = ENTER_FROM[s] + (this.sideX(s) - ENTER_FROM[s]) * ease;
         c.e.rig.root.position.z = 0.4 * (1 - ease);
         if (k >= 1 && !c.locked && c.e.anim.currentName !== c.e.anim.resolve('idle')) c.e.anim.play('idle', { blend: 0.15 });
         c.e.anim.update(dt);
@@ -149,7 +191,7 @@ export class SelectStage {
       for (const l of S.leaving) {
         l.t += dt;
         const k = Math.min(1, l.t / 0.25);
-        l.e.rig.root.position.x = SIDE_X[s] + (ENTER_FROM[s] - SIDE_X[s]) * k * k;
+        l.e.rig.root.position.x = this.sideX(s) + (ENTER_FROM[s] - this.sideX(s)) * k * k;
         l.e.anim.update(dt);
         if (k >= 1) { this.scene.remove(l.e.rig.root); l.done = true; }
       }
@@ -170,5 +212,52 @@ export class SelectStage {
     for (const m of this.cache) for (const e of m.values()) { e.rig.root.traverse((o) => { if (o.geometry && !o.userData.sharedGeometry) o.geometry.dispose(); }); disposeSkeletons(e.rig.root); }
     for (const S of this.sides) for (const b of S.back) b.rig.root.traverse((o) => { if (o.geometry && !o.userData.sharedGeometry) o.geometry.dispose(); });
     this.cache = [new Map(), new Map()];
+    if (this.bgTex) this.bgTex.dispose();
+    if (this.moteGeo) this.moteGeo.dispose();
   }
+}
+
+// o fundo: roxo escuro, um brilho embaixo do centro e o rasgo vertical do Véu (o mesmo feixe do menu inicial)
+function riftBackdrop() {
+  const W = 512, H = 288;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#07050c';
+  g.fillRect(0, 0, W, H);
+  let r = g.createRadialGradient(W / 2, H * 0.78, 10, W / 2, H * 0.78, W * 0.55);
+  r.addColorStop(0, 'rgba(110,50,170,.55)');
+  r.addColorStop(0.5, 'rgba(50,20,90,.35)');
+  r.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = r;
+  g.fillRect(0, 0, W, H);
+  r = g.createRadialGradient(W / 2, H * 0.3, 4, W / 2, H * 0.3, W * 0.2);
+  r.addColorStop(0, 'rgba(164,107,255,.28)');
+  r.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = r;
+  g.fillRect(0, 0, W, H);
+  // o rasgo: uma linha que treme, com o brilho em volta
+  const path = () => {
+    g.beginPath();
+    let x = W / 2;
+    g.moveTo(x, 0);
+    for (let y = 8; y <= H * 0.72; y += 8) { x = W / 2 + Math.sin(y * 0.09) * 2.2 + (Math.random() - 0.5) * 2.4; g.lineTo(x, y); }
+  };
+  g.lineCap = 'round';
+  for (const [w, c] of [[14, 'rgba(120,50,220,.10)'], [7, 'rgba(150,80,255,.22)'], [3, 'rgba(200,150,255,.55)'], [1.2, 'rgba(245,235,255,.9)']]) {
+    g.strokeStyle = c;
+    g.lineWidth = w;
+    path();
+    g.stroke();
+  }
+  const v = g.createLinearGradient(0, 0, 0, H);
+  v.addColorStop(0, 'rgba(4,2,8,.55)');
+  v.addColorStop(0.25, 'rgba(0,0,0,0)');
+  v.addColorStop(0.7, 'rgba(0,0,0,0)');
+  v.addColorStop(1, 'rgba(4,2,8,.8)');
+  g.fillStyle = v;
+  g.fillRect(0, 0, W, H);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
 }

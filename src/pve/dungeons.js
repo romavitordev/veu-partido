@@ -1098,7 +1098,9 @@ export function phaseCleared(campaign, id) {
 export function phaseUnlocked(campaign, id) {
   const i = DUNGEON_ORDER.indexOf(id);
   // (v5.19.0) uma fase nova entrou no meio da ordem (Tipora antes da Torre): quem já venceu a de depois não a perde
-  return i === 0 || (i > 0 && (phaseCleared(campaign, DUNGEON_ORDER[i - 1]) || phaseCleared(campaign, id)));
+  // campaign.revealed: as fases abertas por um REQUISITO SECRETO cumprido em outra fase (dono, 2026-11-21: "ou cumprir
+  // algum requisito secreto nela (ainda pensaremos quais fases terão esse requisito)") — quem cumprir põe o id aqui
+  return i === 0 || (i > 0 && (phaseCleared(campaign, DUNGEON_ORDER[i - 1]) || phaseCleared(campaign, id) || (campaign.revealed || []).includes(id)));
 }
 // DIFICULDADES TRANCADAS (pedido do dono, 2026-11-19: "para jogar no dificil o player tem que ter ganhado essa mesma
 // fase no normal, assim por diante, apenas o normal e fácil são liberados, mas fácil nao libera o dificil"): por FASE,

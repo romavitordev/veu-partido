@@ -5,11 +5,59 @@
 // Agora, quando alguém solta o especial e o inimigo da sala está escondido, ele vira o DUBLÊ do bicho na mira: vai para
 // o lugar do bicho, continua invisível (só a malha some; para o jogo ele está ali), e o especial roda inteiro nele — a
 // cena, a câmera, os empurrões. A cada quadro o bicho segue o dublê (posição e altura) e leva o dano que o dublê levou
-// (os bichos colados nele levam metade). Acabou o especial: o dublê volta a se esconder onde estava, com a vida de antes.
+// (os bichos em volta também: veja ÁREA abaixo). Acabou o especial: o dublê volta a se esconder onde estava, com a vida de antes.
 import { distXZ } from '../core/util.js';
 
 const RANGE = 16; // até onde o especial procura o bicho
-const SPLASH = 2.4; // os bichos colados no alvo levam metade
+const SPLASH = 2.4; // golpe de um alvo só (tiro, agarrão): os bichos colados no alvo levam metade
+// ÁREA (dono, 2026-11-21: "confira se os ataques que são em area pegam em area, por exemplo uma espadada em um especial
+// ou uma habilidade normal"): o dublê é UM corpo, então o que ele leva é repartido pela forma da ação —
+//  - área (radius/aoe/explode... de 1,2 m ou mais): todos dentro do raio em volta do alvo (e em volta de quem usou, se
+//    o alvo estava dentro dele) levam o dano inteiro;
+//  - golpe em arco (arc + range): todos no arco à frente de quem bateu levam o dano inteiro;
+//  - especial: no mínimo SPECIAL_AREA em volta do alvo e o arco à frente até ele. PROPOSTA: os números.
+const MIN_AREA = 1.2;
+const SPECIAL_AREA = 3.2;
+const SPECIAL_ARC = 110;
+
+// o maior raio de área declarado na ação (o `radius` pequeno de projétil fica de fora)
+export function areaOf(act) {
+  if (!act) return 0;
+  let r = 0;
+  const take = (v) => { if (typeof v === 'number' && v >= MIN_AREA && v > r) r = v; };
+  take(act.radius); take(act.aoe); take(act.area);
+  for (const k of ['explode', 'zone', 'blast', 'shockwave', 'burst', 'field']) if (act[k] && typeof act[k] === 'object') take(act[k].radius);
+  return r;
+}
+
+// quem leva o dano do dublê e quanto (1 = inteiro, 0.5 = respingo); exportada para o teste
+// `at`: onde o alvo estava quando a ação saiu (o especial costuma arrastar o alvo para a cena; a área é a de onde bateu)
+export function shareOf(n, mob, f, kind, act, at = null) {
+  if (n === mob) return 1;
+  const dm = at ? Math.min(distXZ(n.pos, mob.pos), distXZ(n.pos, at)) : distXZ(n.pos, mob.pos);
+  const nr = n.radius ?? 0.5;
+  let R = areaOf(act);
+  if (kind === 'special') R = Math.max(R, SPECIAL_AREA);
+  if (R > 0) {
+    if (dm <= R + nr) return 1;
+    if (distXZ(f.pos, mob.pos) <= R + (mob.radius ?? 0.5) && distXZ(n.pos, f.pos) <= R + nr) return 1;
+  }
+  const arc = act && act.arc ? act.arc : kind === 'special' ? SPECIAL_ARC : 0;
+  if (arc) {
+    const reach = act && act.range && kind !== 'special' ? act.range : Math.min(8, distXZ(f.pos, mob.pos) + 1);
+    const df = distXZ(n.pos, f.pos);
+    if (df <= reach + nr + 0.4) {
+      const ax = mob.pos.x - f.pos.x, az = mob.pos.z - f.pos.z;
+      const al = Math.hypot(ax, az);
+      const yaw = al > 0.01 ? Math.atan2(ax, az) : f.yaw;
+      const ang = Math.atan2(n.pos.x - f.pos.x, n.pos.z - f.pos.z);
+      let d = Math.abs(ang - yaw) % (Math.PI * 2);
+      if (d > Math.PI) d = Math.PI * 2 - d;
+      if (df < 0.6 || d <= (arc * Math.PI / 180) / 2) return 1;
+    }
+  }
+  return dm < SPLASH ? 0.5 : 0;
+}
 
 const rootOf = (n) => (n.model && n.model.root) || (n.rig && n.rig.root) || n.group || null;
 
@@ -39,7 +87,7 @@ export class SpecialStandIn {
   }
 
   // chamado por Fighter.trySpecial (antes do canStart) e por Fighter.useAbility: true = o dublê está no bicho da mira
-  begin(f, kind = 'special') {
+  begin(f, kind = 'special', act = null) {
     const e = this.d.enemy;
     if (!e || !this.d.players.includes(f)) return false;
     if (this.cur) {
@@ -49,6 +97,8 @@ export class SpecialStandIn {
       const mob = pickMob(this.d.world, f);
       if (mob && mob !== S.mob) { this.flush(); this.place(mob, f); }
       S.kind = kind;
+      S.act = act;
+      S.at = S.mob.pos.clone();
       S.quiet = 0;
       S.t = 0;
       return true;
@@ -56,7 +106,7 @@ export class SpecialStandIn {
     if (!e.lurking) return false;
     const mob = pickMob(this.d.world, f);
     if (!mob) return false;
-    this.cur = { f, mob: null, t: 0, quiet: 0, kind, saved: { pos: e.pos.clone(), yaw: e.yaw, hp: e.health, maxHp: e.maxHealth, edge: e.cpuEdge } };
+    this.cur = { f, mob: null, t: 0, quiet: 0, kind, act, saved: { pos: e.pos.clone(), yaw: e.yaw, hp: e.health, maxHp: e.maxHealth, edge: e.cpuEdge } };
     e.lurking = false;
     e.setVisible(true);
     e.maxHealth = 99999;
@@ -72,6 +122,7 @@ export class SpecialStandIn {
     const S = this.cur;
     const r = rootOf(mob);
     S.mob = mob;
+    S.at = mob.pos.clone();
     S.baseY = r ? r.position.y - (mob.pos.y || 0) : 0;
     e.standIn = mob;
     e.rig.root.visible = false; // invisível: quem aparece é o bicho
@@ -81,7 +132,7 @@ export class SpecialStandIn {
     e.yaw = Math.atan2(f.pos.x - mob.pos.x, f.pos.z - mob.pos.z);
   }
 
-  // o dano que o dublê levou vai para o bicho (e metade para os colados nele)
+  // o dano que o dublê levou vai para o bicho e para os que a ação pega em volta (shareOf)
   flush() {
     const S = this.cur;
     const e = this.d.enemy;
@@ -89,8 +140,8 @@ export class SpecialStandIn {
     if (dealt > 0) {
       for (const n of this.d.world.hostileNpcs(S.f)) {
         if (n.alive === false || n.isCloset || !n.pos) continue;
-        if (n === S.mob) n.hitBy(S.f, dealt, { kind: S.kind });
-        else if (distXZ(n.pos, S.mob.pos) < SPLASH) n.hitBy(S.f, dealt * 0.5, { kind: S.kind });
+        const k = shareOf(n, S.mob, S.f, S.kind, S.act, S.at);
+        if (k > 0) n.hitBy(S.f, dealt * k, { kind: S.kind });
       }
     }
     e.health = this.hp = 99999;

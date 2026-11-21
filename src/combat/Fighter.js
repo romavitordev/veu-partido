@@ -39,6 +39,7 @@ import { startRagdoll } from '../physics/ragdoll.js';
 import { chargeBar } from '../fx/chargeBar.js';
 
 // estados em que o alvo continua "dentro do combo" (contadores de escala não zeram)
+const MELEE_CONE = 0.75; // o cone (rad) em que o golpe corpo a corpo gruda no bicho com a câmera livre
 const RUN_SIDE = 1.15; // o desvio de lado no corredor (× a velocidade de corrida)
 const COMBO_STATES = new Set(['hitstun', 'stun', 'pulled', 'grabbed', 'ko', 'downed']);
 // comandos que o buffer guarda
@@ -412,7 +413,9 @@ export class Fighter {
   // ele sozinha — quem joga tem que achá-la de olho
   // MIRA PELA CÂMERA (Outro Lado): com aimYaw ligado, o alvo é quem estiver no cone da mira (o adversário ou um NPC
   // inimigo), o mais alinhado; ninguém no cone → null (o golpe/tiro vai reto para onde a câmera aponta)
-  aimTarget(maxDist = 16, cone = 0.42) {
+  // MELEE_CONE (2026-11-21): o golpe corpo a corpo puxa o corpo para o bicho num cone largo (~43°), já que a trava de
+  // mira começa desligada; o tiro (16 m) segue no cone estreito
+  aimTarget(maxDist = 16, cone = maxDist <= 8 ? MELEE_CONE : 0.42) {
     if (this.aimYaw == null) return null;
     let best = null;
     let bs = Infinity;
@@ -3149,7 +3152,7 @@ export class Fighter {
       return;
     }
     // OUTRO LADO: a habilidade que mira "o adversário" vai no bicho da mira (o dublê, pve/duble.js)
-    const dubbed = this.world.specialStandIn ? this.world.specialStandIn(this, 'ability') : false;
+    const dubbed = this.world.specialStandIn ? this.world.specialStandIn(this, 'ability', a) : false;
     const seq = impl.start(this, a, this.world);
     if (!seq) { if (dubbed && this.world.cancelStandIn) this.world.cancelStandIn(); return; } // falhou (ex.: sem posição/alvo válido) — não gasta nada
     this.payCost(cost, blood);
@@ -3237,7 +3240,7 @@ export class Fighter {
     const impl = SPECIALS[sp.type];
     if (!impl) return;
     // OUTRO LADO: na sala de bichos o inimigo escondido vira o DUBLÊ do bicho na mira, e o especial roda nele (pve/duble.js)
-    if (this.world.specialStandIn) this.world.specialStandIn(this);
+    if (this.world.specialStandIn) this.world.specialStandIn(this, 'special', sp);
     if (impl.canStart && !impl.canStart(this, sp, this.world)) {
       if (this.world.specialStandIn) this.world.cancelStandIn && this.world.cancelStandIn();
       this.notify(impl.blockMsg || 'ALVO FORA DE ALCANCE');

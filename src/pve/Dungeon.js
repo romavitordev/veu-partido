@@ -223,7 +223,7 @@ export class Dungeon {
     this.gates = [];
     this.copias = [];
     this.standIn = new SpecialStandIn(this); // o dublê dos especiais nos bichos (pve/duble.js)
-    w.specialStandIn = (f, kind) => this.standIn.begin(f, kind);
+    w.specialStandIn = (f, kind, act) => this.standIn.begin(f, kind, act);
     w.cancelStandIn = () => this.standIn.end();
     this.doors = [];
     this.drawers = [];
@@ -1905,7 +1905,11 @@ export class Dungeon {
   makeView(i, p, inp, rig) {
     const w = this.world;
     const layer = this.coop ? i + 1 : 0;
-    const V = { i, p, inp, rig, layer, lockOn: true, lockT: null, lockBtnPrev: false, flick: 0, flickCd: 0, interactLatch: false, chestHoldT: 0, chestHoldTarget: null };
+    // a trava começa DESLIGADA (dono, 2026-11-21: "a mira que trava buga tudo... ou remova essa mira que gruda e ajuste pra
+    // um ataque que gruda no inimigo"): a câmera fica livre e o GOLPE gruda no bicho à frente (Fighter.aimTarget, o cone
+    // largo do corpo a corpo), como nos jogos de ação com mira suave; a seta vermelha mostra onde está a criatura. F / R3
+    // ainda trava para quem quiser
+    const V = { i, p, inp, rig, layer, lockOn: false, lockT: null, lockBtnPrev: false, flick: 0, flickCd: 0, interactLatch: false, chestHoldT: 0, chestHoldTarget: null };
     V.prompt = new InteractPrompt(w);
     V.prompt.layer = layer;
     V.arrowChest = makeArrow(w.scene, 0x4aa8ff);
@@ -1917,7 +1921,7 @@ export class Dungeon {
 
   get players() { return this.coop ? [this.player, this.player2] : [this.player]; }
   // os testes e a pausa ligam/desligam a trava do P1
-  get lockOn() { return this.views ? this.views[0].lockOn : true; }
+  get lockOn() { return this.views ? this.views[0].lockOn : false; }
   set lockOn(v) { if (this.views) this.views[0].lockOn = v; }
   get lockT() { return this.views ? this.views[0].lockT : null; }
   get prompt() { return this.views ? this.views[0].prompt : null; }
@@ -2474,7 +2478,7 @@ export class Dungeon {
           this.phase = 'explore';
           this.hud.banner(this.D.name.toUpperCase(), this.D.color);
           if (this.D.waves) { this.pveHud.hint(this.D.exploreHint || this.D.aboutShort); this.hintT = 6; this.waveObjective(); break; }
-          this.pveHud.hint(this.player.input?.source === 'gamepad' ? (this.D.exploreHint || 'Explore a mansão →') : 'Clique esq. golpe · clique dir. tiro · 1–5 habilidades · Z especial · G agarrão · E defesa · Shift esquiva · C (segure) sanidade · Q/R assistências · F trava a mira');
+          this.pveHud.hint(this.player.input?.source === 'gamepad' ? (this.D.exploreHint || 'Explore a mansão →') : 'Clique esq. golpe · clique dir. tiro · 1–5 habilidades · Z especial · G agarrão · E defesa · Shift esquiva · C (segure) sanidade · Q/R assistências · F liga/desliga a trava de mira');
           this.hintT = 8;
         }
         break;

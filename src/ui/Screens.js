@@ -5,7 +5,7 @@ import { ELEMENTS } from '../config/elements.js';
 import { SETTINGS, TIMER_OPTIONS, CPU_LEVELS, ROUND_OPTIONS, timerLabel, cpuLabel, cycleSetting } from '../config/settings.js';
 import { ARENAS, ARENA_ORDER } from '../arena/index.js';
 import { actionLabel, moveLabel } from './labels.js';
-import { moveListHTML, specialSummary } from './moves.js';
+import { moveListHTML, specialBlurb, passiveNames } from './moves.js';
 import { VERSION, VERSION_LABEL, CHANGELOG, formatVersion } from '../config/version.js';
 import { t, getLanguage } from '../i18n/index.js';
 import { roundKey } from '../game/tournament.js';
@@ -329,16 +329,20 @@ export const MODES = {
 const SEL_COLS = 3;
 const SEL_PAGE = 15; // até 15 lutadores por página (3 × 5), sem barra de rolagem; ←/→ na ponta da linha trocam de página
 // a GRADE tem UM cartão por personagem: as outras versões (VERSION_GROUPS — Juan, Anfitrião, Deus da Morte) moram no
-// cartão da versão principal e saem no RB/LB. GRID = índices no ROSTER dos cartões, na ordem da tela
-const GRID = ROSTER.map((c, i) => i).filter((i) => versionsOf(i)[0] === i);
-// posição na grade do cartão de um lutador (uma versão fica no cartão da principal)
-const posOf = (i) => GRID.indexOf(versionsOf(i)[0]);
-// páginas por EQUIPE: o elenco vem agrupado pela origem; uma equipe que não cabe inteira no resto da página começa a
-// página seguinte (ex.: os Mascarados ficam juntos na página 2). Cada página = [início, fim) em posições da GRID.
-const SEL_PAGES = (() => {
+// cartão da versão principal e saem no RB/LB. layout(hide) monta, para a tela, quem aparece (hide: o Outro Lado tira a
+// equipe Outro Lado — dono, 2026-11-21: "Grid de personagens no outro lado pode ser ajustado, já que não possui os
+// personagens 'Outro Lado'"), as versões de cada cartão e as páginas por EQUIPE: o elenco vem agrupado pela origem; uma
+// equipe que não cabe inteira no resto da página começa a página seguinte (ex.: os Mascarados ficam juntos na página 2).
+//  - grid = índices no ROSTER dos cartões, na ordem da tela; pages = [início, fim) em posições da grid;
+//  - vers(i) = as versões visíveis do lutador i (a 1ª é a do cartão); posOf/pageOf = posição e página do cartão de i.
+function layout(hide = null) {
+  const shown = (k) => !hide || !hide(ROSTER[k]);
+  const vers = (i) => { const v = versionsOf(i).filter(shown); return v.length ? v : [i]; };
+  const grid = ROSTER.map((c, i) => i).filter((i) => shown(i) && vers(i)[0] === i);
+  const posOf = (i) => grid.indexOf(vers(i)[0]);
   const pages = [[0, 0]];
-  const n = GRID.length;
-  const team = (k) => ROSTER[GRID[k]].origin;
+  const n = grid.length;
+  const team = (k) => ROSTER[grid[k]].origin;
   let i = 0;
   while (i < n) {
     let j = i;
@@ -353,20 +357,23 @@ const SEL_PAGES = (() => {
     }
     i = j;
   }
-  return pages;
-})();
-// página do cartão de um lutador (índice no ROSTER)
-const pageOf = (i) => { const k = posOf(i); return Math.max(0, SEL_PAGES.findIndex(([a, b]) => k >= a && k < b)); };
+  const pageOf = (k) => { const q = posOf(k); return Math.max(0, pages.findIndex(([a, b]) => q >= a && q < b)); };
+  return { grid, pages, vers, posOf, pageOf, shown };
+}
 // as etiquetas de equipe do cartão (uma por equipe — quem é de duas mostra as duas)
 const teamTags = (c) => defTeams(c).map((tm) => `<i style="--tc:${TEAM_COLORS[tm] || '#aaa'}">${TEAM_SHORT[tm] || tm}</i>`).join('');
-const INPUT_NAMES = { 'carga+ranged': '△ → □', 'carga+physical': '△ → ○', 'block+carga': 'R2 + △', 'block+jump': 'R2 + ×', 'carga+dodge': '△ + L2', 'ranged+forward': '→ + □', 'ranged+back': '← + □' };
-const inputName = (k) => (k === 'carga+jump' ? t('input.carga_jump') : k === 'ranged+side' ? `${t('input.side')} + □` : INPUT_NAMES[k] || k);
+// o comando de cada habilidade na ficha, curto, com os símbolos do controle (os mesmos da lista de comandos e do HUD):
+// "△○" = △ e logo ○ (ou juntos), "R2△" = segurando R2, "→□" = direção + □
+const INPUT_KEYS = { '○': ['○'], '□': ['□'], '△△○': ['△', '△', '○'], 'carga+ranged': ['△', '□'], 'carga+physical': ['△', '○'], 'carga+jump': ['△', '×'], 'carga+dodge': ['△', 'L2'], 'block+carga': ['R2', '△'], 'block+jump': ['R2', '×'], 'ranged+forward': ['→', '□'], 'ranged+back': ['←', '□'], 'ranged+side': ['↕', '□'] };
+const keyChip = (k) => `<kbd class="fk">${(INPUT_KEYS[k] || [k]).map((x) => `<i>${x}</i>`).join('')}</kbd>`;
+const escAttr = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 
 export class SelectScreen {
   // heading: título no lugar do padrão (TORNEIO: "VEZ DE: JOGADOR 3")
   // locked: Map id → texto (OUTRO LADO: os personagens ainda bloqueados e como desbloquear)
-  constructor(root, { portraits, audio, prev, mode = 'pvp', team = false, heading = null, locked = null }) {
+  constructor(root, { portraits, audio, prev, mode = 'pvp', team = false, heading = null, locked = null, hide = null }) {
+    this.G = layout(hide);
     this.audio = audio;
     this.locked = locked;
     this.mode = mode;
@@ -381,47 +388,48 @@ export class SelectScreen {
     // OUTRO LADO: o cursor começa num liberado (online, `locked` é uma lista por lado: os dados de cada computador)
     [0, 1].forEach((s) => {
       const L = this.lockedFor(s);
-      if (L && L.has(ROSTER[this.cursor[s]].id)) { const f = GRID.find((i) => !L.has(ROSTER[i].id)); if (f !== undefined) this.cursor[s] = f; }
+      if (L && L.has(ROSTER[this.cursor[s]].id)) { const f = this.G.grid.find((i) => !L.has(ROSTER[i].id)); if (f !== undefined) this.cursor[s] = f; }
+      if (!this.G.shown(this.cursor[s])) this.cursor[s] = this.G.grid.find((i) => !(L && L.has(ROSTER[i].id))) ?? this.G.grid[0];
     });
-    this.home = this.cursor.map((i) => versionsOf(i)[0]);
+    this.home = this.cursor.map((i) => this.G.vers(i)[0]);
     this.portraits = portraits;
     this.ready = [false, false];
     const side = (p) => `
       <div class="sel-side s${p + 1}">
         <div class="sel-head"><span class="tag">${this.M.slots[p]}</span><span class="st"></span></div>
         <div class="sel-pages"><b class="pg-prev">◀</b><span class="pg-n"></span><b class="pg-next">▶</b></div>
-        <div class="sel-grid">${GRID.map((i) => { const c = ROSTER[i]; const vs = versionsOf(i); return `
+        <div class="sel-grid">${this.G.grid.map((i) => { const c = ROSTER[i]; const vs = this.G.vers(i); return `
           <div class="card${vs.length > 1 ? ' ver' : ''}" data-i="${i}" style="--c:${c.color}">
             <img src="${portraits[c.id]}" alt="${c.name}">
             <span class="tm">${teamTags(c)}</span>
             ${vs.length > 1 ? `<span class="vr" title="${vs.map((k) => ROSTER[k].name).join(' · ')}">⇄ ${vs.length}</span>` : ''}
-            <div class="cn"><b style="color:${c.color}">${c.name}</b></div>
+            <div class="cn"><b style="color:${c.color}">${c.name}</b></div><i class="cbar"></i>
           </div>`; }).join('')}
         </div>
-        <div class="det p${p + 1}"></div>
       </div>`;
     this.el = el(root, 'screen', 'select', `
-      <div class="sel-title">${heading || t(team ? 'sel.title_team' : 'sel.title')} <small>${this.M.title}${team ? ` · ${t('sel.team_sub')}` : ''}</small></div>
+      <div class="sel-fx" aria-hidden="true"><i class="sel-vig"></i><i class="sel-grain"></i></div>
+      <div class="sel-title"><small>${this.M.title}${team ? ` · ${t('sel.team_sub')}` : ''}</small><h1>${heading || t(team ? 'sel.title_team' : 'sel.title')}</h1></div>
       ${side(0)}
       <div class="sel-center">
         <div class="sel-vs">VS</div>
-        <div class="plates"><div class="plate p1"></div><div class="plate p2"></div></div>
+        <div class="plates">${[1, 2].map((n) => `<div class="pcol p${n}"><div class="plate p${n}"></div><div class="det p${n}"></div></div>`).join('')}</div>
         <div class="startbtn">${t('ui.start')} <small>${t('sel.start_hint', { ok: OK })}</small></div>
       </div>
       ${side(1)}
       <div class="hint"></div>`);
     this.stage = new SelectStage(ROSTER);
-    if (this.M.soloPick) this.el.classList.add('solo-pick');
+    if (this.M.soloPick) { this.el.classList.add('solo-pick'); this.stage.solo = true; }
     this.startEl = this.el.querySelector('.startbtn');
     onTap(this, this.startEl, 250, () => { if (this.ready[0] && this.ready[1]) this.startClicked = true; });
     this.el.classList.add('net-taps');
     this.sides = [0, 1].map((p) => this.el.querySelector(`.sel-side.s${p + 1}`));
     this.cards = this.sides.map((sd) => [...sd.querySelectorAll('.card')]);
-    this.dets = this.sides.map((sd) => sd.querySelector('.det'));
+    this.dets = [1, 2].map((n) => this.el.querySelector(`.det.p${n}`));
     this.heads = this.sides.map((sd) => sd.querySelector('.sel-head .st'));
     this.plates = [this.el.querySelector('.plate.p1'), this.el.querySelector('.plate.p2')];
     this.pages = this.sides.map((sd) => sd.querySelector('.sel-pages'));
-    this.pageCount = SEL_PAGES.length;
+    this.pageCount = this.G.pages.length;
     // setas clicáveis (mouse / toque)
     this.pages.forEach((pg, p) => {
       pg.querySelector('.pg-prev').addEventListener('click', () => this.tapSide(p, 251));
@@ -497,7 +505,7 @@ export class SelectScreen {
 
   // lutador com outras versões: "⇄ HENRI · JUAN" na placa, a escolhida acesa, com os botões que trocam (LB/RB)
   versionLine(p, front) {
-    const vs = versionsOf(ROSTER.indexOf(front));
+    const vs = this.G.vers(ROSTER.indexOf(front));
     if (vs.length < 2 || this.ready[p]) return '';
     const names = vs.map((k) => (ROSTER[k] === front ? `<b>${ROSTER[k].name}</b>` : ROSTER[k].name)).join(' · ');
     return `<div class="pv">⇄ ${names} <kbd>LB</kbd>/<kbd>RB</kbd></div>`;
@@ -513,14 +521,14 @@ export class SelectScreen {
       this.sides[p].classList.toggle('done', this.ready[p]);
       // só os 15 da página do cursor aparecem
       const home = this.home[p];
-      const page = pageOf(home);
+      const page = this.G.pageOf(home);
       this.pages[p].classList.toggle('single', this.pageCount < 2);
-      this.pages[p].querySelector('.pg-n').textContent = t('sel.page', { n: page + 1, t: this.pageCount });
+      { const pn = this.pages[p].querySelector('.pg-n'); const key = `${page}/${this.pageCount}`; if (pn.dataset.k !== key) { pn.dataset.k = key; pn.title = t('sel.page', { n: page + 1, t: this.pageCount }); pn.innerHTML = Array.from({ length: this.pageCount }, (_, k) => `<i class="${k === page ? 'on' : ''}"></i>`).join(''); } }
       this.cards[p].forEach((card) => {
         const i = Number(card.dataset.i);
-        card.classList.toggle('off', pageOf(i) !== page);
+        card.classList.toggle('off', this.G.pageOf(i) !== page);
         card.classList.toggle('on', home === i);
-        card.classList.toggle('picked', this.team && this.picks[p].some((k) => versionsOf(k)[0] === i));
+        card.classList.toggle('picked', this.team && this.picks[p].some((k) => this.G.vers(k)[0] === i));
         // o cartão do cursor mostra a versão escolhida (RB/LB); os outros, o próprio lutador
         const shown = home === i ? c : ROSTER[i];
         const img = card.querySelector('img');
@@ -533,6 +541,17 @@ export class SelectScreen {
           card.querySelector('.tm').innerHTML = teamTags(shown);
         }
         card.classList.toggle('alt', home === i && c !== ROSTER[i]);
+        // OUTRO LADO: o cadeado segue a versão MOSTRADA (dono, 2026-11-21: "Personagens que são mostrados com RB como
+        // Juan que está na aba do Henri, ainda não estão travados visualmente") — antes só olhava o lutador do cartão
+        const L = this.lockedFor(p);
+        if (L) {
+          const lk = L.has(shown.id);
+          card.classList.toggle('locked', lk);
+          const tag = card.querySelector('.lk');
+          if (lk && !tag) card.insertAdjacentHTML('beforeend', `<span class="lk" title="${L.get(shown.id)}">🔒</span>`);
+          else if (lk) tag.title = L.get(shown.id);
+          else if (tag) tag.remove();
+        }
         card.classList.toggle('rec', !this.ready[p] && this.rec[p] === i); // recomendado (fecha um especial de equipe)
       });
       const you = NET_UI.send && p === NET_UI.slot ? `${t('sel.you')} · ` : ''; // online: qual lado é o seu
@@ -544,21 +563,29 @@ export class SelectScreen {
         return `<span class="${c2 ? 'on' : ''}"><small>${lab}</small><b style="color:${c2 ? c2.color : 'inherit'}">${c2 ? c2.name : '—'}</b></span>`;
       }).join('')}</div>${this.teamLinkLine(p)}${this.duoLine(p)}` : '';
       this.plates[p].innerHTML = `
-        <div class="pn" style="color:${front.color}">${front.name}</div>
+        <div class="pn"><span class="ptag">${this.M.slots[p]}</span><b style="--c:${front.color}">${front.name}</b></div>
         <div class="po">${defTeams(front).join(' / ')} · <span style="color:${ELEMENTS[front.element].color}">${ELEMENTS[front.element].name}</span></div>
         <div class="pt">“${front.info.tagline}”</div>${this.versionLine(p, front)}${teamLine}`;
       this.plates[p].classList.toggle('ok', this.ready[p]);
       // ficha resumida embaixo da grade
-      const extras = (c.abilities || []).map((a) => `<span class="abl">${a.name} <i>${inputName(a.input)}</i></span>`).join('') || '—';
+      // FICHA (refeita em 2026-11-21: "tem umas habilidades dizendo em baixo que já está ultrapassado pro nivel que está
+      // o jogo"): a arma e o estilo, o básico (○ e □), o especial com o custo (sem o "250 de dano" que valia para todos),
+      // TODAS as habilidades com o comando (antes cortadas em "Decadência △ ..."), a transformação e as passivas. O mouse
+      // em cima de uma habilidade mostra a descrição.
       const sp = c.special;
+      const blurb = specialBlurb(c);
+      const MAX_AB = 3;
+      const abs = c.abilities || [];
+      const tip = (a) => escAttr(`${a.name}: ${a.description || ''}${a.energyCost ? ` · ${a.energyCost} de sanidade` : ''}${a.cooldown ? ` · recarga ${a.cooldown} s` : ''}`);
+      const pas = passiveNames(c);
       this.dets[p].innerHTML = `
-        <dl>
-          <dt>${t('sel.style')}</dt><dd class="clamp">${c.info.identity || c.info.style}</dd>
-          <dt>${t('sel.melee')}</dt><dd>${c.melee.name}</dd>
-          <dt>${t('sel.ranged')}</dt><dd>${c.ranged ? c.ranged.name : '—'}</dd>
-          <dt>${t('sel.special')}</dt><dd class="clamp">${sp ? `${sp.name} · ${specialSummary(c)}` : '—'}</dd>
-          <dt>${t('sel.abilities')}</dt><dd>${extras}</dd>
-        </dl>`;
+        <div class="fx-base"><span>${keyChip('○')}${c.melee.name}</span><span>${keyChip('□')}${c.ranged ? c.ranged.name : '—'}</span></div>
+        <ul class="fx-rb">
+          ${sp ? `<li class="sp" title="${escAttr(blurb)}">${keyChip('△△○')}<b>${sp.name}</b>${sp.energyCost ? `<small>${t('sel.cost', { n: sp.energyCost })}</small>` : ''}</li>` : ''}
+          ${c.awakening ? `<li class="aw" title="${escAttr(t('sel.transform'))}"><kbd class="fk"><i>△</i></kbd><b>${c.awakening.name}</b><small>${t('sel.transform')}</small></li>` : ''}
+          ${abs.slice(0, MAX_AB).map((a) => `<li title="${tip(a)}">${keyChip(a.input)}<b>${a.name}</b></li>`).join('')}
+        </ul>
+        ${abs.length > MAX_AB || pas.length ? `<div class="fx-more">${abs.length > MAX_AB ? `<span title="${abs.slice(MAX_AB).map((a) => escAttr(a.name)).join(' · ')}">${t('sel.more_ab', { n: abs.length - MAX_AB })}: ${abs.slice(MAX_AB).map((a) => a.name).join(' · ')}</span>` : ''}${pas.length ? `<span><b>${t('sel.passives')}</b> ${pas.join(', ')}</span>` : ''}</div>` : ''}`;
       // modelo 3D no centro (TORRE: só o do P1)
       if (!(this.M.soloPick && p === 1)) this.stage.show(p, front.id, this.ready[p]);
       if (this.team) this.stage.setBack(p, (this.ready[p] ? this.picks[p].slice(1) : this.picks[p]).map((i) => ROSTER[i].id));
@@ -568,7 +595,7 @@ export class SelectScreen {
     const lk = this.lockedFor(0) && this.lockedFor(0).get(ROSTER[this.cursor[0]].id);
     this.hint.innerHTML = lk ? `🔒 <b>${ROSTER[this.cursor[0]].name}</b> ainda está bloqueado no Outro Lado · ${lk}` : this.mode === 'pve' ? `<b>P1</b> escolhe quem entra no Outro Lado · <kbd>${keys.jump}</kbd>/<kbd>Enter</kbd> confirma · <kbd>${keys.phys}</kbd>/<kbd>Esc</kbd> volta` : t(this.M.soloPick ? 'tower.sel_hint' : this.cpu ? 'sel.hint_cpu' : 'sel.hint_pvp', keys)
       + t('sel.hint_common', { ok: OK, rand: RAND, back: BACK })
-      + (this.home.some((h) => versionsOf(h).length > 1) ? t('sel.hint_version', { l: actionLabel(0, 'pageL'), r: actionLabel(0, 'pageR') }) : '');
+      + (this.home.some((h) => this.G.vers(h).length > 1) ? t('sel.hint_version', { l: actionLabel(0, 'pageL'), r: actionLabel(0, 'pageR') }) : '');
   }
 
   // Retorna { p1, p2 } quando os dois estão prontos, ou 'back' para voltar ao menu
@@ -641,8 +668,8 @@ export class SelectScreen {
     // linha (não descem para a linha de baixo)
     // (contas em POSIÇÕES da grade; home/cursor guardam índices no ROSTER)
     const home = this.home[slot];
-    const pos = posOf(home);
-    const [start, end] = SEL_PAGES[pageOf(home)];
+    const pos = this.G.posOf(home);
+    const [start, end] = this.G.pages[this.G.pageOf(home)];
     const count = end - start;
     const c = pos - start;
     let target = null;
@@ -656,11 +683,11 @@ export class SelectScreen {
     }
     if (p.menu.up) target = start + (c - SEL_COLS >= 0 ? c - SEL_COLS : c + SEL_COLS * Math.floor((count - 1 - c) / SEL_COLS));
     if (p.menu.down) target = start + (c + SEL_COLS < count ? c + SEL_COLS : c % SEL_COLS);
-    if (target !== null && GRID[target] !== home) { this.home[slot] = this.cursor[slot] = GRID[target]; this.audio.play('select'); changed = true; }
+    if (target !== null && this.G.grid[target] !== home) { this.home[slot] = this.cursor[slot] = this.G.grid[target]; this.audio.play('select'); changed = true; }
     if (confirm(p)) { if (this.lockPick(slot) !== false) this.audio.play('confirm'); changed = true; }
     else if (random(p)) {
-      this.cursor[slot] = pickRandom(n, this.cursor[slot], (i) => (!this.team || !this.picks[slot].includes(i)) && !(this.lockedFor(slot) && this.lockedFor(slot).has(ROSTER[i].id)));
-      this.home[slot] = versionsOf(this.cursor[slot])[0];
+      this.cursor[slot] = pickRandom(n, this.cursor[slot], (i) => this.G.shown(i) && (!this.team || !this.picks[slot].includes(i)) && !(this.lockedFor(slot) && this.lockedFor(slot).has(ROSTER[i].id)));
+      this.home[slot] = this.G.vers(this.cursor[slot])[0];
       this.lockPick(slot);
       this.audio.play('confirm');
       this.flashRandom(slot, this.home[slot]);
@@ -673,8 +700,8 @@ export class SelectScreen {
   // direita) ou pela direita (indo para a esquerda); se a página não tem aquela linha, o último lutador dela.
   // Com uma página só, dá a volta na própria linha. Devolve a POSIÇÃO na grade
   pageEdge(home, row, dir) {
-    const np = (pageOf(home) + dir + this.pageCount) % this.pageCount;
-    const [s, e] = SEL_PAGES[np];
+    const np = (this.G.pageOf(home) + dir + this.pageCount) % this.pageCount;
+    const [s, e] = this.G.pages[np];
     const rowStart = s + row * SEL_COLS;
     if (rowStart >= e) return e - 1;
     return dir > 0 ? rowStart : Math.min(rowStart + SEL_COLS, e) - 1;
@@ -683,7 +710,7 @@ export class SelectScreen {
   // RB/LB: próxima/anterior versão do lutador do cartão (o cursor fica no mesmo cartão)
   cycleVersion(slot, dir) {
     if (this.ready[slot]) return false;
-    const vs = versionsOf(this.home[slot]);
+    const vs = this.G.vers(this.home[slot]);
     if (vs.length < 2) return false;
     const k = Math.max(0, vs.indexOf(this.cursor[slot]));
     this.cursor[slot] = vs[(k + dir + vs.length) % vs.length];
@@ -694,10 +721,10 @@ export class SelectScreen {
   // setas clicáveis do paginador (mouse / toque): página anterior/seguinte, mantendo a posição na grade quando existe
   turnPage(slot, dir) {
     if (this.pageCount < 2 || this.ready[slot]) return;
-    const page = pageOf(this.home[slot]);
-    const pos = posOf(this.home[slot]) - SEL_PAGES[page][0];
+    const page = this.G.pageOf(this.home[slot]);
+    const pos = this.G.posOf(this.home[slot]) - this.G.pages[page][0];
     const np = (page + dir + this.pageCount) % this.pageCount;
-    this.home[slot] = this.cursor[slot] = GRID[Math.min(SEL_PAGES[np][0] + pos, SEL_PAGES[np][1] - 1)];
+    this.home[slot] = this.cursor[slot] = this.G.grid[Math.min(this.G.pages[np][0] + pos, this.G.pages[np][1] - 1)];
     this.audio.play('select');
   }
 
@@ -733,14 +760,14 @@ export class SelectScreen {
     if (!entry) return;
     let i = ROSTER.findIndex((d) => d.id === entry);
     if (i < 0) i = ROSTER.findIndex((d) => matchesEntry(entry, d));
-    if (i < 0 || this.picks[slot].includes(i)) return;
+    if (i < 0 || !this.G.shown(i) || this.picks[slot].includes(i)) return;
     this.cursor[slot] = i;
-    this.home[slot] = versionsOf(i)[0];
+    this.home[slot] = this.G.vers(i)[0];
     this.rec[slot] = this.home[slot];
   }
 
   flashRandom(slot, i) {
-    const c = this.cards[slot][posOf(i)];
+    const c = this.cards[slot][this.G.posOf(i)];
     if (!c) return;
     c.classList.remove('rand');
     void c.offsetWidth;

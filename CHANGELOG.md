@@ -1,5 +1,33 @@
 # Changelog
 
+## v5.46.0 — Além do Véu
+
+### Corrigido
+- Outro Lado, poções de cura: só são pegas por quem perdeu vida (um pouco que seja) e pode se curar agora. Antes eram gastas mesmo com a vida cheia ou sob a Ferida Aberta, sem curar nada. O aviso "+N VIDA" mostra o quanto curou de verdade.
+- Outro Lado, ataques em área: especiais e habilidades nas salas de bichos acertavam o alvo inteiro, mas os bichos em volta só levavam metade, e só a até 2,4 m. Agora a área segue a ação: habilidade com raio pega todos dentro do raio, golpe em arco pega todos no arco à frente, e o especial pega quem está até 3,2 m do alvo ou no arco até ele, com dano inteiro. Tiros de um alvo só continuam respingando metade nos colados.
+- Machado na Corda (Aguiar) e outros tiros que puxam: agora puxam também Assombrações, zumbis e feras até a frente de quem lançou, e os deixam parados um instante para o combo. Chefes e bichos grandes não se movem, só ficam presos por um momento.
+
+- Seleção de personagem do Outro Lado: a versão trocada no RB/LB (ex.: Juan no cartão do Henri) aparecia colorida e sem cadeado mesmo trancada. Agora o cadeado e o cinza seguem a versão mostrada.
+
+### Alterado
+- Seleção de personagem redesenhada (Batalha, Equipe, Torre, Torneio e Outro Lado), no padrão do menu inicial:
+  - os lutadores em 3D ficam maiores no centro, num palco com o rasgo do Véu ao fundo, o pentagrama no chão e cinzas roxas subindo;
+  - as grades viram retratos quadrados em painéis de vidro roxo nos cantos de cima, com as páginas em pontos;
+  - embaixo de cada lutador, o nome grande com a etiqueta do jogador e faixas com o especial (custo), a transformação e as habilidades, cada uma com o comando; o mouse em cima mostra a descrição;
+  - a ficha antiga saiu: ela dizia "250 de dano" em quase todo especial e cortava as habilidades no meio;
+  - o rodapé virou uma barra de comandos e o COMEÇAR fica entre as duas colunas;
+  - na Torre e no Outro Lado, onde só o P1 escolhe, o lutador fica no centro;
+  - no celular continua o layout compacto.
+- Tela de carregamento redesenhada: no lugar do pentagrama, um emblema do Véu rasgado. O anel fecha, o rasgo abre, os cinco elementos acendem um a um e uma rachadura atravessa o título conforme os arquivos chegam.
+  - a porcentagem sobe aos poucos, sem pular de 12% para 60%;
+  - em 100% a tela dá um clarão, o anel e a barra ficam dourados e aparece "PRONTO!" por um instante antes de sumir;
+  - com o menu já aberto, o selo do topo também mostra "PRONTO! ✓" ao terminar.
+- Seleção de personagem do Outro Lado: a equipe Outro Lado, que não entra no modo, saiu da grade (antes aparecia trancada). As páginas se reorganizam só com quem pode jogar: 5 páginas em vez de 6.
+- Outro Lado, fases veladas: as fases ainda não liberadas não mostram o nome, o chefe nem o cenário. O cartão vira "ALÉM DO VÉU", com a névoa do Véu e um rasgo de luz no lugar da imagem; vencendo a anterior, o nome e o cenário aparecem. A tela Descobertas também não entrega o nome da fase velada. Já existe o gancho para uma fase abrir por um requisito secreto cumprido em outra (quais fases terão isso fica para quando houver mais fases).
+- Outro Lado, fusões à mostra: a carta de nível diz QUAL fusão ela ajuda e o que falta em cada ingrediente (ex.: Fúria 2/3 + Sanguessuga 1/1). Embaixo da build, "FUSÕES À VISTA" lista as fusões em andamento, com as prontas em destaque ("o próximo baú traz").
+- Tela DESCOBERTAS: cada quadrado mostra a receita (as duas melhorias e o nível pedido) ou a fase do achado, sem precisar selecionar. O texto explica que a fusão vem das cartas de nível + um baú e que o achado só sai dos baús da fase dele.
+- Outro Lado, mira: a trava de mira começa DESLIGADA. A câmera fica livre e o golpe corpo a corpo gruda no bicho à frente (cone de ~43°, antes ~24°); a seta vermelha continua mostrando onde está a criatura. F, o botão do meio do mouse ou R3 ainda ligam a trava para quem quiser.
+
 ## v5.45.1 — O Corredor Sem Atalhos
 
 ### Corrigido

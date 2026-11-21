@@ -220,8 +220,23 @@ export function createPveFlow(ctx) {
       const won = wonIn(camp, id);
       const recAll = phaseRecord(camp, id);
       const done = phaseCleared(camp, id);
-      let desc = `Vença ${i > 0 ? DUNGEONS[DUNGEON_ORDER[i - 1]].place : 'a anterior'} para abrir.`;
-      if (open) {
+      // FASE VELADA (dono, 2026-11-21: "Deixar as proximas fases não liberadas ainda como mistério, nome e imagem [...]
+      // Esse mistério não precisa ser literalmente '?'"): trancada, não mostra o nome, o chefe nem o cenário — só a
+      // névoa do Véu. Vencendo a anterior (ou um requisito secreto: phaseUnlocked) o nome e a imagem aparecem.
+      if (!open) {
+        return {
+          id: `phase:${id}`,
+          label: `${i + 1}. ALÉM DO VÉU`,
+          icon: '🔒',
+          desc: 'O Véu ainda cobre este lugar. Vença a fase anterior para descobrir o que existe do outro lado.',
+          tag: 'VELADA',
+          tone: 'veiled',
+          disabled: true,
+          pic: { key: `veil:${id}`, src: '' }, // a chave não é a da fase: a prévia gerada depois não cai aqui
+        };
+      }
+      let desc = '';
+      {
         desc = D.waves ? `${D.aboutShort}` : `Chefe: ${D.bossName}`;
         if (won.length) desc += ` · vencida no ${won.map((d) => PVE_DIFFICULTIES[d].label).join(', ')}`;
         else if (!done) desc += ' · ainda não vencida';
@@ -230,11 +245,10 @@ export function createPveFlow(ctx) {
       return {
         id: `phase:${id}`,
         label: `${i + 1}. ${(D.cardName || D.place).toUpperCase()}`, // cardName: quando o lugar não é o nome da fase (o Sertão)
-        icon: open ? (done ? '★' : '▶') : '🔒',
+        icon: done ? '★' : '▶',
         desc,
-        tag: open ? (done ? `★ ${won.length || 1}/${DIFF_IDS().length}` : D.waves ? 'ONDAS' : 'NOVA') : 'TRANCADA',
-        tone: open && !done ? 'gold' : '',
-        disabled: !open,
+        tag: done ? `★ ${won.length || 1}/${DIFF_IDS().length}` : D.waves ? 'ONDAS' : 'NOVA',
+        tone: !done ? 'gold' : '',
         pic: { key: id, src: phaseThumb(id) },
       };
     });
@@ -318,7 +332,7 @@ export function createPveFlow(ctx) {
   function toFound() {
     endMatch();
     setOverlay(null, null);
-    setScreen('pvefound', new PveFusionScreen(screens, { audio, discovered: data.discovered || [] }));
+    setScreen('pvefound', new PveFusionScreen(screens, { audio, discovered: data.discovered || [], phaseOpen: (id) => online() || phaseUnlocked(data.campaign, id) }));
   }
 
   // ------------------------------------------------ a loja de personagens (moedas dos baús)

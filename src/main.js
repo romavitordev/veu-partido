@@ -30,6 +30,7 @@ import { t, tAlert, setLanguage } from './i18n/index.js';
 import { OptionsScreen } from './ui/OptionsScreen.js';
 import { TouchControls, isTouchDevice } from './ui/touchControls.js';
 import { createPveFlow } from './pve/flow.js';
+import { pveBanned } from './pve/unlocks.js';
 import { registerPWA, InstallHint } from './ui/installHint.js';
 import { pinPrograms } from './core/programPin.js';
 
@@ -197,7 +198,7 @@ function toSelect() {
   endMatch();
   setOverlay(null, null);
   const locked = game.mode.kind === 'pve' && game.pve ? game.pve.lockedChars() : null;
-  setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind === 'pve' && game.mode.coop ? 'pvecoop' : game.mode.kind, team: !!game.mode.team, locked }));
+  setScreen('select', new SelectScreen(screens, { portraits, audio, prev: game.lastSelect, mode: game.mode.kind === 'pve' && game.mode.coop ? 'pvecoop' : game.mode.kind, team: !!game.mode.team, locked, hide: game.mode.kind === 'pve' ? pveBanned : null }));
 }
 
 // MODO EXPLORAR: escolhe o cenário e voa por ele (game/Explorer.js)

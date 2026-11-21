@@ -4,8 +4,27 @@
 //  · nível e barra de experiência, as melhorias da tentativa (e as sinergias), o objetivo da sala, a dica do momento;
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
 import { actionLabel } from '../ui/labels.js';
-import { SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KIT, MAX_PASSIVE, slotsOf, getUpgrade, fusionHint } from './upgrades.js';
+import { SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KIT, MAX_PASSIVE, slotsOf, getUpgrade, fusionHint, fusionProgress, FUSIONS } from './upgrades.js';
 import { onHover } from '../ui/hover.js';
+
+// A RECEITA À MOSTRA NA FASE (dono, 2026-11-21): cada ingrediente com o nível que tem / o que a fusão pede
+const partHtml = (p) => `<span class="${p.have >= p.need ? 'ok' : ''}">${p.u.icon} ${esc(p.u.name)} ${p.have}/${p.need}</span>`;
+// a carta de nível: as fusões em que ela entra (com o que a carta acrescenta) e se fecha alguma
+function fusionCardHint(picks, id, completes) {
+  const after = [...picks, id];
+  const list = FUSIONS.filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => x === id)).slice(0, 2);
+  const rows = list.map((f) => {
+    const parts = f.evolve.needs.map(([pid, need]) => ({ need, have: Math.min(need, countOf(after, pid)), u: getUpgrade(pid) }));
+    return `<small class="fus${parts.every((p) => p.have >= p.need) ? ' ready' : ''}">⚗ ${esc(f.name)}: ${parts.map(partHtml).join(' + ')}</small>`;
+  });
+  return (completes ? '<small class="fus ready">⚗ Completa uma FUSÃO: o próximo baú traz!</small>' : '') + rows.join('');
+}
+// embaixo da build: as fusões à vista (as que já têm algum ingrediente), as prontas em destaque
+function fusionTrackHtml(picks) {
+  const list = fusionProgress(picks).slice(0, 4);
+  if (!list.length) return '';
+  return `<div class="pv-fusions"><span>FUSÕES À VISTA</span>${list.map(({ f, parts, ready }) => `<div class="${ready ? 'ready' : ''}"><b>${f.icon} ${esc(f.name)}</b>${ready ? '<em>PRONTA: o próximo baú traz</em>' : parts.map(partHtml).join(' + ')}</div>`).join('')}</div>`;
+}
 
 // os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
 const pipsHtml = (n, max, was = n) => Array.from({ length: max }, (_, i) => `<b class="${i < was ? 'on' : i < n ? 'new' : ''}"></b>`).join('');
@@ -232,7 +251,8 @@ export class PveHud {
       const kind = u.kind === 'kit' ? `<u class="act">${coop ? esc(u.who) : 'SEU KIT'}</u>` : '<u>PASSIVA</u>';
       // a PISTA DA FUSÃO (2026-11-20): a carta que entra numa receita avisa; a que completa, avisa mais forte
       const fh = u.kind === 'kit' ? null : fusionHint(picks, u.id);
-      const fus = fh && fh.completes ? '<small class="fus ready">⚗ Completa uma FUSÃO: o próximo baú traz!</small>' : fh && fh.part ? '<small class="fus">⚗ Ingrediente de uma fusão</small>' : '';
+      // e desde 2026-11-21 diz QUAL fusão e o que falta nela (dono: "mostre quais melhorias são necessárias")
+      const fus = fh && fh.part ? fusionCardHint(picks, u.id, fh.completes) : '';
       return `<div class="pv-card ${u.kind === 'kit' ? 'act' : ''}" data-i="${i}"><i>${u.icon}</i><div><b>${kind}${esc(u.name)}<em class="${n ? '' : 'new'}">${tag}</em></b><p>${esc(u.desc)}</p><s>${pipsHtml(n + 1, u.max, n)}</s>${ready.length ? `<small class="ready">★ Liga a sinergia ${ready.map((s) => esc(s.name)).join(', ')}!</small>` : syn.length ? `<small>Sinergia: ${syn.map((s) => esc(s.name)).join(', ')}</small>` : ''}${fus}</div></div>`;
     }).join('');
     const ids = buildIds(picks);
@@ -240,7 +260,7 @@ export class PveHud {
     this.q('.pv-build').innerHTML = `<span>Build (nv ${run.level}) · kit ${slotsOf(picks, 'kit', kitChar)}/${MAX_KIT} · passivas ${slotsOf(picks, 'passive')}/${MAX_PASSIVE}</span>` + (ids.length ? ids.map((id) => {
       const u = getUpgrade(id);
       return `<span class="pv-up ${u.kind === 'kit' ? 'act' : ''}" title="${esc(u.name)}"><i>${u.icon}</i><s>${pipsHtml(countOf(picks, id), u.max)}</s></span>`;
-    }).join('') : '<em>nenhuma melhoria ainda</em>');
+    }).join('') : '<em>nenhuma melhoria ainda</em>') + fusionTrackHtml(picks);
     box.hidden = false;
     if (!noClick) box.querySelectorAll('.pv-card').forEach((c) => c.addEventListener('click', () => { if (!this.choice) return; this.choice.index = Number(c.dataset.i); this.pick(); }));
     if (!noClick) box.querySelectorAll('.pv-card').forEach((c) => onHover(c, () => { const i = Number(c.dataset.i); if (this.choice && this.choice.index !== i) { this.choice.index = i; this.renderChoice(); } }));

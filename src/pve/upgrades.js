@@ -372,6 +372,19 @@ export const isFusion = (id) => FUSIONS.some((f) => f.id === id);
 // os ACHADOS DAS FASES (tela DESCOBERTAS)
 export const RELICS = UPGRADES.filter((u) => u.kind === 'relic');
 export const isRelic = (id) => RELICS.some((r) => r.id === id);
+// O PROGRESSO DAS FUSÕES na tentativa (dono, 2026-11-21: "quero que mostre quais melhorias são necessárias para eu
+// fazer elas na fase"): as fusões ainda não ganhas em que a build já tem ao menos um ingrediente, com o que cada
+// ingrediente tem / pede e se a receita está pronta (o próximo baú traz). As mais perto de ficar prontas primeiro.
+export function fusionProgress(picks) {
+  return FUSIONS.filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => countOf(picks, x) > 0))
+    .map((f) => {
+      const parts = f.evolve.needs.map(([id, need]) => ({ id, need, have: Math.min(need, countOf(picks, id)), u: getUpgrade(id) }));
+      const missing = parts.reduce((s, p) => s + (p.need - p.have), 0);
+      return { f, parts, missing, ready: missing === 0 };
+    })
+    .sort((a, b) => a.missing - b.missing);
+}
+
 // a pista nas cartas de nível: a melhoria entra em alguma fusão que falta, e escolher `id` agora deixa uma pronta
 export function fusionHint(picks, id) {
   const open = FUSIONS.filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => x === id));

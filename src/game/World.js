@@ -430,6 +430,19 @@ export class World {
       }
       for (const f of this.fighters) if (f.assists) for (const a of f.assists) emitAt(this.audio, a.pos, () => a.update(dt)); for (const f of this.fighters) if (f.teamGuests) for (const a of f.teamGuests) emitAt(this.audio, a.pos, () => a.update(dt)); // convidados do Especial em Equipe (teamSpecials.js)
       for (const n of this.npcs) {
+        // PUXADO por corrente/corda (projectiles.applyOnHitNpc): vai até a frente de quem puxou e fica parado um instante
+        if (n.pull && n.alive) {
+          const P = n.pull;
+          P.t += dt;
+          const k = Math.min(1, P.t / P.time);
+          const e = 1 - (1 - k) * (1 - k);
+          n.pos.x = P.from.x + (P.to.x - P.from.x) * e;
+          n.pos.z = P.from.z + (P.to.z - P.from.z) * e;
+          const root = (n.model && n.model.root) || (n.rig && n.rig.root);
+          if (root) { root.position.x = n.pos.x; root.position.z = n.pos.z; }
+          if (k >= 1) { n.pull = null; n.stunT = Math.max(n.stunT || 0, P.after); }
+          continue;
+        }
         // OFUSCADO (luz na cara: abilities.js stunNpc): parado, sem agir, até passar
         if (n.stunT > 0) {
           n.stunT -= dt;

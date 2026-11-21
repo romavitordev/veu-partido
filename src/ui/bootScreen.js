@@ -23,7 +23,7 @@ export function createBootScreen() {
   const status = $('.bs-status');
   const note = $('.bs-note');
   const tipEl = $('.bs-tip');
-  let shown = 0; // a barra só anda para frente (uma nova tentativa aumenta o total de arquivos)
+  let shown = 0; // valor mostrado (corre atrás do alvo, ver tick)
   let scale = 0.9; // os downloads ocupam até 90%; o resto é preparar os retratos
   let finished = false;
   let away = false; // menu aberto por cima: a tela está escondida, mas segue o progresso
@@ -44,12 +44,34 @@ export function createBootScreen() {
   tipEl.before(cancel);
   let last = { bytes: 0, lastByteAt: performance.now(), files: 0, done: 0, failed: 0, frac: 0 };
 
+  // PORCENTAGEM GRADUAL (pedido do dono, 2026-11-21): o progresso real vira o ALVO e o número mostrado corre atrás
+  // dele quadro a quadro (nunca pula de 12% para 60%). Anel, rasgo do emblema, rachadura do título, barra e selo leem
+  // o mesmo valor (--p). O 100% só aparece quando o número chega lá de verdade — aí vem o momento "PRONTO!".
+  let target = 0;
+  let onFull = null; // done() espera o número chegar a 100% antes de mostrar o fim
+  let raf = 0;
+  let prev = performance.now();
+  const paint = () => {
+    const v = Math.floor(shown * 100);
+    fill.style.width = `${(shown * 100).toFixed(2)}%`;
+    root.style.setProperty('--p', shown.toFixed(4));
+    pct.textContent = `${v}%`;
+    badge.style.setProperty('--p', shown.toFixed(4));
+    if (!badge.classList.contains('done')) badgeTxt.textContent = t('boot.badge', { pct: v });
+  };
+  const tick = (now) => {
+    const dt = Math.min(0.1, (now - prev) / 1000);
+    prev = now;
+    const gap = target - shown;
+    // persegue o alvo: rápido quando está longe, com um passo mínimo para não ficar se arrastando no fim
+    if (gap > 0) shown = Math.min(target, shown + Math.max(gap * Math.min(1, dt * 4), dt * 0.12));
+    paint();
+    if (shown >= 1 && onFull) { const f = onFull; onFull = null; f(); }
+    raf = (shown < target || onFull) ? requestAnimationFrame(tick) : 0;
+  };
   const setBar = (k) => {
-    shown = Math.max(shown, Math.min(1, k));
-    fill.style.width = `${(shown * 100).toFixed(1)}%`;
-    pct.textContent = `${Math.floor(shown * 100)}%`;
-    badgeFill.style.width = `${(shown * 100).toFixed(1)}%`;
-    badgeTxt.textContent = t('boot.badge', { pct: Math.floor(shown * 100) });
+    target = Math.max(target, Math.min(1, k)); // a barra só anda para frente (uma nova tentativa aumenta o total)
+    if (!raf) { prev = performance.now(); raf = requestAnimationFrame(tick); }
   };
   status.textContent = t('boot.models');
   let tip = Math.floor(Math.random() * TIP_COUNT);
@@ -78,7 +100,7 @@ export function createBootScreen() {
     } else note.hidden = true;
   }, 1000);
 
-  const stop = () => { finished = true; off(); clearInterval(stallTimer); clearInterval(tipTimer); badge.remove(); };
+  const stop = () => { finished = true; off(); clearInterval(stallTimer); clearInterval(tipTimer); };
 
   return {
     // etapa depois dos downloads (os retratos): a barra vai de 90% a 100%
@@ -90,6 +112,7 @@ export function createBootScreen() {
     fail(e) {
       if (finished) return;
       stop();
+      badge.remove();
       window.__bootFail = true;
       console.error(e);
       const msg = String((e && (e.message || e)) || 'erro');
@@ -131,13 +154,22 @@ export function createBootScreen() {
     onCancel(fn) { cancelFn = fn; },
     done() {
       if (finished) return;
-      setBar(1);
-      cancel.hidden = true;
-      status.textContent = t('boot.ready');
       stop();
+      cancel.hidden = true;
       root.dataset.done = '1';
-      setTimeout(() => root.classList.add('hide'), 250);
-      setTimeout(() => root.remove(), 1000);
+      setBar(1);
+      // espera o número chegar a 100% e então marca o fim: brilho, anel completo, "PRONTO!" — e só depois some
+      onFull = () => {
+        status.textContent = t('boot.ready');
+        root.classList.add('complete');
+        badge.classList.add('done');
+        badgeTxt.textContent = t('boot.ready');
+        setTimeout(() => badge.classList.add('out'), 1500);
+        setTimeout(() => badge.remove(), 2100);
+        setTimeout(() => root.classList.add('hide'), away && root.classList.contains('hide') ? 0 : 1300);
+        setTimeout(() => root.remove(), 2100);
+      };
+      if (!raf) raf = requestAnimationFrame(tick);
     },
   };
 }

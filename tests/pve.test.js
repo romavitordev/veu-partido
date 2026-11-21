@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KIT, MAX_PASSIVE, slotsOf, rewardChoices, kitUpgrades, kitId, KIT_STEP, FUSIONS } from '../src/pve/upgrades.js';
+import { computeMods, rollChoices, gainXp, xpForLevel, activeSynergies, UPGRADES, TREE, chestCount, chestUpgrades, MAX_KIT, MAX_PASSIVE, slotsOf, rewardChoices, kitUpgrades, kitId, KIT_STEP, FUSIONS, fusionProgress } from '../src/pve/upgrades.js';
 import cindy from '../src/characters/cindy.js';
 import { loadPve, savePve, clearPve, emptyData, profileOf, buyRank, refundTree, treeCoinCost, migrateTree, rewardBoss, endAttemptByDeath, newAttempt, PVE_KEY, PVE_PREV_KEY, PVE_BROKEN_KEY, exportPve, parseBackup, describePve } from '../src/pve/save.js';
 import { DUNGEONS, DUNGEON_ORDER, rollRouteLength, rollExits, chestChance, pickNextDungeon, advanceAfterClear, validDungeons, isAllowed, rollHeal, depthScale, PVE_DIFFICULTIES } from '../src/pve/dungeons.js';
@@ -600,4 +600,49 @@ test('Árvore Anciã: as lamparinas do corredor enfraquecem as ondas (menos Asso
   for (const d of Object.keys(PVE_DIFFICULTIES)) for (const w of treePlan(d, 0)) assert.ok(w.count >= 2 && Object.values(w.foes).every((q) => q > 0));
   assert.ok(!treePlan('easy', 0).some((w) => w.foes.broen));
   assert.ok(none[none.length - 1].foes.broen === 1);
+});
+
+test('fusões: o progresso mostra o que cada ingrediente tem e pede, e a receita pronta', () => {
+  // Carnificina = Fúria 3 + Sanguessuga 1
+  let list = fusionProgress(['furia']);
+  const c = list.find((x) => x.f.id === 'carnificina');
+  assert.ok(c, 'com um ingrediente a fusão já aparece');
+  assert.deepEqual(c.parts.map((p) => [p.id, p.have, p.need]), [['furia', 1, 3], ['sanguessuga', 0, 1]]);
+  assert.equal(c.ready, false);
+  list = fusionProgress(['furia', 'furia', 'furia', 'sanguessuga']);
+  assert.equal(list[0].f.id, 'carnificina', 'a pronta vem primeiro');
+  assert.equal(list[0].ready, true);
+  assert.ok(!fusionProgress(['furia', 'furia', 'furia', 'sanguessuga', 'carnificina']).some((x) => x.f.id === 'carnificina'), 'a já ganha some da lista');
+  assert.deepEqual(fusionProgress([]), []);
+});
+
+test('dublê: golpe em área pega todos em volta; tiro de um alvo só respinga metade', async () => {
+  const { shareOf, areaOf } = await import('../src/pve/duble.js');
+  const v = (x, z) => new THREE.Vector3(x, 0, z);
+  const f = { pos: v(0, 0), yaw: 0 };
+  const mob = { pos: v(0, 5), radius: 0.5 };
+  const near = { pos: v(2.5, 5), radius: 0.5 }; // 2,5 m do alvo
+  const side = { pos: v(1.2, 1.4), radius: 0.5 }; // perto de quem bate, à frente
+  const behind = { pos: v(0, -2), radius: 0.5 };
+  assert.equal(areaOf({ radius: 0.5 }), 0, 'o raio de projétil não é área');
+  assert.equal(areaOf({ explode: { radius: 3 } }), 3);
+  assert.equal(shareOf(mob, mob, f, 'ability', { radius: 0.5 }), 1);
+  assert.equal(shareOf(near, mob, f, 'ability', { radius: 0.5 }), 0, 'tiro: 2,5 m do alvo fica de fora');
+  assert.equal(shareOf({ pos: v(1.5, 5) }, mob, f, 'ability', {}), 0.5, 'tiro: o colado leva metade');
+  assert.equal(shareOf(near, mob, f, 'ability', { radius: 3 }), 1, 'área: o raio inteiro leva tudo');
+  assert.equal(shareOf(near, mob, f, 'special', {}), 1, 'especial: a área mínima em volta do alvo');
+  assert.equal(shareOf(side, mob, f, 'special', {}), 1, 'especial: quem está no arco até o alvo');
+  assert.equal(shareOf(behind, mob, f, 'special', {}), 0, 'especial: quem está atrás fica de fora');
+  const close = { pos: v(0, 1.8), radius: 0.5 };
+  assert.equal(shareOf({ pos: v(-0.9, 1.6), radius: 0.5 }, close, f, 'ability', { range: 2.2, arc: 90 }), 1, 'golpe em arco: todos no arco');
+});
+
+test('fase velada: abre vencendo a anterior ou por um requisito secreto (campaign.revealed)', async () => {
+  const { phaseUnlocked } = await import('../src/pve/dungeons.js');
+  const [a, b, c] = DUNGEON_ORDER;
+  assert.equal(phaseUnlocked({ phases: [] }, a), true);
+  assert.equal(phaseUnlocked({ phases: [] }, b), false);
+  assert.equal(phaseUnlocked({ phases: [a] }, b), true);
+  assert.equal(phaseUnlocked({ phases: [], revealed: [c] }, c), true, 'o segredo abre sem vencer a anterior');
+  assert.equal(phaseUnlocked({ phases: [], revealed: [c] }, b), false);
 });

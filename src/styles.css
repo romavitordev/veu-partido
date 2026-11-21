@@ -821,6 +821,130 @@ body.touch-ui .dmg small, body.touch-ui .dmg i { font-size: 13px; }
 .teamlink b { font-family: 'Bebas Neue', sans-serif; font-size: 18px; font-weight: 400; letter-spacing: .06em; color: #fff; text-shadow: 0 0 10px var(--c); }
 .sel-center .startbtn { pointer-events: auto; margin-top: 10px; }
 #select .hint { grid-column: 1 / -1; justify-self: center; margin-top: 0; font-size: 11px; line-height: 1.5; }
+#select .sel-title h1 { margin: 0; font: inherit; letter-spacing: inherit; }
+.sel-fx { display: none; }
+.sel-grid .card .cbar { display: none; }
+.sel-center .pcol { display: contents; } /* telas pequenas: a coluna não existe, a placa fica como antes */
+.sel-center .det { display: none; }
+.plate .pn .ptag { margin-right: .3em; font-size: .62em; letter-spacing: .06em; }
+.plate.p1 .pn .ptag { color: var(--p1); }
+.plate.p2 .pn .ptag { color: var(--p2); }
+.plate .pn b { font-weight: 400; color: var(--c); }
+.sel-pages .pg-n { display: inline-flex; align-items: center; gap: 5px; }
+.sel-pages .pg-n i { width: 6px; height: 6px; border-radius: 50%; background: #ffffff2e; }
+.sel-pages .pg-n i.on { background: var(--pc); box-shadow: 0 0 8px var(--pc); transform: scale(1.3); }
+
+/* ================= SELEÇÃO REDESENHADA (dono, 2026-11-21: "todo design ultrapassado com nosso novo nivel de qualidade",
+   com uma referência de seleção de jogo de luta): os LUTADORES em 3D são o centro da tela; as grades viram retratos
+   quadrados nos cantos de cima, em vidro roxo; embaixo de cada lutador, o NOME grande com a etiqueta do jogador e as
+   FAIXAS com o especial, a transformação e as habilidades (com o comando); no rodapé, a barra de comandos. Só em telas
+   de computador/tablet: no celular deitado o layout compacto de antes continua. ================= */
+@media (min-width: 761px) and (min-height: 521px) {
+  #select { --tile: clamp(42px, min(4.3vw, 6.3vh), 74px); --gap: 5px; --sw: calc(var(--tile) * 3 + var(--gap) * 2 + 24px);
+    display: block; padding: 0; background: none; overflow: hidden; }
+  .sel-fx { display: block; position: absolute; inset: 0; pointer-events: none; }
+  .sel-fx .sel-vig { position: absolute; inset: 0; background: radial-gradient(ellipse 75% 70% at 50% 45%, transparent 45%, rgba(3,2,6,.55) 78%, rgba(2,1,4,.9) 100%); }
+  .sel-fx .sel-grain { position: absolute; inset: -50%; opacity: .06; mix-blend-mode: overlay; animation: grain 1s steps(6) infinite;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+  /* título: o rótulo espaçado em cima (como "BATALHA SOLO" no menu) e o nome da tela */
+  #select .sel-title { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); text-align: center; text-shadow: none; pointer-events: none; white-space: nowrap; }
+  #select .sel-title small { display: block; margin: 0 0 3px; font: 700 10px/1 Inter, sans-serif; letter-spacing: .34em; color: #a99ac6; text-transform: uppercase; }
+  #select .sel-title h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(30px, 3vw, 44px); letter-spacing: .14em; line-height: 1;
+    background: linear-gradient(180deg, #fff 30%, #c9b3f0); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 3px 0 rgba(0,0,0,.6)) drop-shadow(0 0 18px rgba(164,107,255,.45)); }
+
+  /* as grades: vidro roxo nos cantos de cima, retratos quadrados */
+  .sel-side { position: absolute; top: 16px; left: 16px; width: var(--sw); padding: 10px 12px; gap: 8px;
+    background: linear-gradient(180deg, rgba(26,14,42,.72), rgba(12,7,20,.78)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(181,138,255,.18); border-radius: 12px; box-shadow: inset 2px 0 0 var(--pc), 0 14px 40px rgba(0,0,0,.45); transition: opacity .2s; }
+  .sel-side.s2 { left: auto; right: 16px; border: 1px solid rgba(181,138,255,.18); box-shadow: inset -2px 0 0 var(--pc), 0 14px 40px rgba(0,0,0,.45); background: linear-gradient(180deg, rgba(26,14,42,.72), rgba(12,7,20,.78)); }
+  .sel-side.waiting { opacity: .45; }
+  .sel-head { font-size: clamp(10px, 1.2vh, 13px); letter-spacing: .16em; white-space: nowrap; gap: 6px; }
+  .plate .teampicks { margin: 4px 0 2px; gap: 5px; }
+  .plate .teampicks span { min-width: 0; padding: 2px 7px; }
+  .plate .teampicks b { font-size: 14px; }
+  .pcol.p2 .plate .teampicks { justify-content: flex-end; }
+  .sel-head .tag { padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--pc) 22%, transparent); color: var(--pc); border: 1px solid color-mix(in srgb, var(--pc) 60%, transparent); letter-spacing: .14em; }
+  .sel-head .st { font-size: 10px; }
+  .sel-grid { flex: none; display: grid; grid-template-columns: repeat(3, var(--tile)); grid-auto-rows: var(--tile); grid-template-rows: none; gap: var(--gap); }
+  .sel-grid .card { aspect-ratio: 1; border: 1px solid rgba(255,255,255,.1); border-radius: 7px; transition: transform .14s, box-shadow .14s, border-color .14s;
+    background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--c) 40%, #1a1028), #0b0711 75%); }
+  .sel-grid .card img { object-position: 50% 8%; transform: scale(1.35); transform-origin: 50% 0; }
+  .sel-grid .card .cn, .sel-grid .card .tm, .sel-grid .card .vr { display: none; }
+  .sel-grid .card .cbar { display: block; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--c); opacity: .75; }
+  .sel-grid .card.ver::after { content: ''; position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; transform: rotate(45deg); background: #f0eaf8; box-shadow: 0 0 6px #fff; }
+  .sel-grid .card.alt::after { background: var(--pc); box-shadow: 0 0 8px var(--pc); }
+  .sel-grid .card:hover { border-color: rgba(255,255,255,.35); }
+  .sel-grid .card.on { border-color: var(--pc); box-shadow: 0 0 0 2px var(--pc), 0 0 18px var(--pc); transform: translateY(-2px) scale(1.07); z-index: 2; }
+  .sel-grid .card.locked img { filter: grayscale(1) brightness(.3); }
+  .sel-grid .card.locked .cbar { background: #555; }
+  .sel-grid .card .lk { font-size: calc(var(--tile) * .32); }
+  .sel-grid .card.picked::after { content: '✔'; width: auto; height: auto; transform: none; background: none; box-shadow: none; top: 2px; right: 5px; }
+  .sel-grid .card.rec::before { top: 1px; left: 4px; font-size: 12px; }
+  .sel-pages { justify-content: center; gap: 12px; font-size: 10px; }
+  .sel-pages b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(181,138,255,.3); font-size: 9px; color: #d8ccef; }
+  .sel-pages b:hover { background: rgba(164,107,255,.25); }
+
+  /* centro: VS, os lutadores (3D, atrás) e embaixo a coluna de cada um */
+  .sel-center { position: absolute; inset: 0; display: block; }
+  .sel-vs { top: 15%; font-size: clamp(56px, 6vw, 92px); opacity: .85; }
+  .sel-center .plates { position: absolute; left: 16px; right: 16px; width: auto; bottom: 44px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 clamp(24px, 6vw, 120px); align-items: end; }
+  .sel-center .pcol { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .sel-center .pcol.p2 { align-items: flex-end; text-align: right; }
+  .sel-center .plate { max-width: none; padding: 0; background: none; border: 0; }
+  .plate .pn { display: flex; align-items: baseline; gap: 10px; min-width: 0; font-size: clamp(34px, 3.9vw, 60px); line-height: .9; text-shadow: none; }
+  .pcol.p2 .plate .pn { flex-direction: row-reverse; }
+  .plate .pn .ptag { font-family: 'Bebas Neue', sans-serif; font-size: .5em; letter-spacing: .08em; text-shadow: 0 0 14px currentColor; }
+  .plate.p1 .pn .ptag { color: var(--p1); }
+  .plate.p2 .pn .ptag { color: var(--p2); }
+  .plate .pn b { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; letter-spacing: .05em; filter: drop-shadow(0 4px 0 rgba(0,0,0,.75)) drop-shadow(0 0 20px color-mix(in srgb, var(--c) 70%, transparent));
+    background: linear-gradient(180deg, #fff 35%, color-mix(in srgb, var(--c) 55%, #fff)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .plate.ok .pn::after { content: '✔'; color: #3ad17a; font-size: .4em; align-self: center; }
+  .plate .po { margin-top: 6px; font-size: clamp(11px, 1.3vh, 14px); letter-spacing: .16em; text-transform: uppercase; color: #cfc4e2; }
+  .plate .pt { font-size: clamp(12px, 1.5vh, 16px); color: #b8acd0; }
+  .plate .pv { margin-top: 4px; }
+
+  /* faixas: o especial (ouro), a transformação (carmesim) e as habilidades, cada uma com o comando */
+  .sel-center .det { display: flex; flex-direction: column; gap: 6px; width: min(100%, 32em); min-height: 0; max-height: none; padding: 0; border: 0; background: none; overflow: visible; font-size: clamp(12px, 1.55vh, 17px); pointer-events: auto; }
+  .pcol.p2 .det { align-items: flex-end; }
+  .det .fx-base { display: flex; flex-wrap: wrap; gap: 4px 14px; color: #d6cce6; font-size: .95em; }
+  .pcol.p2 .det .fx-base { justify-content: flex-end; }
+  .det .fx-base span { display: inline-flex; align-items: center; gap: 6px; }
+  .det .fx-rb { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; width: 100%; }
+  .det .fx-rb li { position: relative; display: flex; align-items: center; gap: 9px; min-width: 0; padding: 4px 16px 4px 8px; cursor: help;
+    background: linear-gradient(90deg, rgba(30,18,50,.92), rgba(18,10,30,.75) 70%, transparent); border-left: 2px solid rgba(181,138,255,.55);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
+  .pcol.p2 .det .fx-rb li { flex-direction: row-reverse; padding: 4px 8px 4px 16px; border-left: 0; border-right: 2px solid rgba(181,138,255,.55);
+    background: linear-gradient(270deg, rgba(30,18,50,.92), rgba(18,10,30,.75) 70%, transparent); clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%); }
+  .det .fx-rb li b { font-weight: 700; color: #f2ecfb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .02em; }
+  .det .fx-rb li small { margin-left: auto; color: #a99ac6; font-size: .85em; white-space: nowrap; }
+  .pcol.p2 .det .fx-rb li small { margin: 0 auto 0 0; }
+  .det .fx-rb li.sp { border-color: #ffd84a; background: linear-gradient(90deg, rgba(90,62,10,.85), rgba(40,26,8,.7) 70%, transparent); }
+  .pcol.p2 .det .fx-rb li.sp { background: linear-gradient(270deg, rgba(90,62,10,.85), rgba(40,26,8,.7) 70%, transparent); }
+  .det .fx-rb li.sp b { color: #ffe68a; }
+  .det .fx-rb li.aw { border-color: #e0304a; background: linear-gradient(90deg, rgba(90,14,28,.85), rgba(40,8,16,.7) 70%, transparent); }
+  .pcol.p2 .det .fx-rb li.aw { background: linear-gradient(270deg, rgba(90,14,28,.85), rgba(40,8,16,.7) 70%, transparent); }
+  .det .fx-more { display: flex; flex-direction: column; gap: 2px; color: #a99ac6; font-size: .9em; max-width: 100%; }
+  .det .fx-more span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .det .fx-more b { color: #d6cce6; margin-right: 4px; }
+  .det kbd.fk { flex: none; display: inline-flex; gap: 2px; font: 800 .85em/1 system-ui, sans-serif; }
+  .det kbd.fk i { font-style: normal; min-width: 18px; padding: 3px 4px; text-align: center; border-radius: 4px; background: #241c33; border: 1px solid #514268; color: #f0eaf8; box-shadow: 0 1px 0 #000; }
+  .det .fx-rb li.sp kbd.fk i { border-color: #8a6a1a; }
+
+  .sel-center .startbtn { position: absolute; bottom: calc(clamp(12px, 1.4vh, 15px) * 1.5 + 34px); left: 50%; transform: translateX(-50%); margin: 0; z-index: 3;
+    padding: 10px 34px 8px; font-size: clamp(28px, 3vw, 40px); letter-spacing: .22em; white-space: nowrap; text-align: center;
+    border: 1px solid rgba(216,184,255,.8); border-radius: 999px; color: #fff; text-shadow: 0 0 14px rgba(200,160,255,.9);
+    background: linear-gradient(90deg, rgba(60,22,110,.92), rgba(120,50,190,.92), rgba(60,22,110,.92));
+    box-shadow: 0 0 0 4px rgba(164,107,255,.15), 0 0 30px rgba(164,107,255,.6); animation: sel-go 1.4s ease-in-out infinite alternate; }
+  .sel-center .startbtn small { display: block; margin: 2px 0 0; font: 700 10px/1 Inter, sans-serif; letter-spacing: .24em; text-transform: uppercase; opacity: .8; }
+  @keyframes sel-go { to { box-shadow: 0 0 0 8px rgba(164,107,255,.08), 0 0 44px rgba(190,140,255,.85); } }
+  /* rodapé: a barra de comandos */
+  #select .hint { position: absolute; left: 0; right: 0; bottom: 0; max-width: none; margin: 0; padding: 8px 18px; font-size: clamp(12px, 1.4vh, 15px); letter-spacing: .03em; color: #b9adcf;
+    background: linear-gradient(0deg, rgba(6,3,12,.92), rgba(6,3,12,.6)); border-top: 1px solid rgba(181,138,255,.18); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #select .hint kbd { font: 800 11px Inter, sans-serif; padding: 2px 6px; border-radius: 4px; background: #241c33; border: 1px solid #514268; color: #f0eaf8; }
+  /* TORRE: só o P1 escolhe; a coluna do P2 fica vazia */
+  #select.solo-pick .pcol.p2 { visibility: hidden; }
+}
 @media (max-width: 760px) {
   #select { grid-template-columns: 1fr 1fr; grid-template-rows: auto minmax(0, 1fr) auto auto; padding: 8px; gap: 5px 8px; }
   .sel-center { grid-column: 1 / -1; grid-row: 4; }
@@ -1928,6 +2052,13 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 #pvehud .pv-up.rel i { box-shadow: 0 0 0 1px #7effc8, 0 0 10px #3ad8a0aa; color: #d8fff0; }
 #pvehud .pv-card small.fus { display: block; color: #d8a0ff; }
 #pvehud .pv-card small.fus.ready { color: #f0c8ff; font-weight: 700; text-shadow: 0 0 8px #b060ff; }
+/* a receita à mostra (2026-11-21): cada ingrediente com tem/pede; o que já está no nível fica verde */
+#pvehud .pv-card small.fus span, #pvehud .pv-fusions span:not(:first-child) { white-space: nowrap; }
+#pvehud .pv-card small.fus span.ok, #pvehud .pv-fusions div span.ok { color: #7dffb0; }
+#pvehud .pv-fusions { flex-basis: 100%; display: flex; flex-direction: column; gap: 3px; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--pv-line); text-align: left; font-size: 11px; color: var(--pv-mute); }
+#pvehud .pv-fusions > span { font-weight: 600; letter-spacing: .12em; color: #d8a0ff; font-size: 10px; }
+#pvehud .pv-fusions div b { color: #e8d8f4; font-weight: 600; margin-right: 6px; }
+#pvehud .pv-fusions div.ready b, #pvehud .pv-fusions div em { color: #f0c8ff; font-style: normal; font-weight: 700; text-shadow: 0 0 8px #b060ff; }
 #pvehud .pv-card b u { display: inline-block; margin-right: 8px; padding: 1px 6px; border-radius: 4px; font-size: 10px; letter-spacing: .12em; text-decoration: none; vertical-align: middle; color: #c8bfb0; border: 1px solid #ffffff33; }
 #pvehud .pv-card b u.act { color: #e0c8ff; border-color: #b07aff; background: #8a4aff22; }
 #pvehud .pv-card.act > i { box-shadow: 0 0 0 1px #b07aff, 0 0 12px #8a4aff66; }
@@ -1939,6 +2070,21 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 .pve-choice .pc-grid button.pic.on figure img { transform: scale(1.05); }
 .pve-choice .pc-grid button.pic.disabled figure img { filter: grayscale(1) brightness(.5); }
 .pve-choice .pc-grid button.pic em { top: 8px; }
+/* FASE VELADA (trancada): no lugar do cenário, a névoa do Véu se mexendo, com um rasgo de luz roxa ao fundo */
+.pve-choice .pc-grid button.pic.veiled figure { position: relative; background:
+  radial-gradient(ellipse 6% 55% at 50% 55%, #d8b8ff66, transparent 80%),
+  radial-gradient(ellipse 30% 60% at 50% 55%, #7a4ab877, transparent 70%),
+  radial-gradient(ellipse 80% 50% at 30% 70%, #2a2238, transparent 70%),
+  radial-gradient(ellipse 70% 60% at 75% 35%, #1c1828, transparent 70%), #07060b; }
+.pve-choice .pc-grid button.pic.veiled figure::before, .pve-choice .pc-grid button.pic.veiled figure::after { content: ''; position: absolute; inset: -20%;
+  background: radial-gradient(ellipse 40% 25% at 30% 40%, #c8c0e038, transparent 70%), radial-gradient(ellipse 35% 20% at 70% 65%, #b8b0d030, transparent 70%);
+  animation: veil-drift 9s ease-in-out infinite alternate; }
+.pve-choice .pc-grid button.pic.veiled figure::after { animation-duration: 13s; animation-direction: alternate-reverse; transform: scaleX(-1); }
+.pve-choice .pc-grid button.pic.veiled b { letter-spacing: .12em; color: #a99cc4; }
+.pve-choice .pc-grid button.veiled.disabled { opacity: .78; filter: none; } /* a névoa precisa aparecer: só o texto fica apagado */
+.pve-choice .pc-grid button.veiled.disabled span, .pve-choice .pc-grid button.veiled.disabled > i { opacity: .7; }
+@keyframes veil-drift { from { translate: -6% 2%; } to { translate: 6% -3%; } }
+@media (prefers-reduced-motion: reduce) { .pve-choice .pc-grid button.pic.veiled figure::before, .pve-choice .pc-grid button.pic.veiled figure::after { animation: none; } }
 .pve-choice .pc-grid button.pic span { flex: 1; }
 
 /* A TELA DE K.O. (2026-11-14): camada própria acima da faixa do especial; clarão, onda, riscos de luz e letras carimbando */
@@ -2019,6 +2165,8 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 .pve-found .pf-tile.rel.ok i { color: #7effc8; text-shadow: 0 0 12px #3ad8a088; }
 .pve-found .pf-info.rel > i { color: #7effc8; }
 .pve-found .pf-tile.ok b { color: #f4ece0; }
+.pve-found .pf-tile small { font-size: 11px; color: #a090b0; letter-spacing: .02em; line-height: 1.2; }
+.pve-found .pf-tile.ok small { color: #c8b8d8; }
 .pve-found .pf-tile.on { border-color: #ffd84a; background: #2a1a10e6; }
 .pve-found .pf-info { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 10px; background: #160c12d9; border: 1px solid #ffffff1a; min-height: 96px; }
 .pve-found .pf-info > i { font-style: normal; font-size: 40px; color: #d8a0ff; width: 48px; text-align: center; }
@@ -2031,22 +2179,52 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 .pve-found .pf-btns button { padding: 10px 18px; border-radius: 8px; background: #2a1a10e6; color: #ffd84a; border: 1px solid #ffd84a55; font-weight: 700; letter-spacing: .08em; cursor: pointer; }
 @media (max-width: 560px) { .pve-found .pf-grid { grid-template-columns: repeat(3, 1fr); } }
 
-/* TELA DE CARREGAMENTO DO JOGO (#bootscreen no index.html, ui/bootScreen.js) — própria, por cima de tudo */
-#bootscreen { position: fixed; inset: 0; z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: radial-gradient(ellipse at 50% 42%, #24123a 0%, #0b0612 58%, #030205 100%); color: #e9e0f7; font-family: 'Bebas Neue', Impact, sans-serif; text-align: center; transition: opacity .6s ease, visibility .6s; }
+/* TELA DE CARREGAMENTO DO JOGO (#bootscreen no index.html, ui/bootScreen.js) — própria, por cima de tudo.
+   REDESENHO (pedido do dono, 2026-11-21): emblema do VÉU RASGADO no lugar do pentagrama. Tudo lê --p (0..1, o número
+   mostrado, que corre atrás do progresso real): o anel fecha, o rasgo abre, os 5 elementos acendem um a um, a
+   rachadura atravessa o título e a barra enche. Em 100% vem o estado .complete (clarão + anel branco + "PRONTO!"). */
+#bootscreen { --p: 0; position: fixed; inset: 0; z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px; overflow: hidden;
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, #2a1342 0%, #120820 48%, #050308 100%); color: #e9e0f7; font-family: 'Bebas Neue', Impact, sans-serif; text-align: center; transition: opacity .7s ease, visibility .7s; }
 #bootscreen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-#bootscreen .bs-glow { position: absolute; left: 50%; top: 38%; width: 70vmin; height: 70vmin; transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(155,77,255,.22), transparent 62%); animation: bsPulse 3.2s ease-in-out infinite; pointer-events: none; }
-#bootscreen .bs-sigil { width: min(26vmin, 150px); height: auto; animation: spin 14s linear infinite; filter: drop-shadow(0 0 12px #9b4dff); }
-#bootscreen .bs-sigil * { fill: none; stroke-width: 1.4; }
-#bootscreen .bs-sigil .o { stroke: #b58aff; stroke-dasharray: 6 4; }
-#bootscreen .bs-sigil .i { stroke: rgba(209,18,46,.7); }
-#bootscreen .bs-sigil .p { stroke: #d9c4ff; stroke-linejoin: round; animation: bsDraw 2.6s ease-in-out infinite alternate; stroke-dasharray: 260; }
-#bootscreen .bs-title { display: flex; align-items: baseline; gap: .3em; font-size: clamp(34px, 8vw, 64px); letter-spacing: .08em; line-height: 1; text-shadow: 0 0 24px rgba(155,77,255,.6), 3px 3px 0 #000; }
-#bootscreen .bs-veu { color: #d1122e; font-size: .55em; letter-spacing: .3em; }
-#bootscreen .bs-status { font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .28em; color: #b9a8d8; min-height: 1.2em; }
-#bootscreen .bs-bar { position: relative; width: min(86vw, 460px); height: 10px; border-radius: 6px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(181,138,255,.25); overflow: hidden; }
-#bootscreen .bs-bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, #6a1428, #9b4dff 55%, #f3e9ff); box-shadow: 0 0 14px #9b4dff; transition: width .25s ease; }
-#bootscreen .bs-nums { display: flex; justify-content: space-between; width: min(86vw, 460px); font-family: system-ui, sans-serif; font-size: 12px; color: #9d8fb5; font-variant-numeric: tabular-nums; }
-#bootscreen .bs-pct { color: #e9e0f7; font-weight: 800; }
+#bootscreen > * { position: relative; z-index: 1; }
+#bootscreen .bs-glow { position: absolute; z-index: 0; left: 50%; top: 38%; width: 80vmin; height: 80vmin; transform: translate(-50%, -50%) scale(calc(.8 + .3 * var(--p))); background: radial-gradient(circle, rgba(155,77,255,calc(.12 + .2 * var(--p))), transparent 62%); animation: bsBreath 3.6s ease-in-out infinite; pointer-events: none; }
+#bootscreen .bs-vig { position: absolute; z-index: 0; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,.7) 100%), repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px); }
+/* emblema */
+#bootscreen .bs-sigil { width: min(30vmin, 190px); height: auto; overflow: visible; filter: drop-shadow(0 0 calc(6px + 14px * var(--p)) rgba(155,77,255,.85)); }
+#bootscreen .bs-sigil .prog, #bootscreen .bs-sigil .i, #bootscreen .bs-sigil .orb, #bootscreen .bs-sigil .tear { transform-box: view-box; transform-origin: 50% 50%; }
+#bootscreen .bs-sigil .core { fill: url(#bsCoreG); opacity: calc(.35 + .65 * var(--p)); animation: bsCore 2.4s ease-in-out infinite; }
+#bootscreen .bs-sigil .o { fill: none; stroke: rgba(181,138,255,.16); stroke-width: 2.6; }
+#bootscreen .bs-sigil .prog { fill: none; stroke: #c9a6ff; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 289.03; stroke-dashoffset: calc(289.03 * (1 - var(--p))); transform: rotate(-90deg); }
+#bootscreen .bs-sigil .i { fill: none; stroke: rgba(209,18,46,.55); stroke-width: .8; stroke-dasharray: 1.5 3.2; animation: spin 40s linear infinite reverse; }
+#bootscreen .bs-sigil .orb { animation: spin 18s linear infinite; }
+#bootscreen .bs-sigil .orb rect { stroke: #0b0612; stroke-width: .8; transition: opacity .3s, filter .3s; opacity: .22; filter: saturate(.3); }
+#bootscreen .bs-sigil .orb rect:nth-child(1) { --k: 1; } #bootscreen .bs-sigil .orb rect:nth-child(2) { --k: 2; }
+#bootscreen .bs-sigil .orb rect:nth-child(3) { --k: 3; } #bootscreen .bs-sigil .orb rect:nth-child(4) { --k: 4; }
+#bootscreen .bs-sigil .orb rect:nth-child(5) { --k: 5; }
+#bootscreen .bs-sigil .orb rect { opacity: clamp(.22, calc((var(--p) * 5 - var(--k) + 1) * 3), 1); filter: saturate(clamp(.3, calc((var(--p) * 5 - var(--k) + 1) * 3), 1)); }
+#bootscreen .bs-sigil .tear { transform: scaleX(calc(.14 + .86 * var(--p))); animation: bsFlicker 2.2s steps(1) infinite; }
+#bootscreen .bs-sigil .tg { fill: url(#bsTearG); opacity: calc(.4 + .6 * var(--p)); }
+#bootscreen .bs-sigil .te { fill: none; stroke: #fbf6ff; stroke-width: .7; stroke-linejoin: round; opacity: .9; }
+#bootscreen .bs-sigil .tc { fill: none; stroke: #ffd9ea; stroke-width: .6; stroke-linecap: round; stroke-dasharray: 8; stroke-dashoffset: calc(8 * (1 - var(--p))); opacity: .75; }
+/* título com a rachadura que cresce junto com o progresso */
+#bootscreen .bs-title { display: flex; flex-direction: column; align-items: center; gap: .05em; line-height: .9; margin-top: 12px; }
+#bootscreen .bs-veu { color: #e0204a; font-size: clamp(14px, 2.6vw, 20px); letter-spacing: .9em; padding-left: .9em; text-shadow: 0 0 12px rgba(224,32,74,.7); }
+#bootscreen .bs-word { position: relative; display: block; font-size: clamp(42px, 9vw, 78px); letter-spacing: .06em; }
+#bootscreen .bs-word b { display: block; font-weight: 400; color: #f3ecff; text-shadow: 0 0 28px rgba(155,77,255,.55), 3px 3px 0 #000; }
+#bootscreen .bs-word .bs-shard { position: absolute; inset: 0; color: #e0204a; text-shadow: none; opacity: .75; clip-path: polygon(0 0, 100% 0, 100% 38%, 0 58%); transform: translate(2px, -2px); mix-blend-mode: screen; animation: bsShard 3.4s steps(1) infinite; }
+#bootscreen .bs-word .bs-rift { position: absolute; inset: -12% -4%; width: 108%; height: 124%; pointer-events: none; mix-blend-mode: screen; filter: drop-shadow(0 0 6px #b58aff); clip-path: inset(0 calc(100% - 100% * var(--p)) 0 0); }
+#bootscreen .bs-word .bs-rift path { fill: url(#bsRiftG); }
+#bootscreen .bs-els { display: flex; align-items: center; gap: 9px; margin: 2px 0 6px; }
+#bootscreen .bs-els .ln { width: clamp(30px, 9vw, 80px); height: 1px; background: linear-gradient(90deg, transparent, rgba(181,138,255,.6)); }
+#bootscreen .bs-els .ln:last-child { transform: scaleX(-1); }
+#bootscreen .bs-els b { width: 7px; height: 7px; transform: rotate(45deg); background: var(--c); box-shadow: 0 0 8px var(--c); opacity: .85; }
+/* estado, barra e números */
+#bootscreen .bs-status { font-family: system-ui, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .3em; color: #b9a8d8; min-height: 1.2em; transition: color .3s; }
+#bootscreen .bs-bar { position: relative; width: min(80vw, 420px); height: 6px; border-radius: 4px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(181,138,255,.22); }
+#bootscreen .bs-bar i { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: linear-gradient(90deg, #6a1428, #9b4dff 60%, #e9dcff); box-shadow: 0 0 12px rgba(155,77,255,.8); }
+#bootscreen .bs-bar i::after { content: ''; position: absolute; right: -5px; top: 50%; width: 12px; height: 12px; border-radius: 50%; transform: translateY(-50%); background: #fff; box-shadow: 0 0 10px #fff, 0 0 22px #b58aff; opacity: calc(var(--p) * 8); }
+#bootscreen .bs-nums { display: flex; align-items: baseline; justify-content: space-between; width: min(80vw, 420px); font-family: system-ui, sans-serif; font-size: 12px; color: #9d8fb5; font-variant-numeric: tabular-nums; }
+#bootscreen .bs-pct { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 30px; line-height: 1; letter-spacing: .04em; color: #f3ecff; text-shadow: 0 0 14px rgba(155,77,255,.7); min-width: 3ch; text-align: left; }
 #bootscreen .bs-note { max-width: 480px; font-family: system-ui, sans-serif; font-size: 13px; line-height: 1.45; color: #ffd37a; }
 #bootscreen .bs-err { max-width: 520px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px 18px; border: 1px solid rgba(209,18,46,.6); border-radius: 8px; background: rgba(40,6,14,.75); font-family: system-ui, sans-serif; }
 #bootscreen .bs-err[hidden], #bootscreen .bs-note[hidden] { display: none; }
@@ -2054,19 +2232,43 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 #bootscreen .bs-err code { max-width: 100%; font-size: 11px; color: #c9a3ad; overflow-wrap: anywhere; }
 #bootscreen .bs-err button { padding: 10px 26px; font: 700 15px system-ui, sans-serif; letter-spacing: .08em; color: #fff; background: #c81e2e; border: 0; border-radius: 6px; cursor: pointer; }
 #bootscreen .bs-err button:hover, #bootscreen .bs-err button:focus-visible { background: #e2283a; outline: 2px solid #fff; outline-offset: 2px; }
-/* menu antes dos downloads: selo do progresso no alto da tela e o VOLTAR da espera */
-#netbadge { position: fixed; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 8000; display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 12px; border-radius: 999px; background: rgba(11,6,18,.82); box-shadow: inset 0 0 0 1px rgba(181,138,255,.35), 0 4px 14px rgba(0,0,0,.5); font: 700 11px system-ui, sans-serif; letter-spacing: .12em; color: #d9c4ff; pointer-events: none; overflow: hidden; white-space: nowrap; }
+/* selo do canto: downloads seguindo por trás do menu */
+#netbadge { --p: 0; position: fixed; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 8000; display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 12px; border-radius: 999px; background: rgba(11,6,18,.82); box-shadow: inset 0 0 0 1px rgba(181,138,255,.35), 0 4px 14px rgba(0,0,0,.5); font: 700 11px system-ui, sans-serif; letter-spacing: .12em; color: #d9c4ff; pointer-events: none; overflow: hidden; white-space: nowrap; font-variant-numeric: tabular-nums; transition: opacity .5s, transform .5s, box-shadow .3s, color .3s; }
 #netbadge[hidden] { display: none; }
-#netbadge i { position: absolute; inset: auto auto 0 0; height: 2px; width: 0; background: linear-gradient(90deg, #6a1428, #9b4dff); transition: width .25s ease; }
-#netbadge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #9b4dff; box-shadow: 0 0 8px #9b4dff; animation: bsPulse 1.6s ease-in-out infinite; }
+#netbadge i { position: absolute; inset: auto auto 0 0; height: 2px; width: calc(var(--p) * 100%); background: linear-gradient(90deg, #6a1428, #9b4dff); }
+#netbadge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #9b4dff; box-shadow: 0 0 8px #9b4dff; animation: bsDot 1.6s ease-in-out infinite; }
+#netbadge.done { color: #fff4cf; box-shadow: inset 0 0 0 1px rgba(242,194,48,.8), 0 0 22px rgba(242,194,48,.45), 0 4px 14px rgba(0,0,0,.5); animation: bsBadgePop .5s ease-out; }
+#netbadge.done i { background: linear-gradient(90deg, #f2c230, #fff4cf); }
+#netbadge.done::before { content: '✓'; width: auto; height: auto; background: none; box-shadow: none; color: #f2c230; font-size: 13px; animation: none; }
+#netbadge.out { opacity: 0; transform: translateX(-50%) translateY(-8px); }
 body:not(.static-bg) #netbadge { display: none; }
 #bootscreen .bs-cancel { padding: 9px 24px; font: 700 14px system-ui, sans-serif; letter-spacing: .1em; color: #e9e0f7; background: transparent; border: 1px solid rgba(181,138,255,.55); border-radius: 6px; cursor: pointer; }
 #bootscreen .bs-cancel[hidden] { display: none; }
 #bootscreen .bs-cancel:hover, #bootscreen .bs-cancel:focus-visible { background: rgba(155,77,255,.2); outline: 2px solid #fff; outline-offset: 2px; }
-#bootscreen.failed .bs-sigil { animation-play-state: paused; filter: grayscale(.6) drop-shadow(0 0 8px #d1122e); }
 #bootscreen .bs-tip { position: absolute; bottom: max(16px, env(safe-area-inset-bottom)); left: 16px; right: 16px; font-family: system-ui, sans-serif; font-size: 12px; color: #7f7396; }
-@keyframes bsPulse { 50% { opacity: .55; transform: translate(-50%, -50%) scale(1.08); } }
-@keyframes bsDraw { from { stroke-dashoffset: 260; } to { stroke-dashoffset: 0; } }
+/* 100%: clarão, anel e barra brancos, emblema dá um pulo, "PRONTO!" dourado */
+#bootscreen::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 38%, rgba(255,250,255,.95), rgba(181,138,255,.45) 30%, transparent 65%); }
+#bootscreen.complete::after { animation: bsFlash .9s ease-out; }
+#bootscreen.complete .bs-sigil { animation: bsPop .6s cubic-bezier(.2,1.6,.4,1); filter: drop-shadow(0 0 26px #fff) drop-shadow(0 0 40px #b58aff); }
+#bootscreen.complete .bs-sigil .prog { stroke: #fff; stroke-width: 3.4; }
+#bootscreen.complete .bs-sigil .tear { animation: none; }
+#bootscreen.complete .bs-sigil .tg { fill: #fbf6ff; }
+#bootscreen.complete .bs-word .bs-shard { animation: none; opacity: 0; }
+#bootscreen.complete .bs-status { color: #f2c230; letter-spacing: .5em; font-size: 15px; text-shadow: 0 0 12px rgba(242,194,48,.7); animation: bsPop .5s ease-out; }
+#bootscreen.complete .bs-bar i { background: linear-gradient(90deg, #f2c230, #fff); box-shadow: 0 0 18px #f2c230; }
+#bootscreen.complete .bs-pct { color: #fff4cf; text-shadow: 0 0 16px #f2c230; animation: bsPop .5s ease-out; }
+#bootscreen.failed .bs-sigil { filter: grayscale(.6) drop-shadow(0 0 8px #d1122e); }
+#bootscreen.failed .bs-sigil * { animation-play-state: paused; }
+@keyframes bsBreath { 50% { opacity: .65; } }
+@keyframes bsCore { 50% { opacity: calc(.2 + .5 * var(--p)); } }
+@keyframes bsFlicker { 0%, 100% { opacity: 1; } 47% { opacity: .78; } 49% { opacity: 1; } 83% { opacity: .88; } }
+@keyframes bsShard { 0%, 100% { transform: translate(2px, -2px); } 30% { transform: translate(-3px, -1px); } 33% { transform: translate(2px, -2px); } 71% { transform: translate(4px, -3px); } 73% { transform: translate(2px, -2px); } }
+@keyframes bsDot { 50% { opacity: .45; transform: scale(.8); } }
+@keyframes bsFlash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes bsPop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes bsBadgePop { 0% { transform: translateX(-50%) scale(1); } 40% { transform: translateX(-50%) scale(1.12); } 100% { transform: translateX(-50%) scale(1); } }
+@media (max-height: 520px) { #bootscreen { gap: 6px; } #bootscreen .bs-sigil { width: min(26vmin, 120px); } #bootscreen .bs-word { font-size: 40px; } #bootscreen .bs-tip { display: none; } }
+@media (prefers-reduced-motion: reduce) { #bootscreen *, #bootscreen::after, #netbadge, #netbadge::before { animation: none !important; } }
 @media (prefers-reduced-motion: reduce) { #bootscreen .bs-sigil, #bootscreen .bs-glow, #bootscreen .bs-sigil .p { animation: none; } #bootscreen .bs-sigil .p { stroke-dasharray: none; } }
 
 /* MODO EXPLORAR no celular (game/Explorer.js makeTouch): analógico à esquerda, arrastar à direita olha */

@@ -15,8 +15,12 @@ export function recipeText(f) {
   return f.needs.map(([id, lv]) => `${getUpgrade(id).name}${lv > 1 ? ` no nível ${lv}` : ''}`).join(' + ');
 }
 
+// a fase ainda VELADA (não liberada) não entrega o nome aqui também
+const VEILED = 'uma fase além do Véu';
+let phaseOpen = () => true;
 const phaseName = (r) => {
   const D = DUNGEONS[r.phase];
+  if (!phaseOpen(r.phase)) return VEILED;
   return D ? D.cardName || D.place : r.phase;
 };
 
@@ -35,7 +39,8 @@ const ITEMS = [];
 }
 
 export class PveFusionScreen {
-  constructor(root, { audio, discovered = [] }) {
+  constructor(root, { audio, discovered = [], phaseOpen: open = null }) {
+    phaseOpen = open || (() => true);
     this.audio = audio;
     this.found = new Set(discovered);
     this.index = 0;
@@ -47,7 +52,9 @@ export class PveFusionScreen {
     const grid = (sec) => `<h3>${sec.title} <span>${sec.items.filter((u) => this.found.has(u.id)).length}/${sec.items.length}</span></h3>
       <div class="pf-grid">${sec.items.map((u) => {
         const ok = this.found.has(u.id);
-        return `<div class="pf-tile ${sec.id} ${ok ? 'ok' : ''}" data-i="${k++}"><i>${ok ? u.icon : '?'}</i><b>${ok ? esc(u.name) : '???'}</b></div>`;
+        // a PISTA em cada quadrado (dono, 2026-11-21): a receita com o nível pedido (fusão) ou a fase (achado)
+        const clue = sec.id === 'fus' ? u.needs.map(([id, lv]) => `${esc(getUpgrade(id).name)}${lv > 1 ? ` ${lv}` : ''}`).join(' + ') : esc(phaseName(u));
+        return `<div class="pf-tile ${sec.id} ${ok ? 'ok' : ''}" data-i="${k++}"><i>${ok ? u.icon : '?'}</i><b>${ok ? esc(u.name) : '???'}</b><small>${clue}</small></div>`;
       }).join('')}</div>`;
     el.innerHTML = `
       <div class="pf-wrap">
@@ -76,11 +83,11 @@ export class PveFusionScreen {
     info.querySelector('i').textContent = ok ? u.icon : '?';
     info.querySelector('b').textContent = ok ? u.name : '???';
     if (it.sec === 'fus') {
-      info.querySelector('p').textContent = ok ? u.desc : 'Ainda não descoberta. Monte a receita numa tentativa e abra um baú.';
-      info.querySelector('small').textContent = `Receita: ${recipeText(u)}`;
+      info.querySelector('p').textContent = ok ? u.desc : 'Ainda não descoberta. Numa tentativa, pegue as duas melhorias da receita nos níveis pedidos (nas cartas de nível); com a receita pronta, o PRÓXIMO baú traz a fusão.';
+      info.querySelector('small').textContent = `Receita: ${recipeText(u)} (as duas nas cartas de nível; depois, abra um baú)`;
     } else {
-      info.querySelector('p').textContent = ok ? u.desc : 'Ainda não achado. Abra os baús desta fase.';
-      info.querySelector('small').textContent = `Fase: ${phaseName(u)}`;
+      info.querySelector('p').textContent = ok ? u.desc : 'Ainda não achado. Não sai nas cartas de nível: cada baú aberto nesta fase tem uma chance de trazê-lo (um achado por baú).';
+      info.querySelector('small').textContent = `Fase: ${phaseName(u)} · sai dos baús dela`;
     }
     const tile = this.el.querySelectorAll('.pf-tile')[this.index];
     if (tile && tile.scrollIntoView) tile.scrollIntoView({ block: 'nearest' });

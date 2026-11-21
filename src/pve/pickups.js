@@ -7,6 +7,9 @@ import * as THREE from 'three';
 const PICK_COLORS = { heal: 0x7dffb0, coins: 0xffc040, xp: 0x6ad1ff, proof: 0xc8d8f0, reward: 0xf2c230, ink: 0xd8702a };
 const small = (k) => k === 'heal' || k === 'coins' || k === 'xp';
 
+// pode tomar a poção: perdeu vida (um pouco que seja) e nada bloqueia a cura agora
+const canHeal = (p) => p.health < p.maxHealth - 0.5 && !(p.findBuff && p.findBuff('noHeal'));
+
 export class Pickup {
   constructor(world, { kind = 'heal', pos, amount = 0.2, onTake, radius = 0.9 }) {
     this.world = world;
@@ -66,6 +69,9 @@ export class Pickup {
     if (this.t < 0.5) return; // não coleta no mesmo quadro em que nasceu
     for (const p of players) {
       if (!p || p.state === 'ko') continue;
+      // a CURA só vai para quem perdeu vida (dono, 2026-11-21: "elas são pegas mesmo full life, deveria pegar só se tivesse
+      // perdido vida, pouco que fosse") e que pode se curar agora (sob a FERIDA ABERTA ela ficava gasta sem curar nada)
+      if (this.kind === 'heal' && !canHeal(p)) continue;
       // ÍMÃ (melhoria da tentativa e da loja): os itens pequenos voam até quem está perto
       const mag = small(this.kind) ? (p.pveMods && p.pveMods.magnet) || 1 : 1;
       const dd = Math.hypot(p.pos.x - this.pos.x, p.pos.z - this.pos.z);
@@ -89,9 +95,11 @@ export class Pickup {
     const at = new THREE.Vector3(this.pos.x, 1, this.pos.z);
     if (this.kind === 'heal') {
       const n = Math.round(p.maxHealth * this.amount * ((p.pveMods && p.pveMods.healMult) || 1)); // + Poções (loja)
+      const before = p.health;
       p.heal(n);
+      const got = Math.round(p.health - before); // o que curou de verdade (o aviso mostrava o valor cheio mesmo sem curar)
       w.audio.play('pickup', { volume: 0.8 });
-      w.ui && w.ui.popup(p.index, `+${n} VIDA`, '#7dffb0');
+      w.ui && w.ui.popup(p.index, `+${got} VIDA`, '#7dffb0');
     } else if (small(this.kind)) {
       w.audio.play('pickup', { volume: 0.8, pitch: this.kind === 'coins' ? 1.4 : 1.1 });
     } else {

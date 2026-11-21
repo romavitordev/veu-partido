@@ -261,6 +261,22 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - [x] Mais fusões (uma por par de passivas que combina): v5.17.0, 5 novas (12 no total).
 - [x] Fusões que dá para alcançar: v5.41.0, receita no nível 3, baú garantido com a receita pronta, pistas nas cartas e 5 fusões novas (17 no total).
 - [x] Achados das fases: v5.41.0, 12 melhorias únicas (duas por fase) só dos baús da fase, na tela DESCOBERTAS.
+- [x] (v5.46.0) **Pedido do dono, 2026-11-21:** poções só para quem perdeu vida; a receita e o progresso das fusões à
+      mostra na fase (cartas de nível e "FUSÕES À VISTA") e nos quadrados da DESCOBERTAS; a trava de mira começa desligada
+      e o golpe corpo a corpo gruda no bicho à frente (cone maior). Balanceamento conferido contra o Vampire Survivors (lá:
+      a arma no nível máximo + o item, e um baú depois dos 10 min, sem garantia): aqui a 1ª melhoria no nível 3 + a 2ª na
+      build e o PRÓXIMO baú garante, porque cada tentativa é uma fase só. Mantido.
+- [x] (v5.46.0) **Pedido do dono, 2026-11-21:** ataques em área pegam em área no Outro Lado (o dano do dublê segue o
+      raio/arco da habilidade; o especial pega 3,2 m em volta do alvo e o arco até ele); o Machado na Corda e outros tiros
+      que puxam agora puxam Assombrações, zumbis e feras (chefes só ficam presos); o cadeado segue a versão do RB/LB
+      (Juan no cartão do Henri); fases não liberadas ficam VELADAS ("ALÉM DO VÉU", sem nome nem cenário); a grade
+      da seleção no Outro Lado não mostra a equipe Outro Lado (5 páginas).
+- [x] (v5.46.0) **Pedido do dono, 2026-11-21:** seleção de personagem redesenhada (palco 3D com o rasgo, grades em
+      painéis de vidro, nome grande e faixas de especial/transformação/habilidades com comando, COMEÇAR no centro) e
+      tela de carregamento nova (emblema do Véu rasgado, porcentagem gradual, momento "PRONTO!" em 100%).
+- [ ] **Requisitos secretos de fase** (dono, 2026-11-21: "ainda pensaremos quais fases terão esse requisito, quando
+      tiver mais fases"): o gancho existe (`campaign.revealed` em `phaseUnlocked`); falta decidir quais fases e quais
+      requisitos.
 - [ ] PROPOSTA: fusões do KIT do personagem (o "talvez" do item acima).
 
 ## Outro Lado — baú e salas da Escola (pedido do dono, 2026-11-16)
@@ -765,7 +781,7 @@ baixado sem o OK do dono.
   - [ ] Afogados vagando na borda do pântano na versão pós-tempestade (como os Existidos do Orfanato), quando houver
         modelo.
 - [x] **Acampamento dos Pássaros** — v4.46.0: dia (manhã com névoa) e noite de lua de sangue.
-- [ ] **Mapas que ainda faltam do repertório:** Sertão (Hexatombe, já com dia e noite), Lua da Benquerença, Granja
+- [ ] **Mapas que ainda faltam do repertório:** ~~Sertão~~ (feito: Sertão do Quibungo, dia e noite), Lua da Benquerença, Granja
       Abobrinha e Mansão Leone.
 - [x] **Mapas de Hexatombe em duas versões, dia e noite de lua de sangue** (pedido do dono, 2026-11-12): Ferro Velho,
       Circo dos Psikolera e Igreja Antiga, cada um com "(Dia)" e "(Noite)" na seleção (mesmo .glb, `cfg.materials`).

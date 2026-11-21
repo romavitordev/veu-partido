@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { tongueRoot } from './tongue.js';
 import { applyHit, npcDamage } from './damage.js';
 import { inBounds } from './positioning.js';
+import { distXZ } from '../core/util.js';
 import { glowMat } from '../models/rig.js';
 import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, barBottle } from '../models/weapons.js';
 import { khopesh, spear, doubleDagger } from '../models/ordoWeapons.js';
@@ -620,6 +621,37 @@ export class Projectiles {
     this.list.push(p);
   }
 
+  // `onHit` num NPC (Assombração, Zumbi, fera...): dono, 2026-11-21 — "o machado com corda do aguiar nao está puxando
+  // as assombrações pra perto". Os NPCs não têm o pullTo do lutador: o World (n.pull) os arrasta até a frente de quem
+  // puxou e os deixa parados um instante (stunT), para combar. Chefes e bichos grandes não se movem (o puxão só prende).
+  applyOnHitNpc(p, npc) {
+    const a = p.ability;
+    const w = this.world;
+    const pull = a.onHit && a.onHit.pull;
+    if (!pull || !npc.alive || !npc.pos || npc.isCloset) return;
+    const o = p.owner;
+    const heavy = (npc.radius ?? 0.5) >= 0.9 || (npc.maxHp ?? npc.hp ?? 0) >= 800;
+    const F = new THREE.Vector3().subVectors(npc.pos, o.pos).setY(0);
+    if (F.lengthSq() < 1e-6) F.set(Math.sin(o.yaw), 0, Math.cos(o.yaw));
+    F.normalize();
+    const d = (pull.distance ?? 1.6) + (npc.radius ?? 0.5);
+    const to = new THREE.Vector3(o.pos.x + F.x * d, npc.pos.y || 0, o.pos.z + F.z * d);
+    const time = pull.time ?? 0.3;
+    if (!heavy && distXZ(npc.pos, to) > 0.2) npc.pull = { from: npc.pos.clone(), to, t: 0, time, after: pull.after ?? 0.6 };
+    else npc.stunT = Math.max(npc.stunT || 0, (pull.after ?? 0.6) * 0.5);
+    if (o.anim) o.anim.play(pull.anim || 'chain_pull', { restart: true, duration: 0.4 });
+    w.audio.play(pull.sound || 'chainPull');
+    if (p.chainFx) {
+      const fx = p.chainFx;
+      const hand = a.origin === 'back' ? o.rig.sockets.back : o.rig.sockets.handR;
+      const chest = () => new THREE.Vector3(npc.pos.x, (npc.pos.y || 0) + (npc.height ?? 1.8) * 0.55, npc.pos.z);
+      fx.toFn = chest;
+      fx.fromFn = () => hand.getWorldPosition(new THREE.Vector3());
+      w.after(time + 0.08, () => fx.stop());
+      p.chainFx = null;
+    }
+  }
+
   // Efeitos extras ao acertar, definidos em `onHit` do ataque
   applyOnHit(p, target) {
     const a = p.ability;
@@ -830,6 +862,7 @@ export class Projectiles {
         if (npc) {
           npc.hitBy(p.owner, npcDamage(p.owner, a.damage, a.kind || 'ranged'), { kind: 'ranged' });
           w.fx.impact(p.pos.clone(), a.color ?? 0xffffff, 0.8);
+          this.applyOnHitNpc(p, npc);
           dead = true;
           break;
         }

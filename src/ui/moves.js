@@ -111,3 +111,19 @@ export function specialSummary(c) {
     default: return `${sp.damage ?? COMBAT.specialDamage} de dano`;
   }
 }
+
+// o resumo do especial para a ficha da SELEÇÃO: o "N de dano" padrão (a maioria dos especiais é uma cena própria, sem
+// `damage` no def) dizia 250 para todo mundo — ali ele some e fica só o nome (dono, 2026-11-21: a ficha "já está
+// ultrapassada pro nível que está o jogo")
+export function specialBlurb(c) {
+  const sp = c.special;
+  if (!sp) return '';
+  const s = specialSummary(c);
+  return sp.damage == null && s === `${COMBAT.specialDamage} de dano` ? '' : s;
+}
+
+// os nomes das passivas (a lista de comandos detalha; a ficha só nomeia)
+const PASSIVE_NAMES = { meleeDrain: 'Cura que cobra sanidade', backstab: 'Golpe pelas costas', decepar: 'Decepar', resistant: 'Resistente', macabreId: 'Identificação Macabra', bloodNecklace: 'Colar Banhado em Sangue', precognition: 'Precognição', kianScript: 'A Escrita', slowImpact: 'Desacelerar Impacto', iKnewIt: 'Eu Já Sabia', mindRead: 'Leitura', bulletDodge: 'Desviar de Balas', aggressorGaze: 'Olhar ao Agressor' };
+export function passiveNames(c) {
+  return (c.passives || []).map((p) => p.name || PASSIVE_NAMES[p.type]).filter(Boolean);
+}

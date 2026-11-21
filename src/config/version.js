@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.45.1';
+export const VERSION = '5.46.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.46.0',
+    date: '2026-11-21',
+    title: 'Além do Véu',
+    items: [
+      'Seleção de personagem redesenhada: os lutadores frente a frente num palco com o rasgo do Véu, grades em painéis de vidro e, embaixo de cada um, o especial com o custo, a transformação e as habilidades com o comando.',
+      'Tela de carregamento nova: emblema do Véu rasgado, a porcentagem sobe aos poucos e em 100% aparece "PRONTO!".',
+      'Outro Lado: as fases ainda não liberadas ficam veladas ("ALÉM DO VÉU"), sem nome nem cenário, até você vencer a anterior.',
+      'Outro Lado: ataques em área pegam todos na área com dano inteiro, e o Machado na Corda do Aguiar puxa Assombrações, zumbis e feras.',
+      'Poções só são pegas por quem perdeu vida, e o cadeado da seleção segue a versão mostrada (Juan no cartão do Henri).',
+    ],
+  },
   {
     v: '5.45.1',
     date: '2026-11-21',
