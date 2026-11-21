@@ -675,6 +675,17 @@ baixado sem o OK do dono.
       Ivete + Balu, Ivete + Rubens). Fernando segue sem rituais (wiki: "não conseguia utilizar esses rituais").
 - [x] **Bateria de balanceamento**: Fernando/Luciano, Tristan e Ivete. Feito: 47%, 48% e 49% (92 lutas focadas cada).
 
+- [ ] **Membros da Vigília (A Vigília) — nomes dados pelo dono (2026-11-21)** para quando forem adicionados. Cada um tem
+      a forma normal e a TRANSFORMADA (com a fantasia), como versões do mesmo personagem:
+      | Personagem | Normal | Transformado (fantasia) |
+      |---|---|---|
+      | Zuri | A Curandeira | ? / Guerreira da Vigília |
+      | Mael | O Druida | Herói da Vigília |
+      | Bran | O Vigia Noturno | O Inquebrável |
+      | Gwayne | O Forasteiro | O Morto que Caminha |
+      | Eileen | A Apicultora | ? (a definir) |
+      - O "?" é título ainda sem nome: não inventar; conferir na wiki/episódios ou perguntar ao dono.
+
 ## Elementos (pedido do dono, 2026-11-14)
 - [x] **Símbolos oficiais dos elementos na página Sobre** — v4.45.2: imagens da wiki na cor de cada elemento; Transmissão
       e Tinta com os seus Sinos.
