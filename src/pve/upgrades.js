@@ -301,8 +301,9 @@ export function rollChoices(picks, rng = Math.random, n = 3, def = null) {
   return out;
 }
 
-// o BAÚ (como no Vampire Survivors): sobe de grau melhorias que o jogador JÁ tem e, enquanto houver vaga, pode trazer
-// uma do baú (u.chest). Ids sem repetir, só abaixo do máximo. Devolve [] quando não há mais nada: aí o baú oferece moedas
+// o BAÚ (como no Vampire Survivors): SÓ sobe de grau melhorias que o jogador JÁ tem (dono, 2026-11-21: "baús não
+// deveriam vir habilidades novas, apenas upar as que você já possui"); de novo só a FUSÃO das que você tem e o ACHADO
+// da fase. Ids sem repetir, só abaixo do máximo. Devolve [] quando não há mais nada: aí o baú oferece moedas
 // ou vida (Dungeon.openChest)
 export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = [], phase = null } = {}) {
   const have = [...picks];
@@ -319,7 +320,7 @@ export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = []
   while (out.length < n) {
     const owned = [...new Set(have)].filter(isKit).map((id) => KIT.get(id)).filter(Boolean);
     const pool = [...UPGRADES, ...owned].filter((u) => !u.evolve && u.kind !== 'relic' && !out.includes(u.id) && countOf(have, u.id) < u.max
-      && (countOf(have, u.id) > 0 || (u.chest && slotFree(have, u)))).map((u) => u.id);
+      && countOf(have, u.id) > 0).map((u) => u.id);
     if (!pool.length) break;
     const id = pool[Math.floor(rng() * pool.length)];
     out.push(id);

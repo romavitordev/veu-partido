@@ -208,6 +208,11 @@ test('melhorias: o KIT do personagem (6 golpes) e 6 passivas, cada tipo com o se
   assert.ok(chestUpgrades(maxed, () => 0.99, 3).every((id) => FUSIONS.some((f) => f.id === id)));
   assert.deepEqual(chestUpgrades([...maxed, ...FUSIONS.map((f) => f.id)], () => 0.99, 3), []);
   assert.equal(rollChoices(maxed, Math.random, 3, cindy).length, 0);
+  // baú com vagas sobrando: mesmo assim só sobe o que já tem (nada novo além de fusão/achado)
+  for (let i = 0; i < 200; i++) {
+    const few = ['furia', six[0]];
+    assert.ok(chestUpgrades(few, Math.random, 3).every((id) => few.includes(id) || FUSIONS.some((f) => f.id === id)), 'baú não traz melhoria nova');
+  }
   const r = rewardChoices(30, 0.3);
   assert.deepEqual(r.map((x) => x.id), ['reward:coins', 'reward:heal']);
   // os efeitos do kit: só valem para quem é dono do golpe

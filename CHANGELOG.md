@@ -1,5 +1,12 @@
 # Changelog
 
+## v5.46.2 — O Baú no Meio da Luta
+
+### Alterado
+- Outro Lado, baús: só sobem as melhorias que você já tem. De novo, um baú só traz a fusão delas ou o achado da fase.
+- Outro Lado, baús no meio da luta: dá para abrir um baú com a onda ou a luta da sala já começada, segurando o botão de interagir. Portas e gavetas continuam só com a sala calma, e o golpe físico não abre baú durante a luta.
+- Outro Lado, trava de mira: um selo fixo no canto de cima mostra se ela está ligada ("MIRA TRAVADA", dourado) ou desligada ("MIRA LIVRE"), com a tecla que alterna (F no teclado, R3 no controle). Ele pisca ao trocar; no coop, cada jogador tem o seu na própria metade da tela.
+
 ## v5.46.1 — A Receita Secreta
 
 ### Alterado

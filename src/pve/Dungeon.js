@@ -2048,6 +2048,7 @@ export class Dungeon {
       this.popup(V.i, V.lockOn ? 'MIRA TRAVADA' : 'MIRA LIVRE', '#f2c230');
     }
     V.lockBtnPrev = L.lockBtn;
+    this.pveHud.setLock(V.i, V.lockOn, V.p.input?.source === 'gamepad' ? 'R3' : 'F', this.views.length > 1);
     const busy = this.bossIntro || this.transit || V.p.state === 'ko' || ['intro', 'dead', 'exit', 'over'].includes(this.phase);
     if (!V.lockOn || busy) { V.lockT = null; this.updateLockMark(dt, V); return; }
     if (!this.validLock(V.lockT, V.p)) V.lockT = this.pickLock(V);
@@ -2188,19 +2189,23 @@ export class Dungeon {
     const inp = V.inp;
     const pr = inp.pressed || {};
     const held = inp.held || {};
-    const interactionHeld = !!held.interact || !!held.physical;
+    // BAÚ NO MEIO DA LUTA (dono, 2026-11-21: "deveria ser possível abrir o baú mesmo depois que já começou o round"): com
+    // a sala em luta (onda, encontro) só o BAÚ abre, e só segurando o interagir — o golpe físico continua sendo golpe
+    const enc = this.encounter;
+    const fighting = !!enc && !enc.done;
+    const interactionHeld = !!held.interact || (!fighting && !!held.physical);
     // o botão apertado para interagir não vira defesa nem golpe até ser solto
     if (V.interactLatch) {
       if (!interactionHeld) V.interactLatch = false;
       else { held.block = false; pr.block = false; pr.physical = false; pr.interact = false; }
     }
-    const enc = this.encounter;
-    const calm = !this.transit && !this.choosing && !this.bossIntro && (!enc || enc.done) && ['explore', 'fight', 'bossDown'].includes(this.phase) && !['ko', 'intro', 'hitstun', 'stun', 'grabbed', 'downed'].includes(p.state);
+    const able = !this.transit && !this.choosing && !this.bossIntro && ['explore', 'fight', 'bossDown'].includes(this.phase) && !['ko', 'intro', 'hitstun', 'stun', 'grabbed', 'downed'].includes(p.state);
+    const calm = able && !fighting;
     let best = null;
     let bd = Infinity;
-    if (calm) {
+    if (able) {
       const consider = (o, d, y, verb) => { if (d < bd) { bd = d; best = { o, y, verb }; } };
-      for (const d of this.doors) {
+      if (calm) for (const d of this.doors) {
         if (!d.exit || d.locked || (d.opened && !d.stairs)) continue;
         if (d.spot.landing && !p.onStairs) continue; // a porta do patamar: só de cima da escada
         consider(d, d.reach(p.pos), (d.spot.y || 0) + (d.stairs ? 1.6 : 2.0), d.stairs ? 'Subir' : d.padlock ? (this.keys > 0 ? 'Destrancar' : 'Trancada') : d.spot.landing ? 'Entrar' : 'Abrir');
@@ -2210,7 +2215,7 @@ export class Dungeon {
         const dd = distXZ(k.pos, p.pos);
         if (dd < 1.5) consider(k, dd, 1.35, 'Abrir');
       }
-      for (const dr of this.drawers) consider(dr, dr.reach(p.pos), (dr.spot.y ?? 0.6) + 0.7, 'Abrir');
+      if (calm) for (const dr of this.drawers) consider(dr, dr.reach(p.pos), (dr.spot.y ?? 0.6) + 0.7, 'Abrir');
     }
     // solta o baú que estava sendo segurado (o tremor e a luz param)
     const releaseChest = () => { if (V.chestHoldTarget && V.chestHoldTarget.charge) V.chestHoldTarget.charge(0); };
@@ -2231,7 +2236,7 @@ export class Dungeon {
     const at = best.o instanceof RoomDoor ? best.o.target(v3) : best.o.pos;
     // o botão de BATER também abre (dono, 2026-11-14: "fico apertando o botão de bater e ele fica batendo no ar"): só
     // com a sala calma (sem luta) e com algo ao alcance — não rouba golpe de ninguém
-    const phys = inp.source === 'gamepad' ? '' : ` / ${actionLabel(V.i, 'physical', inp.source)}`;
+    const phys = inp.source === 'gamepad' || fighting ? '' : ` / ${actionLabel(V.i, 'physical', inp.source)}`;
     V.prompt.show(at, best.y, `${btn}${phys}|${isChest ? 'Segure para abrir' : best.verb}`);
     if (isChest) {
       if (!interactionHeld) { releaseChest(); V.chestHoldT = 0; V.chestHoldTarget = best.o; V.prompt.progress?.(0); return; }

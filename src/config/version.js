@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.46.1';
+export const VERSION = '5.46.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.46.2',
+    date: '2026-11-21',
+    title: 'O Baú no Meio da Luta',
+    items: [
+      'Outro Lado: dá para abrir um baú com a onda ou a luta já começada, segurando o botão de interagir.',
+      'Baús só sobem as melhorias que você já tem; de novo, só a fusão delas ou o achado da fase.',
+      'Trava de mira: um selo fixo no canto de cima mostra se ela está ligada (MIRA TRAVADA) ou livre, com a tecla.',
+    ],
+  },
   {
     v: '5.46.1',
     date: '2026-11-21',

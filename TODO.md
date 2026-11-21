@@ -276,6 +276,14 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       tela de carregamento nova (emblema do Véu rasgado, porcentagem gradual, momento "PRONTO!" em 100%).
 - [x] (v5.46.1) **Pedido do dono, 2026-11-21:** "a receita das fusões só deve mostrar das quais você já aprendeu":
       Descobertas, FUSÕES À VISTA, pistas das cartas e o aviso FUSÃO PRONTA só para as já descobertas.
+- [x] (v5.46.2) **Pedido do dono, 2026-11-21:** aviso visual da trava de mira ligada/desligada (selo fixo no HUD do
+      Outro Lado, com a tecla; um por jogador no coop).
+- [x] (v5.46.2) **Pedido do dono, 2026-11-21:** baú só sobe melhorias que você já tem (de novo, só a fusão delas e o
+      achado da fase); o baú abre também com a luta/onda em andamento (segurando o interagir; portas e gavetas seguem só
+      com a sala calma).
+- [ ] **Poções e baús com o tema da fase** (dono, 2026-11-21: "futuramente as poções de cura e baús de algumas fases
+      serão personalizados com o tema da fase"): visual próprio por fase (ex.: Sertão, Treb Ciach). O gancho do baú já
+      existe (`D.chestSkin` em dungeons.js → `Chest({ skin })`); falta o da poção e decidir quais fases e o tema de cada.
 - [ ] **Requisitos secretos de fase** (dono, 2026-11-21: "ainda pensaremos quais fases terão esse requisito, quando
       tiver mais fases"): o gancho existe (`campaign.revealed` em `phaseUnlocked`); falta decidir quais fases e quais
       requisitos.

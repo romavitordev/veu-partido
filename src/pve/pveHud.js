@@ -203,6 +203,31 @@ export class PveHud {
     el.classList.add('on');
   }
 
+  // AVISO DA TRAVA DE MIRA (pedido do dono, 2026-11-21: "um aviso visual que a trava de mira está ligada ou desligada"):
+  // um selo fixo por jogador (no coop, um em cada metade da tela) com o estado e a tecla; pisca ao trocar.
+  setLock(i, on, key = 'F', split = false) {
+    this.locks = this.locks || [];
+    let el = this.locks[i];
+    if (!el) {
+      el = document.createElement('div');
+      el.className = `pv-lock p${i + 1}`;
+      el.innerHTML = '<i></i><b></b><kbd></kbd>';
+      this.el.appendChild(el);
+      this.locks[i] = el;
+    }
+    const st = `${on}|${key}|${split}`;
+    if (el.dataset.st === st) return;
+    const changed = el.dataset.st && el.dataset.st.split('|')[0] !== String(on);
+    el.dataset.st = st;
+    el.classList.toggle('on', on);
+    el.classList.toggle('split', split);
+    el.title = on ? 'Trava de mira LIGADA: a câmera segue o alvo' : 'Trava de mira DESLIGADA: câmera livre';
+    el.querySelector('i').textContent = on ? '◎' : '○';
+    el.querySelector('b').textContent = on ? 'MIRA TRAVADA' : 'MIRA LIVRE';
+    el.querySelector('kbd').textContent = key;
+    if (changed) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  }
+
   hint(text) {
     const h = this.q('.pv-hint');
     h.textContent = text || '';
