@@ -1258,8 +1258,22 @@ export class Dungeon {
     } else {
       // a onda cresce e MISTURA os infectados da ilha conforme a dificuldade (dungeons.js wavePlan)
       const { count, foes } = S.plan[n - 1];
-      let i = 0;
-      for (const [type, q] of Object.entries(foes)) for (let k = 0; k < q; k++) this.spawnFoe(type, this.waveSpawnPoint(i++, count));
+      if (this.tree) {
+        // a ÁRVORE: a HORDA em levas pelas 3 frentes (pve/arvore.js packs); a onda só acaba depois da última leva
+        const enc = this.encounter;
+        const packs = this.tree.packs(foes);
+        enc.pending = packs.length - 1;
+        const spawnPack = (pack) => { for (const [type, lane] of pack) { const pos = this.tree.spawnPoint(0, count, lane); resolveBody(this.world.arena, pos, 1.0); this.spawnFoe(type, pos); } };
+        spawnPack(packs[0]);
+        packs.slice(1).forEach((pack, j) => this.world.after(TREE.packGap * (j + 1), () => {
+          if (this.disposed || !this.tree || this.encounter !== enc || enc.done) return;
+          spawnPack(pack);
+          enc.pending--;
+        }));
+      } else {
+        let i = 0;
+        for (const [type, q] of Object.entries(foes)) for (let k = 0; k < q; k++) this.spawnFoe(type, this.waveSpawnPoint(i++, count));
+      }
       const beasts = ['javali', 'cao', 'cobra'].filter((t) => foes[t]).length;
       if (this.tree) this.hud.callout(`ONDA ${n}: ELAS VÊM PARA A ÁRVORE`, '#ffd84a');
       else if (this.village) this.hud.callout(`ONDA ${n}: AS ASSOMBRAÇÕES`, '#ffd84a');
@@ -1269,7 +1283,8 @@ export class Dungeon {
       if (foes.cao) S.wolves = true;
       this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
     }
-    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT, taken: 1 };
+    // na ÁRVORE quem joga apanha um pouco mais (a porta não se cura mais; pve/arvore.js TREE.playerDmg)
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT * (this.tree ? TREE.playerDmg : 1), taken: 1 };
     this.hudAdd('pve-noboss'); // a barra de cima é do chefe: o dono escondido dos zumbis não aparece (os zumbis têm a própria)
     this.waveObjective();
   }
@@ -2510,7 +2525,7 @@ export class Dungeon {
         this.world.fx.burst(this.enemy.chestPos(v1).clone(), { count: 30, color: 0x6c6a66, kind: 'smoke', speed: 2, life: 0.7, size: 0.7, grow: 1 });
         this.lurk(null);
       }
-      if (enc.koAt !== null && this.enemy.lurking && !this.copias.length && enc.wave) this.onWaveCleared(enc);
+      if (enc.koAt !== null && this.enemy.lurking && !this.copias.length && enc.wave) { if (!(enc.pending > 0)) this.onWaveCleared(enc); }
       else if (enc.koAt !== null && this.enemy.lurking && !this.copias.length) {
         enc.done = true;
         this.hudRemove('pve-minor');
@@ -2765,12 +2780,12 @@ export class Dungeon {
     const cine = !!(w.cinematic || w.cameraRig.shots);
     // um no CAIXÃO (dono, 2026-11-19: "a tela volta a ser de um player só"): a tela inteira é de quem ficou vivo
     const solo = this.coop && !this.net && this.views ? this.views.find((V) => !V.p.coffin && this.players.some((q) => q.coffin)) : null;
-    // o CORREDOR das lamparinas (parte 2 do Samhain): os dois correm lado a lado no mesmo caminho — uma tela só (dono,
-    // 2026-11-20: "Parte 2 de treb ciach no coop local deve virar uma tela só, sem divisão é o suficiente")
-    const run = !!(this.runner && !this.runner.done);
+    // o CORREDOR das lamparinas (parte 2 do Samhain) VOLTOU à tela dividida (dono, 2026-11-21: "a parte 2 precisa voltar
+    // pra tela dividida, se nao os player se perdem no coop"): a tela só (v5.36.0) seguia um jogador e o outro sumia;
+    // cada metade segue o seu, com a câmera atrás olhando o caminho (chaseTarget)
     // as CARTAS de melhoria (e a recompensa) por cima da tela inteira: na tela dividida o menu ficava cortado
     const menu = !!this.choosing;
-    const full = !this.coop || this.net || this.bossIntro || cine || run || menu || this.phase === 'exit' || this.phase === 'over' || !!solo;
+    const full = !this.coop || this.net || this.bossIntro || cine || menu || this.phase === 'exit' || this.phase === 'over' || !!solo;
     if (this.coop && !this.net && this.pveHud && this.pveHud.split === full) this.pveHud.setSplit(!full);
     if (this.coop && !this.net) this.hud.root.classList.toggle('pve-solo', full);
     // a visão aberta das metades (zoom < 1) volta ao normal na tela inteira

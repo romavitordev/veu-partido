@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.43.0 — A Horda na Árvore Anciã
+
+### Alterado
+- Treb Ciach, 2ª parte: no coop local, o Corredor das Lamparinas voltou à tela dividida. Com a tela única, um jogador se perdia; agora cada metade segue o seu personagem, com a câmera atrás olhando o caminho.
+- Treb Ciach, 3ª parte: as Assombrações não chegam mais em roda. A onda vem em HORDA por três frentes (os dois lados e o caminho), em levas: metade de uma vez e o resto em colunas logo atrás, com as fortes e a Assombração de Broén no fim da fila.
+- Árvore Anciã: o alçapão não se recupera mais entre as ondas, e o dano se acumula a noite toda. Em troca, cada golpe nele tira 30% menos, e as Assombrações batem 20% mais forte em quem joga.
+- Página Sobre: o card de Treb Ciach fala da horda e do alçapão sem cura.
+
 ## v5.42.1 — A Língua que Estica
 
 ### Corrigido

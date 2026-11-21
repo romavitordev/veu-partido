@@ -18,7 +18,18 @@ export const TREE = {
   radius: 22, // a clareira (o limite de quem anda)
   doorHp: { easy: 2200, normal: 2150, hard: 1900, superhard: 1750, annihilation: 1600 },
   hpCut: 0.5, // a vida das Assombrações cai até a metade do corte das lamparinas (dungeons.js treeWeaken)
-  regen: 0.07, // entre as ondas, o alçapão recupera 7% (os aldeões escoram por dentro; dono, 2026-11-20: "a arvore deveria carregar a vida mais devagar"; antes 18%)
+  // SEM CURA (dono, 2026-11-21: "a arvore nao deve curar mais, deve ser realmente um desafio defender essa arvore e nao
+  // deixar chegar a zero"; antes 7% entre as ondas, e 18% antes disso). Como o dano agora ACUMULA a noite toda, cada golpe
+  // no alçapão tira menos (doorDmg) e quem joga apanha um pouco mais (playerDmg). PROPOSTA: os números.
+  regen: 0,
+  doorDmg: 0.7,
+  playerDmg: 1.2,
+  // A HORDA (dono: "estão vindo em circulos, podem vir umas atrás delas também, como uma horda mesmo"): a onda chega
+  // por 3 frentes (os dois lados e o caminho) em LEVAS — a 1ª metade de uma vez, o resto em colunas logo atrás
+  lanes: [-1.25, 0, 1.25], // os ângulos das frentes (0 = o caminho, +z)
+  packs: [0.5, 0.3, 0.2], // quanto da onda vem em cada leva
+  packGap: 3.2, // segundos entre as levas
+
   trunk: { x: 0, z: -10, r: 4.3 }, // o tronco: ~7 m de largura e ~10 m até se abrir (ep. 3, 3h30: uns 4 personagens de largura)
   spawnR: 21,
 };
@@ -496,12 +507,30 @@ export class TreeDefense {
     this.group = g;
   }
 
-  // onde as Assombrações surgem: na borda da clareira, pelos lados e pelo caminho (não atrás da árvore)
-  spawnPoint(i, count) {
-    const spread = count > 1 ? (i / (count - 1) - 0.5) * 3.6 : (Math.random() - 0.5) * 3.6;
-    const a = spread + (Math.random() - 0.5) * 0.35;
-    const r = TREE.spawnR - Math.random() * 1.5;
-    return new THREE.Vector3(Math.sin(a) * r, 0, Math.cos(a) * r);
+  // onde as Assombrações surgem: na borda da clareira, numa das 3 FRENTES (os lados e o caminho; não atrás da árvore),
+  // amontoadas como horda — não mais espalhadas num arco igual (que as fazia chegar em roda)
+  spawnPoint(i, count, lane = i % TREE.lanes.length) {
+    const a = TREE.lanes[lane % TREE.lanes.length] + (Math.random() - 0.5) * 0.5;
+    const r = TREE.spawnR - Math.random() * 2.2;
+    const side = (Math.random() - 0.5) * 3.2; // a largura da coluna
+    return new THREE.Vector3(Math.sin(a) * r + Math.cos(a) * side, 0, Math.cos(a) * r - Math.sin(a) * side);
+  }
+
+  // as LEVAS de uma onda: [[tipo, frente], ...] por leva (a 1ª entra na hora; as outras, packGap s depois cada)
+  packs(foes) {
+    const list = [];
+    for (const [type, q] of Object.entries(foes)) for (let k = 0; k < q; k++) list.push(type);
+    // as fortes e Broén no fim da fila: chegam nas levas de trás, atrás das comuns
+    list.sort((x, y) => (x === 'assombracao' ? 0 : 1) - (y === 'assombracao' ? 0 : 1));
+    const out = [];
+    let at = 0;
+    TREE.packs.forEach((f, j) => {
+      const n = j === TREE.packs.length - 1 ? list.length - at : Math.round(list.length * f);
+      const pack = list.slice(at, at + n).map((type, k) => [type, k % TREE.lanes.length]);
+      at += n;
+      if (pack.length) out.push(pack);
+    });
+    return out;
   }
 
   targets() { return this.door.alive ? [this.door] : []; }
@@ -644,7 +673,7 @@ class TreeDoor {
 
   hurt(dmg) {
     if (this.state === 'ko') return;
-    this.hp = Math.max(0, this.hp - dmg);
+    this.hp = Math.max(0, this.hp - dmg * TREE.doorDmg);
     this.flash = 0.12;
     this.tree.onDoorHit(this);
     if (this.hp <= 0) {

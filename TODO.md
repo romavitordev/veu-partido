@@ -631,6 +631,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **A horda na Árvore Anciã** — v5.43.0: corredor de Treb Ciach de volta à tela dividida no coop; na Árvore, hordas em levas por três frentes, alçapão sem cura, menos dano nele e mais em quem joga.
 - [x] **A língua que estica** — v5.42.1: a língua do Quibungo nos ataques é a do próprio modelo (a enrolada some e ela estica da raiz), sem segunda língua; as criaturas do Outro Lado só grunhem (vitória, entrada e luta).
 - [x] **O Nascimento do Kerberos** — v5.42.0: Quibungo jogável de quatro (garras no chão, a língua das costas no □ e na Língua e Mordida), a Transformação KERBEROS com a lua de sangue, o Kerberos no Aniquilação do Sertão e o Damir na cena do especial do Boris.
 - [x] **As fusões do Outro Lado** — v5.41.0: fusões alcançáveis (nível 3, baú garantido, pistas), 5 fusões novas, 12 achados das fases, tela DESCOBERTAS em duas seções, Ordo Calamitas reordenada e Arnaldo na Ordo Realitas sem o título Portadores.

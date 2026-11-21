@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.42.1';
+export const VERSION = '5.43.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.43.0',
+    date: '2026-11-21',
+    title: 'A Horda na Árvore Anciã',
+    items: [
+      'Treb Ciach, 2ª parte: no coop local o Corredor das Lamparinas voltou à tela dividida, cada jogador com a sua câmera atrás dele.',
+      'Treb Ciach, 3ª parte: as Assombrações chegam em HORDA pelos dois lados e pelo caminho, em levas, uma atrás da outra.',
+      'Árvore Anciã: o alçapão não se recupera mais entre as ondas. Cada golpe nele tira menos, e as Assombrações batem um pouco mais forte em quem joga.',
+    ],
+  },
   {
     v: '5.42.1',
     date: '2026-11-21',

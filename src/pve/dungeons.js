@@ -459,7 +459,7 @@ export const DUNGEONS = {
       'No corredor, passe rente às <b>lamparinas</b> para acendê-las: cada uma acesa enfraquece um pouco as Assombrações da Árvore.',
       'As <b>brasas da Chama</b> brilham nas beiradas do corredor, bem onde as Assombrações dão o bote: cada uma dá XP. Os níveis ficam guardados e você os resgata ao chegar na Árvore.',
       '<b>3ª parte, a Árvore Anciã:</b> proteja o ALÇAPÃO do arsenal. A barra no topo mostra quão seguros estão os aldeões escondidos.',
-      'A porta se recupera um pouco entre as ondas. Na Árvore não há XP nem baús, e a cura cai menos: guarde vida para o fim.',
+      'O alçapão <b>não se recupera</b>: o dano vale a noite toda. As Assombrações chegam em hordas pelos lados e pelo caminho. Na Árvore não há XP nem baús, e a cura cai menos: guarde vida para o fim.',
       '<b>Itens da Vigília (só na Árvore):</b> de tempos em tempos um aldeão sai do alçapão, larga um item no chão (a coluna de luz) e volta. Passe por cima para pegar.',
       'Derrame o <b>COMBUSTÍVEL</b> (□/tiro) perto do alçapão e encoste a <b>TOCHA</b> na poça: o fogo vira uma barreira que as Assombrações não atravessam e que as queima. Ele fica aceso até você acender a lanterna.',
       'Depois do primeiro fogo vem a <b>LANTERNA DO CRÂNIO DE PORCO</b>: acenda no fogo e arremesse (□/tiro). O clarão ofusca as Assombrações em volta.',
