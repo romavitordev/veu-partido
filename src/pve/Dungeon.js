@@ -16,7 +16,8 @@ import { disposeRigResources } from '../models/glbRig.js';
 import { CpuController } from '../ai/CpuController.js';
 import { DanteClone, BloodZombie, GiantBloodZombie, InkZombie } from '../combat/npcs.js';
 import { InkBeast, InkSnake } from '../combat/beasts.js';
-import { AraraBeast, FelinoBeast, FelinoInfernal, Quibungo } from '../combat/sertaoBeasts.js';
+import { AraraBeast, FelinoBeast, FelinoInfernal, Quibungo, Kerberos } from '../combat/sertaoBeasts.js';
+import { KerberosInferno } from './kerberosInferno.js';
 import { Assombracao } from '../combat/assombracao.js';
 import { SamhainVillage } from './samhain.js';
 import { LanternRun } from './corredor.js';
@@ -112,7 +113,8 @@ const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (
 // os INFECTADOS DA ILHA (Tipora): a vida-base de cada tipo nas ondas e nas invocações do Amigo (PROPOSTA)
 const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150, assombracao: 140, assombracaoForte: 300,
   // o Sertão do Quibungo (PROPOSTA): as araras têm pouca vida (voam e somem do alcance), os felinos andam em bando
-  araraDevorada: 90, araraInfernal: 200, felinoDevorado: 140, felinoInfernal: 320, quibungo: 2600 };
+  araraDevorada: 90, araraInfernal: 200, felinoDevorado: 140, felinoInfernal: 320, quibungo: 2600,
+  kerberos: 3400 }; // a 2ª forma do Quibungo no Aniquilação (pve/kerberosInferno.js)
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
@@ -987,7 +989,7 @@ export class Dungeon {
     const X = this.D.xp;
     // na ÁRVORE (a parte 3 do Samhain) abate não dá XP e a cura cai menos (dono, 2026-11-19: "você chegar na parte 3
     // com oque você conseguiu upar na parte um … E na parte 3 sobreviver com oque upou antes")
-    if (!this.tree) this.giveXp(z.giant ? X.gigante || X.zumbiForte * 2 : z.foe && X[z.foe] ? X[z.foe] : z.strong ? X.zumbiForte : X.zumbi);
+    if (!this.tree) this.giveXp(z.foe === 'kerberos' && X.kerberos ? X.kerberos : z.giant ? X.gigante || X.zumbiForte * 2 : z.foe && X[z.foe] ? X[z.foe] : z.strong ? X.zumbiForte : X.zumbi);
     this.tryHeal(z.pos, (z.giant ? 2 : z.strong ? 1 : 0.6) * (this.tree ? 0.5 : 1));
     if (this.mods.killHeal) for (const pl of this.players) if (pl.state !== 'ko') pl.health = Math.min(pl.maxHealth, pl.health + pl.maxHealth * this.mods.killHeal * 0.5);
     if (z.summoned && Math.random() < INK_DROP.chance) this.dropInk(z.pos);
@@ -1228,6 +1230,9 @@ export class Dungeon {
       const sp = S.M.spawn || { x: 0, z: -11 };
       const z = this.spawnFoe('quibungo', new THREE.Vector3(sp.x, 0, sp.z));
       z.giant = true;
+      // no ANIQUILAÇÃO, demorou a matar: lua de sangue, chuva de sangue, ele derrete e nasce o KERBEROS
+      if (this.inferno) this.inferno.dispose();
+      this.inferno = this.run.difficulty === 'annihilation' ? new KerberosInferno(this, z) : null;
       this.hud.callout(this.D.bossName || 'O CHEFE', this.D.color || '#ff4a3a');
       this.audio.play('fearGaze', { volume: 0.9, pitch: 0.35 });
     } else if (kind === 'giant') {
@@ -1303,6 +1308,7 @@ export class Dungeon {
     else if (type === 'felinoDevorado') z = new FelinoBeast(e, this.world, pos, opts);
     else if (type === 'felinoInfernal') z = new FelinoInfernal(e, this.world, pos, opts);
     else if (type === 'quibungo') z = new Quibungo(e, this.world, pos, opts);
+    else if (type === 'kerberos') z = new Kerberos(e, this.world, pos, opts);
     else z = new BloodZombie(e, this.world, pos, opts);
     z.foe = type;
     z.onDestroyed = () => this.onZombieSlain(z);
@@ -2398,6 +2404,7 @@ export class Dungeon {
     if (this.D.mist) this.updateMist(dt);
     placeLamp(this.lamp, p.pos, this.world.camera.position);
     this.ambience && this.ambience.update(dt);
+    this.inferno && this.inferno.update(dt);
     for (const V of this.views) { this.updateLock(dt, V); this.updateArrows(dt, V); }
     if (this.transit) this.updateTransit(dt);
     for (const d of this.doors) {
@@ -2829,6 +2836,7 @@ export class Dungeon {
     if (this.roomCables) { disposeCables(this.roomCables); this.roomCables = null; }
     if (this.sigAmb) { this.sigAmb.remove(); this.sigAmb = null; }
     this.ambience && this.ambience.dispose();
+    if (this.inferno) { this.inferno.dispose(); this.inferno = null; }
     this.brain && this.brain.dispose();
     this.pressure && this.pressure.dispose();
     this.sino && this.sino.disposeAll();

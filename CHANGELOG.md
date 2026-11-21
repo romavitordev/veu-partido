@@ -1,22 +1,43 @@
 # Changelog
 
-## Não lançado
+## v5.42.0 — O Nascimento do Kerberos
 
 ### Adicionado
 - Quibungo jogável na equipe Outro Lado. Ele usa a mesma escultura do chefe do Sertão, agora no esqueleto de lutador: quatro braços, sem olhos e a bocarra nas costas, de onde a língua sobe curvada como um rabo. Golpes:
-  - □ Língua da Bocarra: puxa a presa de longe;
+  - □ Chicote da Língua: se achata no chão e chicoteia de longe com a língua das costas;
+  - Língua e Mordida (△ → □): a língua enrola a presa, puxa até ele e ele morde; sangra e devolve parte do dano como vida;
   - Rajada dos Quatro Braços;
   - Salto do Quibungo;
   - Racha-Chão: a onda derruba quem estiver perto;
   - Urro do Sertão: deixa os golpes mais fortes e o Quibungo mais rápido por um tempo;
   - especial Banquete da Bocarra;
-  - Transformação Fúria do Sertão.
+  - Transformação Nascimento do Kerberos (abaixo).
 - O fogo causa 1,5× dano ao Quibungo, como no chefe. Ele tem falas com todo o elenco, agarrão próprio e retrato.
+- A Transformação do Quibungo agora é o KERBEROS, com uma cena como a do fim de Hexatombe: a lua fica de sangue, chove sangue, o Quibungo derrete numa gosma cercada de ossos e o Kerberos sobe dela. O Kerberos tem seis patas, três cabeças (o verme dentado, a canina e a insetoide) e uma cauda enorme. Golpes:
+  - □ Disparo de Espinhos;
+  - Devorar: as três cabeças mordem e o dano volta como vida;
+  - Derrubar e Devorar: o bote das seis patas;
+  - Ataque Flexível: a cauda varre em volta;
+  - Uivo das Três Cabeças;
+  - especial Banquete das Três Cabeças.
+- Sertão do Quibungo, no Aniquilação: se o Quibungo demorar a cair (90 s de luta), a LUA DE SANGUE nasce. O céu, a névoa e a lua ficam vermelhos, chove sangue, o Quibungo derrete numa gosma e dela nasce o KERBEROS, o chefe da onda. Ele morde e se cura, dispara leques de espinhos, varre com a cauda e dá o bote de longe.
 
 ### Alterado
 - Menus: passar o mouse por uma opção agora a destaca, como mexer o direcional até ela, e o clique confirma. Vale para todos os menus: Online/LAN, pausa, configurações da batalha, vitória, cenários, lutadores, torres, torneio, Opções e as telas do Outro Lado (cartas de melhoria, loja, melhorias e descobertas). Não vale na partida online, onde os dois aparelhos precisam ficar na mesma opção.
 - Outro Lado em dois no mesmo PC: a tela agora se divide lado a lado, com o P1 na esquerda e o P2 na direita (antes era em cima e embaixo). Cada metade abre um pouco mais a câmera, e a barra do inimigo aparece no alto de cada metade.
 - O retrato do Quibungo (na página Sobre e na seleção) mostra ele de perfil, encarando a câmera, com uma garra erguida e a língua curvada para cima.
+- O chefe do Sertão foi remodelado pelas artes oficiais: a coroa de espinhos em leque, a bocarra sem olhos com as presas em leque e as mandíbulas dos lados, a fenda de dentes nas costas, a língua mais comprida e os tufos de pelo.
+- A barra do chefe mostra só QUIBUNGO, e a barra de vida dele (e a do Quibungo jogável) é vermelha com textura de carne.
+- Quibungo jogável:
+  - anda de quatro, com as garras da frente no chão;
+  - as mãos estavam ao contrário e foram corrigidas;
+  - a língua dos ataques é a mesma que ele carrega curvada nas costas: ela some de lá, estica até a presa e volta (antes saía uma segunda língua);
+  - pose parada, galope e vitória novos: os braços compridos atravessavam o chão; agora as patas da frente apoiam as garras no piso em diagonal, o tronco fica quase deitado e a cabeça olha para a frente (antes parecia sentado);
+  - o Salto pula mais alto, mais longe e mais agressivo;
+  - está um pouco maior, mas ainda menor que o chefe do Outro Lado;
+  - tem pose de vitória própria;
+  - os golpes batem mais forte.
+- Boris, especial Pela Família Lukic: o Damir agora aparece na cena. Ele sai da fumaça ao lado do irmão, esfrega a bengala de prata e os sigilos dourados correm até a gadanha, que vira a Foice Amaldiçoada.
 
 ## v5.41.0 — As Fusões do Outro Lado
 

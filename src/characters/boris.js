@@ -165,7 +165,7 @@ export default {
     },
   ],
 
-  // PELA FAMÍLIA LUKIC (PROPOSTA; o broche dos Lukic no sobretudo): ceifa, gira, e o Damir aparece para encaixar a
+  // PELA FAMÍLIA LUKIC (PROPOSTA; o broche dos Lukic no sobretudo): ceifa, gira, e o Damir aparece para amaldiçoar a
   // bengala — a gadanha vira a FOICE AMALDIÇOADA dourada ("Saber tudo é perder tudo") e o golpe final escreve os
   // sigilos na pele do alvo (cânone do corte da foice)
   special: {
@@ -182,11 +182,14 @@ export default {
     hits: [
       { t: 0.2, anim: 'hammer_h', dur: 0.4, share: 0.18, fx: { kind: 'slash', wide: true }, sound: 'bladeHit', shout: 'GRANDÃO TÁ AQUI.' },
       { t: 0.7, anim: 'hammer_diag', dur: 0.4, share: 0.18, fx: { kind: 'slash', flip: true }, sound: 'bladeHit' },
-      { t: 1.2, noHit: true, anim: 'concentrate', dur: 0.5, shout: 'A FOICE AMALDIÇOADA', props: [['scythe', false], ['foice', true]] },
-      { t: 1.8, anim: 'hammer_finisher', dur: 0.7, share: 0.64, fx: { kind: 'slash', big: true }, sound: 'slashFinal', final: true, shout: 'SABER TUDO É PERDER TUDO' },
+      // o DAMIR entra na cena (dono, 2026-11-21: "o damir deve aparecer na cutscene para amaldiçoar a arma para o boris"):
+      // sai da fumaça ao lado do irmão, esfrega a bengala de prata e os sigilos dourados correm até a gadanha
+      { t: 1.2, noHit: true, anim: 'concentrate', dur: 0.75, shout: 'IRMÃO. A FOICE.', ally: { model: 'damir', anims: { idle: 'idle_nubi' }, props: ['cane'], anim: 'concentrate', animTime: 0.8, curse: { from: 0.2, to: 0.7 }, color: GOLD } },
+      { t: 1.95, noHit: true, anim: 'concentrate', dur: 0.4, shout: 'A FOICE AMALDIÇOADA', props: [['scythe', false], ['foice', true]] },
+      { t: 2.45, anim: 'hammer_finisher', dur: 0.7, share: 0.64, fx: { kind: 'slash', big: true }, sound: 'slashFinal', final: true, shout: 'SABER TUDO É PERDER TUDO' },
     ],
     bannerAt: 0.2,
-    length: 2.9,
+    length: 3.55,
   },
 
   // DESPERTAR (PROPOSTA, pelo Escapar da Morte do cânone): ele se recusa a cair — ainda de pé, bate e aguenta mais até o

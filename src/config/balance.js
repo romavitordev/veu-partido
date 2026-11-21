@@ -77,6 +77,7 @@ export const BALANCE = {
   sabara: { dealt: 1.08, taken: 0.95 }, // 31% (sem ajuste) → 40%
   velisar: { dealt: 1.12, taken: 0.92 }, // 25% (sem ajuste, 44 lutas focadas) → 66% (1.2/0.88) → meio-termo
   zefero: { dealt: 1.06, taken: 0.96 }, // 34% (sem ajuste, 44 lutas focadas)
+  quibungo: { dealt: 1.2, taken: 0.86 }, // 11% (sem ajuste e com size 1.15, 109 lutas focadas; o dano do Kerberos conta para ele) → 69% (1.3/0.8, size 1, 128) → 32% (1.12/0.9, 111) → 49% (1.2/0.86 com a língua nova: □ só chicote, △→□ puxa e morde; 74 lutas)
   artemis: { dealt: 1.12, taken: 0.93 }, // 24% (sem ajuste) → 37%
   boris: { dealt: 1.25, taken: 0.86 }, // 10% (sem ajuste) → 32% (1.2/0.88) → 51%
   damir: { dealt: 1.22, taken: 0.87 }, // 5% (sem ajuste; + Força Paranormal 1.08 no físico) → 40%

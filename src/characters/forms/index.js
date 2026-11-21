@@ -24,6 +24,7 @@ import carinaLeone from './carina_leone.js';
 import beatriceExistida from './beatrice_existida.js';
 import luciano from './luciano.js';
 import veritusKian from './veritus_kian.js';
+import quibungoKerberos from './quibungo_kerberos.js';
 
 export const FORMS = {};
 
@@ -36,4 +37,4 @@ export function getForm(id) {
   return FORMS[id];
 }
 
-[deusMorte, diabo, fantasma, labirintoElmo, aguiarMutilador, erinCaos, anfitriao, jaeX, colosso, guizoEt, kianCalamidade, juanOdio, guizoBombado, guizoVelho, cristinoDesertor, danteAberto, jouiShinokage, razielVerdadeiro, celestineMagistrada, amphitruo, carinaLeone, beatriceExistida, luciano, veritusKian].forEach(registerForm);
+[deusMorte, diabo, fantasma, labirintoElmo, aguiarMutilador, erinCaos, anfitriao, jaeX, colosso, guizoEt, kianCalamidade, juanOdio, guizoBombado, guizoVelho, cristinoDesertor, danteAberto, jouiShinokage, razielVerdadeiro, celestineMagistrada, amphitruo, carinaLeone, beatriceExistida, luciano, veritusKian, quibungoKerberos].forEach(registerForm);

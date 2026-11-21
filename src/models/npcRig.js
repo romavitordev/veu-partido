@@ -26,6 +26,7 @@ export const NPC_MODELS = {
   felino_devorado: 'npcs/felino_devorado.glb', // sobre o cão da tinta (as juntas do InkBeast)
   felino_infernal: 'npcs/felino_infernal.glb', // sobre o Zumbi de Sangue fraco (de pé), mais o rabo
   quibungo: 'npcs/quibungo.glb', // sobre o Zumbi de Sangue gigante: 4 braços, mandíbulas, bocarra e língua nas costas
+  kerberos: 'npcs/kerberos.glb', // a 2ª forma do Quibungo no Aniquilação: 6 patas e 3 cabeças (tools/blender/npc_kerberos.py)
   // ARMAS feitas no Blender (peças rígidas, mesmo carregador): models/weapons.js usa o .glb e, sem ele, a versão em código
   xande_bat: 'npcs/xande_bat.glb', // o taco com arame farpado do Xande
   leonora: 'npcs/leonora.glb', // a Leonora, a marreta do Lírio (tools/blender/npc_leonora.py)

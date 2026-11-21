@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.41.0';
+export const VERSION = '5.42.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,22 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.42.0',
+    date: '2026-11-21',
+    title: 'O Nascimento do Kerberos',
+    items: [
+      'Quibungo jogável na equipe Outro Lado: a escultura do chefe do Sertão no esqueleto de lutador, de quatro, com quatro braços e a bocarra nas costas. □ Chicote da Língua, △ → □ Língua e Mordida (puxa a presa com a língua e morde), Rajada dos Quatro Braços, Salto do Quibungo, Racha-Chão, Urro do Sertão e o especial Banquete da Bocarra. O fogo causa 1,5× dano a ele.',
+      'A Transformação do Quibungo é o KERBEROS: a lua fica de sangue, chove sangue, o Quibungo derrete numa gosma cercada de ossos e o Kerberos de seis patas e três cabeças sobe dela, com Disparo de Espinhos, Devorar, Derrubar e Devorar, Ataque Flexível, Uivo e o especial Banquete das Três Cabeças.',
+      'Sertão do Quibungo, no Aniquilação: se o Quibungo demorar a cair, nasce a LUA DE SANGUE e dele sai o KERBEROS, o chefe da onda.',
+      'A língua do Quibungo nos ataques é a mesma que ele carrega curvada nas costas: ela estica até a presa e volta.',
+      'Pose parada, galope e vitória novos para o Quibungo: as garras da frente apoiam no chão em vez de atravessá-lo.',
+      'O chefe do Sertão foi remodelado pelas artes oficiais, e a barra de vida do Quibungo é vermelha com textura de carne.',
+      'Boris, especial Pela Família Lukic: o Damir aparece na cena e amaldiçoa a gadanha com a bengala de prata.',
+      'Menus: passar o mouse por uma opção a destaca, e o clique confirma.',
+      'Outro Lado em dois no mesmo PC: a tela se divide lado a lado.',
+    ],
+  },
   {
     v: '5.41.0',
     date: '2026-11-20',

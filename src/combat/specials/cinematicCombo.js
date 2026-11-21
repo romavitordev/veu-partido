@@ -9,6 +9,66 @@ import { HoloCopy } from '../holo.js';
 import { groundMark, blindFighter } from '../abilities.js';
 import { buildOrpheu } from '../../models/orpheu.js';
 import { bateriaEloy } from '../../models/weapons.js';
+import { buildModel } from '../../models/index.js';
+import { Animator } from '../../anim/Animator.js';
+
+// h.ally: um ALIADO entra na cena (Boris — dono, 2026-11-21: "o damir deve aparecer na cutscene para amaldiçoar a arma
+// para o boris"). Surge numa fumaça ao lado de quem usa o especial, virado para ele, faz a animação (A.anim, com as peças
+// A.props na mão) e, se A.curse, um rio de sigilos (A.color) sai da mão dele até a arma do dono. Fica até o fim da cena.
+// Devolve { step(dt), dispose() } como o pássaro.
+function summonAlly(world, f, A) {
+  const rig = buildModel(A.model);
+  const anim = new Animator(rig, A.anims || {});
+  anim.play('idle', { blend: 0 });
+  for (const p of A.props || []) rig.showProp(p, true);
+  const side = A.side ?? 1; // 1 = à esquerda de quem usa
+  const F = forwardFromYaw(f.yaw);
+  const R = new THREE.Vector3(F.z, 0, -F.x); // a esquerda
+  const pos = new THREE.Vector3(f.pos.x, f.pos.y, f.pos.z).addScaledVector(R, 1.5 * side).addScaledVector(F, -0.4);
+  rig.root.position.copy(pos);
+  rig.root.rotation.y = yawTo(pos, f.pos) - 0.5 * side; // meio de frente para ele, meio para a câmera
+  world.scene.add(rig.root);
+  const puff = (at) => world.fx.burst(at, { count: 26, color: A.smoke ?? 0x1a1620, kind: 'smoke', speed: 2, life: 0.55, size: 0.6, grow: 1 });
+  puff(pos.clone().add(new THREE.Vector3(0, 1, 0)));
+  world.audio.play('blink', { volume: 0.6 });
+  if (A.anim) anim.play(A.anim, { restart: true, duration: A.animTime ?? 0.8 });
+  const hand = () => (rig.sockets?.handR ? rig.sockets.handR.getWorldPosition(new THREE.Vector3()) : pos.clone().add(new THREE.Vector3(0, 1.1, 0)));
+  const weapon = () => (f.rig.sockets.handR.getWorldPosition(new THREE.Vector3()));
+  let t = 0;
+  let stream = null;
+  if (A.curse) {
+    stream = { from: A.curse.from ?? 0.15, to: A.curse.to ?? 0.6 };
+    world.audio.play('ritual', { volume: 0.7, pitch: 1.1 });
+  }
+  return {
+    step(dt) {
+      t += dt;
+      anim.update(dt);
+      if (stream && t >= stream.from && t <= stream.to) {
+        // os sigilos voam da bengala até a arma, em arco
+        const a = hand();
+        const b = weapon();
+        for (let i = 0; i < 2; i++) {
+          const k = Math.random();
+          const p = a.clone().lerp(b, k);
+          p.y += Math.sin(k * Math.PI) * 0.5;
+          world.fx.burst(p, { count: 1, color: A.color ?? 0xf2c230, speed: 0.3, life: 0.35, size: 0.12 });
+        }
+        world.fx.burst(a, { count: 1, color: A.color ?? 0xf2c230, speed: 1.2, life: 0.3, size: 0.1 });
+      }
+      if (stream && !stream.done && t > stream.to) {
+        stream.done = true;
+        world.fx.burst(weapon(), { count: 36, color: A.color ?? 0xf2c230, speed: 4, life: 0.6, size: 0.18 });
+        world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: A.color ?? 0xf2c230, radius: 2.2, life: 0.5 });
+        world.audio.play('powerUp', { volume: 0.7 });
+      }
+    },
+    dispose() {
+      puff(rig.root.position.clone().add(new THREE.Vector3(0, 1, 0)));
+      world.scene.remove(rig.root);
+    },
+  };
+}
 
 // h.bird: o pássaro sai do ombro e voa em volta da cabeça do alvo, mergulhando de tempos em tempos, até o fim da cena
 // (Beatrice — o Orpheu na Menina do Pássaro). Devolve { step(dt), dispose() } — o cleanup chama dispose e o pássaro some em penas.
@@ -328,6 +388,7 @@ export const cinematicCombo = {
     let hidden = false; // h.vanish: sumido
     let mine = null; // h.mine: a mina no chão
     let bird = null; // h.bird: o pássaro voando (a peça do ombro volta no fim)
+    let ally = null; // h.ally: o aliado que entra na cena (o Damir no especial do Boris)
     let propSwaps = []; // h.props: peças trocadas no meio da cena (a faca do Johnny no fim do especial do Rubens)
     const ownStrike = (i) => opp.def.melee?.strikes?.[i]?.anim || 'hit';
     const cleanup = () => {
@@ -345,6 +406,7 @@ export const cinematicCombo = {
       emitters = [];
       propSwaps.reverse().forEach(([p, v]) => { if (!(p === 'maskOn' && !v && (f.findBuff('mask') || f.findBuff('awakened')?.keepProps?.includes('maskOn')))) f.rig.showProp(p, v); });
       propSwaps = [];
+      if (ally) { ally.dispose(); ally = null; }
       if (bird) { bird.dispose(); f.orpheuOut = false; if (f.state !== 'ko') f.rig.showProp(bird.props, true); bird = null; }
       // a peça some no fim — a não ser que um estado ativo a mantenha (ex.: máscara do Aguiar)
       if (sp.prepare?.showProp && !(sp.prepare.keepIfBuff && f.findBuff(sp.prepare.keepIfBuff))) {
@@ -364,6 +426,7 @@ export const cinematicCombo = {
       if (h.props) for (const [p, v] of h.props) { f.rig.showProp(p, v); propSwaps.push([p, !v]); }
       // o Voo do Orpheu já no ar: o pássaro é um só (não sai outro do ombro vazio)
       if (h.bird && !bird && !f.orpheuOut) { f.rig.showProp(h.bird.props, false); f.orpheuOut = true; bird = flyBird(world, f, opp); bird.props = h.bird.props; }
+      if (h.ally && !ally) ally = summonAlly(world, f, h.ally);
       if (h.vanish) {
         // some numa fumaça e volta depois de h.vanish s (Jae — Shhh...)
         world.fx.burst(f.chestPos(), { count: 22, color: 0x0a0608, kind: 'smoke', speed: 2, life: 0.5, size: 0.6, grow: 1 });
@@ -606,6 +669,7 @@ export const cinematicCombo = {
           if (kitFly.t > 1.6) removeKit();
         }
         if (bird) bird.step(dt);
+        if (ally) ally.step(dt);
         if (trap) trap.update(dt);
         t += dt;
         if (phase === 'prepare') {

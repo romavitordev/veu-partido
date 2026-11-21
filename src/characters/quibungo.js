@@ -31,19 +31,25 @@ export default {
     identity: 'A criatura de Sangue do sertão da Coroa de Espinhos, a bocarra aberta nas costas',
     tagline: 'A bocarra das costas também tem fome.',
   },
-  stats: { moveSpeed: 7.0, attackSpeed: 0.95 }, // o gigante: mais lento, golpes pesados
-  anims: { idle: 'idle_raziel', run: 'run', charge: 'db_charge', victory: 'taunt_roar', block: 'db_block' },
+  // o tamanho maior está no MODELO (tools/blender/char_quibungo.py, S = 1,25; dono, 2026-11-21: "Ele deve ser um pouco
+  // maior"). stats.size só aumentaria a área de acerto: com 1,15 ele ganhava 11% das lutas — fica no tamanho padrão
+  stats: { moveSpeed: 7.0, attackSpeed: 1.0 },
+  // DE QUATRO (dono, 2026-11-21: "ele deveria estar mais quadrúpede", "com as 4 patas no chão"): a postura e o galope
+  // da fera do Zéfero — o tronco quase deitado, as garras da frente apoiadas no chão
+  anims: { idle: 'idle_quibungo', run: 'run_quibungo', charge: 'db_charge', victory: 'vic_quibungo', block: 'db_block' },
   chargeFx: { style: 'aura', color: BLOOD, smoke: FLESH },
+  // a barra de vida de CARNE (dono, 2026-11-21: "A vida dele deveria ser vermelha e ter textura de carne"; styles.css .hb-flesh)
+  hpBar: { style: 'flesh' },
   dodge: { style: 'default', distance: 4.2 },
   // o FOGO queima mais (como o chefe: as lamparinas, o Cristino, as tochas)
   weakTo: { fire: 1.5 },
   // o RETRATO (dono, 2026-11-20, com a arte do Quibungo: "ele de lado, olhando pra camera, como um tigre, sua lingua
   // como um rabo curvado pra cima"): o corpo de perfil e curvado, a cabeça virada para a câmera, um braço erguido em garra
   portrait: {
-    turn: -1.1,
+    turn: -0.8,
     fit: true,
     bones: [
-      ['sp', 'side', -0.45], ['hd', 'up', 0.9], // ergue o tronco do agachado e vira o rosto sem olhos para a câmera
+      ['sp', 'side', -0.45], ['hd', 'up', 1.5], // de quatro (2026-11-21): a bocarra sem olhos erguida e virada para a câmera
       ['sR', 'side', 0.6], ['eR', 'side', -1.2], ['sL', 'side', 0.9], ['eL', 'side', -0.6], // a garra erguida
       ['lL', 'side', -0.35], ['kL', 'side', 0.5], ['lR', 'side', 0.35], // a perna da frente avançada
     ],
@@ -61,29 +67,31 @@ export default {
     air: claw(raziel.melee.air, 'Cair sobre a presa'),
   },
 
-  // □ A LÍNGUA DAS COSTAS: chicoteia de longe e PUXA a presa para perto (o golpe do chefe)
+  // □ A LÍNGUA DAS COSTAS: se achata no chão e CHICOTEIA de longe com a língua (dono, 2026-11-21: "ele abaixando o corpo
+  // atacando o adversario com a lingua", "um que ele só ataca com a lingua"). O PUXÃO ficou na Língua e Mordida (△ → □)
   ranged: {
-    name: 'Língua da Bocarra',
+    name: 'Chicote da Língua',
     type: 'projectile',
     homing: 1.4,
-    anim: 'point',
+    anim: 'qb_tongue',
+    origin: 'back', // a LÍNGUA DAS COSTAS (dono, 2026-11-21): sai da bocarra das costas, por cima do ombro
     chain: true,
     rope: true,
+    hideProp: 'tongue', // a corda É a língua do modelo esticada (dono: "essa 'cauda' dele das costas que era pra ser a lingua")
     ropeColor: TONGUE,
-    ropeThick: 0.07,
+    ropeThick: 0.11,
     windup: 0.32,
     recovery: 0.36,
     count: 1,
     interval: 0,
-    damage: 22,
-    range: 11,
+    damage: 32,
+    range: 12,
     speed: 26,
     radius: 0.55,
     spread: 0,
-    knockback: 0,
-    hitstun: 0.15,
-    onHit: { pull: { distance: 2.2, time: 0.35, after: 0.6 } },
-    cooldown: 4.5,
+    knockback: 1.4,
+    hitstun: 0.3,
+    cooldown: 3.5,
     energyCost: 10,
     visual: 'inkClaw',
     color: TONGUE,
@@ -111,7 +119,7 @@ export default {
       track: true,
       range: 2.8,
       arc: 160,
-      damage: 64,
+      damage: 76,
       knockback: 5,
       whiffRecovery: 0.35,
       element: 'sangue',
@@ -124,7 +132,16 @@ export default {
       id: 'saltoQuibungo',
       name: 'Salto do Quibungo',
       input: 'carga+jump',
-      description: 'Agacha o corpo enorme e salta sobre a presa, descendo com as garras. Quem esquiva ainda toma metade. Aguenta um golpe na preparação.',
+      description: 'Agacha o corpo enorme e SALTA alto e longe sobre a presa (até ~8 m), caindo com as quatro garras: derruba e faz sangrar. Quem esquiva ainda toma metade. Aguenta um golpe na preparação.',
+      // dono, 2026-11-21: "o salto dele deveria pular mais agressivo e mais alto e mais pra frente"
+      hop: 11, // sobe a 11 m/s (~1,9 m de altura, ~0,7 s no ar)
+      step: 12,
+      impact: 0.95,
+      duration: 1.3,
+      damage: 92,
+      knockback: 4,
+      range: 3.2,
+      track: true,
       element: 'sangue',
       color: BLOOD,
     },
@@ -140,9 +157,35 @@ export default {
       duration: 0.8,
       impact: 0.45,
       radius: 3.6,
-      damage: 40,
+      damage: 50,
       armorMax: 60,
       color: DUST,
+    },
+    {
+      // △ → □ LÍNGUA E MORDIDA (dono, 2026-11-21: "pode ter um ataque que ele puxa o adversário com a lingua para dar uma
+      // mordida"): achatado, a língua das costas enrola a presa, PUXA até a bocarra e ele morde — sangra e cura um pouco
+      id: 'linguaMordidaQuibungo',
+      name: 'Língua e Mordida',
+      input: 'carga+ranged',
+      type: 'tongueLash',
+      description: 'Se achata no chão e a língua das costas enrola a presa (até ~7 m à frente), PUXA até a bocarra e MORDE: sangra e devolve parte do dano como vida. Não dá para defender depois de pego; esquivar a língua evita tudo.',
+      anim: 'qb_tongue_bite',
+      from: 'back',
+      rope: true,
+      hideProp: 'tongue',
+      ropeThick: 0.11,
+      color: TONGUE,
+      biteFx: true,
+      energyCost: 22,
+      cooldown: 10,
+      windup: 0.35,
+      pull: 0.4,
+      recovery: 0.5,
+      stun: 0.35,
+      range: 7,
+      damage: 58,
+      drain: 0.35,
+      bleed: { dps: 5, duration: 2.5 },
     },
     {
       // R2 + △ O URRO (o do chefe com metade da vida): mais rápido e mais forte por um tempo
@@ -190,13 +233,23 @@ export default {
     endReaction: { knockback: 6, lowLaunch: true },
   },
 
-  // A FÚRIA DO SERTÃO (o URRO do chefe com metade da vida: fica mais rápido e mais bravo)
+  // A TRANSFORMAÇÃO: O KERBEROS (dono, 2026-11-21: "E a transformação dele ser o kerberus, com uma cutscene como a do
+  // outro lado"): a lua fica de sangue, chove sangue, ele DERRETE numa gosma cercada de ossos e o Kerberos sobe dela
+  // (a cena 'kerberos' de combat/specials/maskTransform.js; a forma em characters/forms/quibungo_kerberos.js)
   awakening: {
-    name: 'Fúria do Sertão',
-    banner: 'Fúria do Sertão',
-    type: 'awakenMode',
-    ranged: { ...raziel.ranged, name: 'Investida do Gigante', color: BLOOD, element: 'sangue' },
-    mult: 1.2, speedMult: 1.2, cdRate: 1.4, aura: 'smoke', color: BLOOD, heal: 0.08,
+    name: 'Nascimento do Kerberos',
+    banner: 'Nascimento do Kerberos',
+    type: 'maskTransform',
+    form: 'quibungo_kerberos',
+    formBanner: 'O KERBEROS',
+    scene: 'kerberos',
+    redAura: false,
+    startSound: 'fearGaze',
+    sound: 'powerUp',
+    tint: 0xff1a1a,
+    duration: 0,
+    bonusHealth: 120,
+    color: BLOOD,
   },
 
   passives: [

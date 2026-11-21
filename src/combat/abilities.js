@@ -2480,11 +2480,30 @@ Object.assign(ABILITY_TYPES, {
         world.fx.play('FX_DUST', f.pos, { scale: 0.6 });
         world.audio.play('heavyPunch', { volume: 0.3, pitch: 0.5 });
       });
+      // a.hop (o SALTO do Quibungo): o passo vira um pulo de verdade — sobe a.hop m/s e cai em cima na hora do golpe
+      const air = a.hop ? (2 * a.hop) / COMBAT.gravity : 0;
+      let hopped = false;
       tl.each((t) => {
         // a.track (Decepar): continua virando para o alvo durante a preparação
         if (a.track && t < a.impact && opp && opp.state !== 'ko') f.yaw = yawTo(f.pos, opp.pos);
+        if (a.hop && !hopped && t >= a.impact - air) {
+          hopped = true;
+          f.vel.y = a.hop;
+          f.onGround = false;
+          world.fx.play('FX_DUST', f.pos, { scale: 1.0 });
+          world.audio.play('jump', { volume: 0.9, pitch: 0.6 });
+        }
+        // no ar, segue a presa: a distância que falta vira a velocidade (até a.step)
+        if (a.hop && hopped && t < a.impact) {
+          const F = forwardFromYaw(f.yaw);
+          const left = opp ? Math.max(0, distXZ(f.pos, opp.pos) - 1.1) : a.step * air;
+          const sp = Math.min(a.step, left / Math.max(0.05, a.impact - t));
+          f.vel.x = F.x * sp;
+          f.vel.z = F.z * sp;
+          return;
+        }
         // deslocamento do corpo à frente logo antes do golpe
-        if (t > a.impact - (a.stepTime ?? 0.2) && t < a.impact && !(opp && distXZ(f.pos, opp.pos) < 1.3)) {
+        if (!a.hop && t > a.impact - (a.stepTime ?? 0.2) && t < a.impact && !(opp && distXZ(f.pos, opp.pos) < 1.3)) {
           const F = forwardFromYaw(f.yaw);
           f.vel.x = F.x * a.step;
           f.vel.z = F.z * a.step;
@@ -2527,6 +2546,11 @@ Object.assign(ABILITY_TYPES, {
           });
           if (a.stun && typeof res === 'number' && opp.state !== 'ko') opp.stun(a.stun);
           if (a.bleed && typeof res === 'number' && opp.state !== 'ko') opp.applyBleed(a.bleed, f);
+          // a.drain (Devorar do Kerberos): parte do dano volta como vida
+          if (a.drain && typeof res === 'number' && res > 0) {
+            f.health = Math.min(f.maxHealth, f.health + res * a.drain);
+            world.fx.burst(f.chestPos(), { count: 12, color: 0xff3040, speed: 2, up: 1.5, life: 0.6, size: 0.2 });
+          }
           // a.noHeal (Decepar): FERIDA ABERTA — o alvo não se cura por um tempo
           if (a.noHeal && typeof res === 'number' && opp.state !== 'ko') {
             opp.blockHealing(a.noHeal);
@@ -4768,7 +4792,7 @@ export const DALMO_TYPES = {
       const tl = new Timeline();
       f.vel.set(0, 0, 0);
       if (opp) f.yaw = yawTo(f.pos, opp.pos);
-      f.anim.play('stomp', { restart: true, duration: a.duration ?? 0.75 });
+      f.anim.play(a.anim || 'stomp', { restart: true, duration: a.duration ?? 0.75 });
       world.audio.play('carga', { volume: 0.6, pitch: 0.6 });
       const now = world.time;
       f.superArmor = { from: now, to: now + a.impact, max: a.armorMax ?? 60, hits: 2 };

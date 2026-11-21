@@ -29,9 +29,9 @@ from npc_sculpt_lib import Sculpt, vcol_material, limb_fibers, ridge, n3, white_
 
 def quibungo_extras(chest, M, MAW_C, MAW_D):
     """as costas do Quibungo: os ESPINHOS DE OSSO em arco (como costelas) em volta da bocarra e a LÍNGUA em três juntas.
-    No jogo o tronco vai inclinado ~0,45 rad para a frente (o remodelo o pôs mais em pé): U é o "para cima" e F o "para
-    a frente" no mundo"""
-    th = 0.45
+    No jogo o tronco vai inclinado ~0,7 rad para a frente (de quatro): U é o "para cima" e F o "para a frente" no
+    mundo"""
+    th = 0.7
     U = Vector((0, math.sin(th), -math.cos(th)))
     F = Vector((0, math.cos(th), math.sin(th)))
     X = Vector((1, 0, 0))
@@ -433,24 +433,27 @@ def build(strong, quibungo=False, felino=False):
         hand = joint(f'J_hand{name}', (0, -foreL, 0), el)
         hw = foreR * 1.5
         fl = (0.2 if strong else 0.17) * (1.8 if Q else 1)  # o Quibungo: os dedos LONGOS da arte
+        # o Quibungo anda DE QUATRO: a palma vira para TRÁS (com o braço à frente, ela fica para baixo, apoiada no chão)
+        # e as garras curvam para baixo (dono, 2026-11-21: "as mãos do quibungo estão ao contrario")
+        zf = -1 if Q else 1
         Hd = Sculpt(f'hand{name}_{tag}')
-        Hd.ell((0, -0.04, 0.01), (hw, 0.07, hw * 0.55))  # palma
+        Hd.ell((0, -0.04, 0.01 * zf), (hw, 0.07, hw * 0.55))  # palma
         tips = []
         for i in range(4):
             a = (i - 1.5) * 0.36
             x0 = math.sin(a) * hw
-            base = (x0, -0.09, 0.02)
-            mid = (x0 * 1.35, -0.09 - fl * 0.55, 0.05)
-            tip = (x0 * 1.5, -0.09 - fl, 0.1)
+            base = (x0, -0.09, 0.02 * zf)
+            mid = (x0 * 1.35, -0.09 - fl * 0.55, 0.05 * zf)
+            tip = (x0 * 1.5, -0.09 - fl, 0.1 * zf)
             Hd.chain([base, mid, tip], [hw * 0.3, hw * 0.26, hw * 0.2], step=0.5)
             tips.append(tip)
-        th = [(-s * hw * 0.8, -0.04, 0.03), (-s * hw * 1.3, -0.1, 0.09), (-s * hw * 1.25, -0.14, 0.16)]
+        th = [(-s * hw * 0.8, -0.04, 0.03 * zf), (-s * hw * 1.3, -0.1, 0.09 * zf), (-s * hw * 1.25, -0.14, 0.16 * zf)]
         Hd.chain(th, [hw * 0.3, hw * 0.24, hw * 0.18], step=0.5)
         Hd.build(hand, M['flesh'], 700, res=0.008 if strong else 0.0055, smooth=2, color=flesh_color(None, AMP))
         cl = (0.14 if strong else 0.1) * (1.4 if Q else 1)
         for i, tip in enumerate(tips + [th[-1]]):  # GARRAS longas e curvas
-            c1 = (tip[0] * 1.05, tip[1] - cl * 0.45, tip[2] + cl * 0.4)
-            c2 = (tip[0] * 1.08, tip[1] - cl * 0.7, tip[2] + cl)
+            c1 = (tip[0] * 1.05, tip[1] - cl * 0.45, tip[2] + cl * 0.4 * zf)
+            c2 = (tip[0] * 1.08, tip[1] - cl * 0.7, tip[2] + cl * zf)
             add(hand, f'claw{i}', rod([tip, c1, c2], [hw * 0.2, hw * 0.13, 0.002], seg=5), M['claw'])
         if Q:  # o tufo de pelo atrás do antebraço (as artes: a "manga" peluda do cotovelo ao pulso)
             fur_tuft(el, f'fur{name}', (0, -foreL * 0.1, -foreR * 0.9), (0, -1, -0.15), s, 9, foreL * 0.42, M)

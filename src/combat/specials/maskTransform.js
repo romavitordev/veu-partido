@@ -162,6 +162,8 @@ export const maskTransform = {
     let total;
     let transformAt = null; // cena com epílogo: transforma antes do fim e mostra a forma nova (watch)
     let epilogue = null;
+    let lateCleanup = false; // a cena guarda as peças até o fim do epílogo (kerberos)
+    let late = [];
     const scrap = []; // peças temporárias da cena (removidas no fim ou se a cena for interrompida)
     if (scene === 'helmet') {
       // 1) segura o capacete sorridente no peito e olha por cima do ombro · 2) clarão · 3) ergue acima da cabeça e
@@ -628,6 +630,145 @@ export const maskTransform = {
         maskOn(true);
       });
       total = 3.7;
+    } else if (scene === 'kerberos') {
+      // QUIBUNGO → KERBEROS (o fim de Hexatombe, a mesma cena do Outro Lado: pve/kerberosInferno.js): 1) urra para o céu
+      // e tudo avermelha (a LUA DE SANGUE) · 2) a CHUVA DE SANGUE · 3) ele DERRETE numa gosma, os ossos furam o chão em
+      // volta · 4) o KERBEROS sobe da gosma, desdobrando as seis patas, e as três cabeças uivam
+      const root = f.rig.root;
+      const sc = world.scene;
+      const fog = sc.fog ? { c: sc.fog.color.clone(), dens: sc.fog.density } : null;
+      const hemi = new THREE.HemisphereLight(0xff2a1a, 0x2a0002, 0);
+      sc.add(hemi);
+      scrap.push(() => { sc.remove(hemi); hemi.dispose && hemi.dispose(); });
+      // o CÉU de sangue: um degradê vermelho no lugar do céu da arena (volta no fim)
+      const bg0 = sc.background;
+      const skyC = document.createElement('canvas');
+      skyC.width = 4;
+      skyC.height = 256;
+      const sg = skyC.getContext('2d');
+      const grd = sg.createLinearGradient(0, 0, 0, 256);
+      [[0, '#0e0204'], [0.45, '#3a0608'], [0.8, '#7a1010'], [1, '#a82018']].forEach(([k, c]) => grd.addColorStop(k, c));
+      sg.fillStyle = grd;
+      sg.fillRect(0, 0, 4, 256);
+      const skyTex = new THREE.CanvasTexture(skyC);
+      skyTex.colorSpace = THREE.SRGBColorSpace;
+      tl.add(0.5, () => { sc.background = skyTex; world.screenFlash && world.screenFlash('#3a0004', 0.3); });
+      scrap.push(() => { if (sc.background === skyTex) sc.background = bg0; skyTex.dispose(); });
+      let red = 0; // 0..1: a lua de sangue
+      f.anim.play('taunt_roar', { restart: true, duration: 1.2 });
+      lightTo = 3;
+      lightColor = new THREE.Color(0xff2010);
+      world.cameraRig.playShots([
+        lowAngle(f, { dur: 1.3, dist: 3.6, side: 0.6 }),
+        orbit(f, { dur: 1.6, radius: 5.2, height: 2.4, a0: -0.9, a1: -0.2, lookH: 0.6, fov: 48 }),
+        orbit(f, { dur: 2.4, radius: 7, height: 2.2, a0: -0.2, a1: 0.5, lookH: 1.3, fov: 50 }),
+      ]);
+      world.audio.play('fearGaze', { volume: 0.9, pitch: 0.3 });
+      tl.add(0.3, () => world.specialBanner(f, sp, sp.name));
+      // a CHUVA: riscos vermelhos caindo em volta
+      const N = 360;
+      const rainGeo = new THREE.BufferGeometry();
+      rainGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 6), 3));
+      const rainMat = new THREE.LineBasicMaterial({ color: 0xb01418, transparent: true, opacity: 0, depthWrite: false });
+      const rain = new THREE.LineSegments(rainGeo, rainMat);
+      rain.frustumCulled = false;
+      const drops = Array.from({ length: N }, () => ({ x: (Math.random() - 0.5) * 24, y: Math.random() * 14, z: (Math.random() - 0.5) * 24, v: 14 + Math.random() * 8 }));
+      let raining = false;
+      tl.add(1.0, () => {
+        sc.add(rain);
+        raining = true;
+        world.audio.play('drain', { volume: 0.8, pitch: 0.35 });
+      });
+      scrap.push(() => { sc.remove(rain); rainGeo.dispose(); rainMat.dispose(); });
+      // a GOSMA e os ossos
+      const goo = new THREE.Group();
+      goo.position.set(f.pos.x, 0.02, f.pos.z);
+      const gooMat = new THREE.MeshToonMaterial({ color: 0x5a0408, emissive: 0x1a0002 });
+      const puddle = new THREE.Mesh(new THREE.SphereGeometry(1, 18, 8), gooMat);
+      puddle.scale.set(0.01, 0.01, 0.01);
+      goo.add(puddle);
+      const boneMat = new THREE.MeshToonMaterial({ color: 0xd8c4a0 });
+      const bones = [];
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2 + Math.random() * 0.25;
+        const s = new THREE.Mesh(new THREE.ConeGeometry(0.12, 1, 6).translate(0, 0.5, 0), boneMat);
+        s.position.set(Math.sin(a) * 1.9, 0, Math.cos(a) * 1.9);
+        s.rotation.set(Math.cos(a) * 0.5, 0, -Math.sin(a) * 0.5);
+        s.userData.h = 0.9 + Math.random() * 1.1;
+        s.scale.set(1, 0.01, 1);
+        goo.add(s);
+        bones.push(s);
+      }
+      sc.add(goo);
+      scrap.push(() => { sc.remove(goo); goo.traverse((o) => o.geometry && o.geometry.dispose()); gooMat.dispose(); boneMat.dispose(); });
+      // 3: DERRETE (o modelo do Quibungo afunda e se espalha)
+      let melt = -1;
+      tl.add(1.6, () => {
+        melt = 0;
+        world.audio.play('fearGaze', { volume: 1, pitch: 0.22 });
+        world.cameraRig.shake(0.3, 1.6);
+      });
+      // 4: o Kerberos sobe da gosma (o epílogo, já com o modelo novo)
+      let rise = -1;
+      transformAt = 3.3;
+      epilogue = () => {
+        rise = 0;
+        f.rig.root.scale.set(1, 0.2, 1);
+        f.anim.play('kb_roar', { restart: true, duration: 1.4 });
+        world.audio.play('explosion', { volume: 0.7, pitch: 0.4 });
+        world.audio.play('fearGaze', { volume: 1, pitch: 0.2 });
+        world.cameraRig.shake(0.5, 1.0);
+        world.cameraRig.playShots([orbit(f, { dur: 1.8, radius: 7.5, height: 2.0, a0: 0.3, a1: 0.7, lookH: 1.2, fov: 50 })]);
+        return (dt) => { rainTick(dt); riseTick(dt); };
+      };
+      const rainTick = (dt) => {
+        if (!raining) return;
+          rainMat.opacity = Math.min(0.6, rainMat.opacity + dt * 0.6);
+          const arr = rainGeo.attributes.position.array;
+          drops.forEach((q, i) => {
+            q.y -= q.v * dt;
+            if (q.y < 0) q.y += 14;
+            const x = f.pos.x + q.x, z = f.pos.z + q.z;
+            arr.set([x, q.y, z, x + 0.03, q.y + 0.6, z], i * 6);
+          });
+          rainGeo.attributes.position.needsUpdate = true;
+          if (Math.random() < 0.5) world.fx.burst(new THREE.Vector3(f.pos.x + (Math.random() - 0.5) * 10, 0.05, f.pos.z + (Math.random() - 0.5) * 10), { count: 2, color: 0x9a1014, speed: 1, up: 1.4, life: 0.3, size: 0.08, gravity: 9 });
+      };
+      const riseTick = (dt) => {
+        if (rise < 0 || rise >= 1) return;
+        rise = Math.min(1, rise + dt / 1.2);
+        const e = 1 - (1 - rise) * (1 - rise);
+        f.rig.root.scale.set(1, 0.2 + 0.8 * e, 1);
+        f.rig.root.position.y = f.pos.y - 1.2 * (1 - e);
+        puddle.scale.y = 0.4 * (1 - e) + 0.05;
+        if (Math.random() < 0.7) world.fx.burst(new THREE.Vector3(f.pos.x + (Math.random() - 0.5) * 2, 0.4 + e * 1.5, f.pos.z + (Math.random() - 0.5) * 2), { count: 5, color: 0xa01018, speed: 3, up: 3, life: 0.6, size: 0.2, gravity: 9 });
+      };
+      tl.each((time, dt) => {
+        red = Math.min(1, time / 1.2);
+        hemi.intensity = 1.6 * red;
+        if (fog && sc.fog) sc.fog.color.copy(fog.c).lerp(new THREE.Color(0x5a0a0c), red);
+        rainTick(dt);
+        if (melt >= 0 && melt < 1 && rise < 0) {
+          melt = Math.min(1, melt + dt / 1.6);
+          const e = melt * melt;
+          f.rig.root.scale.set(1 + e * 0.5, Math.max(0.05, 1 - e * 0.95), 1 + e * 0.5);
+          if (Math.random() < 0.6) world.fx.burst(f.chestPos().setY(0.3 + (1 - melt) * 1.2), { count: 4, color: 0xa01018, speed: 2, up: 1, life: 0.5, size: 0.18, gravity: 9 });
+        }
+        if (melt >= 0) {
+          const g = Math.min(1, melt * 1.3);
+          puddle.scale.set(0.2 + 2.2 * g, 0.18 + 0.25 * Math.sin(Math.min(1, melt) * Math.PI), 0.2 + 2.2 * g);
+          for (const s of bones) s.scale.set(1, Math.max(0.01, Math.min(1, (melt - 0.35) / 0.5)) * s.userData.h, 1);
+        }
+      });
+      // devolve o céu e o tamanho (o modelo novo volta inteiro; o do Quibungo fica guardado para o próximo round)
+      const baseRoot = root;
+      scrap.push(() => {
+        if (fog && sc.fog) sc.fog.color.copy(fog.c);
+        baseRoot.scale.set(1, 1, 1);
+        f.rig.root.scale.set(1, 1, 1);
+      });
+      lateCleanup = true; // a chuva, a gosma e o céu vermelho ficam até o fim do epílogo
+      total = 5.0;
     } else {
       f.anim.play(sp.anim || 'concentrate', { restart: true, duration: 1.5 });
       world.cameraRig.playShots([
@@ -654,6 +795,7 @@ export const maskTransform = {
     const finish = () => {
       if (done) return;
       done = true;
+      if (lateCleanup) late = scrap.splice(0);
       cleanup();
       if (!epilogue) world.endCinematic();
       world.fx.ring(new THREE.Vector3(f.pos.x, 0.06, f.pos.z), { color: tint, radius: 3, life: 0.5 });
@@ -683,13 +825,19 @@ export const maskTransform = {
       if (!epilogue) return;
       // a troca de modelo (applyDef) descarta a sequência atual: o epílogo vira a sequência nova da forma, e é ELA que
       // encerra a cinematic (senão o mundo ficaria parado para sempre)
-      epilogue();
+      const tick = epilogue();
       let et = 0;
       const rest = total - transformAt;
+      const endLate = () => { late.forEach((fn) => fn()); late = []; };
       f.setState('special');
       f.seq = {
-        update(dt) { et += dt; if (et >= rest) { world.endCinematic(); return true; } return false; },
-        cancel() { world.endCinematic(); },
+        update(dt) {
+          et += dt;
+          if (typeof tick === 'function') tick(dt);
+          if (et >= rest) { endLate(); world.endCinematic(); return true; }
+          return false;
+        },
+        cancel() { endLate(); world.endCinematic(); },
       };
     });
     tl.end(total);

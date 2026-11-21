@@ -598,8 +598,15 @@ export class Projectiles {
     }
     // corrente ligando a mão ao projétil (Injustiça)
     if (ability.chain) {
-      const hand = owner.rig.sockets.handR;
+      const hand = ability.origin === 'back' ? owner.rig.sockets.back : owner.rig.sockets.handR; // a língua das costas do Quibungo
       p.chainFx = this.world.fx.chain(() => hand.getWorldPosition(new THREE.Vector3()), () => p.pos.clone(), { links: 30, sag: 0.1, rope: !!ability.rope, ...(ability.ropeColor ? { color: ability.ropeColor, glow: 0x0a0402, thick: ability.ropeThick } : {}) });
+      // hideProp: a corda É a peça do modelo esticada (a língua das costas do Quibungo): some enquanto a corda existe
+      if (ability.hideProp && owner.rig.showProp) {
+        const fx = p.chainFx;
+        const stop = fx.stop.bind(fx);
+        owner.rig.showProp(ability.hideProp, false);
+        fx.stop = () => { stop(); if (owner.rig) owner.rig.showProp(ability.hideProp, true); };
+      }
     }
     this.list.push(p);
   }
@@ -619,7 +626,7 @@ export class Projectiles {
       w.audio.play(a.onHit.pull.sound || 'chainPull');
       if (p.chainFx) {
         const fx = p.chainFx;
-        const hand = o.rig.sockets.handR;
+        const hand = a.origin === 'back' ? o.rig.sockets.back : o.rig.sockets.handR; // a língua continua saindo das costas
         fx.toFn = () => target.chestPos();
         fx.fromFn = () => hand.getWorldPosition(new THREE.Vector3());
         w.after((a.onHit.pull.time ?? 0.3) + 0.08, () => fx.stop());

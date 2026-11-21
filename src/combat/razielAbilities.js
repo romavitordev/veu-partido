@@ -86,14 +86,26 @@ Object.assign(ABILITY_TYPES, {
       f.yaw = yawTo(f.pos, opp.pos);
       f.anim.play(a.anim || 'raziel_bite', { restart: true, duration: a.windup + a.pull + a.recovery });
       world.audio.play('fearGaze', { volume: 0.6, pitch: 0.8 });
-      const mouth = () => (f.rig.joints.hd ? f.rig.joints.hd.getWorldPosition(new THREE.Vector3()) : f.chestPos());
+      // a.from 'back': a língua sai da bocarra das COSTAS (o Quibungo), não da boca
+      const mouth = () => {
+        if (a.from === 'back' && f.rig.sockets.back) return f.rig.sockets.back.getWorldPosition(new THREE.Vector3());
+        return f.rig.joints.hd ? f.rig.joints.hd.getWorldPosition(new THREE.Vector3()) : f.chestPos();
+      };
       let caught = false;
       let from = null;
+      let rope = null;
+      // a.hideProp: a corda é a peça do modelo esticada (a língua das costas do Quibungo) — some enquanto ela estica
+      const dropRope = () => { if (rope) { rope.stop(); rope = null; if (a.hideProp) f.rig.showProp(a.hideProp, true); } };
       tl.add(a.windup, () => {
         const ok = opp.state !== 'ko' && !opp.isInvulnerable() && distXZ(f.pos, opp.pos) - opp.radius <= a.range
           && Math.abs(Math.atan2(Math.sin(yawTo(f.pos, opp.pos) - f.yaw), Math.cos(yawTo(f.pos, opp.pos) - f.yaw))) < 0.7;
         const tip = ok ? opp.chestPos() : mouth().add(forwardFromYaw(f.yaw).multiplyScalar(a.range));
-        world.fx.tracer(mouth(), tip, { color: a.color ?? 0xc04050, life: a.pull + 0.05, width: 0.07 });
+        if (a.rope && world.fx.chain) {
+          // a língua de carne (a mesma corda do □), presa no peito da presa enquanto puxa
+          if (a.hideProp) f.rig.showProp(a.hideProp, false);
+          rope = world.fx.chain(mouth, ok ? () => opp.chestPos() : () => tip, { links: 30, sag: 0.1, rope: true, color: a.color ?? 0xc04050, glow: 0x0a0402, thick: a.ropeThick ?? 0.1 });
+          world.after(ok ? a.pull : 0.25, dropRope);
+        } else world.fx.tracer(mouth(), tip, { color: a.color ?? 0xc04050, life: a.pull + 0.05, width: 0.07 });
         world.audio.play('whip', { volume: 0.7, pitch: 0.7 });
         if (!ok) return;
         caught = true;
@@ -116,9 +128,12 @@ Object.assign(ABILITY_TYPES, {
         if (!caught || opp.state === 'ko') return;
         const res = applyHit(world, f, opp, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: 0, hitstun: a.stun, reaction: false, sound: 'clawHit', color: BLOOD, scale: 1.1, ignoreInvuln: true, unblockable: true });
         if (typeof res === 'number' && res > 0 && a.bleed && opp.state !== 'ko') opp.applyBleed(a.bleed, f);
+        // a.drain: a MORDIDA devolve vida (o Quibungo)
+        if (typeof res === 'number' && res > 0 && a.drain) f.health = Math.min(f.maxHealth, f.health + Math.round(res * a.drain));
+        if (a.biteFx) world.fx.burst(opp.chestPos(), { count: 22, color: BLOOD, speed: 3.5, life: 0.5, size: 0.16, gravity: 8 });
       });
       tl.end(a.windup + a.pull + a.recovery); // pegou: o alvo ainda está atordoado quando ele volta a agir
-      return seqFrom(tl);
+      return seqFrom(tl, { cancel: dropRope });
     },
   },
 

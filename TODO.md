@@ -631,6 +631,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **O Nascimento do Kerberos** — v5.42.0: Quibungo jogável de quatro (garras no chão, a língua das costas no □ e na Língua e Mordida), a Transformação KERBEROS com a lua de sangue, o Kerberos no Aniquilação do Sertão e o Damir na cena do especial do Boris.
 - [x] **As fusões do Outro Lado** — v5.41.0: fusões alcançáveis (nível 3, baú garantido, pistas), 5 fusões novas, 12 achados das fases, tela DESCOBERTAS em duas seções, Ordo Calamitas reordenada e Arnaldo na Ordo Realitas sem o título Portadores.
 - [x] **A tinta e as sombras** — v5.40.0: furtividade que desvia de 2 ataques ou 1 especial, a tinta na tela na entrada do Amigo, a língua do Quibungo (sem olhos) e as seleções de fases e mapas responsivas.
 - [x] **O morro do Quibungo** — v5.38.0: mapa novo do sertão (HEX ep. 5), noite e dia.

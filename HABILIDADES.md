@@ -3319,23 +3319,20 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | ↑ + ○ (no combo) | Garra de baixo | 38 | 2 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Esmagar | 44 | 2 m | finalizador: derruba |
 
-### Principal (□ / X): Língua da Bocarra
+### Principal (□ / X): Chicote da Língua
 
-- Dano 22 · alcance 11 m · cooldown 4.5 s · custo 10
-- Prende e puxa o inimigo para 2.2 m, abrindo 0.6 s para combar
-
-### Principal durante Fúria do Sertão: Investida do Gigante
-
-- Dano 30 · alcance 1.6 m · cooldown 2.6 s · custo 0
+- Dano 32 · alcance 12 m · cooldown 3.5 s · custo 10
 
 ### Habilidades
 
-- **Rajada dos Quatro Braços** — △ + ○ / Y + B · custo 25 · cooldown 9 s · dano 64 · alcance 2.8 m
+- **Rajada dos Quatro Braços** — △ + ○ / Y + B · custo 25 · cooldown 9 s · dano 76 · alcance 2.8 m
   Avança e desce as quatro garras de uma vez: um golpe pesado que joga a presa longe. Aguenta um golpe na preparação.
-- **Salto do Quibungo** — Energia + Pulo (△+× / Y+A) · custo 30 · cooldown 12 s · dano 84 · alcance 2.8 m
-  Agacha o corpo enorme e salta sobre a presa, descendo com as garras. Quem esquiva ainda toma metade. Aguenta um golpe na preparação.
-- **Racha-Chão** — △ + L2 / Y + LT · custo 22 · cooldown 11 s · dano 40
+- **Salto do Quibungo** — Energia + Pulo (△+× / Y+A) · custo 30 · cooldown 12 s · dano 92 · alcance 3.2 m
+  Agacha o corpo enorme e SALTA alto e longe sobre a presa (até ~8 m), caindo com as quatro garras: derruba e faz sangrar. Quem esquiva ainda toma metade. Aguenta um golpe na preparação.
+- **Racha-Chão** — △ + L2 / Y + LT · custo 22 · cooldown 11 s · dano 50
   Bate os quatro braços no chão: a terra racha e a onda derruba quem estiver perto.
+- **Língua e Mordida** — △ + □ / Y + X · custo 22 · cooldown 10 s · dano 58 · alcance 7 m
+  Se achata no chão e a língua das costas enrola a presa (até ~7 m à frente), PUXA até a bocarra e MORDE: sangra e devolve parte do dano como vida. Não dá para defender depois de pego; esquivar a língua evita tudo.
 - **Urro do Sertão** — R2 + △ / RT + Y · custo 20 · cooldown 16 s
   Urra com a língua de fora: por 6 s os golpes físicos ficam 20% mais fortes e ele anda 15% mais rápido.
 - **Passiva — Afinidade com Sangue:** rituais de Sangue +10%; −15% de dano de rituais desse elemento
@@ -3344,6 +3341,6 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 250 de dano · custo 50 · cooldown 14 s.
 
-### Transformação: Fúria do Sertão
+### Transformação: Nascimento do Kerberos
 
-Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → desperta até o fim do round: +20% de dano, +20% de velocidade, recargas 40% mais rápidas, cura 8% na hora, □ passa a ser Investida do Gigante.
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.

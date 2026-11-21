@@ -18,7 +18,7 @@ from lib import Skeleton, build_armature, skin, Builder
 import npc_zumbi_lib
 
 OUT = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'quibungo.glb'
-S = 1.08  # o Quibungo é um gigante: um pouco maior que o Zumbi de Sangue Forte de onde veio
+S = 1.25  # o Quibungo é um gigante (dono, 2026-11-21: "Ele deve ser um pouco maior"; o do Outro Lado, 1,6×, continua maior)
 
 # 1) a escultura do NPC, sem exportar
 _exp = npc_zumbi_lib.export_glb
@@ -98,8 +98,6 @@ tv, tf, tu = rod([G(r0 + p) for p in pts], rads, seg=10)
 make_obj('P_tongue', tv, tf, tu, mat=tmat)
 
 meshes = [o for o in bpy.data.objects if o.type == 'MESH' and o.name.startswith('P_')]
-
-meshes = [o for o in bpy.data.objects if o.type == 'MESH' and o.name.startswith('P_')]
 for o in meshes:
     mw = o.matrix_world.copy()
     o.parent = None
@@ -133,7 +131,8 @@ for o in meshes:
     else:
         wf = (lambda bn: lambda p: {bn: 1.0})(bone)
     skin(o, arm, sk, weight_fn=wf)
-    o.name = 'q_' + key
+    # a LÍNGUA fica separada (prop_tongue): no jogo ela some enquanto estica até a presa (a corda É ela) e volta depois
+    o.name = 'prop_tongue' if key == 'tongue' else 'q_' + key
     b.parts.append(o)
 
 b.export(OUT)

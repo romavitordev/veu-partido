@@ -19,6 +19,7 @@ import { addWeaponClips } from './weaponClips.js';
 import { addIdleClips } from './idleClips.js';
 import { addPowerClips } from './powerClips.js';
 import { addRazielClips } from './razielClips.js';
+import { addKerberosClips } from './kerberosClips.js';
 import { UAL_CLIPS } from './ualClips.js';
 import { locomotionClips } from './locomotionClips.js';
 import { polishStrikes, POLISHED_STRIKES, FINISHER_STRIKES } from './strikePolish.js';
@@ -701,6 +702,7 @@ addWeaponClips(CLIPS, k, GUARD);
 addIdleClips(CLIPS, k);
 addPowerClips(CLIPS, k);
 addRazielClips(CLIPS, k); // o Raziel (Vampiros)
+addKerberosClips(CLIPS, k); // o Kerberos (a forma do Quibungo)
 
 // melhoria geral das animações (anim/strikePolish.js): antecipação, passagem e peso nos golpes de combo, mais forte nos
 // que fecham combo — depois de todos os clipes registrados (os de personagem também entram)

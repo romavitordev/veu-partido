@@ -2857,6 +2857,10 @@ export class Fighter {
       origin.addScaledVector(forwardFromYaw(this.yaw, v1), 0.4);
     } else if (r.origin === 'ground') {
       origin.set(this.pos.x, 0.15, this.pos.z).addScaledVector(forwardFromYaw(this.yaw, v1), 0.8);
+    } else if (r.origin === 'back') {
+      // a bocarra das COSTAS (o Quibungo: a língua sai de lá, por cima do ombro)
+      this.rig.sockets.back.getWorldPosition(origin);
+      origin.y += 0.35;
     } else if (r.origin === 'handL') {
       this.rig.sockets.handL.getWorldPosition(origin); // ex.: o Emissor de Pulsos na mão esquerda do Arnaldo
     } else if (r.origin === 'hand') {

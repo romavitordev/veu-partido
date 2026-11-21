@@ -385,10 +385,9 @@ const INTRO_WALK = 0.55; // fração da entrada andando (o resto é o rugido)
 BLOOD_ZOMBIE.quibungo = {
   ...BLOOD_ZOMBIE.strong,
   name: 'O QUIBUNGO', hp: 2600, duration: Infinity, speed: 3.6, radius: 1.3, height: 4.6,
-  // REMODELO (dono, 2026-11-20, com as artes oficiais): EM PÉ e curvado, não de quatro — os braços compridos pendem
-  // quase até o chão, a bocarra da frente no alto da corcova
-  crouch: { hip: -0.55, knee: 0.95, chest: 0.42, neck: -0.15 },
-  armFwd: 0.15, elbow: -0.35,
+  // DE QUATRO (dono, 2026-11-21: "ele deveria estar mais quadrúpede", "com as 4 patas no chão"): o tronco deitado e as
+  // garras da frente apoiadas no chão; a cabeça (a bocarra da frente) erguida para a presa
+  crouch: { hip: -0.85, knee: 1.35, chest: 0.85, neck: -0.85 },
   fireMult: 1.5,
   attacks: {
     claw: { windup: 0.38, active: 0.14, recovery: 0.45, range: 3.6, arc: 150, damage: 36, cd: 1.4, knockback: 4.5 },
@@ -491,7 +490,33 @@ export class Quibungo extends BloodZombie {
     return super.bob();
   }
 
+  // A LUA DE SANGUE (pve/kerberosInferno.js, só no Aniquilação): ele para, não apanha mais e DERRETE numa gosma; no
+  // fim some sem contar como abate (quem vem é o Kerberos, que nasce da gosma antes de ele sumir)
+  startMelt(time, onDone) {
+    if (!this.alive || this.state === 'die') return;
+    this.atk = null;
+    this.release && this.release(false);
+    this.meltTime = time;
+    this.onMelted = onDone;
+    this.setState('melt');
+    this.world.audio.play('fearGaze', { volume: 1, pitch: 0.25 });
+  }
+  hitTest(p, r) { return this.state !== 'melt' && super.hitTest(p, r); }
+
   update(dt) {
+    if (this.state === 'melt') {
+      if (!this.alive) return;
+      this.t += dt;
+      this.stateT += dt;
+      const k = Math.min(1, this.stateT / this.meltTime);
+      this.pose();
+      bloodMelt(this, k, this.restY(), QUIB_SCALE);
+      this.model.root.position.x = this.pos.x;
+      this.model.root.position.z = this.pos.z;
+      if (k >= 0.75 && this.onMelted) { const f = this.onMelted; this.onMelted = null; f(); }
+      if (k >= 1) this.dispose();
+      return;
+    }
     // o URRO: com metade da vida, para e ruge uma vez; dali em diante, mais rápido e com os golpes voltando antes
     if (this.alive && this.state === 'chase' && !this.enraged && this.hp < this.maxHp * this.cfg.enrage.at) {
       this.enraged = true;
@@ -609,6 +634,7 @@ export class Quibungo extends BloodZombie {
 
   // o FOGO queima mais
   hitBy(attacker, dmg, info) {
+    if (this.state === 'melt') return;
     if (info && info.fire && this.alive && this.state !== 'die') {
       dmg *= this.cfg.fireMult;
       this.world.fx.burst(new THREE.Vector3(this.pos.x, 2.4, this.pos.z), { count: 8, color: 0xff7a2a, speed: 2, up: 2.5, life: 0.5, size: 0.35 });
@@ -688,6 +714,231 @@ export class Quibungo extends BloodZombie {
       if (g2) g2.rotation.set(a2, 0, 0);
       if (g3) g3.rotation.set(a3, Math.sin(t * 2) * 0.2, 0);
     }
-    this.model.root.scale.setScalar(this.state === 'die' ? this.model.root.scale.x : QUIB_SCALE);
+    this.model.root.scale.setScalar(this.state === 'die' || this.state === 'melt' ? this.model.root.scale.x : QUIB_SCALE);
+  }
+}
+
+// ------------------------------------------------------------------ O KERBEROS (a 2ª forma do Quibungo no Aniquilação)
+// Hexatombe ep. 10 (wiki "Kerberos"): criatura de Sangue com mais de 3 m de altura e 7 de comprimento, SEIS patas
+// caninas, uma cauda enorme e TRÊS CABEÇAS (o verme dentado, a canina com sete dentes enormes, a insetoide com quatro
+// quelíceras). Os golpes seguem as habilidades da wiki: MORDIDA, DISPARO DE ESPINHOS, ATAQUE FLEXÍVEL (a cauda),
+// DEVORAR (a mordida cura) e DERRUBAR E DEVORAR (o bote). Dono, 2026-11-20: no Aniquilação, se o Quibungo demora a
+// morrer, a lua fica de sangue, chove sangue, ele derrete numa gosma e o Kerberos sai do corpo dele
+// (pve/kerberosInferno.js). PROPOSTA: todos os números, o tempo e a forma dos golpes.
+const KB_SCALE = 1.35;
+export const KERBEROS = {
+  name: 'KERBEROS', hp: 3400, duration: Infinity, speed: 5.2, radius: 1.9, height: 3.4,
+  element: 'sangue', fxColor: BLOOD, poolColor: 0x5a0008, noPool: true,
+  attacks: {
+    // as três cabeças mordem juntas; a mordida que pega DEVORA (cura o Kerberos)
+    bite: { windup: 0.42, active: 0.16, recovery: 0.5, range: 4.4, arc: 130, damage: 40, cd: 1.5, knockback: 3.5, devour: 0.03 },
+    // a cauda varre em volta (o ataque flexível)
+    tail: { windup: 0.55, active: 0.3, recovery: 0.6, range: 5.6, arc: 360, damage: 44, cd: 5.5, knockback: 7, knockdown: true },
+    // o DISPARO DE ESPINHOS: as costas se eriçam e uma rajada de espinhos sai em leque
+    spikes: { windup: 0.7, active: 0.3, recovery: 0.7, range: 16, arc: 60, damage: 18, cd: 6, knockback: 1.5, volley: 7 },
+    // DERRUBAR E DEVORAR: o bote de longe; quem é pego cai e é mordido (cura)
+    pounce: { windup: 0.6, active: 0.45, recovery: 0.8, range: 3.6, arc: 160, damage: 62, cd: 8, knockback: 5, knockdown: true, dash: 19, devour: 0.05 },
+  },
+  firstCd: { bite: 0.4, tail: 3, spikes: 2.5, pounce: 1.5 },
+};
+
+export class Kerberos extends InkBeast {
+  configFor() { return KERBEROS; }
+  buildModel() {
+    this.kind = 'kerberos';
+    this.isMarionette = false;
+    this.isInkBeast = true;
+    this.giant = true;
+    this.bossBar = true;
+    this.barName = 'KERBEROS';
+    this.barOwner = '';
+    this.barStyle = 'blood';
+    this.spikes = [];
+    const m = buildNpcModel('kerberos', { outline: 0.014, noOutline: ['vein', 'fang', 'claw', 'gum', 'maw', 'spine', 'bone'] });
+    if (!m) {
+      const b = buildInkBeast('cao');
+      b.root.scale.setScalar(3);
+      return b;
+    }
+    const J = m.joint;
+    const opt = (n) => { try { return J(n); } catch { return null; } };
+    return {
+      root: m.root,
+      joints: {
+        body: J('body'), torso: J('torso'), tail: opt('tail'), tail2: opt('tail2'),
+        necks: ['L', 'C', 'R'].map((n) => opt('neck' + n)), jaws: ['L', 'C', 'R'].map((n) => opt('jaw' + n)),
+        legs: ['FL', 'FR', 'ML', 'MR', 'BL', 'BR'].map((n) => ({ hip: J('leg' + n), knee: J('knee' + n) })),
+      },
+    };
+  }
+  chooseTarget() { this.target = this.owner.opponent; }
+  restY() { return 0; }
+  bob() { return Math.abs(Math.sin(this.gait * 1.6)) * 0.08; }
+  stepSpeed(d) { return this.cfg.speed * (d > 7 ? 1.35 : 1); }
+  attackSound(name) { return name === 'tail' ? 'whip' : name === 'spikes' ? 'drain' : name === 'pounce' ? 'jump' : 'bloodClaw'; }
+
+  pickAttack(d) {
+    const c = this.cds;
+    const A = this.cfg.attacks;
+    if (d > 6 && d < 13 && c.pounce <= 0 && Math.random() < 0.6) return 'pounce';
+    if (d > 5 && d < A.spikes.range - 1 && c.spikes <= 0) return 'spikes';
+    if (d < A.tail.range - 0.4 && c.tail <= 0 && Math.random() < 0.35) return 'tail';
+    if (d < A.bite.range - 0.3 && c.bite <= 0) return 'bite';
+    return null;
+  }
+
+  // NASCE DA GOSMA do Quibungo: sobe do chão encolhido, se desdobrando, jorrando sangue
+  riseTime() { return 3.6; }
+  risePose(k) {
+    const root = this.model.root;
+    const e = 1 - (1 - k) * (1 - k);
+    root.position.set(this.pos.x, -2.4 * (1 - e), this.pos.z);
+    root.scale.setScalar(KB_SCALE * (0.35 + 0.65 * e));
+    root.rotation.y = this.yaw;
+    const W = this.world;
+    if (Math.random() < 0.6) W.fx.burst(new THREE.Vector3(this.pos.x + (Math.random() - 0.5) * 2, 0.4 + e * 2, this.pos.z + (Math.random() - 0.5) * 2), { count: 5, color: 0xa01018, speed: 3, up: 3, life: 0.7, size: 0.22, gravity: 9 });
+    if (k > 0.85 && !this.howled) {
+      this.howled = true;
+      W.audio.play('fearGaze', { volume: 1, pitch: 0.22 });
+      W.audio.play('drain', { volume: 0.9, pitch: 0.3 });
+      W.cameraRig && W.cameraRig.shake(0.55, 1.2);
+    }
+  }
+  vanishPose(k, restY) {
+    if (this.state !== 'die') { this.model.root.position.y = -k * 3; return; }
+    bloodMelt(this, k, restY, KB_SCALE);
+  }
+
+  strike(a, tg, d) {
+    if (a.volley) { this.fireSpikes(a, tg); return true; }
+    const hit = Marionette.prototype.strike.call(this, a, tg, d);
+    // DEVORAR: a mordida que pega cura (uma fração da vida máxima)
+    if (hit && a.devour && this.hp > 0) {
+      this.hp = Math.min(this.maxHp, this.hp + this.maxHp * a.devour);
+      this.world.fx.burst(new THREE.Vector3(this.pos.x, 2.4, this.pos.z), { count: 10, color: 0xff3040, speed: 2, up: 2, life: 0.6, size: 0.25 });
+      if (!this.devourWarned) { this.devourWarned = true; tg.notify && tg.notify('O KERBEROS DEVORA: ELE SE CURA', true); }
+    }
+    return hit;
+  }
+
+  // a rajada: espinhos de osso voando em leque (desviáveis; cada um acerta uma vez)
+  fireSpikes(a, tg) {
+    const W = this.world;
+    const from = new THREE.Vector3(this.pos.x, 2.9, this.pos.z);
+    const aim = tg.chestPos();
+    const base = yawTo(this.pos, aim);
+    if (!Kerberos.spikeGeo) {
+      Kerberos.spikeGeo = new THREE.ConeGeometry(0.09, 0.9, 6).rotateX(Math.PI / 2);
+      Kerberos.spikeMat = new THREE.MeshToonMaterial({ color: 0xd8c4a0, emissive: 0x3a0a08 });
+    }
+    for (let i = 0; i < a.volley; i++) {
+      const yaw = base + (i / (a.volley - 1) - 0.5) * (a.arc * DEG);
+      const dir = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
+      dir.y = (aim.y - from.y) / Math.max(2, distXZ(from, aim));
+      dir.normalize();
+      const mesh = new THREE.Mesh(Kerberos.spikeGeo, Kerberos.spikeMat);
+      mesh.position.copy(from);
+      mesh.lookAt(from.clone().add(dir));
+      W.scene.add(mesh);
+      this.spikes.push({ mesh, dir, t: 0, a, tg });
+    }
+    W.audio.play('swing', { volume: 0.8, pitch: 0.5 });
+  }
+
+  updateSpikes(dt) {
+    const W = this.world;
+    for (const s of this.spikes) {
+      s.t += dt;
+      s.mesh.position.addScaledVector(s.dir, 26 * dt);
+      const tg = s.tg;
+      if (!s.dead && tg && tg.state !== 'ko' && !tg.isInvulnerable() && s.mesh.position.distanceTo(tg.chestPos()) < 0.8) {
+        s.dead = true;
+        applyHit(W, this.owner, tg, { damage: s.a.damage, kind: 'ability', element: 'sangue', knockback: s.a.knockback, dir: s.dir.clone().setY(0).normalize(), sound: 'bladeHit', color: BLOOD, scale: 1 });
+      }
+      if (s.t > 0.9 || s.mesh.position.y < 0) s.dead = true;
+      if (s.dead) W.scene.remove(s.mesh);
+    }
+    this.spikes = this.spikes.filter((s) => !s.dead);
+  }
+
+  update(dt) {
+    if (this.spikes.length) this.updateSpikes(dt);
+    return super.update(dt);
+  }
+
+  dispose() {
+    for (const s of this.spikes) this.world.scene.remove(s.mesh);
+    this.spikes = [];
+    super.dispose();
+  }
+
+  swingFx(a) {
+    const W = this.world;
+    if (a.volley) {
+      W.fx.burst(new THREE.Vector3(this.pos.x, 3, this.pos.z), { count: 14, color: 0xd8c4a0, speed: 3, up: 2, life: 0.4, size: 0.15 });
+      return;
+    }
+    if (a.name === 'tail') {
+      W.fx.ring(new THREE.Vector3(this.pos.x, 0.6, this.pos.z), { color: 0xc0202c, radius: a.range, life: 0.35, inner: 0.85 });
+      return;
+    }
+    if (a.name === 'pounce') {
+      W.cameraRig && W.cameraRig.shake(0.35, 0.3);
+      W.fx.burst(new THREE.Vector3(this.pos.x, 0.3, this.pos.z), { count: 16, color: DUST, kind: 'smoke', speed: 4, up: 0.6, life: 0.7, size: 0.9 });
+    }
+    W.fx.slash(new THREE.Vector3(this.pos.x, 1.8, this.pos.z), this.yaw, { color: 0xd02030, radius: a.range, arc: 2.2, life: 0.22, width: 0.45, roll: -0.25 });
+  }
+
+  // galope de SEIS patas (tripé: FL+MR+BL com FR+ML+BR), as três cabeças balançando cada uma no seu ritmo
+  pose() {
+    const J = this.model.joints;
+    const root = this.model.root;
+    root.rotation.y = this.yaw;
+    if (this.state !== 'rise' && this.state !== 'die') root.scale.setScalar(KB_SCALE);
+    if (!J.necks) { this.updateFlash(); return; } // o modelo provisório (sem o .glb)
+    const t = this.t;
+    const walk = this.state === 'chase' ? 1 : 0;
+    const ph = this.gait * 1.6;
+    let neckX = 0, jaw = 0.15 + Math.abs(Math.sin(t * 5)) * 0.1, torsoX = 0, tailX = Math.sin(t * 2.1) * 0.12;
+    const tailY = Math.sin(t * 1.6) * 0.35;
+    const a = this.state === 'attack' ? this.atk : null;
+    if (a) {
+      const st = this.stateT;
+      const k = Math.min(1, st / a.windup);
+      const after = st > a.windup;
+      const end = st > a.windup + a.active;
+      if (a.name === 'bite' || a.name === 'pounce') {
+        neckX = after && !end ? 0.35 : -0.35 * k;
+        jaw = after && !end ? 0.05 : 0.9 * k;
+        if (a.name === 'pounce') torsoX = after ? 0.1 : -0.25 * k;
+      } else if (a.name === 'tail') {
+        const s = Math.min(1, Math.max(0, (st - a.windup * 0.6) / (a.active + a.windup * 0.4)));
+        root.rotation.y = this.yaw + s * Math.PI * 2;
+        tailX = -0.3;
+      } else if (a.name === 'spikes') {
+        torsoX = -0.15 * k;
+        neckX = -0.45 * k;
+        jaw = 0.8 * k;
+        if (!after && Math.random() < 0.4) this.world.fx.burst(new THREE.Vector3(this.pos.x, 3, this.pos.z), { count: 2, color: 0xa01018, speed: 1, up: 2, life: 0.4, size: 0.12 });
+      }
+    }
+    if (this.state === 'rise') { neckX = -0.6; jaw = 0.9 + Math.sin(t * 30) * 0.1; }
+    const tremble = Math.sin(t * 31) * 0.012;
+    J.torso.rotation.set(torsoX + tremble, 0, Math.sin(ph) * 0.03 * walk);
+    J.necks.forEach((n, i) => {
+      if (n) n.rotation.set(neckX + Math.sin(t * (2.1 + i * 0.7) + i) * 0.1, Math.sin(t * (1.3 + i * 0.4) + i * 2) * 0.18, 0);
+    });
+    const [jL, jC, jR] = J.jaws;
+    if (jC) jC.rotation.x = jaw;
+    if (jL) jL.scale.setScalar(0.8 + jaw * 0.45); // o anel de dentes do verme abre
+    if (jR) { jR.scale.set(1 + jaw * 0.6, 1 + jaw * 0.4, 1); jR.rotation.z = Math.sin(t * 7) * 0.15; } // as quelíceras abrem
+    if (J.tail) J.tail.rotation.set(tailX, tailY, 0);
+    if (J.tail2) J.tail2.rotation.set(Math.sin(t * 2.6 + 1) * 0.2, tailY * 0.8, 0);
+    J.legs.forEach((l, i) => {
+      const s = Math.sin(ph + ([0, 3, 4].includes(i) ? 0 : Math.PI));
+      l.hip.rotation.x = s * 0.5 * walk;
+      if (l.knee) l.knee.rotation.x = Math.max(0, -s) * 0.6 * walk * (i < 4 ? -1 : 1);
+    });
+    this.updateFlash();
   }
 }
