@@ -41,7 +41,7 @@ export class KerberosInferno {
     if (this.stage === 'wait') {
       // só conta enquanto ele luta (a entrada e a morte não contam); morreu antes do tempo, acabou
       if (!q.alive || q.state === 'die') { this.stage = 'off'; return; }
-      if (q.state === 'chase' || q.state === 'attack') this.t += dt;
+      if (q.state === 'chase' || q.state === 'attack' || q.state === 'charge' || q.state === 'dizzy') this.t += dt;
       if (this.t >= INFERNO.trigger) this.begin();
       return;
     }

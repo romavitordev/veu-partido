@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.43.0';
+export const VERSION = '5.44.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.44.0',
+    date: '2026-11-21',
+    title: 'A Investida do Quibungo',
+    items: [
+      'Quibungo (chefe do Sertão): quem fica colado nele por muito tempo é ARREMESSADO para longe (no Aniquilação, mais cedo).',
+      'A INVESTIDA do Quibungo: ele marca o caminho no chão e atravessa o mapa até a borda; quem desvia o faz bater a cabeça e ficar ZONZO, apanhando mais.',
+      'O Quibungo não foge mais (nem aparece "A COROA DE ESPINHOS SOBREVIVEU" no meio da luta): se demorar, no Aniquilação, ele derrete e vira o Kerberos.',
+      'Aniquilação: o Quibungo (e o Kerberos que nasce dele) tem mais vida e bate mais forte.',
+    ],
+  },
   {
     v: '5.43.0',
     date: '2026-11-21',

@@ -118,6 +118,9 @@ const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobr
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado
+// o QUIBUNGO no Aniquilação (por cima da escala da dificuldade): +40% de vida e +25% de dano (vale para o Kerberos que
+// nasce dele, na mesma onda). PROPOSTA.
+const QUIB_HARD = { hp: 1.4, dealt: 1.25 };
 const COPIA_HP = 160;
 const COPIA_DMG = 0.45;
 const LOCK_RANGE = 15; // até onde a mira trava num inimigo
@@ -1228,8 +1231,12 @@ export class Dungeon {
     if (kind === 'beastBoss') {
       // o chefe-BICHO (o Quibungo no Sertão): sobe pela trilha sozinho; caiu, a fase acaba como a tempestade
       const sp = S.M.spawn || { x: 0, z: -11 };
-      const z = this.spawnFoe('quibungo', new THREE.Vector3(sp.x, 0, sp.z));
+      // MAIS FORTE NO ANIQUILAÇÃO (dono, 2026-11-21: "Quibungo está fácil mesmo no modo aniquilação"): mais vida, bate
+      // mais (cpuEdge, abaixo), arremessa antes e a investida dói mais (sertaoBeasts.js `hard`). PROPOSTA: os números.
+      const hard = this.run.difficulty === 'annihilation';
+      const z = this.spawnFoe('quibungo', new THREE.Vector3(sp.x, 0, sp.z), { hpMul: hard ? QUIB_HARD.hp : 1 });
       z.giant = true;
+      z.hard = hard;
       // no ANIQUILAÇÃO, demorou a matar: lua de sangue, chuva de sangue, ele derrete e nasce o KERBEROS
       if (this.inferno) this.inferno.dispose();
       this.inferno = this.run.difficulty === 'annihilation' ? new KerberosInferno(this, z) : null;
@@ -1284,7 +1291,7 @@ export class Dungeon {
       this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
     }
     // na ÁRVORE quem joga apanha um pouco mais (a porta não se cura mais; pve/arvore.js TREE.playerDmg)
-    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT * (this.tree ? TREE.playerDmg : 1), taken: 1 };
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT * (this.tree ? TREE.playerDmg : 1) * (kind === 'beastBoss' && this.run.difficulty === 'annihilation' ? QUIB_HARD.dealt : 1), taken: 1 };
     this.hudAdd('pve-noboss'); // a barra de cima é do chefe: o dono escondido dos zumbis não aparece (os zumbis têm a própria)
     this.waveObjective();
   }

@@ -6,6 +6,7 @@ import { yawTo, angleDiff, DEG, forwardFromYaw, distXZ } from '../core/util.js';
 import { buildNpcModel } from '../models/npcRig.js';
 import { buildInkBeast } from '../models/beasts.js';
 import { buildBloodZombie } from '../models/bloodZombie.js';
+import { resolveBody } from './positioning.js';
 
 // ================================================================== O BESTIÁRIO DO SERTÃO DO QUIBUNGO
 // Hexatombe ep. 5 (wiki "Araras Devoradas", "Felinos Devorados", "Quibungo"): os animais da Coroa de Espinhos tomados
@@ -398,10 +399,25 @@ BLOOD_ZOMBIE.quibungo = {
     tongue: { windup: 0.55, active: 0.25, recovery: 0.55, range: 11, arc: 50, damage: 22, cd: 4.5, knockback: 0, pull: 7 },
     leap: { windup: 0.7, active: 0.55, recovery: 0.75, range: 3.6, arc: 180, damage: 48, cd: 9, knockback: 7, knockdown: true, dash: 15 },
     roar: { windup: 0.3, active: 1.2, recovery: 0.4, range: 99, arc: 360, damage: 0, cd: 999, knockback: 0, self: true },
+    // o ARREMESSO (dono, 2026-11-21: "ainda é possivel ficar spammando ataque proximo dele. Ele deveria arremessar o
+    // player pra longe caso ele ficasse proximo por muito tempo"): colado nele por QUIB_TOSS.after s, ele agarra com os
+    // quatro braços e joga longe (em volta toda: não adianta ficar atrás)
+    toss: { windup: 0.32, active: 0.16, recovery: 0.7, range: 4.6, arc: 360, damage: 30, cd: 0, knockback: 22, knockdown: true },
   },
-  firstCd: { claw: 0.5, flurry: 2.5, slam: 3.5, tongue: 1.2, leap: 4, roar: 999 },
+  firstCd: { claw: 0.5, flurry: 2.5, slam: 3.5, tongue: 1.2, leap: 4, roar: 999, toss: 0 },
   enrage: { at: 0.5, speed: 1.3, cd: 0.7 },
 };
+// quanto tempo colado nele até o ARREMESSO (no Aniquilação, menos) e o que conta como "colado". PROPOSTA.
+const QUIB_TOSS = { close: 4.2, after: 2.6, afterHard: 1.7 };
+// o aviso para quem está lutando com ele (o jogador e, no coop, o outro)
+function tgNotify(q, text) {
+  for (const f of q.world.fighters) if (f !== q.owner && !f.lurking && f.notify) f.notify(text, true);
+}
+// A INVESTIDA (dono: "ele dar uma investida que atravessa o mapa até a outra ponta e desse muito dano, mas se o player
+// desviar, ele bate a cabeça e fica zonzo, dando abertura pra ataca-lo"): abaixa a cabeça e marca o caminho no chão
+// (preparo), dispara em linha reta até a borda do mapa atropelando quem estiver na frente; se não pegou ninguém, BATE A
+// CABEÇA na borda e fica ZONZO (apanha mais). PROPOSTA: todos os números.
+const QUIB_CHARGE = { windup: 1.15, aimUntil: 0.8, speed: 26, maxDist: 44, damage: 80, damageHard: 100, knockback: 13, cd: 12, first: 6, minDist: 5, dizzy: 3.4, dizzyTaken: 1.35, after: 0.8 };
 
 export class Quibungo extends BloodZombie {
   configFor() { return BLOOD_ZOMBIE.quibungo; }
@@ -410,6 +426,7 @@ export class Quibungo extends BloodZombie {
     this.isMarionette = false;
     this.giant = true;
     this.bossBar = true;
+    this.noLeave = true; // o chefe não vai embora (npcs.js)
     // só "QUIBUNGO" (dono, 2026-11-20: "São coisas diferentes era pra ser apenas 'Quibungo'" — a Coroa é o lugar)
     this.barName = 'QUIBUNGO';
     this.barOwner = '';
@@ -474,6 +491,7 @@ export class Quibungo extends BloodZombie {
     const c = this.cds;
     const A = this.cfg.attacks;
     if (d > 4 && d < A.tongue.range - 0.5 && c.tongue <= 0) return 'tongue';
+    if ((this.closeT || 0) >= (this.hard ? QUIB_TOSS.afterHard : QUIB_TOSS.after) && d < A.toss.range) { this.closeT = 0; return 'toss'; }
     if (d > 6.5 && d < 13 && c.leap <= 0 && Math.random() < 0.5) return 'leap';
     if (d > 2.2 && c.tongue <= 0 && Math.random() < 0.3) return 'tongue';
     if (d < 3.6 && c.slam <= 0 && Math.random() < 0.35) return 'slam';
@@ -481,7 +499,7 @@ export class Quibungo extends BloodZombie {
     if (d < A.claw.range - 0.3 && c.claw <= 0) return 'claw';
     return null;
   }
-  attackSound(name) { return name === 'tongue' ? 'whip' : name === 'leap' ? 'jump' : name === 'roar' ? 'fearGaze' : name === 'claw' ? 'swing' : 'bloodClaw'; }
+  attackSound(name) { return name === 'toss' ? 'heavyPunch' : name === 'tongue' ? 'whip' : name === 'leap' ? 'jump' : name === 'roar' ? 'fearGaze' : name === 'claw' ? 'swing' : 'bloodClaw'; }
   stepSpeed(d) { return this.cfg.speed * (this.enraged ? this.cfg.enrage.speed : 1) * (d > 7 ? 1.25 : 1); }
   // no SALTO o corpo sobe num arco
   bob() {
@@ -498,12 +516,15 @@ export class Quibungo extends BloodZombie {
     this.release && this.release(false);
     this.meltTime = time;
     this.onMelted = onDone;
+    this.charge = null;
+    this.clearChargeMark();
     this.setState('melt');
     this.world.audio.play('fearGaze', { volume: 1, pitch: 0.25 });
   }
   hitTest(p, r) { return this.state !== 'melt' && super.hitTest(p, r); }
 
   update(dt) {
+    if (this.state === 'charge' || this.state === 'dizzy') { this.updateCharge(dt); this.updateTongue(); return; }
     if (this.state === 'melt') {
       if (!this.alive) return;
       this.t += dt;
@@ -525,9 +546,155 @@ export class Quibungo extends BloodZombie {
       this.world.audio.play('fearGaze', { volume: 1, pitch: 0.28 });
     }
     if (this.enraged && this.state === 'chase') for (const k in this.cds) this.cds[k] = Math.max(0, this.cds[k] - dt * (1 / this.cfg.enrage.cd - 1));
+    // COLADO NELE: o tempo que o alvo passa perto enche a conta do ARREMESSO (longe, ela esvazia)
+    const tg = this.target;
+    if (this.alive && tg && tg.state !== 'ko' && (this.state === 'chase' || this.state === 'attack')) {
+      const d = distXZ(this.pos, tg.pos);
+      this.closeT = d < QUIB_TOSS.close ? (this.closeT || 0) + dt : Math.max(0, (this.closeT || 0) - dt * 1.5);
+      // a INVESTIDA: fora de um golpe, com o alvo a alguns metros
+      if (this.chargeCd === undefined) this.chargeCd = QUIB_CHARGE.first;
+      this.chargeCd -= dt * (this.enraged ? 1.4 : 1);
+      if (this.state === 'chase' && this.chargeCd <= 0 && d > QUIB_CHARGE.minDist && tg.state !== 'downed' && !this.world.cinematic) { this.startCharge(); return; }
+    }
     const r = super.update(dt);
     if (this.alive) this.updateTongue();
     return r;
+  }
+
+  // ---- A INVESTIDA e o ZONZO
+  startCharge() {
+    this.atk = null;
+    this.closeT = 0;
+    this.charge = { dir: new THREE.Vector3(), gone: 0, go: false, hit: [], hitAny: false, endT: null };
+    this.setState('charge');
+    this.world.audio.play('fearGaze', { volume: 0.9, pitch: 0.32 });
+    tgNotify(this, 'O QUIBUNGO VAI INVESTIR!');
+  }
+
+  // o caminho até a borda (onde ele vai bater): anda em passos pelo mapa até a parede ou o limite
+  chargeLength(dir) {
+    const p = this.pos.clone();
+    let L = 0;
+    for (; L < QUIB_CHARGE.maxDist; L += 0.8) {
+      const nx = p.x + dir.x * 0.8, nz = p.z + dir.z * 0.8;
+      p.set(nx, 0, nz);
+      resolveBody(this.bounds, p, this.radius);
+      if ((p.x - nx) * (p.x - nx) + (p.z - nz) * (p.z - nz) > 0.09) break;
+    }
+    return Math.max(2, L);
+  }
+
+  // a faixa vermelha no chão: o aviso de por onde ele vai passar
+  updateChargeMark(len) {
+    if (!this.chargeMark) {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).translate(0, 0.5, 0), new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: 0, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+      m.rotation.order = 'YXZ';
+      m.renderOrder = 4;
+      this.world.scene.add(m);
+      this.chargeMark = m;
+    }
+    const m = this.chargeMark;
+    m.position.set(this.pos.x, 0.06, this.pos.z);
+    m.rotation.set(Math.PI / 2, this.yaw, 0);
+    m.scale.set(this.radius * 2.2, len, 1);
+    m.material.opacity = 0.25 + 0.2 * Math.abs(Math.sin(this.t * 14));
+    m.visible = true;
+  }
+
+  clearChargeMark() {
+    if (!this.chargeMark) return;
+    this.world.scene.remove(this.chargeMark);
+    this.chargeMark.geometry.dispose();
+    this.chargeMark.material.dispose();
+    this.chargeMark = null;
+  }
+
+  updateCharge(dt) {
+    const C = QUIB_CHARGE;
+    const w = this.world;
+    const ch = this.charge;
+    this.t += dt;
+    this.stateT += dt;
+    for (const k in this.cds) this.cds[k] = Math.max(0, this.cds[k] - dt);
+    if (this.flash > 0) this.flash -= dt;
+    const px = this.pos.x, pz = this.pos.z;
+    if (this.state === 'charge' && ch) {
+      if (!ch.go) {
+        // o PREPARO: mira no alvo, raspa o chão e marca o caminho; nos últimos instantes a mira trava (dá para sair)
+        const tg = this.target;
+        if (tg && this.stateT < C.aimUntil) this.yaw = yawTo(this.pos, tg.pos);
+        ch.dir.set(Math.sin(this.yaw), 0, Math.cos(this.yaw));
+        this.updateChargeMark(this.chargeLength(ch.dir));
+        if (Math.random() < 0.35) w.fx.burst(new THREE.Vector3(this.pos.x - ch.dir.x * 1.5, 0.2, this.pos.z - ch.dir.z * 1.5), { count: 3, color: DUST, kind: 'smoke', speed: 2, up: 0.6, life: 0.5, size: 0.6 });
+        if (this.stateT >= C.windup) {
+          ch.go = true;
+          this.clearChargeMark();
+          w.audio.play('dash', { volume: 1, pitch: 0.5 });
+          w.audio.play('fearGaze', { volume: 0.8, pitch: 0.4 });
+          w.cameraRig && w.cameraRig.shake(0.3, 0.4);
+        }
+      } else if (ch.endT === null) {
+        // a CORRIDA: reto pelo mapa; atropela quem estiver no caminho e segue
+        const step = C.speed * dt;
+        this.pos.x += ch.dir.x * step;
+        this.pos.z += ch.dir.z * step;
+        resolveBody(this.bounds, this.pos, this.radius);
+        const adv = (this.pos.x - px) * ch.dir.x + (this.pos.z - pz) * ch.dir.z;
+        ch.gone += Math.max(0, adv);
+        for (const f of w.fighters) {
+          if (f === this.owner || f.lurking || f.state === 'ko' || ch.hit.includes(f) || f.visible === false) continue;
+          if (distXZ(f.pos, this.pos) > this.radius + (f.radius || 0.4) + 0.5 || Math.abs(f.pos.y - this.pos.y) > 2.6) continue;
+          ch.hit.push(f);
+          if (f.isInvulnerable && f.isInvulnerable()) continue; // desviou (esquiva): não conta como pego
+          ch.hitAny = true;
+          const side = new THREE.Vector3(f.pos.x - this.pos.x, 0, f.pos.z - this.pos.z);
+          const dir = ch.dir.clone().multiplyScalar(1.5).add(side.normalize().multiplyScalar(0.6)).normalize();
+          applyHit(w, this.owner, f, { damage: this.hard ? C.damageHard : C.damage, kind: 'ability', element: 'sangue', knockback: C.knockback, launch: true, dir, sound: 'heavyPunch', color: 0xd02030, scale: 2 });
+          f.notify && f.notify('A INVESTIDA DO QUIBUNGO', true);
+          w.cameraRig && w.cameraRig.shake(0.45, 0.4);
+        }
+        if (Math.random() < 0.6) w.fx.burst(new THREE.Vector3(this.pos.x, 0.25, this.pos.z), { count: 3, color: DUST, kind: 'smoke', speed: 2.5, up: 0.8, life: 0.6, size: 0.8 });
+        const wall = adv < step * 0.5;
+        if (wall || ch.gone >= C.maxDist) {
+          ch.endT = this.stateT;
+          if (!ch.hitAny) this.bonk(wall);
+        }
+      } else if (this.stateT - ch.endT >= C.after) {
+        // pegou alguém: só freia e volta a caçar
+        this.charge = null;
+        this.chargeCd = C.cd;
+        this.setState('chase');
+      }
+    } else if (this.state === 'dizzy') {
+      // ZONZO: cambaleia, as estrelas giram em volta da cabeça; apanha mais (hitBy)
+      if (Math.random() < 0.3) {
+        const a = this.t * 6 + Math.random();
+        w.fx.burst(new THREE.Vector3(this.pos.x + Math.sin(a) * 1.4, this.restY() + this.height * 0.75, this.pos.z + Math.cos(a) * 1.4), { count: 1, color: 0xffe27a, speed: 0.4, up: 0.3, life: 0.5, size: 0.18 });
+      }
+      if (this.stateT >= C.dizzy) {
+        this.charge = null;
+        this.chargeCd = C.cd;
+        this.setState('chase');
+      }
+    } else {
+      this.setState('chase');
+    }
+    this.gait += Math.hypot(this.pos.x - px, this.pos.z - pz);
+    this.model.root.position.set(this.pos.x, this.restY(), this.pos.z);
+    this.pose();
+  }
+
+  // BATEU A CABEÇA na borda: poeira, o tranco e fica ZONZO
+  bonk(wall) {
+    const w = this.world;
+    const f = forwardFromYaw(this.yaw, new THREE.Vector3());
+    const at = new THREE.Vector3(this.pos.x + f.x * this.radius, 2.2, this.pos.z + f.z * this.radius);
+    w.fx.burst(at, { count: 26, color: DUST, kind: 'smoke', speed: 4, up: 1.5, life: 0.8, size: 1 });
+    w.fx.burst(at, { count: 18, color: 0xffe27a, speed: 5, up: 2.5, life: 0.5, size: 0.14 });
+    w.audio.play(wall ? 'explosion' : 'heavyPunch', { volume: 0.8, pitch: 0.6 });
+    w.cameraRig && w.cameraRig.shake(0.5, 0.5);
+    this.setState('dizzy');
+    tgNotify(this, 'O QUIBUNGO ESTÁ ZONZO! ATAQUE!');
   }
 
   // A LÍNGUA DO ATAQUE: um tubo de carne que sai da bocarra das costas, sobe por cima dele (o aviso), estica até o alvo
@@ -583,6 +750,7 @@ export class Quibungo extends BloodZombie {
   }
 
   dispose() {
+    this.clearChargeMark();
     if (this.lash) {
       this.world.scene.remove(this.lash);
       this.lash.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
@@ -600,6 +768,16 @@ export class Quibungo extends BloodZombie {
       W.fx.ring(new THREE.Vector3(this.pos.x, 0.1, this.pos.z), { color: 0xc0202c, radius: 7, life: 0.8, inner: 0.85 });
       this.owner.notify && this.owner.notify('O QUIBUNGO ENFURECEU', true);
       tg && tg.notify && tg.notify('O QUIBUNGO ENFURECEU', true);
+      return true;
+    }
+    if (a.name === 'toss') {
+      // o ARREMESSO: joga para LONGE dele (para fora, em qualquer lado), num arco alto — o lançamento baixo do golpe
+      // comum (lowLaunch) mal tirava o alvo do lugar
+      if (d - tg.radius > a.range || Math.abs(tg.pos.y - this.pos.y) > 2.6 || tg.isInvulnerable()) return true;
+      const out = new THREE.Vector3(tg.pos.x - this.pos.x, 0, tg.pos.z - this.pos.z);
+      if (out.lengthSq() < 1e-4) forwardFromYaw(this.yaw, out);
+      applyHit(this.world, this.owner, tg, { damage: a.damage, kind: 'ability', element: 'sangue', knockback: a.knockback, launch: true, dir: out.normalize(), sound: 'heavyPunch', color: 0xd02030, scale: 1.8 });
+      tg.notify && tg.notify('O QUIBUNGO TE ARREMESSOU', true);
       return true;
     }
     if (a.pull) {
@@ -621,6 +799,11 @@ export class Quibungo extends BloodZombie {
     const W = this.world;
     if (a.self) return;
     if (a.pull) return; // a língua é uma peça de verdade (updateTongue)
+    if (a.name === 'toss') {
+      W.cameraRig && W.cameraRig.shake(0.35, 0.3);
+      W.fx.ring(new THREE.Vector3(this.pos.x, 0.08, this.pos.z), { color: 0xc0202c, radius: a.range, life: 0.4, inner: 0.75 });
+      return;
+    }
     if (a.name === 'slam' || a.name === 'leap') {
       W.cameraRig && W.cameraRig.shake(0.4, 0.35);
       W.fx.ring(new THREE.Vector3(this.pos.x, 0.08, this.pos.z), { color: DUST, radius: a.range + 0.6, life: 0.5, inner: 0.7 });
@@ -635,6 +818,7 @@ export class Quibungo extends BloodZombie {
   // o FOGO queima mais
   hitBy(attacker, dmg, info) {
     if (this.state === 'melt') return;
+    if (this.state === 'dizzy') dmg *= QUIB_CHARGE.dizzyTaken; // ZONZO: a abertura
     if (info && info.fire && this.alive && this.state !== 'die') {
       dmg *= this.cfg.fireMult;
       this.world.fx.burst(new THREE.Vector3(this.pos.x, 2.4, this.pos.z), { count: 8, color: 0xff7a2a, speed: 2, up: 2.5, life: 0.5, size: 0.35 });
@@ -692,6 +876,29 @@ export class Quibungo extends BloodZombie {
       l2 = [armBase - 0.3 * roar, 0, 0.45 + 0.9 * roar];
       r2 = [armBase - 0.3 * roar, 0, -0.45 - 0.9 * roar];
       if (J.jaw) J.jaw.rotation.x = 0.2 + 0.8 * roar;
+    }
+    // a INVESTIDA: cabeça baixa no preparo, a corrida a galope; ZONZO: a cabeça e o corpo balançam
+    if (this.state === 'charge' && this.charge) {
+      const ch = this.charge;
+      if (!ch.go) { J.chest.rotation.x += 0.25; J.neck.rotation.x += 0.45; }
+      else if (ch.endT === null) {
+        const s1 = Math.sin(this.gait * 1.6);
+        for (const [i, l] of J.legs.entries()) l.hip.rotation.x += (i ? -s1 : s1) * 0.6;
+        J.armL.sh.rotation.x += s1 * 0.6;
+        J.armR.sh.rotation.x -= s1 * 0.6;
+        l2 = [l2[0] - s1 * 0.5, l2[1], l2[2]];
+        r2 = [r2[0] + s1 * 0.5, r2[1], r2[2]];
+        J.neck.rotation.x += 0.35;
+      }
+    } else if (this.state === 'dizzy') {
+      const k = Math.min(1, this.stateT / 0.25);
+      J.neck.rotation.z = Math.sin(t * 5) * 0.35 * k;
+      J.neck.rotation.x += 0.3 * k;
+      this.model.root.rotation.z = Math.sin(t * 3.2) * 0.07 * k;
+      if (J.jaw) J.jaw.rotation.x = 0.45;
+    } else {
+      if (this.model.root.rotation.z) this.model.root.rotation.z = 0;
+      J.neck.rotation.z = 0;
     }
     J.armL2.sh.rotation.set(l2[0], l2[1], l2[2]);
     J.armR2.sh.rotation.set(r2[0], r2[1], r2[2]);
@@ -751,6 +958,7 @@ export class Kerberos extends InkBeast {
     this.giant = true;
     this.bossBar = true;
     this.barName = 'KERBEROS';
+    this.noLeave = true;
     this.barOwner = '';
     this.barStyle = 'blood';
     this.spikes = [];

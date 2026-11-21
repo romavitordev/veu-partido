@@ -1,5 +1,17 @@
 # Changelog
 
+## v5.44.0 — A Investida do Quibungo
+
+### Adicionado
+- A INVESTIDA do Quibungo: ele abaixa a cabeça, marca o caminho com uma faixa vermelha no chão e dispara em linha reta até a borda do mapa, atropelando quem estiver na frente (muito dano). Quem desvia (sai da linha ou esquiva) o faz bater a cabeça na borda: ele fica ZONZO por uns 3 segundos e leva 35% mais dano.
+- O ARREMESSO: ficar colado no Quibungo batendo sem parar não funciona mais. Depois de uns 2,6 s perto dele (1,7 s no Aniquilação), ele agarra com os quatro braços e joga quem estiver em volta para longe.
+
+### Corrigido
+- O Quibungo podia ir embora no meio da luta, e a fase acabava com "A COROA DE ESPINHOS SOBREVIVEU". O chefe (e o Kerberos) não vai mais embora: só cai lutando. No Aniquilação, se a luta demorar, ele derrete na lua de sangue e vira o Kerberos.
+
+### Alterado
+- Aniquilação: o Quibungo tem 40% mais vida e bate 25% mais forte (vale também para o Kerberos que nasce dele).
+
 ## v5.43.0 — A Horda na Árvore Anciã
 
 ### Alterado

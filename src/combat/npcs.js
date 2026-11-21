@@ -359,7 +359,9 @@ export class Marionette {
     const J = this.model.joints;
     const root = this.model.root;
     const restY = this.restY();
-    if (this.state !== 'leave' && this.state !== 'die' && (this.t >= this.life || this.owner.state === 'ko')) {
+    // o CHEFE (o Quibungo e o Kerberos: noLeave) nunca vai embora sozinho — só cai lutando (dono, 2026-11-21: "ele fugiu
+    // antes de morrer e apareceu A COROA DE ESPINHOS SOBREVIVEU não tem logica isso")
+    if (!this.noLeave && this.state !== 'leave' && this.state !== 'die' && (this.t >= this.life || this.owner.state === 'ko')) {
       this.release(false);
       this.setState('leave');
       w.audio.play('drain');
