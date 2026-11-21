@@ -6,6 +6,7 @@
 import { TREE } from './upgrades.js';
 import { treeCoinCost, treeSpent } from './save.js';
 import { AGHATA_LINES, pickLine } from './aghataShop.js';
+import { hoverIndex } from '../ui/hover.js';
 
 const COLS = 4;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -55,6 +56,7 @@ export class PveTreeScreen {
       if (i === this.index || i >= TREE.length) this.clicked = i;
       else { this.index = i; this.audio?.play('select'); this.render(); }
     }));
+    el.querySelectorAll('[data-i]').forEach((b) => { if (b.dataset.i !== 'buy') hoverIndex(this, b, Number(b.dataset.i)); });
     this.render();
   }
 

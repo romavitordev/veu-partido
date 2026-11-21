@@ -48,6 +48,7 @@ const BLENDER_MODELS = {
   degolificada: { url: 'models/degolificada.glb', props: addDegolificadaProps }, // OUTRO LADO: a chefe da Escola Nostradamus (jogável no modo de luta desde 2026-11-06)
   espreitador: { url: 'models/espreitador.glb', props: addEspreitadorProps }, // OUTRO LADO: o chefe da Mansão (jogável no modo de luta desde 2026-11-06) // Força D: a florista (o canivete na mão, a balestra no □, o Orpheu no ombro)
   dara: { url: 'models/dara.glb', props: addDaraProps }, // Os Cinco: a médica de campo (lanterna, bolsa e walkie-talkie no modelo)
+  quibungo: { url: 'models/quibungo.glb', props: null }, // o Quibungo jogável (a escultura do chefe no esqueleto de lutador: tools/blender/char_quibungo.py)
   carnical: { url: 'models/carnical.glb', props: null }, // o Carniçal jogável (garras no modelo); o NPC é public/npcs/carnical.glb
   juan: { url: 'models/juan.glb', props: addJuanProps },
   diabo: { url: 'models/diabo.glb', props: null }, // Portador do Trono (garras)

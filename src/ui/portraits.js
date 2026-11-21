@@ -49,16 +49,31 @@ export function renderPortraits(roster, renderer, { w = 300, h = 400, anim: anim
       cam.updateProjectionMatrix();
       const rig = buildModel(def.model);
       try {
+        const P = def.portrait; // a POSE própria do retrato (o Quibungo: de lado, curvado como um tigre, encarando)
         const anim = new Animator(rig, def.anims);
-        anim.play(animName, { blend: 0 });
-        anim.update(animTime);
-        rig.root.rotation.y = turn;
+        anim.play((P && P.anim) || animName, { blend: 0 });
+        anim.update(P && P.animTime != null ? P.animTime : animTime);
+        rig.root.rotation.y = P && P.turn != null ? P.turn : turn;
         scene.add(rig.root);
+        if (P && P.bones) posePortrait(rig, P.bones);
+        if (P && P.fit) {
+          // enquadra o corpo inteiro pela caixa do modelo (a língua erguida, os braços compridos)
+          rig.root.updateMatrixWorld(true);
+          const box = new THREE.Box3().setFromObject(rig.root);
+          const size = box.getSize(new THREE.Vector3());
+          const c = box.getCenter(new THREE.Vector3());
+          const half = THREE.MathUtils.degToRad(cam.fov / 2);
+          const dist = Math.max(size.y * 0.53 / Math.tan(half), (size.x * 0.53) / (Math.tan(half) * cam.aspect)) + size.z * 0.25;
+          cam.position.set(c.x + dist * 0.12, c.y + size.y * 0.04, c.z + dist);
+          cam.lookAt(c.x, c.y, c.z);
+          cam.far = dist * 4;
+          cam.updateProjectionMatrix();
+        }
         // ENQUADRAMENTO pela altura real da cabeça (antes a câmera era fixa para todos e cortava a cabeça dos mais altos,
         // como o Kian): o busto vai de um pouco acima da cabeça (cabelo, chifres) até a cintura
         rig.root.updateMatrixWorld(true);
         const hd = rig.joints && rig.joints.hd;
-        if (hd && !full) {
+        if (hd && !full && !(P && P.fit)) {
           const headY = hd.getWorldPosition(new THREE.Vector3()).y;
           const view = 2 * 3.6 * k * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)); // altura visível na distância da câmera
           const yc = headY + 0.42 * k - view / 2; // o alto do quadro fica ~0,42 m acima do centro da cabeça (cabeças grandes, cabelo alto)
@@ -100,6 +115,28 @@ export function renderPortraits(roster, renderer, { w = 300, h = 400, anim: anim
         target.dispose();
       }
     }
+  }
+}
+
+// gira ossos do retrato em eixos do MUNDO: [osso, eixo, ângulo]; eixo 'up' (vertical), 'side' (o lado do corpo, para
+// curvar para a frente) ou 'fwd' (para onde o corpo olha, para inclinar de lado)
+function posePortrait(rig, bones) {
+  rig.root.updateMatrixWorld(true);
+  const rq = rig.root.getWorldQuaternion(new THREE.Quaternion());
+  const AX = {
+    up: new THREE.Vector3(0, 1, 0),
+    side: new THREE.Vector3(1, 0, 0).applyQuaternion(rq),
+    fwd: new THREE.Vector3(0, 0, 1).applyQuaternion(rq),
+  };
+  for (const [name, ax, ang] of bones) {
+    const b = rig.joints && rig.joints[name];
+    if (!b) continue;
+    b.updateMatrixWorld(true);
+    const qw = b.getWorldQuaternion(new THREE.Quaternion());
+    const pw = b.parent.getWorldQuaternion(new THREE.Quaternion());
+    const turn = new THREE.Quaternion().setFromAxisAngle(AX[ax], ang);
+    b.quaternion.copy(pw.invert().multiply(turn).multiply(qw));
+    b.updateMatrixWorld(true);
   }
 }
 

@@ -6,6 +6,8 @@
 // Campos extras das opções: icon, desc, tag (selo no canto), tone ('danger' | 'gold'), wide (ocupa a linha toda),
 // foot (vai para o rodapé pequeno, como VOLTAR), pic (a imagem em cima do cartão: { src, key } — key acha o cartão
 // para trocar a imagem quando ela fica pronta depois; setPic). `panel` = HTML livre entre o subtítulo e os cartões (tela do fim).
+import { hoverIndex } from '../ui/hover.js';
+
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const SECONDARY = new Set(['back', 'no']);
 
@@ -45,6 +47,7 @@ export class PveChoiceScreen {
     el.querySelectorAll('[data-i]').forEach((b) => {
       this.btns[+b.dataset.i] = b;
       b.addEventListener('click', () => { if (!this.options[+b.dataset.i].disabled) this.clicked = +b.dataset.i; else this.audio?.play('denied'); });
+      hoverIndex(this, b, +b.dataset.i);
     });
     this.render();
   }

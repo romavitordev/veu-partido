@@ -10,6 +10,7 @@ import { VERSION, VERSION_LABEL, CHANGELOG, formatVersion } from '../config/vers
 import { t, getLanguage } from '../i18n/index.js';
 import { roundKey } from '../game/tournament.js';
 import { getTeamLink, recommendNext, matchesEntry } from '../config/teamLinks.js';
+import { HOVER, onHover, hoverIndex } from './hover.js';
 
 // Telas fora da luta. Todas recebem as entradas normalizadas dos dois jogadores.
 // Fluxo: Título → Menu principal (P1 VS P2 / P1 VS CPU / Opções) → Personagens →
@@ -34,6 +35,7 @@ const BACK = 'B/○';
 // código que viaja junto com os comandos sincronizados (main.js packLocal → flags) e os dois aparelhos aplicam no mesmo
 // quadro, com o lado de quem tocou (screen.netTap(code, slot)). NET_UI.send existe só durante a partida online.
 export const NET_UI = { send: null, slot: 0 };
+HOVER.off = () => !!NET_UI.send; // no online o mouse não mexe no destaque (ver ui/hover.js)
 
 // liga o clique de um elemento: fora do online roda fn(null) na hora; no online manda o código (fn(slot) ao chegar)
 function onTap(screen, elm, code, fn) {
@@ -178,7 +180,7 @@ export class HomeScreen {
     this.opts.forEach((o, i) => {
       // destaque ao passar o MOUSE (só mouse: no celular, mudar a tela no "hover" fazia o navegador engolir o 1º toque —
       // era preciso tocar duas vezes para escolher uma opção do submenu)
-      o.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' && this.menu) { this.index = i; this.render(); } });
+      onHover(o, () => { if (this.menu && this.index !== i) { this.index = i; this.render(); } });
       o.addEventListener('click', () => { this.clicked = i; });
     });
     this.render();
@@ -267,6 +269,7 @@ export class MenuScreen {
     this.opts = [...this.el.querySelectorAll('.opt')];
     // no online, só quem controla o menu (ex.: quem pausou) escolhe pelo toque
     this.opts.forEach((o, i) => onTap(this, o, 1 + i, (slot) => { if (slot === null || this.owner === null || slot === this.owner) this.clicked = i; }));
+    this.opts.forEach((o, i) => hoverIndex(this, o, i));
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
     this.render();
@@ -434,6 +437,15 @@ export class SelectScreen {
     }));
     // toque no lutador: o 1º toque olha, o 2º no mesmo confirma
     this.cards.forEach((list, p) => list.forEach((c) => c.addEventListener('click', () => this.tapSide(p, 1 + Number(c.dataset.i)))));
+    // o mouse em cima de um lutador já o mostra (o clique escolhe): só na grade de quem está escolhendo agora
+    this.cards.forEach((list, p) => list.forEach((c) => onHover(c, () => {
+      const i = Number(c.dataset.i);
+      const active = this.cpu ? (this.ready[0] ? 1 : 0) : p;
+      if (active !== p || this.ready[p] || this.home[p] === i) return;
+      this.home[p] = this.cursor[p] = i;
+      this.audio.play('select');
+      this.render();
+    })));
     this.render();
   }
 
@@ -757,6 +769,7 @@ export class BattleConfigScreen {
       <div class="hint">${t('cfg.hint', { ok: OK, back: BACK })}</div>`);
     this.opts = [...this.el.querySelectorAll('.opt')];
     this.opts.forEach((o, i) => onTap(this, o, 1 + i, () => { this.index = i; this.clicked = true; }));
+    this.opts.forEach((o, i) => hoverIndex(this, o, i));
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
     this.render();
@@ -818,6 +831,7 @@ export class VictoryScreen {
       <div class="vopts">${options.map(() => '<div class="opt"></div>').join('')}</div>`);
     this.opts = [...this.el.querySelectorAll('.vopts .opt')];
     this.opts.forEach((o, i) => onTap(this, o, 1 + i, () => { this.clicked = i; }));
+    this.opts.forEach((o, i) => hoverIndex(this, o, i));
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
     this.render();
@@ -913,6 +927,7 @@ export class StageSelectScreen {
     this.spDots = [...this.el.querySelectorAll('.sp-dot')];
 
     this.cards.forEach((c, i) => onTap(this, c, 1 + i, () => { this.index = i; this.render(); }));
+    this.cards.forEach((c, i) => onHover(c, () => this.move(i)));
     onTap(this, this.confirmEl, 250, () => { this.confirmClicked = true; });
     if (this.btnPrev) onTap(this, this.btnPrev, 251, () => { this.turnPage(-1); });
     if (this.btnNext) onTap(this, this.btnNext, 252, () => { this.turnPage(1); });
@@ -1232,6 +1247,7 @@ export class TowerSelectScreen {
     void progress; void getName;
     this.cards = [...this.el.querySelectorAll('.tws-card')];
     this.cards.forEach((c, i) => onTap(this, c, 1 + i, () => { if (this.index === i) this.clicked = i; else { this.index = i; this.render(); this.moved = true; } }));
+    this.cards.forEach((c, i) => onHover(c, () => { if (this.index !== i) { this.index = i; this.render(); this.moved = true; } }));
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
     this.render();
@@ -1307,6 +1323,7 @@ export class TowerScreen {
     this.btnBox = this.el.querySelector('.tw-btns');
     this.btns = [...this.el.querySelectorAll('.tw-btns .opt')];
     this.btns.forEach((b, i) => onTap(this, b, 1 + i, () => { this.clicked = b.dataset.a; }));
+    this.btns.forEach((b, i) => hoverIndex(this, b, i, null));
     this.el.addEventListener('click', () => { if (this.stage && !this.stage.introDone) this.stage.skipIntro(); });
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
@@ -1417,6 +1434,7 @@ export class TournamentSetupScreen {
         else this.clicked = dir ? `dir:${dir.dataset.dir}` : 'act';
         ev.stopPropagation();
       });
+      onHover(e, () => { if (this.focus !== e.dataset.k) { this.focusKey(e.dataset.k); this.render(); } });
     });
   }
   focusKey(k) {
@@ -1611,6 +1629,7 @@ export class TournamentScreen {
       <div class="tb-btns">${opts.map(([id, l]) => `<div class="opt" data-a="${id}">${l}</div>`).join('')}</div>`);
     this.btns = [...this.el.querySelectorAll('.tb-btns .opt')];
     this.btns.forEach((b, i) => onTap(this, b, 1 + i, () => { this.clicked = b.dataset.a; }));
+    this.btns.forEach((b, i) => hoverIndex(this, b, i, null));
     this.el.classList.add('net-taps');
     this.netTap = netTapDefault;
     this.render();
@@ -1707,6 +1726,13 @@ export class LanScreen {
     else if (V === 'password') body = `<p class="sub">${t('lan.room_of', { name: esc(this.target && this.target.name) })} · ${this.target && this.target.code}</p><label class="lan-label">${t('lan.password')}</label>${field('f-pass', t('lan.password_ph'), 20, 'password')}`;
     this.el.innerHTML = `<div class="menu lan"><h2>${this.mode === 'pve' ? 'OUTRO LADO · ONLINE' : 'ONLINE / LAN'}</h2>${body}<p class="lan-status ${this.statusErr ? 'err' : ''}">${esc(this.status || '')}</p>${opts.map(([, l], i) => `<div class="opt ${i === this.index ? 'on' : ''}" data-i="${i}">${l}</div>`).join('')}</div>`;
     this.el.querySelectorAll('.opt').forEach((o) => o.addEventListener('click', () => { this.clicked = Number(o.dataset.i); }));
+    // hover: só troca o destaque (redesenhar a tela apagaria o que está sendo digitado no nome)
+    this.el.querySelectorAll('.opt').forEach((o) => onHover(o, () => {
+      const i = Number(o.dataset.i);
+      if (this.index === i) return;
+      this.index = i;
+      this.el.querySelectorAll('.opt').forEach((x) => x.classList.toggle('on', Number(x.dataset.i) === i));
+    }));
     const bindField = (sel, get, set, upper) => {
       const inp = this.el.querySelector(sel);
       if (!inp) return null;

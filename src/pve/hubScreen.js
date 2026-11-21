@@ -4,6 +4,7 @@
 // o botão principal (CONTINUAR ou COMEÇAR). Embaixo: LOJA, MELHORIAS e, pequeno no canto, DADOS (backup, reiniciar e
 // apagar ficam lá dentro, atrás de confirmação). Devolve: 'continue' | 'new' | 'unlock' | 'tree' | 'found' | 'data' | 'back'.
 import { SPIN_PRICE } from './economy.js';
+import { hoverIndex } from '../ui/hover.js';
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export class PveHubScreen {
@@ -56,6 +57,7 @@ export class PveHubScreen {
     this.el = el;
     this.btns = this.items.map((id) => el.querySelector(`[data-id="${id}"]`));
     el.querySelectorAll('[data-id]').forEach((b) => b.addEventListener('click', () => { this.clicked = b.dataset.id; }));
+    this.btns.forEach((b, i) => hoverIndex(this, b, i));
     this.render();
   }
 

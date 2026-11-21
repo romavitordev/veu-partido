@@ -2766,6 +2766,8 @@ export class Dungeon {
     const full = !this.coop || this.net || this.bossIntro || cine || run || menu || this.phase === 'exit' || this.phase === 'over' || !!solo;
     if (this.coop && !this.net && this.pveHud && this.pveHud.split === full) this.pveHud.setSplit(!full);
     if (this.coop && !this.net) this.hud.root.classList.toggle('pve-solo', full);
+    // a visão aberta das metades (zoom < 1) volta ao normal na tela inteira
+    if (full && this.views) for (const V of this.views) if (V.rig.camera.zoom !== 1) { V.rig.camera.zoom = 1; V.rig.camera.updateProjectionMatrix(); }
     if (solo && solo.i === 1 && !(this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over')) {
       const cam = solo.rig.camera;
       const asp = size.x / Math.max(1, size.y);
@@ -2779,15 +2781,20 @@ export class Dungeon {
       w.render();
       return;
     }
-    const half = Math.floor(size.y / 2);
+    // LADO A LADO (pedido do dono, 2026-11-20: "a tela dividida deve ser lateral agora e nao cima e em baixo, um player
+    // na direita e uma na esquerda"): o P1 na metade da esquerda, o P2 na da direita. A metade fica em pé (mais alta que
+    // larga): a câmera abre um pouco (zoom 0,84) para não perder o que está dos lados
+    const half = Math.floor(size.x / 2);
     r.setScissorTest(true);
     this.views.forEach((V, i) => {
       const cam = V.rig.camera;
-      cam.aspect = size.x / Math.max(1, half);
+      const wd = i === 0 ? half : size.x - half;
+      cam.aspect = wd / Math.max(1, size.y);
+      cam.zoom = 0.84;
       cam.updateProjectionMatrix();
-      const y = i === 0 ? size.y - half : 0; // a origem do WebGL é embaixo: o P1 fica na metade de cima
-      r.setViewport(0, y, size.x, half);
-      r.setScissor(0, y, size.x, half);
+      const x = i === 0 ? 0 : half;
+      r.setViewport(x, 0, wd, size.y);
+      r.setScissor(x, 0, wd, size.y);
       r.render(w.scene, cam);
     });
     r.setScissorTest(false);

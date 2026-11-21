@@ -314,7 +314,9 @@ export class HUD {
     this.npcBar.classList.toggle('lost', !!(mar && mar.barLost));
     this.npcBar.classList.toggle('blood', !!(mar && mar.barStyle === 'blood')); // o Quibungo (Sertão): a barra de sangue
     if (mar) {
-      const lbl = `${mar.barName || mar.name} · ${mar.barOwner || mar.owner.def.name}`;
+      // barOwner '' = só o nome (os chefes de fase, como o Quibungo: não são invocação de ninguém)
+      const own = mar.barOwner === '' ? '' : mar.barOwner || mar.owner.def.name;
+      const lbl = own ? `${mar.barName || mar.name} · ${own}` : mar.barName || mar.name;
       const nb = this.npcBar.querySelector('b');
       if (nb.textContent !== lbl) nb.textContent = lbl;
       let k = Math.max(0, mar.hp / mar.maxHp);

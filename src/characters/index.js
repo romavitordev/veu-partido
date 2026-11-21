@@ -53,6 +53,7 @@ import cornelius from './cornelius.js';
 import karise from './karise.js';
 import marcellus from './marcellus.js';
 import carnical from './carnical.js';
+import quibungo from './quibungo.js';
 import dara from './dara.js';
 import carina from './carina.js';
 import rubens from './rubens.js';
@@ -95,7 +96,7 @@ export const ROSTER = [
   cascadia, cornelius, karise, marcellus,
   celestine, amalia, faustus, marius, remus, veritus, veritus_rancor, nero, gaius,
   ferreiro, oDiabo, deusMorteReliquia, magistrada, anfitriaoReliquia, // Relíquias (o Ferreiro desde 2026-11-20; Sangue, Morte, Conhecimento, Energia)
-  estrangeiro, amigo, carnical, degolificada, espreitador, // Outro Lado (os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
+  estrangeiro, amigo, carnical, degolificada, espreitador, quibungo, // Outro Lado (o Quibungo, o chefe do Sertão, jogável desde 2026-11-20; os Sinos de Tenebris: Transmissão e Tinta; o Carniçal, a criatura de Morte; a Degolificada e o Espreitador, os chefes do modo Outro Lado — jogáveis desde 2026-11-06)
 ];
 
 // VERSÕES do mesmo personagem (seleção: RB/LB trocam a versão sem sair do cartão, como no Naruto Storm). A ordem é a do

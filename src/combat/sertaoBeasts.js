@@ -385,7 +385,10 @@ const INTRO_WALK = 0.55; // fração da entrada andando (o resto é o rugido)
 BLOOD_ZOMBIE.quibungo = {
   ...BLOOD_ZOMBIE.strong,
   name: 'O QUIBUNGO', hp: 2600, duration: Infinity, speed: 3.6, radius: 1.3, height: 4.6,
-  crouch: { hip: -0.85, knee: 1.35, chest: 0.8, neck: -0.7 },
+  // REMODELO (dono, 2026-11-20, com as artes oficiais): EM PÉ e curvado, não de quatro — os braços compridos pendem
+  // quase até o chão, a bocarra da frente no alto da corcova
+  crouch: { hip: -0.55, knee: 0.95, chest: 0.42, neck: -0.15 },
+  armFwd: 0.15, elbow: -0.35,
   fireMult: 1.5,
   attacks: {
     claw: { windup: 0.38, active: 0.14, recovery: 0.45, range: 3.6, arc: 150, damage: 36, cd: 1.4, knockback: 4.5 },
@@ -408,8 +411,9 @@ export class Quibungo extends BloodZombie {
     this.isMarionette = false;
     this.giant = true;
     this.bossBar = true;
-    this.barName = 'O QUIBUNGO';
-    this.barOwner = 'COROA DE ESPINHOS';
+    // só "QUIBUNGO" (dono, 2026-11-20: "São coisas diferentes era pra ser apenas 'Quibungo'" — a Coroa é o lugar)
+    this.barName = 'QUIBUNGO';
+    this.barOwner = '';
     this.barStyle = 'blood';
     // a entrada: do mato da trilha (atrás e abaixo, ~10 m) até o ponto do morro onde o Dungeon o pôs
     this.introTo = this.pos.clone();

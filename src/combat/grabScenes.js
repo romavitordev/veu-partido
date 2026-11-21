@@ -282,4 +282,6 @@ GRAB_SCENES.juan_odio = GRAB_SCENES.juan; // o Ódio do Diabo agarra como o Juan
 GRAB_SCENES.degolificada = scene({ ...S('ai_claw_r', 0.34), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('ai_lash', 0.34), fx: { kind: 'claw', flip: true }, sound: 'whip' }, { anim: 'ai_down', fx: 'crush', sound: 'heavyPunch' });
 // ESPREITADOR: duas pancadas dos braços longos e, colado na vítima, o olho de dentro da boca encara — a mente racha
 GRAB_SCENES.espreitador = scene({ ...S('db_claw_r'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('db_claw_l'), fx: { kind: 'punch', flip: true }, sound: 'punch' }, { anim: 'db_rend', fx: 'mind', sound: 'fearGaze' });
+// QUIBUNGO: as garras de cima rasgam, as de baixo seguram, e a bocarra morde (o banquete do chefe do Sertão)
+GRAB_SCENES.quibungo = scene({ ...S('db_claw_r'), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('db_claw_l'), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'raziel_feast', fx: 'crush', sound: 'heavyPunch' });
 GRAB_SCENES.carnical = scene({ ...S('db_claw_r'), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('db_claw_l'), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'db_rend', fx: 'mind', sound: 'clawHit' });

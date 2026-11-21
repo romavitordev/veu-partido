@@ -5,6 +5,7 @@
 //  · a escolha de melhoria ao subir de nível (3 cartas) — o jogo para enquanto escolhe.
 import { actionLabel } from '../ui/labels.js';
 import { SYNERGIES, activeSynergies, countOf, xpForLevel, MAX_KIT, MAX_PASSIVE, slotsOf, getUpgrade, fusionHint } from './upgrades.js';
+import { onHover } from '../ui/hover.js';
 
 // os graus como pontinhos (cheios até `n`; `was`: os que já tinha, o novo brilha)
 const pipsHtml = (n, max, was = n) => Array.from({ length: max }, (_, i) => `<b class="${i < was ? 'on' : i < n ? 'new' : ''}"></b>`).join('');
@@ -125,7 +126,7 @@ export class PveHud {
     if (!el) { el = document.createElement('div'); el.className = 'pv-shieldbar'; bar.appendChild(el); }
     const { n, total } = this.shield;
     el.innerHTML = Array.from({ length: total }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('');
-    // a metade de baixo da tela dividida: a mesma barra azul
+    // a metade da direita da tela dividida: a mesma barra azul
     const low = this.q('.pv-enemy.low:not([hidden]) .pv-ebar');
     if (low && bar.closest('.pv-enemy')) {
       let e2 = low.querySelector('.pv-shieldbar');
@@ -242,6 +243,7 @@ export class PveHud {
     }).join('') : '<em>nenhuma melhoria ainda</em>');
     box.hidden = false;
     if (!noClick) box.querySelectorAll('.pv-card').forEach((c) => c.addEventListener('click', () => { if (!this.choice) return; this.choice.index = Number(c.dataset.i); this.pick(); }));
+    if (!noClick) box.querySelectorAll('.pv-card').forEach((c) => onHover(c, () => { const i = Number(c.dataset.i); if (this.choice && this.choice.index !== i) { this.choice.index = i; this.renderChoice(); } }));
     this.renderChoice();
   }
 
@@ -276,8 +278,8 @@ export class PveHud {
   }
 
   // COOP LOCAL: a vida do inimigo da vez (os dois painéis da HUD são dos jogadores) e a linha do meio da tela dividida
-  // Na tela dividida (coop local) a barra aparece nas DUAS metades (pedido do dono, 2026-11-06): .pv-enemy em cima e
-  // .pv-enemy.low na de baixo; o escudo da Degolificada vai nas duas (ensureShield)
+  // Na tela dividida (coop local) a barra aparece nas DUAS metades (pedido do dono, 2026-11-06): .pv-enemy na da esquerda e
+  // .pv-enemy.low na da direita (lado a lado desde 2026-11-20); o escudo da Degolificada vai nas duas (ensureShield)
   setEnemy(name, frac, sig = false) {
     const els = [this.enemyBar('pv-enemy', true)];
     if (this.split) els.push(this.enemyBar('pv-enemy low', true));
@@ -349,6 +351,7 @@ export class PveHud {
 
   setSplit(on) {
     this.split = !!on;
+    this.el.classList.toggle('pv-is-split', this.split); // lado a lado: as barras do inimigo em cada metade (styles.css)
     let el = this.q('.pv-split');
     if (!el && on) { el = document.createElement('div'); el.className = 'pv-split'; this.el.appendChild(el); }
     if (el) el.hidden = !on;

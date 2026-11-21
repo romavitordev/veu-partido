@@ -636,6 +636,19 @@ export const VOICES = {
       any: [(o) => `(o brilho vermelho dos ombros acende) ...${o.name}...`, (o) => `...PARE... ${o.name}...`],
     },
   },
+  // QUIBUNGO: sem olhos, quase não fala. Fareja, ruge, as mandíbulas estalam e a bocarra das costas abre
+  quibungo: {
+    open: {
+      ally: (o) => `(fareja ${o.name} e abaixa os quatro braços) ...JUNTOS...`,
+      rival: (o) => `(a bocarra das costas abre devagar) ...${o.group}... COMIDA...`,
+      any: [(o) => `(fareja o ar até achar ${o.name}; as mandíbulas estalam)`, (o) => `...FOME... ${o.name}... (a língua desenrola das costas)`],
+    },
+    reply: {
+      ally: (o) => `(rosna baixo para ${o.name}) ...sim...`,
+      rival: (o) => `(ruge para ${o.group}; as quatro mãos arranham o chão)`,
+      any: [(o) => `(vira a cabeça sem olhos para ${o.name} e fareja)`, (o) => `...${o.name}... CHEIRO... BOM...`],
+    },
+  },
   amigo: {
     open: {
       ally: (o) => `...${o.name}... brincar... juntos?...`,

@@ -1,5 +1,23 @@
 # Changelog
 
+## Não lançado
+
+### Adicionado
+- Quibungo jogável na equipe Outro Lado. Ele usa a mesma escultura do chefe do Sertão, agora no esqueleto de lutador: quatro braços, sem olhos e a bocarra nas costas, de onde a língua sobe curvada como um rabo. Golpes:
+  - □ Língua da Bocarra: puxa a presa de longe;
+  - Rajada dos Quatro Braços;
+  - Salto do Quibungo;
+  - Racha-Chão: a onda derruba quem estiver perto;
+  - Urro do Sertão: deixa os golpes mais fortes e o Quibungo mais rápido por um tempo;
+  - especial Banquete da Bocarra;
+  - Transformação Fúria do Sertão.
+- O fogo causa 1,5× dano ao Quibungo, como no chefe. Ele tem falas com todo o elenco, agarrão próprio e retrato.
+
+### Alterado
+- Menus: passar o mouse por uma opção agora a destaca, como mexer o direcional até ela, e o clique confirma. Vale para todos os menus: Online/LAN, pausa, configurações da batalha, vitória, cenários, lutadores, torres, torneio, Opções e as telas do Outro Lado (cartas de melhoria, loja, melhorias e descobertas). Não vale na partida online, onde os dois aparelhos precisam ficar na mesma opção.
+- Outro Lado em dois no mesmo PC: a tela agora se divide lado a lado, com o P1 na esquerda e o P2 na direita (antes era em cima e embaixo). Cada metade abre um pouco mais a câmera, e a barra do inimigo aparece no alto de cada metade.
+- O retrato do Quibungo (na página Sobre e na seleção) mostra ele de perfil, encarando a câmera, com uma garra erguida e a língua curvada para cima.
+
 ## v5.41.0 — As Fusões do Outro Lado
 
 ### Corrigido

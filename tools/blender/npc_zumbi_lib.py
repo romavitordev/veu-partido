@@ -29,38 +29,77 @@ from npc_sculpt_lib import Sculpt, vcol_material, limb_fibers, ridge, n3, white_
 
 def quibungo_extras(chest, M, MAW_C, MAW_D):
     """as costas do Quibungo: os ESPINHOS DE OSSO em arco (como costelas) em volta da bocarra e a LÍNGUA em três juntas.
-    No jogo o tronco vai inclinado ~0,8 rad para a frente: U é o "para cima" e F o "para a frente" no mundo"""
-    th = 0.8
+    No jogo o tronco vai inclinado ~0,45 rad para a frente (o remodelo o pôs mais em pé): U é o "para cima" e F o "para
+    a frente" no mundo"""
+    th = 0.45
     U = Vector((0, math.sin(th), -math.cos(th)))
     F = Vector((0, math.cos(th), math.sin(th)))
     X = Vector((1, 0, 0))
     c0, d = Vector(MAW_C), Vector(MAW_D).normalized()
+    # REMODELO (dono, 2026-11-20, com as artes oficiais de Hexatombe: "um remodel agora com essas referencias"): a COROA
+    # de espinhos de osso é o que mais marca a silhueta — 9 de cada lado, compridos, saindo dos ombros e das costas e
+    # curvando para cima e para a frente por trás da bocarra da frente (a arte de frente mostra um leque em volta da
+    # "cabeça"); os de trás, mais curtos, descem pela espinha
     for s in (1, -1):
+        # a COROA: na crista dos ombros, em leque — os do meio para cima, os de fora abrindo para o lado — inclinada para
+        # a frente, por trás da bocarra (a arte de frente)
+        for i in range(7):
+            t = i / 6
+            a = 0.12 + t * 1.25  # 0 = para cima, ~1,4 = para o lado
+            c = c0 + d * (0.5 - 0.12 * t) * 0.95
+            ln = (0.78 - 0.22 * t) * random.uniform(0.9, 1.08)
+            b = Vector((s * (0.08 + 0.2 * t), c.y - 0.04 * t, c.z + 0.08 + 0.04 * t))
+            dr = (U * math.cos(a) + X * s * math.sin(a) + F * 0.55).normalized()
+            mid = b + dr * ln * 0.55 + X * s * ln * 0.08
+            tip = b + dr * ln + F * ln * 0.18 - X * s * ln * 0.06  # a ponta curva para a frente e para dentro
+            pts = curve(tuple(b), tuple(mid), tuple(tip), 8)
+            r0 = 0.042 - 0.008 * t
+            add(chest, f'spine{s}{i}', rod(pts, [r0, r0 * 0.88, r0 * 0.74, r0 * 0.6, r0 * 0.46, r0 * 0.33, r0 * 0.2, 0.003], seg=7), M['bone'])
+            add(chest, f'spineTip{s}{i}', rod(pts[-3:], [r0 * 0.32, r0 * 0.18, 0.002], seg=6), M['boneTip'])
+        # e os das COSTAS (a arte de costas): dos dois lados da fenda, para cima e um pouco para trás, menores para baixo
         for i in range(6):
             t = i / 5
-            c = c0 + d * (t - 0.5) * 0.95
-            ln = 0.42 + 0.2 * math.sin(t * math.pi)
-            b = Vector((s * (0.16 + 0.05 * math.sin(t * math.pi)), c.y, c.z + 0.05))
-            # arqueiam como costelas: saem para o lado e a ponta volta para cima da bocarra
-            mid = b + X * s * ln * 0.75 + U * ln * 0.45
-            tip = b + X * s * ln * 0.25 + U * ln * 1.0 + F * ln * (0.1 + 0.3 * t)
-            pts = curve(tuple(b), tuple(mid), tuple(tip), 7)
-            r0 = 0.03 + 0.012 * math.sin(t * math.pi)
-            add(chest, f'spine{s}{i}', rod(pts, [r0, r0 * 0.85, r0 * 0.7, r0 * 0.55, r0 * 0.4, r0 * 0.25, 0.003], seg=7), M['bone'])
-            add(chest, f'spineTip{s}{i}', rod(pts[-3:], [r0 * 0.3, r0 * 0.18, 0.002], seg=6), M['boneTip'])
-        for i in range(10):  # os dentes na borda da bocarra
-            t = i / 9
-            c = c0 + d * (t - 0.5) * 0.56
-            add(chest, f'btooth{s}{i}', spike((s * 0.08, c.y, c.z - 0.02), (s * 0.02, c.y + 0.01, c.z - 0.09), 0.016, seg=5), M['fang'])
+            c = c0 + d * (0.3 - t * 0.85) * 0.95
+            ln = (0.6 - 0.3 * t) * random.uniform(0.88, 1.1)
+            b = Vector((s * (0.16 + 0.03 * math.sin(t * 3)), c.y, c.z + 0.05))
+            dr = (U + X * s * 0.35 - F * (0.15 + 0.4 * t)).normalized()
+            pts = curve(tuple(b), tuple(b + dr * ln * 0.55 + X * s * ln * 0.1), tuple(b + dr * ln + F * ln * 0.12), 8)
+            r0 = 0.034 - 0.01 * t
+            add(chest, f'spineB{s}{i}', rod(pts, [r0, r0 * 0.88, r0 * 0.74, r0 * 0.6, r0 * 0.46, r0 * 0.33, r0 * 0.2, 0.003], seg=7), M['bone'])
+            add(chest, f'spineBTip{s}{i}', rod(pts[-3:], [r0 * 0.32, r0 * 0.18, 0.002], seg=6), M['boneTip'])
+        # a BOCARRA DAS COSTAS (arte de costas): uma fenda comprida na espinha com dentes curvos que se cruzam por cima
+        for i in range(11):
+            t = i / 10
+            c = c0 + d * (t - 0.5) * 0.62
+            ln = 0.16 + 0.06 * math.sin(t * math.pi)
+            b = Vector((s * 0.085, c.y, c.z - 0.01))
+            add(chest, f'btooth{s}{i}', rod(curve(tuple(b), tuple(b + X * -s * ln * 0.35 + U * ln * 0.5), tuple(b + X * -s * ln * 1.05 + U * ln * 0.25), 5),
+                                            [0.017, 0.013, 0.009, 0.005, 0.0015], seg=5), M['fang'])
+    # a LÍNGUA (as artes: comprida, roxa, enrolando bem acima dele): três juntas, ~2,6 m esticada
     tg = joint('J_tongue', tuple(c0 + U * 0.02), chest)
-    q1 = curve((0, 0, 0), tuple(U * 0.55 - F * 0.2), tuple(U * 1.0 - F * 0.05), 7)
-    add(tg, 'tongue1', rod(q1, [0.085, 0.08, 0.076, 0.072, 0.068, 0.064, 0.06], seg=10), M['tongue'])
+    q1 = curve((0, 0, 0), tuple(U * 0.7 - F * 0.25), tuple(U * 1.25 - F * 0.05), 8)
+    add(tg, 'tongue1', rod(q1, [0.095, 0.09, 0.085, 0.08, 0.076, 0.072, 0.068, 0.064], seg=10), M['tongue'])
     tg2 = joint('J_tongue2', q1[-1], tg)
-    q2 = curve((0, 0, 0), tuple(U * 0.6 + F * 0.3), tuple(U * 0.75 - F * 0.35), 7)
-    add(tg2, 'tongue2', rod(q2, [0.06, 0.056, 0.052, 0.048, 0.045, 0.042, 0.04], seg=10), M['tongue'])
+    q2 = curve((0, 0, 0), tuple(U * 0.75 + F * 0.4), tuple(U * 0.95 - F * 0.4), 8)
+    add(tg2, 'tongue2', rod(q2, [0.064, 0.06, 0.056, 0.052, 0.048, 0.045, 0.042, 0.04], seg=10), M['tongue'])
     tg3 = joint('J_tongue3', q2[-1], tg2)
-    q3 = curve((0, 0, 0), tuple(U * 0.1 - F * 0.45), tuple(U * 0.45 - F * 0.4), 8)
-    add(tg3, 'tongue3', rod(q3, [0.04, 0.037, 0.034, 0.03, 0.025, 0.018, 0.01, 0.002], seg=10), M['tongue'])
+    q3 = curve((0, 0, 0), tuple(U * 0.15 - F * 0.6), tuple(U * 0.6 - F * 0.55), 9)
+    add(tg3, 'tongue3', rod(q3, [0.04, 0.037, 0.034, 0.03, 0.026, 0.021, 0.015, 0.008, 0.002], seg=10), M['tongue'])
+
+
+def fur_tuft(jnt, name, base, axis, side, n, ln, M):
+    """os TUFOS DE PELO das artes ("pelos já consumidos pela carne"): mechas finas e escuras na parte de trás dos
+    antebraços e das coxas, penteadas para baixo ao longo do membro"""
+    ax = Vector(axis).normalized()
+    for i in range(n):
+        t = i / max(1, n - 1)
+        b = Vector(base) + ax * (t * ln * 1.4)
+        off = Vector((side * random.uniform(-0.05, 0.05), 0, -random.uniform(0.0, 0.05)))
+        L = ln * random.uniform(0.6, 1.0)
+        p0 = b + off
+        p2 = p0 + ax * L * 0.8 + Vector((0, 0, -L * 0.55))
+        p1 = (p0 + p2) / 2 + Vector((0, 0, -L * 0.1))
+        add(jnt, f'{name}{i}', rod(curve(tuple(p0), tuple(p1), tuple(p2), 4), [0.012, 0.008, 0.004, 0.001], seg=4), M['fur'])
 
 
 def felino_extras(chest, neck, M):
@@ -118,6 +157,7 @@ def build(strong, quibungo=False, felino=False):
         'tongue': material('flesh_tongue_quibungo', '#8a2a4a', 0.4),
         'eye': material('glow_eye_quibungo', '#ffb020', 0.3, emission='#ff8a10', strength=3.0),
         'tail': material('tail_felinoinf', '#7a1418', 0.45),
+        'fur': material('vein_fur_quibungo', '#3a0a0e', 0.7),
     }
     C = {k: Vector(hex_rgb(v)) for k, v in {
         'deep': '#4a0a0f', 'flesh': '#8a1a20', 'crest': '#d07070', 'vein': '#38040a', 'patch': '#5a0c12', 'hole': '#080102', 'gum': '#a8303c',
@@ -128,6 +168,8 @@ def build(strong, quibungo=False, felino=False):
         hipY, shY, shZ, shX = 0.95, 0.78, 0.22, 0.44
         upL, foreL, upR, foreR = 0.6, 0.66, 0.17, 0.13
         thighL, shinL, thighR, shinR, hipX = 0.46, 0.44, 0.16, 0.11, 0.22
+        if Q:  # as artes: membros compridos e SECOS (tendões, não massa) — as juntas ficam nos mesmos lugares
+            upR, foreR, thighR, shinR = 0.125, 0.095, 0.125, 0.085
     else:
         hipY, shY, shZ, shX = 1.0, 0.64, 0.14, 0.24
         upL, foreL, upR, foreR = 0.5, 0.52, 0.06, 0.045
@@ -161,7 +203,27 @@ def build(strong, quibungo=False, felino=False):
 
     # ================================================================ TRONCO
     S = Sculpt('torso_' + tag)
-    if strong:
+    if Q:
+        # REMODELO pelas artes de Hexatombe: o tronco SECO e comprido (cintura fina, costelas e barriga encolhida), os
+        # ombros altos e curvados para a frente; a corcova vira a base da coroa de espinhos e da bocarra das costas
+        S.ell((0, -0.04, 0.0), (0.2, 0.15, 0.15))  # pelve estreita
+        S.ell((0, 0.18, 0.0), (0.17, 0.2, 0.14))  # a cintura fina
+        S.ell((0, 0.44, 0.06), (0.3, 0.24, 0.22))  # a caixa torácica
+        S.ell((0, 0.7, 0.0), (0.32, 0.22, 0.25))  # a corcova dos ombros
+        S.ell((0, 0.82, 0.12), (0.24, 0.14, 0.2))
+        for s in (1, -1):
+            S.ell((s * 0.16, 0.56, 0.24), (0.14, 0.11, 0.08))  # peitoral seco
+            S.ell((s * 0.3, 0.72, 0.1), (0.16, 0.16, 0.16))  # ombro alto
+            S.ell((s * 0.2, 0.62, -0.16), (0.15, 0.22, 0.12))  # dorso
+            S.ell((s * 0.24, 0.32, 0.0), (0.09, 0.22, 0.13), dir=(s * 0.3, 1, 0))  # dorsal fino
+            S.ell((s * 0.13, -0.06, -0.07), (0.11, 0.11, 0.1))  # glúteo
+            S.ell((s * 0.3, 0.42, 0.14), (0.12, 0.11, 0.11))  # o ombro do 2º par de braços
+            for k in range(4):  # as COSTELAS saltadas dos flancos
+                y = 0.3 + k * 0.075
+                S.ell((s * 0.2, y, 0.12 - k * 0.01), (0.1, 0.022, 0.08), dir=(s * 1, -0.35, 0.4))
+        S.ell(MAW_C, (0.12, 0.36, 0.09), 'gum', dir=MAW_D)
+        S.ell((MAW_C[0], MAW_C[1], MAW_C[2] + 0.03), (0.07, 0.33, 0.13), 'hole', dir=MAW_D, neg=True)
+    elif strong:
         S.ell((0, -0.04, 0.0), (0.26, 0.16, 0.2))  # pelve larga
         S.ell((0, 0.2, 0.06), (0.3, 0.22, 0.24))  # barriga
         S.ell((0, 0.48, 0.14), (0.42, 0.26, 0.3))  # tórax enorme
@@ -175,11 +237,6 @@ def build(strong, quibungo=False, felino=False):
             S.ell((s * 0.16, -0.06, -0.08), (0.14, 0.13, 0.12))  # glúteo
             for k in range(3):
                 S.ell((s * 0.085, 0.36 - k * 0.12, 0.27 - k * 0.02), (0.075, 0.06, 0.05))  # gomos do abdômen
-            if Q:
-                S.ell((s * 0.34, 0.42, 0.18), (0.15, 0.14, 0.14))  # o ombro do 2º par de braços
-        if Q:  # a BOCARRA DAS COSTAS na corcova: a gengiva em volta e a fenda escura ao longo da espinha
-            S.ell(MAW_C, (0.13, 0.34, 0.1), 'gum', dir=MAW_D)
-            S.ell((MAW_C[0], MAW_C[1], MAW_C[2] + 0.03), (0.075, 0.3, 0.14), 'hole', dir=MAW_D, neg=True)
     else:
         S.ell((0, -0.05, 0.0), (0.12, 0.09, 0.09))  # pelve
         S.ell((0, 0.1, 0.02), (0.1, 0.12, 0.08))  # barriga funda
@@ -212,7 +269,66 @@ def build(strong, quibungo=False, felino=False):
     S.build(chest, M['flesh'], 4200 if strong else 3000, res=0.012 if strong else 0.009, disp=torso_disp, color=flesh_color(torso_disp, AMP))
 
     # ================================================================ CABEÇA (sem olhos) E MANDÍBULA
-    if strong:
+    if Q:
+        # REMODELO pelas artes: o Quibungo NÃO TEM CABEÇA — a frente da corcova vira uma BOCARRA enorme, sem olhos,
+        # aberta para a frente, com as presas compridas e curvas em LEQUE em volta da borda (em cima e embaixo) e as
+        # fileiras de presas dos lados (as várias mandíbulas). Juntas neck/jaw/mandL/mandR nos mesmos lugares de antes
+        neck = joint('J_neck', (0, top[1] - 0.04, top[2] + 0.2), chest)
+        H = Sculpt('head_quibungo')
+        H.ell((0, 0.04, -0.06), (0.24, 0.2, 0.22))  # a massa que sai da corcova
+        H.ell((0, 0.08, 0.14), (0.2, 0.15, 0.2))  # a "testa" da bocarra (o lábio de cima, alto)
+        H.ell((0, 0.1, 0.3), (0.17, 0.08, 0.12))
+        for s in (1, -1):
+            H.ell((s * 0.15, 0.0, 0.18), (0.07, 0.15, 0.16))  # os cantos da boca (as bochechas que seguram as presas)
+        H.ell((0, -0.04, 0.26), (0.13, 0.12, 0.2), 'hole', neg=True)  # a goela escura
+
+        def head_disp(p):
+            x, y, z = p
+            v = ridge(math.atan2(abs(x), y + 0.05) * 7 + n3(p, 6))
+            return AMP * (v - 0.35)
+
+        H.build(neck, M['flesh'], 1500, res=0.01, smooth=4, disp=head_disp, color=flesh_color(head_disp, AMP))
+        add(neck, 'mawU', rod(curve((0.16, -0.02, 0.12), (0, 0.0, 0.42), (-0.16, -0.02, 0.12), 9), 0.04, seg=6), M['maw'])
+        for row, (rr, n, L0) in enumerate(((1.0, 15, 0.34), (0.8, 11, 0.2))):  # 2 fileiras em leque no lábio de cima
+            for i in range(n):
+                a = (i - (n - 1) / 2) / ((n - 1) / 2) * 1.45
+                base = Vector((math.sin(a) * 0.19 * rr, 0.06 - 0.03 * row, 0.12 + math.cos(a) * 0.28 * rr))
+                ln = L0 * (0.8 + 0.3 * math.cos(a)) * random.uniform(0.85, 1.15)
+                out = Vector((math.sin(a) * 0.6, 0, math.cos(a))).normalized()
+                # saem para fora e para a frente e a ponta vira para baixo (o leque das artes)
+                mid = base + out * ln * 0.55 + Vector((0, 0.03, 0))
+                tip = base + out * ln * 0.75 + Vector((0, -ln * 0.6, 0))
+                add(neck, f'fangU{row}_{i}', rod(curve(tuple(base), tuple(mid), tuple(tip), 5), [0.02, 0.015, 0.01, 0.005, 0.0015], seg=5), M['fang'])
+        jaw = joint('J_jaw', (0, -0.06, 0.06), neck)
+        J = Sculpt('jaw_quibungo')
+        J.chain(curve((-0.17, 0.0, 0.0), (0, -0.12, 0.46), (0.17, 0.0, 0.0), 9), [0.06, 0.06, 0.055, 0.05, 0.05, 0.05, 0.055, 0.06, 0.06], step=0.5)
+        J.ell((0, -0.08, 0.2), (0.14, 0.05, 0.18))
+        J.ell((0, -0.03, 0.22), (0.11, 0.04, 0.14), 'hole', neg=True)
+        J.build(jaw, M['flesh'], 800, res=0.009, smooth=3, color=flesh_color(None, AMP))
+        for i in range(13):  # o leque de baixo, subindo
+            a = (i - 6) / 6 * 1.4
+            base = Vector((math.sin(a) * 0.16, -0.04, 0.16 + math.cos(a) * 0.24))
+            ln = 0.26 * (0.8 + 0.3 * math.cos(a)) * random.uniform(0.85, 1.15)
+            out = Vector((math.sin(a) * 0.6, 0, math.cos(a))).normalized()
+            add(jaw, f'fangL{i}', rod(curve(tuple(base), tuple(base + out * ln * 0.5 - Vector((0, 0.02, 0))), tuple(base + out * ln * 0.7 + Vector((0, ln * 0.6, 0))), 5),
+                                      [0.018, 0.014, 0.009, 0.0045, 0.0015], seg=5), M['fang'])
+        for i in range(3):
+            x = random.uniform(-0.1, 0.1)
+            add(jaw, f'drip{i}', rod([(x, -0.1, 0.38), (x, -0.18, 0.39), (x * 1.05, -0.26 - i * 0.04, 0.39)], [0.012, 0.009, 0.005], seg=5), M['vein'])
+        # as MANDÍBULAS dos lados: placas de carne com fileiras de presas abrindo para os lados (o "pente" de presas
+        # das artes, logo atrás do canto da boca)
+        for sd, nm in ((1, 'L'), (-1, 'R')):
+            md = joint(f'J_mand{nm}', (sd * 0.2, -0.05, 0.2), neck)
+            Md = Sculpt(f'mand{nm}_quibungo')
+            Md.chain([(0, 0.06, -0.08), (sd * 0.03, -0.02, 0.06), (0, -0.06, 0.18)], [0.06, 0.055, 0.035], step=0.5)
+            Md.build(md, M['flesh'], 450, res=0.008, smooth=2, color=flesh_color(None, AMP))
+            for i in range(9):
+                t = i / 8
+                b = Vector((sd * 0.03, 0.08 - t * 0.16, -0.08 + t * 0.26))
+                ln = 0.13 * random.uniform(0.8, 1.2) * (1 - 0.3 * abs(t - 0.5))
+                add(md, f'mfang{i}', rod(curve(tuple(b), tuple(b + Vector((sd * ln * 0.6, 0.01, ln * 0.3))), tuple(b + Vector((sd * ln * 0.8, -ln * 0.5, ln * 0.55))), 4),
+                                         [0.016, 0.011, 0.006, 0.0015], seg=5), M['fang'])
+    elif strong:
         # o BESTIAL: a cabeça afundada entre os ombros, baixa e comprida como um focinho; o crânio partido ao meio a
         # partir do topo (o sulco fundo no meio) e a bocarra de presas que pinga
         neck = joint('J_neck', (0, top[1] - 0.04, top[2] + 0.2), chest)
@@ -255,18 +371,6 @@ def build(strong, quibungo=False, felino=False):
         for i in range(3):
             x = random.uniform(-0.1, 0.1)
             add(jaw, f'drip{i}', rod([(x, -0.1, 0.36), (x, -0.18, 0.37), (x * 1.05, -0.24 - i * 0.04, 0.37)], [0.012, 0.009, 0.005], seg=5), M['vein'])
-        if Q:
-            # as MANDÍBULAS dos lados (as várias bocas): abrem para os lados. SEM OLHOS, como o Zumbi de Sangue (dono,
-            # 2026-11-20: "acho que o quimbungo nao tem olhos")
-            for sd, nm in ((1, 'L'), (-1, 'R')):
-                md = joint(f'J_mand{nm}', (sd * 0.2, -0.05, 0.2), neck)
-                Md = Sculpt(f'mand{nm}_quibungo')
-                Md.chain([(0, 0, -0.05), (sd * 0.04, -0.03, 0.12), (sd * 0.0, -0.02, 0.26)], [0.07, 0.06, 0.04], step=0.5)
-                Md.build(md, M['flesh'], 500, res=0.008, smooth=2, color=flesh_color(None, AMP))
-                for i in range(6):
-                    z = 0.0 + i * 0.05
-                    ln = 0.09 * random.uniform(0.8, 1.25)
-                    add(md, f'mfang{i}', rod(curve((-sd * 0.03, -0.01, z), (-sd * (0.03 + ln * 0.6), -0.02, z + 0.02), (-sd * (0.02 + ln), -0.05, z + 0.03), 4), [0.016, 0.012, 0.006, 0.0015], seg=5), M['fang'])
     else:
         # o FRACO: crânio grande e calvo de feto, as duas ÓRBITAS VAZIAS e fundas, a bocarra vertical cheia de presas
         neck = joint('J_neck', (0, top[1] + 0.03, top[2] + 0.06), chest)
@@ -348,6 +452,8 @@ def build(strong, quibungo=False, felino=False):
             c1 = (tip[0] * 1.05, tip[1] - cl * 0.45, tip[2] + cl * 0.4)
             c2 = (tip[0] * 1.08, tip[1] - cl * 0.7, tip[2] + cl)
             add(hand, f'claw{i}', rod([tip, c1, c2], [hw * 0.2, hw * 0.13, 0.002], seg=5), M['claw'])
+        if Q:  # o tufo de pelo atrás do antebraço (as artes: a "manga" peluda do cotovelo ao pulso)
+            fur_tuft(el, f'fur{name}', (0, -foreL * 0.1, -foreR * 0.9), (0, -1, -0.15), s, 9, foreL * 0.42, M)
 
     arm(1, 'L')
     arm(-1, 'R')
@@ -367,6 +473,8 @@ def build(strong, quibungo=False, felino=False):
         Th.ell((0, -thighL * 0.45, -thighR * 0.5), (thighR * 0.7, thighL * 0.28, thighR * 0.55))  # posterior
         ft = limb_fibers((0, 0.02, 0), (0, -thighL, 0.02), 7, 1.0 * s, AMP)
         Th.build(hip, M['flesh'], 900, res=0.011 if strong else 0.0075, disp=ft, color=flesh_color(ft, AMP))
+        if Q:  # o pelo nas coxas e no joelho (as artes)
+            fur_tuft(hip, f'furT{name}', (0, -thighL * 0.2, -thighR * 0.8), (0, -1, -0.1), s, 8, thighL * 0.4, M)
 
         knee = joint(f'J_knee{name}', (0, -thighL, 0.02), hip)
         Sh = Sculpt(f'shin{name}_{tag}')

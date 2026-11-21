@@ -1435,8 +1435,8 @@ body.touch-capable #options { padding-left: 64px; padding-right: 64px; }
 /* ================= OUTRO LADO (PvE): a vida do jogador no canto inferior esquerdo, o chefe no centro do alto (TODO §10) */
 #hud.pve #center { display: none; }
 #hud.pve .panel.p1 { top: auto; bottom: 14px; left: 16px; width: min(40vw, 460px); }
-/* COOP LOCAL (tela dividida em cima e embaixo): o P1 no pé da metade de cima, o P2 no pé da metade de baixo */
-#hud.pve.pve-coop .panel.p1 { bottom: calc(50% + 10px); }
+/* COOP LOCAL (tela dividida lado a lado desde 2026-11-20): o P1 no pé da metade da esquerda, o P2 no pé da direita */
+#hud.pve.pve-coop .panel.p1 { width: min(40vw, 460px); }
 #hud.pve.pve-coop .panel.p2 { top: auto; bottom: 14px; left: auto; right: 16px; width: min(40vw, 460px); }
 #hud.pve.pve-coop .panel { transform: scale(.78); transform-origin: bottom left; }
 #hud.pve.pve-coop .panel.p2 { transform-origin: bottom right; }
@@ -1638,9 +1638,11 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 #pvehud .pv-enemy { position: absolute; left: 50%; top: 58px; transform: translateX(-50%); width: min(40vw, 420px); text-align: center; color: #ffb4a8; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
 #pvehud .pv-enemy b { display: block; margin-bottom: 4px; font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
 #pvehud .pv-ebar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
-#pvehud .pv-enemy.low { top: calc(50% + 14px); } /* a metade de baixo da tela dividida */
+/* tela dividida lado a lado: a barra do inimigo no alto de cada metade (a da esquerda e a .low, da direita) */
+#pvehud.pv-is-split .pv-enemy { left: 25%; width: min(36vw, 380px); }
+#pvehud.pv-is-split .pv-enemy.low { left: 75%; }
 #pvehud .pv-ebar i { display: block; height: 100%; background: #ff6a5a; }
-#pvehud .pv-split { position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); background: #050506; pointer-events: none; }
+#pvehud .pv-split { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); background: #050506; pointer-events: none; }
 /* OUTRO LADO — cena de entrada do chefe: sem HUD (só o cronômetro some junto) */
 #hud.pve-cine .panel, #hud.pve-cine #pvehud > :not(.pv-fade), #hud.pve-cine .combo { visibility: hidden; }
 /* celular deitado: logo no topo sem a lista de grupos, o elenco embaixo e o "pressione start" no rodapé */
@@ -1855,7 +1857,6 @@ body.touch-ui #pvehud .pv-hint { bottom: auto; top: 28%; max-width: min(56vw, 52
 @keyframes sigRoll { from { background-position: 0 0; } to { background-position: 0 300px; } }
 @keyframes sigHit { 0% { opacity: calc(.18 + .3 * var(--snow)); } 100% { opacity: .07; } }
 #hud.pve-cine #npcbar { visibility: hidden; }
-#hud.pve.pve-coop.pve-solo .panel.p1 { bottom: 14px; } /* tela dividida desfeita (especial, cena): o P1 volta para baixo */
 
 /* VOLTAR À VIDA (2026-11-14): cartões pagar/desistir, a barra do tempo e quem tem moedas */
 #pvehud .pv-revive .pv-panel { width: min(460px, calc(100% - 24px)); border-color: rgba(255,106,90,.45); box-shadow: 0 0 0 1px rgba(255,106,90,.15), 0 24px 70px rgba(0,0,0,.7); }
@@ -2150,7 +2151,6 @@ body.touch-ui .pv-house-arrow { font-size: 28px; }
 #hud .gold-fever .gf-sec { color: #fff3c8; font-size: 12px; font-weight: 600; min-width: 30px; }
 #hud .gold-fever .gf-box em { grid-column: 1 / -1; text-align: center; font-style: normal; font-size: 10px; color: #f0d890; opacity: .85; }
 #hud .gold-fever.low .gf-bar i { background: linear-gradient(90deg, #8a3a00, #ff9a2a); animation: gf-blink .5s steps(2) infinite; }
-#hud.pve-coop:not(.pve-solo):not(.pve-online) .gold-fever .gf-box { top: calc(50% - 30px); }
 @keyframes gf-in { from { opacity: 0; filter: brightness(2.2); } to { opacity: 1; filter: none; } }
 @keyframes gf-pulse { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
 @keyframes gf-fall { from { transform: translateY(0); } to { transform: translateY(calc(100vh + 80px)); } }

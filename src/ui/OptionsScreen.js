@@ -7,6 +7,7 @@
 // A tela não guarda nada sozinha: cada mudança chama `onChange(id, valor)` (main.js aplica e salva). Trocar o idioma
 // pede a tela de novo (`'relabel'`), na mesma linha.
 import { t } from '../i18n/index.js';
+import { onHover } from './hover.js';
 
 const OK = 'A/×';
 const BACK = 'B/○';
@@ -36,6 +37,7 @@ export class OptionsScreen {
     this.descEl = this.el.querySelector('.opt-desc');
     this.backEl = this.el.querySelector('.opt-back');
     this.backEl.addEventListener('click', () => { this.clickedBack = true; });
+    onHover(this.backEl, () => { if (this.index !== this.rows.length) { this.index = this.rows.length; this.render(); } });
     this.rowEls.forEach((rowEl, i) => this.bind(rowEl, rows[i], i));
     this.render();
   }
@@ -49,7 +51,7 @@ export class OptionsScreen {
   }
 
   bind(rowEl, r, i) {
-    rowEl.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' && this.index !== i) { this.index = i; this.render(); } });
+    onHover(rowEl, () => { if (this.index !== i) { this.index = i; this.render(); } });
     if (r.kind === 'slider') {
       const track = rowEl.querySelector('.opt-track');
       const setFrom = (e) => {

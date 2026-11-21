@@ -66,6 +66,7 @@ export const PALCO_LINES = {
     anfitriao: ['Eu contra... alguém. Plateia, já sabem pra quem torcer.'],
     amphitruo: ['Eu de toga! Que elegância a minha. Plateia, aplaudam a mim.'],
     carnical: ['Uma criatura de Lodo no meu palco! Alguém limpa o chão depois.'],
+    quibungo: ['Um gigante de quatro braços no meu palco! E uma boca nas costas! A audiência vai AMAR.'],
     amigo: ['O desenho da criança! Plateia, não olhem muito, mancha.'],
     degolificada: ['Uma moça de cabelo comprido no meu palco! Alguém traz uma escova. E uma tesoura.'],
     espreitador: ['Um espectador saiu do armário! Plateia, ele vai olhar vocês de volta.'],

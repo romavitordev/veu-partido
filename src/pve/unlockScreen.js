@@ -5,6 +5,7 @@
 // Devolve para o flow.js: 'spin', 'buy:<id>' ou 'back'. O resultado do giro volta por showSpin().
 import { isUnlocked, pveBanned } from './unlocks.js';
 import { RARITY_INFO, RARITIES, SPIN_PRICE, DUP_REFUND, rarityOf, shopPrice, shopBanner, shopWindow, nextRefresh, spinOdds } from './economy.js';
+import { onHover } from '../ui/hover.js';
 
 const COLS = 6;
 const GCOLS = 3;
@@ -67,6 +68,14 @@ export class PveUnlockScreen {
   }
 
   bindTile(t) {
+    onHover(t, () => {
+      const i = Number(t.dataset.i);
+      if (this.focus === 'grid' && this.index === i) return;
+      this.focus = 'grid';
+      this.index = i;
+      this.audio?.play('select');
+      this.render();
+    });
     t.addEventListener('click', () => {
       const i = Number(t.dataset.i);
       if (this.focus === 'grid' && i === this.index && this.tab === 'shop') { this.clicked = 'action'; return; }

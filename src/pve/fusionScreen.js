@@ -6,6 +6,7 @@
 // Devolve 'back'.
 import { FUSIONS, RELICS, getUpgrade } from './upgrades.js';
 import { DUNGEONS } from './dungeons.js';
+import { hoverIndex } from '../ui/hover.js';
 
 const COLS = 6;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -59,6 +60,7 @@ export class PveFusionScreen {
     root.appendChild(el);
     this.el = el;
     el.querySelectorAll('.pf-tile').forEach((t) => t.addEventListener('click', () => { this.index = Number(t.dataset.i); this.audio?.play('select'); this.render(); }));
+    el.querySelectorAll('.pf-tile').forEach((t) => hoverIndex(this, t, Number(t.dataset.i)));
     el.querySelector('[data-i="back"]').addEventListener('click', () => { this.clicked = 'back'; });
     this.render();
   }
