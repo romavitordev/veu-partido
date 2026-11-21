@@ -631,6 +631,7 @@ baixado sem o OK do dono.
 - [x] **Alê toca o keytar na horizontal e máscara de corpse paint refeita** (v5.11.0).
 - [x] **Telemetria de balanço da Cindy** (v4.44.0: 18% → 50%).
 - [x] **Alvira (Vampiros)** — v5.12.0: A Primeira Vampira de Hexatombe jogável, fecha a equipe dos Vampiros com Raziel e Sabara. Cajado da Cruz de Sangue, Hastes de Metal no □, Titereira de Sangue (marionete que puxa pelas cordas de sangue), Vampirismo, Bolsa do Sangue, O Sino, especial Absolvição, despertar O Sino Tocou e especial em equipe Missa de Sangue.
+- [x] **Shi no Kage** — v5.45.0: Decepar não repete o golpe a cada quadro no Outro Lado, especial do Joui renomeado, ondas do Sertão batem mais forte (vida em rampa), Araras imunes a corpo a corpo no ar e cartas de melhoria sem "+dano" em habilidade sem dano.
 - [x] **A investida do Quibungo** — v5.44.0: o chefe arremessa quem fica colado, investida de ponta a ponta (desviou, ele bate a cabeça e fica zonzo), não foge mais (demorou no Aniquilação, vira o Kerberos) e mais forte no Aniquilação.
 - [x] **A horda na Árvore Anciã** — v5.43.0: corredor de Treb Ciach de volta à tela dividida no coop; na Árvore, hordas em levas por três frentes, alçapão sem cura, menos dano nele e mais em quem joga.
 - [x] **A língua que estica** — v5.42.1: a língua do Quibungo nos ataques é a do próprio modelo (a enrolada some e ela estica da raiz), sem segunda língua; as criaturas do Outro Lado só grunhem (vitória, entrada e luta).

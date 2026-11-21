@@ -187,29 +187,48 @@ export const isKit = (id) => typeof id === 'string' && id.startsWith('kit:');
 const kitParts = (id) => { const [, c, ...r] = id.split(':'); return { char: c, slot: r.join(':') }; };
 
 const pctTxt = (x) => `${Math.round(x * 100)}%`;
-function kitDesc(t, base) {
+// o texto da carta só fala do que a habilidade TEM (dono, 2026-11-21: "algumas habilidades mesmo sem ser de dano ... diz:
+// -x% cooldown, +10% de dano"): sem dano, não promete dano; sem recarga ou sem custo, não fala delas
+// has: { dmg, cd, cost } (o padrão é ter tudo: o tiro, o combo e o especial)
+function kitDesc(t, base, has = { dmg: true, cd: true, cost: true }) {
   const S = KIT_STEP[t];
   const bits = [];
-  if (S.cd) bits.push(`recarga ${pctTxt(S.cd)} menor`);
-  if (S.cost) bits.push(`${pctTxt(S.cost)} menos Sanidade`);
-  bits.push(t === 'ability' ? `+${pctTxt(S.dmg)} de dano no que acertar` : `+${pctTxt(S.dmg)} de dano`);
+  if (S.cd && has.cd) bits.push(`recarga ${pctTxt(S.cd)} menor`);
+  if (S.cost && has.cost) bits.push(`${pctTxt(S.cost)} menos Sanidade`);
+  if (has.dmg) bits.push(t === 'ability' ? `+${pctTxt(S.dmg)} de dano no que acertar` : `+${pctTxt(S.dmg)} de dano`);
   return `${base} Por nível: ${bits.join(', ')}.`;
+}
+
+// a habilidade causa dano? procura um número de dano na ficha dela (o golpe, os tiros, as ondas, o sangramento...)
+// (damage, blowDamage, finalDamage, dragDamage, pushDamage..., dps; não os multiplicadores como damageMult)
+const isDmgKey = (k) => /amage$/.test(k) || /dps$/i.test(k);
+export function dealsDamage(a, depth = 0) {
+  if (!a || typeof a !== 'object' || depth > 4) return false;
+  for (const [k, v] of Object.entries(a)) {
+    if (isDmgKey(k) && typeof v === 'number' && v > 0) return true;
+    if (v && typeof v === 'object' && !(v.isColor || v.isVector3) && dealsDamage(v, depth + 1)) return true;
+  }
+  return false;
 }
 
 // as cartas do kit de uma ficha de personagem (def de src/characters): uma por habilidade, o tiro (□), o combo e o especial
 export function kitUpgrades(def) {
   if (!def || !def.id) return [];
   const out = [];
-  const add = (slot, type, name, icon, base) => {
+  const add = (slot, type, name, icon, base, has) => {
     const id = kitId(def.id, slot);
     let u = KIT.get(id);
     if (!u) {
-      u = { id, kind: 'kit', slot, type, char: def.id, who: def.name, name, icon, max: KIT_MAX, desc: kitDesc(type, base), apply: () => {} };
+      u = { id, kind: 'kit', slot, type, char: def.id, who: def.name, name, icon, max: KIT_MAX, desc: kitDesc(type, base, has), apply: () => {} };
       KIT.set(id, u);
     }
     out.push(u);
   };
-  for (const a of def.abilities || []) if (a && a.id && a.name && !a.hidden) add(a.id, 'ability', a.name, '◆', 'Habilidade sua.');
+  for (const a of def.abilities || []) {
+    if (!a || !a.id || !a.name || a.hidden) continue;
+    const has = { dmg: dealsDamage(a), cd: (a.cooldown || 0) > 0, cost: (a.energyCost || 0) > 0 };
+    if (has.dmg || has.cd || has.cost) add(a.id, 'ability', a.name, '◆', 'Habilidade sua.', has); // sem nada a melhorar, sem carta
+  }
   if (def.ranged && def.ranged.name) add('ranged', 'ranged', def.ranged.name, '➹', 'O seu ataque à distância.');
   if (def.melee && def.melee.name) add('melee', 'melee', def.melee.name, '⚔', 'O seu combo corpo a corpo.');
   if (def.special && def.special.name) add('special', 'special', def.special.name, '★', 'O seu especial.');

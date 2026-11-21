@@ -94,6 +94,11 @@ export class SpecialStandIn {
       }
     }
     e.health = this.hp = 99999;
+    // a FERIDA ABERTA (noHeal: o Decepar e o Corte Ceifador) trava a vida do dublê onde ela caiu; sem soltar o teto, a
+    // volta para 99999 era desfeita a cada quadro e o MESMO golpe passava de novo para o bicho a cada quadro (dono,
+    // 2026-11-21: "quando usei no quibungo a vida dele foi de 70% pra uns 2%")
+    const nh = e.findBuff && e.findBuff('noHeal');
+    if (nh) nh.cap = this.hp;
   }
 
   // a cada quadro, depois do mundo andar

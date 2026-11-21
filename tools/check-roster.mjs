@@ -188,7 +188,7 @@ ok(carL && carL.baseId === 'carina' && carL.model === 'carina_leone' && !carL.gr
 const bal = get('balu');
 ok(bal && bal.origin === 'Ordo Realitas' && ['curseWeapon', 'demonAxe', 'caiDentro', 'selfBuff', 'heavyProtection'].every((t) => bal.abilities.some((a) => a.type === t)) && bal.ranged.boomerang && bal.ranged.returnsProp === 'axe' && bal.melee.ground && bal.melee.ground.otg && bal.grip.twoHand, 'Balu: pesado da Ordo Realitas, Amaldiçoar Arma, Machado Demônio (vida), Fala Imponente, 110%, Colete, machado que volta e Derrubar e Atacar');
 const banners = Object.fromEntries(ROSTER.map((c) => [c.id, c.special.banner]));
-ok(banners.gal_sal === 'Injustiça né?' && banners.kaiser === 'Cinerária!' && banners.joui === 'Execução das Sombras' && banners.aghata === 'Descarnar!' && banners.arthur === 'Solo do Abutre' && banners.kian === 'Inexistir', 'textos dos especiais na tela');
+ok(banners.gal_sal === 'Injustiça né?' && banners.kaiser === 'Cinerária!' && banners.joui === 'Shi no Kage' && banners.aghata === 'Descarnar!' && banners.arthur === 'Solo do Abutre' && banners.kian === 'Inexistir', 'textos dos especiais na tela');
 ok(COMBAT.maxHealth === 1500 && COMBAT.maxEnergy === 100, 'vida 1500 e energia 100');
 // VIDA IGUAL PARA TODOS (1500, sem número na tela); os PORTADORES aguentam mais — Ferreiro e Arnaldo só transformados
 {

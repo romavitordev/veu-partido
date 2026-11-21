@@ -121,6 +121,11 @@ const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador cop
 // o QUIBUNGO no Aniquilação (por cima da escala da dificuldade): +40% de vida e +25% de dano (vale para o Kerberos que
 // nasce dele, na mesma onda). PROPOSTA.
 const QUIB_HARD = { hp: 1.4, dealt: 1.25 };
+// AS ONDAS (dono, 2026-11-21: "as criaturas das ondas estão meio fracas, bastante vida e pouco dano" e "não precisa
+// baixar [a vida], mantenha, ou ajuste por ondas, as primeiras com um pouco menos de vida do que as proximas"): os bichos
+// das ondas batem mais (dealt) e a vida SOBE ao longo da fase — da 1ª onda (hpFirst) até a de antes da última (100%).
+// A vila de Treb Ciach já tinha a própria rampa (70% → 100%) e a Árvore, o próprio dano (TREE.playerDmg). PROPOSTA.
+const WAVE_FOES = { dealt: 1.25, hpFirst: 0.8 };
 const COPIA_HP = 160;
 const COPIA_DMG = 0.45;
 const LOCK_RANGE = 15; // até onde a mira trava num inimigo
@@ -1291,7 +1296,8 @@ export class Dungeon {
       this.audio.play('fearGaze', { volume: 0.5, pitch: 0.6 });
     }
     // na ÁRVORE quem joga apanha um pouco mais (a porta não se cura mais; pve/arvore.js TREE.playerDmg)
-    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT * (this.tree ? TREE.playerDmg : 1) * (kind === 'beastBoss' && this.run.difficulty === 'annihilation' ? QUIB_HARD.dealt : 1), taken: 1 };
+    const waveDealt = this.tree || kind === 'beastBoss' ? 1 : WAVE_FOES.dealt;
+    e.cpuEdge = { dealt: this.scale.dealt * MINION_DEALT * waveDealt * (this.tree ? TREE.playerDmg : 1) * (kind === 'beastBoss' && this.run.difficulty === 'annihilation' ? QUIB_HARD.dealt : 1), taken: 1 };
     this.hudAdd('pve-noboss'); // a barra de cima é do chefe: o dono escondido dos zumbis não aparece (os zumbis têm a própria)
     this.waveObjective();
   }
@@ -1305,6 +1311,8 @@ export class Dungeon {
     // vai de 70% na 1ª onda a 100% na penúltima (dono, 2026-11-20: "parece que as assombrações da parte 1 são mais fortes
     // que a da parte 3" — a base é a mesma, mas na Árvore já se chega com todos os níveis). PROPOSTA.
     if (this.village && !this.tree && this.waves && this.waves.total > 2) hpMul *= 0.7 + 0.3 * Math.min(1, Math.max(0, (this.waves.n - 1) / (this.waves.total - 2)));
+    // as outras FASES DE ONDAS (Tipora, Sertão): a mesma ideia, mais suave (WAVE_FOES.hpFirst → 100%); o chefe fica inteiro
+    else if (this.waves && !this.tree && !this.village && this.waves.total > 2 && type !== 'quibungo' && type !== 'kerberos') hpMul *= WAVE_FOES.hpFirst + (1 - WAVE_FOES.hpFirst) * Math.min(1, Math.max(0, (this.waves.n - 1) / (this.waves.total - 2)));
     const W = this.D.waves || {};
     const giant = type === 'gigante' || type === W.giant;
     const base = giant ? W.giantHp || 900 : FOE_HP[type] || FOE_HP.zumbi;

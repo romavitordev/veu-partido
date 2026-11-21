@@ -1,5 +1,16 @@
 # Changelog
 
+## v5.45.0 — Shi no Kage
+
+### Corrigido
+- Decepar no Outro Lado: o golpe passava para o bicho de novo a cada quadro (a Ferida Aberta travava a vida do dublê invisível), e um Decepar no nível máximo tirava quase toda a vida do Quibungo. Agora acerta uma vez e depois só sangra. Vale também para o Corte Ceifador do Joui.
+- Melhorias da fase: as cartas das habilidades mostravam "+10% de dano" mesmo em habilidade sem dano (teleporte, buffs, curas). Agora cada carta só lista o que a habilidade tem: recarga, custo de Sanidade e dano.
+
+### Alterado
+- O especial do Joui, antes Execução das Sombras, agora se chama Shi no Kage.
+- Ondas do Sertão: as criaturas batem 25% mais forte. A vida foi mantida nas últimas ondas e começa em 80% na primeira, subindo onda a onda. PROPOSTA: os números.
+- Araras: enquanto voam, golpes corpo a corpo não causam dano (aparece o aviso para bater quando ela pousar); tiros, habilidades e especiais pegam normalmente.
+
 ## v5.44.0 — A Investida do Quibungo
 
 ### Adicionado

@@ -180,10 +180,11 @@ export default {
 
   // ESPECIAL do Joui mascarado: some na própria sombra e surge golpeando pelas costas. (Até a v3.41.0 chamava "Shi no
   // Kage", mas Shi no Kage é o nome da KATANA que ele só recebe depois de entregar a máscara — agora é o especial da
-  // Transformação; este passou a se chamar "Execução das Sombras", nome de jogo, não do cânone.)
+  // Transformação; este passou a se chamar "Execução das Sombras", nome de jogo, não do cânone. Dono, 2026-11-21: "Ataque
+  // Execução das Sombras do Joui deveria se chamar 'Shi no Kage'" — volta o nome; o da Transformação também é Shi no Kage.)
   special: {
-    name: 'Execução das Sombras',
-    banner: 'Execução das Sombras',
+    name: 'Shi no Kage',
+    banner: 'Shi no Kage',
     type: 'teleportStrike',
     energyCost: 50,
     cooldown: 14,

@@ -93,6 +93,21 @@ export class AraraBeast extends Marionette {
     return hitBand(this, p, r, low, this.alt + this.height);
   }
 
+  // NO AR, GOLPE FÍSICO NÃO PEGA (dono, 2026-11-21: "Araras deveriam não tomar ataques fisicos no ar, só quando elas
+  // descerem, mas tiros elas podem sim tomar dano"): o soco/corte que alcança a arara voando só levanta penas; tiros,
+  // habilidades e especiais continuam valendo. Pousada (depois do rasante), apanha de tudo.
+  hitBy(attacker, dmg, info) {
+    if (!this.landed() && info && info.kind === 'melee' && this.alive && this.state !== 'die') {
+      this.world.fx.burst(new THREE.Vector3(this.pos.x, this.alt + 0.4, this.pos.z), { count: 4, color: this.kind === 'infernal' ? 0x5a1018 : 0x2a8a3a, speed: 1.5, up: 0.5, life: 0.5, size: 0.1, gravity: 2 });
+      if (attacker && attacker.notify && !(attacker.araraWarnAt > this.world.time - 8)) {
+        attacker.araraWarnAt = this.world.time;
+        attacker.notify('NO AR, SÓ TIRO PEGA: BATA QUANDO ELA POUSAR', true);
+      }
+      return;
+    }
+    super.hitBy(attacker, dmg, info);
+  }
+
   pickAttack(d) {
     const c = this.cds;
     const A = this.cfg.attacks;

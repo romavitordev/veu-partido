@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.44.0';
+export const VERSION = '5.45.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,18 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.45.0',
+    date: '2026-11-21',
+    title: 'Shi no Kage',
+    items: [
+      'Decepar (e o Corte Ceifador): nos bichos e chefes do Outro Lado o golpe acertava de novo a cada quadro e tirava quase toda a vida do Quibungo; agora acerta uma vez e depois só sangra.',
+      'O especial do Joui agora se chama Shi no Kage.',
+      'Ondas do Sertão: as criaturas batem 25% mais forte; a vida começa um pouco menor nas primeiras ondas e sobe até a de antes.',
+      'Araras: no ar, golpes corpo a corpo não pegam (bata quando ela pousar); tiros, habilidades e especiais pegam.',
+      'Melhorias da fase: as cartas das habilidades só prometem o que elas têm (sem "+10% de dano" em habilidade que não dá dano).',
+    ],
+  },
   {
     v: '5.44.0',
     date: '2026-11-21',

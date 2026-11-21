@@ -109,7 +109,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Passiva — Precognição:** não é pego desprevenido (sem bônus de costas nem susto de teleporte)
 - **Passiva — Resistente:** −7% de dano físico recebido
 
-### Especial: Execução das Sombras
+### Especial: Shi no Kage
 
 250 de dano · custo 50 · cooldown 14 s.
 
