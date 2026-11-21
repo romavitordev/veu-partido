@@ -616,6 +616,15 @@ test('fusões: o progresso mostra o que cada ingrediente tem e pede, e a receita
   assert.deepEqual(fusionProgress([]), []);
 });
 
+test('fusões: a receita só aparece para as já descobertas', async () => {
+  const U = await import('../src/pve/upgrades.js');
+  const picks = ['furia', 'furia', 'furia'];
+  assert.ok(!fusionProgress(picks, []).some((x) => x.f.id === 'carnificina'), 'nunca achada: some da lista');
+  assert.ok(fusionProgress(picks, ['carnificina']).some((x) => x.f.id === 'carnificina'), 'descoberta: aparece');
+  assert.deepEqual(U.fusionHint(picks, 'sanguessuga', []), { part: false, completes: false });
+  assert.deepEqual(U.fusionHint(picks, 'sanguessuga', ['carnificina']), { part: true, completes: true });
+});
+
 test('dublê: golpe em área pega todos em volta; tiro de um alvo só respinga metade', async () => {
   const { shareOf, areaOf } = await import('../src/pve/duble.js');
   const v = (x, z) => new THREE.Vector3(x, 0, z);

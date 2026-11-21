@@ -274,6 +274,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - [x] (v5.46.0) **Pedido do dono, 2026-11-21:** seleção de personagem redesenhada (palco 3D com o rasgo, grades em
       painéis de vidro, nome grande e faixas de especial/transformação/habilidades com comando, COMEÇAR no centro) e
       tela de carregamento nova (emblema do Véu rasgado, porcentagem gradual, momento "PRONTO!" em 100%).
+- [x] (v5.46.1) **Pedido do dono, 2026-11-21:** "a receita das fusões só deve mostrar das quais você já aprendeu":
+      Descobertas, FUSÕES À VISTA, pistas das cartas e o aviso FUSÃO PRONTA só para as já descobertas.
 - [ ] **Requisitos secretos de fase** (dono, 2026-11-21: "ainda pensaremos quais fases terão esse requisito, quando
       tiver mais fases"): o gancho existe (`campaign.revealed` em `phaseUnlocked`); falta decidir quais fases e quais
       requisitos.

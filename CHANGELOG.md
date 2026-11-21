@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.46.1 — A Receita Secreta
+
+### Alterado
+- Outro Lado, fusões: a receita só aparece para as fusões que você já descobriu. As nunca achadas ficam como "???" e "receita secreta" na tela Descobertas, não entram em "FUSÕES À VISTA" nem nas pistas das cartas de nível, e não avisam "FUSÃO PRONTA". Elas continuam saindo do baú quando você junta as melhorias certas, agora como surpresa.
+- Página Sobre: o texto das fusões explica a receita secreta e conta 17 fusões (dizia 12).
+
 ## v5.46.0 — Além do Véu
 
 ### Corrigido

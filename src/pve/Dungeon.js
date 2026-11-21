@@ -1868,15 +1868,17 @@ export class Dungeon {
     this.audio.play('levelUp', { volume: 1 });
     this.choosing = true;
     if (this.coop) this.chooser = 1 - this.chooser;
+    this.pveHud.known = this.discovered();
     this.pveHud.openChoice(choices, this.run, (id) => {
-      const wasReady = FUSIONS.filter((f) => evolutionReady(this.run.picks, f)).length;
+      const wasReady = FUSIONS.filter((f) => this.discovered().includes(f.id) && !this.run.picks.includes(f.id) && evolutionReady(this.run.picks, f)).length;
       this.run.picks.push(id);
       this.applyPlayerMods(false);
       this.pveHud.setRun(this.run, this.run.depth);
       this.choosing = false;
       this.hud.callout(choices.find((u) => u.id === id).name.toUpperCase(), '#ffd84a');
       // a receita de uma FUSÃO ficou pronta: o próximo baú traz (o aviso entra depois do nome da carta)
-      const ready = FUSIONS.filter((f) => !this.run.picks.includes(f.id) && evolutionReady(this.run.picks, f)).length;
+      // só as fusões já descobertas avisam (a nunca achada vem do baú como surpresa)
+      const ready = FUSIONS.filter((f) => this.discovered().includes(f.id) && !this.run.picks.includes(f.id) && evolutionReady(this.run.picks, f)).length;
       if (ready > wasReady) this.world.after(1.2, () => { if (!this.disposed) this.hud.callout('FUSÃO PRONTA: ABRA UM BAÚ!', '#d8a0ff'); });
     }, { who, coop: this.coop, noClick: !!this.net || (this.coop && who === 1), mine: this.local === null || this.local === who });
   }

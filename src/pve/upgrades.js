@@ -375,8 +375,11 @@ export const isRelic = (id) => RELICS.some((r) => r.id === id);
 // O PROGRESSO DAS FUSÕES na tentativa (dono, 2026-11-21: "quero que mostre quais melhorias são necessárias para eu
 // fazer elas na fase"): as fusões ainda não ganhas em que a build já tem ao menos um ingrediente, com o que cada
 // ingrediente tem / pede e se a receita está pronta (o próximo baú traz). As mais perto de ficar prontas primeiro.
-export function fusionProgress(picks) {
-  return FUSIONS.filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => countOf(picks, x) > 0))
+// SÓ AS JÁ DESCOBERTAS (dono, 2026-11-21: "a receita das fusões só deve mostrar das quais você já aprendeu"): `known`
+// é a lista do save (profile.discovered); a fusão nunca achada continua saindo do baú, mas como surpresa.
+const knownFusions = (known) => (known ? FUSIONS.filter((f) => known.includes(f.id)) : FUSIONS);
+export function fusionProgress(picks, known = null) {
+  return knownFusions(known).filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => countOf(picks, x) > 0))
     .map((f) => {
       const parts = f.evolve.needs.map(([id, need]) => ({ id, need, have: Math.min(need, countOf(picks, id)), u: getUpgrade(id) }));
       const missing = parts.reduce((s, p) => s + (p.need - p.have), 0);
@@ -386,8 +389,8 @@ export function fusionProgress(picks) {
 }
 
 // a pista nas cartas de nível: a melhoria entra em alguma fusão que falta, e escolher `id` agora deixa uma pronta
-export function fusionHint(picks, id) {
-  const open = FUSIONS.filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => x === id));
+export function fusionHint(picks, id, known = null) {
+  const open = knownFusions(known).filter((f) => !picks.includes(f.id) && f.evolve.needs.some(([x]) => x === id));
   const completes = open.some((f) => !evolutionReady(picks, f) && evolutionReady([...picks, id], f));
   return { part: open.length > 0, completes };
 }

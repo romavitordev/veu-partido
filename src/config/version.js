@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.46.0';
+export const VERSION = '5.46.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.46.1',
+    date: '2026-11-21',
+    title: 'A Receita Secreta',
+    items: [
+      'Outro Lado, fusões: a receita só aparece para as fusões que você já descobriu (Descobertas, FUSÕES À VISTA e cartas de nível).',
+      'As nunca achadas continuam saindo do baú quando você junta as melhorias certas, agora como surpresa.',
+    ],
+  },
   {
     v: '5.46.0',
     date: '2026-11-21',
