@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.42.0';
+export const VERSION = '5.42.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.42.1',
+    date: '2026-11-21',
+    title: 'A Língua que Estica',
+    items: [
+      'Quibungo: a língua dos ataques é a do próprio modelo. A enrolada some das costas e a mesma língua estica da raiz até a presa, sem aparecer uma segunda.',
+      'As criaturas do Outro Lado (Quibungo, Kerberos, Carniçal, Degolificada e Espreitador) não falam mais: na vitória e nas falas da luta ficam só a cena e um grunhido.',
+    ],
+  },
   {
     v: '5.42.0',
     date: '2026-11-21',

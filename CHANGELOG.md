@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.42.1 — A Língua que Estica
+
+### Corrigido
+- Quibungo: no □ Chicote da Língua e na Língua e Mordida ainda aparecia uma segunda língua (uma faixa reta) enquanto a enrolada ficava nas costas. Agora a língua do próprio modelo estica: a enrolada some, e a mesma língua, com a mesma cor e grossura, sai da raiz dela, faz o arco e afina até a ponta na presa; quando volta, aparece enrolada de novo. Saiu também a bolinha na ponta do □.
+
+### Alterado
+- As criaturas do Outro Lado (Quibungo, Kerberos, Carniçal, Degolificada e Espreitador) não falam mais: na vitória, na entrada e no meio da luta fica só a cena entre parênteses e um grunhido de cada uma (o rugido do Quibungo, o grito rasgado da Degolificada, o chiado do Carniçal). O Estrangeiro e o Amigo Imaginário continuam falando, como no cânone.
+
 ## v5.42.0 — O Nascimento do Kerberos
 
 ### Adicionado

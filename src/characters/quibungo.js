@@ -93,7 +93,7 @@ export default {
     hitstun: 0.3,
     cooldown: 3.5,
     energyCost: 10,
-    visual: 'inkClaw',
+    visual: 'none', // a ponta é a própria língua esticada (combat/tongue.js)
     color: TONGUE,
     element: 'sangue',
     sound: 'chainThrow',

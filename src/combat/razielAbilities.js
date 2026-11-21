@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { tongueRoot } from './tongue.js';
 import { Timeline, yawTo, distXZ, forwardFromYaw } from '../core/util.js';
 import { ABILITY_TYPES } from './abilities.js';
 import { applyHit } from './damage.js';
@@ -102,8 +103,11 @@ Object.assign(ABILITY_TYPES, {
         const tip = ok ? opp.chestPos() : mouth().add(forwardFromYaw(f.yaw).multiplyScalar(a.range));
         if (a.rope && world.fx.chain) {
           // a língua de carne (a mesma corda do □), presa no peito da presa enquanto puxa
+          // a.hideProp: a língua enrolada do modelo some e ELA MESMA estica (o material dela, saindo da raiz dela)
+          const root = a.hideProp ? tongueRoot(f.rig, a.hideProp) : null;
           if (a.hideProp) f.rig.showProp(a.hideProp, false);
-          rope = world.fx.chain(mouth, ok ? () => opp.chestPos() : () => tip, { links: 30, sag: 0.1, rope: true, color: a.color ?? 0xc04050, glow: 0x0a0402, thick: a.ropeThick ?? 0.1 });
+          if (root) rope = world.fx.fleshTongue(root, ok ? () => opp.chestPos() : () => tip, { material: root.material, radius: a.ropeThick ?? 0.09 });
+          else rope = world.fx.chain(mouth, ok ? () => opp.chestPos() : () => tip, { links: 30, sag: 0.1, rope: true, color: a.color ?? 0xc04050, glow: 0x0a0402, thick: a.ropeThick ?? 0.1 });
           world.after(ok ? a.pull : 0.25, dropRope);
         } else world.fx.tracer(mouth(), tip, { color: a.color ?? 0xc04050, life: a.pull + 0.05, width: 0.07 });
         world.audio.play('whip', { volume: 0.7, pitch: 0.7 });

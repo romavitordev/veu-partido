@@ -305,6 +305,77 @@ export class Effects {
     return h;
   }
 
+  // A LÍNGUA DE CARNE que estica (o Quibungo; dono, 2026-11-21: "era pra lingua do modelo dele esticar e atacar e nao
+  // aparecer uma nova"): um tubo redondo com o MESMO material da língua do modelo, que nasce da raiz dela (rootFn →
+  // { pos, dir }: o ponto e a direção em que a língua sai do corpo), sobe um pouco nessa direção, faz o arco e afina
+  // até a ponta em toFn. O chamador esconde a língua enrolada enquanto este tubo existe. Mesmo contrato da chain():
+  // devolve { stop, fromFn, toFn } (fromFn/toFn podem ser trocados no meio, como no puxão).
+  fleshTongue(rootFn, toFn, o = {}) {
+    const SEG = 28;
+    const RAD = 8;
+    const r0 = o.radius ?? 0.09;
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array((SEG + 1) * RAD * 3);
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const idx = [];
+    for (let i = 0; i < SEG; i++) for (let j = 0; j < RAD; j++) {
+      const a = i * RAD + j, b = i * RAD + ((j + 1) % RAD), c = a + RAD, d = b + RAD;
+      idx.push(a, c, b, b, c, d);
+    }
+    geo.setIndex(idx);
+    const own = !o.material;
+    const mat = o.material || new THREE.MeshToonMaterial({ color: o.color ?? 0xb01828 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.frustumCulled = false;
+    this.scene.add(mesh);
+    const curve = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3());
+    const h = { mesh, alive: true, toFn };
+    h.fromFn = () => rootFn().pos;
+    const P = new THREE.Vector3(), T = new THREE.Vector3(), N = new THREE.Vector3(), B = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
+    h.update = () => {
+      const R = rootFn();
+      const b = h.toFn();
+      if (!R || !b) return;
+      const a = R.pos;
+      const len = a.distanceTo(b);
+      // sai da raiz na direção da língua (para cima/trás), faz o arco e chega na ponta
+      curve.v0.copy(a);
+      curve.v1.copy(a).addScaledVector(R.dir, Math.min(1.1, 0.25 + len * 0.22));
+      curve.v2.lerpVectors(a, b, 0.7).add(new THREE.Vector3(0, Math.min(0.6, len * 0.08), 0));
+      curve.v3.copy(b);
+      for (let i = 0; i <= SEG; i++) {
+        const t = i / SEG;
+        curve.getPoint(t, P);
+        curve.getTangent(t, T);
+        N.crossVectors(T, UP);
+        if (N.lengthSq() < 1e-6) N.set(1, 0, 0);
+        N.normalize();
+        B.crossVectors(N, T).normalize();
+        const r = Math.max(0.012, r0 * (1 - 0.8 * Math.pow(t, 1.3))); // afina como a do modelo
+        for (let j = 0; j < RAD; j++) {
+          const ang = (j / RAD) * Math.PI * 2;
+          const k = (i * RAD + j) * 3;
+          pos[k] = P.x + (N.x * Math.cos(ang) + B.x * Math.sin(ang)) * r;
+          pos[k + 1] = P.y + (N.y * Math.cos(ang) + B.y * Math.sin(ang)) * r;
+          pos[k + 2] = P.z + (N.z * Math.cos(ang) + B.z * Math.sin(ang)) * r;
+        }
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.computeVertexNormals();
+    };
+    h.stop = () => {
+      if (!h.alive) return;
+      h.alive = false;
+      this.scene.remove(mesh);
+      geo.dispose();
+      if (own) mat.dispose();
+    };
+    this.chains = this.chains || new Set();
+    this.chains.add(h);
+    h.update();
+    return h;
+  }
+
   _updateChain(h) {
     const a = h.fromFn();
     const b = h.toFn();
@@ -456,7 +527,7 @@ export class Effects {
     this.debris.update(dt);
     this.spark.update(dt);
     this.wounds.update(dt);
-    if (this.chains) for (const h of this.chains) { if (!h.alive) this.chains.delete(h); else this._updateChain(h); }
+    if (this.chains) for (const h of this.chains) { if (!h.alive) this.chains.delete(h); else if (h.update) h.update(); else this._updateChain(h); }
     if (this.runeSets) {
       for (const h of this.runeSets) {
         if (!h.alive) { this.runeSets.delete(h); continue; }

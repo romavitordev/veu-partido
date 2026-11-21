@@ -3943,10 +3943,41 @@ export function battleLines(speakerId, opponentId, event) {
   const opening = lines[speaker];
   const response = replies[opponent];
   if (!opening || !response) return null;
-  return [[speakerId, opening], [opponentId, response]];
+  // as criaturas do Outro Lado só grunhem (CREATURE_GRUNTS)
+  const say = (id, l) => (Array.isArray(l) ? l.map((x) => gruntLine(CREATURE_GRUNTS[id] ? id : baseOf(id), x)) : gruntLine(CREATURE_GRUNTS[id] ? id : baseOf(id), l));
+  return [[speakerId, say(speakerId, opening)], [opponentId, say(opponentId, response)]];
+}
+
+// AS CRIATURAS DO OUTRO LADO NÃO FALAM (dono, 2026-11-21: "Quibungo e essas criaturas do outro lado nao deveria ter
+// falas de vitória, apenas grunidos"). A cena entre parênteses fica (o que ela faz depois de vencer); qualquer palavra
+// dita vira um GRUNHIDO dela. A escolha do grunhido é fixa por fala (o mesmo texto dá sempre o mesmo som).
+// O Estrangeiro e o Amigo Imaginário ficam de fora: eles falam no cânone.
+export const CREATURE_GRUNTS = {
+  quibungo: ['GRRRRHH...', 'HRRRAAAAGH!', 'Hhhrrr... hhrrr...', 'RRRRUUUAAARGH!'],
+  quibungo_kerberos: ['GRRR-RRR-RRRAAAH!', 'Hrrr... hrrr... hrrr...', 'RRRAAAUUUUUH!'],
+  carnical: ['Grrrrr...', 'Hhhsssss...', 'KRRRAAAH!'],
+  degolificada: ['...hhhhkkk...', 'HHHAAAAKKK!', '...khhh... khhh...'],
+  espreitador: ['...hhhh...', 'Hnnnnggh...', '...ghhrrr...'],
+};
+const CREATURE_BASE = { quibungo_kerberos: 'quibungo' };
+export function gruntLine(id, line) {
+  const G = CREATURE_GRUNTS[id];
+  if (!G || typeof line !== 'string') return line;
+  const scenes = line.match(/\([^)]*\)/g) || [];
+  const spoken = line.replace(/\([^)]*\)/g, '');
+  if (!/[A-Za-zÀ-ÿ]/.test(spoken)) return line; // só a cena: já é sem fala
+  let h = 0;
+  for (const c of line) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const grunt = G[h % G.length];
+  return scenes.length ? `${scenes.join(' ')} ${grunt}` : grunt;
 }
 
 export function victoryLines(winner, loser, loserName = CHARACTER_NAMES[loser] || loser) {
+  if (CREATURE_GRUNTS[winner]) return victoryLinesRaw(CREATURE_BASE[winner] || winner, loser, loserName).map((l) => gruntLine(winner, l));
+  return victoryLinesRaw(winner, loser, loserName);
+}
+
+function victoryLinesRaw(winner, loser, loserName = CHARACTER_NAMES[loser] || loser) {
   // uma versão com falas próprias (o Sacrifício do Rancor) fala por elas; as outras, pelas do personagem base
   if (winner !== 'anfitriao' && !VICTORY_LINES[winner]?.[BASE_CHARACTER[loser] || loser]) winner = BASE_CHARACTER[winner] || winner;
   // quem derruba o ANFITRIÃO (o das Relíquias ou o Amphitruo) fala com ele — não com o Arnaldo nem com o Gaius
@@ -5336,9 +5367,10 @@ export function introLines(idA, idB) {
   const variations = INTRO_DIALOGUES[idA]?.[idB];
   if (!variations?.length) throw new Error(`Fala de introdução não registrada: ${idA} vs ${idB}`);
   const scene = variations[Math.floor(Math.random() * variations.length)];
+  // as criaturas do Outro Lado também não falam na entrada: só a cena e o grunhido (CREATURE_GRUNTS)
   return [
-    [scene.starter, scene.line],
-    [scene.response, scene.responseLine],
+    [scene.starter, gruntLine(scene.starter, scene.line)],
+    [scene.response, gruntLine(scene.response, scene.responseLine)],
   ];
 }
 

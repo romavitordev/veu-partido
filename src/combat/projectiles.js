@@ -1,5 +1,6 @@
 import { COMBAT } from '../config/combat.js';
 import * as THREE from 'three';
+import { tongueRoot } from './tongue.js';
 import { applyHit, npcDamage } from './damage.js';
 import { inBounds } from './positioning.js';
 import { glowMat } from '../models/rig.js';
@@ -287,6 +288,10 @@ const VISUALS = {
     const glow = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), glowMat(color, 0.5));
     g.add(glow);
     return g;
+  },
+  // sem peça: o próprio efeito é o golpe (a ponta da língua esticada do Quibungo)
+  none() {
+    return new THREE.Group();
   },
   // Amigo Imaginário: a ponta do tentáculo — três garras negras pingando tinta
   inkClaw(color) {
@@ -599,13 +604,17 @@ export class Projectiles {
     // corrente ligando a mão ao projétil (Injustiça)
     if (ability.chain) {
       const hand = ability.origin === 'back' ? owner.rig.sockets.back : owner.rig.sockets.handR; // a língua das costas do Quibungo
-      p.chainFx = this.world.fx.chain(() => hand.getWorldPosition(new THREE.Vector3()), () => p.pos.clone(), { links: 30, sag: 0.1, rope: !!ability.rope, ...(ability.ropeColor ? { color: ability.ropeColor, glow: 0x0a0402, thick: ability.ropeThick } : {}) });
-      // hideProp: a corda É a peça do modelo esticada (a língua das costas do Quibungo): some enquanto a corda existe
-      if (ability.hideProp && owner.rig.showProp) {
+      // hideProp: a corda É a peça do modelo esticada (a língua das costas do Quibungo): a enrolada some e a mesma
+      // língua (o material dela, saindo da raiz dela) estica até o projétil
+      const root = ability.hideProp ? tongueRoot(owner.rig, ability.hideProp) : null;
+      if (root) {
+        p.chainFx = this.world.fx.fleshTongue(root, () => p.pos.clone(), { material: root.material, radius: ability.ropeThick ?? 0.09 });
         const fx = p.chainFx;
-        const stop = fx.stop.bind(fx);
+        const stop = fx.stop;
         owner.rig.showProp(ability.hideProp, false);
         fx.stop = () => { stop(); if (owner.rig) owner.rig.showProp(ability.hideProp, true); };
+      } else {
+        p.chainFx = this.world.fx.chain(() => hand.getWorldPosition(new THREE.Vector3()), () => p.pos.clone(), { links: 30, sag: 0.1, rope: !!ability.rope, ...(ability.ropeColor ? { color: ability.ropeColor, glow: 0x0a0402, thick: ability.ropeThick } : {}) });
       }
     }
     this.list.push(p);
