@@ -28,6 +28,13 @@ export const SHOP_WINDOW_MS = 3 * 60 * 60 * 1000; // 3 h (dono, 2026-11-20: "pod
 // chances do giro (somam 1). Domingo: o lendário pega 0,4% a mais, tirado do comum
 export const SPIN_ODDS = { comum: 0.71, raro: 0.25, epico: 0.039, lendario: 0.001 };
 export const SUNDAY_LEGENDARY = 0.005;
+// GARANTIA (o "pity" dos gachas; pedido do dono, 2026-11-21: "a cada X giros garante um Lendário"): a cada PITY_SPINS
+// giros sem um lendário NOVO, o próximo giro traz o LENDÁRIO DA VITRINE. O contador (data.pity) atravessa as vitrines
+// e zera quando um lendário novo sai (pela sorte ou pela garantia). Se você já tem o lendário da vitrine, a garantia
+// fica guardada para a próxima vitrine com um lendário que você não tem. 50 giros (dono, 2026-11-21; 10.000 moedas, com os
+// comuns e raros que saem no caminho; comprar o lendário direto custa 1.600)
+export const PITY_SPINS = 50;
+export const pityLeft = (data) => Math.max(0, PITY_SPINS - ((data && data.pity) || 0));
 
 export function rarityOf(id) {
   const t = UNLOCK_TIERS.find((x) => x.ids.includes(id));
@@ -74,7 +81,12 @@ export function shopBanner(ids, now = Date.now()) {
 }
 
 // um giro (sem mexer no save): a raridade pelas chances e um personagem da vitrine nessa raridade
-export function rollSpin(banner, rng = Math.random, date = new Date()) {
+export function rollSpin(banner, rng = Math.random, date = new Date(), { pity = 0, owned = [] } = {}) {
+  // a garantia: com o contador cheio, o lendário da vitrine (se você ainda não tem)
+  if (pity + 1 >= PITY_SPINS) {
+    const leg = banner.slots.find((x) => x.rarity === 'lendario' && !owned.includes(x.id));
+    if (leg) return { id: leg.id, rarity: leg.rarity, pity: true };
+  }
   const odds = spinOdds(date);
   let r = rng();
   let rarity = 'comum';
@@ -89,12 +101,14 @@ export function rollSpin(banner, rng = Math.random, date = new Date()) {
 export function spin(data, banner, rng = Math.random, date = new Date()) {
   if ((data.coins || 0) < SPIN_PRICE) return false;
   data.coins -= SPIN_PRICE;
-  const got = rollSpin(banner, rng, date);
+  const got = rollSpin(banner, rng, date, { pity: data.pity || 0, owned: data.unlocked || [] });
   const dup = (data.unlocked || []).includes(got.id) || !rarityOf(got.id);
   if (dup) data.coins += DUP_REFUND;
   else data.unlocked = [...(data.unlocked || []), got.id];
   data.spins = (data.spins || 0) + 1;
-  return { ...got, dup, refund: dup ? DUP_REFUND : 0 };
+  // o contador da garantia: zera com um lendário novo; senão sobe (para no máximo e espera a vitrine certa)
+  data.pity = got.rarity === 'lendario' && !dup ? 0 : Math.min(PITY_SPINS, (data.pity || 0) + 1);
+  return { ...got, pity: !!got.pity, dup, refund: dup ? DUP_REFUND : 0 };
 }
 
 // RECOMPENSA DO CHEFE em moedas: cresce com a profundidade e a dificuldade (coin da dificuldade em dungeons.js)

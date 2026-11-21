@@ -284,6 +284,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - [ ] **Poções e baús com o tema da fase** (dono, 2026-11-21: "futuramente as poções de cura e baús de algumas fases
       serão personalizados com o tema da fase"): visual próprio por fase (ex.: Sertão, Treb Ciach). O gancho do baú já
       existe (`D.chestSkin` em dungeons.js → `Chest({ skin })`); falta o da poção e decidir quais fases e o tema de cada.
+- [x] (v5.46.3) **Pedido do dono, 2026-11-21:** garantia de lendário no gacha (pity): a cada 50 giros (decisão do
+      dono; `PITY_SPINS` em economy.js) sem lendário novo, o próximo traz o lendário da vitrine; barra com os giros que faltam.
 - [ ] **Requisitos secretos de fase** (dono, 2026-11-21: "ainda pensaremos quais fases terão esse requisito, quando
       tiver mais fases"): o gancho existe (`campaign.revealed` em `phaseUnlocked`); falta decidir quais fases e quais
       requisitos.

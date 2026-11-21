@@ -360,6 +360,29 @@ test('loja: todo personagem tem raridade e a vitrine do gacha tem 6 (2/2/1/1), i
   assert.ok(d.unlocked.includes(r.id));
 });
 
+test('gacha: a garantia (pity) traz o lendário da vitrine a cada PITY_SPINS giros sem um lendário novo', async () => {
+  const { ROSTER } = await import('../src/characters/index.js');
+  const { pveBanned } = await import('../src/pve/unlocks.js');
+  const { shopBanner, rarityOf, spin, SPIN_PRICE, PITY_SPINS, pityLeft } = await import('../src/pve/economy.js');
+  const ids = ROSTER.filter((c) => !pveBanned(c) && rarityOf(c.id)).map((c) => c.id);
+  const b = shopBanner(ids, 1e12);
+  const leg = b.slots.find((x) => x.rarity === 'lendario').id;
+  const d = emptyData();
+  d.coins = SPIN_PRICE * PITY_SPINS;
+  for (let i = 0; i < PITY_SPINS - 1; i++) assert.notEqual(spin(d, b, () => 0).rarity, 'lendario');
+  assert.equal(pityLeft(d), 1);
+  const r = spin(d, b, () => 0);
+  assert.equal(r.id, leg);
+  assert.ok(r.pity && !r.dup && d.unlocked.includes(leg));
+  assert.equal(d.pity, 0, 'zera com o lendário novo');
+  // já tem o lendário da vitrine: a garantia fica guardada (o contador para no máximo)
+  d.pity = PITY_SPINS;
+  d.coins = SPIN_PRICE;
+  const r2 = spin(d, b, () => 0);
+  assert.ok(!r2.pity);
+  assert.equal(d.pity, PITY_SPINS);
+});
+
 test('loja da Aghata: DEVOLVER TUDO devolve cada moeda; a Ressurreição é cara e liga o revive', () => {
   const d = emptyData();
   d.coins = 5000;

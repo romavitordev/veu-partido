@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.46.3 — A Garantia do Lendário
+
+### Adicionado
+- Gacha do Outro Lado com GARANTIA de lendário (o "pity"): a cada 50 giros sem um lendário novo, o próximo giro traz o lendário da vitrine. Uma barra dourada embaixo das chances mostra quantos giros faltam; o contador passa de uma vitrine para a outra e zera quando sai um lendário novo, pela sorte ou pela garantia. Se você já tem o lendário da vitrine, a garantia fica guardada para a próxima vitrine com um lendário que você não tem.
+
 ## v5.46.2 — O Baú no Meio da Luta
 
 ### Alterado

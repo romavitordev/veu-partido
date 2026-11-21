@@ -4,7 +4,7 @@
 //  COMPRAR: qualquer bloqueado direto, pelo preço da raridade — o caminho certo, porém mais caro que o giro.
 // Devolve para o flow.js: 'spin', 'buy:<id>' ou 'back'. O resultado do giro volta por showSpin().
 import { isUnlocked, pveBanned } from './unlocks.js';
-import { RARITY_INFO, RARITIES, SPIN_PRICE, DUP_REFUND, rarityOf, shopPrice, shopBanner, shopWindow, nextRefresh, spinOdds } from './economy.js';
+import { RARITY_INFO, RARITIES, SPIN_PRICE, DUP_REFUND, rarityOf, shopPrice, shopBanner, shopWindow, nextRefresh, spinOdds, PITY_SPINS, pityLeft } from './economy.js';
 import { onHover } from '../ui/hover.js';
 
 const COLS = 6;
@@ -41,6 +41,7 @@ export class PveUnlockScreen {
             <div class="pt-grid pu-grid pu-banner"></div>
           </div>
           <div class="pu-odds"></div>
+          <div class="pu-pity" title="Garantia: a cada ${PITY_SPINS} giros sem um lendário novo, o próximo traz o lendário da vitrine"><span>GARANTIA DE LENDÁRIO</span><div class="pu-pbar"><i></i></div><b></b></div>
           <div class="pu-result" hidden></div>
         </div>
         <div class="pu-shop"><div class="pt-grid pu-grid pu-all"></div></div>
@@ -145,6 +146,15 @@ export class PveUnlockScreen {
     const odds = spinOdds();
     const sunday = new Date().getDay() === 0;
     this.el.querySelector('.pu-odds').innerHTML = RARITIES.map((r) => `<i style="color:${RARITY_INFO[r].color}">${RARITY_INFO[r].label} ${pct(odds[r])}</i>`).join(' · ') + (sunday ? ' <b class="pu-sun">DOMINGO: lendário ×5</b>' : '');
+    // o contador da garantia (pity): quantos giros faltam para o lendário da vitrine vir com certeza
+    const left = pityLeft(d);
+    const legend = this.banner.slots.find((x) => x.rarity === 'lendario');
+    const pityEl = this.el.querySelector('.pu-pity');
+    pityEl.style.setProperty('--k', ((PITY_SPINS - left) / PITY_SPINS).toFixed(3));
+    pityEl.classList.toggle('full', left <= 1);
+    pityEl.querySelector('b').textContent = left <= 1
+      ? (legend && !isUnlocked(d, legend.id) ? 'O PRÓXIMO GIRO É LENDÁRIO!' : 'Garantia guardada: espera um lendário da vitrine que você não tem')
+      : `${left} giros para o lendário garantido`;
     this.tick();
     const mark = (t, id) => {
       const own = isUnlocked(d, id);
@@ -256,7 +266,7 @@ export class PveUnlockScreen {
     box.hidden = false;
     box.style.setProperty('--c', info.color);
     box.className = `pu-result r-${res.rarity}`;
-    box.innerHTML = `<div><img src="${this.portraits[res.id] || ''}" alt=""><span>${info.label.toUpperCase()}</span><b>${esc(c ? c.name : res.id)}</b><small>${res.dup ? `Repetido: +● ${res.refund} de volta` : 'NOVO! Liberado no Outro Lado'}</small><em>clique ou aperte para continuar</em></div>`;
+    box.innerHTML = `<div><img src="${this.portraits[res.id] || ''}" alt=""><span>${info.label.toUpperCase()}</span><b>${esc(c ? c.name : res.id)}</b><small>${res.pity ? 'GARANTIA! ' : ''}${res.dup ? `Repetido: +● ${res.refund} de volta` : 'NOVO! Liberado no Outro Lado'}</small><em>clique ou aperte para continuar</em></div>`;
     this.resultT = performance.now();
     this.render();
   }

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.46.2';
+export const VERSION = '5.46.3';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.46.3',
+    date: '2026-11-21',
+    title: 'A Garantia do Lendário',
+    items: [
+      'Gacha do Outro Lado com garantia de lendário: a cada 50 giros sem um lendário novo, o próximo traz o lendário da vitrine.',
+      'Uma barra dourada mostra quantos giros faltam; o contador passa de uma vitrine para outra e zera com um lendário novo.',
+    ],
+  },
   {
     v: '5.46.2',
     date: '2026-11-21',
