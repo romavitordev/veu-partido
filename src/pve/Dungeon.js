@@ -54,6 +54,8 @@ import { AmigoBrain, growBoss, AMIGO_SIZE, INK_DROP } from './amigo.js';
 import { SinoMechanics } from './sino.js';
 import { rollMiniboss, RastropodaRoom, BiluStalker } from './alheioMinis.js';
 import { MazeRoom } from './maze.js';
+import { MazeDark } from './mazeDark.js';
+import { InkScreen } from './inkScreen.js';
 import { actionLabel } from '../ui/labels.js';
 import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
 import { AmigoInkIntro } from './amigoInkIntro.js';
@@ -2091,6 +2093,8 @@ export class Dungeon {
     const e = this.enemy;
     // CÂMERA LIVRE: o jogador gira a câmera (mouse / analógico direito) e o personagem mira para onde ela aponta
     const out = { player: p, focus: null, free: !this.bossIntro && this.phase !== 'exit', look: V.inp.look };
+    // o LABIRINTO DOS BECOS: vista de cima (CameraRig TOPDOWN_CFG)
+    if (this.maze && !this.bossIntro && this.phase !== 'exit') { out.topDown = true; out.free = false; return out; }
     // o corredor: a câmera atrás, olhando o caminho (o jogador não gira a câmera)
     if (this.runner && !this.runner.done) { out.free = false; out.yaw = this.runner.yaw; out.lockRate = 8; out.dist = 6.4; out.height = 3.6; return out; }
     // TRAVADA: a câmera fica atrás do jogador olhando o alvo (o corpo mira nele; o mouse só troca de alvo)
@@ -2427,6 +2431,8 @@ export class Dungeon {
       const q = V.p;
       q.aimYaw = this.phase === 'exit' || this.phase === 'dead' || q.input?.cpu ? null : V.rig.yaw + Math.PI;
       // travado: o corpo mira direto no alvo (não espera a câmera terminar de virar)
+      // na vista de cima (labirinto) o corpo mira para onde anda, não para onde a câmera olha
+      if (q.aimYaw !== null && this.maze) { const sp = Math.hypot(q.vel.x, q.vel.z); q.aimYaw = sp > 0.6 ? Math.atan2(q.vel.x, q.vel.z) : q.yaw; }
       if (q.aimYaw !== null && V.lockT && V.lockT.pos) q.aimYaw = Math.atan2(V.lockT.pos.x - q.pos.x, V.lockT.pos.z - q.pos.z);
       // um erro na interação (porta, gaveta, baú) não pode impedir o mundo de andar logo abaixo (travamentos, 2026-11-07)
       // o coop: levantar quem caiu / reviver do caixão tem a vez antes das portas e baús
@@ -2543,6 +2549,7 @@ export class Dungeon {
   updateRooms() {
     const p = this.player;
     if (this.waves) this.updateWaves(this.lastDt);
+    this.updateInk();
     if (this.runner) this.runner.update(this.lastDt);
     const enc = this.encounter;
     if (enc && !enc.done && !enc.boss) {
@@ -2796,6 +2803,7 @@ export class Dungeon {
     if (this.net) this.placeMate();
     if (this.net && this.local === 1 && !(this.bossIntro || this.phase === 'exit' || this.phase === 'over')) {
       const cam = this.views[1].rig.camera;
+      this.updateMazeDark(size, [this.views[1]], true);
       const asp = size.x / Math.max(1, size.y);
       if (Math.abs(cam.aspect - asp) > 1e-3) { cam.aspect = asp; cam.updateProjectionMatrix(); }
       r.render(w.scene, cam);
@@ -2814,6 +2822,7 @@ export class Dungeon {
     const full = !this.coop || this.net || this.bossIntro || cine || menu || this.phase === 'exit' || this.phase === 'over' || !!solo;
     if (this.coop && !this.net && this.pveHud && this.pveHud.split === full) this.pveHud.setSplit(!full);
     if (this.coop && !this.net) this.hud.root.classList.toggle('pve-solo', full);
+    this.updateMazeDark(size, full ? [solo && solo.i === 1 && !(this.bossIntro || cine) ? this.views[1] : this.views[0]] : this.views, full);
     // a visão aberta das metades (zoom < 1) volta ao normal na tela inteira
     if (full && this.views) for (const V of this.views) if (V.rig.camera.zoom !== 1) { V.rig.camera.zoom = 1; V.rig.camera.updateProjectionMatrix(); }
     if (solo && solo.i === 1 && !(this.bossIntro || cine || this.phase === 'exit' || this.phase === 'over')) {
@@ -2847,6 +2856,32 @@ export class Dungeon {
     });
     r.setScissorTest(false);
     r.setViewport(0, 0, size.x, size.y);
+  }
+
+  // o ESCURO do labirinto (pve/mazeDark.js): um círculo de luz em volta de cada jogador, só nos Becos
+  // Ilha de Tipora: a tinta escorre na tela a cada onda; na luta com o Amigo Imaginário, as bordas escurecem (inkScreen.js)
+  updateInk() {
+    const W = this.waves;
+    const tipora = this.D && this.D.id === 'tipora' && W && !W.tree && !this.village && this.phase !== 'exit';
+    if (!tipora) { if (this.inkScreen) this.inkScreen.hide(); return; }
+    if (!this.inkScreen) this.inkScreen = new InkScreen(this.hud.root);
+    this.inkScreen.set(W.total ? W.n / W.total : 0, W.n >= W.total && this.encounter && !this.encounter.done);
+    this.inkScreen.update(this.lastDt || 1 / 60);
+  }
+
+  updateMazeDark(size, views, full) {
+    if (!this.maze || !this.pveHud || this.phase === 'exit' || !views || !views[0]) { if (this.mazeDark) this.mazeDark.hide(); return; }
+    if (!this.mazeDark) this.mazeDark = new MazeDark(this.hud.root); // no começo do #hud: embaixo das barras e do HUD do modo
+    const half = Math.floor(size.x / 2);
+    const threatOf = (p) => {
+      let d = Infinity;
+      for (const n of this.world.npcs) if (n.alive && !n.isCloset && !this.players.includes(n.owner)) d = Math.min(d, distXZ(n.pos, p.pos));
+      return d < 7 ? 1 - d / 7 : 0;
+    };
+    this.mazeDark.update(this.lastDt || 1 / 60, views.map((V, i) => ({
+      cam: full ? (views.length === 1 && V.i === 1 && !this.world.cinematic ? V.rig.camera : this.world.camera) : V.rig.camera,
+      p: V.p, x: full ? 0 : i === 0 ? 0 : half, w: full ? size.x : i === 0 ? half : size.x - half, h: size.y, threat: threatOf(V.p),
+    })));
   }
 
   // online: o nome do outro jogador flutuando em cima dele, na câmera desta tela (só desenho: não mexe na simulação)
@@ -2888,6 +2923,8 @@ export class Dungeon {
     if (this.village) { this.village.dispose(); this.village = null; }
     if (this.tree) { this.tree.dispose(); this.tree = null; }
     this.maze && this.maze.dispose();
+    if (this.mazeDark) { this.mazeDark.dispose(); this.mazeDark = null; }
+    if (this.inkScreen) { this.inkScreen.dispose(); this.inkScreen = null; }
     for (const k of this.pickups) k.dispose();
     for (const c of this.closets) c.dispose();
     for (const id in this.cracks) this.cracks[id].dispose();

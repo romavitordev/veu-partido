@@ -58,6 +58,9 @@ function tickDaze(m, dt) {
 // ================================================================== RASTROPODA
 export const RASTROPODA = {
   name: 'RASTROPODA', hp: 900, duration: Infinity, speed: 3.6, radius: 0.9, height: 1.4, restY: 0,
+  // INVISÍVEL ESQUIVA (dono, 2026-11-21: "rastropoda está fácil, na versão invisível poderia ficar invulnerável a 50% dos
+  // ataques, pois é como se o player errasse"): sem farinha, sem estar tonto, metade dos golpes passa pelo vazio
+  ghostDodge: 0.5,
   element: 'transmissao', fxColor: 0x7aff4a, poolColor: 0x1e3a12, noPool: true,
   attacks: {
     claw: { windup: 0.42, active: 0.14, recovery: 0.45, range: 2.9, arc: 140, damage: 24, cd: 1.3, knockback: 2.5, sound: 'heavyPunch' },
@@ -111,7 +114,17 @@ export class Rastropoda extends Marionette {
     if (this.reveal < t) this.reveal = t;
   }
 
+  // invisível de verdade: sem farinha nem lampejo, e não está tonto (tonto ele fica à mostra)
+  get unseen() { return this.reveal <= 0 && this.state !== 'dazed' && this.state !== 'die'; }
+
   hitBy(attacker, dmg, info) {
+    if (this.unseen && Math.random() < (this.cfg.ghostDodge || 0)) {
+      // o golpe passou pelo vazio: só um sopro de poeira, sem dano e sem revelar
+      this.world.fx.burst(new THREE.Vector3(this.pos.x, 0.8, this.pos.z), { count: 4, color: 0xc8c4b8, kind: 'smoke', speed: 0.8, up: 0.4, life: 0.4, size: 0.35, grow: 1 });
+      this.world.audio && this.world.audio.play('swing', { volume: 0.35, pitch: 1.4 });
+      this.dodged = (this.dodged || 0) + 1;
+      return;
+    }
     this.dust(0.5); // apanhar mostra só um lampejo (antes 1,2 s)
     super.hitBy(attacker, this.state === 'dazed' ? dmg * this.cfg.daze.taken : dmg, info);
   }
@@ -328,6 +341,9 @@ export class Rastropoda extends Marionette {
 // faz hesitar: ele recua de novo. Fraco e rápido; volta depois de cair (o Dungeon cuida).
 export const BILU = {
   name: 'BILU', hp: 90, duration: Infinity, speed: 7.4, radius: 0.45, height: 2.7, restY: 0,
+  // VOLTA MAIS FORTE (dono, 2026-11-21: "a cada ressurreição ele poderia vir com mais vida"): × isto a cada volta
+  // (90 → 162 → 292 antes da escala da dificuldade). PROPOSTA
+  comebackHp: 1.8,
   element: 'transmissao', fxColor: 0x5aff6a, poolColor: 0x0a120a, noPool: true,
   attacks: {
     swipe: { windup: 0.3, active: 0.12, recovery: 0.32, range: 2.4, arc: 130, damage: 18, cd: 0.9, knockback: 2 },

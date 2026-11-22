@@ -284,6 +284,7 @@ export class BiluStalker {
     this.w = dungeon.world;
     this.R = M.rects[0];
     this.lives = lives;
+    this.maxLives = lives;
     this.bilu = null;
     this.wait = 1.6; // entra na sala, e logo o barulho
     this.warned = false;
@@ -324,7 +325,9 @@ export class BiluStalker {
       this.w.fx.burst(new THREE.Vector3(this.at.x, 2.4, this.at.z), { count: 2, color: GREEN, speed: 0.1, life: 0.9, size: 0.12 });
     }
     if (this.wait > 0) return;
-    const b = new Bilu(this.d.enemy, this.w, this.at || this.spot(), { hp: Math.round(BILU.hp * this.d.scale.hp) });
+    // cada volta vem com mais vida (BILU.comebackHp por ressurreição)
+    const back = this.maxLives - this.lives;
+    const b = new Bilu(this.d.enemy, this.w, this.at || this.spot(), { hp: Math.round(BILU.hp * this.d.scale.hp * Math.pow(BILU.comebackHp || 1, back)) });
     b.onDestroyed = () => this.onSlain(b);
     b.bossBar = true;
     b.barStyle = 'signal';
@@ -333,7 +336,7 @@ export class BiluStalker {
     this.w.addNpc(b);
     this.bilu = b;
     // a 1ª vez: a CENA (os olhos no escuro, o clarão); a luta continua quando ela acaba
-    if (this.lives === 3 && !this.d.bossIntro) {
+    if (this.lives === this.maxLives && !this.d.bossIntro) {
       this.d.bossIntro = new BiluIntro(this.d, b);
       this.d.bossIntro.onDone = () => this.d.hud.callout('ELE MORRE FÁCIL… E VOLTA', '#7aff4a');
     }

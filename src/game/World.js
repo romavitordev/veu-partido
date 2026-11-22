@@ -330,7 +330,10 @@ export class World {
   }
 
   endCinematic() {
-    if (!this.cinematic) return;
+    // CÂMERA PRESA (dono, 2026-11-21, coop da TV Varminho: "bugou a câmera após um especial"): com dois especiais
+    // seguidos, o 1º a acabar já zerava o cinematic e o último plano do outro (o close do Cristino) ficava na tela para
+    // sempre — sem cinematic, ainda solta os planos
+    if (!this.cinematic) { if (this.cameraRig.shots) this.cameraRig.stopShots(); return; }
     const { target } = this.cinematic;
     if (target && target.state === 'grabbed') target.setState('idle');
     this.cinematic = null;

@@ -286,6 +286,26 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
       existe (`D.chestSkin` em dungeons.js → `Chest({ skin })`); falta o da poção e decidir quais fases e o tema de cada.
 - [x] (v5.46.3) **Pedido do dono, 2026-11-21:** garantia de lendário no gacha (pity): a cada 50 giros (decisão do
       dono; `PITY_SPINS` em economy.js) sem lendário novo, o próximo traz o lendário da vitrine; barra com os giros que faltam.
+- [x] (v5.46.4) **Pedido do dono, 2026-11-21:** câmera presa após especial no coop corrigida; labirinto dos Becos
+      com câmera de cima; Rastropoda invisível esquiva 50% (`ghostDodge`); Bilu volta com ×1,8 de vida por ressurreição
+      (`comebackHp`, PROPOSTA).
+- [ ] **Suspense e sensações por fase** (dono, 2026-11-21: "tem mais alguma parte que pode ter essa melhoria? mais
+      suspenses ou outro tipo de sensação pro player?"; a lista é PROPOSTA, exceto os itens 10 e 11, pedidos pelo dono).
+      Modelo: o escuro do labirinto dos Becos (`pve/mazeDark.js`).
+  - [ ] 1. Treb Ciach, Corredor das Lamparinas: o raio de luz do jogador depende do fogo (lamparina apagada fecha a luz,
+        brasa abre de novo).
+  - [ ] 2. Torre TV, sala do Bilu: escuro quase total, só os olhos verdes dele brilhando quando está perto.
+  - [ ] 3. Torre TV: estática de TV na tela (chiado, linhas de sinal) que cresce com A Presença ou o Rastropoda
+        invisível perto — serve de pista.
+  - [ ] 4. Mansão Endiabrada: batimento e borda da tela pulsando quando o Espreitador vai sair de um armário.
+  - [ ] 5. Sertão do Quibungo: antes da onda final a música corta; só vento e moitas balançando para onde ele vai sair.
+  - [ ] 6. Sanidade baixa (todas as fases): a visão afunila, as cores perdem saturação, sussurros.
+  - [ ] 7. Alívio: almoxarifado e loja com luz quente e música calma.
+  - [ ] 8. Adrenalina: meio segundo de câmera lenta + flash no golpe que derruba um chefe.
+  - [ ] 9. Pressa nas ondas: borda vermelha e som acelerado quando o alçapão ou a lamparina estão para cair.
+  - [x] 10. (v5.46.4) **Proteja a Ilha de Tipora (dono):** gotas de tinta escorrendo na tela, mais a cada onda (a tinta do Amigo
+        Imaginário tomando a vila).
+  - [x] 11. (v5.46.4) **Chefe Amigo Imaginário (dono):** um fade leve de tinta nas bordas da tela durante a luta contra ele.
 - [ ] **Requisitos secretos de fase** (dono, 2026-11-21: "ainda pensaremos quais fases terão esse requisito, quando
       tiver mais fases"): o gancho existe (`campaign.revealed` em `phaseUnlocked`); falta decidir quais fases e quais
       requisitos.

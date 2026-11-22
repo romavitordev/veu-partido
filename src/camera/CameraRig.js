@@ -32,6 +32,10 @@ export const CAMERA_CFG = {
 };
 
 // câmera em 3ª pessoa do OUTRO LADO (updateChase)
+// VISTA DE CIMA (dono, 2026-11-21: "a câmera do labirinto poderia ser top-down, visão aérea como DOTA, LoL"): alta,
+// inclinada, sem girar (alinhada à grade do labirinto); o personagem vira para onde anda
+// mais perto (dono, 2026-11-21: "não pode revelar muito do labirinto, tem que ter um close maior"): ~1 célula em volta
+export const TOPDOWN_CFG = { height: 7.5, back: 3.2, fov: 46, follow: 7, yawRate: 5 };
 export const CHASE_CFG = {
   fov: 58,
   distance: 4.4,
@@ -192,6 +196,8 @@ export class CameraRig {
         s.blendT = 0;
         s.blendDur = shot.cut ? 0 : shot.blend ?? CUTSCENE.between;
       }
+      // rede de segurança: o último plano acabou há 1 s e não há cena em andamento — ninguém vai soltar; volta à luta
+      if (shot && s.i === s.list.length - 1 && s.t > shot.dur + 1 && !(this.world && this.world.cinematic)) { this.stopShots(); return this.update(dt, fighters, snap); }
       if (shot) {
         const k = clamp(s.t / shot.dur, 0, 1);
         // cópias: um plano pode devolver sempre o mesmo vetor (a mistura e o recuo mexem neles)
@@ -306,6 +312,23 @@ export class CameraRig {
     this._dt = dt;
     if (snap) this.chaseFree = 1;
     const p = c.player;
+    if (c.topDown) {
+      const T = TOPDOWN_CFG;
+      // gira até o múltiplo de 90° mais perto (a grade do labirinto fica reta na tela) e para
+      const want = Math.round(this.yaw / (Math.PI / 2)) * (Math.PI / 2);
+      this.yaw += snap ? angleDiff(this.yaw, want) : angleDiff(this.yaw, want) * Math.min(1, dt * T.yawRate);
+      this.pitch = 0;
+      const gy = p.groundY || 0;
+      this.target.lerp(v1.set(p.pos.x, gy + 0.6, p.pos.z), snap ? 1 : Math.min(1, dt * T.follow));
+      const sy = Math.sin(this.yaw);
+      const cy = Math.cos(this.yaw);
+      this.distance = T.back;
+      this.height = T.height;
+      this.pos.set(this.target.x + sy * T.back, this.target.y + T.height, this.target.z + cy * T.back);
+      this.look.copy(this.target);
+      this.camera.fov += (T.fov - this.camera.fov) * (snap ? 1 : Math.min(1, dt * 5));
+      return;
+    }
     let want = null;
     let rate = K.yawDamping;
     if (c.focus) {

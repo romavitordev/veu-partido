@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.46.3';
+export const VERSION = '5.46.4';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.46.4',
+    date: '2026-11-21',
+    title: 'A Tinta Escorre',
+    items: [
+      'Labirinto dos Becos visto de cima, de perto, no escuro: só um círculo de luz no jogador, que tremula e encolhe com bicho perto.',
+      'Proteja a Ilha de Tipora: a tinta do Amigo Imaginário escorre na tela, mais a cada onda; na luta com ele, as bordas escurecem.',
+      'Rastropoda invisível desvia de metade dos golpes; Bilu volta com mais vida a cada ressurreição.',
+      'Corrigido: câmera presa depois de dois especiais seguidos no coop; selo da trava de mira na tela dividida.',
+    ],
+  },
   {
     v: '5.46.3',
     date: '2026-11-21',

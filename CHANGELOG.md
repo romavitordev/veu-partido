@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.46.4 — A Tinta Escorre
+
+### Corrigido
+- Câmera presa depois de um especial (coop da TV Varminho): com dois especiais seguidos, o que acabava primeiro encerrava a cena e o último plano do outro (o close no rosto do Cristino) ficava na tela para sempre. Agora a câmera sempre volta, e se um plano final ficar sem dono por 1 s ela volta sozinha.
+- Selo da trava de mira no coop: na tela dividida lado a lado, o selo do P1 fica no alto da metade esquerda e o do P2 no da direita.
+
+### Alterado
+- Labirinto dos Becos com câmera de cima, inclinada e sem girar, alinhada à grade, como nos jogos de arena vistos do alto. Ela fica perto o bastante para mostrar só os arredores (cerca de uma célula em volta), sem entregar o caminho. Em volta, o escuro: só um círculo de luz no jogador, que respira, tremula de vez em quando e encolhe quando um bicho chega perto. O personagem vira para onde anda.
+- Rastropoda: invisível (sem farinha e sem estar tonto), metade dos golpes passa pelo vazio, sem dano e sem revelá-lo. Enfarinhado ou tonto, todo golpe acerta.
+- Bilu: volta com mais vida a cada ressurreição, ×1,8 por volta (90 → 162 → 292, antes da dificuldade).
+
+### Adicionado
+- Proteja a Ilha de Tipora: a tinta do Amigo Imaginário escorre do alto da tela. A cada onda aparecem mais filetes, mais longos, e a faixa de tinta no topo engrossa. Fica embaixo do HUD.
+- Luta contra o Amigo Imaginário: as bordas da tela escurecem de tinta, de leve, respirando devagar enquanto ele está de pé.
+
 ## v5.46.3 — A Garantia do Lendário
 
 ### Adicionado
