@@ -2873,7 +2873,13 @@ export class Dungeon {
     const tipora = this.D && this.D.id === 'tipora' && W && !W.tree && !this.village && this.phase !== 'exit';
     if (!tipora) { if (this.inkScreen) this.inkScreen.hide(); return; }
     if (!this.inkScreen) this.inkScreen = new InkScreen(this.hud.root);
-    this.inkScreen.set(W.total ? W.n / W.total : 0, W.n >= W.total && this.encounter && !this.encounter.done);
+    // dono, 2026-11-22: a tinta começa um pouco depois (nada na 1ª onda, `INK_FROM`) e, na ÚLTIMA onda (a do Amigo), os
+    // filetes somem e fica só o fade leve escuro nas bordas
+    const INK_FROM = 1;
+    const last = W.total && W.n >= W.total;
+    const span = Math.max(1, (W.total || 1) - 1 - INK_FROM);
+    const level = last ? 1 : Math.max(0, Math.min(1, (W.n - INK_FROM) / span));
+    this.inkScreen.set(level, last, last);
     this.inkScreen.update(this.lastDt || 1 / 60);
   }
 

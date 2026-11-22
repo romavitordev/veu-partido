@@ -323,10 +323,11 @@ test('moedas: aparecem sempre, mas poucas (pedido do dono, 2026-11-08)', async (
   const rng = () => seq[k++ % 2];
   const r1 = rollLoot('drawer', rng, 1);
   assert.equal(r1.kind, 'coins');
-  assert.ok(r1.amount >= 1 && r1.amount <= 3, `profundidade 1: 1–3 moedas (veio ${r1.amount})`);
+  // dono, 2026-11-22: "está vindo pouco dinheiro" → 2–4 (antes 1–3)
+  assert.ok(r1.amount >= 2 && r1.amount <= 4, `profundidade 1: 2–4 moedas (veio ${r1.amount})`);
   k = 0;
   const r3 = rollLoot('monster', rng, 3);
-  assert.ok(r3.amount <= 5, `profundidade 3: no máximo 5 (veio ${r3.amount})`);
+  assert.ok(r3.amount <= 6, `profundidade 3: no máximo 6 (veio ${r3.amount})`);
 });
 
 test('salvamento: a árvore antiga (por personagem, com pontos) vira moedas na árvore global', () => {

@@ -306,6 +306,13 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
   - [x] 10. (v5.46.4) **Proteja a Ilha de Tipora (dono):** gotas de tinta escorrendo na tela, mais a cada onda (a tinta do Amigo
         Imaginário tomando a vila).
   - [x] 11. (v5.46.4) **Chefe Amigo Imaginário (dono):** um fade leve de tinta nas bordas da tela durante a luta contra ele.
+  - [ ] **Ajustes pedidos pelo dono (2026-11-22)** depois de jogar a Ilha de Tipora:
+    - [x] A TINTA NA TELA começa um pouco depois, não já na primeira onda (sem versão: nada na 1ª onda, `INK_FROM`).
+    - [x] Na ÚLTIMA onda (a do Amigo) as gotas somem da tela e fica só o fade leve escuro nas bordas (sem versão).
+    - [ ] Balancear as MELHORIAS (cartas) para o jogo: parecem meio fracas (o dono ainda não tem certeza; medir antes
+          de mexer).
+    - [x] Vem pouco DINHEIRO nas fases (sem versão, PROPOSTA): drops 2–4 moedas (antes 1–3) e `BOSS_BOUNTY` 70
+          (antes 45). Medir na bateria e reajustar se passar do ponto.
 - [ ] **Requisitos secretos de fase** (dono, 2026-11-21: "ainda pensaremos quais fases terão esse requisito, quando
       tiver mais fases"): o gancho existe (`campaign.revealed` em `phaseUnlocked`); falta decidir quais fases e quais
       requisitos.

@@ -70,7 +70,8 @@ export function rollLoot(source, rng = Math.random, depth = 1, mult = 1) {
   const d = 1 + 0.25 * Math.max(0, depth - 1);
   let r = rng() / Math.max(0.2, mult);
   // MOEDAS: sempre aparecem, mas POUCAS (pedido do dono, 2026-11-08: "1021 moedas em 3 fases"; antes 4–10 por drop)
-  if ((r -= o.coins || 0) < 0) return { kind: 'coins', amount: Math.max(1, Math.round((1 + rng() * 2) * d)) };
+  // dono, 2026-11-22: "está vindo pouco dinheiro nas fases" (agora é 1 fase por tentativa): 2–4 por drop (antes 1–3). PROPOSTA.
+  if ((r -= o.coins || 0) < 0) return { kind: 'coins', amount: Math.max(1, Math.round((2 + rng() * 2) * d)) };
   if ((r -= o.xp || 0) < 0) return { kind: 'xp', amount: Math.round((10 + rng() * 10) * d) };
   if ((r -= o.heal || 0) < 0) return { kind: 'heal', amount: 0.15 };
   return null;

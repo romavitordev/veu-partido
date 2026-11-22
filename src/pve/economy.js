@@ -112,7 +112,8 @@ export function spin(data, banner, rng = Math.random, date = new Date()) {
 }
 
 // RECOMPENSA DO CHEFE em moedas: cresce com a profundidade e a dificuldade (coin da dificuldade em dungeons.js)
-export const BOSS_BOUNTY = 45;
+// 70 (antes 45; dono, 2026-11-22: "está vindo pouco dinheiro nas fases" — com 1 fase por tentativa a renda caiu). PROPOSTA.
+export const BOSS_BOUNTY = 70;
 export function bossBounty(depth = 1, coinMult = 1) {
   return Math.round(BOSS_BOUNTY * (1 + 0.15 * Math.max(0, depth - 1)) * coinMult);
 }
