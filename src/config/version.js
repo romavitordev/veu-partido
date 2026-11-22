@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.46.4';
+export const VERSION = '5.46.5';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.46.5',
+    date: '2026-11-21',
+    title: 'Ninguém Sai da Sala do Bilu',
+    items: [
+      'Sala do Bilu: as saídas ficam trancadas até ele cair de vez; não dá mais para escapar pela porta no meio da luta.',
+      'Antes, no coop, o botão de defesa do P2 (o de levantar o amigo caído) podia levar pela porta.',
+    ],
+  },
   {
     v: '5.46.4',
     date: '2026-11-21',

@@ -416,7 +416,28 @@ baixado sem o OK do dono.
 - [ ] Atualização automática do jogo de PC (electron-updater).
 - [ ] Mais para frente: WebGPURenderer, itch.io/butler, Steam, geração de adereços por IA, Mixamo.
 
+## Outro Lado — fase futura: Santo Berço (ideia do dono, 2026-11-21)
+> Rascunho. O dono avisou que tudo ainda vai ser melhorado, inclusive a ORDEM das etapas. Conferir no cânone antes de
+> fechar (o Ferreiro como receptáculo do Deus da Morte já está no jogo; o resto da sequência é ideia do dono).
+
+- [ ] **A fase em três atos, numa tentativa só:**
+  1. **Defender Santo Berço.** Fase de ondas (como Proteja a Ilha de Tipora): os jogadores seguram a vila contra as
+     criaturas até a última onda.
+  2. **Descer na caverna.** Vencida a defesa, abre a entrada da caverna e o grupo desce. É uma parte NOVA do mapa,
+     ligada à vila (não é outra fase): precisa de modelagem própria (entrada, descida, salão do Ferreiro).
+  3. **O Ferreiro e o Deus da Morte.** No fundo da caverna, a luta contra o Ferreiro. Quando ele cai, vira o Deus da
+     Morte, e a luta muda de objetivo: derrotá-lo não basta. Os jogadores precisam ATEAR FOGO NO CORAÇÃO (um alvo no
+     cenário, que vai queimando aos poucos), enquanto o Deus da Morte tenta impedir (persegue quem está no coração,
+     apaga o fogo, invoca mortos). A fase acaba quando o coração queima por inteiro.
+- [ ] **Diálogos depois das batalhas, como num RPG (ideia geral, serve para outras fases):** entre um ato e outro, uma
+      cena curta com um NPC que conta o que aconteceu e diz para onde ir (por exemplo, depois da defesa da vila, um
+      morador aponta a caverna). Câmera de cutscene, caixa de fala com retrato e nome, avançar com o botão de
+      confirmar (e pular). Precisa de um sistema de diálogo reaproveitável (falas em dados, não no código da fase).
+- [ ] **A decidir:** a ordem dos atos; quem são os NPCs que falam; se o coração é um só ou vários pontos; quanto da
+      caverna é corredor e quanto é sala de chefe; dificuldade de cada ato e onde ficam os baús e a cura.
+
 ## Outro Lado — pedidos de 2026-11-19
+- [x] (v5.46.5) Sala do Bilu sem fuga pela porta (dono, 2026-11-21): saídas trancadas até ele cair de vez.
 - [x] Febre do Ouro (baú raro, barra de 30 s, abates estendem, moedas caindo e fade dourado) — v5.28.0.
 - [x] Coop: dois leitos na saída da TV Varminho, a fase só acaba com os dois deitados — v5.28.0.
 - [x] Coop: caído se arrastando, resgate segurando o botão (mão + aura), caixão e reviver pago pela metade — v5.28.0.

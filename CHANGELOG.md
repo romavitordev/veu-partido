@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.46.5 — Ninguém Sai da Sala do Bilu
+
+### Corrigido
+- Sala do Bilu: não dá mais para sair pela porta no meio da luta. As saídas ficam trancadas ("Derrote o Bilu") até ele cair de vez. Antes elas abriam já na entrada, e o botão de interagir (no P2, o mesmo da defesa, usado para levantar o amigo caído) levava para a próxima sala.
+
 ## v5.46.4 — A Tinta Escorre
 
 ### Corrigido

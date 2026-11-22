@@ -456,6 +456,7 @@ export class Dungeon {
     if (M.pillars) this.pillars = new PillarRoom(this, M);
     if (this.minis) { this.minis.dispose(); this.minis = null; }
     if (this.bilu) { this.bilu.dispose(); this.bilu = null; }
+    this.biluLock = false;
     if (this.maze) { this.maze.dispose(); this.maze = null; }
     if (M.maze) this.maze = new MazeRoom(this, M);
     // TORRE: os feixes de cabos no teto de cada sala (dono, 2026-11-14: "cheias de tubos e fios ligados")
@@ -854,6 +855,12 @@ export class Dungeon {
       if (M.kind === 'stalk' && this.miniHere('bilu')) {
         this.met.bilu = true;
         this.bilu = new BiluStalker(this, M);
+        // (dono, 2026-11-21: "na sala do Bilu tem como fugir pela porta, não deveria") as saídas ficam trancadas até
+        // ele cair de vez — antes abriam na entrada, e o interagir (no P2 o mesmo botão da DEFESA, o de levantar o
+        // amigo caído) levava pela porta no meio da luta
+        for (const d of this.doors) if (d.exit) d.setLocked(true);
+        this.biluLock = true;
+        this.pveHud.setObjective('Derrote o Bilu');
         this.pveHud.hint('Um barulho de bicho no escuro… o BILU RODEIA e ataca pelas COSTAS, CORRE em cima de quem está longe e tosse de um lado para voltar pelo outro (os olhos verdes piscam). Fraco, mas VOLTA depois de cair');
         this.hintT = 7;
       }
@@ -2579,6 +2586,7 @@ export class Dungeon {
     if (this.enemy && this.enemy.lurking && this.enemy.visible) this.enemy.setVisible(false);
     if (this.minis) this.minis.update(this.lastDt);
     if (this.bilu) this.bilu.update(this.lastDt);
+    if (this.biluLock && (!this.bilu || this.bilu.done)) { this.biluLock = false; this.unlockExits(null); }
     if (this.maze && this.phase === 'explore' && !this.transit) this.maze.update(this.lastDt);
     // a Torre: a saída é DEITAR numa cápsula (pve/sino.js)
     if (this.sino && this.sino.exitCap && this.phase !== 'exit') {
