@@ -292,6 +292,8 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
 - [ ] **Suspense e sensações por fase** (dono, 2026-11-21: "tem mais alguma parte que pode ter essa melhoria? mais
       suspenses ou outro tipo de sensação pro player?"; a lista é PROPOSTA, exceto os itens 10 e 11, pedidos pelo dono).
       Modelo: o escuro do labirinto dos Becos (`pve/mazeDark.js`).
+      Regra para todos (2026-11-26, não lançado): nada pisca mais de 3 vezes por segundo, e cada efeito respeita
+      "Efeitos de tela reduzidos" (`SETTINGS.reduceFx`). O pisca do labirinto já foi corrigido para uma queda suave.
   - [ ] 1. Treb Ciach, Corredor das Lamparinas: o raio de luz do jogador depende do fogo (lamparina apagada fecha a luz,
         brasa abre de novo).
   - [ ] 2. Torre TV, sala do Bilu: escuro quase total, só os olhos verdes dele brilhando quando está perto.
@@ -422,6 +424,77 @@ baixado sem o OK do dono.
 - [ ] Painel de desenvolvedor com lil-gui para o `balance.js`.
 - [ ] Atualização automática do jogo de PC (electron-updater).
 - [ ] Mais para frente: WebGPURenderer, itch.io/butler, Steam, geração de adereços por IA, Mixamo.
+
+## Melhorias vindas das skills novas (2026-11-26, PROPOSTA)
+> O dono pediu para anotar o que as skills de jogo (game feel, interface, áudio, entrada, level design, save, desempenho,
+> testes) apontam como necessário. Nada aqui é cânone; cada item diz de onde veio e como saber que ficou pronto.
+> Downloads ou dependências novas (Playwright, músicas) só com o OK do dono.
+
+- [x] **1. Auditoria de piscas e clarões** (não lançado; game-feel, acessibilidade). Regra: nada pisca mais de 3 vezes
+      por segundo, e todo efeito de tela respeita "Efeitos de tela reduzidos" (`SETTINGS.reduceFx`). Medido quadro a
+      quadro (2026-11-26), máximo de apagões em 1 s, antes → agora:
+      - Clarões de tela (`HUD.flash`, por onde passam os 50 `screenFlash`): sem limite → no máximo 3 por segundo
+        (`FLASH_GAP_MS`). Medido no navegador: 20 chamadas em 1 s → 3 clarões. O caminho reduzido já existia.
+      - Tinta do Amigo (`amigoInkIntro.js`): 4 → 3; no modo reduzido a tinta só clareia (1).
+      - Cenas da Torre (`torreIntros.js`): Estrangeiro surgindo 5 → 2; Bilu depois do clarão 6 → 3; no modo
+        reduzido ficam firmes.
+      - Chiado de TV (`@keyframes sigSnow`): o brilho variava a ≈8 Hz; agora só a posição se mexe.
+      - Febre do Ouro (pulso de 1,6 s) e pós-processamento: já estavam abaixo do limite; o pós já cortava os pulsos.
+      - Novo: a classe `html.reduce-fx` (`applyReduceFxClass` em `settings.js`) deixa o CSS seguir a opção do jogo,
+        não só o "reduzir movimento" do sistema. Ela para o chiado, o REC piscando e o pulso da Febre do Ouro.
+      - Ficaram de fora: os brilhos pequenos no mundo (`fx.flash`, efeitos de golpe), que não cobrem a tela.
+- [x] **2. Trocar teclas e botões nas Opções** (não lançado; input-systems). Opções → Controles → Teclas e botões
+      (`src/ui/ControlsScreen.js`): abas P1/P2, uma linha por ação com o teclado e o controle, escuta da tecla nova
+      (Esc ou Start cancela), aviso de tecla repetida e "voltar ao padrão". `config/controls.js` guarda o padrão e
+      aplica por cima o que está em `SETTINGS.controls`. O controle agora tem um mapa por jogador (`GAMEPAD_LAYOUTS`),
+      e Interagir virou ação própria (P1: E; controle: B; o P2 no teclado interage pela Defesa). As dicas do Outro Lado,
+      a HUD, a lista de golpes e o rodapé do menu leem a tecla escolhida. Testes em `tests/controls-remap.test.js`.
+      **Conferido (2026-11-26):** ataque físico do P1 trocado de L para U, numa luta (Dara × Chico, U ataca e L não) e
+      numa sala do Outro Lado (Torre da TV Varminho, U ataca), e a troca continua depois de recarregar.
+      - [ ] Ainda fixas no Outro Lado (P1, teclado e mouse): 1–5 habilidades, Z especial, G agarrão, C carga, F trava,
+        Q/R assistências, cliques do mouse. A tela avisa quando uma troca bate nelas; trocar também essas fica para depois.
+      - [ ] Não testado com controle de verdade (não havia um conectado): a escuta do botão novo e o mapa por jogador.
+- [x] **3. Música por camadas** (audio-design) (v5.47.0). O dono escolheu música **composta por código**
+      (2026-11-26): `src/audio/music.js` toca uma trilha original no WebAudio, sem arquivo — Ré menor com a 2ª menor,
+      92 BPM, progressão Ré·Ré·Si♭·Lá. Camadas: zumbido + vento e sino (explorar), baixo em colcheias e percussão
+      (luta), acordes com o trítono (chefe), só o zumbido (morte/saída). Troca suave, sem trocar de faixa. Abaixa
+      ~8 dB em falas (legenda), especiais/cenas (câmera de cena) e na apresentação do chefe. Canal "Música" nas Opções
+      (padrão 70%). **Conferido (2026-11-26):** no Território do Espreitador a música começa em "explorar"; forçando os
+      níveis, as camadas trocam (RMS explorar 0,081 · luta 0,084 · chefe 0,117 · chefe abaixado 0,030 · quieto 0,041)
+      e para ao sair da fase.
+      - [ ] Só no Outro Lado; música nas lutas da arena e nos menus fica para depois.
+      - [ ] A troca para "luta"/"chefe" foi testada forçando o nível, não andando até uma sala de luta.
+- [ ] **4. Curva de ritmo de cada fase** (level-design). Para cada fase do Outro Lado, uma tabela simples sala por
+      sala com a intensidade esperada (0 a 1): deve subir com quedas para descanso, e ter um respiro (baú, cura, sala
+      calma) antes do chefe. Conferir com a bateria se o tempo e o dano por sala seguem a curva. **Pronto quando:**
+      as tabelas estão em `dungeons.js` e nenhuma fase tem três salas de luta pesada seguidas sem descanso.
+- [x] **5. Feedback em três pesos** (game-feel) (v5.47.0). `src/pve/feedback.js`: FEEDBACK_TIERS (som, faíscas,
+      anel, tremor, pausa de impacto) e EVENT_WEIGHT, a tabela única do peso de cada evento — moeda, cura, xp e chave
+      (pequeno); baú, nível, recompensa, achado, fusão já vista, voltar à vida, item grande (médio); chefe derrubado e
+      descoberta nova (grande, com tremor e pausa de impacto). A moeda do chão tocava o som duas vezes (a coleta e o
+      giveCoins) e mais alto que o baú; agora toca uma, baixa. Testes em `tests/feedback-tiers.test.js`.
+      - [ ] Conferido por teste e chamando no jogo; a queda de um chefe de verdade com o peso grande não foi jogada.
+- [ ] **6. Sistema de diálogo em dados** (dialogue-systems), para os diálogos pós-batalha de Santo Berço e outras
+      fases: as falas num arquivo de dados (quem fala, retrato, texto, condição), um leitor que mostra a caixa de fala,
+      avança e pula, e as falas passam pela tradução (`i18n`) como o resto. **Pronto quando:** uma cena curta roda
+      depois de uma sala, sem código da fase, e dá para pular com um botão.
+- [x] **7. Migração do save do Outro Lado** (save-systems) (v5.47.0). `src/pve/save.js`: MIGRATIONS (um degrau
+      por versão) e `migratePve`, que sobe o save degrau por degrau; `normalizePve` e o backup passam por ela. Save de
+      versão mais nova que o jogo continua guardado à parte, sem ser apagado, e o backup diz para atualizar o jogo.
+      `tests/save-migration.test.js`: um save v1 abre numa versão 2 (e 3) de teste com moedas, personagens e árvore
+      iguais; degrau faltando ou quebrado recusa. Ainda não há degrau real (SAVE_VERSION continua 1).
+- [ ] **8. Teste de fumaça no navegador** (playwright, threejs-testing). Um roteiro que abre o jogo, entra em cada
+      fase do Outro Lado e numa luta, joga 10 segundos e falha se aparecer erro no console. Pegaria antes do lançamento
+      erros como o id errado da tinta de Tipora (`'amigo'` em vez de `'tipora'`, 2026-11-21). **Precisa do dono:** OK
+      para instalar o Playwright.
+- [ ] **9. Orçamento de desempenho por fase** (threejs-performance). Medir no celular, na qualidade baixa, o tempo de
+      quadro e as chamadas de desenho de cada fase, e anotar o pior caso. A tinta de Tipora redesenha o canvas todo quadro
+      mesmo parada: passar a redesenhar só quando algo muda. **Pronto quando:** cada fase tem o número medido e nenhuma passa
+      de 16 ms por quadro no aparelho de referência.
+      - [x] (v5.47.0) A tinta de Tipora só redesenha quando algo muda: calcula as posições em pixels e compara com o
+        quadro anterior. Medido: parada, 0 redesenhos por segundo (era 1 por quadro); escorrendo ou no chefe, só quando
+        um filete cresce ou a borda respira. Tirado o balanço de ±1 px dos filetes, que não se via.
+      - [ ] Falta medir cada fase no celular (tempo de quadro e chamadas de desenho).
 
 ## Outro Lado — fase futura: Santo Berço (ideia do dono, 2026-11-21)
 > Rascunho. O dono avisou que tudo ainda vai ser melhorado, inclusive a ORDEM das etapas. Conferir no cânone antes de
@@ -3312,6 +3385,13 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
         (R2 + △: aguenta 2 golpes e recupera as esquivas). PROPOSTA: punhos, □ Lanterna UV (`photoFlash`, cega 1,4 s),
         especial Bolsa de Emergência e a Transformação "Ninguém Fica Pra Trás". Elemento Medo (sem afinidade, como o
         Veríssimo). Falas com todo o elenco e agarrão próprio.
+        - [x] (v5.47.0) **Modelo polido** (2026-11-26, pela arte promocional, em 4 fatias com print de cada uma):
+          chanel liso castanho com franja de lado e a faixa ciano com o nó no alto; sobretudo preto caído dos ombros
+          (ombros de fora, mangas com dobra); peça mecânica dourada no ombro esquerdo; laço vermelho na gola; óculos
+          de aviador do lado direito; a bolsa enorme de primeiros socorros no quadril, atrás do braço; 5 bolsinhas no
+          cinto; calça dobrada no meio da canela com as meias vermelha (direita) e ciano (esquerda) aparecendo. Passa
+          na auditoria de entrega (`bx_audit.deliverable`, perfil game). Retrato do Sobre/VS refeito.
+        - [ ] Refazer a imagem do elenco (`elenco.webp`), que ainda mostra a Dara antiga.
       - [x] **CHICO** (v4.7.0): `src/characters/chico.js` + `tools/blender/char_chico.py`. Cânone: Farol da Van (△ + ○,
         cega), Scanner de Energia (△ + L2), Joias de Escudo Mental (passiva `iKnewIt`), Remendão (R2 + △). PROPOSTA: □ Pulso
         do Scanner, especial Conexão Neural, Transformação Engenhosidade. Balanço: 6×8 contra o elenco de teste.

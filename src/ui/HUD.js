@@ -9,6 +9,7 @@ const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', 
 
 const DMG_HOLD = 1.2; // segundos que o marcador fica depois do combo acabar
 const SUBTITLE_WORD_INTERVAL = 0.12;
+const FLASH_GAP_MS = 1000 / 3; // clarões de tela: no máximo 3 por segundo
 
 const COMBO_STATES = new Set(['hitstun', 'stun', 'pulled', 'grabbed', 'downed']);
 
@@ -581,6 +582,11 @@ export class HUD {
   }
 
   flash(color, time) {
+    // (2026-11-26, acessibilidade) no máximo 3 clarões de tela por segundo (o seguro para fotossensibilidade):
+    // golpes seguidos chamavam um clarão a cada acerto. Um clarão que chega antes de 1/3 s do anterior é ignorado
+    const now = performance.now();
+    if (now - (this.lastFlash ?? -Infinity) < FLASH_GAP_MS) return;
+    this.lastFlash = now;
     const el = this.flashEl;
     el.style.background = color;
     el.style.transition = 'none';

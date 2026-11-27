@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.47.0 — A Trilha do Outro Lado
+
+### Adicionado
+- Teclas e botões (Opções → Controles): troque a tecla do teclado e o botão do controle de cada ação, para o P1 e o P2 — ataques, Carga, pulo, Defesa, esquiva, assistências, trocas, andar e o Interagir do Outro Lado. Fica salvo. Se a tecla já for de outra ação (do mesmo jogador ou do outro, já que o teclado é um só), aparece um aviso dizendo de quem; "Voltar ao padrão" desfaz as trocas do jogador. As dicas na tela, a lista de golpes e o rodapé do menu mostram a tecla escolhida. Esc, Enter, Backspace e Tab, e o Start e o Select do controle, ficam fixos.
+- Música no Outro Lado: uma trilha original, composta e tocada pelo próprio jogo, que cresce com a tensão em vez de trocar de faixa — um zumbido grave com vento e um sino distante enquanto se explora, o baixo e a percussão quando a luta começa, e acordes pesados no chefe. Ela abaixa durante falas, especiais e a apresentação do chefe. Novo volume "Música" nas Opções.
+
+### Alterado
+- Recompensas do Outro Lado com peso certo: pegar moeda, cura e chave faz um som baixinho; abrir baú, subir de nível e achar uma melhoria rara fazem mais festa; derrubar o chefe e descobrir uma fusão nova fazem tudo — som cheio, faíscas, anel no chão, a câmera treme e o tempo para por um instante. A moeda tocava o som duas vezes e mais alto que o baú.
+- Saves do Outro Lado preparados para o futuro: quando o formato do save mudar numa atualização, o save antigo é convertido passo a passo em vez de ser recusado, sem perder moedas, personagens e árvore.
+- Proteja a Ilha de Tipora: a tinta na tela começa na 2ª onda e, na última (a do Amigo Imaginário), os filetes somem e fica só um escurecer leve nas bordas. Ela também pesa menos: só é redesenhada quando muda.
+- Mais moedas no Outro Lado: cada queda dá 2 a 4 (eram 1 a 3) e o chefe paga 70 (eram 45).
+- Dara remodelada pela arte promocional: cabelo chanel liso com franja de lado e a faixa ciano com o nó no alto, sobretudo preto caído dos ombros, peça dourada no ombro esquerdo, laço vermelho na gola, óculos de aviador vermelhos, a bolsa enorme de primeiros socorros no quadril e a calça dobrada na canela mostrando as meias vermelha e ciano. Retrato novo no Sobre e na tela de VS.
+
+### Corrigido
+- Piscas e clarões (acessibilidade, para quem tem fotossensibilidade): nada mais pisca mais de 3 vezes por segundo. Golpes seguidos disparavam um clarão de tela a cada acerto; agora são no máximo 3 por segundo. Na entrada do Amigo Imaginário a tinta e o rosto alternam 3 vezes por segundo (eram 4); nas cenas da Torre, o Estrangeiro, ao surgir, pisca 2 (eram 5) e o Bilu, depois do clarão, 3 (eram 6). O chiado de TV da Torre só se mexe, sem cintilar o brilho da tela inteira. Com "Efeitos de tela reduzidos": a tinta do Amigo só clareia, as figuras da Torre ficam firmes, o chiado fica parado e o brilho da Febre do Ouro não pulsa.
+- Labirinto dos Becos (acessibilidade): a luz do jogador não pisca mais liga/desliga (eram ~11 vezes por segundo, faixa de risco para fotossensibilidade). Agora, de tempos em tempos, ela cai uma vez, suave, em meio segundo, e volta. Com "Efeitos de tela reduzidos" essa queda não acontece.
+
 ## v5.46.5 — Ninguém Sai da Sala do Bilu
 
 ### Corrigido

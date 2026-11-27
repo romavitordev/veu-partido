@@ -27,6 +27,7 @@ import { SETTINGS, cycleSetting, saveSettings, TIMER_OPTIONS, timerLabel, cpuLab
 import { TutorialMode } from './ui/Tutorial.js';
 import { VERSION } from './config/version.js';
 import { t, tAlert, setLanguage } from './i18n/index.js';
+import { ControlsScreen } from './ui/ControlsScreen.js';
 import { OptionsScreen } from './ui/OptionsScreen.js';
 import { TouchControls, isTouchDevice } from './ui/touchControls.js';
 import { createPveFlow } from './pve/flow.js';
@@ -67,7 +68,7 @@ renderer.toneMappingExposure = 1.1;
 const input = new InputManager();
 const audio = new AudioManager();
 // os volumes salvos nas OPÇÕES (geral e um por canal)
-const VOL_KEYS = { volume: 'master', volSfx: 'sfx', volUi: 'ui', volHum: 'hum' };
+const VOL_KEYS = { volume: 'master', volSfx: 'sfx', volUi: 'ui', volHum: 'hum', volMusic: 'music' };
 for (const [k, ch] of Object.entries(VOL_KEYS)) audio.setChannel(ch, SETTINGS[k] / 100);
 const hud = new HUD(document.getElementById('hud'));
 // ENIGMA DA ESFINGE: tocar/clicar na resposta = apertar o botão dela (só quem responde e joga neste aparelho)
@@ -169,11 +170,12 @@ function toOptions(index = 0) {
   const vol = (id, key) => ({ section: t('opt.sec.sound'), id, kind: 'slider', label: t('opt.vol.' + key), desc: t('opt.desc.vol.' + key), get: () => S[id], set: (v) => { S[id] = v; } });
   const pick = (id, key, list, label) => ({ section: null, id, kind: 'choice', label: t(key), get: () => S[id], set: (v) => { S[id] = v; }, choices: list.map((v) => ({ v, label: label(v) })) });
   const rows = [
-    vol('volume', 'master'), vol('volSfx', 'sfx'), vol('volUi', 'ui'), vol('volHum', 'hum'),
+    vol('volume', 'master'), vol('volSfx', 'sfx'), vol('volUi', 'ui'), vol('volHum', 'hum'), vol('volMusic', 'music'),
     { ...pick('graphics', 'opt.gfx.label', GFX_OPTIONS, (v) => t('opt.gfx.' + v)), section: t('opt.sec.video'), desc: t('opt.desc.gfx', { auto: t('opt.gfx.' + autoGraphics()) }) },
     { ...pick('reduceFx', 'opt.fx.label', FX_OPTIONS, (v) => t(v ? 'opt.fx.reduced' : 'opt.fx.normal')), section: t('opt.sec.video'), desc: t('opt.desc.fx') },
     { ...pick('blood', 'opt.blood.label', BLOOD_OPTIONS, (v) => t(v ? 'opt.blood.on' : 'opt.blood.off')), section: t('opt.sec.video'), desc: t('opt.desc.blood') },
     { ...pick('rumble', 'opt.rumble.label', RUMBLE_OPTIONS, (v) => t(v ? 'opt.rumble.on' : 'opt.rumble.off')), section: t('opt.sec.video'), desc: t('opt.desc.rumble') },
+    { section: t('opt.sec.controls'), id: 'controls', kind: 'open', label: t('opt.controls.label'), button: t('opt.controls.open'), desc: t('opt.desc.controls'), get: () => null, set: () => {} },
     { ...pick('timer', 'opt.time.label', TIMER_OPTIONS, (v) => timerLabel(v)), section: t('opt.sec.match'), desc: t('opt.desc.time') },
     { ...pick('fightLines', 'opt.lines.label', LINES_OPTIONS, (v) => t(v ? 'opt.lines.on' : 'opt.lines.off')), section: t('opt.sec.match'), desc: t('opt.desc.lines') },
     { ...pick('language', 'opt.lang.label', LANGUAGE_OPTIONS.map((l) => l.id), (v) => languageLabel(v)), section: t('opt.sec.lang'), desc: t('opt.desc.lang') },
@@ -1124,7 +1126,13 @@ function tick(dt) {
     case 'options': {
       const c = game.screen.update(input);
       if (c === 'relabel') toOptions(game.screen.index); // idioma novo: a tela volta traduzida, na mesma linha
+      else if (c === 'controls') { const i = game.screen.index; setScreen('controls', new ControlsScreen(screens, { audio })); game.controlsFrom = i; }
       else if (c === 'back') toMainMenu();
+      break;
+    }
+    case 'controls': {
+      // TECLAS E BOTÕES: volta para as Opções, na mesma linha
+      if (game.screen.update(input) === 'back') toOptions(game.controlsFrom || 0);
       break;
     }
     case 'select': {

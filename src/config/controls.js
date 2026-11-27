@@ -49,6 +49,7 @@ export const KEYBOARD_LAYOUTS = {
     pageR: ['KeyE'],
     select: ['Tab'],
     start: ['Escape'],
+    interact: ['KeyE'], // Outro Lado: portas, baús, gavetas (a Dungeon decide se vira defesa)
   },
   // Jogador 2 — setas + teclado numérico (alternativas para notebook)
   // Jogador 2 — setas + teclado numérico, com o MESMO losango (8 △ · 4 □ · 6 ○ · 2 ×)
@@ -73,7 +74,8 @@ export const KEYBOARD_LAYOUTS = {
   },
 };
 
-// Gamepad no layout "standard" do navegador (Xbox / PlayStation).
+// Gamepad no layout "standard" do navegador (Xbox / PlayStation). É o PADRÃO; cada jogador usa a sua cópia em
+// GAMEPAD_LAYOUTS (que as trocas das Opções podem mudar)
 export const GAMEPAD_LAYOUT = {
   jump: [0], // A / ×
   physical: [1], // B / ○
@@ -92,6 +94,7 @@ export const GAMEPAD_LAYOUT = {
   down: [13],
   left: [14],
   right: [15],
+  interact: [1], // B / ○ no Outro Lado (perto de porta/gaveta/baú; senão é o ○)
 };
 
 export const GAMEPAD_DEADZONE = 0.25;
@@ -116,3 +119,101 @@ export const BUTTON_LABELS = {
     physical: '○', ranged: '□', carga: '△', jump: '×', block: 'DEF', dodge: 'ESQ', assist1: 'AS1', assist2: 'AS2', switch1: '⇄1', switch2: '⇄2',
   },
 };
+
+// ------------------------------------------------------------------ TROCAR TECLAS E BOTÕES (Opções, 2026-11-26)
+// O dono pediu (TODO, item 2 das melhorias das skills): cada ação do teclado e do controle, por jogador, salva nas
+// opções. KEYBOARD_LAYOUTS e GAMEPAD_LAYOUTS são mudados NO LUGAR (quem já importou vê a troca); os padrões ficam
+// guardados aqui embaixo para o "voltar ao padrão". SETTINGS.controls guarda só o que mudou:
+//   { kb: [{ physical: ['KeyU'] }, {}], pad: [{ jump: [2] }, {}] }
+const copy = (o) => JSON.parse(JSON.stringify(o));
+const DEFAULT_KEYBOARD = copy(KEYBOARD_LAYOUTS);
+export const GAMEPAD_LAYOUTS = [copy(GAMEPAD_LAYOUT), copy(GAMEPAD_LAYOUT), copy(GAMEPAD_LAYOUT)];
+
+// as ações que a tela de troca mostra, na ordem (as do menu — pageL/pageR/select — e a pausa ficam fixas)
+export const REMAP_ACTIONS = {
+  kb: ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'assist1', 'assist2', 'switch1', 'switch2', 'up', 'down', 'left', 'right', 'interact'],
+  pad: ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'assist1', 'assist2', 'interact'],
+};
+// teclas e botões que não podem ser usados: Esc/Backspace pausam, Enter confirma nos menus; Select/Start do controle
+export const RESERVED_KEYS = ['Escape', 'Enter', 'Backspace', 'Tab', 'F5', 'F11', 'F12'];
+export const RESERVED_BUTTONS = [8, 9];
+// no Outro Lado, o P1 no teclado ainda tem estas teclas fixas (uma tecla por habilidade): avisamos se repetir
+export const OUTRO_LADO_KEYS = { Digit1: 'quick1', Digit2: 'quick2', Digit3: 'quick3', Digit4: 'quick4', Digit5: 'quick5', KeyZ: 'quickSp', KeyG: 'grab', KeyC: 'carga', KeyF: 'lock' };
+
+const kbName = (i) => PLAYER_DEVICES[i].keyboard;
+
+export function defaultBinding(device, player, action) {
+  if (device === 'kb') return (DEFAULT_KEYBOARD[kbName(player)] || {})[action] || [];
+  return GAMEPAD_LAYOUT[action] || [];
+}
+
+// volta tudo ao padrão e aplica as trocas salvas por cima
+export function applyControlBindings(saved) {
+  for (const k of Object.keys(KEYBOARD_LAYOUTS)) {
+    const L = KEYBOARD_LAYOUTS[k];
+    for (const a of Object.keys(L)) if (!(a in DEFAULT_KEYBOARD[k])) delete L[a];
+    Object.assign(L, copy(DEFAULT_KEYBOARD[k]));
+  }
+  GAMEPAD_LAYOUTS.forEach((L) => { for (const a of Object.keys(L)) delete L[a]; Object.assign(L, copy(GAMEPAD_LAYOUT)); });
+  if (!saved) return;
+  [0, 1].forEach((i) => {
+    const kb = saved.kb && saved.kb[i];
+    const L = KEYBOARD_LAYOUTS[kbName(i)];
+    // o que sobrar vazio (só tecla reservada ou lixo) fica no padrão: nenhuma ação pode ficar sem tecla
+    if (kb && L) for (const a of REMAP_ACTIONS.kb) {
+      const ok = Array.isArray(kb[a]) ? kb[a].filter((c) => typeof c === 'string' && !RESERVED_KEYS.includes(c)) : [];
+      if (ok.length) L[a] = ok;
+    }
+    const pad = saved.pad && saved.pad[i];
+    if (pad) for (const a of REMAP_ACTIONS.pad) {
+      const ok = Array.isArray(pad[a]) ? pad[a].filter((b) => Number.isInteger(b) && !RESERVED_BUTTONS.includes(b)) : [];
+      if (ok.length) GAMEPAD_LAYOUTS[i][a] = ok;
+    }
+  });
+}
+
+// liga UMA tecla/botão a uma ação (substitui as que ela tinha) e devolve o objeto salvo atualizado
+export function setBinding(saved, device, player, action, code) {
+  const out = copy(saved || {});
+  out[device] = out[device] || [{}, {}];
+  out[device][player] = out[device][player] || {};
+  const def = defaultBinding(device, player, action);
+  if (def.length === 1 && def[0] === code) delete out[device][player][action];
+  else out[device][player][action] = [code];
+  return out;
+}
+
+export function resetBindings(saved, player) {
+  const out = copy(saved || {});
+  for (const d of ['kb', 'pad']) if (out[d]) out[d][player] = {};
+  return out;
+}
+
+export function currentBinding(device, player, action) {
+  if (device === 'kb') return (KEYBOARD_LAYOUTS[kbName(player)] || {})[action] || [];
+  return GAMEPAD_LAYOUTS[player][action] || [];
+}
+
+// TECLA REPETIDA: quem mais (deste ou do outro jogador — o teclado é um só) usa esta tecla/botão.
+// Devolve [{ player, action }]. No controle, cada jogador tem o seu, então só conta o mesmo jogador.
+// Ficam de fora as duplas de propósito: interagir com a defesa (a Dungeon decide) e interagir com o físico no controle.
+const SHARED_ON_PURPOSE = [['interact', 'block'], ['interact', 'physical']];
+export function bindingConflicts(device, player, action, code) {
+  const out = [];
+  const players = device === 'kb' ? [0, 1] : [player];
+  for (const p of players) {
+    for (const a of REMAP_ACTIONS[device]) {
+      if (p === player && a === action) continue;
+      if (p === player && SHARED_ON_PURPOSE.some(([x, y]) => (x === a && y === action) || (y === a && x === action))) continue;
+      if (currentBinding(device, p, a).includes(code)) out.push({ player: p, action: a });
+    }
+  }
+  // no Outro Lado as assistências e as trocas do P1 ficam fixas (Q/R, sem troca): ali elas não brigam com 1–4
+  const FIXED_IN_OUTRO = ['assist1', 'assist2', 'switch1', 'switch2'];
+  if (device === 'kb' && player === 0 && OUTRO_LADO_KEYS[code] && OUTRO_LADO_KEYS[code] !== action && !FIXED_IN_OUTRO.includes(action)) out.push({ player: 0, action: OUTRO_LADO_KEYS[code], outroLado: true });
+  return out;
+}
+
+// nomes dos botões do controle (layout standard), para a HUD e a tela de troca
+export const PAD_NAMES = { 0: 'A/×', 1: 'B/○', 2: 'X/□', 3: 'Y/△', 4: 'LB/L1', 5: 'RB/R1', 6: 'LT/L2', 7: 'RT/R2', 8: 'Select', 9: 'Start', 10: 'L3', 11: 'R3', 12: '↑', 13: '↓', 14: '←', 15: '→', 16: 'Home' };
+export const padName = (id) => PAD_NAMES[id] || `#${id}`;

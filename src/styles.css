@@ -401,7 +401,13 @@ html.vp-fix canvas#game, html.vp-fix #hud, html.vp-fix .screen, html.vp-fix #tou
 #npcbar.sig .bar::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.4) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, transparent 0 40px, rgba(220,255,220,.45) 40px 42px, transparent 42px 70px); background-size: 100% 100%, 110px 100%; animation: hbScan .7s linear infinite; }
 #npcbar.sig.lost .fill { transition: none; background: repeating-linear-gradient(90deg, #d8ffd8 0 2px, #2a6a34 2px 5px, #9adfa4 5px 6px, #0a2a10 6px 9px); animation: sigSnow .12s steps(2) infinite; }
 #npcbar.sig.lost .bar::before { content: 'SINAL PERDIDO'; position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; font: 400 11px/1 'Bebas Neue', sans-serif; letter-spacing: .3em; color: #eaffea; text-shadow: 1px 1px 0 #000, -1px 0 0 #ff2a6a, 1px 0 0 #2affd8; animation: sigName 1.7s steps(1) infinite; }
-@keyframes sigSnow { 0% { background-position: 0 0; filter: brightness(1); } 50% { background-position: 7px 0; filter: brightness(1.5); } 100% { background-position: -3px 0; filter: brightness(.8); } }
+/* (2026-11-26, acessibilidade) o chiado só se MEXE: antes o brilho ia de 1 a 1,5 a cada 0,06 s (≈8 Hz), e num corte de
+   sinal a camada sobe até .48 de opacidade, uma cintilação na tela toda. Mexendo só a posição, o brilho médio fica igual */
+@keyframes sigSnow { 0% { background-position: 0 0; } 50% { background-position: 7px 0; } 100% { background-position: -3px 0; } }
+/* Efeitos de tela reduzidos (Opções): chiado parado e fraco, sem os cortes de sinal, sem o pulso da Febre do Ouro */
+html.reduce-fx #sigfx .snow, html.reduce-fx #sigamb .snow { animation: none !important; }
+html.reduce-fx #sigfx.rec .rec { animation: none; }
+html.reduce-fx #hud .gold-fever .gf-glow { animation: none; }
 @keyframes sigName { 0%, 100% { transform: none; opacity: 1; } 31% { transform: translateX(3px) skewX(-12deg); opacity: .6; } 33% { transform: none; opacity: 1; } 71% { transform: translateX(-2px); opacity: .8; } 72% { transform: none; } }
 /* o chefe durante a PRESENÇA: a barra vira interferência pura */
 .bar.health.hb-signal.jam .fill { animation: sigSnow .1s steps(2) infinite; background: repeating-linear-gradient(90deg, #d8ffd8 0 2px, #2a6a34 2px 5px, #9adfa4 5px 6px, #0a2a10 6px 9px); }
@@ -1541,6 +1547,27 @@ body.touch-ui .startbtn small { display: none; }
 #options .opt-seg button.sel { background: #a46bff; border-color: #fff; color: #000; }
 /* escolhas longas: ◀ valor ▶ */
 #options .opt-step { display: flex; flex: 1; align-items: center; gap: 6px; }
+/* abre outra tela (Teclas e botões) */
+#options .opt-open { flex: 1; padding: 8px 10px; border-radius: 5px; border: 1px solid #3a3346; background: rgba(255,255,255,.04); font-weight: 800; font-size: 13px; text-align: right; }
+#options .opt-row.on .opt-open { background: #a46bff; border-color: #fff; color: #000; }
+/* TECLAS E BOTÕES (ui/ControlsScreen.js) */
+#options .remap .rm-tabs { display: flex; gap: 6px; margin: 0 0 8px; }
+#options .remap .rm-tabs button { flex: 1; padding: 7px; border-radius: 5px; border: 1px solid #3a3346; background: rgba(255,255,255,.04); font-weight: 800; letter-spacing: .1em; }
+#options .remap .rm-tabs button.sel { background: #a46bff; border-color: #fff; color: #000; }
+#options .remap .rm-head, #options .remap .rm-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; }
+#options .remap .rm-head { padding: 0 12px 4px; font-size: 11px; font-weight: 800; letter-spacing: .2em; color: #a99ac6; text-transform: uppercase; }
+#options .remap .rm-row { padding: 5px 12px; }
+#options .remap .opt-label { font-size: 14px; }
+#options .remap .rm-warn { display: block; font-style: normal; font-size: 11px; font-weight: 700; color: #ffb347; }
+#options .remap .rm-key { min-height: 32px; padding: 5px 6px; border-radius: 5px; border: 1px solid #3a3346; background: rgba(255,255,255,.05); font-weight: 800; font-size: 13px; }
+#options .remap .rm-key.sel { border-color: #fff; background: #a46bff; color: #000; }
+#options .remap .rm-key.wait { border-color: #ffd84a; background: rgba(255,216,74,.2); color: #ffd84a; }
+#options .remap .rm-key.dup { box-shadow: inset 0 0 0 2px #ffb347; }
+#options .remap .rm-key.fixed { opacity: .45; cursor: default; }
+#options .remap .rm-key small { font-size: 11px; font-weight: 700; }
+#options .remap .rm-reset { grid-template-columns: 1fr; }
+#options .remap .rm-resetbtn { padding: 8px; border-radius: 5px; border: 1px solid #3a3346; background: rgba(255,255,255,.04); font-weight: 800; }
+#options .remap .rm-reset.on .rm-resetbtn { background: #a46bff; border-color: #fff; color: #000; }
 #options .opt-step button { width: 40px; height: 34px; border-radius: 5px; border: 1px solid #3a3346; background: rgba(255,255,255,.04); font-size: 14px; }
 #options .opt-cur { flex: 1; text-align: center; font-weight: 800; font-size: 15px; }
 #options .opt-desc { min-height: 34px; margin-top: 8px; padding: 8px 10px; border-top: 1px solid #2c2438; font-size: 13px; color: #cfc5e3; }

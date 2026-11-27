@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { inkSplash, inkTentacle, ghostBell } from '../fx/inkFx.js';
+import { SETTINGS } from '../config/settings.js';
 
 // A ENTRADA DO AMIGO IMAGINÁRIO (a onda final de Tipora). Pedido do dono (2026-11-20): "quando o boss Amigo imaginário
 // estiver surgindo deve escorrer tinta pela tela, vindo de cima da tela, escorrendo por toda tela e quando o amigo
@@ -179,8 +180,11 @@ export class AmigoInkIntro {
     let alpha = 1;
     if (t > T.face && t < T.flashEnd) {
       const k = (t - T.face) / (T.flashEnd - T.face);
-      const blink = Math.floor(k * 9) % 2 === 1; // lampejos cada vez mais longos
-      alpha = blink || k > 0.82 ? 0.08 : 1;
+      // (2026-11-26, acessibilidade) eram 9 trechos em 1,2 s: a tela inteira trocava de tinta para o rosto ≈3,75
+      // vezes por segundo. Agora são 6 trechos (3 lampejos, 2,5 por segundo, abaixo do limite de 3), e com "Efeitos
+      // de tela reduzidos" a tinta só clareia, devagar, sem piscar
+      const blink = SETTINGS.reduceFx ? k > 0.15 : Math.floor(k * 6) % 2 === 1;
+      alpha = SETTINGS.reduceFx ? 1 - 0.92 * Math.min(1, k / 0.6) : blink || k > 0.82 ? 0.08 : 1;
       if (blink && !this.lastBlink) d.audio.play('fearGaze', { volume: 0.6, pitch: 0.35 + Math.random() * 0.2 });
       this.lastBlink = blink;
     } else if (t >= T.flashEnd && t < T.clear) alpha = 0.08;

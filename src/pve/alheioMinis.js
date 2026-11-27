@@ -125,7 +125,7 @@ export class RastropodaRoom {
     const p = V.p;
     if (!this.boss || !this.boss.alive || p.state === 'ko') return;
     const pr = V.inp.pressed || {};
-    const btn = V.inp.source === 'gamepad' ? 'B' : V.i ? 'DEF' : 'E';
+    const btn = actionLabel(V.i, 'interact', V.inp.source === 'gamepad' ? 'gamepad' : 'keyboard'); // a tecla/botão de INTERAGIR de cada um (pode ter sido trocado nas Opções)
     const held = this.sacks.find((k) => k.holder === p);
     const busy = ['hitstun', 'stun', 'grabbed', 'downed', 'launched'].includes(p.state);
     if (held) {

@@ -15,6 +15,7 @@
 import * as THREE from 'three';
 import { applyHit } from '../combat/damage.js';
 import { resolveBody } from '../combat/positioning.js';
+import { actionLabel } from '../ui/labels.js';
 
 export const RESCUE = {
   bleed: 25, // segundos caído antes de morrer de vez
@@ -116,7 +117,7 @@ export class CoopRescue {
     const held = inp.held || {};
     const pr = inp.pressed || {};
     const on = !!(held.interact || held.block || held.physical);
-    const btn = inp.source === 'gamepad' ? 'B' : V.i ? 'DEF' : 'E';
+    const btn = actionLabel(V.i, 'interact', inp.source === 'gamepad' ? 'gamepad' : 'keyboard'); // a tecla/botão de INTERAGIR de cada um (pode ter sido trocado nas Opções)
     const coffin = !!mate.coffin;
     const price = coffin ? this.coffinPrice() : 0;
     const coins = d.coinsOf(V.i);

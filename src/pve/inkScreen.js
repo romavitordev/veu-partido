@@ -30,7 +30,6 @@ export class InkScreen {
       len: 0.06 + Math.random() * 0.42,
       cur: 0,
       speed: 0.02 + Math.random() * 0.05,
-      wob: Math.random() * Math.PI * 2,
     }));
   }
 
@@ -51,13 +50,35 @@ export class InkScreen {
     const H = Math.max(2, Math.round(cv.clientHeight * SCALE));
     if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
     const g = this.g;
-    g.clearRect(0, 0, W, H);
-    if ((this.level < 0.01 || this.drip < 0.01) && this.boss < 0.01) { cv.hidden = true; return; }
+    if ((this.level < 0.01 || this.drip < 0.01) && this.boss < 0.01) {
+      if (!cv.hidden) { g.clearRect(0, 0, W, H); cv.hidden = true; }
+      this.lastKey = null;
+      return;
+    }
     cv.hidden = false;
+    // DESEMPENHO (TODO, item 9, 2026-11-27): primeiro calcula onde cada coisa fica, em pixels; se nada mudou desde o
+    // último quadro (a tinta parada entre as ondas), não redesenha o canvas
+    const band = H * (0.012 + 0.05 * this.level);
+    const pulse = this.boss > 0.01 ? 0.85 + Math.sin(this.t * 1.3) * 0.15 : 0;
+    let key = (W * 7919 + H) | 0;
+    const mix = (v) => { key = (Math.imul(key, 31) + Math.round(v)) | 0; };
+    mix(band * 4); mix(this.drip * 200); mix(this.boss * 200); mix(pulse * 60);
+    for (const d of this.drips) {
+      const on = this.level >= d.u;
+      const target = on ? d.len * (0.45 + 0.55 * Math.min(1, (this.level - d.u) * 3 + 0.3)) : 0;
+      d.cur += (target - d.cur) * Math.min(1, dt * d.speed * 6);
+      d.px = Math.round(d.x * W); // sem o balanço de ±1 px (não se via e obrigava a redesenhar todo quadro)
+      d.plen = d.cur * H + band;
+      if (d.cur < 0.004) { mix(-1); continue; }
+      mix(d.px); mix(d.plen * 2);
+    }
+    if (key === this.lastKey) return;
+    this.lastKey = key;
+    this.draws = (this.draws || 0) + 1;
+    g.clearRect(0, 0, W, H);
     const ink = (a) => `rgba(${INK[0]},${INK[1]},${INK[2]},${a})`;
     g.globalAlpha = Math.max(0, Math.min(1, this.drip));
     // a faixa de tinta no alto, engrossando com as ondas
-    const band = H * (0.012 + 0.05 * this.level);
     const top = g.createLinearGradient(0, 0, 0, band * 2.2);
     top.addColorStop(0, ink(0.92));
     top.addColorStop(0.5, ink(0.75));
@@ -66,13 +87,10 @@ export class InkScreen {
     g.fillRect(0, 0, W, band * 2.2);
     // os filetes escorrendo (cada um com a gota mais gorda na ponta)
     for (const d of this.drips) {
-      const on = this.level >= d.u;
-      const target = on ? d.len * (0.45 + 0.55 * Math.min(1, (this.level - d.u) * 3 + 0.3)) : 0;
-      d.cur += (target - d.cur) * Math.min(1, dt * d.speed * 6);
       if (d.cur < 0.004) continue;
-      const x = (d.x + Math.sin(this.t * 0.3 + d.wob) * 0.002) * W;
+      const x = d.px;
       const w = Math.max(1.5, d.w * W);
-      const len = d.cur * H + band;
+      const len = d.plen;
       g.fillStyle = ink(0.86);
       g.beginPath();
       g.moveTo(x - w * 0.9, 0);
@@ -91,7 +109,6 @@ export class InkScreen {
     g.globalAlpha = 1;
     // a borda de tinta da luta com o Amigo: um fade LEVE e escuro nos cantos, respirando devagar
     if (this.boss > 0.01) {
-      const pulse = 0.85 + Math.sin(this.t * 1.3) * 0.15;
       const R = Math.hypot(W, H) * 0.5;
       const v = g.createRadialGradient(W / 2, H / 2, R * 0.45, W / 2, H / 2, R);
       v.addColorStop(0, ink(0));

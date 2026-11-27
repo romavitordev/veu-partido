@@ -15,7 +15,8 @@ const confirm = (p) => p.pressed.jump;
 const back = (p) => p.pressed.physical;
 
 export class OptionsScreen {
-  // rows: [{ section, id, kind: 'slider'|'choice', label, desc, get(), set(v), choices?: [{ v, label }], step? }]
+  // rows: [{ section, id, kind: 'slider'|'choice'|'open', label, desc, get(), set(v), choices?: [{ v, label }], step? }]
+  // kind 'open': um botão que abre outra tela (Teclas e botões) — a tela devolve o id da linha
   constructor(root, { rows, audio, onChange, focus = 0 }) {
     this.rows = rows;
     this.audio = audio;
@@ -43,6 +44,7 @@ export class OptionsScreen {
   }
 
   controlHTML(r) {
+    if (r.kind === 'open') return `<button type="button" class="opt-open">${r.button}</button>`;
     if (r.kind === 'slider') {
       return '<span class="opt-slider"><span class="opt-track"><span class="opt-fill"></span><span class="opt-knob"></span></span></span><button type="button" class="opt-val"></button>';
     }
@@ -52,6 +54,7 @@ export class OptionsScreen {
 
   bind(rowEl, r, i) {
     onHover(rowEl, () => { if (this.index !== i) { this.index = i; this.render(); } });
+    if (r.kind === 'open') { rowEl.querySelector('.opt-open').addEventListener('click', () => { this.index = i; this.opened = r.id; }); return; }
     if (r.kind === 'slider') {
       const track = rowEl.querySelector('.opt-track');
       const setFrom = (e) => {
@@ -113,6 +116,7 @@ export class OptionsScreen {
     this.rowEls.forEach((rowEl, i) => {
       const r = this.rows[i];
       rowEl.classList.toggle('on', i === this.index);
+      if (r.kind === 'open') return;
       if (r.kind === 'slider') {
         const v = r.get();
         rowEl.querySelector('.opt-fill').style.width = `${v}%`;
@@ -137,11 +141,17 @@ export class OptionsScreen {
   update(input) {
     if (this.relabel) { this.relabel = false; return 'relabel'; }
     if (this.clickedBack) { this.clickedBack = false; this.audio?.play('select'); return 'back'; }
+    if (this.opened) { const id = this.opened; this.opened = null; this.audio?.play('confirm'); return id; }
     const n = this.rows.length + 1;
     for (const p of input.players) {
       if (p.menu.up) { this.index = (this.index + n - 1) % n; this.audio?.play('select'); this.render(); }
       if (p.menu.down) { this.index = (this.index + 1) % n; this.audio?.play('select'); this.render(); }
       const r = this.rows[this.index];
+      if (r && r.kind === 'open') {
+        if (confirm(p) || p.menu.right) { this.audio?.play('confirm'); return r.id; }
+        if (back(p) || p.pressed.start) { this.audio?.play('select'); return 'back'; }
+        continue;
+      }
       if (r && p.menu.left) this.shift(r, -1);
       if (r && p.menu.right) this.shift(r, 1);
       if (confirm(p)) {
@@ -152,6 +162,7 @@ export class OptionsScreen {
     }
     if (input.keyPressedOnce('Escape')) { this.audio?.play('select'); return 'back'; }
     if (input.keyPressedOnce('Enter') && this.index === this.rows.length) { this.audio?.play('select'); return 'back'; }
+    if (input.keyPressedOnce('Enter') && this.rows[this.index] && this.rows[this.index].kind === 'open') { this.audio?.play('confirm'); return this.rows[this.index].id; }
     return this.relabel ? (this.relabel = false, 'relabel') : null;
   }
 

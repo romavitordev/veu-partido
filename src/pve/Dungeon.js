@@ -61,6 +61,8 @@ import { EstrangeiroIntro, RastropodaIntro, BiluIntro } from './torreIntros.js';
 import { AmigoInkIntro } from './amigoInkIntro.js';
 import { GoldFever, rollFever } from './goldFever.js';
 import { CoopRescue, RESCUE } from './coopRescue.js';
+import { Music } from '../audio/music.js';
+import { feedback } from './feedback.js';
 
 const CHEST_INTERACT_HOLD_TIME = 0.45;
 
@@ -778,7 +780,7 @@ export class Dungeon {
       this.phaseTime = 0;
       this.reviveAsked = false;
       this.hud.callout('DE VOLTA!', '#7dffb0');
-      this.audio.play('levelUp', { volume: 0.9 });
+      feedback(this.world, 'revive');
       this.popup(payer, `-${o.price} MOEDAS`, '#ffc040');
       return;
     }
@@ -871,7 +873,7 @@ export class Dungeon {
     for (const d of this.doors) if (d.exit) d.setLocked(false);
     if (!this.pveHud) return;
     this.pveHud.setObjective(this.mod && this.mod.kind === 'maze' ? this.mod.objective || 'Ache a saída' : 'Escolha uma porta');
-    this.pveHud.hint(hint || (this.player.input?.source === 'gamepad' ? 'B' : 'E') + ' abre portas, baús e gavetas · setas AMARELAS: as portas · seta AZUL: um baú (opcional)');
+    this.pveHud.hint(hint || actionLabel(0, 'interact', this.player.input?.source === 'gamepad' ? 'gamepad' : 'keyboard') + ' abre portas, baús e gavetas · setas AMARELAS: as portas · seta AZUL: um baú (opcional)');
     this.hintT = 4;
   }
 
@@ -1175,6 +1177,7 @@ export class Dungeon {
     this.endRunUps();
     this.revivePlayers();
     this.hud.callout(this.D.bossDownText || 'A ONDA FINAL CAIU', '#ffd84a');
+    feedback(this.world, 'bossDown', { at: p.pos, color: 0xffd84a });
     this.pveHud.hint(null);
   }
 
@@ -1702,13 +1705,13 @@ export class Dungeon {
         // a FUSÃO: a 1ª vez em qualquer tentativa é uma DESCOBERTA (fica na tela DESCOBERTAS, no save)
         const fresh = this.onDiscover ? this.onDiscover(id) : false;
         this.hud.callout(`${fresh ? 'NOVA FUSÃO' : 'FUSÃO'}: ${u.name.toUpperCase()}`, '#d8a0ff');
-        this.audio.play('levelUp', { volume: 1, pitch: 0.8 });
+        feedback(this.world, fresh ? 'discovery' : 'fusion', { at: this.player.pos, color: 0xd8a0ff });
         for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'fusão';
       } else if (u.kind === 'relic') {
         // o ACHADO DA FASE: também vai para a DESCOBERTAS (o mesmo `discovered` do save)
         const fresh = this.onDiscover ? this.onDiscover(id) : false;
         this.hud.callout(`${fresh ? 'NOVO ACHADO' : 'ACHADO DA FASE'}: ${u.name.toUpperCase()}`, '#7effc8');
-        this.audio.play('levelUp', { volume: 0.9, pitch: 1.15 });
+        feedback(this.world, fresh ? 'discovery' : 'relic', { at: this.player.pos, color: 0x7effc8, pitch: 1.15 });
         for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'achado';
       } else if (u.chest && countOf(this.run.picks, id) === 1) this.hud.callout(u.name.toUpperCase(), '#7ec8ff');
     }
@@ -1750,7 +1753,7 @@ export class Dungeon {
     if (!raw) n = Math.max(1, Math.round(n * (this.diff.coin ?? 1) * (this.mods?.coinMult ?? 1)));
     if (this.fever && this.fever.active) n *= this.fever.mult(); // a Febre do Ouro: o dobro (até a recompensa já calculada)
     this.stats.coins += n;
-    this.audio.play('pickup', { volume: 1, pitch: 1.4 });
+    feedback(this.world, 'coin');
     this.popup(0, `+${n} MOEDAS`, '#ffc040');
     this.onCoins && this.onCoins(n);
     this.pveHud && this.pveHud.setCoins(this.coinsTotal ? this.coinsTotal() : this.stats.coins);
@@ -1795,6 +1798,7 @@ export class Dungeon {
       this.endRunUps();
       if (this.bossGate) this.openGate(this.bossGate);
       this.hud.callout(this.D.bossDownText || 'O ESPREITADOR CAIU', '#ffd84a');
+      feedback(this.world, 'bossDown', { at, color: 0xffd84a });
       this.pveHud.hint(null);
       for (const c of this.copias) if (c.alive) c.kill();
       // as frestas morrem com ele: os armários fecham e o quarto se abre
@@ -1849,7 +1853,7 @@ export class Dungeon {
   // MOEDAS ou VIDA (o baú sem nada para subir, ou a carta de nível quando tudo chegou ao máximo): o jogador escolhe;
   // a vida vai para os dois no coop
   openReward(r) {
-    this.audio.play('levelUp', { volume: 0.8, pitch: 1.1 });
+    feedback(this.world, 'reward');
     this.choosing = true;
     // quem escolhe (sumiu na v4.44.0: o ReferenceError deixava choosing = true e o jogo PARADO depois de um baú sem nada
     // para subir — o travamento do dono, 2026-11-16)
@@ -1874,7 +1878,7 @@ export class Dungeon {
     const chooserP = who === 1 && this.player2 ? this.player2 : this.player;
     const choices = rollChoices(this.run.picks, Math.random, (this.mods && this.mods.choices) || 3, chooserP.def); // Mais Opções: 4 cartas; o kit de quem escolhe
     if (!choices.length) { this.openReward({ coins: Math.round(4 * (1 + 0.25 * Math.max(0, this.run.depth - 1))), heal: 0.3 }); return; }
-    this.audio.play('levelUp', { volume: 1 });
+    feedback(this.world, 'levelUp');
     this.choosing = true;
     if (this.coop) this.chooser = 1 - this.chooser;
     this.pveHud.known = this.discovered();
@@ -2243,7 +2247,7 @@ export class Dungeon {
       V.chestHoldT = 0;
       V.chestHoldTarget = null;
     }
-    const btn = inp.source === 'gamepad' ? 'B' : V.i ? 'DEF' : 'E';
+    const btn = actionLabel(V.i, 'interact', inp.source === 'gamepad' ? 'gamepad' : 'keyboard'); // a tecla/botão de INTERAGIR de cada um (pode ter sido trocado nas Opções)
     const at = best.o instanceof RoomDoor ? best.o.target(v3) : best.o.pos;
     // o botão de BATER também abre (dono, 2026-11-14: "fico apertando o botão de bater e ele fica batendo no ar"): só
     // com a sala calma (sem luta) e com algo ao alcance — não rouba golpe de ninguém
@@ -2297,7 +2301,7 @@ export class Dungeon {
         this.keys++;
         this.pveHud.setKeys(this.keys);
         if (this.twoLocks && this.doors.filter((d) => d.padlock).length > 1) { this.hint('UMA CHAVE, DUAS PORTAS COM CADEADO — escolha qual caminho abrir'); this.hintT = 5; }
-        this.audio.play('pickup', { volume: 1, pitch: 1.1 });
+        feedback(this.world, 'key');
         this.popup(V.i, '+1 CHAVE', '#e8c050');
       } else if (c.kind === 'coins') {
         this.world.fx.burst(new THREE.Vector3(o.spot.x, (o.spot.y ?? 0.6) + 0.2, o.spot.z), { count: 14, color: 0xffd84a, speed: 2, life: 0.5, size: 0.1, up: 1.4 });
@@ -2381,6 +2385,7 @@ export class Dungeon {
     this.lastDt = dt;
     if (this.endQueued) { this.flushEnd(); return; }
     if (this.phase === 'loading' || this.phase === 'over' || this.disposed) return;
+    this.updateMusic();
     // a cena de entrada do Espreitador: o mundo anda (animações, câmera), mas ninguém luta
     if (this.bossIntro) {
       for (const q of this.players) q.aimYaw = null;
@@ -2914,8 +2919,25 @@ export class Dungeon {
     this.pveHud.setMate(name + k, (s.x + 1) / 2 * el.clientWidth, (1 - s.y) / 2 * el.clientHeight, this.local === 1 ? '#ffb24a' : '#7ec8ff');
   }
 
+  // MÚSICA POR CAMADAS (audio/music.js): a tensão da sala escolhe as camadas; falas, especiais e a apresentação do
+  // chefe abaixam a música
+  updateMusic() {
+    const a = this.audio;
+    if (!a) return;
+    if (!a.music) a.music = new Music(a);
+    const E = this.encounter && !this.encounter.done ? this.encounter : null;
+    let level = 'explore';
+    if (['dead', 'exit', 'bossDown'].includes(this.phase)) level = 'quiet';
+    else if (this.bossIntro || (E && E.boss)) level = 'boss';
+    else if (E || this.bilu) level = 'fight';
+    const duck = !!(this.bossIntro || (this.world && this.world.cameraRig.shots) || (this.hud && this.hud.subtitleState));
+    if (!a.music.on) a.music.want(level);
+    a.music.update(level, duck);
+  }
+
   dispose() {
     this.disposed = true;
+    this.audio && this.audio.music && this.audio.music.stop();
     this.input.teamMode = false;
     this.input.freeLook = false;
     if (this.player) this.player.aimYaw = null;

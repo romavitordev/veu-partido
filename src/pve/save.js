@@ -32,9 +32,39 @@ export function emptyProfile() {
   return { level: 1, points: 0, spent: 0, tree: {}, bossKills: 0 };
 }
 
-// confere e completa um save (do armazenamento ou de um backup); null se não for um save do Outro Lado desta versão
-export function normalizePve(d) {
-  if (!d || typeof d !== 'object' || Array.isArray(d) || d.version !== SAVE_VERSION) return null;
+// ESCADA DE MIGRAÇÕES (TODO, item 7 das melhorias das skills, 2026-11-27): quando SAVE_VERSION subir, cada degrau
+// leva um save da versão N para a N+1 (MIGRATIONS[N] recebe o save, muda o que precisar e devolve). Um save antigo sobe
+// degrau por degrau até a versão atual, sem perder moedas, personagens e árvore. Um save de uma versão MAIS NOVA que o
+// jogo (voltou para uma versão velha) não é tocado: o loadPve guarda o original à parte, como um save quebrado.
+// Regra para quem subir a versão: nunca editar um degrau que já saiu num lançamento; acrescentar um novo e um teste
+// em tests/save-migration.test.js.
+export const MIGRATIONS = {
+  // 1: (d) => { ...; return d; },   // exemplo: v1 → v2
+};
+
+// sobe o save até `target`; null se não der (versão desconhecida, mais nova, ou falta um degrau)
+export function migratePve(d, target = SAVE_VERSION, steps = MIGRATIONS) {
+  if (!d || typeof d !== 'object' || Array.isArray(d) || !Number.isInteger(d.version)) return null;
+  if (d.version > target || d.version < 1) return null;
+  let cur = d;
+  while (cur.version < target) {
+    const step = steps[cur.version];
+    if (typeof step !== 'function') return null;
+    const from = cur.version;
+    let next;
+    try { next = step(JSON.parse(JSON.stringify(cur))); } catch { return null; }
+    if (!next || typeof next !== 'object') return null;
+    next.version = from + 1;
+    cur = next;
+  }
+  return cur;
+}
+
+// confere e completa um save (do armazenamento ou de um backup); null se não for um save do Outro Lado que esta versão
+// consiga abrir (os antigos sobem pela escada de migrações)
+export function normalizePve(raw, { version = SAVE_VERSION, migrations = MIGRATIONS } = {}) {
+  const d = migratePve(raw, version, migrations);
+  if (!d) return null;
   const base = emptyData();
   const profiles = d.profiles && typeof d.profiles === 'object' && !Array.isArray(d.profiles) ? d.profiles : {};
   const attempt = d.attempt && typeof d.attempt === 'object' && typeof d.attempt.charId === 'string' ? d.attempt : null;
@@ -122,7 +152,7 @@ export function parseBackup(text) {
   let o;
   try { o = JSON.parse(String(text || '')); } catch { throw new Error('O arquivo não é um backup do Véu Partido (não é JSON).'); }
   if (!o || o.kind !== BACKUP_KIND) throw new Error('Esse arquivo não é um backup do Outro Lado.');
-  if (o.version !== SAVE_VERSION) throw new Error(`O backup é de outra versão do save (${o.version}); este jogo usa a ${SAVE_VERSION}.`);
+  if (!(Number.isInteger(o.version) && o.version <= SAVE_VERSION)) throw new Error(`O backup é de uma versão mais nova do save (${o.version}); este jogo usa a ${SAVE_VERSION}. Atualize o jogo.`);
   const d = normalizePve(o.data);
   if (!d) throw new Error('O backup está incompleto ou corrompido.');
   return { data: d, exportedAt: typeof o.exportedAt === 'string' ? o.exportedAt : null };

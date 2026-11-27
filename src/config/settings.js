@@ -1,4 +1,5 @@
 import { SUPPORTED_LANGUAGES, initLanguage, setLanguage, t } from '../i18n/index.js';
+import { applyControlBindings } from './controls.js';
 
 // Opções do jogador, salvas no navegador (se o navegador permitir).
 const KEY = 'arena-paranormal:settings';
@@ -12,11 +13,13 @@ const DEFAULTS = {
   volSfx: 100, // % dos efeitos da luta
   volUi: 100, // % dos sons dos menus
   volHum: 100, // % do zumbido da Carga de Poder
+  volMusic: 70, // % da música por camadas (Outro Lado)
   reduceFx: false, // conforto/fotossensibilidade: flashes de tela e tremor de câmera bem mais fracos
   fightLines: true, // falas curtas no meio da luta (provocações, vida baixa); as de entrada e vitória continuam
   blood: true, // SANGUE NOS FERIMENTOS (respingo, gotas e manchas no chão — fx/woundBlood.js); os efeitos antigos ficam
   rumble: true, // VIBRAÇÃO DO CONTROLE (só controle; o celular não vibra)
   graphics: 'auto', // QUALIDADE GRÁFICA: auto (baixa no celular, alta no PC) | high | medium | low
+  controls: null, // TECLAS E BOTÕES trocados nas Opções (só o que mudou): { kb: [{…}, {…}], pad: [{…}, {…}] } — config/controls.js
 };
 
 // opções das configurações de combate (tela antes do cenário)
@@ -67,12 +70,13 @@ function load() {
     if (!CPU_LEVELS.some((l) => l.id === s.cpuLevel)) s.cpuLevel = DEFAULTS.cpuLevel;
     if (!ROUND_OPTIONS.includes(s.rounds)) s.rounds = DEFAULTS.rounds;
     // volumes: 0..100 (a barra arrastável grava qualquer valor; as versões antigas gravavam de 10 em 10)
-    for (const k of ['volume', 'volSfx', 'volUi', 'volHum']) if (!(Number.isFinite(s[k]) && s[k] >= 0 && s[k] <= 100)) s[k] = DEFAULTS[k];
+    for (const k of ['volume', 'volSfx', 'volUi', 'volHum', 'volMusic']) if (!(Number.isFinite(s[k]) && s[k] >= 0 && s[k] <= 100)) s[k] = DEFAULTS[k];
     s.reduceFx = !!s.reduceFx;
     s.rumble = s.rumble !== false;
     s.blood = s.blood !== false;
     s.fightLines = s.fightLines !== false;
     if (!GFX_OPTIONS.includes(s.graphics)) s.graphics = DEFAULTS.graphics;
+    if (!s.controls || typeof s.controls !== 'object') s.controls = null;
     if (!LANGUAGE_OPTIONS.some((l) => l.id === s.language)) s.language = initLanguage();
     else initLanguage(s.language);
     return s;
@@ -103,7 +107,16 @@ export function cycleSetting(name, list, dir = 1) {
 
 export const SETTINGS = load();
 
+// (2026-11-26) "Efeitos de tela reduzidos" também no CSS: a classe html.reduce-fx desliga as animações de tela
+// (o chiado da Torre, o pulso da Febre do Ouro…), já que o @media prefers-reduced-motion só segue o sistema
+export function applyReduceFxClass() {
+  if (typeof document !== 'undefined') document.documentElement.classList.toggle('reduce-fx', !!SETTINGS.reduceFx);
+}
+applyReduceFxClass();
+applyControlBindings(SETTINGS.controls); // as teclas trocadas valem desde o primeiro quadro
+
 export function saveSettings() {
+  applyReduceFxClass();
   try {
     localStorage.setItem(KEY, JSON.stringify(SETTINGS));
   } catch {

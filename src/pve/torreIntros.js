@@ -10,6 +10,7 @@
 // O jogador pula a cena com PULO/START depois de 1 s. Enquanto ela corre, o Dungeon não atualiza as salas nem os
 // minibosses (Dungeon.update → bossIntro), e o NPC da cena fica preso (held) para não atacar ninguém.
 import * as THREE from 'three';
+import { SETTINGS } from '../config/settings.js';
 
 const v1 = new THREE.Vector3();
 const GREEN = 0x8aff4a;
@@ -121,7 +122,8 @@ export class EstrangeiroIntro extends TorreIntro {
     if (t > 3.6 && t < 5.6 && Math.random() < dt * 10) w.fx.burst(this.spot.clone().add(v1.set((Math.random() - 0.5) * 1.6, 0.2 + Math.random() * 1.8, (Math.random() - 0.5) * 1.6)), { count: 2, color: GREEN, speed: 0.6, life: 0.5, size: 0.14 });
     if (t > 3.7 && !this.formed) { this.formed = true; w.fx.distort(this.spot.clone().setY(1.2), { color: GREEN, radius: 2.6, life: 1.6 }); w.audio.play('teleport', { volume: 0.9, pitch: 0.45 }); }
     // ele pisca entre os quadros (o sinal falhando) até firmar
-    if (this.formed && t < 5.4) { const on = Math.sin(t * 31) > (t < 4.6 ? 0.4 : -0.3); b.setVisible(on); if (!on && Math.random() < dt * 6) this.burst(0.5); }
+    // (2026-11-26, acessibilidade) era sin(t·31), ≈4,9 piscas por segundo; agora ≈2, e nenhuma com efeitos reduzidos
+    if (this.formed && t < 5.4) { const on = SETTINGS.reduceFx || Math.sin(t * 12.5) > (t < 4.6 ? 0.4 : -0.3); b.setVisible(on); if (!on && Math.random() < dt * 3) this.burst(0.5); }
     if (t > 5.4 && !this.named) {
       this.named = true;
       b.setVisible(true);
@@ -250,7 +252,8 @@ export class BiluIntro extends TorreIntro {
       this.burst(1);
       w.showBanner('BILU', '#7aff4a');
     }
-    if (this.flash && t > 3.75) { const on = t < 4.0 || Math.sin(t * 40) > 0.6; this.b.model.root.visible = on; }
+    // (2026-11-26, acessibilidade) era sin(t·40), ≈6,4 piscas por segundo em close; agora ≈2, e nenhuma com efeitos reduzidos
+    if (this.flash && t > 3.75) { const on = t < 4.0 || SETTINGS.reduceFx || Math.sin(t * 12.5) > 0.6; this.b.model.root.visible = on; }
   }
 
   end() {

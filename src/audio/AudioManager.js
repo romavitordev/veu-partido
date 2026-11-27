@@ -19,7 +19,7 @@ export class AudioManager {
     this.buffers = {};
     this.master = null;
     this.volume = 0.55;
-    this.levels = { sfx: 1, ui: 1, hum: 1 }; // volume de cada canal (0..1)
+    this.levels = { sfx: 1, ui: 1, hum: 1, music: 0.7 }; // volume de cada canal (0..1)
     this.buses = null;
     this.out = null; // canal do som que está sendo montado agora (os blocos de síntese ligam nele)
     this.loops = new Map();
@@ -91,7 +91,7 @@ export class AudioManager {
     if (this.master) this.master.gain.value = this.volume;
   }
 
-  // volume de um canal (sfx / ui / hum): 0..1
+  // volume de um canal (sfx / ui / hum / music): 0..1
   setChannel(ch, k) {
     if (ch === 'master') return this.setVolume(k);
     this.levels[ch] = Math.max(0, Math.min(1, k));
@@ -114,7 +114,7 @@ export class AudioManager {
     const comp = this.ctx.createDynamicsCompressor();
     this.master.connect(comp).connect(this.ctx.destination);
     this.buses = {};
-    for (const ch of ['sfx', 'ui', 'hum']) {
+    for (const ch of ['sfx', 'ui', 'hum', 'music']) {
       const g = this.ctx.createGain();
       g.gain.value = this.levels[ch];
       g.connect(this.master);

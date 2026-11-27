@@ -3,6 +3,7 @@
 //  RECOMPENSA DO CHEFE: surge onde o chefe morreu; brilha e pede para o jogador ir até lá (a experiência e o ponto
 //  permanente só entram ao coletar).
 import * as THREE from 'three';
+import { feedback } from './feedback.js';
 
 const PICK_COLORS = { heal: 0x7dffb0, coins: 0xffc040, xp: 0x6ad1ff, proof: 0xc8d8f0, reward: 0xf2c230, ink: 0xd8702a };
 const small = (k) => k === 'heal' || k === 'coins' || k === 'xp';
@@ -98,13 +99,13 @@ export class Pickup {
       const before = p.health;
       p.heal(n);
       const got = Math.round(p.health - before); // o que curou de verdade (o aviso mostrava o valor cheio mesmo sem curar)
-      w.audio.play('pickup', { volume: 0.8 });
+      feedback(w, 'heal');
       w.ui && w.ui.popup(p.index, `+${got} VIDA`, '#7dffb0');
     } else if (small(this.kind)) {
-      w.audio.play('pickup', { volume: 0.8, pitch: this.kind === 'coins' ? 1.4 : 1.1 });
+      // as moedas tocam o som no giveCoins (antes tocava duas vezes: aqui e lá)
+      if (this.kind !== 'coins') feedback(w, this.kind === 'xp' ? 'xp' : 'coin');
     } else {
-      w.audio.play('levelUp', { volume: 1 });
-      w.fx.ring(new THREE.Vector3(this.pos.x, 0.05, this.pos.z), { color: PICK_COLORS[this.kind] ?? 0xf2c230, radius: 3, life: 0.7 });
+      feedback(w, 'bigPickup', { at: this.pos, color: PICK_COLORS[this.kind] ?? 0xf2c230 });
     }
     w.fx.burst(at, { count: 24, color: PICK_COLORS[this.kind] ?? 0xf2c230, speed: 3, life: 0.6, size: 0.2, up: 1.5 });
     this.onTake && this.onTake(p, this);
@@ -306,7 +307,7 @@ export class Chest {
       this.glow.material.color.copy(col);
       if (L) L.color.copy(col);
       w.audio.play('creak', { volume: 0.8, pitch: 1.5 });
-      w.audio.play('levelUp', { volume: 0.7, pitch: items.length >= 3 ? 1.25 : 1 });
+      feedback(w, 'chest', { pitch: items.length >= 3 ? 1.25 : 1 });
       w.fx.burst(new THREE.Vector3(this.pos.x, 0.8, this.pos.z), { count: 22 + items.length * 10, color: A.color, speed: 3, life: 0.7, size: 0.12, up: 2.2 });
       w.fx.ring(new THREE.Vector3(this.pos.x, 0.06, this.pos.z), { color: A.color, radius: 1.4 + items.length * 0.3, life: 0.5 });
       // o facho de luz

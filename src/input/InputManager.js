@@ -1,4 +1,4 @@
-import { KEYBOARD_LAYOUTS, GAMEPAD_LAYOUT, GAMEPAD_DEADZONE, PLAYER_DEVICES } from '../config/controls.js';
+import { KEYBOARD_LAYOUTS, GAMEPAD_LAYOUT, GAMEPAD_LAYOUTS, GAMEPAD_DEADZONE, PLAYER_DEVICES } from '../config/controls.js';
 
 const ACTIONS = ['physical', 'ranged', 'carga', 'jump', 'block', 'dodge', 'start', 'select', 'assist1', 'assist2', 'switch1', 'switch2', 'pageL', 'pageR', 'quick1', 'quick2', 'quick3', 'quick4', 'quick5', 'quickSp', 'grab', 'interact'];
 const DIRS = ['up', 'down', 'left', 'right'];
@@ -122,7 +122,8 @@ export class InputManager {
         const kbStart = layout.start && layout.start.some((c) => this.frameTaps.has(c) || this.keys.has(c));
         const kbSelect = layout.select && layout.select.some((c) => this.frameTaps.has(c) || this.keys.has(c));
         const padBtn = (ids) => pad && ids && ids.some((id) => pad.buttons[id] && pad.buttons[id].pressed);
-        const now = { start: !!(kbStart || padBtn(GAMEPAD_LAYOUT.start)), select: !!(kbSelect || padBtn(GAMEPAD_LAYOUT.select)) };
+        const PL = GAMEPAD_LAYOUTS[i] || GAMEPAD_LAYOUT;
+        const now = { start: !!(kbStart || padBtn(PL.start)), select: !!(kbSelect || padBtn(PL.select)) };
         const prev = p._prevHuman || {};
         p.humanPressed = { start: now.start && !prev.start, select: now.select && !prev.select };
         p._prevHuman = now;
@@ -210,12 +211,14 @@ export class InputManager {
     const dev = PLAYER_DEVICES[i];
     const layout = KEYBOARD_LAYOUTS[dev.keyboard];
     const pad = pads[dev.gamepadSlot];
+    const PL = GAMEPAD_LAYOUTS[i] || GAMEPAD_LAYOUT; // o controle DESTE jogador (as trocas das Opções são por jogador)
     const held = {};
     let mx = 0;
     let my = 0;
     let source = prevSource;
     const kbHeld = (codes) => codes && codes.some((c) => this.keys.has(c) || taps.has(c));
-    for (const a of ACTIONS) held[a] = kbHeld(layout[a]);
+    // INTERAGIR só vale no Outro Lado (lido logo abaixo); fora dele a tecla não vira comando
+    for (const a of ACTIONS) held[a] = a !== 'interact' && kbHeld(layout[a]);
     // mouse travado (câmera livre): esquerdo = físico, direito = à distância
     if (i === 0 && this.freeLook && document.pointerLockElement) {
       if (this.mouseHeld.has(0) || taps.has('Mouse0')) held.physical = true;
@@ -227,7 +230,7 @@ export class InputManager {
       for (let k = 1; k <= 5; k++) held['quick' + k] = kbHeld(['Digit' + k]);
       held.quickSp = kbHeld(['KeyZ']);
       held.grab = kbHeld(['KeyG']);
-      held.interact = kbHeld(['KeyE']); // INTERAGIR (portas, gavetas, baús): a Dungeon decide se vira defesa
+      held.interact = kbHeld(layout.interact || ['KeyE']); // INTERAGIR (portas, gavetas, baús): a Dungeon decide se vira defesa
       held.carga = held.carga || kbHeld(['KeyC']);
       held.assist1 = kbHeld(['KeyQ']);
       held.assist2 = kbHeld(['KeyR']);
@@ -256,8 +259,8 @@ export class InputManager {
     if (pad) {
       // gatilhos (LT/RT) são analógicos: considera apertado acima de 35%
       const btn = (ids) => ids.some((id) => pad.buttons[id] && (pad.buttons[id].pressed || pad.buttons[id].value > 0.35));
-      if ((i === 0 || (i === 1 && this.coopLook)) && this.freeLook && btn([1])) held.interact = true; // B: interagir perto de porta/gaveta/baú (senão é o ○)
-      for (const a of ACTIONS) if (GAMEPAD_LAYOUT[a] && btn(GAMEPAD_LAYOUT[a])) held[a] = true;
+      if ((i === 0 || (i === 1 && this.coopLook)) && this.freeLook && btn(PL.interact || [1])) held.interact = true; // B: interagir perto de porta/gaveta/baú (senão é o ○)
+      for (const a of ACTIONS) if (a !== 'interact' && PL[a] && btn(PL[a])) held[a] = true;
       // analógico direito ◀/▶: TROCA o personagem em campo pelo da assistência 1/2
       // (as assistências são chamadas por L1/LB e R1/RB)
       const rx = pad.axes[2] || 0;
@@ -267,11 +270,11 @@ export class InputManager {
       let ay = -(pad.axes[1] || 0);
       const mag = Math.hypot(ax, ay);
       if (mag < GAMEPAD_DEADZONE) { ax = 0; ay = 0; }
-      ax += (btn(GAMEPAD_LAYOUT.right) ? 1 : 0) - (btn(GAMEPAD_LAYOUT.left) ? 1 : 0);
-      ay += (btn(GAMEPAD_LAYOUT.up) ? 1 : 0) - (btn(GAMEPAD_LAYOUT.down) ? 1 : 0);
+      ax += (btn(PL.right) ? 1 : 0) - (btn(PL.left) ? 1 : 0);
+      ay += (btn(PL.up) ? 1 : 0) - (btn(PL.down) ? 1 : 0);
       if (Math.abs(ax) > Math.abs(mx)) mx = ax;
       if (Math.abs(ay) > Math.abs(my)) my = ay;
-      if (ax || ay || ACTIONS.some((a) => GAMEPAD_LAYOUT[a] && btn(GAMEPAD_LAYOUT[a]))) source = 'gamepad';
+      if (ax || ay || ACTIONS.some((a) => PL[a] && btn(PL[a]))) source = 'gamepad';
       else if (mx || my || ACTIONS.some((a) => held[a])) source = 'keyboard';
     } else if (source !== 'touch') {
       source = 'keyboard';

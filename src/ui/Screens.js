@@ -86,6 +86,15 @@ const homeOptions = () => [
   { id: 'about', group: 'game', label: t('menu.about'), desc: t('menu.about.desc') },
 ];
 
+// o rodapé do menu com as teclas: o texto traduzido enquanto o teclado está no padrão; com teclas trocadas nas
+// Opções (Teclas e botões), as teclas de verdade de cada um
+function footKeys() {
+  const kb = SETTINGS.controls && SETTINGS.controls.kb;
+  if (!kb || !kb.some((p) => p && Object.keys(p).length)) return t('menu.foot_keys');
+  const btns = (i) => ['carga', 'ranged', 'jump', 'physical'].map((a) => actionLabel(i, a)).join(' ');
+  return t('menu.foot_keys_custom', { m1: moveLabel(0), b1: btns(0), m2: moveLabel(1), b2: btns(1) });
+}
+
 export class HomeScreen {
   constructor(root, { portraits = {}, menu = false, touchOnly = false } = {}) {
     this.portraits = portraits;
@@ -116,7 +125,7 @@ export class HomeScreen {
       <div class="hsoon" hidden><div class="hsoon-box"><span class="hsoon-tag">${t('menu.soon')}</span><h3></h3><p>${t('menu.soon.text')}</p><div class="hsoon-ok">${t('menu.soon.ok')}</div></div></div>
       <div class="ver">${VERSION_LABEL}</div>
       <button class="hexplore" type="button" title="Explorar os cenários" aria-label="Explorar os cenários">◉</button>
-      <div class="foot">${touchOnly ? `<span>${t('menu.foot_touch')}</span>` : `<span>${t('menu.foot_confirm', { ok: OK, back: BACK })}</span><span>${t('menu.foot_keys')}</span>`}</div>`);
+      <div class="foot">${touchOnly ? `<span>${t('menu.foot_touch')}</span>` : `<span>${t('menu.foot_confirm', { ok: OK, back: BACK })}</span><span>${footKeys()}</span>`}</div>`);
     this.desc = this.el.querySelector('.hdesc');
     this.listEl = this.el.querySelector('.hlist');
     this.soonEl = this.el.querySelector('.hsoon');

@@ -3,8 +3,10 @@
 // volta de cada jogador. A luz respira e às vezes tremula (como lanterna fraca); com bicho perto ela encolhe.
 // Só desenho (DOM por cima do canvas): não mexe na simulação. Na tela dividida, um círculo em cada metade.
 import * as THREE from 'three';
+import { SETTINGS } from '../config/settings.js';
 
 const v = new THREE.Vector3();
+const FLICK = 0.5; // duração da queda da luz (s)
 
 export class MazeDark {
   constructor(parent) {
@@ -30,10 +32,13 @@ export class MazeDark {
   update(dt, views) {
     this.t += dt;
     // a tremida: de tempos em tempos, a luz pisca por um instante
+    // (2026-11-26, acessibilidade) era um pisca liga/desliga a ~11 Hz: estroboscópio na faixa de risco para
+    // fotossensibilidade (o seguro é até 3 por segundo). Agora é UMA queda suave da luz (≈0,5 s, sobe de volta),
+    // e com "Efeitos de tela reduzidos" ela não acontece
     this.flickT -= dt;
-    if (this.flickT <= 0) { this.flick = 0.18 + Math.random() * 0.25; this.flickT = 3 + Math.random() * 6; }
+    if (this.flickT <= 0) { this.flick = FLICK; this.flickT = 3 + Math.random() * 6; }
     this.flick = Math.max(0, this.flick - dt);
-    const blink = this.flick > 0 && Math.sin(this.flick * 70) > 0 ? 0.55 : 1;
+    const blink = this.flick > 0 && !SETTINGS.reduceFx ? 1 - 0.4 * Math.sin(Math.PI * (1 - this.flick / FLICK)) : 1;
     const breath = 1 + Math.sin(this.t * 1.7) * 0.035;
     views.forEach((V, i) => {
       const d = this.el(i);

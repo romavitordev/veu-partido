@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.46.5';
+export const VERSION = '5.47.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,19 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.47.0',
+    date: '2026-11-27',
+    title: 'A Trilha do Outro Lado',
+    items: [
+      'Música no Outro Lado, composta pelo próprio jogo: cresce com a tensão (explorar, luta, chefe) e abaixa nas falas. Novo volume "Música" nas Opções.',
+      'Teclas e botões: troque a tecla e o botão de cada ação, para o P1 e o P2, com aviso de tecla repetida (Opções → Controles).',
+      'Acessibilidade: nada pisca mais de 3 vezes por segundo; a luz do Labirinto dos Becos não pisca mais.',
+      'Recompensas com peso certo: moeda e cura discretas, baú e nível maiores, chefe e fusão nova com tudo.',
+      'Dara remodelada pela arte promocional; mais moedas nas fases; a tinta de Tipora começa na 2ª onda.',
+      'Saves do Outro Lado prontos para ser convertidos em atualizações futuras, sem perder progresso.',
+    ],
+  },
   {
     v: '5.46.5',
     date: '2026-11-21',
