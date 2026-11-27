@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.48.0 — A Foto do Registro
+
+### Alterado
+- Especial em equipe dos Cinco ganhou um momento próprio, a Foto do Registro: no fim, a equipe se enfileira, o Guizo grita "Diz 'Outro Lado'!", o flash dispara, a imagem congela como uma foto e todos acertam juntos.
+- Especial em equipe dos Mascarados ganhou as Máscaras no Escuro: uma fumaça escura engole o alvo, os olhos das máscaras acendem um a um em volta dele, a Fantasma diz "Contrato encerrado." e todos saem da fumaça no golpe final.
+- A arte do elenco da tela inicial mostra a Dara remodelada.
+- Vilarejo de Treb Ciach: um anel de lamparinas da Chama de Proteção cerca o vilarejo inteiro — apagadas no dia do Samhain, acesas na noite depois da tempestade.
+
 ## v5.47.0 — A Trilha do Outro Lado
 
 ### Adicionado

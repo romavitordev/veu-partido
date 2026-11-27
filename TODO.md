@@ -4,6 +4,16 @@
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
+## Outro Lado — o baú mostra o que cada habilidade faz (pedido do dono, 2026-11-27)
+> Só anotado; o dono pediu para não fazer ainda. Referência: o print que o dono mandou, em `docs/referencias/bau-descricao-habilidade.png`.
+
+- [ ] **Ao abrir o baú, explicar cada item que saiu, novo ou repetido.** Hoje a tela do baú lista ícone, nome e uma
+      etiqueta (fusão, achado, descoberta!). Como no print do dono: os itens aparecem em volta do baú aberto, e embaixo
+      um painel com o ícone, o nome, o nível (ex.: "nível 2", contador "1/5" de quantos saíram) e a descrição do que a
+      habilidade faz (no nível novo). Vale para habilidade nova e para a que só subiu de nível. Dá para passar de um item
+      para o outro (ou eles vão se revezando no painel) e fechar com um botão "OK"/confirmar.
+- [ ] A decidir: se o painel passa sozinho de item em item ou o jogador escolhe; se mostra o antes/depois do nível.
+
 ## Resumo do trabalho de 2026-11-18 (para o dono ler)
 
 Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
@@ -394,7 +404,11 @@ Detalhes de cada versão em `CHANGELOG-ADMIN.md`.
     - [~] Momento próprio de cada equipe (como o trapézio dos Lukic):
       - [x] Abutres (v5.14.0): a Roda dos Abutres (PROPOSTA, pelo nome da equipe).
       - [x] Força D (v5.15.0): a Névoa da Força D (PROPOSTA; base: a Cinerária do Kaiser).
-      - [ ] Os Cinco e Mascarados.
+      - [x] Os Cinco (v5.48.0): a Foto do Registro (PROPOSTA, pelo Guizo e o Registro do Outro Lado) — a equipe em
+            fileira, a câmera atrás do alvo como numa foto de grupo, "Diz 'Outro Lado'!", um clarão de flash, o quadro
+            congela e todos acertam juntos.
+      - [x] Mascarados (v5.48.0): as Máscaras no Escuro (PROPOSTA) — fumaça escura fecha em volta do alvo, os olhos
+            das máscaras acendem um a um em volta, "Contrato encerrado." e todos saem da fumaça no golpe final.
 - [x] **Opção de ligar/desligar os efeitos de sangue** (pedido do dono, 2026-11-18): efeitos NOVOS de sangue nos ferimentos (não mexer nos antigos) e a chave nas Opções. Feito na v5.3.0 (`src/fx/woundBlood.js`, Opções → Vídeo → SANGUE).
 - [~] Balanceamento dos recentes (bateria CPU × CPU) e revisão de cânone dos kits. Conferido em 2026-11-18 (`balance.js`):
   medidos Caio 50%, Cindy 50%, Franco 55%, Alê 54%, Alvira 56%, Boris 51%, Tristan 48%, Ivete 49%, Fernando 47%;
@@ -891,8 +905,9 @@ baixado sem o OK do dono.
         - A Torre da Vigília (4h36, 5h08): redonda, de pedra, com poucas janelas, vista por cima das árvores.
         O que muda no mapa (base canônica; forma visual PROPOSTA):
     - [x] Lamparinas nas portas (v5.18.0, no pórtico; amarelas também na noite azul).
-    - [ ] Lamparinas em volta do vilarejo todo (a Chama de Proteção cerca o vilarejo): apagadas na noite
-          do Samhain, acesas na versão do fim.
+    - [x] (v5.48.0) Lamparinas em volta do vilarejo todo (a Chama de Proteção cerca o vilarejo): anel de postes
+          com lamparina de ferro (r = 35 m, entre as casas e a floresta; o riacho e o caminho da câmera livres).
+          Apagadas no dia do Samhain, acesas (amarelas) na noite pós-tempestade. PROPOSTA a forma.
     - [ ] Silhuetas fantasiadas (crânios, vime, mantos) e Assombrações azuladas vagando e girando em volta da
           fogueira (cenário, sem colisão); o círculo ritual de espirais brilhando no chão da fogueira.
     - [x] Cordões de lamparinas entre as casas e a galhada nas entradas (v5.18.0: pórtico com galhada e lamparina na
@@ -3391,7 +3406,7 @@ O projeto deve continuar evoluindo sem recriar sistemas já existentes.
           de aviador do lado direito; a bolsa enorme de primeiros socorros no quadril, atrás do braço; 5 bolsinhas no
           cinto; calça dobrada no meio da canela com as meias vermelha (direita) e ciano (esquerda) aparecendo. Passa
           na auditoria de entrega (`bx_audit.deliverable`, perfil game). Retrato do Sobre/VS refeito.
-        - [ ] Refazer a imagem do elenco (`elenco.webp`), que ainda mostra a Dara antiga.
+        - [x] (v5.48.0) Imagem do elenco da tela inicial (`public/title/elenco.webp`) refeita com a Dara nova (`src/dev/titleCast.js`).
       - [x] **CHICO** (v4.7.0): `src/characters/chico.js` + `tools/blender/char_chico.py`. Cânone: Farol da Van (△ + ○,
         cega), Scanner de Energia (△ + L2), Joias de Escudo Mental (passiva `iKnewIt`), Remendão (R2 + △). PROPOSTA: □ Pulso
         do Scanner, especial Conexão Neural, Transformação Engenhosidade. Balanço: 6×8 contra o elenco de teste.

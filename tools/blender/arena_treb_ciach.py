@@ -82,6 +82,9 @@ M = {
     'glass_blue': material('lamp_glass_blue', '#9ad0ff', 0.3, emission='#5ab0ff', strength=1.4),
     'glass_amber': material('lamp_glass_amber', '#ffd890', 0.3, emission='#ffb040', strength=1.4),
     'glass_rose': material('lamp_glass_rose', '#ffc0d8', 0.3, emission='#ff7aa8', strength=1.2),
+    # o ANEL DA CHAMA DE PROTEÇÃO em volta do vilarejo inteiro (TODO; PROPOSTA a forma): apagado no dia do Samhain,
+    # aceso na noite pós-tempestade (cfg.materials)
+    'ring_flame': material('ring_flame', '#3a2e1c', 0.6, emission='#ffc840', strength=2.4),
 }
 R_FIGHT = 19.0
 # os caminhos de pedra que saem da praça (ângulo do jogo: x = sen a·r, z = cos a·r): para a câmera (+z), para a ponte
@@ -596,6 +599,26 @@ for k, a in enumerate((0.35, 1.3, 2.35, 3.55, 4.2, 5.3)):
         ex, ez = ax - math.sin(ry) * 0.0 + math.cos(ry) * 0.07 * sx, az + math.sin(ry) * 0.07 * sx
         sphere(f'hangTurnipEye{k}{sx}', (ex + math.sin(ry) * 0.2, 1.8, ez + math.cos(ry) * 0.2), (0.045, 0.04, 0.02), M['socket'], seg=4, rings=3)
     box(f'hangTurnipMouth{k}', (ax + math.sin(ry) * 0.21, 1.67, az + math.cos(ry) * 0.21), (0.14, 0.035, 0.02), M['socket'], rot_y=ry)
+
+# ================================================================ o ANEL DA CHAMA DE PROTEÇÃO (AV ep. 3: a chama cerca o
+# vilarejo; PROPOSTA a forma): postes de carvalho com base de pedra e uma lamparina de ferro, em volta de tudo, entre as
+# casas e a floresta; o riacho (leste) e o caminho da câmera (+z) ficam livres
+RING_R = 35.0
+for k in range(28):
+    a = (k + 0.5) / 28 * TAU
+    x, z = at(a, RING_R)
+    if x > CREEK_X - 5:  # a cerca do riacho
+        continue
+    if abs(x) < 2.5 and z > 0:  # o caminho do fundo da câmera
+        continue
+    ry = face_center(x, z)
+    cyl(f'ringBase{k}', (x, 0, z), 0.32, 0.35, M['stone2'], seg=7)
+    strut(f'ringPost{k}', (x, 0.3, z), (x, 2.3, z), 0.075, M['timber'], seg=5)
+    box(f'ringCap{k}', (x, 2.34, z), (0.34, 0.06, 0.34), M['iron'], rot_y=ry)
+    box(f'ringBase2{k}', (x, 1.94, z), (0.3, 0.05, 0.3), M['iron'], rot_y=ry)
+    box(f'ringGlow{k}', (x, 2.13, z), (0.22, 0.32, 0.22), M['ring_flame'], rot_y=ry)
+    for sx in (-1, 1):  # as barras da gaiola
+        box(f'ringBar{k}{sx}', (x + math.cos(ry) * 0.13 * sx, 2.13, z - math.sin(ry) * 0.13 * sx), (0.03, 0.36, 0.03), M['iron'], rot_y=ry)
 
 # ================================================================ as árvores velhas entre as casas, a FLORESTA DENSA e as
 # MONTANHAS em volta

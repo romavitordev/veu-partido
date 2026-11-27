@@ -832,12 +832,13 @@ const CHOREO = {
   },
 
   os_cinco({ tl, S, f, opp, world, crew, guests, color, crewTotal, live }) {
-    const END = S + 5.8;
+    const END = S + 6.7;
     const tools = choreographyTools({ f, opp, world, crew, guests, live, end: END });
     const morato = tools.get('morato'), chico = tools.get('chico'), xande = tools.get('xande');
     const lirio = tools.get('lirio'), guizo = tools.get('guizo'), dara = tools.get('dara');
     const actors = [morato, chico, xande, lirio, guizo, dara].filter(Boolean);
-    const shares = splitDamage(crewTotal, actors.length || 1);
+    // um pedaço a mais para o golpe da foto (o último)
+    const shares = splitDamage(crewTotal, (actors.length || 1) + 1);
     const damageOf = (actor) => shares[actors.indexOf(actor)] || 0;
     const say = sayer(world);
     // rajada curta da submetralhadora (Dara) ou da Mac-10 (Chico): traçantes saindo do cano, o dano entra no último tiro
@@ -992,16 +993,43 @@ const CHOREO = {
       });
     }
 
-    const F = END;
-    tl.add(F - 0.5, () => {
-      if (!live()) return;
+    // A FOTO DO REGISTRO (PROPOSTA; o Guizo e o "Registro do Outro Lado"): a equipe se junta numa fileira na frente do
+    // alvo, a câmera enquadra como uma foto de grupo, o Guizo grita "Diz Outro Lado!" e bate a foto — UM clarão de
+    // flash e o quadro congela por um instante, como uma foto — e, quando a imagem volta, todos acertam juntos
+    const LINE = S + 5.3, SNAP = S + 5.85, F = S + 6.2;
+    const PHOTO_ANIM = { morato: 'shoot_rifle', chico: 'shoot_rifle', xande: 'slash_v', lirio: 'hammer_heavy', guizo: 'slash_h', dara: 'heavy_punch' };
+    tl.add(LINE, () => {
+      if (!live() || !actors.length) return;
       actors.forEach((actor, i) => {
-        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.5, 2.4);
+        const at = tools.around(actor, (i - (actors.length - 1) / 2) * 0.42, 2.6);
         actor.pos.set(at.x, 0, at.z);
         actor.face(opp);
+        actor.play(i % 2 ? 'point' : 'taunt_roar', 0.5);
       });
+      if (guizo) say(guizo, 'Todo mundo junto! Diz "Outro Lado"!', 0);
+      else say(actors[0], 'Os Cinco! Juntos!', 0);
+      // a "foto de grupo": a câmera atrás do alvo, um pouco alta, a equipe inteira no quadro
+      // a câmera fica do lado oposto ao da fileira (pelo centro real da fileira; o orbit é relativo ao alvo)
+      const cx = actors.reduce((s, a) => s + a.pos.x, 0) / actors.length, cz = actors.reduce((s, a) => s + a.pos.z, 0) / actors.length;
+      const a0 = Math.atan2(opp.pos.x - cx, opp.pos.z - cz) - opp.yaw;
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.6, radius: 3.4, height: 2.1, a0: a0 - 0.15, a1: a0 + 0.15, lookH: 1.1, fov: 52 }), cut: true }]);
+    });
+    tl.add(SNAP, () => {
+      if (!live() || !actors.length) return;
+      const cam = guizo || actors[0];
+      world.fx.flash(cam.chest(), { color: 0xffffff, size: 3.2, life: 0.35 }); // um clarão só (acessibilidade)
+      world.audio.play('trapSnap', { volume: 0.8, pitch: 1.6 }); // o obturador
+      world.hitstop(0.3); // a imagem congela como uma foto
+    });
+    tl.add(F, () => {
+      if (!live() || !actors.length) return;
+      actors.forEach((actor) => actor.play(PHOTO_ANIM[linkId(actor.def)] || 'heavy_punch', 0.45));
+      world.fx.burst(opp.chestPos(), { count: 40, color: 0xf2c230, speed: 3.6, spread: 1.6, life: 0.6, size: 0.18 });
+      world.fx.ring(opp.pos.clone().setY(0.08), { color: 0x8bf5ff, radius: 2, life: 0.5 });
+      tools.impact(actors[0], shares[shares.length - 1], { sound: 'heavyPunch', color: 0xf2c230 });
       world.cameraRig.playShots([{ ...orbit(opp, { dur: 0.8, radius: 4, height: 1.8, a0: -0.8, a1: 0.8 }), cut: true }]);
     });
+    tl.add(END, () => { world.ui && world.ui.subtitle && world.ui.subtitle(null); });
     return F;
   },
 
@@ -2665,7 +2693,7 @@ const CHOREO = {
       const want = { x: opp.pos.x + Math.sin(a) * r, z: opp.pos.z + Math.cos(a) * r };
       return findFreeSpotNear(world.arena, want.x, want.z, { radius: 0.5, others: [{ x: opp.pos.x, z: opp.pos.z, r: 0.6 }] }) || want;
     };
-    const END = 5.6; // todos ficam até o fim
+    const END = 6.9; // todos ficam até o fim
     let t = S;
     // o líder espera de lado até a vez dele (a parte dele o põe no lugar)
     tl.add(S, () => {
@@ -2768,8 +2796,47 @@ const CHOREO = {
       }
       t += 1.25;
     }
-    // GOLPE FINAL: Dalmo no soco pesado e Aguiar no machado de cima, juntos; os outros soltam o deles ao mesmo tempo
+    // AS MÁSCARAS NO ESCURO (PROPOSTA; o nome da equipe): uma fumaça escura fecha em volta do alvo e engole todos; no
+    // escuro só as máscaras brilham, uma de cada vez, cercando o alvo; a Fantasma fala baixo e eles saem juntos da fumaça
+    const DARK = t, OUT = t + 1.15;
+    const ringAt = (k, n) => {
+      const a = opp.yaw + (k / n) * Math.PI * 2 + 0.4;
+      return { x: opp.pos.x + Math.sin(a) * 2.4, z: opp.pos.z + Math.cos(a) * 2.4 };
+    };
+    let smokeOn = false;
+    const SMOKE_C = 0x3a3442, SMOKE_D = 0x1c1822; // fumaça cinza-arroxeada: lê no chão escuro e no vermelho
+    tl.add(DARK, () => {
+      if (!live()) return;
+      smokeOn = true;
+      world.audio.play('smoke', { volume: 0.8 });
+      world.audio.play('whisper', { volume: 0.6 });
+      cast.forEach((who, k) => { const p = ringAt(k, cast.length); place(who, p.x, p.z); who.play('idle', 0.4); });
+      world.cameraRig.playShots([{ ...orbit(opp, { dur: OUT - DARK, radius: 6.2, height: 2.6, a0: 0.3, a1: -0.4, lookH: 1.0, fov: 50 }), cut: true }]);
+    });
+    tl.each((time) => {
+      if (!smokeOn || !live() || time > OUT + 0.2) return;
+      const ang = Math.random() * Math.PI * 2;
+      const r = 1.2 + Math.random() * 2.2;
+      world.fx.burst(new THREE.Vector3(opp.pos.x + Math.sin(ang) * r, 0.9, opp.pos.z + Math.cos(ang) * r), { kind: 'smoke', count: 3, color: Math.random() < 0.6 ? SMOKE_C : SMOKE_D, speed: 0.3, spread: 1, up: 0.1, life: 1.6, size: 2.2, grow: 1.1, drag: 1, jitter: 0.6 });
+    });
+    // os olhos das máscaras acendem um por um (luzinhas na cabeça de cada um, não um clarão de tela)
+    cast.forEach((who, k) => {
+      tl.add(DARK + 0.25 + k * (0.7 / Math.max(1, cast.length)), () => {
+        if (!live()) return;
+        const head = who.chest().add(new THREE.Vector3(0, 0.55, 0));
+        // os dois olhos da máscara, virados para o alvo
+        const side = new THREE.Vector3(Math.cos(who.yaw), 0, -Math.sin(who.yaw)).multiplyScalar(0.09);
+        const front = new THREE.Vector3(Math.sin(who.yaw), 0, Math.cos(who.yaw)).multiplyScalar(0.18);
+        for (const sg of [1, -1]) world.fx.flash(head.clone().add(front).addScaledVector(side, sg), { color: who.color, size: 0.55, life: 1.1 });
+        world.fx.flash(head.clone().add(front), { color: who.color, size: 1.4, life: 0.5 });
+        world.audio.play('maskOn', { volume: 0.35, pitch: 0.8 + k * 0.08 });
+      });
+    });
+    tl.add(DARK + 0.85, () => { if (live()) say(kemi || cast[0] || f, kemi ? 'Contrato encerrado.' : 'Acabou.', 0); });
+    t = OUT;
+    // GOLPE FINAL: saem todos da fumaça juntos — Dalmo no soco pesado e Aguiar no machado de cima; os outros soltam o deles
     tl.add(t, () => {
+      smokeOn = false;
       if (!live()) return;
       if (dalmo) dalmo.play('heavy_punch', 0.6);
       if (aguiar) aguiar.play('slash_v', 0.6);

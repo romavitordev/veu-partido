@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.47.0';
+export const VERSION = '5.48.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.48.0',
+    date: '2026-11-27',
+    title: 'A Foto do Registro',
+    items: [
+      'Os Cinco: o especial em equipe fecha com a Foto do Registro — fileira, "Diz Outro Lado!", flash e todos acertam juntos.',
+      'Mascarados: as Máscaras no Escuro — a fumaça engole o alvo, os olhos das máscaras acendem em volta e todos saem juntos.',
+      'Vilarejo de Treb Ciach: um anel de lamparinas da Chama de Proteção cerca o vilarejo (apagadas no Samhain, acesas depois da tempestade).',
+      'A arte do elenco da tela inicial mostra a Dara remodelada.',
+    ],
+  },
   {
     v: '5.47.0',
     date: '2026-11-27',

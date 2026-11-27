@@ -738,6 +738,8 @@ export const TREB_CIACH = {
     // AV ep. 3: de dia as lamparinas das portas e os globos dos cordões brilham pouco
     protect_lamp: { emissiveIntensity: 0.6 },
     lamp_glass_blue: { emissiveIntensity: 0.4 }, lamp_glass_amber: { emissiveIntensity: 0.4 }, lamp_glass_rose: { emissiveIntensity: 0.35 },
+    // o ANEL DA CHAMA DE PROTEÇÃO em volta do vilarejo: no dia do Samhain as lamparinas ainda estão APAGADAS
+    ring_flame: { emissiveIntensity: 0 },
   },
   bounds: { radius: 18.5 }, // a fogueira (r ≈ 4,8) ocupa o meio: a luta é em volta dela
   spawns: [{ x: 0, z: -10.5 }, { x: 0, z: 10.5 }],
@@ -792,6 +794,8 @@ export const TREB_CIACH_TEMPESTADE = {
     irish_grass: { emissive: 0x06303c, emissiveIntensity: 0.6 }, birch_bark: { emissive: 0x2a6a80, emissiveIntensity: 0.35 },
     // AV ep. 3: a Chama de Proteção nas lamparinas das portas continua amarela no meio do azul
     protect_lamp: { emissiveIntensity: 2.4 },
+    // o ANEL DA CHAMA DE PROTEÇÃO em volta do vilarejo inteiro, ACESO (amarelo) na noite depois da tempestade
+    ring_flame: { color: 0xffe8a0, emissiveIntensity: 3.2, fog: false }, // a chama fura a névoa: o anel se vê de longe
   },
   // os RAIOS da tempestade no céu (dono: "pode fazer o efeito de raios de tempestade nesse mapa de Treb Ciach à noite")
   lightning: { interval: [4, 9], distance: 110, top: 80, bottom: 18, arc: [0, Math.PI * 2], intensity: 2.6, skyOpacity: 0.35 },
