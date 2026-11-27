@@ -1,5 +1,12 @@
 # Changelog
 
+## v5.49.1 — Cachos e Penas
+
+### Alterado
+- Bran remodelado no Blender: o cabelo e a barba eram uma massa lisa só, com o rosto num buraco oval. Agora o rosto aparece (olhos, sardas), a barba cheia abraça a mandíbula com o bigode caindo pelos cantos da boca e o cabelo ruivo cai em cachos em espiral pelos ombros e pelas costas até o peito. A gola de pelo ficou mais fina, e os cachos passam por cima dela.
+- O Inquebrável: a gola de penas era um saco liso em forma de ovo. Agora são penas de verdade, em fileiras desencontradas como telhas (curtas em cima, longas embaixo, algumas mais claras), com uma fileira eriçada para cima atrás da cabeça. Não aparece mais pele entre a máscara e a gola.
+- Retratos do Bran e do Inquebrável no Sobre e na tela de VS refeitos.
+
 ## v5.49.0 — O Vigia de Treb Ciach
 
 ### Adicionado

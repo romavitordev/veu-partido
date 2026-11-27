@@ -52,6 +52,8 @@ sole = material('sole_bran', '#1a120c', 0.8)
 bone = material('bone_bran', '#5a5650', 0.7)   # o crânio de corvo, escurecido
 bone_dk = material('bone_bran_dk', '#1c1a1a', 0.8)
 plume = material('plume_bran', '#34404a', 0.85)  # as penas cinza-azuladas da fantasia
+plume_lt = material('plume_lt_bran', '#46525e', 0.85)  # algumas penas mais claras (variação)
+plume_dk = material('plume_dk_bran', '#1c2228', 0.9)  # a base por baixo das penas
 
 PREVIEW = {'face_bran': '#e8b496', 'tunic_bran': '#3a3430', 'cloak_bran': '#1e1c1e'}
 for m in bpy.data.materials:
@@ -162,8 +164,8 @@ relief(cape, lambda p: 0.005 * H * (ridge(math.atan2(p.x, p.y) * 8 + n3(p, 9) * 
 # a GOLA de pelo felpudo: um rolo grosso nos ombros e descendo pelas duas bordas da abertura até o chão
 G = Sculpt()
 collar = [cape_pt(a * TAU, 0.06, 1.0) for a in [gap_at(0.06) + (1 - 2 * gap_at(0.06)) * i / 24 for i in range(25)]]
-G.chain(collar, 0.072 * H, step=0.5)
-b.add('prop_furCollar', G.mesh(res=0.01, smooth=2, disp=lambda p: 0.01 * H * (n3(p, 40) + 0.6 * n3(p, 90)), target=5000), fur, region='torso', weight_fn=cape_weights, subdiv=0)
+G.chain(collar, 0.052 * H, step=0.5)
+b.add('prop_furCollar', G.mesh(res=0.01, smooth=2, disp=lambda p: 0.008 * H * (n3(p, 40) + 0.6 * n3(p, 90)), target=5000), fur, region='torso', weight_fn=cape_weights, subdiv=0)
 # as FRANJAS da barra: tiras curtas penduradas em toda a volta
 fr = []
 for j in range(70):
@@ -202,68 +204,128 @@ for k, dx in enumerate((-0.022, 0.0, 0.022)):
 b.add('crowFeathers', merge(*fe), feather, region='chest', subdiv=0)
 
 # ================================================================ CABELO RUIVO longo e cacheado até o peito
+# (revisto no Blender ao vivo, 2026-11-27): antes era uma bolha lisa com o rosto num buraco oval. Agora, como o Arthur
+# (char_arthur.py), tudo nasce NA SUPERFÍCIE da cabeça (raycast): a calota colada, e os cachos são ESPIRAIS (ringlets)
+# que caem dos lados e de trás até o peito — o que lê "cacheado" mesmo no tamanho do jogo.
+from mathutils.bvhtree import BVHTree
+_hd = part('head')
+_dg = bpy.context.evaluated_depsgraph_get()
+_bvh = BVHTree.FromObject(_hd, _dg)
+_mw = _hd.matrix_world
+_mwi = _mw.inverted()
+
+
+def on_head(a, el, off):
+    """a = ângulo a partir da frente (+ = lado esquerdo dele, +x), el = elevação a partir do equador da cabeça"""
+    d = Vector((math.sin(a) * math.cos(el), -math.cos(a) * math.cos(el), math.sin(el)))
+    o = _mwi @ (HC + d * 0.6 * H)
+    hit = _bvh.ray_cast(o, (_mwi.to_3x3() @ -d).normalized())
+    if hit[0] is None:
+        return None
+    return _mw @ hit[0] + (_mw.to_3x3() @ hit[1]).normalized() * off
+
+
+def ringlet(S, top, down, length, r_coil, r_tube, turns, phase=0.0, out=None):
+    """um cacho em espiral: o eixo desce de `top` na direção `down` (curvando para `out`), a mola em volta dele"""
+    down = Vector(down).normalized()
+    side = down.cross(Vector((0, 0, 1)))
+    if side.length < 1e-4:
+        side = Vector((1, 0, 0))
+    side.normalize()
+    fwd = side.cross(down).normalized()
+    n = max(10, int(turns * 16))
+    pts, rad = [], []
+    for j in range(n + 1):
+        t = j / n
+        c = top + down * (length * t)
+        if out is not None:
+            c = c + Vector(out) * (t * t)
+        ang = phase + t * turns * math.tau
+        rc = r_coil * (1.0 - 0.35 * t)
+        pts.append(c + side * (math.cos(ang) * rc) + fwd * (math.sin(ang) * rc))
+        rad.append(r_tube * (1.0 - 0.45 * t))
+    S.chain(pts, rad, step=0.5)
+
+
+random.seed(31)
 Hr = Sculpt()
-# a calota (risca no meio, volume dos cachos)
-Hr.ell(Vh(0, 0.012, 0.03), (0.15 * H, 0.165 * H, 0.152 * H))
-Hr.ell(Vh(0, 0.05, -0.06), (0.15 * H, 0.14 * H, 0.14 * H))
-# os CACHOS na calota (o volume do alto, risca no meio)
-for i in range(90):
-    th = random.uniform(-math.pi, math.pi)
-    ph = random.uniform(0.05, 1.9)
-    d = Vector((math.sin(th) * math.sin(ph), -math.cos(th) * math.sin(ph), math.cos(ph)))
-    if d.y < -0.3 and d.z < 0.55:
-        continue  # o rosto livre
-    Hr.ell(HC + Vector((d.x * 0.15 * H, 0.012 * H + d.y * 0.16 * H, 0.03 * H + d.z * 0.15 * H)), 0.026 * H)
-# as MECHAS: caem das laterais e de trás da cabeça; as da frente passam por cima dos ombros e deitam no peito
-# (pontos de controle em H, relativos ao centro da cabeça; o ombro fica em z ≈ -0,29)
-LOCKS = []
+# a CALOTA contínua colada no crânio (cobre o alto, os lados e a nuca; a testa e o rosto livres)
+for i in range(30):
+    for j in range(8):
+        a = (i / 30 - 0.5) * math.tau
+        el = -0.35 + 1.25 * j / 7
+        if math.cos(a) > 0.45 and el < 0.62:
+            continue  # testa e rosto
+        if math.cos(a) > 0.1 and el < 0.05:
+            continue  # as bochechas (ali fica a barba)
+        q = on_head(a, el, (0.026 if el > 0.3 else 0.03) * H)
+        if q:
+            Hr.ell(q, (0.034 * H, 0.034 * H, 0.03 * H))
+# o topete: volume na risca do meio, caindo de lado para a testa (os cachos de cima)
 for s_ in (1, -1):
-    for k in range(5):  # as da frente
-        x0 = 0.105 + 0.011 * k
-        LOCKS.append([(s_ * x0, -0.06 + 0.03 * k, 0.0), (s_ * (x0 + 0.03), -0.06 + 0.02 * k, -0.14),
-                      (s_ * (0.15 + 0.02 * k), -0.1 + 0.015 * k, -0.27), (s_ * (0.14 + 0.025 * k), -0.17 + 0.01 * k, -0.4),
-                      (s_ * (0.12 + 0.03 * k), -0.19 + 0.008 * k, -0.52)])
-    for k in range(5):  # as dos lados e de trás, deitadas no manto até as escápulas
-        ang = 1.75 + 0.3 * k
-        x0, y0 = math.sin(ang) * 0.14, -math.cos(ang) * 0.15
-        LOCKS.append([(s_ * x0, y0, 0.0), (s_ * x0 * 1.15, y0 * 1.1 + 0.02, -0.15), (s_ * x0 * 1.2, y0 * 1.05 + 0.08, -0.28),
-                      (s_ * x0 * 1.1, y0 + 0.11, -0.42), (s_ * x0 * 0.95, y0 + 0.1, -0.5)])
-for i, L in enumerate(LOCKS):
-    pts = []
-    for k in range(len(L) - 1):  # cada trecho em 3 pontos, com o cacho ondulando
-        for j in range(3):
-            t = j / 3
-            q = Vector(L[k]).lerp(Vector(L[k + 1]), t)
-            w = 0.018 * math.sin((k + t) * 4.2 + i)
-            pts.append(HC + Vector(((q.x + w) * H, q.y * H, q.z * H)))
-    pts.append(HC + Vector(L[-1]) * H)
-    n = len(pts)
-    Hr.chain(pts, [(0.042 - 0.018 * j / (n - 1)) * H for j in range(n)], step=0.45)
-Hr.ell(Vh(0, -0.13, -0.05), (0.112 * H, 0.1 * H, 0.15 * H), neg=True)  # o rosto livre
-Hr.ell(Vh(0, -0.02, -0.03), (0.108 * H, 0.12 * H, 0.12 * H), neg=True)
+    for k in range(4):
+        q = on_head(s_ * (0.25 + 0.17 * k), 0.68 - 0.05 * k, 0.03 * H)
+        if q:
+            ringlet(Hr, q, (s_ * 0.5, -0.4, -1), 0.07 * H, 0.01 * H, 0.02 * H, 1.2, phase=k)
+# CACHOS da calota: espirais curtas apontando para fora em toda a cabeça (dão a textura dos cachos)
+for i in range(90):
+    a = random.uniform(-math.pi, math.pi)
+    el = random.uniform(-0.1, 1.3)
+    if math.cos(a) > 0.4 and el < 0.75:
+        continue
+    q = on_head(a, el, 0.04 * H)
+    if q:
+        d = (q - HC).normalized()
+        ringlet(Hr, q, d * 0.6 + Vector((0, 0, -1)), 0.055 * H, 0.009 * H, 0.019 * H, 1.2, phase=i)
+# os CACHOS LONGOS: dos lados e de trás, até o peito; os da frente passam por cima dos ombros
+for s_ in (1, -1):
+    for k in range(4):  # os da frente, por cima dos ombros
+        q = on_head(s_ * (1.05 + 0.13 * k), -0.05 - 0.05 * k, 0.02 * H)
+        if q:
+            ringlet(Hr, q, (s_ * 0.06, -0.14, -1), (0.36 - 0.03 * k) * H, 0.014 * H, 0.025 * H, 4.5, phase=k * 1.7,
+                    out=(s_ * 0.05 * H, -0.07 * H, 0))
+    for k in range(5):  # os dos lados e de trás, deitados no manto até as escápulas
+        q = on_head(s_ * (1.75 + 0.3 * k), -0.1 + 0.04 * (k % 2), 0.02 * H)
+        if q:
+            ringlet(Hr, q, (s_ * 0.08, 0.3, -1), (0.38 - 0.02 * k) * H, 0.014 * H, 0.026 * H, 4.2, phase=k * 2.3,
+                    out=(s_ * 0.02 * H, 0.06 * H, 0))
+Hr.ell(Vh(0, -0.16, -0.06), (0.1 * H, 0.08 * H, 0.13 * H), neg=True)  # o rosto livre
 
 
 def curls(p):
-    return 0.006 * H * (n3(p, 55) + 0.5 * n3(p, 110))
+    return 0.0025 * H * (n3(p, 70) + 0.5 * n3(p, 140))
 
 
-b.add('prop_hairCurls', Hr.mesh(res=0.007, smooth=2, disp=curls, target=6500), hairm, region='head', subdiv=0)
+b.add('prop_hairCurls', Hr.mesh(res=0.0055, smooth=1, disp=curls, target=9000), hairm, region='head', subdiv=0)
 
-# ================================================================ a BARBA cheia ruiva (das costeletas ao queixo, cobrindo
-# o pescoço na frente) e o bigode
+# ================================================================ a BARBA cheia ruiva, colada na mandíbula (das
+# costeletas ao queixo), a ponta cacheada até o alto do peito, e o bigode. As bochechas acima da boca ficam livres.
 Bd = Sculpt()
-for i in range(13):
-    a = -1.25 + 2.5 * i / 12  # de uma costeleta à outra, passando pelo queixo
-    x = math.sin(a) * 0.125 * H
-    y = -math.cos(a) * 0.12 * H
-    z = -0.03 * H - 0.08 * H * math.cos(a) ** 2
-    Bd.ell(Vh(0, 0, 0) + Vector((x, y, z)), (0.062 * H, 0.058 * H, 0.08 * H))
-Bd.chain([Vh(0, -0.12, -0.1), Vh(0, -0.135, -0.17), Vh(0, -0.13, -0.22)], [0.1 * H, 0.09 * H, 0.06 * H], step=0.5)  # o queixo e a ponta
+for i in range(23):
+    a = (i / 22 - 0.5) * 2.9
+    for el in (-0.12, -0.27, -0.42, -0.57, -0.72, -0.86):
+        if abs(a) < 0.3 and el > -0.55:
+            continue  # a boca
+        if abs(a) < 0.85 and el > -0.38:
+            continue  # as bochechas
+        if abs(a) > 1.1 and el < -0.6:
+            continue  # o pescoço dos lados
+        q = on_head(a, el, 0.012 * H)
+        if q:
+            Bd.ell(q, (0.036 * H, 0.034 * H, 0.032 * H))
+# a ponta da barba: alguns cachos curtos descendo do queixo
+for k in range(9):
+    a = (k / 8 - 0.5) * 1.5
+    q = on_head(a, -0.8, 0.03 * H)
+    if q:
+        ringlet(Bd, q, (a * 0.25, -0.25, -1), (0.11 - 0.03 * abs(a)) * H, 0.01 * H, 0.028 * H, 1.6, phase=k * 1.3)
+# o BIGODE cheio, caindo pelos cantos da boca até a barba
 for s in (1, -1):
-    Bd.chain([Vh(s * 0.012, -0.152, -0.045), Vh(s * 0.045, -0.14, -0.062), Vh(s * 0.06, -0.13, -0.09)], [0.03 * H, 0.03 * H, 0.024 * H], step=0.5)  # bigode
-Bd.ell(Vh(0, -0.05, -0.02), (0.11 * H, 0.1 * H, 0.1 * H), neg=True)  # dentro do rosto
-Bd.ell(Vh(0, -0.16, -0.07), (0.024 * H, 0.03 * H, 0.012 * H), neg=True)  # a boca
-b.add('prop_hairBeard', Bd.mesh(res=0.006, smooth=2, disp=curls, target=2600), hairm, region='head', subdiv=0)
+    pts = [on_head(s * a, el, 0.014 * H) for a, el in ((0.03, -0.36), (0.17, -0.37), (0.3, -0.45), (0.34, -0.58))]
+    pts = [q for q in pts if q]
+    if len(pts) > 1:
+        Bd.chain(pts, [0.019 * H, 0.021 * H, 0.017 * H, 0.012 * H][:len(pts)], step=0.45)
+b.add('prop_hairBeard', Bd.mesh(res=0.005, smooth=1, disp=curls, target=4500), hairm, region='head', subdiv=0)
 b.group('prop_hair', 'prop_hair')
 
 # ================================================================ FANTASIADO: prop_crowMask (crânio de corvo de bico longo)
@@ -284,29 +346,69 @@ b.add('prop_crowMaskEyes', merge(*ey), bone_dk, region='head', subdiv=0)
 b.add('prop_crowMaskSlit', rod([Vh(0, -0.2, -0.045), Vh(0, -0.31, -0.1), Vh(0, -0.42, -0.21)], 0.004 * H, 4), bone_dk, region='head', subdiv=0)
 b.group('prop_crowMask', 'prop_crowMask')
 
-# prop_feathers: a GOLA ENORME de penas cinza-azuladas, dos ombros até a cintura, fechada no peito
+# prop_feathers: a GOLA ENORME de penas cinza-azuladas, dos ombros até a cintura, fechada no peito.
+# (revisto no Blender ao vivo, 2026-11-27: era um saco de metaballs em forma de ovo, com textura de plástico-bolha.)
+# Agora: uma base fina e escura (para não vazar entre as penas) e, por cima, PENAS DE VERDADE — lâminas achatadas em
+# fileiras desencontradas, como telhas, apontando para baixo; as de cima curtas, as de baixo longas.
+FROWS = 9
+TOP = HC.z - 0.02 * H        # a gola sobe atrás até a altura das orelhas (não passa do alto da cabeça)
+CHIN = HC.z - 0.13 * H       # acima do queixo a frente fica aberta (a máscara)
+
+
+def mantle(v):
+    """(rx, ry, z) da gola na fileira v (0 = alto, 1 = cintura)"""
+    w = math.sin(min(1.0, v / 0.7) * math.pi / 2) ** 0.8  # sino: estreito no pescoço, largo nos ombros e no peito
+    w *= 1 - 0.1 * max(0.0, v - 0.85) / 0.15
+    return (0.1 + 0.23 * w) * H, (0.11 + 0.11 * w) * H, TOP - v * 0.68 * H
+
+
 Fh = Sculpt()
-# um capuz de penas: fecha atrás da cabeça (o rosto livre para a máscara), cai pelos ombros abrindo e termina na cintura
-FROWS = 11
-for k in range(FROWS):
-    v = k / (FROWS - 1)
-    z = HC.z + 0.07 * H - v * 0.8 * H
-    w = math.sin(min(1.0, v / 0.75) * math.pi / 2) ** 0.8  # sino: estreito no capuz, largo no peito
-    w *= 1 - 0.12 * max(0.0, v - 0.85) / 0.15  # a barra volta para dentro, redonda
-    rx = (0.12 + 0.21 * w) * H
-    ry = (0.13 + 0.1 * w) * H
-    n = 20 + int(16 * w)
+for k in range(FROWS + 1):
+    v = k / FROWS
+    rx, ry, z = mantle(v)
+    n = 20 + int(14 * v)
     for i in range(n):
-        a = TAU * i / n  # 0 = frente
-        if v < 0.38 and math.cos(a) > 0.1:
-            continue  # o rosto e o pescoço livres na frente
-        Fh.ell(Vector((math.sin(a) * rx, -math.cos(a) * ry + 0.02 * H, z)), (0.075 - 0.015 * v) * H)
-def feathers(p):
-    a = math.atan2(p.x, -p.y)
-    return 0.012 * H * (ridge(a * 22 + n3(p, 12) * 2, 2) + 0.6 * ridge(p.z / H * 60 + a * 5, 3) - 0.6)
+        a = TAU * i / n
+        if z > CHIN and math.cos(a) > 0.55:
+            continue
+        Fh.ell(Vector((math.sin(a) * rx * 0.92, -math.cos(a) * ry * 0.92 + 0.02 * H, z)), 0.05 * H)
+b.add('prop_feathersBase', Fh.mesh(res=0.01, smooth=2, target=3500), plume_dk, region='torso', weight_fn=cape_weights, subdiv=0)
 
-
-b.add('prop_feathers', Fh.mesh(res=0.01, smooth=2, disp=feathers, target=7000), plume, region='torso', weight_fn=cape_weights, subdiv=0)
+random.seed(77)
+fa, fb = [], []
+for k in range(FROWS):
+    v = (k + 0.15) / FROWS
+    rx, ry, z = mantle(v)
+    ln = (0.12 + 0.1 * v) * H           # comprimento da pena
+    wd = (0.018 + 0.01 * v) * H         # meia-largura
+    n = 26 + int(20 * v)
+    for i in range(n):
+        a = TAU * (i + 0.5 * (k % 2)) / n + random.uniform(-0.05, 0.05)
+        if z > CHIN and math.cos(a) > 0.0:
+            continue
+        out = Vector((math.sin(a), -math.cos(a), 0))
+        root = Vector((math.sin(a) * rx, -math.cos(a) * ry + 0.02 * H, z)) + out * 0.03 * H
+        tilt = 0.22 + 0.12 * random.random()
+        d = (out * tilt + Vector((0, 0, -1))).normalized()
+        L = ln * random.uniform(0.85, 1.1)
+        pts = [root, root + d * L * 0.35 + out * 0.012 * H, root + d * L * 0.75 + out * 0.02 * H, root + d * L + out * 0.022 * H]
+        rad = [wd * 0.3, wd, wd * 0.6, wd * 0.05]
+        nf = (lambda o: (lambda p: o))(out)
+        (fb if random.random() < 0.3 else fa).append(rod(pts, rad, 6, flat=(nf, 0.16)))
+# a fileira de cima: penas eriçadas para cima e para fora, atrás da cabeça (a gola alta do corvo)
+for i in range(22):
+    a = math.pi * 0.5 + math.pi * i / 21 + random.uniform(-0.04, 0.04)  # só atrás e dos lados
+    rx, ry, z = mantle(0.04)
+    out = Vector((math.sin(a), -math.cos(a), 0))
+    root = Vector((math.sin(a) * rx, -math.cos(a) * ry + 0.02 * H, z - 0.02 * H))
+    d = (out * 0.4 + Vector((0, 0, 0.9))).normalized()
+    L = 0.16 * H * random.uniform(0.85, 1.15)
+    pts = [root, root + d * L * 0.35, root + d * L * 0.75 + out * 0.01 * H, root + d * L + out * 0.025 * H]
+    nf = (lambda o: (lambda p: o))(out)
+    (fb if i % 3 == 0 else fa).append(rod(pts, [0.006 * H, 0.02 * H, 0.013 * H, 0.001 * H], 6, flat=(nf, 0.16)))
+b.add('prop_feathersA', merge(*fa), plume, region='torso', weight_fn=cape_weights, subdiv=0)
+b.add('prop_feathersB', merge(*fb), plume_lt, region='torso', weight_fn=cape_weights, subdiv=0)
+b.group('prop_feathers', 'prop_feathers')
 
 b.export(OUT)
 

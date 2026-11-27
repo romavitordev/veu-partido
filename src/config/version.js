@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.49.0';
+export const VERSION = '5.49.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.49.1',
+    date: '2026-11-27',
+    title: 'Cachos e Penas',
+    items: [
+      'Bran remodelado: o rosto aparece, a barba cheia abraça o queixo e o cabelo ruivo cai em cachos de verdade até o peito.',
+      'O Inquebrável: a gola de corvo agora é feita de penas em camadas, com uma fileira eriçada atrás da cabeça.',
+    ],
+  },
   {
     v: '5.49.0',
     date: '2026-11-27',
