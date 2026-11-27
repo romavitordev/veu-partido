@@ -542,6 +542,22 @@ const VISUALS = {
     return g;
   },
   // chumbo de escopeta: pontinho brilhante
+  // PEDRAS DO DRUIDA (Mael, A Vigília): as três pedras do suspensório (verde, roxa e vermelha) acesas de Energia,
+  // girando no voo com um halo da própria cor
+  druidStone(color, ability) {
+    const cs = ability && ability.colors;
+    if (cs && cs.length) color = cs[(VISUALS.druidStone.n = ((VISUALS.druidStone.n || 0) + 1) % cs.length)];
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const stone = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 0), new THREE.MeshToonMaterial({ color, emissive: color, emissiveIntensity: 0.6 }));
+    stone.scale.set(1, 0.8, 1.1);
+    spin.add(stone);
+    const halo = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 8), glowMat(color, 0.35));
+    spin.add(halo);
+    g.add(spin);
+    g.userData.tumble = spin;
+    return g;
+  },
   pellet(color) {
     const m = new THREE.Mesh(new THREE.SphereGeometry(0.05, 5, 4), glowMat(color, 1));
     return m;

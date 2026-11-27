@@ -2290,7 +2290,8 @@ Object.assign(ABILITY_TYPES, {
       tl.add(a.delay, () => {
         // raízes subindo em volta (efeito) + flor no centro
         const roots = new THREE.Group();
-        const mat = new THREE.MeshStandardMaterial({ color: 0x4a2a6a, roughness: 0.8, emissive: a.color, emissiveIntensity: 0.25 });
+        // a.rootColor / a.flower false: as raízes de madeira do Mael (Raízes de Treb Ciach) sem a flor de muitos olhos do Kaiser
+        const mat = new THREE.MeshStandardMaterial({ color: a.rootColor ?? 0x4a2a6a, roughness: 0.8, emissive: a.color, emissiveIntensity: 0.25 });
         for (let i = 0; i < 9; i++) {
           const ang = (i / 9) * Math.PI * 2;
           const root = new THREE.Mesh(new THREE.ConeGeometry(0.07, 1.4 + Math.random() * 0.6, 5), mat);
@@ -2301,7 +2302,7 @@ Object.assign(ABILITY_TYPES, {
         const flower = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), new THREE.MeshBasicMaterial({ color: a.color }));
         flower.scale.set(1.3, 0.5, 1.3);
         flower.position.y = 1.9;
-        roots.add(flower);
+        if (a.flower !== false) roots.add(flower);
         roots.position.copy(c);
         roots.scale.setScalar(0.01);
         world.scene.add(roots);
