@@ -14,6 +14,7 @@ export const TEAM_COLORS = {
   // Amigo ImaginÃ¡rio) no verde-acinzentado do OUTRO LADO
   'RelÃ­quias': '#d63c8c',
   'Outro Lado': '#7fa89a',
+  'A Vigília': '#7a8aa8', // A Vigília (Treb Ciach, 890): o cinza-azulado das penas do corvo e da noite do Samhain (PROPOSTA)
   'Ordo Calamitas': '#4a62e0', // a ordem de 67 d.C. (Celestine, Gaius, Amalia, Cornelius): azul-real, nenhuma outra usa
 };
 

@@ -2228,6 +2228,94 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## BRAN
+
+*O vigia noturno de Treb Ciach, o Inquebrável* · arma: A lança "Justiça", as azagaias e o broquel
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Estocada | 26 | 2.9 m |  |
+| ○ 2 | Broquel na Cara | 30 | 1.7 m |  |
+| ○ 3 | Cravada por Cima | 30 | 3 m |  |
+| ○ 4 | Haste Varrida | 30 | 2.7 m |  |
+| ○ 5 | Justiça | 60 | 3.3 m | finalizador: lança |
+| Frente + ○ | Se Atira em Cima | 38 | 2 m |  |
+| Trás + ○ | Recuo de Lança | 32 | 3 m | invulnerável no começo |
+| Lado + ○ | Roda da Lança | 32 | 2.8 m |  |
+| No ar + ○ | Lança do Alto | 36 | 2.7 m | desce com impacto |
+| ↑ + ○ (no combo) | Lança de Baixo | 38 | 2.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão do Vigia | 44 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Azagaia
+
+- Dano 32 · alcance 20 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Cravar a Justiça** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.3 m
+  Recua a "Justiça" e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Guardião** — △ + L2 / Y + LT · custo 24 · cooldown 20 s
+  Planta o broquel e segura a linha: por 7 s recebe 40% menos dano e aguenta 3 golpes sem recuar, um pouco mais lento.
+- **Prontidão** — R2 + × / RT + A · custo 18 · cooldown 9 s · dano 50 · alcance 3 m
+  Fica pronto, de broquel erguido: um golpe físico ou habilidade que chegar de frente é segurado — ele empurra o broquel na cara e crava a lança. Não segura projéteis nem especiais; no vazio, fica aberto.
+- **Linha de Frente** — R2 + △ / RT + Y · custo 20 · cooldown 10 s · dano 52 · alcance 2.2 m
+  Se atira em cima do adversário atrás do broquel: quebra a defesa e joga longe.
+- **Passiva — Resistente:** −10% de dano físico e de tiros e projéteis recebido
+
+### Especial: Até o Amanhecer
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Inquebrável
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## BRAN
+
+*O Inquebrável (até o fim do round)* · arma: A lança "Justiça", as azagaias e o broquel
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Estocada | 29 | 2.9 m |  |
+| ○ 2 | Broquel na Cara | 34 | 1.7 m |  |
+| ○ 3 | Cravada por Cima | 34 | 3 m |  |
+| ○ 4 | Haste Varrida | 34 | 2.7 m |  |
+| ○ 5 | Justiça | 67 | 3.3 m | finalizador: lança |
+| Frente + ○ | Se Atira em Cima | 38 | 2 m |  |
+| Trás + ○ | Recuo de Lança | 32 | 3 m | invulnerável no começo |
+| Lado + ○ | Roda da Lança | 32 | 2.8 m |  |
+| No ar + ○ | Lança do Alto | 36 | 2.7 m | desce com impacto |
+| ↑ + ○ (no combo) | Lança de Baixo | 38 | 2.7 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão do Vigia | 44 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Azagaia
+
+- Dano 32 · alcance 20 m · cooldown 2.4 s · custo 0
+
+### Habilidades
+
+- **Cravar a Justiça** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.3 m
+  Recua a "Justiça" e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Voo do Corvo** — △ + L2 / Y + LT · custo 18 · cooldown 8 s
+  Some numa revoada de penas escuras e reaparece: na direção do analógico ou, sem direção, colado ao lado do adversário.
+- **Prontidão** — R2 + × / RT + A · custo 18 · cooldown 9 s · dano 50 · alcance 3 m
+  Fica pronto, de broquel erguido: um golpe físico ou habilidade que chegar de frente é segurado — ele empurra o broquel na cara e crava a lança. Não segura projéteis nem especiais; no vazio, fica aberto.
+- **Linha de Frente** — R2 + △ / RT + Y · custo 20 · cooldown 10 s · dano 52 · alcance 2.2 m
+  Se atira em cima do adversário atrás do broquel: quebra a defesa e joga longe.
+- **Passiva — Resistente:** −18% de dano físico e de tiros e projéteis recebido
+
+### Especial: Até o Amanhecer
+
+250 de dano · custo 50 · cooldown 14 s.
+
+---
+
 ## CASCADIA
 
 *A guerreira mais antiga da Ordo Calamitas, mãe de Caesar — cansada de tudo, principalmente da Celestine* · arma: O khopesh curvo e a espada reta

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.48.0';
+export const VERSION = '5.49.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.49.0',
+    date: '2026-11-27',
+    title: 'O Vigia de Treb Ciach',
+    items: [
+      'Novo lutador: BRAN, o vigia noturno da Vigília — a lança "Justiça", o broquel e as azagaias; segura o golpe que vem e devolve (Prontidão), se atira em cima do adversário e, no especial, aguenta tudo até o amanhecer.',
+      'O Inquebrável: a Transformação do Bran (e versão na seleção) veste a fantasia do Samhain — a máscara de crânio de corvo e a gola de penas — e troca o Guardião pelo Voo do Corvo.',
+      'Bran tem falas de vitória e de apresentação contra todo o elenco, retrato no Sobre e na tela de VS e cena de agarrão própria.',
+    ],
+  },
   {
     v: '5.48.0',
     date: '2026-11-27',

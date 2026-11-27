@@ -46,6 +46,7 @@ export const BATTLE_RECENT = {
     quibungo: '(a bocarra das costas lambe a ferida e fecha)',
     degolificada: '(o corpo sem cabeça cambaleia e se firma de novo)',
     espreitador: '(some no escuro e volta mais perto)',
+    bran: 'Eu preciso voltar, mais uma vez.', // (cânone)
   },
   special: {
     veritus: 'A gente não tava nessa Ordem pra lutar uns contra os outros!',
@@ -85,6 +86,7 @@ export const BATTLE_RECENT = {
     quibungo: '(a língua das costas sobe e estala no ar)',
     degolificada: '(o pescoço aberto grita sem voz)',
     espreitador: '(os Devorados saem da sombra junto)',
+    bran: 'Até o amanhecer. Ninguém passa por mim.',
   },
   transform: {
     veritus_rancor: 'O Estigma acordou. O Trono lembra de mim.',
@@ -98,6 +100,7 @@ export const BATTLE_RECENT = {
     joui_shinokage: 'Shi no Kage. A sombra da morte vem comigo.',
     raziel_verdadeiro: 'Chega de disfarce. Este é o verdadeiro Raziel.',
     celestine_magistrada: 'Acabou a brincadeira. A Magistrada julga agora.',
+    bran_inquebravel: '(a máscara de corvo desce sobre o rosto) Hoje à noite, ninguém passa.',
   },
 };
 
@@ -140,6 +143,7 @@ export const BATTLE_REPLIES_RECENT = {
     quibungo: '(fareja o ar sem olhos e vira as quatro mãos para o cheiro)',
     degolificada: '(o corpo vira na direção do som)',
     espreitador: '(um sussurro no escuro, bem atrás de você)',
+    bran: 'Cansou? Eu fico acordado a noite inteira.',
   },
   special: {
     veritus: 'A Ordo aguenta. Eu aguento.',
@@ -179,6 +183,7 @@ export const BATTLE_REPLIES_RECENT = {
     quibungo: '(ruge com a língua de fora e avança)',
     degolificada: '(as mãos procuram no ar uma cabeça que não tem)',
     espreitador: '(a luz pisca, e ele já não está ali)',
+    bran: '(ergue o broquel) Vem. Eu seguro.',
   },
   transform: {
     carina: 'Mudou de forma. A minha mira continua a mesma.',
@@ -208,5 +213,6 @@ export const BATTLE_REPLIES_RECENT = {
     quibungo: '(as quatro mãos param no ar, pela primeira vez)',
     degolificada: '(o corpo para, ouvindo)',
     espreitador: '(a sombra se estica para olhar melhor)',
+    bran: 'Máscara nova. No Samhain todo mundo usa uma.',
   },
 };

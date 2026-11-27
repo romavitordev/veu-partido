@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.49.0 — O Vigia de Treb Ciach
+
+### Adicionado
+- Novo lutador da Vigília: **Bran**, o vigia noturno de Treb Ciach (elemento Morte). Luta com a lança "Justiça" e o broquel; o □ arremessa azagaias. Habilidades: Cravar a Justiça (golpe pesado), Guardião (postura de proteção), Prontidão (fica pronto de broquel erguido: o golpe que chega de frente é segurado e devolvido) e Linha de Frente (se atira em cima do adversário atrás do broquel e quebra a defesa). Especial Até o Amanhecer: finca o broquel, aguenta tudo por 2 s e devolve num giro da lança, mais forte quanto mais segurou. Passivas: Casca Grossa (menos dano físico e de projéteis), pele grossa e escapar da morte.
+- **O Inquebrável**: a Transformação do Bran, também escolhível como versão na seleção (RB/LB no cartão). Ele veste a fantasia do Samhain — a máscara de crânio de corvo de bico longo e a gola de penas cinza-azuladas —, ganha vida e golpes mais fortes e troca o Guardião pelo Voo do Corvo (some numa revoada de penas e reaparece ao lado do adversário).
+- Modelo novo (cabelo e barba ruivos cacheados, manto escuro com remendos xadrez, gola de pelo, botas amarradas), retrato no Sobre e na tela de VS, falas de vitória e de apresentação contra todo o elenco e cena de agarrão própria.
+
+### Corrigido
+- A postura de contra-ataque "segura e devolve" agora também funciona quando é uma habilidade (antes só no □ do Dalmo e do Colosso).
+
 ## v5.48.0 — A Foto do Registro
 
 ### Alterado

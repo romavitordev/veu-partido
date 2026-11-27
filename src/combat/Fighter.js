@@ -2469,7 +2469,7 @@ export class Fighter {
 
   // "PODE VIR!" (Dalmo / Colosso): o golpe entrou na postura — segura, agarra quem bateu e devolve (damage.js)
   arenaRiposte(attacker) {
-    const r = this.def.ranged;
+    const r = this.counterStance?.def ?? this.def.ranged; // a postura como habilidade (Bran) leva a própria ficha
     if (this.seq && this.seq.cancel) this.seq.cancel();
     this.counterStance = null;
     this.invuln = Math.max(this.invuln, 0.2);

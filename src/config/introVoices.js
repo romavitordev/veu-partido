@@ -16,6 +16,7 @@ export const TEAM_REF = {
   Vampiros: { one: 'um vampiro', group: 'os Vampiros' },
   Portadores: { one: 'quem carrega uma Relíquia', group: 'os Portadores' },
   'Ordo Calamitas': { one: 'alguém da Ordo Calamitas', group: 'a Ordo Calamitas' },
+  'A Vigília': { one: 'alguém da Vigília', group: 'a Vigília' },
   'Relíquias': { one: 'uma Relíquia', group: 'as Relíquias' },
   'Outro Lado': { one: 'algo do Outro Lado', group: 'o Outro Lado' },
 };
@@ -421,6 +422,19 @@ export const VOICES = {
       ally: (o) => `Tá, ${o.name}. Mas o último golpe é meu.`,
       rival: (o) => `${o.group}? Já cobrei mais caro por gente como você, ${o.name}.`,
       any: [(o) => `Fala menos, ${o.name}. Bate mais.`, (o) => `Pode vir, ${o.name}. Eu já sei pra onde você vai.`],
+    },
+  },
+  // BRAN (A Vigília): o vigia noturno de Treb Ciach, estoico e protetor; pouco texto, muito dever (PROPOSTA)
+  bran: {
+    open: {
+      ally: (o) => `${o.name}. Fica atrás de mim. A noite é longa.`,
+      rival: (o) => `${o.name}. Já guardei a vila de coisa pior que ${o.group}.`,
+      any: [(o) => `Até o amanhecer, ${o.name}. Ninguém passa.`, (o) => `Não vim brigar, ${o.name}. Vim guardar. Dá no mesmo.`],
+    },
+    reply: {
+      ally: (o) => `Certo, ${o.name}. Eu seguro a frente.`,
+      rival: (o) => `Fala o que quiser, ${o.name}. A lança responde.`,
+      any: [(o) => `Eu preciso voltar, ${o.name}. Mais uma vez.`, (o) => `Pode vir. O broquel aguenta.`],
     },
   },
   // RUBENS NALUTI: fala por PALAVRAS-CHAVE, sério e econômico — "Ainda bem que eu voltei, e vou continuar voltando."

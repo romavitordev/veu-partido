@@ -8,6 +8,7 @@
 import juanOdio from './forms/juan_odio.js';
 import amphitruo from './forms/amphitruo.js';
 import deusMorte from './forms/deus_morte.js';
+import branInquebravel from './forms/bran_inquebravel.js';
 
 const copyMelee = (m) => {
   if (!m) return m;
@@ -23,3 +24,6 @@ export const juanPortador = selectable(juanOdio, { origin: 'Mascarados', teams: 
 export const deusMorteReliquia = selectable(deusMorte, { origin: 'Relíquias', teams: [], relic: 'morte' });
 // o Anfitrião das Relíquias é o AMPHITRUO (o Gaius consumido; 2026-10-29) — mantém o id anfitriao (falas, Torre, Destronar)
 export const anfitriaoReliquia = selectable(amphitruo, { id: 'anfitriao', origin: 'Relíquias', teams: [], relic: 'energia' });
+
+// A VIGÍLIA (dono, 2026-11-21): cada membro tem a forma normal e a TRANSFORMADA (a fantasia do Samhain) como versões
+export const branInquebravelVersao = selectable(branInquebravel, { origin: 'A Vigília', teams: [] });

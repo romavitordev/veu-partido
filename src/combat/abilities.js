@@ -751,7 +751,9 @@ export const ABILITY_TYPES = {
           world.fx.tracer(origin.clone().setY(0.3 + Math.random() * 1.4), origin.clone().set(origin.x + (Math.random() - 0.5) * 1.4, 0.3 + Math.random() * 1.4, origin.z + (Math.random() - 0.5) * 1.4), { color: c, life: 0.25, width: 0.02 });
         }
       } else if (a.residue === 'smoke') {
-        world.fx.burst(origin.clone().setY(0.9), { count: 30, color: 0x0e0c12, kind: 'smoke', speed: 0.5, up: 0.4, life: 1.3, size: 0.6, grow: 0.8 });
+        world.fx.burst(origin.clone().setY(0.9), { count: 30, color: 0x0e0c12, kind: 'smoke', speed: 0.5, up: 0.4, life: 1.3, size: 0.6, grow: 0.8 });      } else if (a.residue === 'feathers') {
+        // Voo do Corvo (Bran, O Inquebrável): a revoada de penas escuras e cinza-azuladas caindo devagar onde ele estava
+        for (const c of [0x14141a, 0x5a6a76, 0x2a2e38]) world.fx.burst(origin.clone().setY(1.1), { count: 14, color: c, speed: 2.2, up: 1.4, life: 1.2, size: 0.16, gravity: 1.2, drag: 1.5 });
       }
       tl.add(a.vanishTime * 0.6, () => f.setVisible(false));
       tl.add(a.vanishTime, () => {
@@ -4824,7 +4826,7 @@ export const DALMO_TYPES = {
       const opp = f.opponent;
       const tl = new Timeline();
       const [w0, w1] = a.window;
-      const st = (f.counterStance = { active: false, reach: a.reach });
+      const st = (f.counterStance = { active: false, reach: a.reach, def: a });
       f.vel.set(0, 0, 0);
       if (opp) f.yaw = yawTo(f.pos, opp.pos);
       f.anim.play('arena_wall', { restart: true, duration: w1 + a.recovery });

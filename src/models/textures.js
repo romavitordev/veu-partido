@@ -3011,6 +3011,94 @@ export const MATERIAL_TEXTURES = {
   // GOSTO DE SANGUE (o Despertar): o rosto lavado de sangue — a boca e o queixo encharcados de quem acabou de morder,
   // respingos pelas bochechas e testa, um corte aberto na sobrancelha e o roxo de pancada na maçã do rosto
   face_sabara_blood: face((g) => sabaraFace(g, true), SABARA_FACE),
+  // ---------------- BRAN (A Vigília; wiki): pele clara com SARDAS, a CICATRIZ na bochecha esquerda (x > 256), os olhos
+  // verdes levemente azulados, as sobrancelhas ruivas grossas e a barba ruiva começando no rosto (o volume é do modelo)
+  face_bran: face((g) => {
+    const rnd = seeded(890);
+    stubble(g, 'rgba(150,60,24,0.75)', 2400, { y0: 146, y1: 236, w: 92 });
+    g.fillStyle = 'rgba(150,62,28,0.85)';
+    g.beginPath(); g.ellipse(CX, MOUTH_Y - 9, 30, 7, 0, 0, Math.PI * 2); g.fill(); // o bigode
+    // as sardas no nariz e nas maçãs do rosto
+    for (let i = 0; i < 110; i++) {
+      const sx = rnd() < 0.5 ? -1 : 1;
+      const x = CX + sx * (8 + rnd() * 62), y = EYE_Y + 16 + rnd() * 30;
+      g.fillStyle = `rgba(${150 + rnd() * 40 | 0},${70 + rnd() * 30 | 0},40,${0.25 + rnd() * 0.3})`;
+      g.beginPath(); g.arc(x, y, 0.8 + rnd() * 1.4, 0, Math.PI * 2); g.fill();
+    }
+    // a cicatriz na bochecha esquerda: um corte em diagonal, claro com a borda rosada
+    g.strokeStyle = 'rgba(170,90,80,0.7)'; g.lineWidth = 4; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(CX + 44, EYE_Y + 14); g.lineTo(CX + 66, EYE_Y + 44); g.stroke();
+    g.strokeStyle = 'rgba(240,200,184,0.85)'; g.lineWidth = 1.6;
+    g.beginPath(); g.moveTo(CX + 45, EYE_Y + 15); g.lineTo(CX + 65, EYE_Y + 42); g.stroke();
+  }, {
+    skin: '#e8b496',
+    eye: { iris: '#4a8a7c', irisLight: '#8ac0b4', w: 13, h: 6, tilt: 0.03, lid: 3.6 },
+    brow: { angry: 0.8, thick: 5, color: '#a8441c' },
+    mouth: { mouthW: 12, smile: 0, lip: 'rgba(150,70,60,0.5)' },
+  }),
+  // a TÚNICA-COLETE de couro escuro toda REMENDADA (o topo do canvas é o decote; u dá a volta no corpo, frente em 0 e 1):
+  // retalhos de couro de tons diferentes, as costuras em X e o cordão do decote
+  tunic_bran: () => canvasTex(256, 256, (g) => {
+    const rnd = seeded(32);
+    g.fillStyle = '#3a3430'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '20,16,14' : '90,80,70'},${0.06 + rnd() * 0.08})`; g.fillRect(rnd() * 256, rnd() * 256, 2 + rnd() * 6, 1 + rnd() * 3); }
+    const patches = [[10, 70, 50, 46, '#4a3e34'], [150, 40, 44, 60, '#2e2a28'], [90, 150, 62, 40, '#463a30'], [196, 140, 46, 52, '#3e3630'], [30, 190, 56, 44, '#2a2624'], [120, 90, 30, 34, '#504234']];
+    for (const [x, y, w, h, c] of patches) {
+      g.save(); g.translate(x + w / 2, y + h / 2); g.rotate((rnd() - 0.5) * 0.3);
+      g.fillStyle = c; g.fillRect(-w / 2, -h / 2, w, h);
+      g.strokeStyle = 'rgba(14,10,8,0.7)'; g.lineWidth = 1.5; g.strokeRect(-w / 2, -h / 2, w, h);
+      g.strokeStyle = 'rgba(190,170,140,0.6)'; g.lineWidth = 1;
+      for (let k = -w / 2 + 3; k < w / 2; k += 6) { for (const yy of [-h / 2, h / 2]) { g.beginPath(); g.moveTo(k, yy - 2); g.lineTo(k + 3, yy + 2); g.stroke(); } }
+      for (let k = -h / 2 + 3; k < h / 2; k += 6) { for (const xx of [-w / 2, w / 2]) { g.beginPath(); g.moveTo(xx - 2, k); g.lineTo(xx + 2, k + 3); g.stroke(); } }
+      g.restore();
+    }
+    // o cordão do decote (na frente: perto de u = 0 e u = 1)
+    g.strokeStyle = '#1a1614'; g.lineWidth = 2;
+    for (const x0 of [6, 250]) for (let y = 4; y < 40; y += 8) { g.beginPath(); g.moveTo(x0 - 5, y); g.lineTo(x0 + 5, y + 6); g.stroke(); }
+    // a sombra embaixo do cinto e o desgaste na barra
+    const gr = g.createLinearGradient(0, 200, 0, 256); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(10,8,6,0.45)');
+    g.fillStyle = gr; g.fillRect(0, 200, 256, 56);
+  }),
+  // o MANTO PRETO (o canvas de cabeça para baixo: o topo é a BARRA, a base é a gola; u vai da borda da frente do lado
+  // esquerdo, pelas costas, até a borda da frente do lado direito) com os RETALHOS DE XADREZ verde-escuro e vinho
+  // costurados — a frente esquerda, o lado esquerdo e as costas, como nas artes de frente e de costas
+  cloak_bran: () => canvasTex(512, 512, (g) => {
+    const rnd = seeded(77);
+    g.fillStyle = '#1e1c1e'; g.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 1800; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '0,0,0' : '70,66,70'},${0.05 + rnd() * 0.07})`; g.fillRect(rnd() * 512, rnd() * 512, 2 + rnd() * 10, 1 + rnd() * 2); }
+    const plaid = (x, y, w, h, base, line, bar, rot) => {
+      g.save(); g.translate(x + w / 2, y + h / 2); g.rotate(rot);
+      g.beginPath(); g.rect(-w / 2, -h / 2, w, h); g.clip();
+      g.fillStyle = base; g.fillRect(-w / 2, -h / 2, w, h);
+      g.fillStyle = bar;
+      for (let k = -w / 2; k < w / 2; k += 28) g.fillRect(k, -h / 2, 10, h);
+      for (let k = -h / 2; k < h / 2; k += 28) g.fillRect(-w / 2, k, w, 10);
+      g.fillStyle = line;
+      for (let k = -w / 2 + 18; k < w / 2; k += 28) g.fillRect(k, -h / 2, 2, h);
+      for (let k = -h / 2 + 18; k < h / 2; k += 28) g.fillRect(-w / 2, k, w, 2);
+      g.restore();
+      // a costura grossa em volta
+      g.save(); g.translate(x + w / 2, y + h / 2); g.rotate(rot);
+      g.strokeStyle = 'rgba(8,6,8,0.8)'; g.lineWidth = 2; g.strokeRect(-w / 2, -h / 2, w, h);
+      g.strokeStyle = 'rgba(160,150,140,0.55)'; g.lineWidth = 1.4;
+      const per = 2 * (w + h);
+      for (let d = 0; d < per; d += 9) {
+        let px, py;
+        if (d < w) { px = -w / 2 + d; py = -h / 2; } else if (d < w + h) { px = w / 2; py = -h / 2 + d - w; } else if (d < 2 * w + h) { px = w / 2 - (d - w - h); py = h / 2; } else { px = -w / 2; py = h / 2 - (d - 2 * w - h); }
+        g.beginPath(); g.moveTo(px - 3, py - 3); g.lineTo(px + 3, py + 3); g.stroke();
+      }
+      g.restore();
+    };
+    const WINE = ['#4a2226', 'rgba(210,190,170,0.5)', 'rgba(20,8,10,0.45)'];
+    const GREEN = ['#24302a', 'rgba(170,60,50,0.55)', 'rgba(8,14,10,0.5)'];
+    plaid(402, 30, 90, 170, ...WINE, -0.04); // a frente esquerda, de baixo até a cintura (u alto = o lado esquerdo dele)
+    plaid(362, 230, 80, 110, ...GREEN, 0.08); // o lado esquerdo, alto
+    plaid(252, 10, 100, 150, ...WINE, 0.05); // as costas, embaixo à esquerda
+    plaid(170, 260, 70, 90, ...GREEN, -0.1); // as costas, no alto (o retalho do ombro direito)
+    // a barra gasta (no topo do canvas)
+    const gr = g.createLinearGradient(0, 0, 0, 40); gr.addColorStop(0, 'rgba(60,56,58,0.5)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 512, 40);
+  }),
   face_rubens: face(() => {}, {
     skin: '#9a6a46',
     eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },

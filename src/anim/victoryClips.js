@@ -131,6 +131,8 @@ export function addVictoryClips(CLIPS, k) {
     vic_cascadia: pose({ sp: [0.12, 0, 0], hd: [0.2, 0, 0.18], sR: [-0.3, 0.2, -0.35], eR: [-0.2, 0, 0], sL: [-0.3, -0.2, 0.35], eL: [-0.2, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.05, 0, -0.12] }),
     // Cornelius: a lança erguida, o escudo na frente e o grito
     vic_cornelius: pose({ sp: [-0.12, 0, 0], hd: [-0.35, 0, 0], sR: [-2.8, 0, -0.1], eR: [-0.2, 0, 0], sL: [-1.2, 0.4, 0.3], eL: [-1.2, 0, 0], lL: [-0.2, 0, 0.18], lR: [0.2, 0, -0.18] }),
+    // Bran: a lança fincada de pé ao lado, o broquel no peito e o olhar no horizonte — o vigia que aguentou a noite
+    vic_bran: pose({ sp: [0.04, 0, 0], hd: [-0.12, 0.35, 0], sR: [-0.45, 0.1, -0.3], eR: [-2.2, 0, 0], sL: [-0.9, 0.55, 0.35], eL: [-1.5, 0, 0], lL: [-0.08, 0, 0.16], lR: [0.06, 0, -0.16] }),
     // Karise: agachada, as adagas abertas dos dois lados, a cabeça baixa no capuz
     vic_karise: pose({ h: -0.12, sp: [0.25, 0, 0], hd: [0.1, 0, 0], sR: [-0.6, 0.3, -0.55], eR: [-0.4, 0, 0], sL: [-0.6, -0.3, 0.55], eL: [-0.4, 0, 0], lL: [-0.35, 0, 0.2], kL: [0.55, 0, 0], lR: [0.25, 0, -0.2], kR: [0.4, 0, 0] }),
     // Marcellus: a saudação do esgrimista — a rapieira de pé na frente do rosto

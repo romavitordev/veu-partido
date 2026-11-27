@@ -1,4 +1,5 @@
 import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps, addCarinaProps, addCarinaLeoneProps, addRubensProps, addBeatriceProps, addBeatriceExistidaProps, addEspreitadorProps, addDegolificadaProps, addFernandoProps, addLucianoProps, addTristanProps, addIveteProps, addBorisProps, addDamirProps, addArtemisProps, addEloyProps, addSabaraProps, addAlviraProps, addCindyProps, addCaioProps, addFrancoProps, addAleProps, addZeferoProps } from './props.js';
+import { addBranProps, addBranInquebravelProps } from './vigiliaProps.js';
 import { addVeritusProps, addVeritusKianProps, addVeritusRancorProps, addNeroProps, addFaustusProps, addMariusProps, addRemusProps, addCascadiaProps, addCorneliusProps, addKariseProps, addMarcellusProps } from './ordoProps.js';
 import { loadGLBRetry as loadWithRetry, rigFromGLB } from './glbRig.js';
 import { preloadNpcModels } from './npcRig.js';
@@ -39,6 +40,7 @@ const BLENDER_MODELS = {
   morato: { url: 'models/morato.glb', props: addMoratoProps }, // Os Cinco: o líder (faixa vermelha, jaqueta azul, colar militar)
   chico: { url: 'models/chico.glb', props: addChicoProps }, // Os Cinco: o técnico (óculos com gambiarra, fones, bolsa com toca-discos)
   carina: { url: 'models/carina.glb', props: addCarinaProps }, // Equipe Abutres: a artista marcial (o Mangual do pai na mão, Glock no □)
+  bran: { url: 'models/bran.glb', props: addBranProps }, // A Vigília: a lança "Justiça", o broquel e as azagaias (vigiliaProps.js)
   rubens: { url: 'models/rubens.glb', props: addRubensProps }, // Equipe Abutres: o paramédico (o Martelo nas duas mãos, Glock Silenciada no □)
   fernando: { url: 'models/fernando.glb', props: addFernandoProps }, // o casal Carvalho: o corpo do Luciano com o Fernando no controle (olhos rosa)
   luciano: { url: 'models/luciano.glb', props: addLucianoProps }, // o mesmo corpo com o Luciano no controle (olhos amarelos, a M4)
@@ -101,6 +103,7 @@ const MODEL_VARIANTS = {
   juan_odio: { base: 'juan', props: addJuanOdioProps }, // Ódio do Diabo: garras de sangue, capuz e o olho vermelho
   carina_leone: { base: 'carina', props: addCarinaLeoneProps }, // Todos os Leone: mechas e olhos dourados, nunchaku dourado e o Grimório de Arnaldo
   beatrice_existida: { base: 'beatrice', props: addBeatriceExistidaProps }, // a Existida: a pele de textos, os olhos brancos, sem o Orpheu
+  bran_inquebravel: { base: 'bran', props: addBranInquebravelProps }, // a fantasia de corvo do Samhain: a máscara de crânio e as penas
   dante_aberto: { base: 'dante', props: addDanteAbertoProps }, // Olhos Abertos: olhos pretos, as faixas, as tatuagens e as orelhas pontudas
   cristino_desertor: { base: 'cristino', props: addCristinoDesertorProps }, // Tocado pela Coroa: rabiscos vermelhos e o rifle
   joui_shinokage: { base: 'joui', props: addJouiShinokageProps }, // sem a máscara, com a Shi no Kage (fase final)

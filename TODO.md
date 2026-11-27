@@ -855,6 +855,9 @@ baixado sem o OK do dono.
       | Gwayne | O Forasteiro | O Morto que Caminha |
       | Eileen | A Apicultora | ? (a definir) |
       - O "?" é título ainda sem nome: não inventar; conferir na wiki/episódios ou perguntar ao dono.
+      - [x] (v5.49.0) **Bran** — O Vigia Noturno e O Inquebrável (versão na seleção e Transformação: a máscara de crânio
+        de corvo e a gola de penas). Kit PROPOSTA em lore/A-VIGILIA.md. Faltam Zuri, Mael, Gwayne e Eileen; o vínculo de
+        equipe "A Vigília" quando houver 2 ou mais.
 
 ## Elementos (pedido do dono, 2026-11-14)
 - [x] **Símbolos oficiais dos elementos na página Sobre** — v4.45.2: imagens da wiki na cor de cada elemento; Transmissão

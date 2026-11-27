@@ -447,8 +447,9 @@ export const ironWall = {
           world.fx.burst(f.chestPos(), { count: 50, color: 0xff4a2a, speed: 8, life: 0.5, size: 0.18 });
           world.cameraRig.shake(0.5, 0.3);
           world.audio.play('slashFinal', { volume: 0.9, pitch: 0.8 });
-          f.notify('FÚRIA', true);
-          f.addBuff({ type: 'furia', name: 'FÚRIA', time: sp.furia ?? 6, duration: sp.furia ?? 6, color: 0xff4a2a });
+          // o Bran (Até o Amanhecer) usa a mesma muralha sem a Fúria: sp.furia 0 e o próprio grito (sp.release)
+          f.notify(sp.release ?? 'FÚRIA', true);
+          if ((sp.furia ?? 6) > 0) f.addBuff({ type: 'furia', name: 'FÚRIA', time: sp.furia ?? 6, duration: sp.furia ?? 6, color: 0xff4a2a });
           const opp = f.opponent;
           if (opp && opp.state !== 'ko' && !opp.isInvulnerable() && distXZ(opp.pos, f.pos) <= (sp.radius ?? 3.6) + opp.radius) {
             applyHit(world, f, opp, { damage: dmg, kind: 'special', knockback: 6, launch: true, hitstun: 0.8, sound: 'heavyPunch', color: 0xff4a2a, scale: 2 });
