@@ -238,7 +238,9 @@ export const twinArrows = {
             igniteFighter(world, f, opp, sp.burn ?? { dps: 12, duration: 4 });
             world.showBanner && world.showBanner(sp.release ?? 'NA CABEÇA', f.def.color);
             if (opp.state !== 'ko') opp.anim.play('launched', { restart: true });
-            world.cameraRig.playShots([impactClose(f, opp, { dur: 1.1, side: 3.6 })]);
+            // a câmera FICA no alvo (o meio do caminho entre os dois, com ele longe, era só o chão): de lado, na altura
+            // do peito, girando devagar enquanto ele queima
+            world.cameraRig.playShots([orbit(opp, { dur: 1.2, radius: 3.4, height: 1.5, a0: -1.1, a1: -0.6, lookH: 1.2, fov: 44 })]);
           }
         }
         // 1 — a flecha sai da aljava e pega fogo

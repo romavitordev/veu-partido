@@ -104,7 +104,7 @@ export default {
       name: 'Virote Silencioso',
       input: 'carga+ranged',
       type: 'deathShot',
-      description: 'Mira com calma (o ponto vermelho no alvo) e dispara o virote mais forte; a mais de 9 m o alvo não consegue esquivar nem defender. A mira deixa ela parada um instante.',
+      description: 'Mira com calma (a barra enche sozinha; andar cancela) e dispara o virote mais forte; a mais de 9 m o alvo não consegue esquivar nem defender. A mira deixa ela parada um instante.',
       energyCost: 25,
       cooldown: 12,
       windup: 0.6,

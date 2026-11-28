@@ -126,7 +126,7 @@ export default {
       name: 'Mira de Elite',
       input: 'carga+ranged',
       type: 'deathShot',
-      description: 'Para, mira com calma (o laser aparece no alvo) e dá um tiro certeiro e forte. A mira deixa ele parado um instante.',
+      description: 'Para, mira com calma (a barra enche sozinha; andar cancela) e dá um tiro certeiro e forte. A mira deixa ele parado um instante.',
       energyCost: 25,
       cooldown: 12,
       windup: 0.55,

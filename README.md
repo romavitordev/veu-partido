@@ -13,7 +13,7 @@ Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível,
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v5.54.0**.
+Versão atual do jogo: **v5.54.1**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 
@@ -202,9 +202,9 @@ Exemplo: X=100, Y=60 → o inimigo perde 100, recupera 60 (saldo −40) e perde 
 - **Dash direcional:** × + × vai na direção do analógico (frente, trás, lados, diagonais); sem direção, vai até o inimigo.
 - **Órbita:** com o lock-on, andar para o lado gira em volta do adversário mantendo a distância.
 - **Carregar andando:** dá para andar segurando △ (anda a 45% e carrega a 50%).
-- **Mira carregada (Flecha de Caça e afins):** nada de linha até o alvo — uma barra enche em cima de quem mira. Tomar
-  um golpe antes de encher corta o dano pela metade ("MIRA ABALADA"); soltar com a barra cheia dá +10% ("TIRO
-  PERFEITO"). Os especiais que avisam antes de acertar de longe também mostram essa barra.
+- **Mira carregada (Flecha de Caça e afins):** nada de linha até o alvo — uma barra enche SOZINHA em cima de quem
+  mira (não precisa segurar) e o tiro sai com ela cheia, com +10% ("TIRO PERFEITO"). Tomar um golpe antes de encher
+  corta o dano pela metade ("MIRA ABALADA"); andar durante a mira cancela o tiro. Os especiais que avisam antes de acertar de longe também mostram essa barra.
 - **Arcos (Gwayne e Amalia):** o □ não tem recarga — segure até a barra encher para a flecha sair; soltar antes desarma
   o arco e nada sai.
 

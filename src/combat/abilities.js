@@ -3113,11 +3113,11 @@ Object.assign(ABILITY_TYPES, {
   deathShot: {
     // A MIRA COM BARRA (dono, 2026-11-28: "essa linha é feia, pode mudar para uma barra se enchendo assim como a do Bran"):
     // em vez do laser até o alvo, a barrinha de carga (fx/chargeBar.js) enche em cima do atirador durante a.windup.
-    //  · segure o botão da habilidade e SOLTE com a barra cheia: o tiro sai com +10% de dano ("TIRO PERFEITO");
-    //  · soltar antes: o tiro sai na hora, com o dano proporcional à barra (de 60% a 100%);
+    //  · a barra ENCHE SOZINHA (dono, 2026-11-28: "não deveria precisar segurar, só deveria carregar sozinha a barra e caso
+    //    ele ande, cancela o ataque"): com a barra cheia o tiro sai com +10% de dano ("TIRO PERFEITO");
+    //  · ANDAR (o analógico) durante a mira cancela o tiro;
     //  · ATINGIDO antes de a barra encher: a mira treme e o tiro sai com METADE do dano (ele aguenta a.aimArmor golpes
-    //    sem largar a mira; um golpe a mais derruba e o tiro se perde);
-    //  · segurando com a barra cheia, o tiro sai sozinho depois de um tempo. A CPU solta com a barra cheia.
+    //    sem largar a mira; um golpe a mais derruba e o tiro se perde).
     start(f, a, world) {
       const opp = f.opponent;
       f.vel.set(0, 0, 0);
@@ -3139,11 +3139,10 @@ Object.assign(ABILITY_TYPES, {
       const bar = chargeBar(world, f, { color });
       const armor = a.aimArmor ?? 2;
       f.armorHits = (f.armorHits || 0) + armor;
-      const keys = String(a.input || 'ranged').split('+');
-      const btn = keys[keys.length - 1]; // o botão do golpe (o △/R2 da combinação pode ser solto)
       const cpu = !!(f.input && f.input.cpu);
       let t = 0;
       let fullT = 0;
+      let still = false; // o analógico já voltou ao centro (quem apertou andando não cancela no mesmo instante)
       let hurt = false;
       let lastHp = f.health;
       let fired = false;
@@ -3199,9 +3198,18 @@ Object.assign(ABILITY_TYPES, {
             if (fullT === 0) { world.audio.play('ready', { volume: 0.7 }); world.fx.flash(f.chestPos(), { color, size: 1.4, life: 0.15 }); }
             fullT += dt;
           }
-          const held = !cpu && f.input && f.input.held && f.input.held[btn];
-          const release = cpu ? k >= 1 : (!held && t >= Math.min(0.25, AIM * 0.4)) || fullT >= (a.aimHold ?? 1.2);
-          if (release) fire(k);
+          // andou: a mira se desfaz e o tiro não sai
+          if (!cpu && f.input) {
+            const mag = Math.hypot(f.input.moveX || 0, f.input.moveY || 0);
+            if (mag < 0.3) still = true;
+            if (mag > 0.5 && (still || t >= 0.2)) {
+              f.notify('MIRA CANCELADA');
+              f.anim.play('idle', { restart: true });
+              restore();
+              return true;
+            }
+          }
+          if (k >= 1) fire(1);
           return false;
         },
         cancel: restore,

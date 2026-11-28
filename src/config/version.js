@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.54.0';
+export const VERSION = '5.54.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.54.1',
+    date: '2026-11-28',
+    title: 'Mira Sozinha',
+    items: [
+      'FLECHA DE CAÇA e as outras miras (Amalia, Artemis, Beatrice, Cindy, Gwayne, Kemi, Rubens e o Fantasma): não precisa mais segurar — a barra enche sozinha e o tiro sai com ela cheia (+10%); andar durante a mira cancela o tiro.',
+      'GWAYNE — no fim da Flecha de Gwyneth a câmera fica no alvo atingido (antes mostrava o chão entre os dois).',
+    ],
+  },
   {
     v: '5.54.0',
     date: '2026-11-28',

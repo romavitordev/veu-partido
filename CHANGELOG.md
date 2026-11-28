@@ -1,5 +1,10 @@
 # Changelog
 
+## v5.54.1 — Mira Sozinha
+
+- FLECHA DE CAÇA e as outras miras (Amalia, Artemis, Beatrice, Cindy, Gwayne, Kemi, Rubens e o Fantasma): não precisa mais segurar — a barra enche sozinha e o tiro sai com ela cheia (+10%); andar durante a mira cancela o tiro.
+- GWAYNE — no fim da Flecha de Gwyneth a câmera fica no alvo atingido (antes mostrava o chão entre os dois).
+
 ## v5.54.0 — Mira Firme
 
 - MIRA EM BARRA: a Flecha de Caça e as outras habilidades de mira não puxam mais uma linha até o inimigo; uma barra enche em cima de quem mira. Apanhar antes de encher corta o dano pela metade (MIRA ABALADA); soltar com a barra cheia dá +10% (TIRO PERFEITO). Os avisos dos especiais de longe (sniper, Gwayne, Zuri) também viraram a barra.

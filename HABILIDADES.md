@@ -443,7 +443,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Queima-Roupa** — △ + ○ / Y + B · custo 18 · cooldown 9 s · dano 46 · alcance 2.4 m
   Encosta a Glock no adversário e dispara: só funciona COLADO nele (até 2,4 m) e joga longe. Longe demais, nem saca.
 - **Mira de Elite** — △ + □ / Y + X · custo 25 · cooldown 12 s
-  Para, mira com calma (o laser aparece no alvo) e dá um tiro certeiro e forte. A mira deixa ele parado um instante.
+  Para, mira com calma (a barra enche sozinha; andar cancela) e dá um tiro certeiro e forte. A mira deixa ele parado um instante.
 - **Tratar Ferimentos** — R2 + △ / RT + Y · custo 25 · cooldown 20 s
   O socorrista se remenda no meio da luta: recupera vida por 3 s (mais se ficar parado). Apanhar no meio não cancela.
 - **Coração Pulsante** — R2 + × / RT + A · custo 22 · cooldown 22 s
@@ -492,7 +492,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Voo do Orpheu** — △ + ○ / Y + B · custo 20 · cooldown 12 s · dano 13
   O Orpheu sai do ombro, voa em volta da cabeça do adversário e ataca três vezes; a última deixa CEGO por 1 s. Ela continua lutando enquanto ele voa.
 - **Virote Silencioso** — △ + □ / Y + X · custo 25 · cooldown 12 s
-  Mira com calma (o ponto vermelho no alvo) e dispara o virote mais forte; a mais de 9 m o alvo não consegue esquivar nem defender. A mira deixa ela parada um instante.
+  Mira com calma (a barra enche sozinha; andar cancela) e dispara o virote mais forte; a mais de 9 m o alvo não consegue esquivar nem defender. A mira deixa ela parada um instante.
 - **Vício em Adrenalina** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Joga a moeda. CARA: por 6 s bate 25% mais forte e anda mais rápido. COROA: bate 35% mais forte, mas recebe 20% a mais de dano.
 - **Clarão dos LEDs** — R2 + △ / RT + Y · custo 18 · cooldown 13 s · alcance 9 m
