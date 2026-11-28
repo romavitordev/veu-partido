@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { part, toon } from './rig.js';
+import { part, toon, glowMat } from './rig.js';
 import { SPEAR_REST } from '../anim/spearClips.js';
 import { spear } from './ordoWeapons.js';
 
@@ -48,6 +48,119 @@ export function broquel() {
   return out;
 }
 
+// ================================================================ AS ARMAS DA VIGÍLIA (o arsenal sob a Árvore Anciã)
+// Cânone (wiki, A Vigília ep. 3): no Samhain eles lutam com as armas do arsenal — "Mael rasgando-os com uma das LÂMINAS
+// DA VIGÍLIA, Bran perfurando vários com a LANÇA DA VIGÍLIA e Eileen se protegendo com o ESCUDO". Pedido do dono
+// (2026-11-28): nas formas transformadas, o Bran usa a lança da Vigília, o Gwayne as flechas da Vigília e o Mael a
+// espada e o escudo da Vigília. PROPOSTA: a forma de cada peça (aço claro, bronze, o sol da Chama de Proteção gravado).
+const VSTEEL = 0xd8dce0;
+const BRONZE = 0xb08a3a;
+const DARKWOOD = 0x3a2a1e;
+const SUNGLOW = 0xffd86a;
+
+// o SOL DA CHAMA (PROPOSTA de emblema): o disco e os raios, de bronze, no plano YZ com a face em +X
+function sunEmblem(r) {
+  const g = new THREE.Group();
+  const disc = part(new THREE.CylinderGeometry(r * 0.38, r * 0.38, 0.012, 16), BRONZE);
+  disc.rotation.z = Math.PI / 2;
+  g.add(disc);
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2;
+    const ray = part(new THREE.ConeGeometry(r * 0.1, r * 0.5, 4), BRONZE);
+    ray.position.set(0, Math.cos(a) * r * 0.62, Math.sin(a) * r * 0.62);
+    ray.rotation.x = a;
+    g.add(ray);
+  }
+  return g;
+}
+
+// a LANÇA DA VIGÍLIA: mais longa que a Justiça, a haste escura com anéis de bronze, a ponta larga de folha em aço
+// claro com a nervura e as abas de bronze, a fita vermelha. Mesma convenção da spear(): o cabo na origem, a ponta em −Y
+export function vigiliaSpear() {
+  const g = new THREE.Group();
+  const shaft = part(new THREE.CylinderGeometry(0.016, 0.018, 2.05, 8), DARKWOOD);
+  shaft.position.y = -0.6;
+  g.add(shaft);
+  for (const y of [0.25, -0.2, -0.95, -1.5]) {
+    const band = part(new THREE.CylinderGeometry(0.022, 0.022, 0.035, 8), BRONZE);
+    band.position.y = y;
+    g.add(band);
+  }
+  const s = new THREE.Shape();
+  s.moveTo(-0.014, 0);
+  s.quadraticCurveTo(-0.075, -0.12, 0, -0.36);
+  s.quadraticCurveTo(0.075, -0.12, 0.014, 0);
+  s.lineTo(-0.014, 0);
+  const head = part(new THREE.ExtrudeGeometry(s, { depth: 0.01, bevelEnabled: false }), 0, { mat: toon(VSTEEL) });
+  head.position.set(0, -1.62, -0.005);
+  g.add(head);
+  const rib = part(new THREE.BoxGeometry(0.008, 0.3, 0.016), BRONZE);
+  rib.position.y = -1.78;
+  g.add(rib);
+  const lugs = part(new THREE.BoxGeometry(0.13, 0.025, 0.02), BRONZE);
+  lugs.position.y = -1.6;
+  g.add(lugs);
+  const ribbon = part(new THREE.BoxGeometry(0.006, 0.26, 0.05), 0x9a1a1a);
+  ribbon.position.set(0.02, -1.48, 0.02);
+  ribbon.rotation.z = 0.25;
+  g.add(ribbon);
+  const glow = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), glowMat(SUNGLOW, 0.3));
+  glow.position.y = -1.9;
+  g.add(glow);
+  g.userData.tip = glow;
+  return g;
+}
+
+// a LÂMINA DA VIGÍLIA (a espada do Mael): lâmina reta de aço claro, guarda de bronze em cruz, o cabo de couro e o
+// pomo com o sol. Sai da mão pelo −Y, como a machadinha
+export function vigiliaBlade() {
+  const g = new THREE.Group();
+  const grip = part(new THREE.CylinderGeometry(0.017, 0.019, 0.17, 7), LEATHER);
+  grip.position.y = 0.01;
+  g.add(grip);
+  const pommel = part(new THREE.SphereGeometry(0.03, 8, 6), BRONZE);
+  pommel.position.y = 0.11;
+  g.add(pommel);
+  const guard = part(new THREE.BoxGeometry(0.03, 0.03, 0.2), BRONZE);
+  guard.position.y = -0.085;
+  g.add(guard);
+  const blade = part(new THREE.BoxGeometry(0.012, 0.66, 0.055), 0, { mat: toon(VSTEEL) });
+  blade.position.y = -0.43;
+  g.add(blade);
+  const fuller = part(new THREE.BoxGeometry(0.014, 0.5, 0.012), 0x9aa0a8);
+  fuller.position.y = -0.38;
+  g.add(fuller);
+  const tip = part(new THREE.ConeGeometry(0.039, 0.1, 4), 0, { mat: toon(VSTEEL) });
+  tip.rotation.x = Math.PI;
+  tip.scale.x = 0.3;
+  tip.position.y = -0.81;
+  g.add(tip);
+  return g;
+}
+
+// o ESCUDO DA VIGÍLIA: redondo e maior que o broquel, tábuas escuras, aro de bronze e o SOL DA CHAMA na face.
+// Mesma convenção do broquel (o disco no plano YZ, a face em +X, a alça na origem)
+export function vigiliaShield() {
+  const g = new THREE.Group();
+  const wood = part(new THREE.CylinderGeometry(0.3, 0.3, 0.035, 26), 0x4a3424);
+  wood.rotation.z = Math.PI / 2;
+  g.add(wood);
+  const rim = part(new THREE.TorusGeometry(0.3, 0.018, 6, 32), BRONZE);
+  rim.rotation.y = Math.PI / 2;
+  g.add(rim);
+  const sun = sunEmblem(0.22);
+  sun.position.x = 0.02;
+  g.add(sun);
+  const boss = part(new THREE.SphereGeometry(0.06, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), VSTEEL);
+  boss.rotation.z = -Math.PI / 2;
+  boss.position.x = 0.024;
+  g.add(boss);
+  g.position.set(0.05, 0.06, 0);
+  const out = new THREE.Group();
+  out.add(g);
+  return out;
+}
+
 // uma AZAGAIA: lança curta de arremesso (cabo fino, ponta de ferro em folha)
 function azagaia() {
   const g = new THREE.Group();
@@ -61,8 +174,8 @@ function azagaia() {
 
 // BRAN: a "Justiça" na direita (segurada no terço de trás), o broquel no braço esquerdo, as azagaias na bainha do lado
 // direito do quadril. A fantasia (máscara de corvo e penas) fica guardada: só a forma O Inquebrável liga
-export function addBranProps(rig) {
-  const sp = spear(0x9aa4b4);
+export function addBranProps(rig, { vigilia = false } = {}) {
+  const sp = vigilia ? vigiliaSpear() : spear(0x9aa4b4); // O Inquebrável luta com a LANÇA DA VIGÍLIA (cânone, ep. 3)
   inFist(sp, GRIP_HEAVY);
   rig.sockets.handR.add(sp);
   rig.props.spear = sp;
@@ -94,7 +207,7 @@ export function addBranProps(rig) {
 // O INQUEBRÁVEL: o mesmo Bran com a fantasia de corvo do Samhain — a máscara e as penas ligadas; o cabelo, a barba, a
 // gola de pelo e as franjas somem por baixo
 export function addBranInquebravelProps(rig) {
-  addBranProps(rig);
+  addBranProps(rig, { vigilia: true });
   for (const p of ['crowMask', 'feathers']) if (rig.props[p]) rig.showProp(p, true);
   for (const p of ['hair', 'fur']) if (rig.props[p]) rig.showProp(p, false);
 }
@@ -135,6 +248,22 @@ export function addMaelProps(rig) {
 // HERÓI DA VIGÍLIA: o mesmo Mael com a fantasia do Samhain ligada; o cabelo (e a coroa de galhos) some sob a máscara
 export function addMaelHeroiProps(rig) {
   addMaelProps(rig);
+  // A LÂMINA E O ESCUDO DA VIGÍLIA (cânone, ep. 3: "Mael rasgando-os com uma das lâminas da Vigília"; o escudo, pedido do
+  // dono 2026-11-28): a espada no lugar da machadinha (a mesma pegada) e o escudo no braço esquerdo, como o broquel do Bran
+  const h = rig.props.hatchet;
+  const b = vigiliaBlade();
+  b.rotation.copy(h.rotation);
+  b.position.copy(h.position);
+  h.parent.add(b);
+  h.parent.remove(h);
+  rig.props.hatchet = b;
+  rig.props.blade = b;
+  const sh = vigiliaShield();
+  // a face para a frente do corpo na guarda de punho do Mael (idle_fist; calculada na pose, como a do broquel)
+  sh.rotation.set(0.311, -1.259, -2.378);
+  sh.position.set(0.03, -0.065, -0.013);
+  rig.sockets.handL.add(sh);
+  rig.props.shield = sh;
   for (const p of ['woodMask', 'leafCollar', 'heroCloak']) if (rig.props[p]) rig.showProp(p, true);
   if (rig.props.hair) rig.showProp('hair', false);
 }

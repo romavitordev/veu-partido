@@ -35,7 +35,7 @@ export const UPGRADES = [
   // partidas que deveria ter uma tela separada pra todos descobertos. Assim como no Vampire Survivors"). Como a evolução
   // de arma do VS (a arma no máximo + o item pedido + um baú aberto depois, por chance): com as DUAS melhorias da receita
   // (a primeira no máximo), cada baú tem `chance` de trazer a fusão; descoberta uma vez, ela fica na tela DESCOBERTAS e
-  // pode vir, bem rara (`rare`), mesmo sem a receita. Nunca sai nas cartas de nível e não ocupa vaga. PROPOSTA: todas.
+  // (desde 2026-11-28 só com a receita pronta: antes a descoberta vinha rara mesmo sem ela). Nunca sai nas cartas de nível e não ocupa vaga. PROPOSTA: todas.
   ...[
     { id: 'carnificina', name: 'Carnificina', icon: '☠', needs: [['furia', 3], ['sanguessuga', 1]], desc: '+15% de dano dos golpes físicos e cura 4% do dano físico que causar.', apply: (m) => { m.dealt.melee += 0.15; m.lifesteal += 0.04; } },
     { id: 'muralhaViva', name: 'Muralha Viva', icon: '⛫', needs: [['couraca', 3], ['vigor', 1]], desc: '−8% de dano recebido e +15% de vida máxima.', apply: (m) => { m.taken *= 0.92; m.hpMult += 0.15; } },
@@ -59,7 +59,7 @@ export const UPGRADES = [
     { id: 'sangueFrio', name: 'Sangue Frio', icon: '❄', needs: [['reflexos', 3], ['certeiro', 1]], desc: '+10% de chance de crítico e a esquiva recarrega 10% mais rápido.', apply: (m) => { m.crit += 0.1; m.dodgeMult *= 0.9; } },
   // A FUSÃO É GARANTIDA (2026-11-20): com a receita pronta, o PRÓXIMO baú traz (como a evolução do Vampire Survivors).
   // Antes: o 1º ingrediente no nível 5 e 30% por baú — numa fase só quase ninguém chegava (2–4% das tentativas simuladas)
-  ].map((f) => ({ ...f, kind: 'fusion', chest: true, max: 1, evolve: { needs: f.needs, chance: 1, rare: 0.03 } })),
+  ].map((f) => ({ ...f, kind: 'fusion', chest: true, max: 1, evolve: { needs: f.needs, chance: 1 } })),
   // ---------------- ACHADOS DAS FASES (pedido do dono, 2026-11-20: "mais variedade de melhorias que posso descobrir nas
   // fases"): dois por fase, só saem dos BAÚS daquela fase (RELIC_CHANCE por baú), cada um uma vez por tentativa, sem
   // ocupar vaga; achado uma vez, fica na tela DESCOBERTAS. PROPOSTA: todos os nomes, efeitos e números.
@@ -311,10 +311,12 @@ export function chestUpgrades(picks, rng = Math.random, n = 1, { discovered = []
   // o ACHADO DA FASE (só nos baús dela; no máximo um por baú)
   const relics = phase ? RELICS.filter((r) => r.phase === phase && !have.includes(r.id)) : [];
   if (relics.length && rng() < RELIC_CHANCE) { const r = relics[Math.floor(rng() * relics.length)]; out.push(r.id); have.push(r.id); }
-  // a FUSÃO primeiro, por chance: com a receita pronta (u.evolve.chance) ou, já descoberta antes, bem rara (rare)
+  // a FUSÃO primeiro, SÓ com a receita pronta (os ingredientes nos níveis pedidos). Antes a já descoberta também vinha
+  // "bem rara" (3%) sem a receita — o dono pegou uma sem ter os ingredientes (2026-11-28: "analise se as fusoes estao
+  // vindo só com os igredients nescessarios"); agora nunca. `discovered` segue só para as pistas na tela.
   for (const u of UPGRADES) {
     if (!u.evolve || countOf(have, u.id) >= u.max || out.length >= n) continue;
-    const chance = evolutionReady(have, u) ? u.evolve.chance : discovered.includes(u.id) ? u.evolve.rare : 0;
+    const chance = evolutionReady(have, u) ? u.evolve.chance : 0;
     if (chance > 0 && rng() < chance) { out.push(u.id); have.push(u.id); }
   }
   while (out.length < n) {

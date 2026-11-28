@@ -28,7 +28,9 @@ export default {
   },
   stats: { ...base.stats, maxHealth: 1600, moveSpeed: 8.4 }, // cabe a vida extra da transformação
   chargeFx: { style: 'aura', color: FIRE, smoke: 0x1a2030 },
-  ranged: { ...base.ranged, damage: 25, burn: { dps: 11, duration: 2.5 } },
+  // □ AS FLECHAS DA VIGÍLIA (pedido do dono, 2026-11-28: "gwayne as flechas da vigilia"): a flecha do arsenal, mais
+  // pesada e sem fogo — o fogo fica na Salva Flamejante (o poder à parte). PROPOSTA: os números
+  ranged: { ...base.ranged, name: 'Flecha da Vigília', visual: 'vigiliaArrow', color: 0x9ac8ff, damage: 30, knockback: 1.2, burn: undefined },
   melee: {
     ...base.melee,
     strikes: base.melee.strikes.map((s) => ({ ...s, damage: Math.round(s.damage * 1.1) })),

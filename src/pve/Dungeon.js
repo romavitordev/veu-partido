@@ -1735,7 +1735,7 @@ export class Dungeon {
     return [...items, { icon: '$', colorCss: '#ffd84a' }];
   }
 
-  // as fusões já descobertas (o flow.js põe `profile.discovered`): chegam ao baú bem raras mesmo sem a receita
+  // as fusões já descobertas (o flow.js põe `profile.discovered`): só para as pistas (o baú pede a receita pronta)
   discovered() { return (this.profile && this.profile.discovered) || []; }
 
   // o baú do começo (nível 1, build vazia): cada item é um punhado de moedas ou de experiência, sorteado

@@ -427,9 +427,8 @@ test('fusões: receita, chance do baú, descoberta e nada de Segundo Fôlego', a
   assert.deepEqual(U.chestUpgrades(pronta, () => carn.evolve.chance - 0.01, 1), ['carnificina']);
   // ...e não sai acima dela
   assert.ok(!U.chestUpgrades(pronta, () => carn.evolve.chance + 0.01, 1).includes('carnificina'));
-  // já descoberta: rara mesmo sem a receita
-  assert.deepEqual(U.chestUpgrades(meia, () => carn.evolve.rare - 0.001, 1, { discovered: ['carnificina'] }), ['carnificina']);
-  assert.ok(!U.chestUpgrades(meia, () => carn.evolve.rare + 0.001, 1, { discovered: ['carnificina'] }).includes('carnificina'));
+  // já descoberta, mas sem a receita: também nunca (dono, 2026-11-28: só com os ingredientes)
+  assert.ok(!U.chestUpgrades(meia, always, 1, { discovered: ['carnificina'] }).includes('carnificina'));
   // não ocupa vaga e aplica o efeito
   assert.equal(U.slotsOf([...pronta, 'carnificina'], 'passive'), 2);
   const m = U.computeMods([...pronta, 'carnificina']);

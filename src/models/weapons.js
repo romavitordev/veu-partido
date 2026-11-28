@@ -2105,6 +2105,34 @@ export function flameArrow(color = 0x3affd0) {
   return g;
 }
 
+// a FLECHA DA VIGÍLIA (O Morto que Caminha; pedido do dono, 2026-11-28; PROPOSTA de forma): a haste escura, a ponta
+// larga de aço claro, as penas brancas e vermelhas e um rastro frio da névoa do Samhain (aponta para +Z)
+export function vigiliaArrow(color = 0x9ac8ff) {
+  const g = new THREE.Group();
+  const shaft = part(new THREE.CylinderGeometry(0.009, 0.009, 0.74, 5), 0x2a1e16);
+  shaft.rotation.x = Math.PI / 2;
+  g.add(shaft);
+  const head = part(new THREE.ConeGeometry(0.03, 0.11, 4), 0xd8dce0);
+  head.rotation.x = Math.PI / 2;
+  head.position.z = 0.42;
+  g.add(head);
+  const band = part(new THREE.CylinderGeometry(0.013, 0.013, 0.03, 6), 0xb08a3a);
+  band.rotation.x = Math.PI / 2;
+  band.position.z = 0.35;
+  g.add(band);
+  for (let i = 0; i < 3; i++) {
+    const fl = part(new THREE.BoxGeometry(0.004, 0.05, 0.11), i ? 0xe8ece6 : 0x9a1a1a);
+    fl.position.z = -0.32;
+    fl.rotation.z = (i / 3) * Math.PI;
+    g.add(fl);
+  }
+  const mist = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.45, 6, 1, true), glowMat(color, 0.35));
+  mist.rotation.x = -Math.PI / 2;
+  mist.position.z = 0.05;
+  g.add(mist);
+  return g;
+}
+
 export function gasMask(glow = 0x7aff9a) {
   const g = new THREE.Group();
   const RUBBER = 0x15171a;

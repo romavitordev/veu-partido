@@ -6,7 +6,7 @@ import { igniteFighter } from './burn.js';
 import { inBounds } from './positioning.js';
 import { distXZ } from '../core/util.js';
 import { glowMat } from '../models/rig.js';
-import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, barBottle } from '../models/weapons.js';
+import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, vigiliaArrow, barBottle } from '../models/weapons.js';
 import { khopesh, spear, doubleDagger } from '../models/ordoWeapons.js';
 import { createMistZone } from './abilities.js';
 import { addBloodPool } from './bloodPools.js';
@@ -384,6 +384,10 @@ const VISUALS = {
   // AMALIA: a flecha flamejante ciano
   flameArrow(color) {
     return flameArrow(color);
+  },
+  // GWAYNE — O MORTO QUE CAMINHA: a flecha da Vigília
+  vigiliaArrow(color) {
+    return vigiliaArrow(color);
   },
   // VIROTE da balestra (Beatrice): a haste curta escura, a ponta de aço e as penas claras atrás (aponta para +Z)
   // as HASTES DE METAL da Alvira (cânone: as varetas que ela crava no Damir): ferro vermelho-escuro, fino e pontudo

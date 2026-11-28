@@ -866,6 +866,9 @@ baixado sem o OK do dono.
         lore/A-VIGILIA.md: arqueiro com o arco da Gwyneth, Flechas Flamejantes que queimam (cânone), Prontidão e Esquiva
         (cânone); especial próprio "A Flecha de Gwyneth". Faltam Zuri e Eileen.
       - [ ] Vínculo de equipe "A Vigília" (já são 3: Bran, Mael e Gwayne).
+      - [ ] **Ajustar os kits do Bran e do Gwayne** (dono, 2026-11-28): mais variedade e mais fiéis ao cânone (conferir
+        A Vigília e a wiki antes; o que não for cânone, PROPOSTA). O GWAYNE atira FLECHAS NORMAIS no básico; as
+        FLECHAS FLAMEJANTES viram um PODER à parte (habilidade própria), não o tiro de sempre.
 
 ## Elementos (pedido do dono, 2026-11-14)
 - [x] **Símbolos oficiais dos elementos na página Sobre** — v4.45.2: imagens da wiki na cor de cada elemento; Transmissão

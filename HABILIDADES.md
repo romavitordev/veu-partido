@@ -2467,9 +2467,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | ↑ + ○ (no combo) | Arco para Cima | 36 | 2 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Adaga no Chão | 40 | 1.8 m | finalizador: derruba |
 
-### Principal (□ / X): Flecha Flamejante
+### Principal (□ / X): Flecha da Vigília
 
-- Dano 25 · alcance 28 m · cooldown 1.1 s · custo 0
+- Dano 30 · alcance 28 m · cooldown 1.1 s · custo 0
 
 ### Habilidades
 
