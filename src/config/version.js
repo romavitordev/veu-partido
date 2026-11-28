@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.49.1';
+export const VERSION = '5.50.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,17 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.50.0',
+    date: '2026-11-27',
+    title: 'O Druida da Chama',
+    items: [
+      'Novo lutador: MAEL, o druida aprendiz da Vigília — a machadinha e o punho, as Pedras do Druida (verde, roxa e vermelha), as Raízes de Treb Ciach que prendem, o Chamado e a Chama de Proteção.',
+      'Especial O Círculo do Samhain: o sigilo dourado da Chama de Proteção aparece no chão; quem está dentro fica preso e a chama amarela sobe em três ondas.',
+      'Herói da Vigília: a Transformação do Mael (e versão na seleção) veste a fantasia do Samhain — a máscara de casca com galhos, a gola de folhas secas e a capa esfarrapada — e some num redemoinho de folhas.',
+      'Mael tem falas de vitória e de apresentação contra todo o elenco, retrato no Sobre e na tela de VS e cena de agarrão própria.',
+    ],
+  },
   {
     v: '5.49.1',
     date: '2026-11-27',

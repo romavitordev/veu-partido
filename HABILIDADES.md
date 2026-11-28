@@ -2316,6 +2316,92 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## MAEL
+
+*O druida aprendiz do Marban, da Chama de Proteção* · arma: A machadinha, os punhos e as pedras do druida
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Talho da Machadinha | 26 | 2 m |  |
+| ○ 2 | Soco do Druida | 22 | 1.6 m |  |
+| ○ 3 | Talho de Volta | 28 | 2 m |  |
+| ○ 4 | Gancho | 32 | 1.7 m |  |
+| ○ 5 | Machadada do Peregrino | 58 | 2.2 m | finalizador: lança |
+| Frente + ○ | Ímpeto | 38 | 1.9 m |  |
+| Trás + ○ | Recua e Corta | 32 | 2.1 m | invulnerável no começo |
+| Lado + ○ | Talho de Passagem | 30 | 2 m |  |
+| No ar + ○ | Machadinha do Alto | 34 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Machadinha de Baixo | 38 | 2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão na Raiz | 42 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Pedras do Druida
+
+- Dano 26 · alcance 18 m · cooldown 1.6 s · custo 0
+
+### Habilidades
+
+- **Machadada** — △ + ○ / Y + B · custo 24 · cooldown 11 s · dano 76 · alcance 2.4 m
+  Ergue a machadinha com as duas mãos e desce com o corpo todo: quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Chamado** — △ + L2 / Y + LT · custo 20 · cooldown 18 s
+  Chama a força da floresta: por 7 s bate 20% mais forte e ataca mais rápido.
+- **Raízes de Treb Ciach** — R2 + △ / RT + Y · custo 24 · cooldown 13 s · dano 40 · alcance 14 m
+  Bate a mão no chão: as raízes da floresta de Treb Ciach sobem sob o adversário e o prendem por um instante.
+- **Chama de Proteção** — R2 + × / RT + A · custo 22 · cooldown 20 s
+  A chama amarela da proteção envolve o corpo: por 6 s recebe 35% menos dano e aguenta 2 golpes sem recuar.
+
+### Especial: O Círculo do Samhain
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Herói da Vigília
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## MAEL
+
+*Herói da Vigília (até o fim do round)* · arma: A machadinha, os punhos e as pedras do druida
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Talho da Machadinha | 29 | 2 m |  |
+| ○ 2 | Soco do Druida | 25 | 1.6 m |  |
+| ○ 3 | Talho de Volta | 31 | 2 m |  |
+| ○ 4 | Gancho | 36 | 1.7 m |  |
+| ○ 5 | Machadada do Peregrino | 65 | 2.2 m | finalizador: lança |
+| Frente + ○ | Ímpeto | 38 | 1.9 m |  |
+| Trás + ○ | Recua e Corta | 32 | 2.1 m | invulnerável no começo |
+| Lado + ○ | Talho de Passagem | 30 | 2 m |  |
+| No ar + ○ | Machadinha do Alto | 34 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Machadinha de Baixo | 38 | 2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Pisão na Raiz | 42 | 1.9 m | finalizador: derruba |
+
+### Principal (□ / X): Pedras do Druida
+
+- Dano 26 · alcance 18 m · cooldown 1.6 s · custo 0
+
+### Habilidades
+
+- **Machadada** — △ + ○ / Y + B · custo 24 · cooldown 11 s · dano 76 · alcance 2.4 m
+  Ergue a machadinha com as duas mãos e desce com o corpo todo: quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
+- **Capa de Folhas** — △ + L2 / Y + LT · custo 18 · cooldown 8 s
+  Some num redemoinho de folhas secas e reaparece: na direção do analógico ou, sem direção, colado ao lado do adversário.
+- **Raízes de Treb Ciach** — R2 + △ / RT + Y · custo 24 · cooldown 13 s · dano 40 · alcance 14 m
+  Bate a mão no chão: as raízes da floresta de Treb Ciach sobem sob o adversário e o prendem por um instante.
+- **Chama de Proteção** — R2 + × / RT + A · custo 22 · cooldown 20 s
+  A chama amarela da proteção envolve o corpo: por 6 s recebe 35% menos dano e aguenta 2 golpes sem recuar.
+
+### Especial: O Círculo do Samhain
+
+250 de dano · custo 50 · cooldown 14 s.
+
+---
+
 ## CASCADIA
 
 *A guerreira mais antiga da Ordo Calamitas, mãe de Caesar — cansada de tudo, principalmente da Celestine* · arma: O khopesh curvo e a espada reta

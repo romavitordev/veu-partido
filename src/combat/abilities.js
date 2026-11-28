@@ -754,6 +754,9 @@ export const ABILITY_TYPES = {
         world.fx.burst(origin.clone().setY(0.9), { count: 30, color: 0x0e0c12, kind: 'smoke', speed: 0.5, up: 0.4, life: 1.3, size: 0.6, grow: 0.8 });      } else if (a.residue === 'feathers') {
         // Voo do Corvo (Bran, O Inquebrável): a revoada de penas escuras e cinza-azuladas caindo devagar onde ele estava
         for (const c of [0x14141a, 0x5a6a76, 0x2a2e38]) world.fx.burst(origin.clone().setY(1.1), { count: 14, color: c, speed: 2.2, up: 1.4, life: 1.2, size: 0.16, gravity: 1.2, drag: 1.5 });
+      } else if (a.residue === 'leaves') {
+        // Capa de Folhas (Mael, Herói da Vigília): o redemoinho de folhas secas caindo onde ele estava
+        for (const c of [0x8a6a2a, 0xb0903a, 0x5a4a1e]) world.fx.burst(origin.clone().setY(1.1), { count: 14, color: c, speed: 2.6, up: 1.6, life: 1.3, size: 0.14, gravity: 1.1, drag: 1.5 });
       }
       tl.add(a.vanishTime * 0.6, () => f.setVisible(false));
       tl.add(a.vanishTime, () => {

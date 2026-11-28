@@ -858,6 +858,10 @@ baixado sem o OK do dono.
       - [x] (v5.49.0) **Bran** — O Vigia Noturno e O Inquebrável (versão na seleção e Transformação: a máscara de crânio
         de corvo e a gola de penas). Kit PROPOSTA em lore/A-VIGILIA.md. Faltam Zuri, Mael, Gwayne e Eileen; o vínculo de
         equipe "A Vigília" quando houver 2 ou mais.
+      - [x] (v5.50.0) **Mael** — O Druida e Herói da Vigília (versão na seleção e Transformação: a máscara de casca em
+        espiral com galhos, a gola de folhas secas e a capa esfarrapada). Kit PROPOSTA em lore/A-VIGILIA.md; especial
+        próprio "O Círculo do Samhain" (o sigilo dourado da Chama de Proteção). Faltam Zuri, Gwayne e Eileen.
+      - [ ] Vínculo de equipe "A Vigília" (já são 2: Bran e Mael).
 
 ## Elementos (pedido do dono, 2026-11-14)
 - [x] **Símbolos oficiais dos elementos na página Sobre** — v4.45.2: imagens da wiki na cor de cada elemento; Transmissão

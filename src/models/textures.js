@@ -3011,6 +3011,57 @@ export const MATERIAL_TEXTURES = {
   // GOSTO DE SANGUE (o Despertar): o rosto lavado de sangue — a boca e o queixo encharcados de quem acabou de morder,
   // respingos pelas bochechas e testa, um corte aberto na sobrancelha e o roxo de pancada na maçã do rosto
   face_sabara_blood: face((g) => sabaraFace(g, true), SABARA_FACE),
+  // ---------------- MAEL (A Vigília; wiki): pele clara corada, olhos VERDES, o bigode fino e a barba rala por fazer, e a
+  // CICATRIZ cortando a sobrancelha esquerda (x > CX) — a fresta na sobrancelha e o risco claro descendo
+  face_mael: face((g) => {
+    stubble(g, 'rgba(60,36,22,0.7)', 2000, { y0: 150, y1: 236, w: 88 });
+    g.fillStyle = 'rgba(62,38,24,0.75)';
+    g.beginPath(); g.ellipse(CX, MOUTH_Y - 9, 26, 5, 0, 0, Math.PI * 2); g.fill(); // o bigode fino
+    g.fillStyle = '#e0ae8e'; g.fillRect(CX + 30, EYE_Y - 30, 5, 16); // a fresta na sobrancelha esquerda
+    g.strokeStyle = 'rgba(176,100,86,0.7)'; g.lineWidth = 3.2; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(CX + 30, EYE_Y - 34); g.lineTo(CX + 35, EYE_Y - 10); g.stroke();
+    g.strokeStyle = 'rgba(244,206,190,0.85)'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(CX + 31, EYE_Y - 33); g.lineTo(CX + 35, EYE_Y - 12); g.stroke();
+  }, {
+    skin: '#e0ae8e',
+    eye: { iris: '#4a8a3a', irisLight: '#8ac070', w: 13, h: 6, tilt: 0.02, lid: 3.4 },
+    brow: { angry: 0.4, thick: 4.5, color: '#3a2418' },
+    mouth: { mouthW: 12, smile: 0.2, lip: 'rgba(160,80,70,0.5)' },
+  }),
+  // a CALÇA VERDE RISCADA larga (u dá a volta na perna): verde-musgo com riscas claras finas na vertical e o pano gasto
+  pants_mael: () => canvasTex(256, 256, (g) => {
+    const rnd = seeded(311);
+    g.fillStyle = '#4a5a34'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '24,30,16' : '110,120,80'},${0.08 + rnd() * 0.08})`; g.fillRect(rnd() * 256, rnd() * 256, 2, 1 + rnd() * 4); }
+    g.fillStyle = 'rgba(196,200,160,0.55)';
+    for (let x = 4; x < 256; x += 16) g.fillRect(x, 0, 1.4, 256);
+    // as dobras soltas caindo
+    for (let x = 0; x < 256; x += 22 + rnd() * 20) { g.fillStyle = 'rgba(16,20,10,0.18)'; g.fillRect(x, 0, 4 + rnd() * 6, 256); }
+  }),
+  // a CAPA ESFARRAPADA do Herói (canvas de cabeça para baixo: o topo é a BARRA): oliva manchado, mais escuro na barra,
+  // os FUROS escuros espalhados e as tiras soltas
+  cloak_mael: () => canvasTex(512, 512, (g) => {
+    const rnd = seeded(1031);
+    g.fillStyle = '#5a5a32'; g.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 60; i++) {
+      const r = 20 + rnd() * 50;
+      g.fillStyle = `rgba(${rnd() < 0.5 ? '40,42,20' : '120,116,70'},${0.12 + rnd() * 0.12})`;
+      g.beginPath(); g.arc(rnd() * 512, rnd() * 512, r, 0, Math.PI * 2); g.fill();
+    }
+    for (let i = 0; i < 2200; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '20,20,10' : '140,134,90'},${0.06 + rnd() * 0.07})`; g.fillRect(rnd() * 512, rnd() * 512, 1 + rnd() * 3, 2 + rnd() * 8); }
+    const gr = g.createLinearGradient(0, 0, 0, 180); gr.addColorStop(0, 'rgba(22,20,10,0.6)'); gr.addColorStop(1, 'rgba(22,20,10,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 512, 180);
+    // os furos: buracos irregulares escuros com a borda puída clara
+    for (let i = 0; i < 26; i++) {
+      const cx = rnd() * 512, cy = rnd() * 512, rx = 5 + rnd() * 14, ry = 4 + rnd() * 10;
+      g.fillStyle = 'rgba(160,150,100,0.5)';
+      g.beginPath(); g.ellipse(cx, cy, rx + 3, ry + 3, rnd(), 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#12100a';
+      g.beginPath();
+      for (let k = 0; k <= 12; k++) { const a = (k / 12) * Math.PI * 2; const q = 0.7 + rnd() * 0.5; const x = cx + Math.cos(a) * rx * q, y = cy + Math.sin(a) * ry * q; if (k) g.lineTo(x, y); else g.moveTo(x, y); }
+      g.closePath(); g.fill();
+    }
+  }),
   // ---------------- BRAN (A Vigília; wiki): pele clara com SARDAS, a CICATRIZ na bochecha esquerda (x > 256), os olhos
   // verdes levemente azulados, as sobrancelhas ruivas grossas e a barba ruiva começando no rosto (o volume é do modelo)
   face_bran: face((g) => {

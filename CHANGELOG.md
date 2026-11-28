@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.50.0 — O Druida da Chama
+
+### Adicionado
+- Novo lutador: **Mael** (A Vigília), o druida aprendiz do Marban. Modelo no Blender com o cabelo cacheado e o dread loiro, a coroa de galhos, a camisa aberta, os suspensórios com ervas e as três pedras, a faixa trançada, o lenço verde, a calça riscada e as botas amarradas.
+- Kit (PROPOSTA): machadinha e punho; □ Pedras do Druida (alternam verde, roxa e vermelha); Machadada; Chamado (bate mais forte e mais rápido); Raízes de Treb Ciach (raízes de madeira prendem o adversário); Chama de Proteção (menos dano e não recua). Passiva Ímpeto: apanhar enche a barra; barra maior (Resoluto).
+- Especial **O Círculo do Samhain**: o sigilo dourado da Chama de Proteção (o mesmo da fogueira de Treb Ciach) cresce em volta dele; quem está dentro fica preso e leva três ondas de chama amarela. Dentro do círculo o Mael quase não sente dano.
+- **Herói da Vigília**: Transformação e versão na seleção, com a máscara de casca em espiral e galhos, a gola de folhas secas e a capa esfarrapada; a Capa de Folhas troca o Chamado (some num redemoinho de folhas e reaparece colado no adversário).
+- Falas de vitória contra todo o elenco (e de quem vence o Mael), falas de apresentação e de batalha, cena de agarrão, pose de vitória e retratos no Sobre e na tela de VS.
+
 ## v5.49.1 — Cachos e Penas
 
 ### Alterado

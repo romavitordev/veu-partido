@@ -96,3 +96,38 @@ export function addBranInquebravelProps(rig) {
   for (const p of ['crowMask', 'feathers']) if (rig.props[p]) rig.showProp(p, true);
   for (const p of ['hair', 'fur']) if (rig.props[p]) rig.showProp(p, false);
 }
+
+// a MACHADINHA do Mael (cânone: no cinto): cabo curto de madeira, cabeça de ferro com o fio claro
+function machadinha() {
+  const g = new THREE.Group();
+  const haft = part(new THREE.CylinderGeometry(0.016, 0.019, 0.46, 7), WOOD);
+  haft.position.y = 0.16;
+  g.add(haft);
+  const head = part(new THREE.BoxGeometry(0.03, 0.09, 0.14), IRON);
+  head.position.set(0, 0.34, 0.06);
+  g.add(head);
+  const edge = part(new THREE.BoxGeometry(0.012, 0.13, 0.03), 0xd8d4d0, { mat: toon(0xd8d4d0) });
+  edge.position.set(0, 0.34, 0.14);
+  g.add(edge);
+  const wrap = part(new THREE.CylinderGeometry(0.021, 0.021, 0.1, 7), LEATHER);
+  wrap.position.y = 0.02;
+  g.add(wrap);
+  return g;
+}
+
+// MAEL: a machadinha na direita (a lâmina para a frente). A fantasia (máscara de casca, gola de folhas e capa) fica
+// guardada: só a forma Herói da Vigília liga
+export function addMaelProps(rig) {
+  const h = machadinha();
+  inFist(h, -1.3);
+  rig.sockets.handR.add(h);
+  rig.props.hatchet = h;
+  for (const p of ['woodMask', 'leafCollar', 'heroCloak']) if (rig.props[p]) rig.showProp(p, false);
+}
+
+// HERÓI DA VIGÍLIA: o mesmo Mael com a fantasia do Samhain ligada; o cabelo (e a coroa de galhos) some sob a máscara
+export function addMaelHeroiProps(rig) {
+  addMaelProps(rig);
+  for (const p of ['woodMask', 'leafCollar', 'heroCloak']) if (rig.props[p]) rig.showProp(p, true);
+  if (rig.props.hair) rig.showProp('hair', false);
+}

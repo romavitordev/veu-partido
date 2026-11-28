@@ -185,6 +185,8 @@ export const GRAB_SCENES = {
   carina: scene({ ...S('slash_h'), fx: { kind: 'punch' }, sound: 'punch' }, { ...S('slash_h_back'), fx: { kind: 'punch', flip: true }, sound: 'punch' }, { anim: 'spin_kick', fx: 'slam', sound: 'kick', bleed: { dps: 3, duration: 2 } }),
   // BRAN: o broquel na cara, a estocada da Justiça e o pisão do vigia
   bran: scene({ ...S('shoulder_bash', 0.32), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('spear_thrust', 0.3), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'stomp', fx: 'slam', sound: 'heavyPunch' }),
+  // MAEL: o talho da machadinha, o gancho de esquerda e a machadada que derruba
+  mael: scene({ ...S('slash_h', 0.3), fx: { kind: 'slash' }, sound: 'axeHit' }, { ...S('hook_l', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'slash_finisher', fx: 'slam', sound: 'slashFinal' }),
   // RUBENS: duas marteladas curtas e a martelada no chão
   rubens: scene({ ...S('hammer_h', 0.3), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.3), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   // FERNANDO: dois cortes nervosos do canivete e o empurrão; LUCIANO: o corte seco, a cotovelada e a estocada
@@ -279,6 +281,7 @@ GRAB_SCENES.estrangeiro = GRAB_SCENES.diabo;
 // Amigo Imaginário: duas garras secas e o capuz se curva sobre o rosto da vítima — a tinta escorre (Derreter)
 GRAB_SCENES.amigo = scene({ ...S('ai_claw_r', 0.34), fx: { kind: 'claw' }, sound: 'clawHit' }, { ...S('ai_claw_l', 0.34), fx: { kind: 'claw', flip: true }, sound: 'clawHit' }, { anim: 'ai_tear', fx: 'ink', sound: 'drain', slow: { mult: 0.8, time: 2 } });
 GRAB_SCENES.bran_inquebravel = GRAB_SCENES.bran; // O Inquebrável agarra como o Bran
+GRAB_SCENES.mael_heroi = GRAB_SCENES.mael; // o Herói da Vigília agarra como o Mael
 GRAB_SCENES.juan_odio = GRAB_SCENES.juan; // o Ódio do Diabo agarra como o Juan (as garras no lugar da faca)
 // CARNIÇAL: as duas garras e, com a vítima presa, encara de perto — a espiral da testa entra na mente — e rasga
 // DEGOLIFICADA: os braços pendentes batem, o cabelo enrola no pescoço e esmaga a cabeça

@@ -47,6 +47,7 @@ export const BATTLE_RECENT = {
     degolificada: '(o corpo sem cabeça cambaleia e se firma de novo)',
     espreitador: '(some no escuro e volta mais perto)',
     bran: 'Eu preciso voltar, mais uma vez.', // (cânone)
+    mael: 'Ainda não. Esse ainda não é o meu fim.',
   },
   special: {
     veritus: 'A gente não tava nessa Ordem pra lutar uns contra os outros!',
@@ -87,6 +88,7 @@ export const BATTLE_RECENT = {
     degolificada: '(o pescoço aberto grita sem voz)',
     espreitador: '(os Devorados saem da sombra junto)',
     bran: 'Até o amanhecer. Ninguém passa por mim.',
+    mael: 'Esse é meu destino.', // (cânone)
   },
   transform: {
     veritus_rancor: 'O Estigma acordou. O Trono lembra de mim.',
@@ -101,6 +103,7 @@ export const BATTLE_RECENT = {
     raziel_verdadeiro: 'Chega de disfarce. Este é o verdadeiro Raziel.',
     celestine_magistrada: 'Acabou a brincadeira. A Magistrada julga agora.',
     bran_inquebravel: '(a máscara de corvo desce sobre o rosto) Hoje à noite, ninguém passa.',
+    mael_heroi: '(a máscara de casca fecha sobre o rosto) No Samhain, vivos e mortos são iguais.',
   },
 };
 
@@ -144,6 +147,7 @@ export const BATTLE_REPLIES_RECENT = {
     degolificada: '(o corpo vira na direção do som)',
     espreitador: '(um sussurro no escuro, bem atrás de você)',
     bran: 'Cansou? Eu fico acordado a noite inteira.',
+    mael: 'Apanhar só me dá mais vontade.',
   },
   special: {
     veritus: 'A Ordo aguenta. Eu aguento.',
@@ -184,6 +188,7 @@ export const BATTLE_REPLIES_RECENT = {
     degolificada: '(as mãos procuram no ar uma cabeça que não tem)',
     espreitador: '(a luz pisca, e ele já não está ali)',
     bran: '(ergue o broquel) Vem. Eu seguro.',
+    mael: '(a chama amarela acende na mão) A fogueira guarda. Eu também.',
   },
   transform: {
     carina: 'Mudou de forma. A minha mira continua a mesma.',
@@ -214,5 +219,6 @@ export const BATTLE_REPLIES_RECENT = {
     degolificada: '(o corpo para, ouvindo)',
     espreitador: '(a sombra se estica para olhar melhor)',
     bran: 'Máscara nova. No Samhain todo mundo usa uma.',
+    mael: 'Chifre de galho e capa de folha. Bonito, né?',
   },
 };

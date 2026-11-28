@@ -437,6 +437,19 @@ export const VOICES = {
       any: [(o) => `Eu preciso voltar, ${o.name}. Mais uma vez.`, (o) => `Pode vir. O broquel aguenta.`],
     },
   },
+  // MAEL (A Vigília): o druida aprendiz do Marban, impetuoso e caloroso; fala da floresta, da chama e do destino (PROPOSTA)
+  mael: {
+    open: {
+      ally: (o) => `${o.name}! Fica perto da fogueira. Eu cuido do resto.`,
+      rival: (o) => `${o.name}. A floresta já viu coisa pior que ${o.group}.`,
+      any: [(o) => `Esse é meu destino, ${o.name}. Vem.`, (o) => `Pedra, raiz ou machadinha, ${o.name}? Escolhe.`],
+    },
+    reply: {
+      ally: (o) => `Bora, ${o.name}! A chama tá do nosso lado.`,
+      rival: (o) => `Fala, ${o.name}. As raízes escutam.`,
+      any: [(o) => `Apanhar só me dá mais vontade, ${o.name}.`, (o) => `O Marban me ensinou a não recuar.`],
+    },
+  },
   // RUBENS NALUTI: fala por PALAVRAS-CHAVE, sério e econômico — "Ainda bem que eu voltei, e vou continuar voltando."
   rubens: {
     open: {
