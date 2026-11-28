@@ -2236,9 +2236,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
-| ○ 1 | Estocada | 26 | 2.9 m |  |
+| ○ 1 | Estocada Dupla | 30 (2 acertos) | 2.9 m |  |
 | ○ 2 | Broquel na Cara | 30 | 1.7 m |  |
-| ○ 3 | Cravada por Cima | 30 | 3 m |  |
+| ○ 3 | Cravada por Cima | 32 | 3 m |  |
 | ○ 4 | Haste Varrida | 30 | 2.7 m |  |
 | ○ 5 | Justiça | 60 | 3.3 m | finalizador: lança |
 | Frente + ○ | Se Atira em Cima | 38 | 2 m |  |
@@ -2282,9 +2282,9 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
-| ○ 1 | Estocada | 29 | 2.9 m |  |
+| ○ 1 | Estocada Dupla | 34 (2 acertos) | 2.9 m |  |
 | ○ 2 | Broquel na Cara | 34 | 1.7 m |  |
-| ○ 3 | Cravada por Cima | 34 | 3 m |  |
+| ○ 3 | Cravada por Cima | 36 | 3 m |  |
 | ○ 4 | Haste Varrida | 34 | 2.7 m |  |
 | ○ 5 | Justiça | 67 | 3.3 m | finalizador: lança |
 | Frente + ○ | Se Atira em Cima | 38 | 2 m |  |

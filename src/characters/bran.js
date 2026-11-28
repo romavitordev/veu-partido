@@ -37,16 +37,19 @@ export default {
   melee: {
     name: 'Justiça e Broquel',
     strikes: [
-      { name: 'Estocada', anim: 'spear_thrust', dur: 0.32, active: [0.13, 0.21], damage: 26, range: 2.9, arc: 40, knockback: 1.0, lunge: 0.8, sound: 'swing', hitSound: 'bladeHit' },
-      { name: 'Broquel na Cara', anim: 'shoulder_bash', dur: 0.36, active: [0.12, 0.22], damage: 30, range: 1.7, arc: 100, knockback: 2.0, lunge: 0.9, sound: 'swing', hitSound: 'heavyPunch' },
-      { name: 'Cravada por Cima', anim: 'spear_over', dur: 0.42, active: [0.2, 0.29], damage: 30, range: 3.0, arc: 40, knockback: 1.3, lunge: 0.9, sound: 'swing', hitSound: 'bladeHit' },
+      // duas estocadas curtas no mesmo passo: a ponta vai e volta antes de o adversário reagir
+      { name: 'Estocada Dupla', anim: 'spear_thrust', dur: 0.36, actives: [[0.1, 0.16], [0.21, 0.27]], damage: 30, range: 2.9, arc: 40, knockback: 1.0, lunge: 0.8, sound: 'swing', hitSound: 'bladeHit', trail: { color: STEEL } },
+      // o umbo de ferro na cara: pesa na defesa de quem segura
+      { name: 'Broquel na Cara', anim: 'shoulder_bash', dur: 0.36, active: [0.12, 0.22], damage: 30, range: 1.7, arc: 100, knockback: 2.0, lunge: 0.9, guardCrush: 18, hitstop: 0.07, impactScale: 1.3, sound: 'swing', hitSound: 'heavyPunch' },
+      { name: 'Cravada por Cima', anim: 'spear_over', dur: 0.42, active: [0.2, 0.29], damage: 32, range: 3.0, arc: 40, knockback: 1.3, lunge: 0.9, guardCrush: 10, sound: 'swing', hitSound: 'bladeHit', trail: { color: STEEL, tilt: 1.3 } },
       { name: 'Haste Varrida', anim: 'spear_sweep', dur: 0.42, active: [0.15, 0.25], damage: 30, range: 2.7, arc: 160, knockback: 1.7, lunge: 0.6, sound: 'swing', hitSound: 'heavyPunch', trail: { color: STEEL, wide: true } },
-      { name: 'Justiça', anim: 'spear_lunge', dur: 0.64, active: [0.3, 0.45], damage: 60, range: 3.3, arc: 40, lunge: 1.7, finisher: 'launch', hitstop: 0.12, sound: 'slashFinal', hitSound: 'bladeHit', impactScale: 1.8, trail: { color: NIGHT, big: true } },
+      { name: 'Justiça', anim: 'spear_lunge', dur: 0.64, active: [0.3, 0.45], damage: 60, range: 3.3, arc: 40, lunge: 1.7, finisher: 'launch', hitstop: 0.14, guardCrush: 30, sound: 'slashFinal', hitSound: 'bladeHit', impactScale: 2, impactFx: 'shock', trail: { color: NIGHT, big: true } },
     ],
     up: { name: 'Lança de Baixo', anim: 'spear_low', dur: 0.46, active: [0.22, 0.32], damage: 38, range: 2.7, arc: 100, lunge: 0.7, finisher: 'launchHigh', launcher: true, sound: 'swing', hitSound: 'bladeHit', trail: { color: STEEL, tilt: -1.3 } },
-    down: { name: 'Pisão do Vigia', anim: 'stomp', dur: 0.5, active: [0.2, 0.3], damage: 44, range: 1.9, arc: 140, lunge: 0.6, finisher: 'knockdown', sound: 'heavyPunch', hitSound: 'heavyPunch' },
+    // pega quem já está no chão: o vigia não deixa levantar
+    down: { name: 'Pisão do Vigia', anim: 'stomp', dur: 0.5, active: [0.2, 0.3], damage: 44, range: 1.9, arc: 140, lunge: 0.6, finisher: 'knockdown', otg: true, sound: 'heavyPunch', hitSound: 'heavyPunch' },
     // "se atira em cima de criaturas" (cânone): o corpo inteiro atrás do broquel
-    forward: { name: 'Se Atira em Cima', anim: 'shoulder_charge', dur: 0.48, active: [0.13, 0.28], damage: 38, range: 2.0, arc: 110, knockback: 3.2, motion: [{ t: [0, 0.26], fwd: 5.4, stopClose: true }], sound: 'swing', hitSound: 'heavyPunch' },
+    forward: { name: 'Se Atira em Cima', anim: 'shoulder_charge', dur: 0.48, active: [0.13, 0.28], damage: 38, range: 2.0, arc: 110, knockback: 3.2, guardCrush: 22, hitstop: 0.08, motion: [{ t: [0, 0.26], fwd: 5.4, stopClose: true }], sound: 'swing', hitSound: 'heavyPunch' },
     back: { name: 'Recuo de Lança', anim: 'spear_thrust', dur: 0.54, active: [0.3, 0.4], damage: 32, range: 3.0, arc: 40, knockback: 2.2, iframes: [0, 0.2], motion: [{ t: [0, 0.2], back: 2.6 }], sound: 'swing', hitSound: 'bladeHit' },
     side: { name: 'Roda da Lança', anim: 'spear_sweep', dur: 0.5, active: [0.15, 0.32], damage: 32, range: 2.8, arc: 300, knockback: 1.8, motion: [{ t: [0, 0.25], side: 2 }], sound: 'swing', hitSound: 'heavyPunch', trail: { color: STEEL, wide: true } },
     air: { name: 'Lança do Alto', anim: 'spear_air', dur: 0.46, active: [0.2, 0.34], damage: 36, range: 2.7, arc: 80, knockback: 3, slam: 16, vertical: 2.4, sound: 'swing', hitSound: 'bladeHit' },
@@ -173,25 +176,30 @@ export default {
     },
   ],
 
-  // ATÉ O AMANHECER (PROPOSTA; o vigia guarda Treb Ciach da escuridão até as 6 da manhã): finca o broquel e aguenta tudo
-  // por 2 s — o adversário bate à vontade —, depois devolve num giro da "Justiça" que cresce com o que segurou
+  // ATÉ O AMANHECER (PROPOSTA; o vigia guarda Treb Ciach da escuridão até as 6 da manhã): finca o broquel e segura a
+  // linha, SE ATIRA em cima do adversário atrás dele, empurra o broquel na cara, crava a "Justiça" três vezes, varre a
+  // haste, e fecha com a estocada de corpo inteiro enquanto o céu clareia — "Eu preciso voltar, mais uma vez"
   special: {
     name: 'Até o Amanhecer',
     banner: 'Eu preciso voltar, mais uma vez.',
-    type: 'ironWall',
+    type: 'cinematicCombo',
     energyCost: 50,
     cooldown: 14,
-    stance: 2,
-    takenMult: 0.15,
-    base: 120,
-    ratio: 0.75,
-    maxBonus: 200,
-    radius: 3.6,
-    furia: 0, // sem a Fúria do Cornelius
-    release: 'ATÉ O AMANHECER',
     damage: 250,
     color: NIGHT,
     sound: 'specialStart',
+    prepare: { anim: 'block_heavy', time: 0.45 },
+    dash: { speed: 22, maxTime: 0.55, contact: 2.1, anim: 'shoulder_charge' },
+    hits: [
+      { t: 0.1, anim: 'shoulder_bash', dur: 0.32, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch', shout: 'NINGUÉM PASSA' },
+      { t: 0.45, anim: 'spear_thrust', dur: 0.26, share: 0.1, fx: { kind: 'stab' }, sound: 'bladeHit' },
+      { t: 0.72, anim: 'spear_thrust', dur: 0.26, share: 0.1, fx: { kind: 'stab' }, sound: 'bladeHit' },
+      { t: 1.0, anim: 'spear_over', dur: 0.36, share: 0.14, fx: { kind: 'stab' }, sound: 'bladeHit', quake: true },
+      { t: 1.45, anim: 'spear_sweep', dur: 0.4, share: 0.16, fx: { kind: 'slash', wide: true, color: 0xc8c4c0 }, sound: 'swing' },
+      { t: 2.05, anim: 'spear_lunge', dur: 0.6, share: 0.38, fx: { kind: 'stab', big: true, color: 0xffe0a0 }, sound: 'slashFinal', final: true, call: 'ATÉ O AMANHECER', quake: 0xffd890 },
+    ],
+    bannerAt: 0.1,
+    length: 2.9,
   },
 
   // O INQUEBRÁVEL (o apelido; PROPOSTA: a fantasia de corvo do Samhain como Transformação): põe a máscara de crânio de

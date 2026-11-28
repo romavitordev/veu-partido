@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.50.0';
+export const VERSION = '5.50.1';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.50.1',
+    date: '2026-11-27',
+    title: 'Até o Amanhecer',
+    items: [
+      'Bran: novo especial Até o Amanhecer — finca o broquel, se atira em cima do adversário, crava a Justiça três vezes, varre a haste e fecha com a estocada de corpo inteiro.',
+      'Bran: a primeira estocada virou Estocada Dupla; o Broquel na Cara, a Cravada, a Justiça e o Se Atira pesam na defesa; o Pisão pega quem está no chão.',
+    ],
+  },
   {
     v: '5.50.0',
     date: '2026-11-27',

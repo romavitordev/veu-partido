@@ -1,5 +1,11 @@
 # Changelog
 
+## v5.50.1 — Até o Amanhecer
+
+### Alterado
+- Bran: o especial **Até o Amanhecer** era a muralha parada (aguentar 2 s e girar a lança). Agora é uma cena própria: ele finca o broquel, se atira em cima do adversário atrás dele, empurra o broquel na cara ("NINGUÉM PASSA"), crava a "Justiça" três vezes, varre a haste e fecha com a estocada de corpo inteiro numa luz de amanhecer.
+- Bran, golpes: a primeira estocada virou **Estocada Dupla** (a ponta vai e volta no mesmo passo); Broquel na Cara, Cravada por Cima, Justiça e Se Atira em Cima agora pesam na defesa de quem segura; o Pisão do Vigia pega quem já está no chão; rastros de aço nas estocadas.
+
 ## v5.50.0 — O Druida da Chama
 
 ### Adicionado
