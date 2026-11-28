@@ -39,7 +39,8 @@ export function stingSwarm(world, owner, foe, { dps = 8, duration = 3, slow = 0.
     const center = foe.chestPos();
     swarm.position.copy(center);
     b = {
-      type: 'bees', name: 'ENXAME', time: duration, duration, speedMult: slow, swarm, bees,
+      type: 'bees', name: 'PICADAS', // (dono, 2026-11-28: o debuff das abelhas perseguindo aparece como "picadas")
+      time: duration, duration, speedMult: slow, swarm, bees,
       onEnd() {
         world.scene.remove(swarm);
         geo.dispose();
@@ -47,7 +48,7 @@ export function stingSwarm(world, owner, foe, { dps = 8, duration = 3, slow = 0.
       },
     };
     foe.addBuff(b);
-    foe.notify('ENXAME!', true);
+    foe.notify('PICADAS!', true);
   }
   b.time = Math.max(b.time || 0, duration);
   b.duration = Math.max(b.duration || 0, duration);

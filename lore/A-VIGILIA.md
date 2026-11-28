@@ -115,8 +115,8 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
   queima-roupa); □ Flecha Flamejante que deixa o alvo QUEIMANDO (cânone: dano de fogo).
 - Habilidades: Flecha de Caça (a mira longa), Salva Flamejante (três flechas em leque), Prontidão (cânone: as esquivas
   voltam e ele fica mais rápido) e Esquiva (cânone: a janela de acrobacia que desvia o golpe).
-- Especial A Flecha de Gwyneth (specials/vigiliaSpecials.js → twinArrows): o vulto pálido da irmã aparece ao lado dele
-  com o mesmo arco, as duas flechas prendem e acendem o alvo e ele surge na frente com a adaga.
+- Especial A Flecha de Gwyneth (specials/vigiliaSpecials.js → twinArrows): com o arco da irmã, ele tira uma flecha,
+  acende a ponta, diz a frase dele e acerta a CABEÇA do alvo, que cai queimando (sem teleporte; dono, 2026-11-28).
 - Transformação e versão O Morto que Caminha: a Esquiva vira o Passo do Morto (some na névoa azul do Samhain e reaparece
   cravando a adaga); as flechas queimam mais.
 - Cenas: Bran + Gwayne ("fica atrás de mim e atira por cima") e Gwayne + Mael (o arco da Gwyneth e as raízes).
@@ -134,7 +134,7 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
   força e velocidade).
 - Passivas: Leitura de Combate (cada golpe defendido vira um marcador de Análise, até 3) e CURANDEIRA (as curas rendem
   25% a mais).
-- Especial Ponto Fraco (specials/vigiliaSpecials.js → weakPoint): marca três pontos no adversário, entra colada e corta
+- Especial Ponto Fraco (specials/vigiliaSpecials.js → weakPoint): marca três pontos no adversário, avança colada e corta
   os três; o último lança, e ela se cura com 25% do dano.
 - Transformação e versão GUERREIRA DA VIGÍLIA: a ESPADA DA VIGÍLIA no lugar da faca (dono, 2026-11-28), a Pomada mais
   forte e a Investida do Cervo (avança com a galhada na frente).
@@ -153,8 +153,10 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
   das colmeias: deixa lento e come projéteis).
 - Passivas: ÍMPETO (cada golpe dela defendido e cada pancada grande que leva vira um marcador: o próximo golpe sai mais
   forte) e Tiro Longo.
-- Especial A Colmeia (specials/vigiliaSpecials.js → hiveSwarm): o rio de abelhas prende o adversário, o enxame fica nele
-  e ela fecha com o corte.
+- Especial A Colmeia (specials/vigiliaSpecials.js → hiveSwarm): ela ARREMESSA o pote de abelhas EM CHAMAS em
+  arco, como a granada da Supernova da Erin (dá para sair de baixo; errando, fica exposta). Acertando, o enxame prende o
+  adversário (PICADAS e QUEIMANDO), ela CORRE até ele e fecha com a pedra da funda na cabeça (sem teleporte nem linha;
+  dono, 2026-11-28).
 - Transformação e versão FANTASIADA: a ESPADA E O ESCUDO DA VIGÍLIA (dono, 2026-11-28); o POTE DE ABELHAS PEGANDO FOGO
   (picadas, QUEIMANDO, lento e tonto, e o chão fica em chamas onde ele estoura); o Golpe de Escudo; A Colmeia queima.
 - Cenas: Zuri + Eileen ("as sobreviventes de Treb Ciach") e o vínculo de equipe A Vigília (3 ou mais dos cinco).

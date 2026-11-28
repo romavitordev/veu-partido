@@ -2652,7 +2652,9 @@ export class Fighter {
     this.vel.z = 0;
     this.anim.play(H.anim || r.anim, { restart: true, duration: H.max });
     const bar = chargeBar(this.world, this, { color: H.color ?? 0xffc840 });
-    const cpuWant = this.input && this.input.cpu ? 0.35 + Math.random() * 0.65 : null;
+    // H.mustFill (os ARCOS — dono, 2026-11-28: "sem cooldown, o cooldown será essa barra tendo que ser segurada até o
+    // final pra flecha sair"): a flecha só sai com a barra CHEIA; soltar antes desarma o arco e nada sai
+    const cpuWant = this.input && this.input.cpu ? (H.mustFill ? 1 : 0.35 + Math.random() * 0.65) : null;
     this.holdChannel = true;
     let t = 0;
     let fullT = 0;
@@ -2676,6 +2678,13 @@ export class Fighter {
         const release = (cpuWant != null ? k >= cpuWant : !held && t >= (H.min ?? 0.12)) || fullT >= (H.auto ?? 1.2);
         if (!release) return false;
         finish();
+        if (H.mustFill && k < 1) {
+          self.notify('SEGURE ATÉ ENCHER');
+          self.hideRangedProps();
+          self.seq = null;
+          self.setState('idle');
+          return true;
+        }
         // k = 0 (toque rápido) → o arremesso normal; k = 1 → o carregado inteiro
         const q = Math.max(0, (k - 0.15) / 0.85);
         const full = k >= 1;
@@ -2691,10 +2700,10 @@ export class Fighter {
           radius: r.radius * (full ? (H.radius ?? 1.3) : 1),
           guardCrush: full && H.guardCrushAtMax ? H.guardCrushAtMax : r.guardCrush, // no máximo atravessa a defesa
           impactScale: (r.impactScale || 1) * (1 + 0.6 * q),
-          hitstun: (r.hitstun || 0.4) * (full ? 1.4 : 1),
+          hitstun: (r.hitstun || 0.4) * (full ? H.fullHitstun ?? 1.4 : 1),
           charged: q,
         };
-        if (full) self.notify(H.label || 'ARREMESSO CARREGADO!', true);
+        if (full && H.label !== false) self.notify(H.label || 'ARREMESSO CARREGADO!', true);
         self.seq = null;
         self.launchRanged(rr, intent, variant);
         return false; // a sequência nova (launchRanged) assume

@@ -142,11 +142,13 @@ export default {
       name: 'Fumaça do Apicultor',
       input: 'block+carga',
       type: 'mistCloud',
-      description: 'Abana o fumegador: a fumaça em volta dela deixa lento quem entra e engole os tiros por 5 s.',
+      description: 'Abana o fumegador para a frente: a fumaça sai em cone e vai longe, fica no chão por 5 s, engole os tiros e deixa quem está dentro LENTO e ESFUMAÇADO (tosse: bate 15% mais fraco, mais devagar e apanha 10% a mais).',
       energyCost: 22,
       cooldown: 18,
       distance: 0,
       radius: 3.6,
+      // (dono, 2026-11-28): mais fumaça, mais longe, em cone, e com debuff
+      cone: { length: 8, r0: 1.3, r1: 2.8, puffs: 4, debuff: { label: 'ESFUMAÇADO', linger: 2.5, damageMult: 0.85, atkSpeed: 0.85, takenMult: 1.1 } },
       duration: 5,
       enemySlow: 0.35,
       eatsProjectiles: true,
@@ -155,8 +157,8 @@ export default {
     },
   ],
 
-  // A COLMEIA (PROPOSTA; specials/vigiliaSpecials.js → hiveSwarm): ela abre a tampa e o enxame inteiro sai num rio
-  // dourado, prende o adversário no meio da nuvem (lento, tonto, as picadas) e ela fecha com a Colheita da foice
+  // A COLMEIA (PROPOSTA; specials/vigiliaSpecials.js → hiveSwarm): ela arremessa o pote de abelhas em chamas em arco
+  // (como a granada da Erin); acertando, o enxame prende o adversário (picadas e fogo), ela corre e fecha com a funda
   special: {
     name: 'A Colmeia',
     banner: 'Elas não picam quem eu gosto.',

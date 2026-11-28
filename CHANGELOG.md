@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.54.0 — Mira Firme
+
+- MIRA EM BARRA: a Flecha de Caça e as outras habilidades de mira não puxam mais uma linha até o inimigo; uma barra enche em cima de quem mira. Apanhar antes de encher corta o dano pela metade (MIRA ABALADA); soltar com a barra cheia dá +10% (TIRO PERFEITO). Os avisos dos especiais de longe (sniper, Gwayne, Zuri) também viraram a barra.
+- ARCOS SEM RECARGA (Gwayne e Amalia): segure □ até a barra encher para a flecha sair; soltar antes desarma o arco e nada sai.
+- GWAYNE — A Flecha de Gwyneth sem teleporte: ele pega uma flecha, acende a ponta, diz "Esse lugar é minha única chance." e acerta a CABEÇA; o alvo fica QUEIMANDO.
+- EILEEN — A Colmeia sem teleporte nem linha: ela arremessa o pote de abelhas EM CHAMAS em arco, como a granada da Erin (dá para sair de baixo; errando, fica exposta). Acertando, o enxame prende com PICADAS e fogo, ela corre até o alvo e fecha com a pedra da funda.
+- EILEEN — a Fumaça sai em cone e vai mais longe; quem fica dentro fica ESFUMAÇADO (bate 15% mais fraco e mais devagar e toma 10% a mais).
+- CÂMERA DE CINEMA nos especiais da Vigília: Mael (o Círculo do Samhain), Gwayne, Zuri (agora avança colada até o alvo, sem teleporte) e Eileen.
+- O enxame que persegue aparece como PICADAS na HUD.
+
 ## v5.53.0 — As Sobreviventes de Treb Ciach
 
 - ZURI chega à Vigília: a curandeira de Treb Ciach luta com a faca e as ervas. Análise (o alvo apanha mais e o próximo golpe dela sai mais forte), Pomada de Mel (cura e fecha sangramento e queimadura), Elixir Calmante e Tônico Fortificante; passivas Leitura de Combate (cada golpe defendido vira um marcador) e Curandeira (curas +25%). Especial PONTO FRACO: marca três pontos e corta os três, curando-se com o dano.

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.53.0';
+export const VERSION = '5.54.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,20 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.54.0',
+    date: '2026-11-28',
+    title: 'Mira Firme',
+    items: [
+      'MIRA EM BARRA: a Flecha de Caça e as outras habilidades de mira não puxam mais uma linha até o inimigo; uma barra enche em cima de quem mira. Apanhar antes de encher corta o dano pela metade (MIRA ABALADA); soltar com a barra cheia dá +10% (TIRO PERFEITO). Os avisos dos especiais de longe (sniper, Gwayne, Zuri) também viraram a barra.',
+      'ARCOS SEM RECARGA (Gwayne e Amalia): segure □ até a barra encher para a flecha sair; soltar antes desarma o arco e nada sai.',
+      'GWAYNE — A Flecha de Gwyneth sem teleporte: ele pega uma flecha, acende a ponta, diz "Esse lugar é minha única chance." e acerta a CABEÇA; o alvo fica QUEIMANDO.',
+      'EILEEN — A Colmeia sem teleporte nem linha: ela arremessa o pote de abelhas EM CHAMAS em arco, como a granada da Erin (dá para sair de baixo; errando, fica exposta). Acertando, o enxame prende com PICADAS e fogo, ela corre até o alvo e fecha com a pedra da funda.',
+      'EILEEN — a Fumaça sai em cone e vai mais longe; quem fica dentro fica ESFUMAÇADO (bate 15% mais fraco e mais devagar e toma 10% a mais).',
+      'CÂMERA DE CINEMA nos especiais da Vigília: Mael (o Círculo do Samhain), Gwayne, Zuri (agora avança colada até o alvo, sem teleporte) e Eileen.',
+      'O enxame que persegue aparece como PICADAS na HUD.',
+    ],
+  },
   {
     v: '5.53.0',
     date: '2026-11-28',

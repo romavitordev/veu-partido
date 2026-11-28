@@ -2435,7 +2435,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Principal (□ / X): Flecha
 
-- Dano 22 · alcance 28 m · cooldown 1 s · custo 0
+- Dano 22 · alcance 28 m · cooldown 0 s · custo 0
 
 ### Habilidades
 
@@ -2482,7 +2482,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Principal (□ / X): Flecha da Vigília
 
-- Dano 30 · alcance 28 m · cooldown 1 s · custo 0
+- Dano 30 · alcance 28 m · cooldown 0 s · custo 0
 
 ### Habilidades
 
@@ -2622,7 +2622,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Dedicada** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Firma a mão: por 8 s a funda sai 25% mais forte e ela ataca mais rápido.
 - **Fumaça do Apicultor** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
-  Abana o fumegador: a fumaça em volta dela deixa lento quem entra e engole os tiros por 5 s.
+  Abana o fumegador para a frente: a fumaça sai em cone e vai longe, fica no chão por 5 s, engole os tiros e deixa quem está dentro LENTO e ESFUMAÇADO (tosse: bate 15% mais fraco, mais devagar e apanha 10% a mais).
 
 ### Especial: A Colmeia
 
@@ -2667,7 +2667,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 - **Dedicada** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Firma a mão: por 8 s a funda sai 25% mais forte e ela ataca mais rápido.
 - **Fumaça do Apicultor** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
-  Abana o fumegador: a fumaça em volta dela deixa lento quem entra e engole os tiros por 5 s.
+  Abana o fumegador para a frente: a fumaça sai em cone e vai longe, fica no chão por 5 s, engole os tiros e deixa quem está dentro LENTO e ESFUMAÇADO (tosse: bate 15% mais fraco, mais devagar e apanha 10% a mais).
 
 ### Especial: A Colmeia
 
@@ -2924,7 +2924,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Principal (□ / X): Flecha Flamejante
 
-- Dano 25 · alcance 30 m · cooldown 1 s · custo 0
+- Dano 25 · alcance 30 m · cooldown 0 s · custo 0
 
 ### Habilidades
 

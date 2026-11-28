@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { chargeBar } from '../../fx/chargeBar.js';
 
 // AVISO dos especiais que acertam à distância (Descarnar, Labirinto, tiros de sniper, Supernova, Shi no Kage,
 // Cinerária com a Acácia): depois do preparo, quem usa fica PARADO e VULNERÁVEL fazendo o gesto (braço erguido, mira,
@@ -30,7 +31,10 @@ export function startTelegraph(f, cfg) {
   const hand = () => (f.rig.sockets.handR ? f.rig.sockets.handR.getWorldPosition(new THREE.Vector3()) : f.chestPos());
   const aura = w.fx.emitter({ rate: 60, follow: hand, particle: { color: col, speed: 1.4, spread: 0.5, up: 0.8, life: 0.35, size: 0.18 } });
   w.audio.play('heartbeat', { volume: 0.8 });
-  return { cfg, t: 0, pulse: 0, col, aura, hand };
+  // a MIRA (dono, 2026-11-28: "é feia essa linha, pode mudar para uma barra se enchendo"): no lugar do fio até o alvo,
+  // a barrinha em cima de quem mira enche até o disparo
+  const bar = cfg.mark === 'laser' ? chargeBar(w, f, { color: col }) : null;
+  return { cfg, t: 0, pulse: 0, col, aura, hand, bar };
 }
 
 // um quadro do aviso: o sigilo/mira acompanha o alvo
@@ -41,9 +45,9 @@ export function updateTelegraph(f, tg, dt) {
   tg.pulse -= dt;
   if (!opp) return;
   const left = Math.max(0, tg.cfg.time - tg.t);
-  if (tg.cfg.mark === 'laser') {
-    // mira fina que treme e engrossa até o disparo
-    if (Math.random() < 0.7) w.fx.tracer(tg.hand(), opp.chestPos(), { color: tg.col, life: 0.05, width: 0.006 + (1 - left / tg.cfg.time) * 0.02 });
+  if (tg.bar) {
+    tg.bar.set(tg.t / tg.cfg.time);
+    tg.bar.update(dt);
   }
   if (tg.pulse <= 0) {
     // sigilo pulsando no chão do alvo, cada vez mais rápido
@@ -54,6 +58,7 @@ export function updateTelegraph(f, tg, dt) {
 
 export function stopTelegraph(tg) {
   if (tg && tg.aura) tg.aura.stop();
+  if (tg && tg.bar) { tg.bar.dispose(); tg.bar = null; }
 }
 
 // fim do aviso: o alvo escapou?

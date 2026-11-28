@@ -9,6 +9,7 @@ import { splitDamage } from './specials/common.js';
 import { fleshCut, rawFlesh } from './specials/ritual.js';
 import { hasPassive, betray, addMarks } from './passives.js';
 import { isHealer, nearbyAlly, healAlly } from './healers.js';
+import { chargeBar } from '../fx/chargeBar.js';
 import { startSelfHarmTrance } from './selfHarm.js';
 import { swapFace } from './specials/maskTransform.js';
 import { DanteClone, CLONE, BloodZombie, InterfloradoNest } from './npcs.js';
@@ -486,6 +487,45 @@ export const ABILITY_TYPES = {
       const mouth = () => f.rig.sockets.mouth.getWorldPosition(new THREE.Vector3());
       const F = forwardFromYaw(f.yaw);
       const breath = world.fx.emitter({ rate: 90, follow: mouth, particle: { color: a.color, kind: 'smoke', speed: 5, spread: 0.25, life: 0.7, size: 0.4, grow: 2.5, dir: F.clone().multiplyScalar(1.2) } });
+      // a.cone (Fumaça do Apicultor da Eileen — dono, 2026-11-28: "deve soltar mais fumaça pra mais longe, como em cone, e
+      // essa fumaça deve dar debuff no inimigo"): o fumegador abana a fumaça para a FRENTE num cone que abre; as nuvens
+      // ficam no chão e quem está dentro fica ESFUMAÇADO (a.cone.debuff: tosse — bate mais fraco e mais devagar)
+      if (a.cone) {
+        breath.stop();
+        const C = a.cone;
+        const hand = () => (f.rig.sockets.handL || f.rig.sockets.handR).getWorldPosition(new THREE.Vector3());
+        const gust = world.fx.emitter({ rate: 160, follow: hand, particle: { color: a.color, kind: 'smoke', speed: 9, spread: 0.55, life: 0.9, size: 0.55, grow: 3, dir: F.clone().multiplyScalar(1.4) } });
+        world.audio.play('smoke', { volume: 0.8, pitch: 0.8 });
+        const zones = [];
+        const n = C.puffs ?? 4;
+        for (let i = 0; i < n; i++) {
+          const d = 1.4 + (C.length - 1.4) * (i / (n - 1));
+          const r = C.r0 + (C.r1 - C.r0) * (i / (n - 1));
+          tl.add(0.25 + i * 0.08, () => {
+            const center = new THREE.Vector3(f.pos.x + F.x * d, 0, f.pos.z + F.z * d);
+            zones.push({ center, r });
+            createMistZone(world, f, { center: () => center, radius: r, duration: a.duration, slow: a.enemySlow, eatsProjectiles: a.eatsProjectiles, color: a.color, density: (a.smokeIntensity ?? 1) * 1.4 });
+          });
+        }
+        tl.add(0.25 + n * 0.08, () => gust.stop());
+        const D = C.debuff;
+        if (D) {
+          f.addBuff({
+            type: 'smokeCone', time: a.duration + 0.6, duration: a.duration + 0.6, hidden: true,
+            onTick() {
+              const o = f.opponent;
+              if (!o || o.state === 'ko') return;
+              if (!zones.some((z) => distXZ(o.pos, z.center) < z.r + (o.radius || 0.4))) return;
+              const old = o.findBuff('smoked');
+              if (old) { old.time = Math.max(old.time, D.linger); return; }
+              o.addBuff({ type: 'smoked', name: D.label || 'ESFUMAÇADO', time: D.linger, duration: D.linger, mult: D.damageMult, affects: ['melee', 'ranged', 'ability'], atkSpeed: D.atkSpeed, takenMult: D.takenMult });
+              o.notify(D.label || 'ESFUMAÇADO', true);
+            },
+          });
+        }
+        tl.end(0.25 + n * 0.08 + 0.2);
+        return seqFrom(tl, { cancel: () => gust.stop() });
+      }
       tl.add(0.4, () => {
         breath.stop();
         const center = new THREE.Vector3(f.pos.x + F.x * a.distance, 0, f.pos.z + F.z * a.distance);
@@ -3071,47 +3111,101 @@ Object.assign(ABILITY_TYPES, {
   // DISPARO DA MORTE: Kemi ajoelha e o tempo desacelera em volta do alvo (fica lento) — ela mira com calma e dispara um
   // tiro certeiro de Morte (a.projectile; com execute, é o Sniper da Morte: a espiral termina quem já está morrendo)
   deathShot: {
+    // A MIRA COM BARRA (dono, 2026-11-28: "essa linha é feia, pode mudar para uma barra se enchendo assim como a do Bran"):
+    // em vez do laser até o alvo, a barrinha de carga (fx/chargeBar.js) enche em cima do atirador durante a.windup.
+    //  · segure o botão da habilidade e SOLTE com a barra cheia: o tiro sai com +10% de dano ("TIRO PERFEITO");
+    //  · soltar antes: o tiro sai na hora, com o dano proporcional à barra (de 60% a 100%);
+    //  · ATINGIDO antes de a barra encher: a mira treme e o tiro sai com METADE do dano (ele aguenta a.aimArmor golpes
+    //    sem largar a mira; um golpe a mais derruba e o tiro se perde);
+    //  · segurando com a barra cheia, o tiro sai sozinho depois de um tempo. A CPU solta com a barra cheia.
     start(f, a, world) {
       const opp = f.opponent;
-      const tl = new Timeline();
       f.vel.set(0, 0, 0);
       if (opp) f.yaw = yawTo(f.pos, opp.pos);
-      f.anim.play(a.aimAnim || 'sniper_kneel', { restart: true, duration: a.windup }); // a.aimAnim: o arco da Amalia
+      const AIM = a.windup;
+      f.anim.play(a.aimAnim || 'sniper_kneel', { restart: true, duration: AIM }); // a.aimAnim: o arco da Amalia
       if (a.showProp) f.rig.showProp(a.showProp, true);
       if (a.hideProp) f.rig.showProp(a.hideProp, false);
       world.audio.play('fearGaze', { volume: 0.5, pitch: 0.5 });
-      tl.add(0.2, () => {
-        if (!opp || opp.state === 'ko' || !a.slow) return; // sem a.slow (o arco da Amalia): só a mira, sem o tempo lento
+      // o tempo lento da Kemi (a.slow): o alvo fica lento enquanto ela mira
+      if (opp && opp.state !== 'ko' && a.slow) {
         world.fx.distort(opp.chestPos(), { color: 0xa7a3ad, radius: 3, life: 0.6 });
         const old = opp.findBuff('deathAim');
         if (old) old.time = a.slowTime;
         else opp.addBuff({ type: 'deathAim', name: 'TEMPO LENTO', time: a.slowTime, duration: a.slowTime, speedMult: a.slow });
         for (let i = 0; i < 3; i++) world.after(i * 0.12, () => world.fx.ring(opp.chestPos(), { color: 0xa7a3ad, radius: 1.8 - i * 0.4, life: 0.5, vertical: true, yaw: f.yaw }));
-      });
-      // mira a laser enquanto o tempo está lento
-      for (let t = 0.25; t < a.windup; t += 0.06) {
-        tl.add(t, () => {
-          if (!opp || opp.state === 'ko') return;
-          f.yaw = yawTo(f.pos, opp.pos);
-          const from = f.rig.muzzle ? f.rig.muzzle.getWorldPosition(new THREE.Vector3()) : f.chestPos();
-          world.fx.tracer(from, opp.chestPos(), { color: a.aimColor ?? 0xd8d4dc, life: 0.05, width: 0.015 });
-        });
       }
-      tl.add(a.windup, () => {
-        const from = f.rig.muzzle ? f.rig.muzzle.getWorldPosition(new THREE.Vector3()) : f.chestPos();
-        const target = opp && opp.state !== 'ko' ? opp.chestPos() : from.clone().add(forwardFromYaw(f.yaw).multiplyScalar(10));
-        world.projectiles.spawn(f, { ...a.projectile, element: a.element }, from, target.sub(from).normalize());
-        world.fx.flash(from, { color: 0xd8d4dc, size: 1.4, life: 0.1 });
-        world.audio.play('sniper');
-        f.anim.play(a.fireAnim || 'sniper_fire', { restart: true, duration: a.recovery + 0.1 });
-      });
+      const color = a.aimColor ?? 0xd8d4dc;
+      const bar = chargeBar(world, f, { color });
+      const armor = a.aimArmor ?? 2;
+      f.armorHits = (f.armorHits || 0) + armor;
+      const keys = String(a.input || 'ranged').split('+');
+      const btn = keys[keys.length - 1]; // o botão do golpe (o △/R2 da combinação pode ser solto)
+      const cpu = !!(f.input && f.input.cpu);
+      let t = 0;
+      let fullT = 0;
+      let hurt = false;
+      let lastHp = f.health;
+      let fired = false;
+      let endAt = Infinity;
+      let cleaned = false;
       const restore = () => {
+        if (cleaned) return;
+        cleaned = true;
+        bar.dispose();
+        f.armorHits = Math.max(0, (f.armorHits || 0) - armor);
         if (a.showProp) f.rig.showProp(a.showProp, false);
         if (a.hideProp) f.rig.showProp(a.hideProp, true);
       };
-      tl.add(a.windup + a.recovery - 0.02, restore);
-      tl.end(a.windup + a.recovery);
-      return seqFrom(tl, { cancel: restore });
+      const fire = (k) => {
+        fired = true;
+        const full = k >= 1;
+        let mult = full && !hurt ? 1.1 : 0.6 + 0.4 * k;
+        if (hurt) mult = 0.5;
+        const from = f.rig.muzzle ? f.rig.muzzle.getWorldPosition(new THREE.Vector3()) : f.chestPos();
+        const o = f.opponent;
+        const target = o && o.state !== 'ko' ? o.chestPos() : from.clone().add(forwardFromYaw(f.yaw).multiplyScalar(10));
+        const P = a.projectile;
+        world.projectiles.spawn(f, { ...P, element: a.element, damage: Math.round(P.damage * mult), impactScale: (P.impactScale || 1) * (full && !hurt ? 1.25 : 1) }, from, target.sub(from).normalize());
+        world.fx.flash(from, { color, size: full && !hurt ? 2 : 1.4, life: 0.1 });
+        world.audio.play('sniper');
+        if (full && !hurt) f.notify('TIRO PERFEITO! +10%', true);
+        else if (hurt) f.notify('MIRA ABALADA: METADE DO DANO');
+        f.anim.play(a.fireAnim || 'sniper_fire', { restart: true, duration: a.recovery + 0.1 });
+        bar.dispose();
+        endAt = t + a.recovery;
+      };
+      return {
+        update(dt) {
+          t += dt;
+          if (fired) {
+            if (t >= endAt) { restore(); return true; }
+            return false;
+          }
+          const o = f.opponent;
+          if (o && o.state !== 'ko') f.yaw = turnTowards(f.yaw, yawTo(f.pos, o.pos), dt * 6);
+          f.vel.set(0, 0, 0);
+          // apanhou antes de a barra encher: a mira fica abalada
+          if (f.health < lastHp - 0.5 && t < AIM && !hurt) {
+            hurt = true;
+            f.notify('MIRA ABALADA!');
+            world.fx.burst(f.chestPos(), { count: 10, color: 0x8a8090, speed: 2, life: 0.35, size: 0.12 });
+          }
+          lastHp = f.health;
+          const k = Math.min(1, t / AIM);
+          bar.set(k);
+          bar.update(dt);
+          if (k >= 1) {
+            if (fullT === 0) { world.audio.play('ready', { volume: 0.7 }); world.fx.flash(f.chestPos(), { color, size: 1.4, life: 0.15 }); }
+            fullT += dt;
+          }
+          const held = !cpu && f.input && f.input.held && f.input.held[btn];
+          const release = cpu ? k >= 1 : (!held && t >= Math.min(0.25, AIM * 0.4)) || fullT >= (a.aimHold ?? 1.2);
+          if (release) fire(k);
+          return false;
+        },
+        cancel: restore,
+      };
     },
   },
 

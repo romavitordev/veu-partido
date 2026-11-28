@@ -1244,3 +1244,8 @@ export class Projectiles {
     this.list.length = 0;
   }
 }
+
+// um visual de projétil avulso (o pote em chamas do especial da Eileen voa fora do sistema de projéteis)
+export function projectileVisual(name, color, ability) {
+  return (VISUALS[name] || VISUALS.bullet)(color, ability || {});
+}

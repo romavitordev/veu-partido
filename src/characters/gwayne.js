@@ -70,8 +70,11 @@ export default {
     radius: 0.3,
     spread: 0,
     knockback: 0.8,
+    // (dono, 2026-11-28) o ARCO: segure □ e a barra enche enquanto a corda estica; a flecha só sai com a barra cheia —
+    // a barra é a recarga (cooldown 0). Com a barra cheia e o botão segurado, sai sozinha depois de um instante
+    hold: { max: 0.55, mustFill: true, anim: 'bow_aim', release: 'bow_shot', releaseWindup: 0.06, damage: 1, speed: 1, knockback: 1, radius: 1, fullHitstun: 1, auto: 0.8, color: STEEL, label: false },
     hitstun: 0.4,
-    cooldown: 1.0,
+    cooldown: 0,
     energyCost: 0,
     visual: 'arrow',
     color: STEEL,
@@ -170,9 +173,8 @@ export default {
     },
   ],
 
-  // A FLECHA DE GWYNETH (PROPOSTA; specials/vigiliaSpecials.js → twinArrows): o vulto pálido da irmã gêmea aparece ao
-  // lado dele com o mesmo arco; os dois soltam juntos as Flechas Flamejantes que prendem o alvo, e ele fecha com a adaga
-  // (o especial continua aceso: é o momento em que os dois acendem as flechas juntos).
+  // A FLECHA DE GWYNETH (PROPOSTA; specials/vigiliaSpecials.js → twinArrows; dono, 2026-11-28): com o arco da irmã, ele
+  // tira uma flecha, acende a ponta, diz a frase dele e acerta a CABEÇA do alvo, que cai queimando. Sem teleporte.
   // "Esse lugar é minha única chance."
   special: {
     name: 'A Flecha de Gwyneth',
@@ -183,7 +185,7 @@ export default {
     range: 30,
     damage: 250,
     color: FIRE,
-    ghost: 0xa8c8ff,
+    burn: { dps: 12, duration: 4 }, // a flecha acesa na cabeça: o alvo fica queimando
     release: 'POR GWYNETH',
     sound: 'specialStart',
   },

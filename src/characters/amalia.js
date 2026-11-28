@@ -65,8 +65,11 @@ export default {
     radius: 0.32,
     spread: 0,
     knockback: 0.8,
+    // (dono, 2026-11-28) o ARCO: segure □ e a barra enche enquanto a corda estica; a flecha só sai com a barra cheia —
+    // a barra é a recarga (cooldown 0). Com a barra cheia e o botão segurado, sai sozinha depois de um instante
+    hold: { max: 0.55, mustFill: true, anim: 'bow_aim', release: 'bow_shot', releaseWindup: 0.06, damage: 1, speed: 1, knockback: 1, radius: 1, fullHitstun: 1, auto: 0.8, color: CYAN, label: false },
     hitstun: 0.4,
-    cooldown: 1.0,
+    cooldown: 0,
     energyCost: 0,
     visual: 'flameArrow',
     color: CYAN,

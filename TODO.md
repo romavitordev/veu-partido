@@ -4,6 +4,22 @@
 **Documento:** TODO principal
 **Histórico de desenvolvimento:** Changelog Admin + Changelog Cliente
 
+## Mira em barra e as cenas da Vigília (pedido do dono, 2026-11-28)
+
+- [x] (v5.54.0) **Habilidades de mira sem a linha até o inimigo** ("é feia essa linha"): a Flecha de Caça e afins enchem uma barra
+      em cima de quem mira; apanhar antes de encher = metade do dano; soltar com a barra cheia = +10%. Os avisos dos
+      especiais de longe (sniper, Gwayne, Zuri) também viraram a barra (`specials/telegraph.js`).
+- [x] (v5.54.0) **Arcos sem recarga** (Gwayne e "os outros personagens de arco" — Amalia): o □ só solta a flecha com a barra cheia.
+- [x] (v5.54.0) **Câmera de cinema nos especiais da Vigília**: Mael (Círculo do Samhain), Gwayne, Zuri e Eileen.
+- [x] (v5.54.0) **Fumaça do Apicultor em cone, mais longe**, deixando ESFUMAÇADO (−15% de dano e de velocidade de ataque, +10% de
+      dano recebido) em quem fica dentro.
+- [x] (v5.54.0) **Especial da Eileen sem teleporte**: arremessa o pote de abelhas EM CHAMAS em arco, como a granada da Supernova da
+      Erin (dá para sair de baixo; errar a deixa exposta); acertando, o enxame prende, ela corre até o alvo e fecha com a funda.
+- [x] (v5.54.0) **Especial do Gwayne sem teleporte**: pega uma flecha, acende, diz "Esse lugar é minha única chance." e acerta a
+      cabeça; o alvo fica QUEIMANDO.
+- [x] (v5.54.0) **PICADAS**: o enxame que persegue agora aparece como o efeito "PICADAS" na HUD.
+- [ ] A conferir na bateria: se o arco sem recarga e a Fumaça em cone mudaram o balanço do Gwayne, da Amalia e da Eileen.
+
 ## Outro Lado — o baú mostra o que cada habilidade faz (pedido do dono, 2026-11-27)
 > Só anotado; o dono pediu para não fazer ainda. Referência: o print que o dono mandou, em `docs/referencias/bau-descricao-habilidade.png`.
 
