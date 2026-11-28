@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.51.0 — O Forasteiro
+
+- Novo lutador da Vigília: GWAYNE, O Forasteiro — o arqueiro de Treb Ciach com o arco recurvo que era da irmã gêmea, a Gwyneth. Adaga e arco de perto e Flechas Flamejantes que deixam o adversário QUEIMANDO.
+- Gwayne: Flecha de Caça (a mira longa), Salva Flamejante (três flechas em leque), Prontidão (as esquivas voltam e ele fica mais rápido) e Esquiva (a janela de acrobacia que desvia o golpe).
+- Especial "A Flecha de Gwyneth": o vulto pálido da irmã aparece ao lado dele com o mesmo arco, as duas flechas prendem e acendem o alvo e ele surge na frente com a adaga. "Esse lugar é minha única chance."
+- Transformação e versão na seleção: GWAYNE — O MORTO QUE CAMINHA, com o crânio de lobo, a pele cinza e o poncho esfarrapado; a Esquiva vira o Passo do Morto, que some na névoa azul do Samhain e reaparece cravando a adaga.
+- Falas novas do Gwayne com todo o elenco e conversas antes da luta com o Bran e o Mael.
+
 ## v5.50.4 — Folhas, Brasas e Raízes
 
 ### Alterado

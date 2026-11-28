@@ -135,6 +135,8 @@ export function addVictoryClips(CLIPS, k) {
     vic_bran: pose({ sp: [0.04, 0, 0], hd: [-0.12, 0.35, 0], sR: [-0.45, 0.1, -0.3], eR: [-2.2, 0, 0], sL: [-0.75, -0.3, 0.05], eL: [-1.0, 0, 0], lL: [-0.08, 0, 0.16], lR: [0.06, 0, -0.16] }),
     // Mael: a mão aberta no peito (o druida que aceitou o destino), a machadinha baixa ao lado e o rosto erguido
     vic_mael: pose({ sp: [-0.04, 0, 0], hd: [-0.25, -0.15, 0], sR: [-0.2, 0.15, -0.25], eR: [-0.35, 0, 0], sL: [-0.75, -0.9, 0.2], eL: [-1.9, 0, 0], lL: [-0.06, 0, 0.12], lR: [0.1, 0, -0.14] }),
+    // Gwayne: o arco da Gwyneth erguido de lado na esquerda, a direita no peito (a promessa à irmã) e o rosto baixo
+    vic_gwayne: pose({ sp: [0.02, 0, 0], hd: [0.2, 0.1, 0], sL: [-1.2, -0.2, 0.5], eL: [-0.4, 0, 0], sR: [-0.6, 0.6, -0.2], eR: [-1.8, 0, 0], lL: [-0.05, 0, 0.1], lR: [0.08, 0, -0.12] }),
     // Karise: agachada, as adagas abertas dos dois lados, a cabeça baixa no capuz
     vic_karise: pose({ h: -0.12, sp: [0.25, 0, 0], hd: [0.1, 0, 0], sR: [-0.6, 0.3, -0.55], eR: [-0.4, 0, 0], sL: [-0.6, -0.3, 0.55], eL: [-0.4, 0, 0], lL: [-0.35, 0, 0.2], kL: [0.55, 0, 0], lR: [0.25, 0, -0.2], kR: [0.4, 0, 0] }),
     // Marcellus: a saudação do esgrimista — a rapieira de pé na frente do rosto

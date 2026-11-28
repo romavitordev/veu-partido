@@ -97,6 +97,30 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
 - Cena Bran + Mael (cânone: o Mael empurrou os companheiros para dentro da base subterrânea e ficou para trás): no
   "fica atrás de mim" do Bran, o Mael não recua — manda o Bran descer e se proteger, porque quem fica é ele.
 
+## Gwayne Ó Doirnáin — O Forasteiro / O Morto que Caminha (fantasiado)
+- Wiki: intérprete Pedro "Grifo" Ernesto; 20–21 anos; Vigilante; irmão gêmeo da GWYNETH (que virou uma Enraizada);
+  morreu no ep. 3 defendendo a Eileen das Assombrações e virou uma delas. Fala: "Esse lugar é minha única chance."
+- Ficha: PRONTIDÃO (2 PD), FLECHAS FLAMEJANTES (2 PD, dano de fogo), ESQUIVA (Acrobacia, uma vez por rodada), DEDICADO.
+- Visual: ~1,75 m, ombros largos, nariz grande, olhos azuis, cicatriz na sobrancelha esquerda, queimaduras na mão
+  esquerda; cabelo escuro repartido no meio e a TRANÇA LOIRA (piebaldismo) do lado esquerdo com o pano azulado e a conta
+  de espiral; manto verde quase preto com capuz e o broche penanular dourado; túnica verde até o joelho sobre a camisa
+  marrom; o pano vermelho-xadrez na cintura com os cintos, a bolsa, a adaga e a aljava de penas vermelhas; braceletes
+  pretos, a ombreira de couro no ombro direito, calças bege nas faixas de couro, sapatos pretos, luvas pretas. O ARCO
+  recurvo de madeira com couro avermelhado e a empunhadura de pano azul era da Gwyneth.
+- Fantasiado: o crânio de cão/lobo com as presas e as penas vermelhas do lado, a pele de pelo cinza-escuro sobre a cabeça
+  e os ombros e o poncho verde-oliva longo e esfarrapado.
+
+### Kit no jogo (PROPOSTA — src/characters/gwayne.js)
+- Elemento ENERGIA (PROPOSTA); "Adaga e Arco" de perto (a adaga na direita, o arco como porrete, a joelhada e a flecha à
+  queima-roupa); □ Flecha Flamejante que deixa o alvo QUEIMANDO (cânone: dano de fogo).
+- Habilidades: Flecha de Caça (a mira longa), Salva Flamejante (três flechas em leque), Prontidão (cânone: as esquivas
+  voltam e ele fica mais rápido) e Esquiva (cânone: a janela de acrobacia que desvia o golpe).
+- Especial A Flecha de Gwyneth (specials/vigiliaSpecials.js → twinArrows): o vulto pálido da irmã aparece ao lado dele
+  com o mesmo arco, as duas flechas prendem e acendem o alvo e ele surge na frente com a adaga.
+- Transformação e versão O Morto que Caminha: a Esquiva vira o Passo do Morto (some na névoa azul do Samhain e reaparece
+  cravando a adaga); as flechas queimam mais.
+- Cenas: Bran + Gwayne ("fica atrás de mim e atira por cima") e Gwayne + Mael (o arco da Gwyneth e as raízes).
+
 ## Próximos da Vigília (títulos do dono, TODO 2026-11-21)
 Zuri (A Curandeira / ?), Mael (O Druida / Herói da Vigília), Gwayne (O Forasteiro / O Morto que Caminha),
 Eileen (A Apicultora / ?). O "?" não deve ser inventado.

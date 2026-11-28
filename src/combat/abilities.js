@@ -758,6 +758,10 @@ export const ABILITY_TYPES = {
       } else if (a.residue === 'leaves') {
         // Capa de Folhas (Mael, Herói da Vigília): o redemoinho de folhas secas caindo onde ele estava
         for (const c of [0x8a6a2a, 0xb0903a, 0x5a4a1e]) world.fx.burst(origin.clone().setY(1.1), { count: 14, color: c, speed: 2.6, up: 1.6, life: 1.3, size: 0.14, gravity: 1.1, drag: 1.5 });
+      } else if (a.residue === 'mist') {
+        // Passo do Morto (Gwayne, O Morto que Caminha): a NÉVOA AZUL do Samhain fica rasteira onde ele estava
+        world.fx.burst(origin.clone().setY(0.5), { count: 26, color: 0x6a8ac8, kind: 'smoke', speed: 0.7, up: 0.2, life: 1.4, size: 0.7, grow: 1.0 });
+        world.fx.burst(origin.clone().setY(1.0), { count: 12, color: 0xa8c8ff, speed: 1.4, up: 0.8, life: 0.8, size: 0.1 });
       }
       tl.add(a.vanishTime * 0.6, () => f.setVisible(false));
       tl.add(a.vanishTime, () => {

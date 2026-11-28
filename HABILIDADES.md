@@ -2402,6 +2402,92 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## GWAYNE
+
+*O Forasteiro: o arqueiro da Vigília, que carrega o arco da irmã gêmea* · arma: O arco recurvo da Gwyneth, as flechas flamejantes e a adaga
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte da Adaga | 24 | 1.7 m |  |
+| ○ 2 | Golpe do Arco | 26 | 2 m |  |
+| ○ 3 | Estocada | 28 | 1.8 m |  |
+| ○ 4 | Joelhada | 30 | 1.5 m |  |
+| ○ 5 | Flecha à Queima-Roupa | 56 | 3.2 m | finalizador: lança |
+| Frente + ○ | Investida do Forasteiro | 34 | 2.1 m |  |
+| Trás + ○ | Esquiva e Adaga | 36 | 1.8 m | invulnerável no começo |
+| Lado + ○ | Giro do Arco | 30 | 2.2 m |  |
+| No ar + ○ | Adaga do Alto | 32 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Arco para Cima | 36 | 2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Adaga no Chão | 40 | 1.8 m | finalizador: derruba |
+
+### Principal (□ / X): Flecha Flamejante
+
+- Dano 22 · alcance 28 m · cooldown 1.1 s · custo 0
+
+### Habilidades
+
+- **Flecha de Caça** — △ + □ / Y + X · custo 26 · cooldown 13 s
+  Mira com calma e solta a flecha mais forte, acesa: derruba e deixa o alvo QUEIMANDO. A mira deixa ele parado um instante.
+- **Salva Flamejante** — △ + ○ / Y + B · custo 22 · cooldown 10 s
+  Três Flechas Flamejantes em leque, uma atrás da outra: cada uma que acerta deixa o alvo QUEIMANDO.
+- **Prontidão** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
+  Fica de prontidão: as esquivas voltam na hora e, por 7 s, ataca e atira mais rápido.
+- **Esquiva** — R2 + × / RT + A · custo 14 · cooldown 9 s
+  Fica atento por um instante: o golpe que chegar nessa janela é esquivado por acrobacia. Precisa de tempo certo; não vale contra especiais.
+
+### Especial: A Flecha de Gwyneth
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: O Morto que Caminha
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## GWAYNE — O MORTO QUE CAMINHA
+
+*O Morto que Caminha (até o fim do round)* · arma: O arco recurvo da Gwyneth, as flechas flamejantes e a adaga
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte da Adaga | 26 | 1.7 m |  |
+| ○ 2 | Golpe do Arco | 29 | 2 m |  |
+| ○ 3 | Estocada | 31 | 1.8 m |  |
+| ○ 4 | Joelhada | 33 | 1.5 m |  |
+| ○ 5 | Flecha à Queima-Roupa | 62 | 3.2 m | finalizador: lança |
+| Frente + ○ | Investida do Forasteiro | 34 | 2.1 m |  |
+| Trás + ○ | Esquiva e Adaga | 36 | 1.8 m | invulnerável no começo |
+| Lado + ○ | Giro do Arco | 30 | 2.2 m |  |
+| No ar + ○ | Adaga do Alto | 32 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Arco para Cima | 36 | 2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Adaga no Chão | 40 | 1.8 m | finalizador: derruba |
+
+### Principal (□ / X): Flecha Flamejante
+
+- Dano 25 · alcance 28 m · cooldown 1.1 s · custo 0
+
+### Habilidades
+
+- **Flecha de Caça** — △ + □ / Y + X · custo 26 · cooldown 13 s
+  Mira com calma e solta a flecha mais forte, acesa: derruba e deixa o alvo QUEIMANDO. A mira deixa ele parado um instante.
+- **Salva Flamejante** — △ + ○ / Y + B · custo 22 · cooldown 10 s
+  Três Flechas Flamejantes em leque, uma atrás da outra: cada uma que acerta deixa o alvo QUEIMANDO.
+- **Prontidão** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
+  Fica de prontidão: as esquivas voltam na hora e, por 7 s, ataca e atira mais rápido.
+- **Passo do Morto** — R2 + × / RT + A · custo 18 · cooldown 8 s
+  Some na névoa azul do Samhain e reaparece: na direção do analógico ou, sem direção, do lado do adversário já cravando a adaga.
+
+### Especial: A Flecha de Gwyneth
+
+250 de dano · custo 50 · cooldown 14 s.
+
+---
+
 ## CASCADIA
 
 *A guerreira mais antiga da Ordo Calamitas, mãe de Caesar — cansada de tudo, principalmente da Celestine* · arma: O khopesh curvo e a espada reta

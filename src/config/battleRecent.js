@@ -48,6 +48,7 @@ export const BATTLE_RECENT = {
     espreitador: '(some no escuro e volta mais perto)',
     bran: 'Eu preciso voltar, mais uma vez.', // (cânone)
     mael: 'Ainda não. Esse ainda não é o meu fim.',
+    gwayne: 'Ainda não... Gwyneth, segura a minha mão.',
   },
   special: {
     veritus: 'A gente não tava nessa Ordem pra lutar uns contra os outros!',
@@ -89,6 +90,7 @@ export const BATTLE_RECENT = {
     espreitador: '(os Devorados saem da sombra junto)',
     bran: 'Até o amanhecer. Ninguém passa por mim.',
     mael: 'Esse é meu destino.', // (cânone)
+    gwayne: 'Esse lugar é minha única chance.', // (cânone)
   },
   transform: {
     veritus_rancor: 'O Estigma acordou. O Trono lembra de mim.',
@@ -104,6 +106,7 @@ export const BATTLE_RECENT = {
     celestine_magistrada: 'Acabou a brincadeira. A Magistrada julga agora.',
     bran_inquebravel: '(a máscara de corvo desce sobre o rosto) Hoje à noite, ninguém passa.',
     mael_heroi: '(a máscara de casca fecha sobre o rosto) No Samhain, vivos e mortos são iguais.',
+    gwayne_morto: '(o crânio de lobo desce sobre o rosto) Agora eu ando com os mortos.',
   },
 };
 
@@ -148,6 +151,7 @@ export const BATTLE_REPLIES_RECENT = {
     espreitador: '(um sussurro no escuro, bem atrás de você)',
     bran: 'Cansou? Eu fico acordado a noite inteira.',
     mael: 'Apanhar só me dá mais vontade.',
+    gwayne: 'Respira. Mira. De novo.',
   },
   special: {
     veritus: 'A Ordo aguenta. Eu aguento.',
@@ -189,6 +193,7 @@ export const BATTLE_REPLIES_RECENT = {
     espreitador: '(a luz pisca, e ele já não está ali)',
     bran: '(ergue o broquel) Vem. Eu seguro.',
     mael: '(a chama amarela acende na mão) A fogueira guarda. Eu também.',
+    gwayne: '(puxa a corda até o rosto) Essa eu não erro.',
   },
   transform: {
     carina: 'Mudou de forma. A minha mira continua a mesma.',
@@ -220,5 +225,6 @@ export const BATTLE_REPLIES_RECENT = {
     espreitador: '(a sombra se estica para olhar melhor)',
     bran: 'Máscara nova. No Samhain todo mundo usa uma.',
     mael: 'Chifre de galho e capa de folha. Bonito, né?',
+    gwayne: 'Crânio de lobo. A Gwyneth ia rir de mim.',
   },
 };

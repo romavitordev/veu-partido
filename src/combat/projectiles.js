@@ -2,6 +2,7 @@ import { COMBAT } from '../config/combat.js';
 import * as THREE from 'three';
 import { tongueRoot } from './tongue.js';
 import { applyHit, npcDamage } from './damage.js';
+import { igniteFighter } from './burn.js';
 import { inBounds } from './positioning.js';
 import { distXZ } from '../core/util.js';
 import { glowMat } from '../models/rig.js';
@@ -900,6 +901,7 @@ export class Projectiles {
           if (typeof res === 'number' && res >= 0) {
             this.applyOnHit(p, target);
             if (a.hitFn && target.state !== 'ko') a.hitFn(w, p.owner, target, p); // efeito da cor do Disparo do Caos
+            if (a.burn && target.state !== 'ko') igniteFighter(w, p.owner, target, a.burn); // Flechas Flamejantes (Gwayne): o alvo fica QUEIMANDO
           }
           if (a.pool) addBloodPool(w, p.owner, target.pos.x, target.pos.z, a.pool);
           if (a.boomerang && !p.back) { p.back = true; p.hitOnce = true; break; }

@@ -10,6 +10,7 @@ import amphitruo from './forms/amphitruo.js';
 import deusMorte from './forms/deus_morte.js';
 import branInquebravel from './forms/bran_inquebravel.js';
 import maelHeroi from './forms/mael_heroi.js';
+import gwayneMorto from './forms/gwayne_morto.js';
 
 const copyMelee = (m) => {
   if (!m) return m;
@@ -29,3 +30,4 @@ export const anfitriaoReliquia = selectable(amphitruo, { id: 'anfitriao', origin
 // A VIGÍLIA (dono, 2026-11-21): cada membro tem a forma normal e a TRANSFORMADA (a fantasia do Samhain) como versões
 export const branInquebravelVersao = selectable(branInquebravel, { origin: 'A Vigília', teams: [] });
 export const maelHeroiVersao = selectable(maelHeroi, { origin: 'A Vigília', teams: [] });
+export const gwayneMortoVersao = selectable(gwayneMorto, { origin: 'A Vigília', teams: [] });

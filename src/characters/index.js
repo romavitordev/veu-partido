@@ -67,7 +67,8 @@ import degolificada from './degolificada.js';
 import espreitador from './espreitador.js';
 import bran from './bran.js';
 import mael from './mael.js';
-import { juanPortador, deusMorteReliquia, anfitriaoReliquia, branInquebravelVersao, maelHeroiVersao } from './selectableForms.js';
+import gwayne from './gwayne.js';
+import { juanPortador, deusMorteReliquia, anfitriaoReliquia, branInquebravelVersao, maelHeroiVersao, gwayneMortoVersao } from './selectableForms.js';
 
 // Elenco jogável, na ordem da tela de seleção — AGRUPADO POR EQUIPE/TEMPORADA (a grade tem 3 colunas × 5 linhas por
 // página, então cada grupo ocupa linhas inteiras):
@@ -87,7 +88,7 @@ export const ROSTER = [
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo
   eloy, cindy, caio, franco, ale, // PSIKOLERA (Hexatombe) — o baterista e fundador, a baixista, o vocalista, o guitarrista e o teclado (Alê)
   raziel, sabara, alvira, velisar, zefero, // Vampiros (Hexatombe) — o líder, a batedora, a Primeira Vampira (2026-11-18), o Velisar e o Zéfero (2026-11-19)
-  bran, branInquebravelVersao, mael, maelHeroiVersao, // A Vigília (Treb Ciach, 890) — o Bran (2026-11-27) e o Mael; Zuri, Gwayne e Eileen depois
+  bran, branInquebravelVersao, mael, maelHeroiVersao, gwayne, gwayneMortoVersao, // A Vigília (Treb Ciach, 890) — o Bran (2026-11-27), o Mael e o Gwayne; Zuri e Eileen depois
   // (2026-10-27) PORTADORES ≠ RELÍQUIAS: quem CARREGA a Relíquia e quem É a Relíquia. As formas ainda acontecem na luta
   // (Henri → Juan (Portador) → Portador do Trono; Arnaldo → Anfitrião; Ferreiro → Deus da Morte), mas também dá para
   // começar já como elas (selectableForms.js)
@@ -111,6 +112,7 @@ export const VERSION_GROUPS = [
   ['veritus', 'veritus_rancor'], // Veritus → o Sacrifício do Rancor (Hexatombe: sem armadura, o Estigma nas costas)
   ['bran', 'bran_inquebravel'], // Bran → O Inquebrável (a fantasia de corvo do Samhain)
   ['mael', 'mael_heroi'], // Mael → Herói da Vigília (a máscara de casca e a capa de folhas)
+  ['gwayne', 'gwayne_morto'], // Gwayne → O Morto que Caminha (o crânio de lobo e a pele cinza)
 ];
 
 // índices no ROSTER das versões do lutador do índice i (ele mesmo incluído; só ele quando não tem outras)

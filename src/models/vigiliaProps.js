@@ -138,3 +138,77 @@ export function addMaelHeroiProps(rig) {
   for (const p of ['woodMask', 'leafCollar', 'heroCloak']) if (rig.props[p]) rig.showProp(p, true);
   if (rig.props.hair) rig.showProp('hair', false);
 }
+
+// o ARCO DA GWYNETH (cânone: era da irmã gêmea): RECURVO largo de madeira, o couro avermelhado costurado nos braços e o
+// pano AZUL na empunhadura. Mesma convenção do arco da Amalia: a empunhadura na origem, os braços ao longo de ±Z,
+// curvando para +Y e as pontas voltando para −Y (o recurvo); a corda de ponta a ponta
+export function gwayneBow() {
+  const g = new THREE.Group();
+  const grip = part(new THREE.CylinderGeometry(0.02, 0.02, 0.13, 8), 0x4a6aa0); // o pano azulado
+  grip.rotation.x = Math.PI / 2;
+  g.add(grip);
+  const tips = [];
+  for (const s of [1, -1]) {
+    const pts = [];
+    for (let i = 0; i <= 10; i++) {
+      const k = i / 10;
+      // sobe para trás até 80% do braço e as pontas viram para a frente (o recurvo)
+      const y = 0.16 * k * k - (k > 0.78 ? (k - 0.78) * (k - 0.78) * 2.6 : 0) + 0.02;
+      pts.push(new THREE.Vector3(0, y, s * (0.07 + 0.52 * k)));
+    }
+    const limb = part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 20, 0.017, 6), 0x6a4426);
+    limb.scale.x = 0.7;
+    g.add(limb);
+    // o couro avermelhado costurado logo depois da empunhadura
+    const wrap = part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.slice(0, 4)), 8, 0.021, 6), 0x8a2e22);
+    wrap.scale.x = 0.75;
+    g.add(wrap);
+    tips.push(pts[10]);
+  }
+  const str = new THREE.Mesh(new THREE.CylinderGeometry(0.0028, 0.0028, Math.abs(tips[0].z - tips[1].z), 4), new THREE.MeshBasicMaterial({ color: 0xd8d0c0 }));
+  str.rotation.x = Math.PI / 2;
+  str.position.set(0, tips[0].y, 0);
+  g.add(str);
+  return g;
+}
+
+// a ADAGA do Gwayne (cânone: no cinto): lâmina curta de ferro, guarda reta e o cabo de couro. Sai da mão pelo −Y
+function adaga() {
+  const g = new THREE.Group();
+  const hilt = part(new THREE.CylinderGeometry(0.014, 0.016, 0.1, 6), LEATHER);
+  hilt.position.y = 0.02;
+  g.add(hilt);
+  const guard = part(new THREE.BoxGeometry(0.02, 0.016, 0.08), IRON);
+  guard.position.y = -0.04;
+  g.add(guard);
+  const blade = part(new THREE.BoxGeometry(0.008, 0.2, 0.034), 0xd0ccc8, { mat: toon(0xd0ccc8) });
+  blade.position.y = -0.14;
+  g.add(blade);
+  const tip = part(new THREE.ConeGeometry(0.02, 0.05, 4), 0xd0ccc8, { mat: toon(0xd0ccc8) });
+  tip.rotation.x = Math.PI;
+  tip.scale.x = 0.4;
+  tip.position.y = -0.265;
+  g.add(tip);
+  return g;
+}
+
+// GWAYNE: o arco da Gwyneth na esquerda e a adaga na direita, a lâmina para baixo (pegada de punhal). A fantasia
+// (crânio, pele e poncho) fica guardada: só a forma O Morto que Caminha liga
+export function addGwayneProps(rig) {
+  const bow = gwayneBow();
+  rig.sockets.handL.add(bow);
+  rig.props.bow = bow;
+  const d = adaga();
+  inFist(d, 0);
+  rig.sockets.handR.add(d);
+  rig.props.dagger = d;
+  for (const p of ['skullMask', 'pelt', 'poncho']) if (rig.props[p]) rig.showProp(p, false);
+}
+
+// O MORTO QUE CAMINHA: o mesmo Gwayne com a fantasia do Samhain — o crânio de lobo, a pele cinza e o poncho
+// esfarrapado; o cabelo, a trança e a gola do capuz somem por baixo
+export function addGwayneMortoProps(rig) {
+  addGwayneProps(rig);
+  for (const p of ['skullMask', 'pelt', 'poncho']) if (rig.props[p]) rig.showProp(p, true);
+  for (const p of ['hair', 'hoodCowl']) if (rig.props[p]) rig.showProp(p, false);
+}

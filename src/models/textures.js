@@ -3150,6 +3150,33 @@ export const MATERIAL_TEXTURES = {
     const gr = g.createLinearGradient(0, 0, 0, 40); gr.addColorStop(0, 'rgba(60,56,58,0.5)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
     g.fillStyle = gr; g.fillRect(0, 0, 512, 40);
   }),
+  // ---------------- GWAYNE (A Vigília; wiki): pele clara, olhos AZUIS, o nariz grande, a barba rala por fazer e a
+  // CICATRIZ cortando a sobrancelha esquerda (x > CX)
+  face_gwayne: face((g) => {
+    stubble(g, 'rgba(50,34,24,0.5)', 1400, { y0: 160, y1: 236, w: 84 });
+    g.fillStyle = 'rgba(150,96,74,0.35)'; // a sombra do nariz grande
+    g.beginPath(); g.ellipse(CX, EYE_Y + 34, 13, 20, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#e6b89a'; g.fillRect(CX + 26, EYE_Y - 31, 5, 15); // a fresta na sobrancelha esquerda
+    g.strokeStyle = 'rgba(176,100,86,0.65)'; g.lineWidth = 3; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(CX + 25, EYE_Y - 36); g.lineTo(CX + 31, EYE_Y - 12); g.stroke();
+  }, {
+    skin: '#e6b89a',
+    eye: { iris: '#3a6aa8', irisLight: '#8ab0e0', w: 13, h: 6, tilt: 0.0, lid: 3.2 },
+    brow: { angry: 0.6, thick: 4.2, color: '#2e2018' },
+    mouth: { mouthW: 12, smile: 0.05, lip: 'rgba(160,84,74,0.5)' },
+  }),
+  // o pano VERMELHO-XADREZ amarrado na cintura (a arte): vermelho com as faixas escuras e o fio claro
+  plaid_gwayne: () => canvasTex(128, 128, (g) => {
+    g.fillStyle = '#8a2420'; g.fillRect(0, 0, 128, 128);
+    g.fillStyle = 'rgba(30,10,10,0.45)';
+    for (let i = 0; i < 128; i += 32) { g.fillRect(i, 0, 12, 128); g.fillRect(0, i, 128, 12); }
+    g.fillStyle = 'rgba(40,60,40,0.35)';
+    for (let i = 16; i < 128; i += 32) { g.fillRect(i, 0, 4, 128); g.fillRect(0, i, 128, 4); }
+    g.fillStyle = 'rgba(220,200,170,0.35)';
+    for (let i = 24; i < 128; i += 32) { g.fillRect(i, 0, 1.5, 128); g.fillRect(0, i, 128, 1.5); }
+  }, { wrap: true, repeat: [4, 1] }),
+  // o PONCHO ESFARRAPADO de O Morto que Caminha: o mesmo pano oliva manchado e furado da capa do Herói (Mael)
+  poncho_gwayne: () => MATERIAL_TEXTURES.cloak_mael(),
   face_rubens: face(() => {}, {
     skin: '#9a6a46',
     eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },

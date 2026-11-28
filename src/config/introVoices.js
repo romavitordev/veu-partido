@@ -450,6 +450,20 @@ export const VOICES = {
       any: [(o) => `Apanhar só me dá mais vontade, ${o.name}.`, (o) => `O Marban me ensinou a não recuar.`],
     },
   },
+  // GWAYNE (A Vigília): o Forasteiro, arqueiro direto e dedicado; fala da flecha, da irmã e da única chance (PROPOSTA;
+  // "Esse lugar é minha única chance." é cânone)
+  gwayne: {
+    open: {
+      ally: (o) => `${o.name}. Tu vai na frente, eu cubro de trás.`,
+      rival: (o) => `${o.name}. Já acertei coisa pior que ${o.group} no escuro.`,
+      any: [(o) => `Esse lugar é minha única chance, ${o.name}. Não vou errar.`, (o) => `Uma flecha, ${o.name}. É o que eu preciso.`],
+    },
+    reply: {
+      ally: (o) => `Pode ir, ${o.name}. Ninguém chega em ti.`,
+      rival: (o) => `Fala, ${o.name}. A corda já tá puxada.`,
+      any: [(o) => `O arco era da minha irmã, ${o.name}. Ele não erra.`, (o) => `Eu sou de fora, ${o.name}. Mas esse lugar é meu agora.`],
+    },
+  },
   // RUBENS NALUTI: fala por PALAVRAS-CHAVE, sério e econômico — "Ainda bem que eu voltei, e vou continuar voltando."
   rubens: {
     open: {
