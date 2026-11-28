@@ -948,18 +948,21 @@ export class Quibungo extends BloodZombie {
 // morrer, a lua fica de sangue, chove sangue, ele derrete numa gosma e o Kerberos sai do corpo dele
 // (pve/kerberosInferno.js). PROPOSTA: todos os números, o tempo e a forma dos golpes.
 const KB_SCALE = 1.35;
+// MAIS AGRESSIVO (dono, 2026-11-28: "o kerberos é mais sobre quanto tempo você aguenta nele do que se você consegue
+// mata-lo, ele deve ser mais agressivo, atacar mais"): mais rápido, armadas e recargas menores (antes speed 5,2; bite cd
+// 1,5; tail 5,5; spikes 6; pounce 8). E a FÚRIA que sobe com o tempo (`rage`, pve/kerberosInferno.js). PROPOSTA.
 export const KERBEROS = {
-  name: 'KERBEROS', hp: 3400, duration: Infinity, speed: 5.2, radius: 1.9, height: 3.4,
+  name: 'KERBEROS', hp: 3400, duration: Infinity, speed: 6.2, radius: 1.9, height: 3.4,
   element: 'sangue', fxColor: BLOOD, poolColor: 0x5a0008, noPool: true,
   attacks: {
     // as três cabeças mordem juntas; a mordida que pega DEVORA (cura o Kerberos)
-    bite: { windup: 0.42, active: 0.16, recovery: 0.5, range: 4.4, arc: 130, damage: 40, cd: 1.5, knockback: 3.5, devour: 0.03 },
+    bite: { windup: 0.36, active: 0.16, recovery: 0.38, range: 4.4, arc: 130, damage: 40, cd: 0.95, knockback: 3.5, devour: 0.03 },
     // a cauda varre em volta (o ataque flexível)
-    tail: { windup: 0.55, active: 0.3, recovery: 0.6, range: 5.6, arc: 360, damage: 44, cd: 5.5, knockback: 7, knockdown: true },
+    tail: { windup: 0.5, active: 0.3, recovery: 0.5, range: 5.6, arc: 360, damage: 44, cd: 3.6, knockback: 7, knockdown: true },
     // o DISPARO DE ESPINHOS: as costas se eriçam e uma rajada de espinhos sai em leque
-    spikes: { windup: 0.7, active: 0.3, recovery: 0.7, range: 16, arc: 60, damage: 18, cd: 6, knockback: 1.5, volley: 7 },
+    spikes: { windup: 0.6, active: 0.3, recovery: 0.55, range: 16, arc: 70, damage: 18, cd: 4, knockback: 1.5, volley: 9 },
     // DERRUBAR E DEVORAR: o bote de longe; quem é pego cai e é mordido (cura)
-    pounce: { windup: 0.6, active: 0.45, recovery: 0.8, range: 3.6, arc: 160, damage: 62, cd: 8, knockback: 5, knockdown: true, dash: 19, devour: 0.05 },
+    pounce: { windup: 0.55, active: 0.45, recovery: 0.65, range: 3.6, arc: 160, damage: 62, cd: 5, knockback: 5, knockdown: true, dash: 19, devour: 0.05 },
   },
   firstCd: { bite: 0.4, tail: 3, spikes: 2.5, pounce: 1.5 },
 };
@@ -997,13 +1000,13 @@ export class Kerberos extends InkBeast {
   chooseTarget() { this.target = this.owner.opponent; }
   restY() { return 0; }
   bob() { return Math.abs(Math.sin(this.gait * 1.6)) * 0.08; }
-  stepSpeed(d) { return this.cfg.speed * (d > 7 ? 1.35 : 1); }
+  stepSpeed(d) { return this.cfg.speed * (d > 7 ? 1.35 : 1) * (this.rage || 1); }
   attackSound(name) { return name === 'tail' ? 'whip' : name === 'spikes' ? 'drain' : name === 'pounce' ? 'jump' : 'bloodClaw'; }
 
   pickAttack(d) {
     const c = this.cds;
     const A = this.cfg.attacks;
-    if (d > 6 && d < 13 && c.pounce <= 0 && Math.random() < 0.6) return 'pounce';
+    if (d > 6 && d < 13 && c.pounce <= 0 && Math.random() < 0.75) return 'pounce';
     if (d > 5 && d < A.spikes.range - 1 && c.spikes <= 0) return 'spikes';
     if (d < A.tail.range - 0.4 && c.tail <= 0 && Math.random() < 0.35) return 'tail';
     if (d < A.bite.range - 0.3 && c.bite <= 0) return 'bite';

@@ -1683,7 +1683,8 @@ export class Dungeon {
       this.run.picks.push(id);
       const u = getUpgrade(id);
       items.push({ icon: u.icon, colorCss: '#ffd84a' });
-      rows.push({ icon: u.icon, name: u.name, tag: `nv ${countOf(this.run.picks, id)}` });
+      const lv = countOf(this.run.picks, id);
+      rows.push({ icon: u.icon, name: u.name, tag: lv > 1 ? 'subiu de nível' : 'nova!', desc: u.desc, level: lv, max: u.max, color: u.kind === 'kit' ? '#c89aff' : '#ffd84a' });
     }
     if (ups.length) {
       this.applyPlayerMods(false);
@@ -1696,7 +1697,7 @@ export class Dungeon {
       const coins = Math.round(missing * (3 + Math.random() * 3) * (1 + 0.25 * Math.max(0, this.run.depth - 1)) * (1 + (c.luck || 0))); // antes 12–24 cada (moedas menores, 2026-11-08)
       const heal = Math.min(0.75, 0.3 * missing);
       items.push({ icon: '?', colorCss: '#ffc040' });
-      rows.push({ icon: '?', name: 'Moedas ou vida', tag: 'escolha' });
+      rows.push({ icon: '?', name: 'Moedas ou vida', tag: 'escolha', desc: 'Nada mais para subir: ao fechar, escolha moedas ou vida.', color: '#ffc040' });
       this.pendingRewards = [...(this.pendingRewards || []), { coins, heal }];
     }
     for (const id of ups) {
@@ -1706,17 +1707,25 @@ export class Dungeon {
         const fresh = this.onDiscover ? this.onDiscover(id) : false;
         this.hud.callout(`${fresh ? 'NOVA FUSÃO' : 'FUSÃO'}: ${u.name.toUpperCase()}`, '#d8a0ff');
         feedback(this.world, fresh ? 'discovery' : 'fusion', { at: this.player.pos, color: 0xd8a0ff });
-        for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'fusão';
+        for (const r of rows) if (r.name === u.name) { r.tag = fresh ? 'descoberta!' : 'fusão'; r.color = '#d8a0ff'; }
       } else if (u.kind === 'relic') {
         // o ACHADO DA FASE: também vai para a DESCOBERTAS (o mesmo `discovered` do save)
         const fresh = this.onDiscover ? this.onDiscover(id) : false;
         this.hud.callout(`${fresh ? 'NOVO ACHADO' : 'ACHADO DA FASE'}: ${u.name.toUpperCase()}`, '#7effc8');
         feedback(this.world, fresh ? 'discovery' : 'relic', { at: this.player.pos, color: 0x7effc8, pitch: 1.15 });
-        for (const r of rows) if (r.name === u.name) r.tag = fresh ? 'descoberta!' : 'achado';
+        for (const r of rows) if (r.name === u.name) { r.tag = fresh ? 'descoberta!' : 'achado'; r.color = '#7effc8'; }
       } else if (u.chest && countOf(this.run.picks, id) === 1) this.hud.callout(u.name.toUpperCase(), '#7ec8ff');
     }
-    this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
+    this.showChest(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
     return this.feverChest(c, items);
+  }
+
+  // A TELA DO BAÚ (pveHud.openChestShow): entra depois que a tampa abre e os ícones voam (a fila espera o fim de outra
+  // escolha). Online fica o aviso curto antigo (a tela pararia o jogo só de um lado).
+  showChest(title, rows, tier) {
+    if (!rows.length) return;
+    if (this.net) { this.pveHud.loot(title, rows, tier); return; }
+    (this.chestShows = this.chestShows || []).push({ title, rows, tier, at: this.stats.time + 0.9 });
   }
 
   // a FEBRE DO OURO (pve/goldFever.js): bem rara, sai de qualquer baú além do que ele já deu
@@ -1740,10 +1749,10 @@ export class Dungeon {
       if (Math.random() < 0.5) coins += Math.round((3 + Math.random() * 3) * scale);
       else xp += Math.round((18 + Math.random() * 12) * scale);
     }
-    if (coins) { items.push({ icon: '●', colorCss: '#ffc040' }); rows.push({ icon: '●', name: 'Moedas', tag: `+${coins}` }); }
-    if (xp) { items.push({ icon: '✦', colorCss: '#7ec8ff' }); rows.push({ icon: '✦', name: 'Experiência', tag: `+${xp}` }); }
+    if (coins) { items.push({ icon: '●', colorCss: '#ffc040' }); rows.push({ icon: '●', name: 'Moedas', tag: `+${coins}`, desc: `+${coins} moedas (compram personagens; ficam mesmo se você cair).`, color: '#ffc040' }); }
+    if (xp) { items.push({ icon: '✦', colorCss: '#7ec8ff' }); rows.push({ icon: '✦', name: 'Experiência', tag: `+${xp}`, desc: `+${xp} de experiência: as melhorias chegam ao subir de nível — e o baú só sobe as que você já escolheu.`, color: '#7ec8ff' }); }
     this.world.after(0.6, () => { if (coins) this.giveCoins(coins); if (xp) this.giveXp(xp); });
-    this.pveHud.loot(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
+    this.showChest(n >= 3 ? 'Baú raro' : 'Baú', rows, n);
     return items;
   }
 
@@ -2420,7 +2429,12 @@ export class Dungeon {
       this.hud.update(this);
       return;
     }
-    if (!this.choosing && this.pendingRewards && this.pendingRewards.length && this.phase !== 'dead' && this.phase !== 'exit' && (this.player.state !== 'ko' || this.player.coffin) && !this.world.cinematic) this.openReward(this.pendingRewards.shift());
+    const cs = this.chestShows && this.chestShows[0];
+    if (!this.choosing && cs && this.stats.time >= cs.at && this.phase !== 'dead' && this.phase !== 'exit' && !this.world.cinematic) {
+      this.chestShows.shift();
+      this.choosing = true;
+      this.pveHud.openChestShow(cs.rows, { title: cs.title, tier: cs.tier, who: 0, onDone: () => { this.choosing = false; } });
+    } else if (!this.choosing && this.pendingRewards && this.pendingRewards.length && this.phase !== 'dead' && this.phase !== 'exit' && (this.player.state !== 'ko' || this.player.coffin) && !this.world.cinematic) this.openReward(this.pendingRewards.shift());
     // no CORREDOR das lamparinas ninguém sobe de nível no meio da corrida (dono, 2026-11-19): as escolhas esperam a chegada
     else if (this.pendingUps > 0 && !(this.runner && !this.runner.done) && this.phase !== 'dead' && this.phase !== 'exit' && (this.player.state !== 'ko' || this.player.coffin) && !this.world.cinematic) {
       this.openLevelUp();

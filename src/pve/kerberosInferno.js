@@ -16,6 +16,13 @@ export const INFERNO = {
   rain: 3, // chovendo antes de ele começar a derreter
   melt: 3.2, // o derretimento (Quibungo.startMelt)
 };
+// QUANTO TEMPO VOCÊ AGUENTA (dono, 2026-11-28: "foque agora em adicionar um timer e aumentar a agressividade, quanto mais
+// tempo você durar nele, maior será seu bonus X moedas a cada Y segundos, assim como a morte de vampire survivors"):
+// com o Kerberos vivo, o cronômetro corre; a cada `every` s você ganha moedas, e o valor cresce `grow` a cada `step` s
+// (passa pela dificuldade, como os outros drops). A FÚRIA dele também sobe a cada `rageEvery` s: anda e recarrega mais
+// rápido (até `rageMax`). PROPOSTA.
+export const SURVIVE = { every: 10, coins: 4, grow: 2, step: 30, rageEvery: 30, rageStep: 0.12, rageMax: 1.6 };
+const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 const RED_SKY = [[0, '#0e0204'], [0.45, '#3a0608'], [0.8, '#7a1010'], [1, '#a82018']];
 const RED_FOG = new THREE.Color(0x5a0a0c);
 const RED_LIGHT = new THREE.Color(0xff3a2a);
@@ -36,7 +43,7 @@ export class KerberosInferno {
   }
 
   update(dt) {
-    if (this.stage === 'done') { this.tickSky(dt); this.tickRain(dt); return; }
+    if (this.stage === 'done') { this.tickSky(dt); this.tickRain(dt); this.tickSurvive(dt); return; }
     const q = this.quib;
     if (this.stage === 'wait') {
       // só conta enquanto ele luta (a entrada e a morte não contam); morreu antes do tempo, acabou
@@ -196,6 +203,44 @@ export class KerberosInferno {
     if (Math.random() < 0.5) this.d.world.fx.burst(new THREE.Vector3(G.g.position.x + (Math.random() - 0.5) * r, 0.3, G.g.position.z + (Math.random() - 0.5) * r), { count: 3, color: 0x7a0810, speed: 1.5, up: 2.5, life: 0.5, size: 0.2, gravity: 8 });
   }
 
+  // ---- o CRONÔMETRO da sobrevivência e o bônus em moedas (SURVIVE)
+  tickSurvive(dt) {
+    const kb = this.kerberos;
+    const d = this.d;
+    if (!kb) return;
+    const dead = !kb.alive || kb.state === 'die';
+    const fighting = !dead && kb.state !== 'rise' && d.players.some((p) => p.state !== 'ko');
+    if (!fighting) {
+      if (this.surviveShown && dead) {
+        this.surviveShown = false;
+        d.pveHud.setSurvive(null);
+        d.hud.callout(`AGUENTOU ${fmt(this.surviveT || 0)} · +${this.surviveCoins || 0} MOEDAS`, '#ffc040');
+      }
+      return;
+    }
+    const S = SURVIVE;
+    this.surviveT = (this.surviveT || 0) + dt;
+    this.surviveCoins = this.surviveCoins || 0;
+    this.nextBonus = this.nextBonus ?? S.every;
+    if (this.surviveT >= this.nextBonus) {
+      this.nextBonus += S.every;
+      const before = d.stats.coins;
+      d.giveCoins(S.coins + S.grow * Math.floor(this.surviveT / S.step));
+      this.surviveCoins += d.stats.coins - before;
+    }
+    // a fúria: anda e recarrega mais rápido conforme o tempo passa
+    const rage = Math.min(S.rageMax, 1 + S.rageStep * Math.floor(this.surviveT / S.rageEvery));
+    if (rage > (kb.rage || 1)) {
+      kb.rage = rage;
+      d.hud.callout('O KERBEROS SE ENFURECE', '#ff2a2a');
+      d.audio.play('fearGaze', { volume: 0.7, pitch: 0.3 });
+    }
+    if (kb.rage > 1) for (const k in kb.cds) kb.cds[k] = Math.max(0, kb.cds[k] - dt * (kb.rage - 1));
+    const next = S.coins + S.grow * Math.floor(this.surviveT / S.step);
+    d.pveHud.setSurvive(fmt(this.surviveT), `+${next} a cada ${S.every}s · ganhou ${this.surviveCoins} ●`, kb.rage || 1);
+    this.surviveShown = true;
+  }
+
   // ---- o KERBEROS sobe da gosma (entra nas cópias ANTES de o Quibungo sumir: a onda não acaba no meio)
   birth() {
     const d = this.d;
@@ -210,6 +255,7 @@ export class KerberosInferno {
 
   dispose() {
     const w = this.d.world;
+    if (this.surviveShown) { this.d.pveHud.setSurvive(null); this.surviveShown = false; }
     const S = this.sky;
     if (S) {
       if (w.scene.background === S.tex) w.scene.background = S.bg;

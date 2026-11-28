@@ -193,6 +193,21 @@ export class PveHud {
     if (hit) { el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit'); }
   }
 
+  // O CRONÔMETRO DO KERBEROS (pve/kerberosInferno.js SURVIVE): quanto tempo você aguenta e o bônus de moedas. null = some
+  setSurvive(time, sub = '', rage = 1) {
+    let el = this.q('.pv-survive');
+    if (time == null) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'pv-survive';
+      el.innerHTML = '<small>AGUENTE O KERBEROS</small><b></b><span></span>';
+      this.el.appendChild(el);
+    }
+    el.querySelector('b').textContent = time;
+    el.querySelector('span').textContent = sub;
+    el.dataset.rage = rage >= 1.36 ? '3' : rage > 1.1 ? '2' : rage > 1 ? '1' : '0';
+  }
+
   // o nome do golpe de uma criatura: pequeno, no canto (pedido do dono, 2026-11-06)
   moveName(text) {
     let el = this.q('.pv-move');
@@ -293,8 +308,64 @@ export class PveHud {
     this.renderChoice();
   }
 
+  // A TELA DO BAÚ (pedido do dono, 2026-11-21, com o print de referência em docs/referencias/bau-descricao-habilidade.png):
+  // os itens que saíram em ARCO sobre o baú aberto e, embaixo, o painel do item da vez com ícone, nome, o nível (e as
+  // bolinhas), o contador "1/5" e a DESCRIÇÃO do que ele faz. ◀ ▶ (ou passar o mouse/tocar) troca o item; OK fecha.
+  // Usa o mesmo `this.choice` das cartas (o jogo fica parado enquanto está aberta). rows: { icon, name, tag, desc,
+  // level, max, color }
+  openChestShow(rows, { title = 'Baú', tier = 1, onDone, who = 0, noClick = false } = {}) {
+    let box = this.q('.pv-chestshow');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'pv-chestshow';
+      box.innerHTML = '<div class="pv-cs"><small class="pv-cs-title"></small><div class="pv-cs-items"></div><div class="pv-cs-chest"><i class="lid"></i><i class="body"></i><i class="glow"></i></div><button class="pv-cs-ok" type="button">OK</button><div class="pv-cs-info"><header><span class="pv-cs-lv"></span><b class="pv-cs-name"></b><span class="pv-cs-n"></span></header><div class="pv-cs-row"><i class="pv-cs-icon"></i><div><p class="pv-cs-desc"></p><s class="pv-cs-pips"></s></div></div></div><small class="pv-cs-hint">◀ ▶ vê cada item · A/× ou Enter fecha</small></div>';
+      this.el.appendChild(box);
+    }
+    box.dataset.tier = String(Math.min(3, tier));
+    box.querySelector('.pv-cs-title').textContent = title;
+    const n = rows.length;
+    // o arco: do item da esquerda ao da direita, mais alto no meio
+    box.querySelector('.pv-cs-items').innerHTML = rows.map((r, i) => {
+      const t = n === 1 ? 0.5 : i / (n - 1);
+      const x = 50 + (t - 0.5) * Math.min(80, 22 * (n - 1));
+      const y = 62 - Math.sin(t * Math.PI) * (n > 1 ? 44 : 30);
+      return `<span class="pv-cs-item" data-i="${i}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;--c:${r.color || '#ffd84a'};animation-delay:${(0.08 * i).toFixed(2)}s"><i>${esc(r.icon)}</i></span>`;
+    }).join('');
+    this.choice = { chest: true, rows, index: 0, who, onPick: () => onDone && onDone(), choices: rows };
+    box.hidden = false;
+    box.classList.remove('on');
+    void box.offsetWidth;
+    box.classList.add('on');
+    if (!noClick) {
+      box.querySelectorAll('.pv-cs-item').forEach((el) => {
+        const go = () => { const i = Number(el.dataset.i); if (this.choice && this.choice.chest && this.choice.index !== i) { this.choice.index = i; this.renderChest(); } };
+        onHover(el, go);
+        el.addEventListener('click', go);
+      });
+      box.querySelector('.pv-cs-ok').onclick = () => { if (this.choice && this.choice.chest) this.pick(); };
+    }
+    this.renderChest();
+  }
+
+  renderChest() {
+    const c = this.choice;
+    const box = this.q('.pv-chestshow');
+    if (!c || !c.chest || !box) return;
+    const r = c.rows[c.index] || {};
+    box.querySelectorAll('.pv-cs-item').forEach((el, i) => el.classList.toggle('on', i === c.index));
+    box.querySelector('.pv-cs-lv').textContent = r.level ? `nível ${r.level}` : (r.tag || '');
+    box.querySelector('.pv-cs-name').textContent = r.name || '';
+    box.querySelector('.pv-cs-n').textContent = `${c.index + 1}/${c.rows.length}`;
+    const ic = box.querySelector('.pv-cs-icon');
+    ic.textContent = r.icon || '';
+    ic.style.setProperty('--c', r.color || '#ffd84a');
+    box.querySelector('.pv-cs-desc').innerHTML = esc(r.desc || '') + (r.tag && r.level ? ` <em>${esc(r.tag)}</em>` : '');
+    box.querySelector('.pv-cs-pips').innerHTML = r.max ? pipsHtml(r.level, r.max, r.level - 1) : '';
+  }
+
   renderChoice() {
     if (!this.choice) return;
+    if (this.choice.chest) { this.renderChest(); return; }
     this.el.querySelectorAll('.pv-card').forEach((c, i) => c.classList.toggle('on', i === this.choice.index));
   }
 
@@ -303,6 +374,14 @@ export class PveHud {
     if (!this.choice) return false;
     const p = input.players[this.choice.who || 0];
     const n = this.choice.choices.length;
+    // a tela do baú: ◀ ▶ troca o item, confirmar fecha (o primeiro instante ignora o botão que abriu o baú)
+    if (this.choice.chest) {
+      this.choice.t = (this.choice.t || 0) + 1;
+      if (p.menu.up || p.menu.left) { this.choice.index = (this.choice.index + n - 1) % n; audio.play('select'); this.renderChest(); }
+      if (p.menu.right || p.menu.down) { this.choice.index = (this.choice.index + 1) % n; audio.play('select'); this.renderChest(); }
+      if (this.choice.t > 20 && (p.pressed.jump || p.pressed.interact || (!this.choice.who && input.keyPressedOnce('Enter')))) { audio.play('confirm'); this.pick(); }
+      return !!this.choice;
+    }
     if (p.menu.up || p.menu.left) { this.choice.index = (this.choice.index + n - 1) % n; audio.play('select'); this.renderChoice(); }
     if (p.menu.right || p.menu.down) { this.choice.index = (this.choice.index + 1) % n; audio.play('select'); this.renderChoice(); }
     if (p.pressed.jump || (!this.choice.who && input.keyPressedOnce('Enter'))) { audio.play('confirm'); this.pick(); }
@@ -313,6 +392,12 @@ export class PveHud {
     const c = this.choice;
     if (!c) return;
     this.choice = null;
+    if (c.chest) {
+      const box = this.q('.pv-chestshow');
+      if (box) box.hidden = true;
+      c.onPick();
+      return;
+    }
     this.q('.pv-choose').hidden = true;
     c.onPick(c.choices[c.index].id);
   }
