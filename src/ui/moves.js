@@ -80,7 +80,7 @@ export function specialSummary(c) {
   const life = sp.bonusHealth ? ` (+${sp.bonusHealth} de vida)` : '';
   switch (sp.type) {
     case 'mistField': return 'névoa + Acácia amplificada (250 de dano); a névoa fica no mapa';
-    case 'erase': return 'corpo a corpo, 1x por partida, indefensável: o alvo vira pó — só escapa esquivando ou com sanidade cheia (resiste levando muito dano)';
+    case 'erase': return (sp.usesPerMatch ? `corpo a corpo, ${sp.usesPerMatch}x por partida` : `corpo a corpo, cada uso soma ${sp.cooldownPerUse} s à recarga`) + ', indefensável: o alvo vira pó — só escapa esquivando ou com sanidade cheia (resiste levando muito dano)';
     case 'santoPact': if (sp.immediate) return 'o Lodo toma o corpo: transforma no Deus da Morte (chefe com vida própria) até o fim do round';
       return `com mais de ${Math.round((sp.minEnergy || 0) * 100)}% de sanidade: pacto de ${sp.window || 45} s — morrer durante o pacto transforma no Deus da Morte`;
     case 'devilPact': return `transforma no Diabo ${until(sp.duration)}${life}${sp.usesPerMatch ? `, ${sp.usesPerMatch}x por partida` : ''}`;

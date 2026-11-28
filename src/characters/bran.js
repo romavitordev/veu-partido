@@ -85,6 +85,45 @@ export default {
 
   abilities: [
     {
+      // △ + × O BARRIL (pedido do dono, 2026-11-28: "Bran poderia ter um ataque onde lança um barril"; PROPOSTA): pega um
+      // barril de carvalho do arsenal e joga por cima, em arco; ele estoura no chão e as tábuas derrubam quem estiver perto
+      id: 'barril',
+      name: 'Barril',
+      input: 'carga+jump',
+      type: 'throwProjectile',
+      description: 'Joga um barril de carvalho por cima, em arco: estoura no chão onde o adversário está e derruba quem estiver perto (pega quem defende parado).',
+      energyCost: 22,
+      cooldown: 10,
+      anim: 'throw_r',
+      windup: 0.36,
+      recovery: 0.34,
+      sound: 'swing',
+      projectile: {
+        name: 'Barril', visual: 'barrel', color: 0x7a5232, speed: 15, range: 15, radius: 0.5, gravity: 18, damage: 0, lobTo: 'feet',
+        explode: { radius: 2.4, damage: 58, knockback: 5, launch: true, guardCrush: 18, fire: false, splinters: 0x8a5a32, sound: 'heavyPunch' },
+      },
+      ai: { when: 'far', min: 4 },
+    },
+    {
+      // △ + □ SALVA DE AZAGAIAS (cânone: "várias lanças menores, as quais Bran lançava para atacar à distância"; pedido
+      // do dono, 2026-11-28: "mais variedade canon"): tira três do cinto e arremessa uma atrás da outra
+      id: 'salvaAzagaias',
+      name: 'Salva de Azagaias',
+      input: 'carga+ranged',
+      type: 'cursedShots',
+      description: 'Tira três azagaias do cinto e arremessa uma atrás da outra, em leque: cada uma empurra e a última quebra a defesa.',
+      energyCost: 22,
+      cooldown: 11,
+      windup: 0.22,
+      count: 3,
+      interval: 0.16,
+      spread: 12,
+      anim: 'spear_throw',
+      shotSound: 'knifeThrow',
+      projectile: { name: 'Azagaia', visual: 'pilum', color: STEEL, damage: 28, range: 22, speed: 38, radius: 0.34, knockback: 1.6, hitstun: 0.42, guardCrush: 8, hitSound: 'bladeHit' },
+      ai: { when: 'far', min: 5 },
+    },
+    {
       // △ + ○ JUSTIÇA (a lança do cânone): recua a lança e crava com o corpo todo
       id: 'cravarJustica',
       name: 'Cravar a Justiça',

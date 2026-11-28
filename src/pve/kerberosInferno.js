@@ -21,7 +21,10 @@ export const INFERNO = {
 // com o Kerberos vivo, o cronômetro corre; a cada `every` s você ganha moedas, e o valor cresce `grow` a cada `step` s
 // (passa pela dificuldade, como os outros drops). A FÚRIA dele também sobe a cada `rageEvery` s: anda e recarrega mais
 // rápido (até `rageMax`). PROPOSTA.
-export const SURVIVE = { every: 10, coins: 4, grow: 2, step: 30, rageEvery: 30, rageStep: 0.12, rageMax: 1.6 };
+// Dono, 2026-11-28: "tá dando muito dinheiro o kerberos, aumente o tempo" — antes 4 moedas a cada 10 s (+2 a cada 30 s);
+// agora 2 a cada 20 s (+1 a cada 60 s), e a fúria sobe mais rápido e mais alto. MATAR o Kerberos (só com a árvore cheia
+// e os mais fortes) paga o bônus `kill` de uma vez (também passa pela dificuldade).
+export const SURVIVE = { every: 20, coins: 2, grow: 1, step: 60, rageEvery: 25, rageStep: 0.15, rageMax: 2, kill: 150 };
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 const RED_SKY = [[0, '#0e0204'], [0.45, '#3a0608'], [0.8, '#7a1010'], [1, '#a82018']];
 const RED_FOG = new THREE.Color(0x5a0a0c);
@@ -214,7 +217,12 @@ export class KerberosInferno {
       if (this.surviveShown && dead) {
         this.surviveShown = false;
         d.pveHud.setSurvive(null);
-        d.hud.callout(`AGUENTOU ${fmt(this.surviveT || 0)} · +${this.surviveCoins || 0} MOEDAS`, '#ffc040');
+        // o BÔNUS por derrotá-lo (dono, 2026-11-28: "se derrotar ele tem uma recompensa em moedas, um bonus")
+        const before = d.stats.coins;
+        d.giveCoins(SURVIVE.kill);
+        const bonus = d.stats.coins - before;
+        d.hud.callout(`KERBEROS DERROTADO · +${bonus} MOEDAS`, '#ffc040');
+        setTimeout(() => d.hud && d.hud.callout(`AGUENTOU ${fmt(this.surviveT || 0)} · +${this.surviveCoins || 0} MOEDAS`, '#ffc040'), 1800);
       }
       return;
     }

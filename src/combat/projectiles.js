@@ -6,7 +6,7 @@ import { igniteFighter } from './burn.js';
 import { inBounds } from './positioning.js';
 import { distXZ } from '../core/util.js';
 import { glowMat } from '../models/rig.js';
-import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, vigiliaArrow, barBottle } from '../models/weapons.js';
+import { knife, leoneKnife, mutilatorAxe, baluAxe, demonMace, chaosSkate, chainHatchet, ironMace, flameArrow, vigiliaArrow, huntArrow, woodBarrel, barBottle } from '../models/weapons.js';
 import { khopesh, spear, doubleDagger } from '../models/ordoWeapons.js';
 import { createMistZone } from './abilities.js';
 import { addBloodPool } from './bloodPools.js';
@@ -334,6 +334,25 @@ const VISUALS = {
     g.userData.tumble = spin;
     return g;
   },
+  // o BARRIL do Bran rolando no ar; ability.lit (O Inquebrável): pegando fogo
+  barrel(color, ability) {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const b = woodBarrel();
+    b.rotation.z = Math.PI / 2;
+    spin.add(b);
+    if (ability && ability.lit) {
+      // as labaredas ficam fora do giro (sempre para cima), finas para o barril de madeira continuar aparecendo
+      for (let i = 0; i < 3; i++) {
+        const fl = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.42 + (i % 2) * 0.16, 6, 1, true), glowMat(i === 1 ? 0xffa030 : color, 0.4));
+        fl.position.set((i - 1) * 0.2, 0.42, 0);
+        g.add(fl);
+      }
+    }
+    g.add(spin);
+    g.userData.tumble = spin;
+    return g;
+  },
   // a garrafa do Suvaco Seco (Ivete): a long neck girando de ponta a ponta
   bottle() {
     const g = new THREE.Group();
@@ -384,6 +403,10 @@ const VISUALS = {
   // AMALIA: a flecha flamejante ciano
   flameArrow(color) {
     return flameArrow(color);
+  },
+  // GWAYNE: a flecha comum, de penas vermelhas
+  arrow() {
+    return huntArrow();
   },
   // GWAYNE — O MORTO QUE CAMINHA: a flecha da Vigília
   vigiliaArrow(color) {
@@ -1019,7 +1042,11 @@ export class Projectiles {
     const E = a.explode;
     const w = this.world;
     const c = p.pos.clone();
-    w.fx.play('FX_EXPLOSION', c, { color: E.color ?? 0xff9a30, scale: E.radius });
+    // E.splinters (o barril do Bran): em vez da explosão, as tábuas voam
+    if (E.splinters) {
+      w.fx.burst(c, { count: 22, color: E.splinters, speed: 6, up: 4, life: 0.7, size: 0.18, gravity: 14 });
+      w.fx.burst(c, { count: 10, color: 0x3a3a3e, speed: 4, up: 3, life: 0.6, size: 0.12, gravity: 14 });
+    } else w.fx.play('FX_EXPLOSION', c, { color: E.color ?? 0xff9a30, scale: E.radius });
     w.audio.play(E.sound || 'explosion', { volume: 1 });
     w.cameraRig.shake(0.35, 0.25);
     if (E.mist) {
@@ -1035,7 +1062,10 @@ export class Projectiles {
           launch: !!E.launch, lowLaunch: !!E.launch, guardCrush: E.guardCrush, element: a.element, stun: E.stun, fire: E.fire !== false,
           dir: new THREE.Vector3(target.pos.x - c.x, 0, target.pos.z - c.z).normalize(), color: E.color ?? 0xff8030, sound: 'heavyPunch', scale: 1.4,
         });
-        if (typeof res === 'number' && res >= 0) this.applyOnHit(p, target);
+        if (typeof res === 'number' && res >= 0) {
+          this.applyOnHit(p, target);
+          if (E.burn && target.state !== 'ko') igniteFighter(w, p.owner, target, E.burn); // o barril em chamas (Bran O Inquebrável)
+        }
       }
     }
     for (const n of w.npcs) if (n.alive && n.owner !== p.owner && n.hitTest(c, E.radius)) n.hitBy(p.owner, npcDamage(p.owner, E.damage || 0, a.kind || 'ranged'), { kind: 'ranged' });

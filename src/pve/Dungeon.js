@@ -118,7 +118,9 @@ const ZOMBIE_HP = { weak: 150, strong: 380 }; // os Zumbis de Sangue da escola (
 const FOE_HP = { zumbi: 150, forte: 380, tinta: 170, javali: 260, cao: 110, cobra: 150, assombracao: 140, assombracaoForte: 300,
   // o Sertão do Quibungo (PROPOSTA): as araras têm pouca vida (voam e somem do alcance), os felinos andam em bando
   araraDevorada: 90, araraInfernal: 200, felinoDevorado: 140, felinoInfernal: 320, quibungo: 2600,
-  kerberos: 3400 }; // a 2ª forma do Quibungo no Aniquilação (pve/kerberosInferno.js)
+  // dono, 2026-11-28: "deixe ele mais forte … ainda deve ser possivel derrota-lo mas só talvez depois de upar tudo do
+  // jogo e pegar os personagens mais fortes" (antes 3400; ×1,4 do QUIB_HARD no Aniquilação)
+  kerberos: 11000 }; // a 2ª forma do Quibungo no Aniquilação (pve/kerberosInferno.js)
 // feedback do dono (2026-11-05): as salas acabavam rápido demais; os Devorados ficaram mais fortes para durar mais
 const DEVORADO_HP = 820;
 const MINION_DEALT = 0.8; // os Devorados batem 20% mais fraco que o lutador copiado

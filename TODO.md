@@ -7,7 +7,7 @@
 ## Outro Lado — o baú mostra o que cada habilidade faz (pedido do dono, 2026-11-27)
 > Só anotado; o dono pediu para não fazer ainda. Referência: o print que o dono mandou, em `docs/referencias/bau-descricao-habilidade.png`.
 
-- [ ] **Ao abrir o baú, explicar cada item que saiu, novo ou repetido.** Hoje a tela do baú lista ícone, nome e uma
+- [x] (v5.52.0) **Ao abrir o baú, explicar cada item que saiu, novo ou repetido.** Hoje a tela do baú lista ícone, nome e uma
       etiqueta (fusão, achado, descoberta!). Como no print do dono: os itens aparecem em volta do baú aberto, e embaixo
       um painel com o ícone, o nome, o nível (ex.: "nível 2", contador "1/5" de quantos saíram) e a descrição do que a
       habilidade faz (no nível novo). Vale para habilidade nova e para a que só subiu de nível. Dá para passar de um item
@@ -866,7 +866,8 @@ baixado sem o OK do dono.
         lore/A-VIGILIA.md: arqueiro com o arco da Gwyneth, Flechas Flamejantes que queimam (cânone), Prontidão e Esquiva
         (cânone); especial próprio "A Flecha de Gwyneth". Faltam Zuri e Eileen.
       - [ ] Vínculo de equipe "A Vigília" (já são 3: Bran, Mael e Gwayne).
-      - [ ] **Ajustar os kits do Bran e do Gwayne** (dono, 2026-11-28): mais variedade e mais fiéis ao cânone (conferir
+      - [x] (v5.52.0: Gwayne com a flecha comum e as Flechas Flamejantes como poder; Bran com o Barril, a Salva de
+        Azagaias, o Barril em Chamas, o Voo do Corvo como investida de lança e o poder Inquebrável) **Ajustar os kits do Bran e do Gwayne** (dono, 2026-11-28): mais variedade e mais fiéis ao cânone (conferir
         A Vigília e a wiki antes; o que não for cânone, PROPOSTA). O GWAYNE atira FLECHAS NORMAIS no básico; as
         FLECHAS FLAMEJANTES viram um PODER à parte (habilidade própria), não o tiro de sempre.
 

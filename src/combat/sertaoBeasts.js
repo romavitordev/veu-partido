@@ -952,17 +952,19 @@ const KB_SCALE = 1.35;
 // mata-lo, ele deve ser mais agressivo, atacar mais"): mais rápido, armadas e recargas menores (antes speed 5,2; bite cd
 // 1,5; tail 5,5; spikes 6; pounce 8). E a FÚRIA que sobe com o tempo (`rage`, pve/kerberosInferno.js). PROPOSTA.
 export const KERBEROS = {
-  name: 'KERBEROS', hp: 3400, duration: Infinity, speed: 6.2, radius: 1.9, height: 3.4,
+  // dono, 2026-11-28: "mais forte e agressivo" — mais dano e recargas ainda menores (antes bite 40/0,95; tail 44/3,6;
+  // spikes 18/4; pounce 62/5; speed 6,2)
+  name: 'KERBEROS', hp: 11000, duration: Infinity, speed: 6.8, radius: 1.9, height: 3.4,
   element: 'sangue', fxColor: BLOOD, poolColor: 0x5a0008, noPool: true,
   attacks: {
     // as três cabeças mordem juntas; a mordida que pega DEVORA (cura o Kerberos)
-    bite: { windup: 0.36, active: 0.16, recovery: 0.38, range: 4.4, arc: 130, damage: 40, cd: 0.95, knockback: 3.5, devour: 0.03 },
+    bite: { windup: 0.32, active: 0.16, recovery: 0.32, range: 4.6, arc: 130, damage: 50, cd: 0.8, knockback: 3.5, devour: 0.03 },
     // a cauda varre em volta (o ataque flexível)
-    tail: { windup: 0.5, active: 0.3, recovery: 0.5, range: 5.6, arc: 360, damage: 44, cd: 3.6, knockback: 7, knockdown: true },
+    tail: { windup: 0.45, active: 0.3, recovery: 0.45, range: 5.8, arc: 360, damage: 56, cd: 3, knockback: 7, knockdown: true },
     // o DISPARO DE ESPINHOS: as costas se eriçam e uma rajada de espinhos sai em leque
-    spikes: { windup: 0.6, active: 0.3, recovery: 0.55, range: 16, arc: 70, damage: 18, cd: 4, knockback: 1.5, volley: 9 },
+    spikes: { windup: 0.55, active: 0.3, recovery: 0.5, range: 16, arc: 80, damage: 22, cd: 3.4, knockback: 1.5, volley: 11 },
     // DERRUBAR E DEVORAR: o bote de longe; quem é pego cai e é mordido (cura)
-    pounce: { windup: 0.55, active: 0.45, recovery: 0.65, range: 3.6, arc: 160, damage: 62, cd: 5, knockback: 5, knockdown: true, dash: 19, devour: 0.05 },
+    pounce: { windup: 0.5, active: 0.45, recovery: 0.6, range: 3.6, arc: 160, damage: 78, cd: 4.2, knockback: 5, knockdown: true, dash: 21, devour: 0.05 },
   },
   firstCd: { bite: 0.4, tail: 3, spikes: 2.5, pounce: 1.5 },
 };

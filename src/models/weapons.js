@@ -2105,6 +2105,57 @@ export function flameArrow(color = 0x3affd0) {
   return g;
 }
 
+// o BARRIL do Bran (pedido do dono, 2026-11-28: "Bran poderia ter um ataque onde lança um barril, e na transformação o
+// barril está pegando fogo"; PROPOSTA de forma): tábuas de carvalho com o bojo no meio, dois aros de ferro e as tampas.
+// O eixo em Y, o centro na origem
+export function woodBarrel() {
+  const g = new THREE.Group();
+  const body = part(new THREE.CylinderGeometry(0.26, 0.26, 0.7, 14, 3), 0x7a5232);
+  const pos = body.geometry.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i);
+    const k = 1 + 0.16 * (1 - (y / 0.35) ** 2); // o bojo
+    pos.setX(i, pos.getX(i) * k);
+    pos.setZ(i, pos.getZ(i) * k);
+  }
+  body.geometry.computeVertexNormals();
+  g.add(body);
+  for (const y of [-0.22, 0.22]) {
+    const hoop = part(new THREE.TorusGeometry(0.285, 0.016, 5, 18), 0x3a3a3e);
+    hoop.rotation.x = Math.PI / 2;
+    hoop.position.y = y;
+    g.add(hoop);
+  }
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2;
+    const seam = part(new THREE.BoxGeometry(0.008, 0.66, 0.01), 0x4a3020);
+    seam.position.set(Math.cos(a) * 0.29, 0, Math.sin(a) * 0.29);
+    seam.rotation.y = -a;
+    g.add(seam);
+  }
+  return g;
+}
+
+// a FLECHA comum do Gwayne (dono, 2026-11-28: "gwayne deve usar flechas normais"): haste de madeira, ponta de ferro e
+// as PENAS VERMELHAS da aljava (cânone, o visual dele). Aponta para +Z
+export function huntArrow() {
+  const g = new THREE.Group();
+  const shaft = part(new THREE.CylinderGeometry(0.008, 0.008, 0.7, 5), 0x6a4a2e);
+  shaft.rotation.x = Math.PI / 2;
+  g.add(shaft);
+  const head = part(new THREE.ConeGeometry(0.024, 0.08, 4), 0x8a8e94);
+  head.rotation.x = Math.PI / 2;
+  head.position.z = 0.39;
+  g.add(head);
+  for (let i = 0; i < 3; i++) {
+    const fl = part(new THREE.BoxGeometry(0.004, 0.045, 0.1), 0xa82020);
+    fl.position.z = -0.31;
+    fl.rotation.z = (i / 3) * Math.PI;
+    g.add(fl);
+  }
+  return g;
+}
+
 // a FLECHA DA VIGÍLIA (O Morto que Caminha; pedido do dono, 2026-11-28; PROPOSTA de forma): a haste escura, a ponta
 // larga de aço claro, as penas brancas e vermelhas e um rastro frio da névoa do Samhain (aponta para +Z)
 export function vigiliaArrow(color = 0x9ac8ff) {

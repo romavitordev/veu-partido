@@ -10,6 +10,9 @@
 // PROPOSTA de jogo (marcada): o elemento, as sequências de adaga e arco, os números, o especial "A Flecha de Gwyneth" e
 // a Transformação "O Morto que Caminha" (forms/gwayne_morto.js).
 const FIRE = 0xff7a2a; // as Flechas Flamejantes
+// KIT (dono, 2026-11-28: "gwayne deve usar flechas normais e as de fogo serem um poder a parte"; "mais variedade
+// canon"): o □ é a flecha COMUM; as FLECHAS FLAMEJANTES (cânone, 2 PD) viram o poder R2 + △ que acende as flechas por um
+// tempo; a Salva e a Flecha de Caça são flechas comuns.
 const STEEL = 0xd0ccc8;
 const BOW = 0x8a5a34;
 
@@ -22,8 +25,8 @@ export default {
   element: 'energia', // PROPOSTA (sem afinidade no cânone)
   energyColor: FIRE,
   info: {
-    weapon: 'O arco recurvo da Gwyneth, as flechas flamejantes e a adaga',
-    style: 'Arqueiro ligeiro: flechas que queimam de longe, a esquiva no tempo certo e a adaga quando chegam perto',
+    weapon: 'O arco recurvo da Gwyneth, as flechas de penas vermelhas e a adaga',
+    style: 'Arqueiro ligeiro: flechas de longe (que ele acende com as Flechas Flamejantes), a esquiva no tempo certo e a adaga quando chegam perto',
     identity: 'O Forasteiro: o arqueiro da Vigília, que carrega o arco da irmã gêmea',
     tagline: 'Esse lugar é minha única chance.',
   },
@@ -51,9 +54,9 @@ export default {
     air: { name: 'Adaga do Alto', anim: 'air_knife', dur: 0.42, active: [0.16, 0.3], damage: 32, range: 2.0, arc: 100, knockback: 3, slam: 15, vertical: 2.2, sound: 'swing', hitSound: 'bladeHit', trail: { color: STEEL, tilt: 1.3 } },
   },
 
-  // □ FLECHAS FLAMEJANTES (cânone, a ficha: dano de fogo): a flecha de penas vermelhas acesa — quem leva fica QUEIMANDO
+  // □ FLECHA: a flecha comum, de penas vermelhas (o fogo é o poder Flechas Flamejantes, R2 + △)
   ranged: {
-    name: 'Flecha Flamejante',
+    name: 'Flecha',
     type: 'projectile',
     anim: 'bow_shot',
     origin: 'chest',
@@ -63,55 +66,72 @@ export default {
     interval: 0,
     damage: 22,
     range: 28,
-    speed: 44,
-    radius: 0.32,
+    speed: 46,
+    radius: 0.3,
     spread: 0,
     knockback: 0.8,
     hitstun: 0.4,
-    cooldown: 1.1,
+    cooldown: 1.0,
     energyCost: 0,
-    visual: 'flameArrow',
-    color: FIRE,
-    element: 'energia',
-    burn: { dps: 8, duration: 2 },
+    visual: 'arrow',
+    color: STEEL,
     sound: 'sniper',
     hitSound: 'impact',
   },
 
   abilities: [
     {
-      // △ + □ FLECHA DE CAÇA (PROPOSTA): a mira longa, a corda até o rosto — a flecha mais forte, queimando forte
+      // △ + □ FLECHA DE CAÇA (PROPOSTA): a mira longa, a corda até o rosto — a flecha mais forte, comum e pesada
       id: 'flechaCaca',
       name: 'Flecha de Caça',
       input: 'carga+ranged',
       type: 'deathShot',
-      description: 'Mira com calma e solta a flecha mais forte, acesa: derruba e deixa o alvo QUEIMANDO. A mira deixa ele parado um instante.',
+      description: 'Mira com calma e solta a flecha mais forte: atravessa o campo e derruba. A mira deixa ele parado um instante.',
       energyCost: 26,
       cooldown: 13,
       windup: 0.85,
       recovery: 0.3,
       aimAnim: 'bow_aim',
       fireAnim: 'bow_shot',
-      aimColor: FIRE,
-      element: 'energia',
-      projectile: { name: 'Flecha de Caça', type: 'projectile', visual: 'flameArrow', color: FIRE, damage: 74, range: 36, speed: 58, radius: 0.36, knockback: 2.4, hitstun: 0.7, launch: true, hitSound: 'heavyPunch', impactScale: 1.5, burn: { dps: 12, duration: 3 } },
+      aimColor: STEEL,
+      projectile: { name: 'Flecha de Caça', type: 'projectile', visual: 'arrow', color: STEEL, damage: 84, range: 38, speed: 62, radius: 0.36, knockback: 2.6, hitstun: 0.75, launch: true, hitSound: 'heavyPunch', impactScale: 1.5 },
       ai: { when: 'far', min: 6 },
     },
     {
-      // △ + ○ SALVA FLAMEJANTE (PROPOSTA, das Flechas Flamejantes): três flechas acesas em leque
-      id: 'salvaFlamejante',
-      name: 'Salva Flamejante',
+      // △ + ○ SALVA DE FLECHAS (PROPOSTA): quatro flechas em leque, uma atrás da outra
+      id: 'salvaFlechas',
+      name: 'Salva de Flechas',
       input: 'carga+physical',
       type: 'cursedShots',
-      description: 'Três Flechas Flamejantes em leque, uma atrás da outra: cada uma que acerta deixa o alvo QUEIMANDO.',
-      energyCost: 22,
-      cooldown: 10,
+      description: 'Quatro flechas em leque, uma atrás da outra: fecha o caminho de quem tenta chegar perto.',
+      energyCost: 20,
+      cooldown: 9,
       windup: 0.16,
-      count: 3,
-      interval: 0.1,
-      spread: 14,
+      count: 4,
+      interval: 0.09,
+      spread: 18,
       anim: 'bow_shot',
-      projectile: { visual: 'flameArrow', color: FIRE, damage: 20, range: 26, speed: 42, radius: 0.3, knockback: 0.6, hitstun: 0.3, element: 'energia', hitSound: 'impact', burn: { dps: 6, duration: 2 } },
+      projectile: { visual: 'arrow', color: STEEL, damage: 19, range: 26, speed: 44, radius: 0.3, knockback: 0.6, hitstun: 0.3, hitSound: 'impact' },
+    },
+    {
+      // R2 + △ FLECHAS FLAMEJANTES (cânone, a ficha: 2 PD, dano de fogo): acende as pontas das flechas — por um tempo o
+      // □ sai em chamas, mais forte, e quem leva fica QUEIMANDO
+      id: 'flechasFlamejantes',
+      name: 'Flechas Flamejantes',
+      input: 'block+carga',
+      type: 'selfBuff',
+      buffType: 'flechasFlamejantes',
+      label: 'FLECHAS FLAMEJANTES',
+      anim: 'bow_aim',
+      animTime: 0.4,
+      sound: 'ritual',
+      description: 'Acende as flechas: por 9 s o □ sai em chamas, 25% mais forte, e deixa o alvo QUEIMANDO.',
+      energyCost: 20,
+      cooldown: 15,
+      duration: 9,
+      rangedPatch: { name: 'Flecha Flamejante', visual: 'flameArrow', color: FIRE, element: 'energia', burn: { dps: 9, duration: 2.5 }, damageMult: 1.25 },
+      color: FIRE,
+      ai: { when: 'far', min: 5 },
     },
     {
       // △ + L2 PRONTIDÃO (cânone, 2 PD): o Vigilante sempre pronto — as esquivas voltam e os golpes saem mais rápido
@@ -151,7 +171,8 @@ export default {
   ],
 
   // A FLECHA DE GWYNETH (PROPOSTA; specials/vigiliaSpecials.js → twinArrows): o vulto pálido da irmã gêmea aparece ao
-  // lado dele com o mesmo arco; os dois soltam juntos as Flechas Flamejantes que prendem o alvo, e ele fecha com a adaga.
+  // lado dele com o mesmo arco; os dois soltam juntos as Flechas Flamejantes que prendem o alvo, e ele fecha com a adaga
+  // (o especial continua aceso: é o momento em que os dois acendem as flechas juntos).
   // "Esse lugar é minha única chance."
   special: {
     name: 'A Flecha de Gwyneth',

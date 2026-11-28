@@ -42,7 +42,7 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
   broquel), Linha de Frente ("se atirando em cima de criaturas": avança atrás do broquel e quebra a defesa).
 - Especial Até o Amanhecer (v5.50.1): finca o broquel, se atira em cima do adversário, crava a Justiça três vezes, varre a haste e fecha com a estocada de corpo inteiro na luz do amanhecer.
 - Passivas: Casca Grossa (resistente a físico e projétil), pele grossa (empurrão menor) e escapar da morte (Inquebrável).
-- Transformação e versão O Inquebrável: a máscara de crânio de corvo e a gola de penas; o Guardião vira o Voo do Corvo
+- Transformação e versão O Inquebrável: a máscara de crânio de corvo e a gola de penas; o Guardião vira o Voo do Corvo (PROPOSTA: uma investida com a lança baixada; antes era um teleporte — o dono pediu sem teleporte, 2026-11-28)
   (some nas penas e reaparece ao lado do adversário); +100 de vida e golpes 12% mais fortes.
 - Relações (wiki, para falas futuras): Fergus (irmão), Eileen, Gwayne, Mael, Zuri.
 

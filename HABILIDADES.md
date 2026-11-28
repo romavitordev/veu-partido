@@ -867,7 +867,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Especial: Inexistir
 
-Corpo a corpo, 2x por partida, não pode ser defendido: o alvo vira pó. Escapa esquivando no contato; com a sanidade cheia resiste levando 450 de dano (nunca morre por isso). Custo 50.
+Corpo a corpo, sem limite de usos, mas cada uso soma 16 s à recarga do próximo, não pode ser defendido: o alvo vira pó. Escapa esquivando no contato; com a sanidade cheia resiste levando 450 de dano (nunca morre por isso). Custo 50.
 
 ### Transformação: Realizador da Calamidade
 
@@ -2254,6 +2254,10 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Habilidades
 
+- **Barril** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 10 s
+  Joga um barril de carvalho por cima, em arco: estoura no chão onde o adversário está e derruba quem estiver perto (pega quem defende parado).
+- **Salva de Azagaias** — △ + □ / Y + X · custo 22 · cooldown 11 s
+  Tira três azagaias do cinto e arremessa uma atrás da outra, em leque: cada uma empurra e a última quebra a defesa.
 - **Cravar a Justiça** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.3 m
   Recua a "Justiça" e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
 - **Guardião** — △ + L2 / Y + LT · custo 24 · cooldown 20 s
@@ -2282,11 +2286,11 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
-| ○ 1 | Estocada Dupla | 34 (2 acertos) | 2.9 m |  |
+| ○ 1 | Estocada Dupla | 34 (2 acertos) | 3.3 m |  |
 | ○ 2 | Broquel na Cara | 34 | 1.7 m |  |
-| ○ 3 | Cravada por Cima | 36 | 3 m |  |
-| ○ 4 | Haste Varrida | 34 | 2.7 m |  |
-| ○ 5 | Justiça | 67 | 3.3 m | finalizador: lança |
+| ○ 3 | Cravada por Cima | 36 | 3.4 m |  |
+| ○ 4 | Haste Varrida | 34 | 3.1 m |  |
+| ○ 5 | Lança da Vigília | 67 | 3.6999999999999997 m | finalizador: lança |
 | Frente + ○ | Se Atira em Cima | 38 | 2 m |  |
 | Trás + ○ | Recuo de Lança | 32 | 3 m | invulnerável no começo |
 | Lado + ○ | Roda da Lança | 32 | 2.8 m |  |
@@ -2297,17 +2301,24 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 ### Principal (□ / X): Azagaia
 
 - Dano 32 · alcance 20 m · cooldown 2.4 s · custo 0
+- Trás + □: **Inquebrável** (habilidade)
 
 ### Habilidades
 
-- **Cravar a Justiça** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.3 m
+- **Cravar a Lança da Vigília** — △ + ○ / Y + B · custo 26 · cooldown 12 s · dano 84 · alcance 3.3 m
   Recua a "Justiça" e crava com o corpo todo: alcance longo, quebra a defesa e derruba. Preparação longa; errar deixa ele aberto.
-- **Voo do Corvo** — △ + L2 / Y + LT · custo 18 · cooldown 8 s
-  Some numa revoada de penas escuras e reaparece: na direção do analógico ou, sem direção, colado ao lado do adversário.
+- **Salva de Azagaias** — △ + □ / Y + X · custo 22 · cooldown 11 s
+  Tira três azagaias do cinto e arremessa uma atrás da outra, em leque: cada uma empurra e a última quebra a defesa.
+- **Barril em Chamas** — Energia + Pulo (△+× / Y+A) · custo 22 · cooldown 10 s
+  Joga um barril PEGANDO FOGO por cima, em arco: estoura numa labareda onde o adversário está, derruba e deixa QUEIMANDO.
+- **Voo do Corvo** — △ + L2 / Y + LT · custo 18 · cooldown 8 s · dano 56 · alcance 3.2 m
+  Baixa a Lança da Vigília e dispara em linha reta até o adversário: a ponta crava, quebra a defesa e joga para cima.
 - **Prontidão** — R2 + × / RT + A · custo 18 · cooldown 9 s · dano 50 · alcance 3 m
   Fica pronto, de broquel erguido: um golpe físico ou habilidade que chegar de frente é segurado — ele empurra o broquel na cara e crava a lança. Não segura projéteis nem especiais; no vazio, fica aberto.
 - **Linha de Frente** — R2 + △ / RT + Y · custo 20 · cooldown 10 s · dano 52 · alcance 2.2 m
   Se atira em cima do adversário atrás do broquel: quebra a defesa e joga longe.
+- **Inquebrável** — Trás + □ / Trás + X · custo 30 · cooldown 30 s
+  Por 8 s ele não cai: o golpe que o derrubaria o levanta com 20% da vida; de novo, 10%; de novo, 5% (no máximo três vezes por round).
 - **Passiva — Resistente:** −18% de dano físico e de tiros e projéteis recebido
 
 ### Especial: Até o Amanhecer
@@ -2363,17 +2374,17 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ## MAEL — O HERÓI DA VIGÍLIA
 
-*Herói da Vigília (até o fim do round)* · arma: A machadinha, os punhos e as pedras do druida
+*Herói da Vigília (até o fim do round)* · arma: A lâmina e o escudo da Vigília, e as pedras do druida
 
 ### Físico (○ / B)
 
 | Comando | Golpe | Dano | Alcance | Observações |
 |---|---|---|---|---|
-| ○ 1 | Talho da Machadinha | 29 | 2 m |  |
-| ○ 2 | Soco do Druida | 25 | 1.6 m |  |
-| ○ 3 | Talho de Volta | 31 | 2 m |  |
-| ○ 4 | Gancho | 36 | 1.7 m |  |
-| ○ 5 | Machadada do Peregrino | 65 | 2.2 m | finalizador: lança |
+| ○ 1 | Talho da Lâmina | 29 | 2.25 m |  |
+| ○ 2 | Escudada | 25 | 1.6 m |  |
+| ○ 3 | Talho de Volta | 31 | 2.25 m |  |
+| ○ 4 | Escudo de Baixo | 36 | 1.7 m |  |
+| ○ 5 | Golpe da Lâmina do Peregrino | 65 | 2.45 m | finalizador: lança |
 | Frente + ○ | Ímpeto | 38 | 1.9 m |  |
 | Trás + ○ | Recua e Corta | 32 | 2.1 m | invulnerável no começo |
 | Lado + ○ | Talho de Passagem | 30 | 2 m |  |
@@ -2404,7 +2415,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ## GWAYNE
 
-*O Forasteiro: o arqueiro da Vigília, que carrega o arco da irmã gêmea* · arma: O arco recurvo da Gwyneth, as flechas flamejantes e a adaga
+*O Forasteiro: o arqueiro da Vigília, que carrega o arco da irmã gêmea* · arma: O arco recurvo da Gwyneth, as flechas de penas vermelhas e a adaga
 
 ### Físico (○ / B)
 
@@ -2422,16 +2433,18 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 | ↑ + ○ (no combo) | Arco para Cima | 36 | 2 m | finalizador: lança alto (combo aéreo) |
 | ↓ + ○ (no combo) | Adaga no Chão | 40 | 1.8 m | finalizador: derruba |
 
-### Principal (□ / X): Flecha Flamejante
+### Principal (□ / X): Flecha
 
-- Dano 22 · alcance 28 m · cooldown 1.1 s · custo 0
+- Dano 22 · alcance 28 m · cooldown 1 s · custo 0
 
 ### Habilidades
 
 - **Flecha de Caça** — △ + □ / Y + X · custo 26 · cooldown 13 s
-  Mira com calma e solta a flecha mais forte, acesa: derruba e deixa o alvo QUEIMANDO. A mira deixa ele parado um instante.
-- **Salva Flamejante** — △ + ○ / Y + B · custo 22 · cooldown 10 s
-  Três Flechas Flamejantes em leque, uma atrás da outra: cada uma que acerta deixa o alvo QUEIMANDO.
+  Mira com calma e solta a flecha mais forte: atravessa o campo e derruba. A mira deixa ele parado um instante.
+- **Salva de Flechas** — △ + ○ / Y + B · custo 20 · cooldown 9 s
+  Quatro flechas em leque, uma atrás da outra: fecha o caminho de quem tenta chegar perto.
+- **Flechas Flamejantes** — R2 + △ / RT + Y · custo 20 · cooldown 15 s
+  Acende as flechas: por 9 s o □ sai em chamas, 25% mais forte, e deixa o alvo QUEIMANDO.
 - **Prontidão** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Fica de prontidão: as esquivas voltam na hora e, por 7 s, ataca e atira mais rápido.
 - **Esquiva** — R2 + × / RT + A · custo 14 · cooldown 9 s
@@ -2449,7 +2462,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ## GWAYNE — O MORTO QUE CAMINHA
 
-*O Morto que Caminha (até o fim do round)* · arma: O arco recurvo da Gwyneth, as flechas flamejantes e a adaga
+*O Morto que Caminha (até o fim do round)* · arma: O arco recurvo da Gwyneth, as flechas de penas vermelhas e a adaga
 
 ### Físico (○ / B)
 
@@ -2469,16 +2482,18 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ### Principal (□ / X): Flecha da Vigília
 
-- Dano 30 · alcance 28 m · cooldown 1.1 s · custo 0
+- Dano 30 · alcance 28 m · cooldown 1 s · custo 0
 
 ### Habilidades
 
 - **Flecha de Caça** — △ + □ / Y + X · custo 26 · cooldown 13 s
-  Mira com calma e solta a flecha mais forte, acesa: derruba e deixa o alvo QUEIMANDO. A mira deixa ele parado um instante.
-- **Salva Flamejante** — △ + ○ / Y + B · custo 22 · cooldown 10 s
-  Três Flechas Flamejantes em leque, uma atrás da outra: cada uma que acerta deixa o alvo QUEIMANDO.
+  Mira com calma e solta a flecha mais forte: atravessa o campo e derruba. A mira deixa ele parado um instante.
+- **Salva de Flechas** — △ + ○ / Y + B · custo 20 · cooldown 9 s
+  Quatro flechas em leque, uma atrás da outra: fecha o caminho de quem tenta chegar perto.
 - **Prontidão** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
   Fica de prontidão: as esquivas voltam na hora e, por 7 s, ataca e atira mais rápido.
+- **Flechas Flamejantes** — R2 + △ / RT + Y · custo 20 · cooldown 15 s
+  Acende as flechas: por 9 s o □ sai em chamas, 25% mais forte, e deixa o alvo QUEIMANDO.
 - **Passo do Morto** — R2 + × / RT + A · custo 18 · cooldown 8 s
   Some na névoa azul do Samhain e reaparece: na direção do analógico ou, sem direção, do lado do adversário já cravando a adaga.
 

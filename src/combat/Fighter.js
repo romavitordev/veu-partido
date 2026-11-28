@@ -129,6 +129,7 @@ export class Fighter {
     this.chronoCd = 0; // Percepção Anacrônica (Anfitrião): recarga da esquiva automática
     this.secretRound = false; // Segredo de Veríssimo contra o Kian: uma vez por round
     this.escapedDeath = false; // Escapar da Morte (Boris): uma vez por round
+    this.unbreakableUses = 0; // INQUEBRÁVEL (Bran): quantas vezes já levantou neste round
     resetCompanion(this); // o Gambá da Artemis volta para o ombro
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
     this.surgeUsed = false; // Surto Temporal (Rubens) / Mercenária (Carina): uma vez por round
@@ -178,7 +179,12 @@ export class Fighter {
   }
 
   getRangedAbility() {
-    return this.findBuff('awakened')?.ranged || this.def.ranged;
+    const r = this.findBuff('awakened')?.ranged || this.def.ranged;
+    // b.rangedPatch (Gwayne — FLECHAS FLAMEJANTES): enquanto o buff dura, o tiro básico sai com o patch por cima
+    const lit = this.buffs.find((b) => b.rangedPatch);
+    if (!lit || !r) return r;
+    if (lit.rangedFor !== r) { lit.rangedFor = r; lit.rangedLit = { ...r, ...lit.rangedPatch, damage: Math.round(r.damage * (lit.rangedPatch.damageMult || 1)) }; }
+    return lit.rangedLit;
   }
 
   // ---------------------------------------------------------------- consultas
@@ -312,6 +318,21 @@ export class Fighter {
         this.world.audio.play('perfectBlock', { volume: 0.8, pitch: 0.8 });
         return dealt;
       }
+    }
+    // INQUEBRÁVEL (Bran — O Inquebrável; dono, 2026-11-28: "se morrer com o inquebravel ativo volta com 20% da vida, se
+    // morrer de novo volta com 10% se morrer de novo volta com 5%"): enquanto o buff dura, o golpe que o derrubaria o
+    // levanta com a fração seguinte da lista (b.unbreakable); acabou a lista no round, cai de verdade
+    const unb = this.health <= 0 && !this.sacrificeWin ? this.buffs.find((b) => b.unbreakable) : null;
+    if (unb && (this.unbreakableUses || 0) < unb.unbreakable.length) {
+      const frac = unb.unbreakable[this.unbreakableUses || 0];
+      this.unbreakableUses = (this.unbreakableUses || 0) + 1;
+      this.health = Math.max(1, Math.round(this.maxHealth * frac));
+      this.invuln = Math.max(this.invuln, 1.2);
+      this.notify(`INQUEBRÁVEL · ${Math.round(frac * 100)}%`, true);
+      this.world.fx.burst(this.chestPos(), { count: 40, color: unb.color ?? 0x8aa0c0, speed: 4.5, up: 2, life: 0.8, size: 0.26 });
+      this.world.fx.flash(this.chestPos(), { color: 0xffffff, size: 2.4, life: 0.18 });
+      this.world.audio.play('perfectBlock', { volume: 0.9, pitch: 0.5 });
+      return dealt;
     }
     // ESCAPAR DA MORTE (Boris, cânone: uma vez por cena, o dano que o derrubaria não o deixa morrendo): uma vez por round,
     // o golpe que o mataria o deixa com 1 de vida, um instante intocável
@@ -694,7 +715,7 @@ export class Fighter {
     this.radius = COMBAT.bodyRadius * this.size;
     this.dodgeCfg = { ...COMBAT.dodge, ...(def.dodge || {}) };
     this.cooldownMax.ranged = def.ranged?.cooldown || 1;
-    this.cooldownMax.special = def.special?.cooldown ?? COMBAT.specialCooldown;
+    this.cooldownMax.special = (def.special?.cooldown ?? COMBAT.specialCooldown) + (def.special?.cooldownPerUse || 0) * Math.max(0, this.specialUses - 1);
     // ao trocar de forma, a recarga do especial anterior não prende o especial novo (antes: Vestir as Faixas, 60 s,
     // travava o Disparo Espiral da Fantasma pelo mesmo tempo)
     if (this.cooldowns.special > this.cooldownMax.special) this.cooldowns.special = this.cooldownMax.special;
@@ -3253,6 +3274,8 @@ export class Fighter {
     }
     this.payCost(this.specialCost(), spBlood);
     this.specialUses++;
+    // sp.cooldownPerUse (Kian — Inexistir): cada uso na partida soma esses segundos à recarga do próximo
+    if (sp.cooldownPerUse) this.cooldownMax.special = (sp.cooldown ?? COMBAT.specialCooldown) + sp.cooldownPerUse * Math.max(0, this.specialUses - 1);
     this.cooldowns.special = this.cooldownMax.special;
     this.vel.set(0, this.vel.y, 0);
     // PREPARO: concentra a energia (vulnerável); se não for atingido, o especial começa de verdade

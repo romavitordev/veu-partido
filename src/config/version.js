@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.51.0';
+export const VERSION = '5.52.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,23 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.52.0',
+    date: '2026-11-28',
+    title: 'Armas da Vigília',
+    items: [
+      'Kerberos (Sertão do Quibungo, Aniquilação): agora é sobre quanto tempo você aguenta. Um cronômetro na tela e moedas de bônus que crescem com o tempo (2 a cada 20 s, +1 a cada minuto), e a FÚRIA dele sobe com o tempo: anda e ataca cada vez mais rápido.',
+      'Kerberos muito mais forte e agressivo: bem mais vida, mais dano e menos tempo entre os golpes. Dá para derrotar, mas só com a árvore de melhorias cheia e os lutadores mais fortes — e quem derrota ganha um BÔNUS de moedas.',
+      'Baú novo: os itens aparecem em volta do baú aberto e um painel explica cada um (nível novo, quantos já saíram e o que a habilidade faz); dá para passar de um para o outro e confirmar.',
+      'Fusões só chegam no baú com a receita pronta (os ingredientes nos níveis pedidos); antes uma fusão já descoberta podia vir sem eles.',
+      'Proteja a Ilha de Tipora: a tinta na tela começa a escorrer um pouco depois (não mais na 1ª onda) e some na última, ficando só um escuro leve nas bordas. As fases dão mais moedas (drops e chefes).',
+      'GWAYNE: o □ agora é a flecha comum de penas vermelhas. As FLECHAS FLAMEJANTES viraram um poder à parte (R2 + △): acendem as flechas por 9 s, mais fortes e deixando o alvo queimando. Novas: Salva de Flechas (quatro em leque) e a Flecha de Caça pesada.',
+      'BRAN: novo Barril (△ + ×), jogado em arco, estoura no chão e derruba; e a Salva de Azagaias (△ + □), três azagaias do cinto em leque.',
+      'BRAN — O INQUEBRÁVEL: luta com a LANÇA DA VIGÍLIA (mais alcance), joga o BARRIL EM CHAMAS (deixa queimando) e o VOO DO CORVO virou uma investida (corre com a lança baixada, sem teleporte). Poder novo INQUEBRÁVEL (← + □): por 8 s, se cair, levanta com 20% da vida; de novo, 10%; de novo, 5%.',
+      'MAEL — O HERÓI DA VIGÍLIA: a lâmina e o escudo da Vigília no lugar da machadinha — os cortes alcançam mais, o escudo bate e a defesa gasta menos. GWAYNE — O MORTO QUE CAMINHA atira as Flechas da Vigília (e as Flamejantes viram um fogo-fátuo azul).',
+      'KIAN: o Inexistir não tem mais limite de 2 usos por partida, mas cada uso aumenta a recarga do próximo (14 s, 30 s, 46 s...), também no Outro Lado.',
+    ],
+  },
   {
     v: '5.51.0',
     date: '2026-11-27',

@@ -130,7 +130,7 @@ for (const c of SHEETS) {
   if (sp.type === 'mistField') {
     md += `Solta a névoa e, dentro dela, conjura a **Acácia amplificada pela Cinerária** (${sp.damage ?? 250} de dano). Depois a névoa fica **parada no mapa** por ${sp.duration} s; com o Kaiser dentro dela: +${Math.round((sp.damageBonus - 1) * 100)}% de dano, esquiva com ${sp.evasion.iframesMult}× invulnerabilidade e metade do cooldown, corpo translúcido, área de ${sp.area} m onde o inimigo fica ${sp.enemySlow * 100}% mais lento, não regenera energia e os projéteis perdem ${sp.projectileSlow * 100}% da velocidade. Custo ${sp.energyCost} · cooldown ${sp.cooldown} s.\n`;
   } else if (sp.type === 'erase') {
-    md += `Corpo a corpo, ${sp.usesPerMatch}x por partida, não pode ser defendido: o alvo vira pó. Escapa esquivando no contato; com a sanidade cheia resiste levando ${sp.resistDamage} de dano (nunca morre por isso). Custo ${sp.energyCost}.\n`;
+    md += `Corpo a corpo, ${sp.usesPerMatch ? `${sp.usesPerMatch}x por partida` : `sem limite de usos, mas cada uso soma ${sp.cooldownPerUse} s à recarga do próximo`}, não pode ser defendido: o alvo vira pó. Escapa esquivando no contato; com a sanidade cheia resiste levando ${sp.resistDamage} de dano (nunca morre por isso). Custo ${sp.energyCost}.\n`;
   } else {
     // transformações, invocações e pactos com o mesmo resumo do jogo (não são "N de dano")
     const resumo = specialSummary(c);

@@ -162,8 +162,9 @@ export default {
   ],
 
   // Especial INEXISTIR: o corpo do alvo se enche de escrita, brilha por dentro e vira pó,
-  // como se nunca tivesse existido. Corpo a corpo, 2 vezes por partida (não volta no round
-  // seguinte), NÃO pode ser defendido — só esquivado. Com a sanidade (energia) cheia o alvo
+  // como se nunca tivesse existido. Corpo a corpo, sem limite de usos, mas CADA USO AUMENTA A RECARGA do próximo
+  // (cooldownPerUse; dono, 2026-11-28: "ele pode usar mais vezes, mas a cada vez aumenta em x segundos o cooldown, até pra
+  // usar mais vezes no outro lado"; antes 2 vezes por partida), NÃO pode ser defendido — só esquivado. Com a sanidade (energia) cheia o alvo
   // resiste: leva muito dano, mas não o suficiente para morrer. Só APAGA quem já está com 35% da vida ou menos; inteiro,
   // leva 380 de dano (balanceamento v3.32).
   special: {
@@ -172,7 +173,7 @@ export default {
     type: 'erase',
     energyCost: 50,
     cooldown: 14,
-    usesPerMatch: 2, // era 1 (+1 ao Transcender): com o fim do Transcender, os 2 usos ficam fixos
+    cooldownPerUse: 16, // a recarga depois de cada uso: 14 s, 30 s, 46 s, 62 s… (a contagem é da partida; antes usesPerMatch: 2). PROPOSTA
     unblockable: true,
     dash: { speed: 24, maxTime: 0.4, contact: 1.6 },
     resistDamage: 450, // dano quando o alvo resiste com sanidade cheia (nunca mata)

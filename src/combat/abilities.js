@@ -4371,7 +4371,7 @@ export function applySelfBuff(f, a, world) {
   }
   // a.castFx (Mael — o Chamado e a Chama de Proteção): a cena própria do poder (fx/vigiliaFx.js), parada no fim
   const castFx = a.castFx && CAST_FX[a.castFx] ? CAST_FX[a.castFx](world, f, a) : null;
-  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); castFx && castFx(); for (const [p, v] of swaps) f.rig.showProp(p, v); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
+  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, rangedPatch: a.rangedPatch, unbreakable: a.unbreakable, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); castFx && castFx(); for (const [p, v] of swaps) f.rig.showProp(p, v); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
   f.notify(a.label || a.name.toUpperCase(), true);
 }
 

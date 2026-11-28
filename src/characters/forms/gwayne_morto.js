@@ -29,16 +29,19 @@ export default {
   stats: { ...base.stats, maxHealth: 1600, moveSpeed: 8.4 }, // cabe a vida extra da transformação
   chargeFx: { style: 'aura', color: FIRE, smoke: 0x1a2030 },
   // □ AS FLECHAS DA VIGÍLIA (pedido do dono, 2026-11-28: "gwayne as flechas da vigilia"): a flecha do arsenal, mais
-  // pesada e sem fogo — o fogo fica na Salva Flamejante (o poder à parte). PROPOSTA: os números
+  // pesada e sem fogo — o fogo fica nas Flechas Flamejantes (o poder à parte, R2 + △). A Flecha de Caça e a Salva
+  // também saem com a flecha da Vigília. PROPOSTA: os números
   ranged: { ...base.ranged, name: 'Flecha da Vigília', visual: 'vigiliaArrow', color: 0x9ac8ff, damage: 30, knockback: 1.2, burn: undefined },
   melee: {
     ...base.melee,
     strikes: base.melee.strikes.map((s) => ({ ...s, damage: Math.round(s.damage * 1.1) })),
   },
   abilities: [
-    byId.flechaCaca,
-    byId.salvaFlamejante,
+    { ...byId.flechaCaca, aimColor: 0x9ac8ff, projectile: { ...byId.flechaCaca.projectile, name: 'Flecha de Caça da Vigília', visual: 'vigiliaArrow', color: 0x9ac8ff, damage: 96 } },
+    { ...byId.salvaFlechas, projectile: { ...byId.salvaFlechas.projectile, visual: 'vigiliaArrow', color: 0x9ac8ff, damage: 22 } },
     byId.prontidao,
+    // as Flechas Flamejantes acendem a flecha da Vigília num FOGO-FÁTUO azul do Samhain (PROPOSTA)
+    { ...byId.flechasFlamejantes, color: 0x7ab8ff, rangedPatch: { ...byId.flechasFlamejantes.rangedPatch, color: 0x7ab8ff } },
     {
       // R2 + × PASSO DO MORTO (PROPOSTA): some na névoa azul do Samhain e reaparece do lado do adversário com a adaga
       id: 'passoMorto',
