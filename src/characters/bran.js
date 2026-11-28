@@ -29,7 +29,7 @@ export default {
     tagline: 'Eu preciso voltar, mais uma vez.',
   },
   stats: { moveSpeed: 7.1, attackSpeed: 0.96 }, // quase 2 m, pesado (PROPOSTA)
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge', victory: 'vic_bran', block: 'block_heavy' },
+  anims: { idle: 'idle_spear', run: 'run', charge: 'charge', victory: 'vic_bran', block: 'block_spear' }, // a guarda de lança e broquel (spearClips.js)
   chargeFx: { style: 'default', color: NIGHT },
   dodge: { style: 'default', distance: 4.6 },
 
@@ -188,7 +188,7 @@ export default {
     damage: 250,
     color: NIGHT,
     sound: 'specialStart',
-    prepare: { anim: 'block_heavy', time: 0.45 },
+    prepare: { anim: 'block_spear', time: 0.45 },
     dash: { speed: 22, maxTime: 0.55, contact: 2.1, anim: 'shoulder_charge' },
     hits: [
       { t: 0.1, anim: 'shoulder_bash', dur: 0.32, share: 0.12, fx: { kind: 'punch' }, sound: 'heavyPunch', shout: 'NINGUÉM PASSA' },

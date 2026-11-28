@@ -376,9 +376,14 @@ b.group('prop_hair', 'prop_hair')
 # ================================================================ FANTASIADO: prop_woodMask — a máscara de casca em espiral
 # cobrindo a cabeça toda, os GALHOS para cima como chifres
 Mk = Sculpt()
+EYE_X, EYE_Z = 0.042, 0.012  # (×H a partir do centro da cabeça) onde ficam os olhos do rosto
 Mk.ell(Vh(0, -0.005, 0.02), (0.18 * H, 0.19 * H, 0.2 * H))
 Mk.ell(Vh(0, -0.05, -0.1), (0.15 * H, 0.15 * H, 0.14 * H))
-FC = Vh(0, -0.2, 0.0)  # o centro da espiral, no rosto
+# o FURO DO OLHO (dono: "na mascara do mael parece ter só uma abertura do olho, analise a referencia"; arte "Mael
+# Fantasiado"): a espiral da casca gira em volta de UMA abertura só, sobre o olho DIREITO dele (−X, à esquerda de quem
+# olha). O furo atravessa a casca: o olho verde aparece lá dentro
+FC = Vh(-EYE_X, -0.2, EYE_Z)  # o centro da espiral = o furo do olho
+Mk.ell(FC, (0.022 * H, 0.08 * H, 0.02 * H), neg=True)
 
 
 def spiral(p):

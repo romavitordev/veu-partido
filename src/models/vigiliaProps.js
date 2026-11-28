@@ -67,9 +67,11 @@ export function addBranProps(rig) {
   rig.sockets.handR.add(sp);
   rig.props.spear = sp;
   rig.gripProp = { obj: sp, base: sp.rotation.x, rest: SPEAR_REST }; // os golpes de lança giram a pegada (Animator.updateGrip)
+  // o broquel segurado pela alça do meio: o punho atrás do umbo, a face para a frente na guarda de lança (idle_spear).
+  // Rotação e posição achadas na pose da guarda (a face do broquel virada para a frente do corpo)
   const sh = broquel();
-  sh.rotation.set(0, -Math.PI / 2, 0);
-  sh.position.set(0.02, 0.04, 0);
+  sh.rotation.set(1.467, -1.121, 0);
+  sh.position.set(0.03, -0.065, -0.013);
   rig.sockets.handL.add(sh);
   rig.props.shield = sh;
   // a bainha com três azagaias, de pé atrás do quadril direito, as pontas para cima
@@ -97,20 +99,21 @@ export function addBranInquebravelProps(rig) {
   for (const p of ['hair', 'fur']) if (rig.props[p]) rig.showProp(p, false);
 }
 
-// a MACHADINHA do Mael (cânone: no cinto): cabo curto de madeira, cabeça de ferro com o fio claro
+// a MACHADINHA do Mael (cânone: no cinto): cabo curto de madeira, cabeça de ferro com o fio claro. Como as outras armas
+// do jogo, sai da mão pelo −Y (a cabeça na ponta, longe do punho)
 function machadinha() {
   const g = new THREE.Group();
   const haft = part(new THREE.CylinderGeometry(0.016, 0.019, 0.46, 7), WOOD);
-  haft.position.y = 0.16;
+  haft.position.y = -0.16;
   g.add(haft);
-  const head = part(new THREE.BoxGeometry(0.03, 0.09, 0.14), IRON);
-  head.position.set(0, 0.34, 0.06);
+  const head = part(new THREE.BoxGeometry(0.034, 0.11, 0.16), IRON);
+  head.position.set(0, -0.34, 0.07);
   g.add(head);
-  const edge = part(new THREE.BoxGeometry(0.012, 0.13, 0.03), 0xd8d4d0, { mat: toon(0xd8d4d0) });
-  edge.position.set(0, 0.34, 0.14);
+  const edge = part(new THREE.BoxGeometry(0.014, 0.16, 0.03), 0xd8d4d0, { mat: toon(0xd8d4d0) });
+  edge.position.set(0, -0.34, 0.16);
   g.add(edge);
   const wrap = part(new THREE.CylinderGeometry(0.021, 0.021, 0.1, 7), LEATHER);
-  wrap.position.y = 0.02;
+  wrap.position.y = -0.02;
   g.add(wrap);
   return g;
 }

@@ -79,9 +79,10 @@ export function addCorneliusProps(rig) {
   rig.sockets.handR.add(sp);
   rig.props.spear = sp;
   rig.gripProp = { obj: sp, base: sp.rotation.x, rest: SPEAR_REST }; // os golpes de lança giram a pegada (Animator.updateGrip)
+  // o escudo na frente do peito com a face para a frente na guarda de lança (idle_spear; spearClips.js)
   const sh = corneliusShield();
-  sh.rotation.set(0, -Math.PI / 2, 0);
-  sh.position.set(0.02, 0.04, 0);
+  sh.rotation.set(1.48, -1.121, 0);
+  sh.position.set(0.035, -0.074, -0.013);
   rig.sockets.handL.add(sh);
   rig.props.shield = sh;
   aura(rig, 0x5a8cff);

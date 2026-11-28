@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.50.1';
+export const VERSION = '5.50.2';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.50.2',
+    date: '2026-11-27',
+    title: 'Lança, Broquel e Machadinha',
+    items: [
+      'Bran e Cornelius: nova guarda — a lança apontada para a frente na altura do ombro e o broquel de frente para o adversário, na espera e na defesa (antes a lança ficava de lado e o escudo deitado).',
+      'Mael: a machadinha agora sai do punho com a lâmina para a frente, nas sequências e na vitória.',
+      'Mael (Herói da Vigília): a máscara de casca tem a abertura do olho no centro da espiral, como na arte.',
+    ],
+  },
   {
     v: '5.50.1',
     date: '2026-11-27',

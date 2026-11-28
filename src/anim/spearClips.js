@@ -9,10 +9,20 @@
 //   spear_over    por cima, crava para baixo    spear_low    por baixo, sobe na diagonal
 //   spear_air     do alto, crava no chão        spear_throw / spear_throw_hold  o arremesso (e a carga segurando □)
 //   spear_sweep   a haste varrida (a lança deitada, o giro do corpo)
-export const SPEAR_REST = 1.9; // a guarda: a ponta para a frente, um pouco para cima
+// GUARDA DE LANÇA E ESCUDO (2026-11-27, dono: "o jeito que o bran segura a lança e o escudo precisa ser melhorado").
+// Antes o Bran e o Cornelius ficavam na guarda de boxe (idle_fist): os dois punhos no rosto, a lança erguida acima do
+// ombro e o escudo solto ao lado do punho. Agora: a mão da lança baixa na cintura, o braço torcido para a haste deitar
+// para a FRENTE (a ponta um pouco para cima, na altura do peito do adversário) e o braço do escudo cruzado na frente
+// do peito. A torção do ombro e o giro da pegada foram achados numericamente (eixo X da mão de lado; ponta ≈ (0,08,
+// 0,17, 1)) e conferidos renderizados de frente, de lado e de três-quartos.
+export const SPEAR_REST = 0.48; // a guarda: a haste deitada para a frente, a ponta um pouco para cima
 
 export function addSpearClips(CLIPS, k, GUARD) {
-  const G = { ...GUARD, sR: [-0.7, 0, -0.25], eR: [-2.0, 0, 0] };
+  const G = { ...GUARD, h: -0.1, hip: [0, -0.45, 0], sp: [0.12, 0.3, 0], hd: [0, -0.25, 0], sL: [-0.7, -0.3, 0], eL: [-0.9, 0, 0], sR: [-0.2, 0.2, -0.1], eR: [-1.0, 0, 0], lL: [-0.35, 0, 0.14], kL: [0.45, 0, 0], lR: [0.3, 0, -0.14], kR: [0.4, 0, 0] };
+  CLIPS.idle_spear = { dur: 1.6, loop: true, keys: [k(0, G), k(0.5, { ...G, h: -0.13, sp: [0.16, 0.3, 0] }), k(1, G)] };
+  // a defesa: agacha atrás do escudo erguido na frente do rosto, a lança recolhida rente ao corpo
+  const B = { ...G, h: -0.26, sp: [0.3, 0.2, 0], hd: [0.15, -0.2, 0], sL: [-1.05, -0.35, 0.05], eL: [-1.1, 0, 0], lL: [-0.55, 0, 0.22], kL: [0.9, 0, 0], lR: [0.5, 0, -0.22], kR: [0.85, 0, 0] };
+  CLIPS.block_spear = { dur: 0.42, keys: [k(0, { ...B, h: -0.3 }), k(0.35, B), k(1, { ...B, h: -0.24 })], grip: [[0, SPEAR_REST], [1, SPEAR_REST]] };
   const R = SPEAR_REST;
   const P = {
     thrustWind: { ...G, h: -0.12, sp: [0.05, -0.2, 0], sR: [-0.3, 0, -0.2], eR: [-1.9, 0, 0] },

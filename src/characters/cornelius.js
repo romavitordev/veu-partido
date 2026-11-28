@@ -24,7 +24,7 @@ export default {
     tagline: 'Você não me responde! Você sabe que eu tenho pavio curto.',
   },
   stats: { moveSpeed: 7.0, attackSpeed: 0.98 },
-  anims: { idle: 'idle_fist', run: 'run', charge: 'charge', victory: 'vic_cornelius', block: 'block_heavy' },
+  anims: { idle: 'idle_spear', run: 'run', charge: 'charge', victory: 'vic_cornelius', block: 'block_spear' }, // a guarda de lança e escudo (spearClips.js)
   chargeFx: { style: 'default', color: BLUE },
   dodge: { style: 'default', distance: 4.4 },
 

@@ -130,9 +130,9 @@ export function addVictoryClips(CLIPS, k) {
     // Cascadia: as duas lâminas abaixadas, os ombros caídos, a cabeça tombada — cansada
     vic_cascadia: pose({ sp: [0.12, 0, 0], hd: [0.2, 0, 0.18], sR: [-0.3, 0.2, -0.35], eR: [-0.2, 0, 0], sL: [-0.3, -0.2, 0.35], eL: [-0.2, 0, 0], lL: [-0.05, 0, 0.12], lR: [0.05, 0, -0.12] }),
     // Cornelius: a lança erguida, o escudo na frente e o grito
-    vic_cornelius: pose({ sp: [-0.12, 0, 0], hd: [-0.35, 0, 0], sR: [-2.8, 0, -0.1], eR: [-0.2, 0, 0], sL: [-1.2, 0.4, 0.3], eL: [-1.2, 0, 0], lL: [-0.2, 0, 0.18], lR: [0.2, 0, -0.18] }),
+    vic_cornelius: pose({ sp: [-0.12, 0, 0], hd: [-0.35, 0, 0], sR: [-2.8, 0, -0.1], eR: [-0.2, 0, 0], sL: [-0.75, -0.3, 0.05], eL: [-1.0, 0, 0], lL: [-0.2, 0, 0.18], lR: [0.2, 0, -0.18] }),
     // Bran: a lança fincada de pé ao lado, o broquel no peito e o olhar no horizonte — o vigia que aguentou a noite
-    vic_bran: pose({ sp: [0.04, 0, 0], hd: [-0.12, 0.35, 0], sR: [-0.45, 0.1, -0.3], eR: [-2.2, 0, 0], sL: [-0.9, 0.55, 0.35], eL: [-1.5, 0, 0], lL: [-0.08, 0, 0.16], lR: [0.06, 0, -0.16] }),
+    vic_bran: pose({ sp: [0.04, 0, 0], hd: [-0.12, 0.35, 0], sR: [-0.45, 0.1, -0.3], eR: [-2.2, 0, 0], sL: [-0.75, -0.3, 0.05], eL: [-1.0, 0, 0], lL: [-0.08, 0, 0.16], lR: [0.06, 0, -0.16] }),
     // Mael: a mão aberta no peito (o druida que aceitou o destino), a machadinha baixa ao lado e o rosto erguido
     vic_mael: pose({ sp: [-0.04, 0, 0], hd: [-0.25, -0.15, 0], sR: [-0.2, 0.15, -0.25], eR: [-0.35, 0, 0], sL: [-0.75, -0.9, 0.2], eL: [-1.9, 0, 0], lL: [-0.06, 0, 0.12], lR: [0.1, 0, -0.14] }),
     // Karise: agachada, as adagas abertas dos dois lados, a cabeça baixa no capuz

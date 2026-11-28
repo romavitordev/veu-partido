@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.50.2 — Lança, Broquel e Machadinha
+
+### Alterado
+
+- Bran e Cornelius: nova guarda de lança e escudo — a lança apontada para a frente na altura do ombro e o broquel de frente para o adversário, na espera, na defesa e na vitória (os dois dividem a guarda).
+- Mael: a machadinha sai do punho com a lâmina para a frente (antes pendia para baixo).
+- Mael (Herói da Vigília): a máscara de casca ganhou a única abertura do olho, no centro da espiral, como na arte "Mael Fantasiado".
+- Retratos do elenco do Bran, Mael e Cornelius refeitos.
+
 ## v5.50.1 — Até o Amanhecer
 
 ### Alterado
