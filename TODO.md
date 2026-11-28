@@ -861,7 +861,7 @@ baixado sem o OK do dono.
       - [x] (v5.50.0) **Mael** — O Druida e Herói da Vigília (versão na seleção e Transformação: a máscara de casca em
         espiral com galhos, a gola de folhas secas e a capa esfarrapada). Kit PROPOSTA em lore/A-VIGILIA.md; especial
         próprio "O Círculo do Samhain" (o sigilo dourado da Chama de Proteção). Faltam Zuri, Gwayne e Eileen.
-      - [x] (v5.50.5) **Gwayne** — O Forasteiro e O Morto que Caminha (versão na seleção e Transformação: o crânio de
+      - [x] (v5.51.0) **Gwayne** — O Forasteiro e O Morto que Caminha (versão na seleção e Transformação: o crânio de
         lobo com as presas e as penas vermelhas, a pele de pelo cinza e o poncho esfarrapado). Kit PROPOSTA em
         lore/A-VIGILIA.md: arqueiro com o arco da Gwyneth, Flechas Flamejantes que queimam (cânone), Prontidão e Esquiva
         (cânone); especial próprio "A Flecha de Gwyneth". Faltam Zuri e Eileen.

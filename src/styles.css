@@ -898,6 +898,9 @@ body.touch-ui .dmg small, body.touch-ui .dmg i { font-size: 13px; }
   .sel-center .pcol { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .sel-center .pcol.p2 { align-items: flex-end; text-align: right; }
   .sel-center .plate { max-width: none; padding: 0; background: none; border: 0; }
+  /* a placa do P2 ocupa a coluna toda (alinhada à direita ela crescia do tamanho do nome e um nome longo como
+     "GWAYNE — O MORTO QUE CAMINHA" passava por cima da coluna do P1 em vez de encolher) */
+  .sel-center .pcol.p2 .plate { align-self: stretch; }
   .plate .pn { display: flex; align-items: baseline; gap: 10px; min-width: 0; font-size: clamp(34px, 3.9vw, 60px); line-height: .9; text-shadow: none; }
   .pcol.p2 .plate .pn { flex-direction: row-reverse; }
   .plate .pn .ptag { font-family: 'Bebas Neue', sans-serif; font-size: .5em; letter-spacing: .08em; text-shadow: 0 0 14px currentColor; }

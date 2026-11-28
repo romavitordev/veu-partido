@@ -575,6 +575,13 @@ export class SelectScreen {
         <div class="pn"><span class="ptag">${this.M.slots[p]}</span><b style="--c:${front.color}">${front.name}</b></div>
         <div class="po">${defTeams(front).join(' / ')} · <span style="color:${ELEMENTS[front.element].color}">${ELEMENTS[front.element].name}</span></div>
         <div class="pt">“${front.info.tagline}”</div>${this.versionLine(p, front)}${teamLine}`;
+      // nome longo (dono, 2026-11-27: "GWAYNE — O MORTO QUE CAM..." "poderia aparecer inteiro"): a fonte encolhe até o
+      // nome caber na placa, em vez de cortar com reticências
+      const nameEl = this.plates[p].querySelector('.pn b');
+      if (nameEl && nameEl.scrollWidth > nameEl.clientWidth + 1) {
+        const k = Math.max(0.45, (nameEl.clientWidth / nameEl.scrollWidth) * 0.98);
+        nameEl.style.fontSize = `${k.toFixed(3)}em`;
+      }
       this.plates[p].classList.toggle('ok', this.ready[p]);
       // ficha resumida embaixo da grade
       // FICHA (refeita em 2026-11-21: "tem umas habilidades dizendo em baixo que já está ultrapassado pro nivel que está
