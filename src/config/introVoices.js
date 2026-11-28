@@ -464,6 +464,32 @@ export const VOICES = {
       any: [(o) => `O arco era da minha irmã, ${o.name}. Ele não erra.`, (o) => `Eu sou de fora, ${o.name}. Mas esse lugar é meu agora.`],
     },
   },
+  // ZURI (A Vigília): a curandeira, curta e prática; fala de ferida, de erva e de ler a luta (PROPOSTA)
+  zuri: {
+    open: {
+      ally: (o) => `${o.name}. Vai na frente. Se cair, eu te levanto.`,
+      rival: (o) => `${o.name}. Já li gente como ${o.group}. Defendem mal.`,
+      any: [(o) => `Fica parado, ${o.name}. Deixa eu ver onde dói.`, (o) => `Eu curo e eu corto, ${o.name}. Escolhe.`],
+    },
+    reply: {
+      ally: (o) => `Pode ir, ${o.name}. Eu fico com a bolsa de ervas.`,
+      rival: (o) => `Fala, ${o.name}. Eu tô contando teus passos.`,
+      any: [(o) => `Tu respira alto, ${o.name}. Já sei onde bater.`, (o) => `Depois eu te remendo, ${o.name}. Se der.`],
+    },
+  },
+  // EILEEN (A Vigília): a apicultora teimosa e calorosa; fala das abelhas e de tentar de novo (PROPOSTA)
+  eileen: {
+    open: {
+      ally: (o) => `${o.name}! Fica do meu lado, que as abelhas não te picam.`,
+      rival: (o) => `${o.name}. As abelhas não gostam de ${o.group}.`,
+      any: [(o) => `Se eu errar, ${o.name}, eu tento de novo. E de novo.`, (o) => `Cuidado com o pote, ${o.name}. Elas acordaram.`],
+    },
+    reply: {
+      ally: (o) => `Vai, ${o.name}! Eu solto o enxame atrás.`,
+      rival: (o) => `Fala, ${o.name}. Elas já estão zumbindo.`,
+      any: [(o) => `Eu falho bastante, ${o.name}. Mas nunca desisto.`, (o) => `Tu cheira a medo, ${o.name}. Abelha sente.`],
+    },
+  },
   // RUBENS NALUTI: fala por PALAVRAS-CHAVE, sério e econômico — "Ainda bem que eu voltei, e vou continuar voltando."
   rubens: {
     open: {

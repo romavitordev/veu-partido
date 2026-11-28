@@ -5,6 +5,7 @@ import { applyHit } from '../damage.js';
 import { splitDamage, trySpecialBlock } from './common.js';
 import { sigilMap, emberBurst, rootSnap } from '../../fx/vigiliaFx.js';
 import { igniteFighter } from '../burn.js';
+import { stingSwarm } from '../bees.js';
 import { gwayneBow } from '../../models/vigiliaProps.js';
 import { overShoulder, impactClose } from '../../camera/shots.js';
 
@@ -274,5 +275,135 @@ export const twinArrows = {
         world.endCinematic();
       },
     };
+  },
+};
+
+// ZURI — PONTO FRACO (PROPOSTA): ela lê o adversário (a ANÁLISE do cânone) — três pontos dourados acendem no corpo dele,
+// ele fica preso no olhar dela — e ela corta um a um com a faca; o último corte derruba e uma parte volta para ela como
+// vida (Curandeira). "Fica parado. Deixa eu ver isso."
+export const weakPoint = {
+  telegraph: () => ({ time: 0.5, anim: 'turn_look', animDuration: 0.5, mark: 'laser' }),
+  canStart(f, sp) {
+    const opp = f.opponent;
+    return !!opp && opp.state !== 'ko' && opp.visible && distXZ(f.pos, opp.pos) <= (sp.range ?? 9);
+  },
+  start(f, sp, world) {
+    const opp = f.opponent;
+    if (trySpecialBlock(world, f, opp, sp)) return { update: () => true, cancel() {} };
+    const color = sp.color ?? 0xe0a83a;
+    const parts = splitDamage(sp.damage ?? COMBAT.specialDamage, sp.shares ?? [0.25, 0.25, 0.5]);
+    const tl = new Timeline();
+    f.vel.set(0, 0, 0);
+    f.yaw = yawTo(f.pos, opp.pos);
+    f.anim.play('turn_look', { restart: true, duration: 0.7 });
+    world.specialBanner(f, sp, sp.name);
+    world.audio.play('ritual', { volume: 0.7, pitch: 1.4 });
+    opp.stun(2.2, 'stagger', { bind: true });
+    opp.vel.set(0, 0, 0);
+    opp.notify('ANALISADO', true);
+    // os três pontos: o ombro, o peito e a perna, acesos em dourado
+    const spots = [[0.25, 0.35], [0, 0], [-0.15, -0.6]];
+    const at = (i) => opp.chestPos().add(new THREE.Vector3(spots[i][0], spots[i][1], 0));
+    spots.forEach((_, i) => tl.add(0.15 + i * 0.15, () => {
+      world.fx.ring(at(i), { color, radius: 0.28, life: 0.9, vertical: true, yaw: f.yaw });
+      world.fx.flash(at(i), { color, size: 0.6, life: 0.2 });
+    }));
+    let dealt = 0;
+    tl.add(0.75, () => {
+      // ela entra colada
+      const back = forwardFromYaw(yawTo(opp.pos, f.pos));
+      f.pos.set(opp.pos.x + back.x * 1.2, 0, opp.pos.z + back.z * 1.2);
+      f.yaw = yawTo(f.pos, opp.pos);
+      world.audio.play('blink', { volume: 0.5, pitch: 1.3 });
+    });
+    const cuts = [['slash_h', 0.8], ['slash_h_back', 1.15], ['knife_final', 1.55]];
+    cuts.forEach(([anim, t], i) => {
+      tl.add(t, () => f.anim.play(anim, { restart: true, duration: 0.35 }));
+      tl.add(t + 0.14, () => {
+        if (opp.state === 'ko') return;
+        const last = i === cuts.length - 1;
+        const p = at(i);
+        world.fx.flash(p, { color: last ? 0xffffff : color, size: last ? 2 : 1.1, life: 0.14 });
+        world.fx.burst(p, { count: last ? 30 : 14, color, speed: last ? 6 : 3.5, life: 0.4, size: 0.12 });
+        world.cameraRig.shake(last ? 0.45 : 0.15, last ? 0.25 : 0.1);
+        const r = applyHit(world, f, opp, { damage: parts[i], kind: 'special', element: f.def.element, reaction: false, ignoreInvuln: true, sound: last ? 'slashFinal' : 'bladeHit', color, scale: last ? 1.8 : 1.1 });
+        if (typeof r === 'number') dealt += r;
+        if (last) {
+          world.showBanner && world.showBanner(sp.release ?? 'ACHEI', f.def.color);
+          if (opp.state !== 'ko') opp.react({ dir: forwardFromYaw(f.yaw), knockback: 5, hitstun: COMBAT.launchHitstun, launch: true });
+          // CURANDEIRA: uma parte do que ela tirou volta como vida
+          const heal = Math.round(dealt * (sp.heal ?? 0.25));
+          if (heal > 0 && f.state !== 'ko') {
+            f.health = Math.min(f.maxHealth, f.health + heal);
+            f.notify('+' + heal + ' VIDA', true);
+            world.fx.burst(f.chestPos(), { count: 18, color: 0x9ad870, speed: 1.4, up: 1.6, life: 0.7, size: 0.12 });
+          }
+        }
+      });
+    });
+    tl.end(2.1);
+    return { update: (dt) => tl.update(dt), cancel() {} };
+  },
+};
+
+// EILEEN — A COLMEIA (PROPOSTA): ela arranca a tampa do pote e o ENXAME inteiro sai num rio dourado até o adversário,
+// que fica preso no meio da nuvem — lento e picado (stingSwarm); ela corre e fecha com a Colheita da foice. Na fantasia
+// (sp.burn), o pote está pegando fogo e o alvo fica queimando também. "Elas não picam quem eu gosto."
+export const hiveSwarm = {
+  telegraph: () => ({ time: 0.5, anim: 'throw_r', animDuration: 0.5, mark: 'laser' }),
+  canStart(f, sp) {
+    const opp = f.opponent;
+    return !!opp && opp.state !== 'ko' && opp.visible && distXZ(f.pos, opp.pos) <= (sp.range ?? 16);
+  },
+  start(f, sp, world) {
+    const opp = f.opponent;
+    if (trySpecialBlock(world, f, opp, sp)) return { update: () => true, cancel() {} };
+    const color = sp.color ?? 0xf2c230;
+    const parts = splitDamage(sp.damage ?? COMBAT.specialDamage, sp.shares ?? [0.35, 0.65]);
+    const tl = new Timeline();
+    f.vel.set(0, 0, 0);
+    f.yaw = yawTo(f.pos, opp.pos);
+    f.anim.play('throw_r', { restart: true, duration: 0.6 });
+    world.specialBanner(f, sp, sp.name);
+    world.audio.play('swarm', { volume: 0.9 });
+    const hand = () => f.rig.sockets.handR.getWorldPosition(new THREE.Vector3());
+    // o rio de abelhas: da mão dela até o alvo
+    const river = world.fx.emitter({
+      rate: 120,
+      follow: () => hand().lerp(opp.chestPos(), Math.random()),
+      particle: { color, speed: 1.5, spread: 0.4, life: 0.35, size: 0.07 },
+    });
+    let stopped = false;
+    const stop = () => { if (!stopped) { stopped = true; river.stop(); } };
+    tl.add(0.45, () => {
+      if (opp.state === 'ko') return;
+      opp.stun(1.7, 'stagger', { bind: true });
+      opp.vel.set(0, 0, 0);
+      stingSwarm(world, f, opp, { dps: 10, duration: 4, slow: 0.65 });
+      if (sp.burn) igniteFighter(world, f, opp, sp.burn);
+      applyHit(world, f, opp, { damage: parts[0], kind: 'special', element: 'energia', reaction: false, ignoreInvuln: true, knockback: 0, hitstun: 0, sound: 'impact', color, scale: 1.2 });
+      opp.notify('PRESO NO ENXAME', true);
+    });
+    tl.add(1.1, () => {
+      stop();
+      const back = forwardFromYaw(yawTo(opp.pos, f.pos));
+      f.pos.set(opp.pos.x + back.x * 1.4, 0, opp.pos.z + back.z * 1.4);
+      f.yaw = yawTo(f.pos, opp.pos);
+      world.fx.burst(f.chestPos(), { count: 16, color: 0x8a8478, kind: 'smoke', speed: 0.8, life: 0.5, size: 0.4 });
+      f.anim.play('slash_finisher', { restart: true, duration: 0.6 });
+    });
+    tl.add(1.38, () => {
+      if (opp.state === 'ko') return;
+      const p = opp.chestPos();
+      world.fx.flash(p, { color, size: 2.2, life: 0.16 });
+      world.fx.burst(p, { count: 40, color, speed: 6, life: 0.5, size: 0.1 });
+      world.fx.ring(new THREE.Vector3(opp.pos.x, 0.08, opp.pos.z), { color, radius: 2.4, life: 0.4 });
+      world.cameraRig.shake(0.5, 0.3);
+      applyHit(world, f, opp, { damage: parts[1], kind: 'special', element: 'energia', reaction: false, ignoreInvuln: true, sound: 'slashFinal', color, scale: 2 });
+      world.showBanner && world.showBanner(sp.release ?? 'COLHEITA', f.def.color);
+      if (opp.state !== 'ko') opp.react({ dir: forwardFromYaw(f.yaw), knockback: 6, hitstun: COMBAT.launchHitstun, launch: true });
+    });
+    tl.end(1.9);
+    return { update: (dt) => tl.update(dt), cancel: stop };
   },
 };

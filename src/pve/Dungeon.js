@@ -199,6 +199,8 @@ export class Dungeon {
       w.fighters.push(p2);
       const baseOpp = w.opponentOf.bind(w);
       w.opponentOf = (f) => (f === this.enemy ? this.enemyTarget() : f === this.player || f === this.player2 ? this.enemy : baseOpp(f));
+      // o AMIGO do coop (os curandeiros curam o amigo de perto: combat/healers.js)
+      w.allyOf = (f) => (f === this.player ? this.player2 : f === this.player2 ? this.player : null);
     }
     // o KIT de cada jogador (as cartas que reforçam os golpes dele): registra as cartas para o HUD e o baú as acharem
     for (const p of this.players) { p.kitChar = p.def.id; kitUpgrades(p.def); }

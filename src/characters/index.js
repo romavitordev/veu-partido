@@ -68,7 +68,9 @@ import espreitador from './espreitador.js';
 import bran from './bran.js';
 import mael from './mael.js';
 import gwayne from './gwayne.js';
-import { juanPortador, deusMorteReliquia, anfitriaoReliquia, branInquebravelVersao, maelHeroiVersao, gwayneMortoVersao } from './selectableForms.js';
+import zuri from './zuri.js';
+import eileen from './eileen.js';
+import { juanPortador, deusMorteReliquia, anfitriaoReliquia, branInquebravelVersao, maelHeroiVersao, gwayneMortoVersao, zuriGuerreiraVersao, eileenFantasiaVersao } from './selectableForms.js';
 
 // Elenco jogável, na ordem da tela de seleção — AGRUPADO POR EQUIPE/TEMPORADA (a grade tem 3 colunas × 5 linhas por
 // página, então cada grupo ocupa linhas inteiras):
@@ -88,7 +90,7 @@ export const ROSTER = [
   cristino, // Transtornados (Hexatombe) — o cangaceiro que não queria jogar o jogo
   eloy, cindy, caio, franco, ale, // PSIKOLERA (Hexatombe) — o baterista e fundador, a baixista, o vocalista, o guitarrista e o teclado (Alê)
   raziel, sabara, alvira, velisar, zefero, // Vampiros (Hexatombe) — o líder, a batedora, a Primeira Vampira (2026-11-18), o Velisar e o Zéfero (2026-11-19)
-  bran, branInquebravelVersao, mael, maelHeroiVersao, gwayne, gwayneMortoVersao, // A Vigília (Treb Ciach, 890) — o Bran (2026-11-27), o Mael e o Gwayne; Zuri e Eileen depois
+  bran, branInquebravelVersao, mael, maelHeroiVersao, gwayne, gwayneMortoVersao, zuri, zuriGuerreiraVersao, eileen, eileenFantasiaVersao, // A Vigília (Treb Ciach, 890) — o Bran (2026-11-27), o Mael, o Gwayne, a Zuri e a Eileen (2026-11-28)
   // (2026-10-27) PORTADORES ≠ RELÍQUIAS: quem CARREGA a Relíquia e quem É a Relíquia. As formas ainda acontecem na luta
   // (Henri → Juan (Portador) → Portador do Trono; Arnaldo → Anfitrião; Ferreiro → Deus da Morte), mas também dá para
   // começar já como elas (selectableForms.js)
@@ -113,6 +115,8 @@ export const VERSION_GROUPS = [
   ['bran', 'bran_inquebravel'], // Bran → O Inquebrável (a fantasia de corvo do Samhain)
   ['mael', 'mael_heroi'], // Mael → Herói da Vigília (a máscara de casca e a capa de folhas)
   ['gwayne', 'gwayne_morto'], // Gwayne → O Morto que Caminha (o crânio de lobo e a pele cinza)
+  ['zuri', 'zuri_guerreira'], // Zuri → Guerreira da Vigília (o crânio de cervo e a capa)
+  ['eileen', 'eileen_fantasia'], // Eileen → Fantasiada (o saco costurado, os galhos e o escudo)
 ];
 
 // índices no ROSTER das versões do lutador do índice i (ele mesmo incluído; só ele quando não tem outras)

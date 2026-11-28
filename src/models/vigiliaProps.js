@@ -8,6 +8,9 @@ import { spear } from './ordoWeapons.js';
 // com umbo e as AZAGAIAS na bainha do cinto. Mesma empunhadura de models/ordoProps.js (o cabo atravessa o punho).
 const GRIP_HEAVY = -1.15;
 const FIST = -0.06;
+// a PEGADA DE FACA do resto do elenco (models/props.js GRIP): com 0 a lâmina saía do punho para trás, como um bastão
+// (dono, 2026-11-28: "a faca da zuri está segurada errada, erro antigo" — a adaga do Gwayne tinha o mesmo erro)
+const KNIFE_GRIP = -1.35;
 const WOOD = 0x6a4a30;
 const IRON = 0x8a8a88;
 const LEATHER = 0x4a3020;
@@ -328,7 +331,7 @@ export function addGwayneProps(rig) {
   rig.sockets.handL.add(bow);
   rig.props.bow = bow;
   const d = adaga();
-  inFist(d, 0);
+  inFist(d, KNIFE_GRIP);
   rig.sockets.handR.add(d);
   rig.props.dagger = d;
   for (const p of ['skullMask', 'pelt', 'poncho']) if (rig.props[p]) rig.showProp(p, false);
@@ -340,4 +343,143 @@ export function addGwayneMortoProps(rig) {
   addGwayneProps(rig);
   for (const p of ['skullMask', 'pelt', 'poncho']) if (rig.props[p]) rig.showProp(p, true);
   for (const p of ['hair', 'hoodCowl']) if (rig.props[p]) rig.showProp(p, false);
+}
+
+// a FACA da Zuri (cânone: a arma dela é uma faca): a lâmina curta de ferro e o cabo de madeira; na forma Guerreira da
+// Vigília, a FACA DA VIGÍLIA (aço claro, guarda e pomo de bronze). Sai da mão pelo −Y, como a adaga do Gwayne
+function zuriKnife(vigilia = false) {
+  const g = new THREE.Group();
+  const hilt = part(new THREE.CylinderGeometry(0.014, 0.016, 0.1, 6), vigilia ? LEATHER : WOOD);
+  hilt.position.y = 0.02;
+  g.add(hilt);
+  if (vigilia) {
+    const pommel = part(new THREE.SphereGeometry(0.02, 8, 6), BRONZE);
+    pommel.position.y = 0.075;
+    g.add(pommel);
+    const guard = part(new THREE.BoxGeometry(0.022, 0.018, 0.09), BRONZE);
+    guard.position.y = -0.04;
+    g.add(guard);
+  }
+  const col = vigilia ? VSTEEL : 0xb8b4ae;
+  const blade = part(new THREE.BoxGeometry(0.008, vigilia ? 0.24 : 0.17, 0.032), col, { mat: toon(col) });
+  blade.position.y = vigilia ? -0.16 : -0.12;
+  g.add(blade);
+  const tip = part(new THREE.ConeGeometry(0.018, 0.05, 4), col, { mat: toon(col) });
+  tip.rotation.x = Math.PI;
+  tip.scale.x = 0.4;
+  tip.position.y = vigilia ? -0.305 : -0.23;
+  g.add(tip);
+  return g;
+}
+
+// ZURI: a faca na direita, a lâmina para baixo. A fantasia (o crânio de cervo, o capuz com o cachecol e a capa
+// esfarrapada) fica guardada: só a forma Guerreira da Vigília liga
+// (dono, 2026-11-28: "na forma transformada eileen e zuri usam a espada da vigília"): a Lâmina da Vigília na direita,
+// no lugar da arma de todo dia — o cabo atravessa o punho e a lâmina sobe para a frente, como a do Mael Herói
+export const SWORD_ROT = [2.92, 0.142, -3.013];
+function swapForSword(rig, key) {
+  const old = rig.props[key];
+  const b = vigiliaBlade();
+  b.rotation.set(...SWORD_ROT);
+  b.position.y = FIST;
+  old.parent.add(b);
+  old.parent.remove(old);
+  rig.props[key] = b;
+  rig.props.blade = b;
+}
+export function addZuriProps(rig, { vigilia = false } = {}) {
+  const k = zuriKnife(vigilia);
+  inFist(k, KNIFE_GRIP);
+  rig.sockets.handR.add(k);
+  rig.props.knife = k;
+  for (const p of ['deerMask', 'cowl', 'robe']) if (rig.props[p]) rig.showProp(p, false);
+}
+
+// GUERREIRA DA VIGÍLIA: a fantasia do Samhain — o crânio de cervo com a galhada, o capuz e a capa; as tranças e o manto
+// somem por baixo; a faca vira a Espada da Vigília
+export function addZuriGuerreiraProps(rig) {
+  addZuriProps(rig, { vigilia: true });
+  swapForSword(rig, 'knife');
+  for (const p of ['deerMask', 'cowl', 'robe']) if (rig.props[p]) rig.showProp(p, true);
+  for (const p of ['hair', 'mantle']) if (rig.props[p]) rig.showProp(p, false);
+}
+
+// a FOICE da Eileen (a apicultora: a foice de colher do campo): cabo curto de madeira e a lâmina curva de latão; na
+// fantasia, a lâmina de aço claro da Vigília. Mesma convenção da machadinha do Mael (o cabo pelo −Y, o fio em +Z)
+function sickle(vigilia = false) {
+  const g = new THREE.Group();
+  const HAFT = 0.2;
+  const haft = part(new THREE.CylinderGeometry(0.017, 0.02, HAFT, 7), vigilia ? DARKWOOD : WOOD);
+  haft.position.y = -HAFT / 2 + 0.03;
+  g.add(haft);
+  const ferrule = part(new THREE.CylinderGeometry(0.023, 0.023, 0.035, 8), vigilia ? BRONZE : IRON);
+  ferrule.position.y = -HAFT + 0.03;
+  g.add(ferrule);
+  // a LÂMINA: sai do fim do cabo, desce, curva para a frente (+Z) e volta em C com a ponta para o lado da mão; o fio é a
+  // parte de DENTRO do C. Desenhada no plano (z, y) e extrudada fina
+  const col = vigilia ? VSTEEL : 0xc8a050;
+  const y0 = -HAFT + 0.02;
+  const R0 = 0.17;
+  const C = { z: R0, y: y0 };
+  const N = 22;
+  const END = 3.45;
+  const outer = [];
+  const inner = [];
+  for (let i = 0; i <= N; i++) {
+    const f = (i / N) * END;
+    const w = 0.055 * (1 - i / N) ** 0.8 + 0.002; // larga perto do cabo, afinando até a ponta
+    const dz = -Math.cos(f);
+    const dy = -Math.sin(f);
+    outer.push([C.z + dz * R0, C.y + dy * R0]);
+    inner.push([C.z + dz * (R0 - w), C.y + dy * (R0 - w)]);
+  }
+  const sh = new THREE.Shape();
+  sh.moveTo(outer[0][0], outer[0][1]);
+  for (const [z, y] of outer.slice(1)) sh.lineTo(z, y);
+  for (const [z, y] of inner.reverse()) sh.lineTo(z, y);
+  sh.closePath();
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: 0.008, bevelEnabled: false });
+  geo.translate(0, 0, -0.004);
+  geo.rotateY(-Math.PI / 2); // o x do desenho vira o z da arma
+  const blade = new THREE.Mesh(geo, toon(col));
+  blade.castShadow = true;
+  g.add(blade);
+  // o fio claro na parte de dentro
+  const edgePts = inner.map(([z, y]) => new THREE.Vector3(0, y, z));
+  const edge = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edgePts), 24, 0.004, 4), toon(0xf0ece4));
+  g.add(edge);
+  return g;
+}
+
+// EILEEN: a foice na direita (o fio para a frente, como a machadinha do Mael); a do cinto some. A fantasia (o saco
+// costurado, os galhos e o capuz preto) fica guardada
+export function addEileenProps(rig, { vigilia = false } = {}) {
+  // a lua virada para o lado de fora (o adversário), não para o rosto dela
+  const blade = sickle(vigilia);
+  blade.rotation.y = Math.PI;
+  const s = new THREE.Group();
+  s.add(blade);
+  // (dono, 2026-11-28: "posição da foice deve ser ajustada"): o cabo sai do punho para a frente, como as facas do elenco,
+  // e a lua da lâmina curva para cima e volta na direção dela, o fio de dentro olhando para o adversário
+  inFist(s, KNIFE_GRIP);
+  rig.sockets.handR.add(s);
+  rig.props.sickle = s;
+  if (rig.props.sickleBelt) rig.showProp('sickleBelt', false);
+  for (const p of ['sackMask', 'twigs', 'blackHood']) if (rig.props[p]) rig.showProp(p, false);
+}
+
+// EILEEN FANTASIADA (o título da transformação ainda é "?" no cânone): o saco costurado com os galhos e o capuz preto;
+// o capuz amarelo e a franja somem. Cânone (ep. 3): "Eileen se protegendo com o ESCUDO" — o Escudo da Vigília no braço
+// esquerdo, na mesma pegada do Mael Herói, e a foice de aço da Vigília
+export function addEileenFantasiaProps(rig) {
+  addEileenProps(rig, { vigilia: true });
+  swapForSword(rig, 'sickle');
+  const sh = vigiliaShield();
+  sh.rotation.set(0.311, -1.259, -2.378);
+  sh.position.set(0.03, -0.065, -0.013);
+  sh.scale.setScalar(0.85);
+  rig.sockets.handL.add(sh);
+  rig.props.shield = sh;
+  for (const p of ['sackMask', 'twigs', 'blackHood']) if (rig.props[p]) rig.showProp(p, true);
+  for (const p of ['hood', 'crown']) if (rig.props[p]) rig.showProp(p, false);
 }

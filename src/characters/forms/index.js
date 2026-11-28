@@ -28,6 +28,8 @@ import quibungoKerberos from './quibungo_kerberos.js';
 import branInquebravel from './bran_inquebravel.js';
 import maelHeroi from './mael_heroi.js';
 import gwayneMorto from './gwayne_morto.js';
+import zuriGuerreira from './zuri_guerreira.js';
+import eileenFantasia from './eileen_fantasia.js';
 
 export const FORMS = {};
 
@@ -40,4 +42,4 @@ export function getForm(id) {
   return FORMS[id];
 }
 
-[deusMorte, diabo, fantasma, labirintoElmo, aguiarMutilador, erinCaos, anfitriao, jaeX, colosso, guizoEt, kianCalamidade, juanOdio, guizoBombado, guizoVelho, cristinoDesertor, danteAberto, jouiShinokage, razielVerdadeiro, celestineMagistrada, amphitruo, carinaLeone, beatriceExistida, luciano, veritusKian, quibungoKerberos, branInquebravel, maelHeroi, gwayneMorto].forEach(registerForm);
+[deusMorte, diabo, fantasma, labirintoElmo, aguiarMutilador, erinCaos, anfitriao, jaeX, colosso, guizoEt, kianCalamidade, juanOdio, guizoBombado, guizoVelho, cristinoDesertor, danteAberto, jouiShinokage, razielVerdadeiro, celestineMagistrada, amphitruo, carinaLeone, beatriceExistida, luciano, veritusKian, quibungoKerberos, branInquebravel, maelHeroi, gwayneMorto, zuriGuerreira, eileenFantasia].forEach(registerForm);

@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.52.0';
+export const VERSION = '5.53.0';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,21 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.53.0',
+    date: '2026-11-28',
+    title: 'As Sobreviventes de Treb Ciach',
+    items: [
+      'ZURI chega à Vigília: a curandeira de Treb Ciach luta com a faca e as ervas. Análise (o alvo apanha mais e o próximo golpe dela sai mais forte), Pomada de Mel (cura e fecha sangramento e queimadura), Elixir Calmante e Tônico Fortificante; passivas Leitura de Combate (cada golpe defendido vira um marcador) e Curandeira (curas +25%). Especial PONTO FRACO: marca três pontos e corta os três, curando-se com o dano.',
+      'ZURI — GUERREIRA DA VIGÍLIA (Transformação e versão na seleção): o crânio de cervo com a galhada, o capuz e a capa; a ESPADA DA VIGÍLIA, a Pomada mais forte e a Investida do Cervo.',
+      'EILEEN chega à Vigília: a apicultora luta com a foice e a funda. POTE DE ABELHAS: o enxame persegue o adversário picando por 5 s, deixando LENTO e TONTO; Rolo da Foice, Dedicada e Fumaça; passiva Ímpeto (golpe defendido ou pancada grande vira um marcador). Especial A COLMEIA.',
+      'EILEEN — FANTASIADA (Transformação e versão na seleção): o saco costurado, os galhos e o capuz preto; a ESPADA E O ESCUDO DA VIGÍLIA, o POTE DE ABELHAS PEGANDO FOGO (picadas, queimadura, lenta e tonta, e o chão fica em chamas onde estoura) e o Golpe de Escudo.',
+      'Equipe A VIGÍLIA: com 3 ou mais dos cinco (Bran, Mael, Gwayne, Zuri e Eileen) na Batalha em Equipe, o vínculo liga; Zuri + Eileen formam a dupla "As Sobreviventes de Treb Ciach". Falas novas entre os cinco e as falas de vitória delas contra todo o elenco.',
+      'CURANDEIROS (Zuri, Dara, Rubens, Caio, Chico e Joui): curam o parceiro quando entram como assistência na Batalha em Equipe; no coop do Outro Lado, usar a habilidade de cura perto do amigo ferido cura o amigo enquanto o botão fica segurado.',
+      'Seleção: cada equipe começa numa linha nova da grade, sem dividir a linha com a equipe seguinte (as equipes de 5 deixavam a grade torta); as setas andam pelas casas e pulam os buracos.',
+      'Correção antiga: a faca da Zuri e a adaga do Gwayne eram seguradas como um bastão (a lâmina saía para trás); agora usam a pegada de faca do resto do elenco.',
+    ],
+  },
   {
     v: '5.52.0',
     date: '2026-11-28',

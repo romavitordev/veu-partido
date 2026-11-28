@@ -188,6 +188,9 @@ export const GRAB_SCENES = {
   // MAEL: o talho da machadinha, o gancho de esquerda e a machadada que derruba
   mael: scene({ ...S('slash_h', 0.3), fx: { kind: 'slash' }, sound: 'axeHit' }, { ...S('hook_l', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'slash_finisher', fx: 'slam', sound: 'slashFinal' }),
   gwayne: scene({ ...S('knee', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { ...S('thrust', 0.3), fx: { kind: 'stab' }, sound: 'bladeHit' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal' }),
+  // ZURI: o corte curto, a joelhada e a faca no ponto que ela leu; EILEEN: o talho, o chute baixo e a colheita da foice
+  zuri: scene({ ...S('slash_h', 0.3), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('knee', 0.3), fx: { kind: 'punch' }, sound: 'heavyPunch' }, { anim: 'knife_final', fx: 'throat', sound: 'slashFinal' }),
+  eileen: scene({ ...S('slash_h', 0.3), fx: { kind: 'slash' }, sound: 'bladeHit' }, { ...S('kick_low', 0.3), fx: { kind: 'punch' }, sound: 'kick' }, { anim: 'slash_finisher', fx: 'slam', sound: 'slashFinal' }),
   // RUBENS: duas marteladas curtas e a martelada no chão
   rubens: scene({ ...S('hammer_h', 0.3), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { ...S('hammer_diag', 0.3), fx: { kind: 'smash' }, sound: 'heavyPunch' }, { anim: 'hammer_ground', fx: 'slam', sound: 'heavyPunch' }),
   // FERNANDO: dois cortes nervosos do canivete e o empurrão; LUCIANO: o corte seco, a cotovelada e a estocada
@@ -284,6 +287,8 @@ GRAB_SCENES.amigo = scene({ ...S('ai_claw_r', 0.34), fx: { kind: 'claw' }, sound
 GRAB_SCENES.bran_inquebravel = GRAB_SCENES.bran; // O Inquebrável agarra como o Bran
 GRAB_SCENES.mael_heroi = GRAB_SCENES.mael; // o Herói da Vigília agarra como o Mael
 GRAB_SCENES.gwayne_morto = GRAB_SCENES.gwayne; // O Morto que Caminha agarra como o Gwayne
+GRAB_SCENES.zuri_guerreira = GRAB_SCENES.zuri; // a Guerreira da Vigília agarra como a Zuri
+GRAB_SCENES.eileen_fantasia = GRAB_SCENES.eileen; // a Eileen fantasiada agarra como a Eileen
 GRAB_SCENES.juan_odio = GRAB_SCENES.juan; // o Ódio do Diabo agarra como o Juan (as garras no lugar da faca)
 // CARNIÇAL: as duas garras e, com a vítima presa, encara de perto — a espiral da testa entra na mente — e rasga
 // DEGOLIFICADA: os braços pendentes batem, o cabelo enrola no pescoço e esmaga a cabeça

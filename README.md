@@ -13,7 +13,7 @@ Jogo de luta 3D em arena com temática paranormal. Combate rápido e acessível,
 movimentação livre, ataques direcionais, defesa, esquiva, habilidades por combinação de
 botões e especiais cinematográficos. Feito com **Three.js + Vite**, roda no navegador.
 
-Versão atual do jogo: **v5.52.0**.
+Versão atual do jogo: **v5.53.0**.
 
 > Jogo **fan made**: projeto de fã sem fins lucrativos, baseado em *Ordem Paranormal* (Cellbit). Não é um jogo oficial.
 
@@ -132,7 +132,7 @@ npm run moves    # regenera HABILIDADES.md a partir dos dados dos personagens
 
 ## Elenco
 
-**70 lutadores em 10 equipes:**
+**75 lutadores em 11 equipes:**
 
 - **Ordo Realitas (16):** Arthur Cervero, Joui Jouki, Kaiser, Dante, Erin Parker, Aghata, Balu, Carina Leone,
   Rubens Naluti, Beatrice Portinari, Fernando Carvalho, Tristan Monteiro, Ivete Beicur, Senhor Veríssimo, Cristopher,
@@ -143,6 +143,7 @@ npm run moves    # regenera HABILIDADES.md a partir dos dados dos personagens
 - **Transtornados (1):** Cristino.
 - **PSIKOLERA (5):** Eloy Furtado, Cindy Lopes, Caio Teles, Franco, Alê.
 - **Vampiros (5):** Raziel, Sabara, Alvira, Velisar, Zéfero.
+- **A Vigília (5):** Bran, Mael, Gwayne, Zuri, Eileen.
 - **Ordo Calamitas (13):** Cascadia, Cornelius, Karise, Marcellus, Celestine, Amalia, Faustus, Marius, Remus, Veritus,
   Sacrifício do Rancor, Nero, Gaius.
 - **Relíquias (5):** Ferreiro, O Diabo, O Deus da Morte, A Magistrada, Amphitruo.

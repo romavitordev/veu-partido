@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import { tongueRoot } from './tongue.js';
 import { applyHit, npcDamage } from './damage.js';
 import { igniteFighter } from './burn.js';
+import { stingSwarm } from './bees.js';
+import { addFireZone } from './cristinoAbilities.js';
 import { inBounds } from './positioning.js';
 import { distXZ } from '../core/util.js';
 import { glowMat } from '../models/rig.js';
@@ -572,6 +574,47 @@ const VISUALS = {
   // chumbo de escopeta: pontinho brilhante
   // PEDRAS DO DRUIDA (Mael, A Vigília): as três pedras do suspensório (verde, roxa e vermelha) acesas de Energia,
   // girando no voo com um halo da própria cor
+  // o POTE DE ABELHAS da Eileen (cânone: Arremessar Abelhas): o vidro com a tampa de pano, as abelhas zunindo dentro
+  beeJar(color, ability) {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.1, 0.22, 10), new THREE.MeshStandardMaterial({ color: 0xc8d8c0, transparent: true, opacity: 0.45, roughness: 0.2 }));
+    spin.add(glass);
+    const honey = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.09, 0.08, 10), new THREE.MeshToonMaterial({ color: 0xd89a2a }));
+    honey.position.y = -0.06;
+    spin.add(honey);
+    const cloth = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.12, 0.05, 10), new THREE.MeshToonMaterial({ color: 0xe8dcc0 }));
+    cloth.position.y = 0.13;
+    spin.add(cloth);
+    for (let i = 0; i < 5; i++) {
+      const bee = new THREE.Mesh(new THREE.SphereGeometry(0.022, 5, 4), glowMat(i % 2 ? color : 0x2a2010, 1));
+      bee.position.set(Math.cos(i * 1.3) * 0.05, -0.02 + (i % 3) * 0.04, Math.sin(i * 1.3) * 0.05);
+      spin.add(bee);
+    }
+    if (ability && ability.big) spin.scale.setScalar(1.25); // o pote maior da fantasia do Samhain
+    g.add(spin);
+    if (ability && ability.lit) {
+      // o POTE PEGANDO FOGO (a fantasia): o pano da tampa em chamas, as labaredas fora do giro (sempre para cima)
+      for (let i = 0; i < 3; i++) {
+        const fl = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3 + (i % 2) * 0.12, 6, 1, true), glowMat(i === 1 ? 0xffa030 : 0xff6a1a, 0.45));
+        fl.position.set((i - 1) * 0.07, 0.3, 0);
+        g.add(fl);
+      }
+    }
+    g.userData.tumble = spin;
+    return g;
+  },
+  // a PEDRA DA FUNDA da Eileen: o seixo de rio girando
+  slingStone(color) {
+    const g = new THREE.Group();
+    const spin = new THREE.Group();
+    const s = new THREE.Mesh(new THREE.IcosahedronGeometry(0.07, 0), new THREE.MeshToonMaterial({ color }));
+    s.scale.set(1.2, 0.85, 1);
+    spin.add(s);
+    g.add(spin);
+    g.userData.tumble = spin;
+    return g;
+  },
   druidStone(color, ability) {
     const cs = ability && ability.colors;
     if (cs && cs.length) color = cs[(VISUALS.druidStone.n = ((VISUALS.druidStone.n || 0) + 1) % cs.length)];
@@ -1046,9 +1089,16 @@ export class Projectiles {
     if (E.splinters) {
       w.fx.burst(c, { count: 22, color: E.splinters, speed: 6, up: 4, life: 0.7, size: 0.18, gravity: 14 });
       w.fx.burst(c, { count: 10, color: 0x3a3a3e, speed: 4, up: 3, life: 0.6, size: 0.12, gravity: 14 });
+    } else if (E.bees) {
+      // o pote estoura: cacos de vidro, mel e a nuvem de abelhas saindo
+      w.fx.burst(c, { count: 14, color: 0xd8e8d8, speed: 5, up: 3, life: 0.5, size: 0.08, gravity: 14 });
+      w.fx.burst(c, { count: 40, color: 0xf2c230, speed: 3, up: 2, life: 0.9, size: 0.07, drag: 1.5 });
+      w.fx.burst(c, { count: 20, color: 0x1a140a, speed: 3, up: 2, life: 0.9, size: 0.06, drag: 1.5 });
     } else w.fx.play('FX_EXPLOSION', c, { color: E.color ?? 0xff9a30, scale: E.radius });
     w.audio.play(E.sound || 'explosion', { volume: 1 });
-    w.cameraRig.shake(0.35, 0.25);
+    w.cameraRig.shake(E.bees ? 0.1 : 0.35, 0.25);
+    // E.fireZone (o pote de abelhas em chamas da Eileen fantasiada): o chão fica pegando fogo onde estourou
+    if (E.fireZone) addFireZone(w, p.owner, c.x, c.z, E.fireZone);
     if (E.mist) {
       const center = c.clone().setY(0);
       createMistZone(w, p.owner, { center: () => center, radius: E.mist.radius, duration: E.mist.duration, slow: E.mist.slow, enemyRegen: E.mist.enemyRegen, eatsProjectiles: !!E.mist.eatsProjectiles, color: E.mist.color, density: E.mist.pool ? 0.2 : 1, pool: E.mist.pool });
@@ -1065,6 +1115,7 @@ export class Projectiles {
         if (typeof res === 'number' && res >= 0) {
           this.applyOnHit(p, target);
           if (E.burn && target.state !== 'ko') igniteFighter(w, p.owner, target, E.burn); // o barril em chamas (Bran O Inquebrável)
+          if (E.bees && target.state !== 'ko') stingSwarm(w, p.owner, target, E.bees); // o pote de abelhas (Eileen)
         }
       }
     }

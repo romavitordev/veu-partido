@@ -343,31 +343,41 @@ const SEL_PAGE = 15; // até 15 lutadores por página (3 × 5), sem barra de rol
 // personagens 'Outro Lado'"), as versões de cada cartão e as páginas por EQUIPE: o elenco vem agrupado pela origem; uma
 // equipe que não cabe inteira no resto da página começa a página seguinte (ex.: os Mascarados ficam juntos na página 2).
 //  - grid = índices no ROSTER dos cartões, na ordem da tela; pages = [início, fim) em posições da grid;
-//  - vers(i) = as versões visíveis do lutador i (a 1ª é a do cartão); posOf/pageOf = posição e página do cartão de i.
+//  - vers(i) = as versões visíveis do lutador i (a 1ª é a do cartão); posOf/pageOf = posição e página do cartão de i;
+//  - cell[k] = a CÉLULA (0..14, linha × 3 + coluna) do cartão k na página. Cada equipe começa numa LINHA NOVA (dono,
+//    2026-11-28: "tem uns personagens que tem 5 e fica ruim" — a equipe de 5 dividia a linha com a seguinte); a sobra da
+//    última linha da equipe fica vazia, e a equipe que não cabe nas linhas que restam vai para a página seguinte.
+const SEL_ROWS = SEL_PAGE / SEL_COLS;
 function layout(hide = null) {
   const shown = (k) => !hide || !hide(ROSTER[k]);
   const vers = (i) => { const v = versionsOf(i).filter(shown); return v.length ? v : [i]; };
   const grid = ROSTER.map((c, i) => i).filter((i) => shown(i) && vers(i)[0] === i);
   const posOf = (i) => grid.indexOf(vers(i)[0]);
   const pages = [[0, 0]];
+  const cell = [];
   const n = grid.length;
   const team = (k) => ROSTER[grid[k]].origin;
+  let row = 0; // a próxima linha livre da página atual
   let i = 0;
   while (i < n) {
     let j = i;
     while (j < n && team(j) === team(i)) j++;
-    const cur = pages[pages.length - 1];
-    if (cur[1] > cur[0] && cur[1] - cur[0] + (j - i) > SEL_PAGE) pages.push([i, i]);
-    // equipe maior que uma página inteira: quebra de 15 em 15
+    const rows = Math.ceil((j - i) / SEL_COLS);
+    if (row > 0 && row + rows > SEL_ROWS) { pages.push([i, i]); row = 0; }
+    // a equipe começa na coluna 0 da linha livre; equipe maior que o resto da página quebra para a seguinte
+    let c = row * SEL_COLS;
     for (let k = i; k < j; k++) {
-      const pg = pages[pages.length - 1];
-      if (pg[1] - pg[0] >= SEL_PAGE) pages.push([k, k]);
+      if (c >= SEL_PAGE) { pages.push([k, k]); c = 0; }
+      cell[k] = c++;
       pages[pages.length - 1][1] = k + 1;
     }
+    row = Math.ceil(c / SEL_COLS);
     i = j;
   }
   const pageOf = (k) => { const q = posOf(k); return Math.max(0, pages.findIndex(([a, b]) => q >= a && q < b)); };
-  return { grid, pages, vers, posOf, pageOf, shown };
+  // a posição na página `pg` que ocupa a célula (r, col), ou -1
+  const at = (pg, r, col) => { const [a, b] = pages[pg]; for (let k = a; k < b; k++) if (cell[k] === r * SEL_COLS + col) return k; return -1; };
+  return { grid, pages, cell, at, vers, posOf, pageOf, shown };
 }
 // as etiquetas de equipe do cartão (uma por equipe — quem é de duas mostra as duas)
 const teamTags = (c) => defTeams(c).map((tm) => `<i style="--tc:${TEAM_COLORS[tm] || '#aaa'}">${TEAM_SHORT[tm] || tm}</i>`).join('');
@@ -408,7 +418,7 @@ export class SelectScreen {
         <div class="sel-head"><span class="tag">${this.M.slots[p]}</span><span class="st"></span></div>
         <div class="sel-pages"><b class="pg-prev">◀</b><span class="pg-n"></span><b class="pg-next">▶</b></div>
         <div class="sel-grid">${this.G.grid.map((i) => { const c = ROSTER[i]; const vs = this.G.vers(i); return `
-          <div class="card${vs.length > 1 ? ' ver' : ''}" data-i="${i}" style="--c:${c.color}">
+          <div class="card${vs.length > 1 ? ' ver' : ''}" data-i="${i}" style="--c:${c.color};--gr:${Math.floor(this.G.cell[this.G.posOf(i)] / SEL_COLS) + 1};--gc:${(this.G.cell[this.G.posOf(i)] % SEL_COLS) + 1}">
             <img src="${portraits[c.id]}" alt="${c.name}">
             <span class="tm">${teamTags(c)}</span>
             ${vs.length > 1 ? `<span class="vr" title="${vs.map((k) => ROSTER[k].name).join(' · ')}">⇄ ${vs.length}</span>` : ''}
@@ -683,22 +693,28 @@ export class SelectScreen {
     // setas: ↑↓ andam na coluna da página; ←→ andam na LINHA e, passando da ponta, vão para a página vizinha na mesma
     // linha (não descem para a linha de baixo)
     // (contas em POSIÇÕES da grade; home/cursor guardam índices no ROSTER)
+    // (as linhas podem ter buraco no fim de uma equipe: as contas andam pelas CÉLULAS — G.cell / G.at)
     const home = this.home[slot];
     const pos = this.G.posOf(home);
-    const [start, end] = this.G.pages[this.G.pageOf(home)];
-    const count = end - start;
-    const c = pos - start;
+    const pg = this.G.pageOf(home);
+    const row = Math.floor(this.G.cell[pos] / SEL_COLS);
+    const col = this.G.cell[pos] % SEL_COLS;
     let target = null;
     if (p.menu.left || p.menu.right) {
-      const row = Math.floor(c / SEL_COLS);
-      const col = c % SEL_COLS;
-      const rowLen = Math.min(SEL_COLS, count - row * SEL_COLS);
-      if (p.menu.right && col + 1 < rowLen) target = pos + 1;
-      else if (p.menu.left && col > 0) target = pos - 1;
-      else target = this.pageEdge(home, row, p.menu.right ? 1 : -1);
+      const d = p.menu.right ? 1 : -1;
+      for (let x = col + d; x >= 0 && x < SEL_COLS && target === null; x += d) { const k = this.G.at(pg, row, x); if (k >= 0) target = k; }
+      if (target === null) target = this.pageEdge(home, row, d);
     }
-    if (p.menu.up) target = start + (c - SEL_COLS >= 0 ? c - SEL_COLS : c + SEL_COLS * Math.floor((count - 1 - c) / SEL_COLS));
-    if (p.menu.down) target = start + (c + SEL_COLS < count ? c + SEL_COLS : c % SEL_COLS);
+    if (p.menu.up || p.menu.down) {
+      // a próxima linha com alguém (dá a volta), na coluna mais perto
+      const d = p.menu.down ? 1 : -1;
+      for (let s = 1; s <= SEL_ROWS && target === null; s++) {
+        const r = (row + d * s + SEL_ROWS * 2) % SEL_ROWS;
+        let best = -1;
+        for (let x = 0; x < SEL_COLS; x++) { const k = this.G.at(pg, r, x); if (k >= 0 && (best < 0 || Math.abs(x - col) < Math.abs((this.G.cell[best] % SEL_COLS) - col))) best = k; }
+        if (best >= 0) target = best;
+      }
+    }
     if (target !== null && this.G.grid[target] !== home) { this.home[slot] = this.cursor[slot] = this.G.grid[target]; this.audio.play('select'); changed = true; }
     if (confirm(p)) { if (this.lockPick(slot) !== false) this.audio.play('confirm'); changed = true; }
     else if (random(p)) {
@@ -717,10 +733,11 @@ export class SelectScreen {
   // Com uma página só, dá a volta na própria linha. Devolve a POSIÇÃO na grade
   pageEdge(home, row, dir) {
     const np = (this.G.pageOf(home) + dir + this.pageCount) % this.pageCount;
-    const [s, e] = this.G.pages[np];
-    const rowStart = s + row * SEL_COLS;
-    if (rowStart >= e) return e - 1;
-    return dir > 0 ? rowStart : Math.min(rowStart + SEL_COLS, e) - 1;
+    const e = this.G.pages[np][1];
+    const ks = [];
+    for (let x = 0; x < SEL_COLS; x++) { const k = this.G.at(np, row, x); if (k >= 0) ks.push(k); }
+    if (!ks.length) return e - 1;
+    return dir > 0 ? ks[0] : ks[ks.length - 1];
   }
 
   // RB/LB: próxima/anterior versão do lutador do cartão (o cursor fica no mesmo cartão)
@@ -738,9 +755,13 @@ export class SelectScreen {
   turnPage(slot, dir) {
     if (this.pageCount < 2 || this.ready[slot]) return;
     const page = this.G.pageOf(this.home[slot]);
-    const pos = this.G.posOf(this.home[slot]) - this.G.pages[page][0];
+    const cl = this.G.cell[this.G.posOf(this.home[slot])];
     const np = (page + dir + this.pageCount) % this.pageCount;
-    this.home[slot] = this.cursor[slot] = this.G.grid[Math.min(this.G.pages[np][0] + pos, this.G.pages[np][1] - 1)];
+    // a mesma célula na outra página, ou o último cartão antes dela
+    const [a, b] = this.G.pages[np];
+    let k = a;
+    for (let q = a; q < b; q++) if (this.G.cell[q] <= cl) k = q;
+    this.home[slot] = this.cursor[slot] = this.G.grid[k];
     this.audio.play('select');
   }
 

@@ -11,6 +11,8 @@ import deusMorte from './forms/deus_morte.js';
 import branInquebravel from './forms/bran_inquebravel.js';
 import maelHeroi from './forms/mael_heroi.js';
 import gwayneMorto from './forms/gwayne_morto.js';
+import zuriGuerreira from './forms/zuri_guerreira.js';
+import eileenFantasia from './forms/eileen_fantasia.js';
 
 const copyMelee = (m) => {
   if (!m) return m;
@@ -31,3 +33,5 @@ export const anfitriaoReliquia = selectable(amphitruo, { id: 'anfitriao', origin
 export const branInquebravelVersao = selectable(branInquebravel, { origin: 'A Vigília', teams: [] });
 export const maelHeroiVersao = selectable(maelHeroi, { origin: 'A Vigília', teams: [] });
 export const gwayneMortoVersao = selectable(gwayneMorto, { origin: 'A Vigília', teams: [] });
+export const zuriGuerreiraVersao = selectable(zuriGuerreira, { origin: 'A Vigília', teams: [] });
+export const eileenFantasiaVersao = selectable(eileenFantasia, { origin: 'A Vigília', teams: [] });

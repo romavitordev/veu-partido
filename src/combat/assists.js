@@ -8,6 +8,7 @@ import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { createMistZone, pickCurseElement, applyWeaponCurse } from './abilities.js';
 import { ELEMENTS } from '../config/elements.js';
 import { getForm } from '../characters/forms/index.js';
+import { assistHeal } from './healers.js';
 
 // ASSISTÊNCIAS (batalha em equipe): o personagem chamado aparece por alguns segundos, faz UMA ação
 // que depende do contexto e vai embora. Não substitui o lutador principal.
@@ -487,6 +488,8 @@ export class Assist {
     this.pos.set(spot ? spot.x : want.x, 0, spot ? spot.z : want.z);
     const ctx = this.enter(opp);
     this.active = (auto && acts.auto ? acts.auto : moving && !still ? acts.moving : acts.still)(ctx);
+    // CURANDEIROS (combat/healers.js): além da ação, curam o parceiro
+    assistHeal(w, this.def, o);
     this.autoCall = auto;
     this.update(0);
     return true;

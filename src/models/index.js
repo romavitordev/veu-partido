@@ -1,5 +1,5 @@
 import { addKaiserProps, addArthurProps, addJouiProps, addAghataProps, addGalSalProps, addKianProps, addErinProps, addAguiarProps, addLabirintoProps, addXandeProps, addLirioProps, addFerreiroProps, addJuanProps, addKemiProps, addFantasmaProps, addBaluProps, addErinCaosProps, addLabirintoElmoProps, addAguiarMutiladorProps, addArnaldoProps, addAnfitriaoProps, addVerissimoProps, addJaeProps, addJaeXProps, addDalmoProps, addColossoProps, addGuizoProps, addGuizoETProps, addKianCalamidadeProps, addJuanOdioProps, addMagistradaProps, addGuizoBombadoProps, addGuizoVelhoProps, addCristinoProps, addCristinoDesertorProps, addDanteProps, addDanteAbertoProps, addJouiShinokageProps, addRazielProps, addRazielVerdadeiroProps, addCelestineProps, addCelestineMagistradaProps, addSeitaProps, addGaiusProps, addAmphitruoProps, addDoppelProps, addAmaliaProps, addMoratoProps, addDaraProps, addChicoProps, addCarinaProps, addCarinaLeoneProps, addRubensProps, addBeatriceProps, addBeatriceExistidaProps, addEspreitadorProps, addDegolificadaProps, addFernandoProps, addLucianoProps, addTristanProps, addIveteProps, addBorisProps, addDamirProps, addArtemisProps, addEloyProps, addSabaraProps, addAlviraProps, addCindyProps, addCaioProps, addFrancoProps, addAleProps, addZeferoProps } from './props.js';
-import { addBranProps, addBranInquebravelProps, addMaelProps, addMaelHeroiProps, addGwayneProps, addGwayneMortoProps } from './vigiliaProps.js';
+import { addBranProps, addBranInquebravelProps, addMaelProps, addMaelHeroiProps, addGwayneProps, addGwayneMortoProps, addZuriProps, addZuriGuerreiraProps, addEileenProps, addEileenFantasiaProps } from './vigiliaProps.js';
 import { addVeritusProps, addVeritusKianProps, addVeritusRancorProps, addNeroProps, addFaustusProps, addMariusProps, addRemusProps, addCascadiaProps, addCorneliusProps, addKariseProps, addMarcellusProps } from './ordoProps.js';
 import { loadGLBRetry as loadWithRetry, rigFromGLB } from './glbRig.js';
 import { preloadNpcModels } from './npcRig.js';
@@ -43,6 +43,8 @@ const BLENDER_MODELS = {
   bran: { url: 'models/bran.glb', props: addBranProps }, // A Vigília: a lança "Justiça", o broquel e as azagaias (vigiliaProps.js)
   mael: { url: 'models/mael.glb', props: addMaelProps }, // A Vigília: a machadinha (vigiliaProps.js); a fantasia vem do Blender
   gwayne: { url: 'models/gwayne.glb', props: addGwayneProps }, // A Vigília: o arco da Gwyneth e a adaga (vigiliaProps.js); a fantasia vem do Blender
+  zuri: { url: 'models/zuri.glb', props: addZuriProps }, // A Vigília: a faca (vigiliaProps.js); a fantasia vem do Blender
+  eileen: { url: 'models/eileen.glb', props: addEileenProps }, // A Vigília: a foice (vigiliaProps.js); a fantasia vem do Blender
   rubens: { url: 'models/rubens.glb', props: addRubensProps }, // Equipe Abutres: o paramédico (o Martelo nas duas mãos, Glock Silenciada no □)
   fernando: { url: 'models/fernando.glb', props: addFernandoProps }, // o casal Carvalho: o corpo do Luciano com o Fernando no controle (olhos rosa)
   luciano: { url: 'models/luciano.glb', props: addLucianoProps }, // o mesmo corpo com o Luciano no controle (olhos amarelos, a M4)
@@ -107,6 +109,8 @@ const MODEL_VARIANTS = {
   beatrice_existida: { base: 'beatrice', props: addBeatriceExistidaProps }, // a Existida: a pele de textos, os olhos brancos, sem o Orpheu
   bran_inquebravel: { base: 'bran', props: addBranInquebravelProps }, // a fantasia de corvo do Samhain: a máscara de crânio e as penas
   mael_heroi: { base: 'mael', props: addMaelHeroiProps }, // a fantasia do Samhain: a máscara de casca, a gola de folhas e a capa
+  zuri_guerreira: { base: 'zuri', props: addZuriGuerreiraProps }, // a fantasia do Samhain: o crânio de cervo, o capuz e a capa
+  eileen_fantasia: { base: 'eileen', props: addEileenFantasiaProps }, // a fantasia do Samhain: o saco costurado, os galhos, o capuz preto e o escudo
   gwayne_morto: { base: 'gwayne', props: addGwayneMortoProps }, // a fantasia do Samhain: o crânio de lobo, a pele cinza e o poncho
   dante_aberto: { base: 'dante', props: addDanteAbertoProps }, // Olhos Abertos: olhos pretos, as faixas, as tatuagens e as orelhas pontudas
   cristino_desertor: { base: 'cristino', props: addCristinoDesertorProps }, // Tocado pela Coroa: rabiscos vermelhos e o rifle

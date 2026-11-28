@@ -97,6 +97,28 @@ export const TEAM_LINKS = {
     min: 3,
     color: 0x3ae8b8,
   },
+  // A VIGÍLIA (Treb Ciach, 890; TODO do dono 2026-11-21: o vínculo quando houvesse 2 ou mais): vale com 3 da equipe e
+  // aparecem todos os membros (as versões transformadas contam como o mesmo personagem). Coreografia genérica por enquanto
+  a_vigilia: {
+    id: 'a_vigilia',
+    kind: 'group',
+    name: 'A VIGÍLIA',
+    banner: 'Até o amanhecer!',
+    group: ['bran', 'mael', 'gwayne', 'zuri', 'eileen'],
+    min: 3,
+    order: ['bran', 'mael', 'gwayne', 'zuri', 'eileen'],
+    color: 0x7a8aa8,
+  },
+  // Dupla Zuri + Eileen (cânone: melhores amigas, as únicas sobreviventes do Samhain e, depois, um casal). PROPOSTA: o nome
+  zuri_eileen: {
+    id: 'zuri_eileen',
+    kind: 'duo',
+    name: 'AS SOBREVIVENTES DE TREB CIACH',
+    banner: 'As Sobreviventes de Treb Ciach!',
+    members: ['eileen', 'zuri'],
+    order: ['eileen', 'zuri'],
+    color: 0xe0a83a,
+  },
   // Dupla Arnaldo + Veríssimo (os melhores amigos da Ordo Realitas, a MESMA espada da fita vermelha): o Veríssimo abre a
   // guarda com a estocada do veterano e o Arnaldo fecha com o corte teatral
   arnaldo_verissimo: {

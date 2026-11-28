@@ -37,7 +37,43 @@ export function betray(f, n = 1) {
   f.notify(`NADA PESSOAL ×${b.stacks}`, true);
 }
 
+// MARCADORES (A Vigília): pontos que juntam na luta e gastam no golpe seguinte — ANÁLISE (Zuri) e ÍMPETO (Eileen)
+export function addMarks(f, key, n, max, label) {
+  f.marks = f.marks || {};
+  const was = f.marks[key] || 0;
+  f.marks[key] = Math.min(max, was + n);
+  if (f.marks[key] !== was && f.notify) f.notify(`${label} ${f.marks[key]}/${max}`, true);
+}
+const MARKED_KINDS = ['melee', 'ranged', 'ability'];
+// o bônus de quem tem marcadores (um por marcador); o golpe que ACERTA gasta todos
+const markRule = (key, per) => ({
+  damageMod({ attacker, kind, passive }) {
+    const n = (attacker.marks && attacker.marks[key]) || 0;
+    return n && MARKED_KINDS.includes(kind) ? 1 + n * (passive.per ?? per) : 1;
+  },
+  onHitDealt({ attacker, kind }) {
+    if (attacker.marks && attacker.marks[key] && MARKED_KINDS.includes(kind)) attacker.marks[key] = 0;
+  },
+});
+
 export const PASSIVES = {
+  // ZURI — LEITURA DE COMBATE (cânone: "quando Zuri gasta uma ação para se defender de um ataque, ela recebe 1 marcador de
+  // Análise"): cada golpe que ela DEFENDE dá um marcador (até 3); cada marcador deixa o próximo golpe dela 12% mais forte
+  // e o golpe que acerta gasta todos. PROPOSTA: os números
+  combatReading: {
+    ...markRule('analise', 0.12),
+    onBlock({ victim, passive }) { addMarks(victim, 'analise', 1, passive.max ?? 3, 'ANÁLISE'); },
+  },
+  // EILEEN — ÍMPETO (cânone: "quando Eileen falha em um teste, ela ganha um ponto de Ímpeto", usado para somar um bônus):
+  // no jogo, FALHAR é ter o golpe defendido ou aparado, ou levar uma pancada forte; cada ponto (até 3) deixa o próximo
+  // golpe dela 15% mais forte. PROPOSTA: os números
+  impeto: {
+    ...markRule('impeto', 0.15),
+    onBlocked({ attacker, passive }) { addMarks(attacker, 'impeto', 1, passive.max ?? 3, 'ÍMPETO'); },
+    onHitTaken({ victim, dealt, passive }) { if (dealt >= (passive.bigHit ?? 60)) addMarks(victim, 'impeto', 1, passive.max ?? 3, 'ÍMPETO'); },
+  },
+  // ZURI — CURANDEIRA (cânone): as curas dela rendem 25% mais (abilities.js → healOverTime)
+  curandeira: {},
   // Tristan — PIROMANIA (cânone: a mania dele, wiki "Tristan Monteiro"; o número é PROPOSTA): bate mais forte em quem
   // está QUEIMANDO (o lança-chamas, o molotov, o fogo no chão)
   pyromania: {

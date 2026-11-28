@@ -27,10 +27,10 @@ import { sphinx } from './sphinx.js';
 import { racha } from './racha.js';
 import { bellAbsolution, silentFilm, specimenHunt } from './vampireSpecials.js';
 import { lastSacrifice, bloodMoon, romeBurns, jupiterPrayer, streetBrawl, charmTheft, ironWall, spyDossier, grandDuel, khopeshBoomerang } from './ordoSpecials.js';
-import { protectionCircle, twinArrows } from './vigiliaSpecials.js';
+import { protectionCircle, twinArrows, weakPoint, hiveSwarm } from './vigiliaSpecials.js';
 
 // Tipos de especial disponíveis. Cada personagem escolhe um em `special.type`.
 // Para criar um tipo novo: { canStart(f, sp, world), start(f, sp, world) → {update(dt)→done, cancel()} }
 // Se acerta à distância sem projétil, defina também telegraph(f, sp) → aviso antes de conectar (ver telegraph.js).
 
-export const SPECIALS = { racha, sphinx, mistField, cinematicCombo, teleportStrike, ritual, erase, marionette, supernova, abyssMaze, santoPact, devilPact, devilDeal, ghostBands, spiralSnipe, eliteShot, headshot, awakenMode, realityRewrite, ageGrab, maskTransform, kamikaze, hostGame, actFinal, mindTorture, inkRequiem, lanternCount, bellAbsolution, silentFilm, specimenHunt, lastSacrifice, bloodMoon, romeBurns, jupiterPrayer, streetBrawl, charmTheft, ironWall, spyDossier, grandDuel, khopeshBoomerang, protectionCircle, twinArrows };
+export const SPECIALS = { racha, sphinx, mistField, cinematicCombo, teleportStrike, ritual, erase, marionette, supernova, abyssMaze, santoPact, devilPact, devilDeal, ghostBands, spiralSnipe, eliteShot, headshot, awakenMode, realityRewrite, ageGrab, maskTransform, kamikaze, hostGame, actFinal, mindTorture, inkRequiem, lanternCount, bellAbsolution, silentFilm, specimenHunt, lastSacrifice, bloodMoon, romeBurns, jupiterPrayer, streetBrawl, charmTheft, ironWall, spyDossier, grandDuel, khopeshBoomerang, protectionCircle, twinArrows, weakPoint, hiveSwarm };

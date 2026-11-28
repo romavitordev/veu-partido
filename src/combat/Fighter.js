@@ -130,6 +130,7 @@ export class Fighter {
     this.secretRound = false; // Segredo de Veríssimo contra o Kian: uma vez por round
     this.escapedDeath = false; // Escapar da Morte (Boris): uma vez por round
     this.unbreakableUses = 0; // INQUEBRÁVEL (Bran): quantas vezes já levantou neste round
+    this.marks = {}; // marcadores da Vigília: ANÁLISE (Zuri) e ÍMPETO (Eileen) — passives.js
     resetCompanion(this); // o Gambá da Artemis volta para o ombro
     this.extraTurnReady = 0; // Turno Extra (Raziel): recarga interna da janela
     this.surgeUsed = false; // Surto Temporal (Rubens) / Mercenária (Carina): uma vez por round

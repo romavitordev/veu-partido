@@ -776,6 +776,8 @@ body.touch-ui .dmg small, body.touch-ui .dmg i { font-size: 13px; }
 .sel-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 5px; }
 .sel-grid .card { aspect-ratio: auto; min-height: 0; border-width: 2px; cursor: pointer; transition: transform .12s; }
 .sel-grid .card.off { display: none; }
+/* cada equipe começa numa linha nova (layout() em ui/Screens.js põe a célula em --gr / --gc) */
+.sel-grid .card { grid-row: var(--gr, auto); grid-column: var(--gc, auto); }
 .sel-grid .card.locked img { filter: grayscale(1) brightness(.35); }
 .sel-grid .card.locked .cn b { color: #777 !important; }
 .sel-grid .card .lk { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(16px, 2vw, 30px); pointer-events: none; text-shadow: 0 0 8px #000; }
@@ -1089,6 +1091,7 @@ body.touch-ui .panel { width: min(36vw, 440px); }
    fundo opaco para o modelo 3D do meio não aparecer por trás das grades */
 @media (max-height: 520px) and (max-width: 760px) {
   .sel-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); }
+  .sel-grid .card { grid-row: auto; grid-column: auto; }
   .sel-grid .card img { object-position: 50% 15%; }
   .sel-side { background: rgba(10, 8, 14, .94); }
 }

@@ -492,6 +492,7 @@ const SYNTHS = {
     a.noise(t, 1.5, { vol: 0.35 * v, type: 'lowpass', freq: 300, freqEnd: 2500, attack: 0.6 });
   },
   smoke: (a, t, v) => a.noise(t, 1.2, { vol: 0.3 * v, type: 'lowpass', freq: 500, freqEnd: 1200, attack: 0.4 }),
+  swarm: (a, t, v) => a.noise(t, 1.4, { vol: 0.28 * v, type: 'bandpass', freq: 230, freqEnd: 280, attack: 0.12 }), // o enxame da Eileen
   bloodClaw: (a, t, v) => {
     a.noise(t, 0.6, { vol: 0.5 * v, type: 'bandpass', freq: 300, freqEnd: 1500, q: 3, attack: 0.2 });
     a.tone(t, 0.7, { vol: 0.3 * v, freq: 50, freqEnd: 110, type: 'sawtooth', attack: 0.2 });

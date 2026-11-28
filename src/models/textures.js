@@ -3177,6 +3177,73 @@ export const MATERIAL_TEXTURES = {
   }, { wrap: true, repeat: [4, 1] }),
   // o PONCHO ESFARRAPADO de O Morto que Caminha: o mesmo pano oliva manchado e furado da capa do Herói (Mael)
   poncho_gwayne: () => MATERIAL_TEXTURES.cloak_mael(),
+  // ---------------- ZURI (A Vigília; wiki): pele escura de tons quentes, olhos COR DE MEL, SARDAS no rosto
+  face_zuri: face((g) => {
+    const rnd = seeded(2207);
+    g.fillStyle = 'rgba(60,30,16,0.5)';
+    for (let i = 0; i < 60; i++) {
+      const s2 = rnd() < 0.5 ? -1 : 1;
+      g.beginPath(); g.arc(CX + s2 * (8 + rnd() * 48), 130 + rnd() * 30, 1 + rnd() * 1.1, 0, Math.PI * 2); g.fill();
+    }
+  }, {
+    skin: '#7a4a30',
+    eye: { iris: '#9a6a1e', irisLight: '#e0aa48', w: 14, h: 7, tilt: 0.06, lid: 3, lashes: true },
+    brow: { angry: 0.1, thick: 3.2, color: '#1a100a' },
+    mouth: { mouthW: 12, smile: 2, lip: 'rgba(90,40,30,0.55)' },
+  }),
+  // o pano XADREZ pendurado na cintura dela: oliva e marrom com o fio claro
+  plaid_zuri: () => canvasTex(128, 128, (g) => {
+    g.fillStyle = '#5a5a2a'; g.fillRect(0, 0, 128, 128);
+    g.fillStyle = 'rgba(60,34,18,0.5)';
+    for (let i = 0; i < 128; i += 32) { g.fillRect(i, 0, 12, 128); g.fillRect(0, i, 128, 12); }
+    g.fillStyle = 'rgba(200,180,130,0.35)';
+    for (let i = 20; i < 128; i += 32) { g.fillRect(i, 0, 2, 128); g.fillRect(0, i, 128, 2); }
+  }, { wrap: true, repeat: [3, 1] }),
+  // a CAPA ESFARRAPADA da fantasia: o mesmo pano oliva manchado e furado da capa do Herói (Mael)
+  robe_zuri: () => MATERIAL_TEXTURES.cloak_mael(),
+  // ---------------- EILEEN (A Vigília; wiki): pele clara com SARDAS pelo rosto todo, olhos VERDES com o centro
+  // castanho (heterocromia central) e os dentes encavalados
+  face_eileen: face((g) => {
+    const rnd = seeded(2411);
+    g.fillStyle = 'rgba(176,92,52,0.5)';
+    for (let i = 0; i < 140; i++) {
+      const s2 = rnd() < 0.5 ? -1 : 1;
+      g.beginPath(); g.arc(CX + s2 * (4 + rnd() * 62), 112 + rnd() * 62, 0.8 + rnd() * 1.3, 0, Math.PI * 2); g.fill();
+    }
+    // os dentes encavalados no sorriso: um da frente torto, por cima do vizinho
+    g.fillStyle = '#f2ece0'; g.strokeStyle = 'rgba(120,80,70,0.6)'; g.lineWidth = 0.8;
+    g.save(); g.translate(CX + 4, MOUTH_Y + 1); g.rotate(0.25);
+    g.fillRect(-3, -2, 6, 6); g.strokeRect(-3, -2, 6, 6); g.restore();
+  }, {
+    skin: '#f0c8b0',
+    eye: { iris: '#3a8a4a', irisLight: '#8a5a24', w: 14, h: 7.5, tilt: 0.05, lid: 2.8, lashes: true },
+    brow: { angry: 0, thick: 2.8, color: '#b0482a' },
+    mouth: { mouthW: 14, smile: 4, lip: 'rgba(190,96,90,0.5)', teeth: true },
+  }),
+  // o AVENTAL branco gasto com a FLOR VERMELHA bordada
+  apron_eileen: () => canvasTex(256, 256, (g) => {
+    const rnd = seeded(2419);
+    g.fillStyle = '#e8e2d4'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '150,130,100' : '255,255,250'},${0.05 + rnd() * 0.07})`; g.fillRect(rnd() * 256, rnd() * 256, 1 + rnd() * 2, 2 + rnd() * 6); }
+    const gr = g.createLinearGradient(0, 180, 0, 256); gr.addColorStop(0, 'rgba(120,96,60,0)'); gr.addColorStop(1, 'rgba(120,96,60,0.35)');
+    g.fillStyle = gr; g.fillRect(0, 180, 256, 76);
+    // a flor: cinco pétalas vermelhas, o miolo amarelo e o caule verde
+    const fx = 150, fy = 92;
+    g.strokeStyle = '#4a7a3a'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(fx, fy + 8); g.quadraticCurveTo(fx - 8, fy + 40, fx + 2, fy + 62); g.stroke();
+    g.fillStyle = '#5a8a40'; g.beginPath(); g.ellipse(fx - 9, fy + 36, 9, 4, -0.6, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#b8282a';
+    for (let k = 0; k < 5; k++) { const a = (k / 5) * Math.PI * 2; g.beginPath(); g.ellipse(fx + Math.cos(a) * 10, fy + Math.sin(a) * 10, 9, 6, a, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#e8b830'; g.beginPath(); g.arc(fx, fy, 5, 0, Math.PI * 2); g.fill();
+  }),
+  // o SACO de estopa da máscara: a trama grossa marrom-clara, manchada
+  sack_eileen: () => canvasTex(256, 256, (g) => {
+    const rnd = seeded(2423);
+    g.fillStyle = '#b8a078'; g.fillRect(0, 0, 256, 256);
+    g.strokeStyle = 'rgba(90,70,40,0.35)'; g.lineWidth = 1.5;
+    for (let i = 0; i < 256; i += 5) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + rnd() * 2, 256); g.stroke(); g.beginPath(); g.moveTo(0, i); g.lineTo(256, i + rnd() * 2); g.stroke(); }
+    for (let i = 0; i < 30; i++) { g.fillStyle = `rgba(70,50,28,${0.08 + rnd() * 0.12})`; g.beginPath(); g.arc(rnd() * 256, rnd() * 256, 8 + rnd() * 26, 0, Math.PI * 2); g.fill(); }
+  }, { wrap: true, repeat: [2, 2] }),
   face_rubens: face(() => {}, {
     skin: '#9a6a46',
     eye: { iris: '#3a2214', irisLight: '#6a4428', w: 14, h: 7, tilt: 0.04, lid: 3.4 },

@@ -7,7 +7,8 @@ import { findSpotBehind, findFreeSpotNear } from './positioning.js';
 import { applyHit } from './damage.js';
 import { splitDamage } from './specials/common.js';
 import { fleshCut, rawFlesh } from './specials/ritual.js';
-import { hasPassive, betray } from './passives.js';
+import { hasPassive, betray, addMarks } from './passives.js';
+import { isHealer, nearbyAlly, healAlly } from './healers.js';
 import { startSelfHarmTrance } from './selfHarm.js';
 import { swapFace } from './specials/maskTransform.js';
 import { DanteClone, CLONE, BloodZombie, InterfloradoNest } from './npcs.js';
@@ -1779,6 +1780,22 @@ Object.assign(ABILITY_TYPES, {
   //  'comfort' Conforto de Santo Berço (Ferreiro): luz dourada da "tarde perfeita"; a ilusão QUEBRA se apanhar (a.breakOnHit)
   healOverTime: {
     start(f, a, world) {
+      // COOP (combat/healers.js): o curandeiro perto do amigo ferido cura o AMIGO enquanto segura o botão
+      const ally = isHealer(f.def) ? nearbyAlly(world, f) : null;
+      if (ally) {
+        const tl = new Timeline();
+        f.vel.set(0, 0, 0);
+        f.yaw = yawTo(f.pos, ally.pos);
+        f.anim.play('breath', { restart: true, duration: 0.6 });
+        world.audio.play('ritual', { volume: 0.6, pitch: 1.3 });
+        const H = a.heal * (hasPassive(f, 'curandeira') ? 1.25 : 1);
+        tl.add(0.3, () => {
+          if (a.cleanse) for (const bf of ally.buffs) if (bf.time > 0 && CLEANSE.has(bf.type)) bf.time = 0;
+          healAlly(world, f, ally, a, H);
+        });
+        tl.end(0.6);
+        return seqFrom(tl);
+      }
       if (f.findBuff('healing')) {
         f.notify('JÁ CICATRIZANDO');
         return null;
@@ -1866,7 +1883,8 @@ Object.assign(ABILITY_TYPES, {
             }
             const still = Math.hypot(f.vel.x, f.vel.z) < 0.5 && ['idle', 'block', 'charging', 'ability'].includes(f.state);
             const k = a.stillBonus && still ? a.stillBonus : 1;
-            const n = Math.min(a.heal * (a.stillBonus || 1) - given, (a.heal / a.duration) * k * dt);
+            const H = a.heal * (hasPassive(f, 'curandeira') ? 1.25 : 1); // CURANDEIRA (Zuri): as curas rendem mais
+            const n = Math.min(H * (a.stillBonus || 1) - given, (H / a.duration) * k * dt);
             if (n > 0) {
               given += n;
               f.health = Math.min(f.maxHealth, f.health + n);
@@ -3143,6 +3161,8 @@ Object.assign(ABILITY_TYPES, {
         const old = opp.findBuff(type);
         if (old) old.time = a.duration;
         else opp.addBuff({ type, name: a.label || 'ANALISADO', time: a.duration, duration: a.duration, takenMult: a.takenMult, takenKinds: a.takenKinds });
+        // ANÁLISE (Zuri): estudar o adversário também dá marcadores de Análise (passives.js → combatReading)
+        if (a.analysisMarks) addMarks(f, 'analise', a.analysisMarks, 3, 'ANÁLISE');
         world.fx.ring(opp.chestPos(), { color: a.color ?? 0xe8c070, radius: 0.9, life: 0.5, vertical: true, yaw: f.yaw });
         world.fx.ring(new THREE.Vector3(opp.pos.x, 0.06, opp.pos.z), { color: a.color ?? 0xe8c070, radius: 1.2, life: 0.6 });
         opp.notify(a.label || 'ANALISADO', true);

@@ -245,6 +245,7 @@ export function applyHit(world, attacker, victim, o) {
         if (o.kind === 'melee') cursedShieldBite(world, victim, attacker, 1.5);
         victim.setState('idle'); // livre para contra-atacar na hora
         world.onParry && world.onParry(victim, attacker);
+        blockPassives(world, attacker, victim, o);
         return 'parried';
       }
       let chip = o.kind === 'melee' ? B.meleeChip : B.rangedChip;
@@ -264,6 +265,7 @@ export function applyHit(world, attacker, victim, o) {
       if (o.kind === 'melee') runMeleePassives(world, attacker, victim, o, dealt, attempted);
       if (o.kind === 'melee') cursedShieldBite(world, victim, attacker);
       world.onHit && world.onHit(attacker, victim, dealt, { ...o, blocked: true });
+      blockPassives(world, attacker, victim, o);
       return 'blocked';
     }
   }
@@ -498,6 +500,14 @@ function energyHitFx(world, victim, color, scale = 1) {
   world.fx.burst(c, { count: 16, color: 0xf4ecff, speed: 5, life: 0.25, size: 0.08, gravity: 4 });
   world.fx.ring(c, { color, radius: 0.9 * scale, life: 0.18, vertical: true, yaw: Math.random() * Math.PI, inner: 0.88, opacity: 0.7 });
   if (Math.random() < 0.5) world.audio.play('chargeHum', { volume: 0.35, pitch: 2.2 });
+}
+
+// DEFESA (A Vigília): quem defendeu ganha (onBlock — a Leitura de Combate da Zuri) e quem teve o golpe defendido ou
+// aparado também (onBlocked — o Ímpeto da Eileen: falhou, junta força)
+function blockPassives(world, attacker, victim, o) {
+  if (o.kind === 'status') return;
+  for (const p of victim.def.passives || []) PASSIVES[p.type]?.onBlock?.({ victim, attacker, o, passive: p, world });
+  for (const p of (attacker && attacker.def && attacker.def.passives) || []) PASSIVES[p.type]?.onBlocked?.({ attacker, victim, o, passive: p, world });
 }
 
 function runMeleePassives(world, attacker, victim, o, dealt, attempted) {

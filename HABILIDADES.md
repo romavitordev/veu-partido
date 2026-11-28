@@ -2503,6 +2503,178 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
+## ZURI
+
+*A Curandeira: a herbalista de Treb Ciach, a melhor amiga da Eileen* · arma: A faca, as ervas e os frascos da bolsa
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte Curto | 22 | 1.6 m |  |
+| ○ 2 | Corte de Volta | 24 | 1.6 m |  |
+| ○ 3 | Joelhada | 28 | 1.4 m |  |
+| ○ 4 | Ponto da Faca | 30 | 1.8 m |  |
+| ○ 5 | Corte Fundo | 50 | 1.9 m | finalizador: derruba |
+| Frente + ○ | Empurrão | 30 | 1.9 m |  |
+| Trás + ○ | Recuo e Corte | 34 | 1.8 m | invulnerável no começo |
+| Lado + ○ | Corte de Lado | 28 | 1.9 m |  |
+| No ar + ○ | Faca do Alto | 30 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Faca para Cima | 34 | 1.8 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Faca no Chão | 38 | 1.8 m | finalizador: derruba |
+
+### Principal (□ / X): Frasco de Ervas
+
+- Dano 18 · alcance 20 m · cooldown 1.1 s · custo 0
+
+### Habilidades
+
+- **Análise** — △ + □ / Y + X · custo 18 · cooldown 14 s · alcance 14 m
+  Estuda o adversário: por 7 s ele recebe 15% a mais de dano, e ela ganha 1 marcador de Análise (o próximo golpe dela sai mais forte).
+- **Pomada de Mel** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
+  Passa a pomada de mel nas feridas: recupera vida por 3 s (mais parada) e fecha sangramento e queimadura. Curandeira: rende 25% a mais.
+- **Elixir Calmante** — △ + L2 / Y + LT · custo 0 · cooldown 18 s
+  Bebe o elixir: recupera 35 de energia na hora e, por 6 s, apanha 10% menos.
+- **Tônico Fortificante** — △ + ○ / Y + B · custo 22 · cooldown 18 s
+  Toma o tônico: por 8 s bate 18% mais forte e ataca mais rápido.
+
+### Especial: Ponto Fraco
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Guerreira da Vigília
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## ZURI — GUERREIRA DA VIGÍLIA
+
+*Guerreira da Vigília (até o fim do round)* · arma: A Espada da Vigília, as ervas e a galhada do crânio de cervo
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Corte Curto | 25 | 1.9 m |  |
+| ○ 2 | Corte de Volta | 27 | 1.9 m |  |
+| ○ 3 | Joelhada | 31 | 1.4 m |  |
+| ○ 4 | Ponto da Espada | 34 | 2.1 m |  |
+| ○ 5 | Corte Fundo | 56 | 2.2 m | finalizador: derruba |
+| Frente + ○ | Empurrão | 34 | 1.9 m |  |
+| Trás + ○ | Recuo e Corte | 38 | 2.1 m | invulnerável no começo |
+| Lado + ○ | Corte de Lado | 31 | 2.2 m |  |
+| No ar + ○ | Espada do Alto | 34 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Espada para Cima | 38 | 2.1 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Espada no Chão | 43 | 2.1 m | finalizador: derruba |
+
+### Principal (□ / X): Frasco de Ervas
+
+- Dano 18 · alcance 20 m · cooldown 1.1 s · custo 0
+
+### Habilidades
+
+- **Análise** — △ + □ / Y + X · custo 18 · cooldown 14 s · alcance 14 m
+  Estuda o adversário: por 7 s ele recebe 15% a mais de dano, e ela ganha 1 marcador de Análise (o próximo golpe dela sai mais forte).
+- **Pomada de Mel** — R2 + △ / RT + Y · custo 26 · cooldown 20 s
+  Passa a pomada de mel nas feridas: recupera vida por 3 s (mais parada) e fecha sangramento e queimadura. Curandeira: rende 25% a mais.
+- **Tônico Fortificante** — △ + ○ / Y + B · custo 22 · cooldown 18 s
+  Toma o tônico: por 8 s bate 18% mais forte e ataca mais rápido.
+- **Investida do Cervo** — △ + L2 / Y + LT · custo 18 · cooldown 9 s · dano 50 · alcance 2.6 m
+  Baixa a galhada do crânio de cervo e dispara em linha reta: quem estiver no caminho é jogado para cima.
+
+### Especial: Ponto Fraco
+
+250 de dano · custo 50 · cooldown 14 s.
+
+---
+
+## EILEEN
+
+*A Apicultora: a ruiva das abelhas de Treb Ciach, a melhor amiga da Zuri* · arma: A foice, a funda e o pote de abelhas
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Talho | 23 | 1.8 m |  |
+| ○ 2 | Talho de Volta | 25 | 1.8 m |  |
+| ○ 3 | Chute Baixo | 24 | 1.6 m |  |
+| ○ 4 | Foice de Cima | 30 | 1.9 m |  |
+| ○ 5 | Colheita | 52 | 2.1 m | finalizador: derruba |
+| Frente + ○ | Avanço da Foice | 32 | 2.1 m |  |
+| Trás + ○ | Recuo e Talho | 32 | 1.9 m | invulnerável no começo |
+| Lado + ○ | Roda da Foice | 30 | 2.1 m |  |
+| No ar + ○ | Foice do Alto | 31 | 2 m | desce com impacto |
+| ↑ + ○ (no combo) | Foice para Cima | 34 | 1.9 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Gancho no Pé | 36 | 2 m | finalizador: derruba |
+
+### Principal (□ / X): Funda
+
+- Dano 21 · alcance 26 m · cooldown 1 s · custo 0
+
+### Habilidades
+
+- **Pote de Abelhas** — △ + □ / Y + X · custo 24 · cooldown 12 s
+  Joga o pote de abelhas em arco: estoura no adversário e o enxame persegue ele picando por 5 s — LENTO e TONTO no começo.
+- **Rolo da Foice** — △ + ○ / Y + B · custo 20 · cooldown 10 s · dano 56
+  Gira com a foice aberta: dois talhos em volta dela, o último joga longe.
+- **Dedicada** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
+  Firma a mão: por 8 s a funda sai 25% mais forte e ela ataca mais rápido.
+- **Fumaça do Apicultor** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
+  Abana o fumegador: a fumaça em volta dela deixa lento quem entra e engole os tiros por 5 s.
+
+### Especial: A Colmeia
+
+250 de dano · custo 50 · cooldown 14 s.
+
+### Transformação: Fantasia do Samhain
+
+Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanidade cheia → 250 de dano.
+
+---
+
+## EILEEN — FANTASIADA
+
+*Fantasiada para o Samhain (até o fim do round)* · arma: A Espada e o Escudo da Vigília, a funda e o pote de abelhas em chamas
+
+### Físico (○ / B)
+
+| Comando | Golpe | Dano | Alcance | Observações |
+|---|---|---|---|---|
+| ○ 1 | Talho | 25 | 2.1 m |  |
+| ○ 2 | Talho de Volta | 28 | 2.1 m |  |
+| ○ 3 | Chute Baixo | 26 | 1.6 m |  |
+| ○ 4 | Espada de Cima | 33 | 2.2 m |  |
+| ○ 5 | Colheita | 57 | 2.4 m | finalizador: derruba |
+| Frente + ○ | Avanço da Espada | 35 | 2.4 m |  |
+| Trás + ○ | Recuo e Talho | 35 | 2.2 m | invulnerável no começo |
+| Lado + ○ | Roda da Espada | 33 | 2.4 m |  |
+| No ar + ○ | Espada do Alto | 34 | 2.3 m | desce com impacto |
+| ↑ + ○ (no combo) | Espada para Cima | 37 | 2.2 m | finalizador: lança alto (combo aéreo) |
+| ↓ + ○ (no combo) | Gancho no Pé | 40 | 2.3 m | finalizador: derruba |
+
+### Principal (□ / X): Funda
+
+- Dano 21 · alcance 26 m · cooldown 1 s · custo 0
+
+### Habilidades
+
+- **Pote de Abelhas em Chamas** — △ + □ / Y + X · custo 24 · cooldown 12 s
+  Joga o pote de abelhas pegando fogo: o chão fica em chamas onde ele estoura e o enxame persegue o adversário — picadas e QUEIMANDO, LENTO e TONTO no começo.
+- **Golpe de Escudo** — △ + ○ / Y + B · custo 18 · cooldown 9 s · dano 46 · alcance 2.4 m
+  Avança com o Escudo da Vigília na frente: quebra a defesa e derruba.
+- **Dedicada** — △ + L2 / Y + LT · custo 18 · cooldown 16 s
+  Firma a mão: por 8 s a funda sai 25% mais forte e ela ataca mais rápido.
+- **Fumaça do Apicultor** — R2 + △ / RT + Y · custo 22 · cooldown 18 s
+  Abana o fumegador: a fumaça em volta dela deixa lento quem entra e engole os tiros por 5 s.
+
+### Especial: A Colmeia
+
+250 de dano · custo 50 · cooldown 14 s.
+
+---
+
 ## CASCADIA
 
 *A guerreira mais antiga da Ordo Calamitas, mãe de Caesar — cansada de tudo, principalmente da Celestine* · arma: O khopesh curvo e a espada reta

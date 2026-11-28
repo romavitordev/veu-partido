@@ -865,7 +865,25 @@ baixado sem o OK do dono.
         lobo com as presas e as penas vermelhas, a pele de pelo cinza e o poncho esfarrapado). Kit PROPOSTA em
         lore/A-VIGILIA.md: arqueiro com o arco da Gwyneth, Flechas Flamejantes que queimam (cânone), Prontidão e Esquiva
         (cânone); especial próprio "A Flecha de Gwyneth". Faltam Zuri e Eileen.
-      - [ ] Vínculo de equipe "A Vigília" (já são 3: Bran, Mael e Gwayne).
+      - [x] (v5.53.0) **Zuri** — A Curandeira e Guerreira da Vigília (versão na seleção e Transformação: o crânio de
+        cervo com a galhada, o capuz e a capa). Kit PROPOSTA em lore/A-VIGILIA.md: a faca, Análise, Pomada de Mel, Elixir
+        Calmante, Tônico Fortificante, Leitura de Combate e Curandeira; especial próprio "Ponto Fraco"; na forma, a Espada
+        da Vigília.
+      - [x] (v5.53.0) **Eileen** — A Apicultora e Fantasiada (o título segue "?"; versão na seleção e Transformação: o saco
+        costurado, os galhos e o capuz preto). Kit PROPOSTA em lore/A-VIGILIA.md: a foice, a funda, o Pote de Abelhas
+        (o enxame persegue, lenta e tonta), Ímpeto; especial próprio "A Colmeia"; na forma, a Espada e o Escudo da Vigília
+        e o pote PEGANDO FOGO (deixa o chão em chamas).
+      - [x] (v5.53.0) Vínculo de equipe "A Vigília" (3 ou mais dos cinco) e a dupla Zuri + Eileen ("As Sobreviventes de
+        Treb Ciach").
+      - [ ] **Fechar a grade da Vigília com 9** (dono, 2026-11-28): Bran, Mael, Gwayne, Zuri, Eileen e mais quatro —
+        **Maeve**; **Aed, Cathal e Tadg como UM personagem só** (dá para intercalar entre os três na luta, como a troca
+        do Fernando/Luciano); **Fergus** (irmão do Bran); **Marban** (o druida mestre do Mael). Conferir cânone na wiki e
+        nos episódios antes (o que não for cânone, PROPOSTA).
+      - [x] (v5.53.0: cada equipe começa numa linha nova; as setas pulam os buracos) **Arrumar a grade da seleção** (dono, 2026-11-28): grupos de 5 lutadores deixam buraco na grade de 3 colunas;
+        ver o que dá para ajustar (o dono acha que não tem muito o que fazer).
+      - [x] (v5.53.0) **Curandeiros curam o parceiro** (dono, 2026-11-28): na assistência da Batalha em Equipe (Zuri,
+        Dara, Rubens, Caio, Chico e Joui; Erin e Dante já curavam) e no coop, segurando a habilidade de cura perto do
+        amigo ferido (combat/healers.js).
       - [x] (v5.52.0: Gwayne com a flecha comum e as Flechas Flamejantes como poder; Bran com o Barril, a Salva de
         Azagaias, o Barril em Chamas, o Voo do Corvo como investida de lança e o poder Inquebrável) **Ajustar os kits do Bran e do Gwayne** (dono, 2026-11-28): mais variedade e mais fiéis ao cânone (conferir
         A Vigília e a wiki antes; o que não for cânone, PROPOSTA). O GWAYNE atira FLECHAS NORMAIS no básico; as

@@ -121,6 +121,44 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
   cravando a adaga); as flechas queimam mais.
 - Cenas: Bran + Gwayne ("fica atrás de mim e atira por cima") e Gwayne + Mael (o arco da Gwyneth e as raízes).
 
+## Zuri — A Curandeira / Guerreira da Vigília (fantasiada)
+- Cânone usado no jogo: a CURANDEIRA da vila (a ficha dela cura e lê o combate), a FACA e o título "Guerreira da Vigília"
+  (dado pelo dono). A fantasia do Samhain: o crânio de cervo com a galhada, o capuz com o cachecol e a capa esfarrapada.
+- O título da forma normal fica como "A Curandeira"; o "?" da tabela do TODO não foi inventado.
+
+### Kit no jogo (PROPOSTA, v5.53.0 — src/characters/zuri.js)
+- Elemento CONHECIMENTO (PROPOSTA); de perto, a FACA em cortes curtos e a joelhada (a pegada de faca do elenco);
+  □ Frasco de Ervas arremessado.
+- Habilidades: Análise (o alvo apanha 15% a mais e ela ganha 1 marcador: o próximo golpe sai mais forte), Pomada de Mel
+  (cura por 3 s e fecha sangramento e queimadura), Elixir Calmante (energia e menos dano) e Tônico Fortificante (mais
+  força e velocidade).
+- Passivas: Leitura de Combate (cada golpe defendido vira um marcador de Análise, até 3) e CURANDEIRA (as curas rendem
+  25% a mais).
+- Especial Ponto Fraco (specials/vigiliaSpecials.js → weakPoint): marca três pontos no adversário, entra colada e corta
+  os três; o último lança, e ela se cura com 25% do dano.
+- Transformação e versão GUERREIRA DA VIGÍLIA: a ESPADA DA VIGÍLIA no lugar da faca (dono, 2026-11-28), a Pomada mais
+  forte e a Investida do Cervo (avança com a galhada na frente).
+
+## Eileen — A Apicultora / Fantasiada (o título ainda é "?")
+- Cânone usado no jogo: a APICULTORA, elemento ENERGIA, a FOICE de colher, a FUNDA, os potes de abelha e o ESCUDO da
+  Vigília no Samhain (ep. 3: "Eileen se protegendo com o escudo"). Visual: o capuz amarelo de abelha com a coroa,
+  as tranças ruivas, as sardas, a heterocromia, o avental branco com a flor vermelha. Fantasia: o SACO costurado com os
+  olhos e os dentes, os galhos na cabeça e o capuz preto com a capa esfarrapada.
+- O título da forma fantasiada ainda é "?": no jogo ela aparece só como "Fantasiada".
+
+### Kit no jogo (PROPOSTA, v5.53.0 — src/characters/eileen.js)
+- De perto, a FOICE (o fio para o adversário); □ a FUNDA (pedra em arco).
+- Habilidades: POTE DE ABELHAS (dono, 2026-11-28): o pote estoura e o ENXAME persegue o adversário picando por 5 s,
+  LENTO e TONTO no começo; Rolo da Foice (giro); Dedicada (o tiro da funda mais forte) e Fumaça (a nuvem de fumaça
+  das colmeias: deixa lento e come projéteis).
+- Passivas: ÍMPETO (cada golpe dela defendido e cada pancada grande que leva vira um marcador: o próximo golpe sai mais
+  forte) e Tiro Longo.
+- Especial A Colmeia (specials/vigiliaSpecials.js → hiveSwarm): o rio de abelhas prende o adversário, o enxame fica nele
+  e ela fecha com o corte.
+- Transformação e versão FANTASIADA: a ESPADA E O ESCUDO DA VIGÍLIA (dono, 2026-11-28); o POTE DE ABELHAS PEGANDO FOGO
+  (picadas, QUEIMANDO, lento e tonto, e o chão fica em chamas onde ele estoura); o Golpe de Escudo; A Colmeia queima.
+- Cenas: Zuri + Eileen ("as sobreviventes de Treb Ciach") e o vínculo de equipe A Vigília (3 ou mais dos cinco).
+
 ## Próximos da Vigília (títulos do dono, TODO 2026-11-21)
 Zuri (A Curandeira / ?), Mael (O Druida / Herói da Vigília), Gwayne (O Forasteiro / O Morto que Caminha),
 Eileen (A Apicultora / ?). O "?" não deve ser inventado.
