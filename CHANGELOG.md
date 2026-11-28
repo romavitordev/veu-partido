@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.50.4 — Folhas, Brasas e Raízes
+
+### Alterado
+
+- **Mael — poderes com cena própria:** o Chamado levanta um redemoinho de folhas verdes em espiral e, enquanto dura, folhas caem em volta dele; a Chama de Proteção acende o sigilo dourado do ritual sob os pés, com um anel de chamas amarelas na borda.
+- **Mael — golpes:** rastro nos talhos da machadinha; a Machadada e os golpes fortes (Ímpeto, Machadada do Peregrino) soltam as brasas amarelas da Chama de Proteção; Gancho, Ímpeto e Machadada do Peregrino pesam na defesa; o Pisão na Raiz pega quem está no chão e as raízes se fecham sobre ele.
+- **O Círculo do Samhain:** as raízes de Treb Ciach prendem quem fica dentro e cada onda solta brasas.
+- **Bran e Mael:** conversa nova antes da luta, a partir do fim do Mael na série. No "fica atrás de mim" do Bran, o Mael não recua: manda o Bran descer para a base e se proteger, porque quem fica é ele.
+
 ## v5.50.3 — O Inquebrável e o Herói da Vigília
 
 ### Alterado

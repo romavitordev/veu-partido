@@ -3,7 +3,7 @@ import { Timeline, yawTo, distXZ, forwardFromYaw } from '../../core/util.js';
 import { COMBAT } from '../../config/combat.js';
 import { applyHit } from '../damage.js';
 import { splitDamage, trySpecialBlock } from './common.js';
-import { ARENA_TEXTURES } from '../../arena/arenaTextures.js';
+import { sigilMap, emberBurst, rootSnap } from '../../fx/vigiliaFx.js';
 
 // ESPECIAIS PRÓPRIOS DA VIGÍLIA (Treb Ciach, 890; lore/A-VIGILIA.md). As cenas são PROPOSTA.
 //   protectionCircle  MAEL — O Círculo do Samhain: o druida aprendiz do Marban risca no chão o SÍMBOLO DO RITUAL DA CHAMA
@@ -13,15 +13,6 @@ import { ARENA_TEXTURES } from '../../arena/arenaTextures.js';
 
 const FLAME = 0xffd84a; // a Chama de Proteção (amarela)
 const EMBER = 0xff9a2a;
-
-let sigilTex = null; // a textura do sigilo é cara de pintar: uma só para a partida inteira
-function sigilMap() {
-  if (!sigilTex) {
-    const t = ARENA_TEXTURES.protection_sigil();
-    sigilTex = t.map || t;
-  }
-  return sigilTex;
-}
 
 export const protectionCircle = {
   canStart: (f, sp) => {
@@ -96,6 +87,7 @@ export const protectionCircle = {
       opp.stun(waves[waves.length - 1] - 0.6, 'stagger', { bind: true });
       opp.vel.set(0, 0, 0);
       opp.notify('PRESO NO CÍRCULO', true);
+      rootSnap(world, opp); // as raízes de Treb Ciach fecham em volta de quem ficou dentro
       column = world.fx.emitter({ rate: 70, follow: () => new THREE.Vector3(opp.pos.x + (Math.random() - 0.5) * 1.1, 0.1, opp.pos.z + (Math.random() - 0.5) * 1.1), particle: { color, speed: 0.6, up: 5, life: 0.6, size: 0.3 } });
     });
     waves.forEach((at, i) => tl.add(at, () => {
@@ -104,6 +96,7 @@ export const protectionCircle = {
       f.anim.play(last ? 'cast_up' : 'concentrate', { restart: true, duration: 0.45 });
       const p = opp.chestPos();
       world.fx.burst(p, { count: last ? 60 : 26, color, speed: last ? 9 : 5, up: 4, life: 0.55, size: 0.28 });
+      emberBurst(world, p, { big: last, color });
       world.fx.ring(new THREE.Vector3(opp.pos.x, 0.08, opp.pos.z), { color: last ? 0xffffff : color, radius: last ? 3 : 1.6, life: 0.4 });
       world.cameraRig.shake(last ? 0.5 : 0.2, last ? 0.3 : 0.15);
       if (last) world.screenFlash && world.screenFlash('#3a3006', 0.15);

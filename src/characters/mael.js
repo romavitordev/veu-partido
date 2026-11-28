@@ -35,18 +35,18 @@ export default {
   melee: {
     name: 'Machadinha e Punho',
     strikes: [
-      { name: 'Talho da Machadinha', anim: 'slash_h', dur: 0.3, active: [0.1, 0.18], damage: 26, range: 2.0, arc: 120, knockback: 1.0, lunge: 1.0, sound: 'swing', hitSound: 'axeHit' },
+      { name: 'Talho da Machadinha', anim: 'slash_h', dur: 0.3, active: [0.1, 0.18], damage: 26, range: 2.0, arc: 120, knockback: 1.0, lunge: 1.0, sound: 'swing', hitSound: 'axeHit', trail: { color: STEEL } },
       { name: 'Soco do Druida', anim: 'jab', dur: 0.26, active: [0.08, 0.15], damage: 22, range: 1.6, arc: 70, knockback: 0.8, lunge: 0.9, sound: 'swing', hitSound: 'punch' },
-      { name: 'Talho de Volta', anim: 'slash_h_back', dur: 0.32, active: [0.1, 0.19], damage: 28, range: 2.0, arc: 120, knockback: 1.2, lunge: 1.0, sound: 'swing', hitSound: 'axeHit' },
-      { name: 'Gancho', anim: 'hook_l', dur: 0.36, active: [0.12, 0.21], damage: 32, range: 1.7, arc: 90, knockback: 1.6, lunge: 1.1, sound: 'swing', hitSound: 'heavyPunch' },
-      { name: 'Machadada do Peregrino', anim: 'slash_finisher', dur: 0.6, active: [0.26, 0.4], damage: 58, range: 2.2, arc: 100, lunge: 1.4, finisher: 'launch', hitstop: 0.12, sound: 'slashFinal', hitSound: 'axeHit', impactScale: 1.7, trail: { color: FLAME, big: true } },
+      { name: 'Talho de Volta', anim: 'slash_h_back', dur: 0.32, active: [0.1, 0.19], damage: 28, range: 2.0, arc: 120, knockback: 1.2, lunge: 1.0, sound: 'swing', hitSound: 'axeHit', trail: { color: STEEL, flip: true } },
+      { name: 'Gancho', anim: 'hook_l', dur: 0.36, active: [0.12, 0.21], damage: 32, range: 1.7, arc: 90, knockback: 1.6, lunge: 1.1, guardCrush: 14, hitstop: 0.06, impactScale: 1.3, sound: 'swing', hitSound: 'heavyPunch' },
+      { name: 'Machadada do Peregrino', anim: 'slash_finisher', dur: 0.6, active: [0.26, 0.4], damage: 58, range: 2.2, arc: 100, lunge: 1.4, finisher: 'launch', hitstop: 0.13, guardCrush: 28, sound: 'slashFinal', hitSound: 'axeHit', impactScale: 1.8, impactFx: 'ember', groundFx: 'smash', groundScale: 0.7, trail: { color: FLAME, big: true } },
     ],
     up: { name: 'Machadinha de Baixo', anim: 'slash_up', dur: 0.44, active: [0.16, 0.28], damage: 38, range: 2.0, arc: 100, lunge: 0.8, finisher: 'launchHigh', launcher: true, sound: 'swing', hitSound: 'axeHit', trail: { color: STEEL, tilt: -1.3 } },
-    down: { name: 'Pisão na Raiz', anim: 'stomp', dur: 0.48, active: [0.2, 0.3], damage: 42, range: 1.9, arc: 140, lunge: 0.6, finisher: 'knockdown', sound: 'heavyPunch', hitSound: 'heavyPunch' },
-    forward: { name: 'Ímpeto', anim: 'uppercut', dur: 0.46, active: [0.14, 0.26], damage: 38, range: 1.9, arc: 90, knockback: 2.6, motion: [{ t: [0, 0.22], fwd: 5, stopClose: true }], sound: 'swing', hitSound: 'heavyPunch' },
-    back: { name: 'Recua e Corta', anim: 'slash_v', dur: 0.5, active: [0.26, 0.36], damage: 32, range: 2.1, arc: 80, knockback: 2.0, iframes: [0, 0.18], motion: [{ t: [0, 0.2], back: 2.6 }], sound: 'swing', hitSound: 'axeHit' },
-    side: { name: 'Talho de Passagem', anim: 'slash_h', dur: 0.4, active: [0.12, 0.22], damage: 30, range: 2.0, arc: 140, knockback: 1.6, motion: [{ t: [0, 0.24], side: 2 }], sound: 'swing', hitSound: 'axeHit' },
-    air: { name: 'Machadinha do Alto', anim: 'air_slash', dur: 0.42, active: [0.16, 0.3], damage: 34, range: 2.0, arc: 100, knockback: 3, slam: 15, vertical: 2.2, sound: 'swing', hitSound: 'axeHit' },
+    down: { name: 'Pisão na Raiz', anim: 'stomp', dur: 0.48, active: [0.2, 0.3], damage: 42, range: 1.9, arc: 140, lunge: 0.6, finisher: 'knockdown', otg: true, impactFx: 'roots', groundFx: 'dust', sound: 'heavyPunch', hitSound: 'heavyPunch' },
+    forward: { name: 'Ímpeto', anim: 'uppercut', dur: 0.46, active: [0.14, 0.26], damage: 38, range: 1.9, arc: 90, knockback: 2.6, guardCrush: 20, hitstop: 0.08, impactFx: 'ember', motion: [{ t: [0, 0.22], fwd: 5, stopClose: true }], sound: 'swing', hitSound: 'heavyPunch' },
+    back: { name: 'Recua e Corta', anim: 'slash_v', dur: 0.5, active: [0.26, 0.36], damage: 32, range: 2.1, arc: 80, knockback: 2.0, iframes: [0, 0.18], motion: [{ t: [0, 0.2], back: 2.6 }], sound: 'swing', hitSound: 'axeHit', trail: { color: STEEL, roll: 1.5 } },
+    side: { name: 'Talho de Passagem', anim: 'slash_h', dur: 0.4, active: [0.12, 0.22], damage: 30, range: 2.0, arc: 140, knockback: 1.6, motion: [{ t: [0, 0.24], side: 2 }], sound: 'swing', hitSound: 'axeHit', trail: { color: STEEL, wide: true } },
+    air: { name: 'Machadinha do Alto', anim: 'air_slash', dur: 0.42, active: [0.16, 0.3], damage: 34, range: 2.0, arc: 100, knockback: 3, slam: 15, vertical: 2.2, sound: 'swing', hitSound: 'axeHit', trail: { color: STEEL, tilt: 1.3 } },
   },
 
   // □ PEDRAS DO DRUIDA (PROPOSTA; as três pedras do suspensório no cânone): tira uma pedra do bolso e joga, acesa de
@@ -99,6 +99,7 @@ export default {
       knockback: 4,
       guardCrush: 55,
       whiffRecovery: 0.5,
+      embers: true, // a Chama de Proteção estoura em brasas onde a machadinha desce
       color: FLAME,
       ai: { when: 'opening', max: 2.4 },
     },
@@ -119,6 +120,8 @@ export default {
       duration: 7,
       damageMult: 1.2,
       atkSpeed: 1.12,
+      castFx: 'leafCall', // o redemoinho de folhas sobe em volta dele; folhas caem enquanto dura
+      trail: false,
       color: LEAF,
       ai: { when: 'close' },
     },
@@ -159,7 +162,8 @@ export default {
       duration: 6,
       takenMult: 0.65,
       armor: 2,
-      redAura: FLAME,
+      castFx: 'protectionFlame', // o sigilo dourado sob os pés e o anel de chamas amarelas
+      trail: false,
       color: FLAME,
       ai: { when: 'hurt' },
     },

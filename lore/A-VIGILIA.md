@@ -90,6 +90,12 @@ Tudo que não estiver aqui e entrar no jogo é PROPOSTA e deve ser marcado como 
 - Passivas: Ímpeto (apanhar enche a barra) e Resoluto (barra de energia maior).
 - Especial O Círculo do Samhain: o símbolo dourado do ritual acende no chão em volta do adversário e a chama sobe.
 - Transformação e versão Herói da Vigília: a máscara de casca com galhos, a gola de folhas e a capa esfarrapada.
+- Polimento (v5.50.4, fx/vigiliaFx.js): o Chamado levanta um redemoinho de folhas verdes e folhas caem em volta enquanto
+  dura; a Chama de Proteção acende o sigilo dourado sob os pés com um anel de chamas; os golpes fortes soltam as brasas
+  amarelas da chama; o Pisão na Raiz pega quem está no chão e as raízes se fecham sobre ele; no Círculo do Samhain as
+  raízes prendem o adversário.
+- Cena Bran + Mael (cânone: o Mael empurrou os companheiros para dentro da base subterrânea e ficou para trás): no
+  "fica atrás de mim" do Bran, o Mael não recua — manda o Bran descer e se proteger, porque quem fica é ele.
 
 ## Próximos da Vigília (títulos do dono, TODO 2026-11-21)
 Zuri (A Curandeira / ?), Mael (O Druida / Herói da Vigília), Gwayne (O Forasteiro / O Morto que Caminha),

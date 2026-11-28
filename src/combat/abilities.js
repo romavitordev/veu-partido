@@ -1,3 +1,4 @@
+import { CAST_FX, emberBurst } from '../fx/vigiliaFx.js';
 import * as THREE from 'three';
 import { BEATS } from '../config/elements.js';
 import { Timeline, yawTo, distXZ, forwardFromYaw, angleDiff, turnTowards, DEG } from '../core/util.js';
@@ -2563,6 +2564,8 @@ Object.assign(ABILITY_TYPES, {
             opp.notify('FERIDA ABERTA: SEM CURA', true);
           }
         }
+        // a.embers (Mael — Machadada): a Chama de Proteção estoura em brasas amarelas onde a machadinha desce
+        if (a.embers) emberBurst(world, at.clone().setY(0.5), { big: true, color: a.color });
         // a.pressure: o soco solta uma onda de pressão atmosférica (distorção do ar e anel de choque à frente)
         if (a.pressure) {
           const c = new THREE.Vector3(f.pos.x + F.x * 1.2, 1.2, f.pos.z + F.z * 1.2);
@@ -4362,7 +4365,9 @@ export function applySelfBuff(f, a, world) {
     world.screenFlash && world.screenFlash('#3a0606', 0.12);
     world.audio.play('maskOn', { volume: 0.6, pitch: 0.9 });
   }
-  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); for (const [p, v] of swaps) f.rig.showProp(p, v); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
+  // a.castFx (Mael — o Chamado e a Chama de Proteção): a cena própria do poder (fx/vigiliaFx.js), parada no fim
+  const castFx = a.castFx && CAST_FX[a.castFx] ? CAST_FX[a.castFx](world, f, a) : null;
+  f.addBuff({ type: a.buffType, name: a.label || a.name.toUpperCase(), time: a.duration, duration: a.duration, speedMult: a.speedMult, mult: a.damageMult, affects: a.affects, takenMult: a.takenMult, takenKinds: a.takenKinds, extraHit: a.extraHit, atkSpeed: a.atkSpeed, knockbackTakenMult: a.knockbackTakenMult, idleAnim: a.idleAnim, meleeBleed: a.meleeBleed, reflect: a.reflect, mindCost: a.mindCost, color: a.color, onEnd() { trail && trail.stop(); aura && aura.stop(); castFx && castFx(); for (const [p, v] of swaps) f.rig.showProp(p, v); if (a.armor) f.armorHits = Math.max(0, (f.armorHits || 0) - a.armor); } });
   f.notify(a.label || a.name.toUpperCase(), true);
 }
 

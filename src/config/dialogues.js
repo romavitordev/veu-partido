@@ -121,6 +121,14 @@ const INTRO_EXCHANGES = {
   // RELAÇÕES DO CÂNONE (pedido do dono, 2026-11-15: "polir relações entre personagens"). Antes estes pares caíam na
   // fala genérica de rival (a Ivete chamava o Arthur, o filho dela, de "alguém da Ordem"). Fatos dos cabeçalhos de
   // cânone de cada characters/<id>.js; o texto é PROPOSTA.
+  // A VIGÍLIA (wiki, lida em 2026-11-27): no Samhain o Bran arriscou ser atacado pelos Assombrados para salvar o Mael; os
+  // dois riscaram juntos o círculo mágico. No fim, o MAEL empurrou os companheiros para dentro da base subterrânea da
+  // Vigília e ficou para trás, consumido pela Assombração de Gwayne. Dono (2026-11-27): no "fica atrás de mim" do Bran, o
+  // Mael não recua — manda o Bran se proteger, porque quem fica é ele. Texto PROPOSTA.
+  'bran+mael': [
+    { starter: 'bran', line: 'Mael. Fica atrás de mim. A noite é longa.', response: 'mael', responseLine: 'Não, Bran. Dessa vez eu não recuo. Desce pra base e se protege. Quem fica sou eu: esse é meu destino.' },
+    { starter: 'mael', line: 'Você se jogou no meio dos Assombrados por mim, Bran.', response: 'bran', responseLine: 'E me jogo de novo. A gente riscou o círculo junto. Até o amanhecer.' },
+  ],
   'arthur+ivete': [
     { starter: 'ivete', line: 'Arthur. Arruma essa postura, guri. Tua mãe tá olhando.', response: 'arthur', responseLine: 'Mãe... não aqui na frente de todo mundo.' },
     { starter: 'arthur', line: 'A gente fez o mesmo juramento, mãe. Proteger quem a gente ama.', response: 'ivete', responseLine: 'Então protege essa cara, que eu não vou pegar leve.' },

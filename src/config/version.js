@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.50.3';
+export const VERSION = '5.50.4';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,16 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.50.4',
+    date: '2026-11-27',
+    title: 'Folhas, Brasas e Raízes',
+    items: [
+      'Mael: o Chamado levanta um redemoinho de folhas e folhas caem em volta dele enquanto dura; a Chama de Proteção acende o sigilo dourado sob os pés com um anel de chamas amarelas.',
+      'Mael: os talhos deixam rastro, a Machadada e os golpes fortes soltam as brasas da Chama de Proteção, o Gancho, o Ímpeto e a Machadada do Peregrino pesam na defesa e o Pisão na Raiz pega quem está no chão, com as raízes se fechando sobre ele.',
+      'Bran e Mael: nova conversa antes da luta — no "fica atrás de mim", o Mael não recua e manda o Bran se proteger.',
+    ],
+  },
   {
     v: '5.50.3',
     date: '2026-11-27',

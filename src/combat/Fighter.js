@@ -1,3 +1,4 @@
+import { emberBurst, rootSnap } from '../fx/vigiliaFx.js';
 import * as THREE from 'three';
 import { updateCompanion, resetCompanion } from './companion.js';
 import { inkTentacle, inkSplash } from '../fx/inkFx.js';
@@ -2415,6 +2416,10 @@ export class Fighter {
       this.world.fx.ring(opp.chestPos(), { color: this.def.energyColor, radius: 2.2, life: 0.35, vertical: true, yaw: this.yaw });
       this.world.fx.distort(opp.chestPos(), { color: this.def.energyColor, radius: 1.6, life: 0.3 });
     }
+    // Mael: as brasas amarelas da Chama de Proteção (golpes fortes da machadinha) e as raízes que fecham sobre quem está
+    // no chão (Pisão na Raiz) — fx/vigiliaFx.js
+    if (s.impactFx === 'ember') emberBurst(this.world, opp.chestPos(), { big: !!s.finisher, color: this.def.energyColor });
+    if (s.impactFx === 'roots') rootSnap(this.world, opp);
     if (s.impactFx === 'shock') {
       // Dalmo: soco de lutador de arena — sem sigilo, só FÍSICA: o anel de ar do impacto, a onda que distorce, a poeira
       // e o suor que voam e um tranco na câmera (o mesmo peso dos socos do Kian, sem o paranormal)
