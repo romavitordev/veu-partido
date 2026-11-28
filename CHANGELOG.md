@@ -1,5 +1,12 @@
 # Changelog
 
+## v5.50.3 — O Inquebrável e o Herói da Vigília
+
+### Alterado
+
+- Mael: a machadinha fica de pé no punho, com o fio virado para o adversário na guarda e no impacto dos talhos (antes o cabo deitava para trás, rumo à cabeça, e o fio olhava para o rosto dele). Retratos refeitos.
+- As transformações da Vigília ganharam nome próprio no HUD, nas falas e na seleção: **BRAN — O INQUEBRÁVEL** e **MAEL — O HERÓI DA VIGÍLIA**.
+
 ## v5.50.2 — Lança, Broquel e Machadinha
 
 ### Alterado

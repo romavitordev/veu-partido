@@ -16,7 +16,7 @@ export default {
   id: 'bran_inquebravel',
   form: true,
   baseId: 'bran',
-  name: 'BRAN',
+  name: 'BRAN — O INQUEBRÁVEL',
   model: 'bran_inquebravel',
   energyColor: PLUME,
   info: {

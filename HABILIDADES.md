@@ -2274,7 +2274,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
-## BRAN
+## BRAN — O INQUEBRÁVEL
 
 *O Inquebrável (até o fim do round)* · arma: A lança "Justiça", as azagaias e o broquel
 
@@ -2361,7 +2361,7 @@ Barra de Transformação cheia + vida ≤ 35%: segurar △ até passar da sanida
 
 ---
 
-## MAEL
+## MAEL — O HERÓI DA VIGÍLIA
 
 *Herói da Vigília (até o fim do round)* · arma: A machadinha, os punhos e as pedras do druida
 

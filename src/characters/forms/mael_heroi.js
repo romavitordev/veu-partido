@@ -17,7 +17,7 @@ export default {
   id: 'mael_heroi',
   form: true,
   baseId: 'mael',
-  name: 'MAEL',
+  name: 'MAEL — O HERÓI DA VIGÍLIA',
   model: 'mael_heroi',
   energyColor: FLAME,
   info: {

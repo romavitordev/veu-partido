@@ -122,7 +122,11 @@ function machadinha() {
 // guardada: só a forma Herói da Vigília liga
 export function addMaelProps(rig) {
   const h = machadinha();
-  inFist(h, -1.3);
+  inFist(h, 0);
+  // orientação achada a partir do punho na guarda (idle_fist): o cabo sobe na vertical, um pouco para a frente, e o FIO
+  // aponta para o adversário (dono, 2026-11-27: "o machado do mael ainda esta com a lamina virada para trás" — com o
+  // inFist(-1.3) o cabo deitava para trás rumo à cabeça e o fio olhava para o rosto dele)
+  h.rotation.set(2.92, 0.142, -3.013);
   rig.sockets.handR.add(h);
   rig.props.hatchet = h;
   for (const p of ['woodMask', 'leafCollar', 'heroCloak']) if (rig.props[p]) rig.showProp(p, false);

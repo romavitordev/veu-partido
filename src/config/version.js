@@ -1,6 +1,6 @@
 // Versão semântica do jogo e NOVIDADES (changelog).
 // Para uma nova atualização: atualize VERSION e acrescente a entrada no TOPO de CHANGELOG.
-export const VERSION = '5.50.2';
+export const VERSION = '5.50.3';
 export const VERSION_LABEL = `v${VERSION}`;
 
 export function formatVersion(version) {
@@ -11,6 +11,15 @@ export function formatVersion(version) {
 }
 
 export const CHANGELOG = [
+  {
+    v: '5.50.3',
+    date: '2026-11-27',
+    title: 'O Inquebrável e o Herói da Vigília',
+    items: [
+      'Mael: a machadinha fica de pé no punho com o fio virado para o adversário (antes o cabo deitava para trás e o fio olhava para o rosto dele).',
+      'Transformações da Vigília com nome próprio: BRAN — O INQUEBRÁVEL e MAEL — O HERÓI DA VIGÍLIA, no HUD, nas falas e na seleção.',
+    ],
+  },
   {
     v: '5.50.2',
     date: '2026-11-27',
